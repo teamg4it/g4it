@@ -1,7 +1,7 @@
 ---
 title: "I want to evaluate the impact of a digital service"
 description: "This section describes everything you need to know to evaluate the impact of a digital service"
-weight: 1
+weight: 2
 ---
 
 ## Introduction to Assessing the Environmental Impact of a Digital Service

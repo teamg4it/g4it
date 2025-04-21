@@ -112,18 +112,6 @@ public class LoadFileService {
                     .build()
                     .parse(reader);
 
-            Set<String> mandatoryHeaderFields = csvFileMapperInfo.getHeaderFields(fileToLoad.getFileType(), true);
-            records.getHeaderNames().forEach(mandatoryHeaderFields::remove);
-
-            if (!mandatoryHeaderFields.isEmpty()) {
-                errors.add(messageSource.getMessage(
-                        "header.mandatory",
-                        new String[]{fileToLoad.getOriginalFileName(), String.join(", ", mandatoryHeaderFields)},
-                        context.getLocale())
-                );
-                return errors;
-            }
-
             Set<String> fileHeader = new HashSet<>(records.getHeaderNames());
             fileHeader.remove("");
             csvFileMapperInfo.getHeaderFields(fileToLoad.getFileType(), false).forEach(fileHeader::remove);
@@ -348,5 +336,45 @@ public class LoadFileService {
         inventoryRepository.save(inventory);
     }
 
+    /**
+     * Check mandatory headers
+     * @param context the context
+     * @return list of missing mandatory headers
+     */
+    public List<String> mandatoryHeadersCheck(final Context context) {
+        List<String> errors = new ArrayList<>();
+
+        for (FileType fileType : List.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION)) {
+            for (FileToLoad fileToLoad : context.getFilesToLoad()) {
+                if (fileType.equals(fileToLoad.getFileType())) {
+
+                try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad.getConvertedFile()))) {
+                    CSVParser records = CSVFormat.RFC4180.builder()
+                            .setHeader()
+                            .setDelimiter(CsvUtils.DELIMITER)
+                            .setAllowMissingColumnNames(true)
+                            .setSkipHeaderRecord(false)
+                            .build()
+                            .parse(reader);
+
+                    Set<String> mandatoryHeaderFields = csvFileMapperInfo.getHeaderFields(fileToLoad.getFileType(), true);
+                    records.getHeaderNames().forEach(mandatoryHeaderFields::remove);
+
+                    if (!mandatoryHeaderFields.isEmpty()) {
+                        errors.add(messageSource.getMessage(
+                                "header.mandatory",
+                                new String[]{fileToLoad.getOriginalFileName(), String.join(", ", mandatoryHeaderFields)},
+                                context.getLocale())
+                        );
+                    }
+
+                } catch (IOException e) {
+                    throw new AsyncTaskException(String.format("%s - Error while managing converted file '%s'", context.log(),
+                            fileToLoad.getConvertedFile().getName()), e);
+                }
+            }}}
+
+        return errors;
+    }
 
 }
