@@ -208,4 +208,5 @@ export abstract class Constants {
     ];
 
     static readonly TOTAL_VISIBLE_GRAPH_ITEMS = 10;
+    static readonly USEFUL_INFORMATION = "useful-information";
 }

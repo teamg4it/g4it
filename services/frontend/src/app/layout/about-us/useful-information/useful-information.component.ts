@@ -1,7 +1,7 @@
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, ElementRef, inject, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
-import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 import { sortByProperty } from "sort-by-property";
 import { BusinessHours } from "src/app/core/interfaces/business-hours.interface";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
@@ -16,11 +16,13 @@ import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-
 @Component({
     selector: "app-useful-information",
     standalone: true,
-    imports: [SharedModule, TranslateModule, TopHeaderComponent, LeftSidebarComponent],
+    imports: [SharedModule, TopHeaderComponent, LeftSidebarComponent],
     templateUrl: "./useful-information.component.html",
     styleUrl: "./useful-information.component.scss",
 })
 export class UsefulInformationComponent {
+    @ViewChild("mainContent") mainContent!: ElementRef;
+
     private readonly translate = inject(TranslateService);
     private readonly businessHoursService = inject(BusinessHoursService);
     private readonly destroyRef = inject(DestroyRef);
@@ -33,7 +35,11 @@ export class UsefulInformationComponent {
     versions: Version[] = [];
     businessHoursData: BusinessHours[] = [];
     selectedLanguage: string = "en";
+    constructor(private readonly titleService: Title) {}
     ngOnInit() {
+        this.translate.get("common.useful-info").subscribe((translatedTitle: string) => {
+            this.titleService.setTitle(translatedTitle);
+        });
         this.selectedLanguage = this.translate.currentLang;
 
         this.businessHoursService
@@ -73,5 +79,16 @@ export class UsefulInformationComponent {
         let subject = `[${this.currentSubscriber.name}/${this.selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
         let email = `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
         window.location.href = email;
+    }
+
+    focusFirstElement() {
+        const mainElement = this.mainContent.nativeElement;
+        const focusableElements = mainElement.querySelectorAll(
+            'a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
+        );
+
+        if (focusableElements.length > 0) {
+            (focusableElements[0] as HTMLElement).focus();
+        }
     }
 }

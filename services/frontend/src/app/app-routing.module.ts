@@ -7,6 +7,7 @@
  */
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import { AuthGuard } from "./guard/auth.gard";
 import { ErrorComponent } from "./layout/common/error/error.component";
@@ -20,7 +21,7 @@ const routes: Routes = [
         component: ErrorComponent,
     },
     {
-        path: "useful-information",
+        path: Constants.USEFUL_INFORMATION,
         loadComponent: () =>
             import(
                 "./layout/about-us/useful-information/useful-information.component"

@@ -1,4 +1,10 @@
 <div class="flex h-screen w-screen">
+    <!-- Skip to Main Content Button -->
+    <button
+        class="hidden-focus-button"
+        (click)="focusFirstElement()"
+        [attr.aria-label]="'common.skip-to-main-content' | translate"
+    ></button>
     <!-- Header -->
     <header class="header w-full fixed top-0 left-0 z-10 flex items-center">
         <app-top-header />
@@ -12,7 +18,7 @@
         </aside>
 
         <!-- Main content area -->
-        <main class="flex-1 mt-8 full-height-width">
+        <main class="flex-1 mt-8 full-height-width" #mainContent>
             <section class="useful-page">
                 <div class="breadcrumb mb-4">
                     <span

@@ -1083,3 +1083,13 @@ app-top-header {
 .border-light-grey-color {
     border-color: var(--tints-black-60);
 }
+
+.hidden-focus-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}

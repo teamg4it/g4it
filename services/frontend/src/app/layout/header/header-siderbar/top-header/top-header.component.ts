@@ -35,6 +35,7 @@ import {
 import { UserService } from "src/app/core/service/business/user.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { generateColor } from "src/app/core/utils/color";
+import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 @Component({
     standalone: true,
@@ -139,7 +140,7 @@ export class TopHeaderComponent implements OnInit {
                 items: [
                     {
                         label: "common.useful-info",
-                        route: "useful-information",
+                        route: Constants.USEFUL_INFORMATION,
                         subHeading: "common.useful-info-desc",
 
                         command: () => {
@@ -214,7 +215,12 @@ export class TopHeaderComponent implements OnInit {
 
     setSelectedPage() {
         let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
-        this.selectedPage.set(subscribers === "administration" ? "administration" : page);
+        this.selectedPage.set(
+            subscribers === "administration" ||
+                subscribers === Constants.USEFUL_INFORMATION
+                ? subscribers
+                : page,
+        );
     }
 
     getCapitaleLetter(str: string) {
