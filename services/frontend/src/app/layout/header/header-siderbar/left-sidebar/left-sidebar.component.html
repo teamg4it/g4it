@@ -19,7 +19,7 @@
         [ngClass]="{ 'bg-light-green': selectedPage() === 'inventories' }"
     >
         <a
-            class="py-3 px-4"
+            class="py-3 px-3"
             *ngIf="userService.isAllowedInventoryRead$ | async"
             [routerLink]="selectedPath + '/inventories'"
             id="information-system"
@@ -76,7 +76,7 @@
         <a
             routerLink="/administration/users"
             *ngIf="isAdminOnSubscriberOrOrganization"
-            class="py-3 px-4"
+            class="py-3 px-2"
             id="administration"
         >
             <div class="flex justify-content-center">

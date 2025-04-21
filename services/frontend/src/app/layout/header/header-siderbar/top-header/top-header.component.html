@@ -69,7 +69,12 @@
             (click)="toggleOrgMenu(); isAboutMenuOpen = false"
         >
             <span class="ml-2">
-                {{ selectedOrganization.name }} ({{ currentSubscriber.name }})
+                {{
+                    selectedOrganization.name.length > maxLength
+                        ? selectedOrganization.name.slice(0, maxLength) + "..."
+                        : selectedOrganization.name
+                }}
+                ({{ currentSubscriber.name }})
             </span>
             <span class="pi pi-chevron-down ml-3"></span>
         </button>
@@ -82,27 +87,6 @@
     >
         <span class="text-2xl">{{ "common.workspaces" | translate }}</span>
 
-        <!-- <div class="flex flex-column gap-2 mt-5 overflow-y-auto max-h-15rem">
-            <div *ngFor="let organization of organizations" class="field-radiobutton">
-                <p-radioButton
-                    [inputId]="organization.id.toString()"
-                    name="group1"
-                    [value]="organization.id.toString()"
-                    [(ngModel)]="modelOrganization"
-                    (click)="selectCompany(organization)"
-                />
-                <label
-                    [for]="organization.id.toString()"
-                    class="ml-2"
-                    [attr.aria-label]="'common.organization' | translate"
-                >
-                    {{ "common.organization" | translate }}
-                    {{ organization.organization!.name }} ({{
-                        organization.subscriber!.name
-                    }})
-                </label>
-            </div>
-        </div> -->
         <div
             class="flex flex-column gap-2 mt-5 overflow-y-auto max-h-15rem"
             role="radiogroup"
@@ -111,10 +95,6 @@
             tabindex="0"
             #radioGroupContainer
         >
-            <label id="organization-label" class="sr-only">
-                Select an organization
-            </label>
-
             <div
                 *ngFor="let organization of organizations; let i = index"
                 class="field-radiobutton"

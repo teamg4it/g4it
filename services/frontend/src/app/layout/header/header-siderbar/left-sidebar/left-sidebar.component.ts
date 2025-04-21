@@ -6,26 +6,20 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, computed, OnInit, signal } from "@angular/core";
+import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
-import { Subject, takeUntil } from "rxjs";
 import { Subscriber } from "src/app/core/interfaces/administration.interfaces";
-import { BusinessHours } from "src/app/core/interfaces/business-hours.interface";
 import {
     Organization,
     OrganizationData,
     User,
     UserInfo,
 } from "src/app/core/interfaces/user.interfaces";
-import { Version } from "src/app/core/interfaces/version.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
-import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
-import { VersionDataService } from "src/app/core/service/data/version-data.service";
 import { generateColor } from "src/app/core/utils/color";
-import { Constants } from "src/constants";
-import { environment } from "src/environments/environment";
 
 @Component({
     standalone: true,
@@ -35,6 +29,11 @@ import { environment } from "src/environments/environment";
     imports: [CommonModule, TranslateModule, RouterModule],
 })
 export class LeftSidebarComponent implements OnInit {
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly router = inject(Router);
+    public userService = inject(UserService);
+    private readonly translate = inject(TranslateService);
+    private readonly keycloak = inject(KeycloakService);
     digitalServicesTitle = computed(() =>
         this.getTitle("digital-services.title", "digital-services"),
     );
@@ -46,19 +45,11 @@ export class LeftSidebarComponent implements OnInit {
     inventoriesAriaCurrent = computed(() => this.getAriaCurrent("inventories"));
     administrationAriaCurrent = computed(() => this.getAriaCurrent("administration"));
 
-    versions: Version[] = [];
-
     selectedPage = signal("");
 
     selectedLanguage: string = "en";
 
-    sideHeaderVisible: boolean = false;
-
-    ngUnsubscribe = new Subject<void>();
-
     organizations: OrganizationData[] = [];
-
-    businessHoursData: BusinessHours[] = [];
 
     selectedOrganization: Organization = {} as Organization;
     selectedOrganizationData: OrganizationData | undefined = undefined;
@@ -66,21 +57,10 @@ export class LeftSidebarComponent implements OnInit {
 
     currentSubscriber: Subscriber = {} as Subscriber;
 
-    days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
-    weekendDays = ["saturday", "sunday"];
-
     isAdminOnSubscriberOrOrganization = false;
     userDetails!: UserInfo;
-    initials = "";
 
-    constructor(
-        private router: Router,
-        public userService: UserService,
-        private versionDataService: VersionDataService,
-        private translate: TranslateService,
-        private businessHoursService: BusinessHoursService,
-        private keycloak: KeycloakService,
-    ) {}
+    constructor() {}
 
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
@@ -94,7 +74,7 @@ export class LeftSidebarComponent implements OnInit {
         });
 
         this.userService.user$
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((user: User) => {
                 this.userDetails = {
                     firstName: user.firstName,
@@ -115,10 +95,6 @@ export class LeftSidebarComponent implements OnInit {
                 });
                 this.isAdminOnSubscriberOrOrganization =
                     this.userService.hasAnyAdminRole(user);
-
-                this.initials =
-                    this.getCapitaleLetter(this.userDetails?.firstName) +
-                    this.getCapitaleLetter(this.userDetails?.lastName);
             });
 
         this.userService.currentSubscriber$.subscribe(
@@ -126,7 +102,7 @@ export class LeftSidebarComponent implements OnInit {
         );
 
         this.userService.currentOrganization$
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((organization: any) => {
                 this.selectedOrganization = organization;
                 this.selectedOrganizationData = {
@@ -159,45 +135,5 @@ export class LeftSidebarComponent implements OnInit {
 
     getAriaCurrent(page: string): any {
         return this.selectedPage() === page ? "page" : null;
-    }
-
-    getCapitaleLetter(str: string) {
-        if (str === undefined) return "";
-        return str.charAt(0).toLocaleUpperCase();
-    }
-
-    changeLanguage(lang: string): void {
-        this.translate.use(lang);
-        localStorage.setItem("lang", lang);
-        document.querySelector("html")!.setAttribute("lang", lang);
-        this.router.navigate([], {
-            skipLocationChange: true,
-            queryParamsHandling: "merge",
-        });
-        window.location.reload();
-    }
-
-    composeEmail() {
-        let subject = `[${this.currentSubscriber.name}/${this.selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
-        let email = `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
-        window.location.href = email;
-    }
-
-    async logout() {
-        localStorage.removeItem("username");
-        localStorage.removeItem("currentOrganization");
-        localStorage.removeItem("currentSubscriber");
-        if (environment.keycloak.enabled === "true") {
-            await this.keycloak.logout();
-        } else {
-            console.error("keycloak is not enabled");
-        }
-    }
-
-    originalOrder = () => 0;
-
-    ngOnDestroy() {
-        this.ngUnsubscribe.next();
-        this.ngUnsubscribe.complete();
     }
 }

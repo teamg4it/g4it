@@ -58,6 +58,7 @@ export class TopHeaderComponent implements OnInit {
     private keycloak = inject(KeycloakService);
     private userService = inject(UserService);
     private destroyRef = inject(DestroyRef);
+    maxLength = 30;
     ingredient: string = "english";
     selectedLanguage: string = "en";
     userDetails!: UserInfo;
@@ -208,11 +209,6 @@ export class TopHeaderComponent implements OnInit {
             });
 
             event.preventDefault();
-        }
-    }
-    navigate(event: any, item: { route: string }) {
-        if (item.route) {
-            this.router.navigate(["/home"]);
         }
     }
 
