@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules;
 
 import com.soprasteria.g4it.backend.common.model.LineError;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,17 +32,63 @@ class RuleDateServiceTest {
 
     @Mock
     MessageSource messageSource;
+    private final Locale locale = Locale.getDefault();
+    private final String filename = "filename";
+    private final int line = 1;
 
     @Test
     void testRuleDateOk() {
-        var actual = ruleDateService.checkDatesPurcaseRetrieval(Locale.getDefault(), "filename",1, LocalDate.now(), LocalDate.now().plusDays(1));
+        var actual = ruleDateService.checkDatesPurcaseRetrieval(locale, filename, line, LocalDate.now(), LocalDate.now().plusDays(1));
         Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
     void testRuleDateError() {
-        Mockito.when(messageSource.getMessage(any(), any(), any())).thenReturn("error test");
-        var actual = ruleDateService.checkDatesPurcaseRetrieval(Locale.getDefault(),"filename", 1, LocalDate.now().plusDays(1), LocalDate.now());
-        Assertions.assertEquals(new LineError("filename",1, "error test"), actual.get());
+        Mockito.when(messageSource.getMessage(any(), any(), any())).thenReturn("Purchase date after retrieval date");
+        var actual = ruleDateService.checkDatesPurcaseRetrieval(locale,filename, line, LocalDate.now().plusDays(1), LocalDate.now());
+        Assertions.assertTrue(actual.isPresent());
+        Assertions.assertEquals(new LineError(filename,line, "Purchase date after retrieval date"), actual.get());
+    }
+
+    @Test
+    void testDatePurchase_InvalidFormatError() {
+        Mockito.when(messageSource.getMessage(
+                any(), any(), any()))
+                .thenReturn("Invalid purchase date format");
+
+        var actual= ruleDateService.checkDatesPurcaseRetrieval(
+                locale, filename, line, Constants.ERROR_DATE_FORMAT, LocalDate.now());
+
+        Assertions.assertTrue(actual.isPresent());
+        Assertions.assertEquals(new LineError(filename,line, "Invalid purchase date format"), actual.get());
+
+    }
+    @Test
+    void testDateRetrieval_InvalidFormatError() {
+        Mockito.when(messageSource.getMessage(
+                        any(), any(), any()))
+                .thenReturn("Invalid retrieval date format");
+
+       var actual = ruleDateService.checkDatesPurcaseRetrieval(
+                locale, filename, line, LocalDate.now(), Constants.ERROR_DATE_FORMAT);
+
+        Assertions.assertTrue(actual.isPresent());
+        Assertions.assertEquals(new LineError(filename,line, "Invalid retrieval date format"), actual.get());
+    }
+
+    @Test
+    void testEmptyDatePurchaseOk() {
+       var actual = ruleDateService.checkDatesPurcaseRetrieval(
+                locale, filename, line, null, LocalDate.now());
+
+        Assertions.assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void testEmptyDateRetrievalOk() {
+       var actual = ruleDateService.checkDatesPurcaseRetrieval(
+                locale, filename, line, LocalDate.now(), null);
+
+        Assertions.assertTrue(actual.isEmpty());
     }
 }
