@@ -6,6 +6,7 @@
 
 ### Minor Changes
 
+- 1035| [Back-end] Improve the test cases and coverage for the new architecture
 - 1005| Prod : Manage Users - bug on the users list when organization changes
 - 1078| 2 files where without explicit error
 - 988 | [Digital service] Edit a value with a decimal reset the values to 0
