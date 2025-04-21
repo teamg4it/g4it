@@ -121,7 +121,8 @@
         "doc-link": "Go to the documentation",
         "useful-info-desc": "G4IT versions, business hours and support contact",
         "inventories": "Inventories",
-        "digital-services": "Digital services"
+        "digital-services": "Digital services",
+        "skip-to-main-content": "Skip to Main Content"
     },
     "errors": {
         "error-occurred": "An error occurred"
