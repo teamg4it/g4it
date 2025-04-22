@@ -10,6 +10,7 @@ import {
     Component,
     DestroyRef,
     ElementRef,
+    HostListener,
     inject,
     OnInit,
     QueryList,
@@ -76,12 +77,14 @@ export class TopHeaderComponent implements OnInit {
     currentSubscriber: Subscriber = {} as Subscriber;
     selectedPath = "";
     selectedPage = signal("");
+    isZoomedIn = false;
     @ViewChildren("radioItem") radioItems!: QueryList<ElementRef>;
 
     constructor() {}
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
         this.setSelectedPage();
+        this.checkZoom();
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 this.setSelectedPage();
@@ -176,6 +179,15 @@ export class TopHeaderComponent implements OnInit {
         ];
     }
 
+    @HostListener("window:resize", [])
+    onResize() {
+        this.checkZoom();
+    }
+
+    checkZoom() {
+        const zoomLevel = Math.round(window.devicePixelRatio * 100);
+        this.isZoomedIn = zoomLevel > 150;
+    }
     handleKeydown(event: KeyboardEvent) {
         const currentIndex = this.organizations.findIndex(
             (org) => org.id === this.modelOrganization,

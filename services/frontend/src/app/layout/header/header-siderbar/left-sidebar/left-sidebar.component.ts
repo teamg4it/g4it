@@ -6,7 +6,15 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
+import {
+    Component,
+    computed,
+    DestroyRef,
+    HostListener,
+    inject,
+    OnInit,
+    signal,
+} from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
@@ -59,14 +67,13 @@ export class LeftSidebarComponent implements OnInit {
 
     isAdminOnSubscriberOrOrganization = false;
     userDetails!: UserInfo;
-
-    constructor() {}
+    isZoomedIn = false;
 
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
 
         this.setSelectedPage();
-
+        this.checkZoom();
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 this.setSelectedPage();
@@ -119,6 +126,16 @@ export class LeftSidebarComponent implements OnInit {
     setSelectedPage() {
         let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
         this.selectedPage.set(subscribers === "administration" ? "administration" : page);
+    }
+
+    @HostListener("window:resize", [])
+    onResize() {
+        this.checkZoom();
+    }
+
+    checkZoom() {
+        const zoomLevel = Math.round(window.devicePixelRatio * 100);
+        this.isZoomedIn = zoomLevel > 150;
     }
 
     getTitle(name: string, page: string): any {

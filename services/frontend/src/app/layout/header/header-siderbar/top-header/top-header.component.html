@@ -1,8 +1,15 @@
 <div class="flex flex-row align-items-stretch w-screen h-full">
-    <div class="flex align-items-center justify-content-center ml-8 pl-5"></div>
-    <div class="hidden md:flex align-items-center justify-content-center top-header">
-        <span class="flex white-g4">G4</span><span class="green-it">IT</span>
-    </div>
+    @if (!isZoomedIn) {
+        <div class="flex align-items-center justify-content-center ml-8 pl-5"></div>
+    } @else {
+        <div class="flex align-items-center justify-content-center ml-4 pl-4"></div>
+    }
+    @if (!isZoomedIn) {
+        <div class="hidden md:flex align-items-center justify-content-center top-header">
+            <span class="flex white-g4">G4</span><span class="green-it">IT</span>
+        </div>
+    }
+
     <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
     <div class="flex align-items-center">
         <!-- About Us Menu -->
@@ -60,7 +67,7 @@
             <span class="pi pi-chevron-down ml-3"></span>
         </button>
     </div>
-    <div class="flex align-items-center ml-7">
+    <div class="flex align-items-center" [ngClass]="isZoomedIn ? 'ml-2' : 'ml-7'">
         <button
             (focus)="isAboutMenuOpen = false; isAccountMenuVisible = false"
             type="button"
@@ -74,7 +81,10 @@
                         ? selectedOrganization.name.slice(0, maxLength) + "..."
                         : selectedOrganization.name
                 }}
-                ({{ currentSubscriber.name }})
+
+                @if (!isZoomedIn) {
+                    ({{ currentSubscriber.name }})
+                }
             </span>
             <span class="pi pi-chevron-down ml-3"></span>
         </button>
@@ -83,12 +93,18 @@
     <!-- Organization Menu -->
     <div
         class="org-menu-new p-4 pr-3 bg-white shadow-5 border-round-xs"
-        [ngClass]="{ block: isOrgMenuVisible }"
+        [ngClass]="{ block: isOrgMenuVisible, 'max-h-15rem': isZoomedIn }"
     >
         <span class="text-2xl">{{ "common.workspaces" | translate }}</span>
 
         <div
-            class="flex flex-column gap-2 mt-5 overflow-y-auto max-h-15rem"
+            [ngClass]="{
+                'max-h-10rem': isZoomedIn,
+                'max-h-15rem': !isZoomedIn,
+                'mt-2': isZoomedIn,
+                'mt-5': !isZoomedIn,
+            }"
+            class="flex flex-column gap-2 overflow-y-auto"
             role="radiogroup"
             aria-labelledby="organization-label"
             (keydown)="handleKeydown($event)"
