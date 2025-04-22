@@ -6,15 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import {
-    Component,
-    computed,
-    DestroyRef,
-    HostListener,
-    inject,
-    OnInit,
-    signal,
-} from "@angular/core";
+import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
@@ -27,6 +19,7 @@ import {
     UserInfo,
 } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { generateColor } from "src/app/core/utils/color";
 
 @Component({
@@ -52,7 +45,7 @@ export class LeftSidebarComponent implements OnInit {
     digitalServicesAriaCurrent = computed(() => this.getAriaCurrent("digital-services"));
     inventoriesAriaCurrent = computed(() => this.getAriaCurrent("inventories"));
     administrationAriaCurrent = computed(() => this.getAriaCurrent("administration"));
-
+    private globalStore = inject(GlobalStoreService);
     selectedPage = signal("");
 
     selectedLanguage: string = "en";
@@ -67,13 +60,12 @@ export class LeftSidebarComponent implements OnInit {
 
     isAdminOnSubscriberOrOrganization = false;
     userDetails!: UserInfo;
-    isZoomedIn = false;
+    isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
 
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
 
         this.setSelectedPage();
-        this.checkZoom();
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 this.setSelectedPage();
@@ -126,16 +118,6 @@ export class LeftSidebarComponent implements OnInit {
     setSelectedPage() {
         let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
         this.selectedPage.set(subscribers === "administration" ? "administration" : page);
-    }
-
-    @HostListener("window:resize", [])
-    onResize() {
-        this.checkZoom();
-    }
-
-    checkZoom() {
-        const zoomLevel = Math.round(window.devicePixelRatio * 100);
-        this.isZoomedIn = zoomLevel > 150;
     }
 
     getTitle(name: string, page: string): any {

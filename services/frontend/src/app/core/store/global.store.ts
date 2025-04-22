@@ -16,6 +16,7 @@ const initialState: GlobalState = {
 })
 export class GlobalStoreService {
     private readonly _store = signal(initialState);
+    private readonly zoomSignal = signal({ zoom: 100 });
 
     readonly loading = computed(() => this._store().loading);
     setLoading(loading: boolean) {
@@ -31,5 +32,10 @@ export class GlobalStoreService {
     readonly criteriaList = computed(() => this._store().criteriaList);
     setcriteriaList(criteria: Criteria) {
         this._store.update((s) => ({ ...s, criteriaList: { ...criteria } }));
+    }
+
+    readonly zoomLevel = computed(() => this.zoomSignal().zoom);
+    setZoomLevel(zoom: number) {
+        this.zoomSignal.update((s) => ({ ...s, zoom }));
     }
 }

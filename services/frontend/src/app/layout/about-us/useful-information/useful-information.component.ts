@@ -10,6 +10,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
 import { VersionDataService } from "src/app/core/service/data/version-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { LeftSidebarComponent } from "../../header/header-siderbar/left-sidebar/left-sidebar.component";
 import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-header.component";
@@ -26,6 +27,7 @@ export class UsefulInformationComponent {
     private readonly translate = inject(TranslateService);
     private readonly businessHoursService = inject(BusinessHoursService);
     private readonly destroyRef = inject(DestroyRef);
+    public globalStore = inject(GlobalStoreService);
 
     private readonly versionDataService = inject(VersionDataService);
     private readonly userService = inject(UserService);

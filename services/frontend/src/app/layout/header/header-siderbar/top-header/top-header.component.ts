@@ -8,9 +8,9 @@
 import { CommonModule } from "@angular/common";
 import {
     Component,
+    computed,
     DestroyRef,
     ElementRef,
-    HostListener,
     inject,
     OnInit,
     QueryList,
@@ -35,6 +35,7 @@ import {
 } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { generateColor } from "src/app/core/utils/color";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
@@ -60,6 +61,7 @@ export class TopHeaderComponent implements OnInit {
     private keycloak = inject(KeycloakService);
     private userService = inject(UserService);
     private destroyRef = inject(DestroyRef);
+    private globalStore = inject(GlobalStoreService);
     maxLength = 30;
     ingredient: string = "english";
     selectedLanguage: string = "en";
@@ -77,14 +79,13 @@ export class TopHeaderComponent implements OnInit {
     currentSubscriber: Subscriber = {} as Subscriber;
     selectedPath = "";
     selectedPage = signal("");
-    isZoomedIn = false;
+    isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
     @ViewChildren("radioItem") radioItems!: QueryList<ElementRef>;
 
     constructor() {}
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
         this.setSelectedPage();
-        this.checkZoom();
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 this.setSelectedPage();
@@ -179,15 +180,6 @@ export class TopHeaderComponent implements OnInit {
         ];
     }
 
-    @HostListener("window:resize", [])
-    onResize() {
-        this.checkZoom();
-    }
-
-    checkZoom() {
-        const zoomLevel = Math.round(window.devicePixelRatio * 100);
-        this.isZoomedIn = zoomLevel > 150;
-    }
     handleKeydown(event: KeyboardEvent) {
         const currentIndex = this.organizations.findIndex(
             (org) => org.id === this.modelOrganization,

@@ -5,23 +5,26 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-administration-panel",
     templateUrl: "./administration-panel.component.html",
 })
 export class AdministrationPanelComponent {
+    public globalStore = inject(GlobalStoreService);
+
     tabMenuList!: MenuItem[];
 
     constructor(
         public userService: UserService,
         public router: Router,
-        private translate: TranslateService,
+        private readonly translate: TranslateService,
     ) {}
 
     ngOnInit() {

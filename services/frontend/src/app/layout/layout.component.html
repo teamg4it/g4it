@@ -11,9 +11,13 @@
         <aside class="left-sidebar">
             <app-left-sidebar />
         </aside>
-
         <!-- Main content area -->
-        <main class="flex-1 mt-8 full-height-width">
+        <main
+            class="flex-1 mt-8 full-height-width"
+            [ngClass]="{
+                'overflow-auto': globalStore.zoomLevel() >= 150,
+            }"
+        >
             <router-outlet></router-outlet>
         </main>
     </div>
