@@ -144,51 +144,16 @@ export class InventoriesFootprintComponent implements OnInit {
                     outVirtualEquipments,
                     inVirtualEquipments,
                 ] = results;
-                this.transformedInVirtualEquipments =
-                    this.transformInVirtualEquipment(inVirtualEquipments);
-                const transformedOutVirtualEquipments =
-                    this.transformOutVirtualEquipment(outVirtualEquipments);
-                this.tranformAcvStepFootprint(footprint);
 
-                transformedOutVirtualEquipments.forEach((equipment) => {
-                    const matchedFootprint = footprint[equipment.criteria];
-
-                    if (matchedFootprint) {
-                        matchedFootprint.impacts.push(equipment);
-                    } else {
-                        footprint[equipment.criteria] = {
-                            label: equipment?.criteria
-                                ?.toLocaleLowerCase()
-                                .replaceAll("-", "_"),
-                            unit: equipment.unit!,
-                            impacts: [equipment],
-                        };
-                    }
-                });
-
-                this.populateCriteriaMenu(footprint, criteria!);
-
-                this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
-                this.allUnmodifiedDatacenters = datacenters;
-                this.allUnmodifiedEquipments = physicalEquipments;
-                this.allUnmodifiedFilters = {};
-
-                const uniqueFilterSet = this.footprintService.getUniqueValues(
-                    this.allUnmodifiedFootprint,
-                    Constants.EQUIPMENT_FILTERS,
-                    true,
+                this.processFootprintData(
+                    footprint,
+                    inVirtualEquipments,
+                    outVirtualEquipments,
                 );
 
-                Constants.EQUIPMENT_FILTERS.forEach((field) => {
-                    this.allUnmodifiedFilters[field] = [
-                        Constants.ALL,
-                        ...uniqueFilterSet[field]
-                            .map((item: any) => (item ? item : Constants.EMPTY))
-                            .sort(),
-                    ];
-                });
+                this.initializeCriteriaMenu(footprint, criteria!);
 
-                this.global.setLoading(false);
+                this.initializeFootprintData(footprint, datacenters, physicalEquipments);
 
                 // React on criteria url param change
                 this.activatedRoute.paramMap.subscribe((params) => {
@@ -202,8 +167,64 @@ export class InventoriesFootprintComponent implements OnInit {
                 });
             });
     }
+    processFootprintData(
+        footprint: Criterias,
+        inVirtualEquipments: InVirtualEquipmentRest[],
+        outVirtualEquipments: OutVirtualEquipmentRest[],
+    ) {
+        this.transformedInVirtualEquipments =
+            this.transformInVirtualEquipment(inVirtualEquipments);
+        const transformedOutVirtualEquipments =
+            this.transformOutVirtualEquipment(outVirtualEquipments);
+        this.tranformAcvStepFootprint(footprint);
 
-    populateCriteriaMenu(footprint: Criterias, criteria: string) {
+        transformedOutVirtualEquipments.forEach((equipment) => {
+            const matchedFootprint = footprint[equipment.criteria];
+
+            if (matchedFootprint) {
+                matchedFootprint.impacts.push(equipment);
+            } else {
+                footprint[equipment.criteria] = {
+                    label: equipment?.criteria?.toLocaleLowerCase().replaceAll("-", "_"),
+                    unit: equipment.unit!,
+                    impacts: [equipment],
+                };
+            }
+        });
+    }
+    initializeFootprintData(
+        footprint: Criterias,
+        datacenters: Datacenter[],
+        physicalEquipments: [
+            PhysicalEquipmentAvgAge[],
+            PhysicalEquipmentLowImpact[],
+            PhysicalEquipmentsElecConsumption[],
+        ],
+    ) {
+        this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
+        this.allUnmodifiedDatacenters = datacenters;
+        this.allUnmodifiedEquipments = physicalEquipments;
+        this.allUnmodifiedFilters = {};
+
+        const uniqueFilterSet = this.footprintService.getUniqueValues(
+            this.allUnmodifiedFootprint,
+            Constants.EQUIPMENT_FILTERS,
+            true,
+        );
+
+        Constants.EQUIPMENT_FILTERS.forEach((field) => {
+            this.allUnmodifiedFilters[field] = [
+                Constants.ALL,
+                ...uniqueFilterSet[field]
+                    .map((item: any) => (item ? item : Constants.EMPTY))
+                    .sort(),
+            ];
+        });
+
+        this.global.setLoading(false);
+    }
+
+    initializeCriteriaMenu(footprint: Criterias, criteria: string) {
         const footprintCriteriaKeys = Object.keys(footprint);
         const sortedCriteriaKeys = Object.keys(this.global.criteriaList()).filter((key) =>
             footprintCriteriaKeys.includes(key),
