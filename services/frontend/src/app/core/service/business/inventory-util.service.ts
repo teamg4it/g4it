@@ -82,13 +82,6 @@ export class InventoryUtilService {
         const equipmentsLowImpact = equipments[1];
         const equipmentsElecConsumption = equipments[2];
 
-        // if (
-        //     equipmentsAvgAge.length === 0 &&
-        //     equipmentsLowImpact.length === 0 &&
-        //     equipmentsElecConsumption.length === 0
-        // )
-        //     return this.getEquipmentStats();
-
         const filtersSet: InventoryFilterSet = {};
         filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
 
@@ -271,8 +264,6 @@ export class InventoryUtilService {
         filterFields: string[],
         datacenters: Datacenter[] = [],
     ): Stat[] {
-        //if (datacenters.length === 0) return this.getDatacenterStats();
-
         const filtersSet: InventoryFilterSet = {};
         filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
 
