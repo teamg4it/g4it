@@ -166,29 +166,8 @@ export class InventoriesFootprintComponent implements OnInit {
                     }
                 });
 
-                //
-                const footprintCriteriaKeys = Object.keys(footprint);
-                const sortedCriteriaKeys = Object.keys(this.global.criteriaList()).filter(
-                    (key) => footprintCriteriaKeys.includes(key),
-                );
-                this.criteres = sortedCriteriaKeys.map((key: string) => {
-                    return {
-                        label: this.translate.instant(`criteria.${key}.title`),
-                        routerLink: `../${key}`,
-                        id: `${key}`,
-                    };
-                });
-                if (this.criteres.length > 1) {
-                    this.criteres.unshift({
-                        label: this.translate.instant(
-                            "criteria-title.multi-criteria.title",
-                        ),
-                        routerLink: `../${Constants.MUTLI_CRITERIA}`,
-                    });
-                }
-                this.footprintStore.setCriteria(criteria || Constants.MUTLI_CRITERIA);
+                this.populateCriteriaMenu(footprint, criteria!);
 
-                //
                 this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
                 this.allUnmodifiedDatacenters = datacenters;
                 this.allUnmodifiedEquipments = physicalEquipments;
@@ -222,6 +201,27 @@ export class InventoriesFootprintComponent implements OnInit {
                     }
                 });
             });
+    }
+
+    populateCriteriaMenu(footprint: Criterias, criteria: string) {
+        const footprintCriteriaKeys = Object.keys(footprint);
+        const sortedCriteriaKeys = Object.keys(this.global.criteriaList()).filter((key) =>
+            footprintCriteriaKeys.includes(key),
+        );
+        this.criteres = sortedCriteriaKeys.map((key: string) => {
+            return {
+                label: this.translate.instant(`criteria.${key}.title`),
+                routerLink: `../${key}`,
+                id: `${key}`,
+            };
+        });
+        if (this.criteres.length > 1) {
+            this.criteres.unshift({
+                label: this.translate.instant("criteria-title.multi-criteria.title"),
+                routerLink: `../${Constants.MUTLI_CRITERIA}`,
+            });
+        }
+        this.footprintStore.setCriteria(criteria || Constants.MUTLI_CRITERIA);
     }
 
     transformOutVirtualEquipment(
