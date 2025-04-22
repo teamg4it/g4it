@@ -4,6 +4,8 @@
 
 ### Major Changes
 
+- 1008 | Allow to estimate a inventory if only virtual equipments = CLOUD_SERVICES
+
 ### Minor Changes
 
 - 1035| [Back-end] Improve the test cases and coverage for the new architecture
