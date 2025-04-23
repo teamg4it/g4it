@@ -2,7 +2,7 @@ openapi: "3.0.3"
 info:
   title: Swagger GreenIT - Open API 3.0 - workspace
   description: This is a Inventory Server based on the OpenAPI 3.0 specification.
-  version: '1.0.0'
+  version: "1.0.0"
 
 tags:
   - name: workspace
@@ -23,21 +23,21 @@ paths:
             schema:
               $ref: "#/components/schemas/OrganizationUpsertRest"
       responses:
-        '201':
+        "201":
           description: workspace has been created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrganizationRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '409':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
           description: workspace already exists.
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/RestError"
-        '500':
+        "500":
           $ref: "#/components/responses/InternalServerError"
 
   /workspace/domain-subscribers:
@@ -54,7 +54,7 @@ paths:
             schema:
               $ref: "#/components/schemas/UserDetailsRest"
       responses:
-        '200':
+        "200":
           description: Return subscribers information
           content:
             application/json:
@@ -62,10 +62,9 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/SubscriberDetailsRest"
-        '500':
+        "500":
           $ref: "#/components/responses/InternalServerError"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
