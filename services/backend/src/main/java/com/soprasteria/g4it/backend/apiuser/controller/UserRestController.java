@@ -62,7 +62,7 @@ public class UserRestController implements UserApiDelegate {
 
     @Override
     public ResponseEntity<OrganizationRest> createNewOrganization(OrganizationUpsertRest organizationUpsertRest) {
-        return new ResponseEntity<>(organizationRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser())),
+        return new ResponseEntity<>(organizationRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser(), false)),
                 HttpStatus.OK);
     }
 

@@ -113,11 +113,13 @@ public class AdministratorOrganizationService {
      * @param user                   the user.
      * @return organization BO.
      */
-    public OrganizationBO createOrganization(OrganizationUpsertRest organizationUpsertRest, UserBO user) {
+    public OrganizationBO createOrganization(OrganizationUpsertRest organizationUpsertRest, UserBO user, boolean checkAdminRole) {
         Long subscriberId = organizationUpsertRest.getSubscriberId();
 
         // Check Admin Role on this subscriber.
-        administratorRoleService.hasAdminRightsOnSubscriber(user, subscriberId);
+        if (checkAdminRole) {
+            administratorRoleService.hasAdminRightsOnSubscriber(user, subscriberId);
+        }
 
         final OrganizationBO result = organizationService.createOrganization(organizationUpsertRest, user, subscriberId);
         userService.clearUserCache(user);
