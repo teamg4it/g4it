@@ -4,7 +4,7 @@
 
 ### Major Changes
 
-- 1008 | Allow to estimate a inventory if only virtual equipments = CLOUD_SERVICES
+- 1038 | Allow to estimate a inventory if only virtual equipments = CLOUD_SERVICES
 
 ### Minor Changes
 
