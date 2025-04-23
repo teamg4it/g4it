@@ -16,10 +16,10 @@ In this area, you can:
 
 ## Manage users
 
-| Procedures                                  | Description                                                                                       | Link                                                                       |
-|---------------------------------------------|---------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| **First Login**         | This procedure explains the steps to follow by an user for the first connection to G4IT. | [First Login](./01_First-Login) |
-| **Manage users in my space (organization)** | This procedure explains how to an administrator how to configure users within their organization. | [Manage users in my space](./02_Manage-users-in-my-space-organization.md)  |
+| Procedures                                  | Description                                                                                       | Link                                                                      |
+|---------------------------------------------|---------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| **First Login**                             | This procedure explains the steps to follow by an user for the first connection to G4IT.          | [First Login](./01_First-Login)                                           |
+| **Manage users in my space (organization)** | This procedure explains how to an administrator how to configure users within their organization. | [Manage users in my space](./02_Manage-users-in-my-space-organization.md) |
 
 You can refer to the functional documentation for a detailed description of the feature [3.1 Manage users](../../../../2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/_index.md).
 

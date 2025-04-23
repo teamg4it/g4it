@@ -1,103 +1,169 @@
-title: "What data needs to be collected?"
+---
+title: "What Data Needs to Be Collected?"
 description: "This section explains the kind of data you need to collect before starting an assessment"
 weight: 10
 ---
+<!-- TOC -->
+  * [Data Collected](#data-collected)
+  * [Datacenter](#datacenter)
+    * [Data That Affects the Impact](#data-that-affects-the-impact)
+    * [Data for Informational Purposes](#data-for-informational-purposes)
+  * [Physical Equipment](#physical-equipment)
+    * [Data That Affects the Impact](#data-that-affects-the-impact-1)
+    * [Data for Informational Purposes](#data-for-informational-purposes-1)
+    * [For Equipment in a Datacenter](#for-equipment-in-a-datacenter)
+  * [Virtual Equipment](#virtual-equipment)
+    * [Hosting Under Control](#hosting-under-control)
+      * [Allocation Calculation](#allocation-calculation)
+      * [Notes](#notes)
+    * [Data for Informational Purposes](#data-for-informational-purposes-2)
+    * [Hosting Unknown – Cloud Services (IaaS)](#hosting-unknown--cloud-services-iaas)
+  * [Application Infrastructure](#application-infrastructure)
+    * [Data for Informational Purposes](#data-for-informational-purposes-3)
+<!-- TOC -->
 
-## Data collected
+## Data Collected
 
-![Schema that describes the data needs to be collected for inventory impact evaluation: users equipments, network equipment, servers...](../images/data_collected.png)
+![Diagram showing types of data needed for inventory impact evaluation, such as user equipment, network equipment, and servers](../images/data_collected.png)
 
-Four types of data are expected in G4IT:
+G4IT requires four main types of data:
 
-- **Datacenter**: allows us to take into account the efficiency of a datacenter.
-- **Physical Equipment**: this is a key component; every IT system is based on physical equipment.
-- **Virtual Equipment**: represents a part of physical equipment in reality and allows us to compute the impact of an application. It can be a Virtual Machine, Pod, part of a hypervisor, or a router...
-- **Application**: an application is a sum of Virtual Equipment.
+- **Datacenter**: Provides information about the energy efficiency of the data center.
+- **Physical Equipment**: The foundation of every IT system.
+- **Virtual Equipment**: Represents logical units or segments of physical infrastructure, essential for application
+  impact assessment.
+- **Application**: Comprised of one or more virtual resources.
 
-This organization allows each kind of file to be loaded separately, multiple times, and enables the load to be automated by API.
+Each data type can be imported independently, multiple times, and supports automation via API.
 
-On this page, you can find all the data you will need to evaluate the impact of an inventory. Some data influences the calculation of the impact, while others do not and simply help users to understand or categorize within the GUI.
+Some of this data directly affects impact calculations, while other data is used for categorization and user interface
+clarity.
 
-### **Data Center**
-
-Data that affects the Impact:
-- **Location of the datacenter**:
-    - The country or region where the data center is located.
-
-- **Power Usage Effectiveness of the datacenter**:
-    - PUE measures the energy efficiency of a data center. A lower PUE indicates better efficiency, as it measures how much energy is used by the infrastructure compared to cooling and power distribution.
-
-Data that informs users:
-- **Entity**: the name of the entity within the organization responsible for the equipment.
-
-### **Physical Equipment**
-
-Data that affects the Impact:
-- **Equipment characteristic**: Description of the physical servers used, including model and performance characteristics (e.g., CPU type, RAM, storage).
-
-- **Quantity**: number of Equipments with the same characteristics.
-
-- **Equipment Lifespan** (if accurate data exists): The expected lifespan of physical Equipments.
-
-- **Energy Consumption** (if accurate data exists): The annual average power usage of the Equipments, measured in kilowatt-hours (kWh).
-
-- **Location**: The country where the Equipment is located.
-
-Data that informs users:
-- **Status**: the objective is to know, for example, if the equipment is in use, in stock, in transit...
-- **Entity**: the name of the entity within the organization responsible for the equipment.
-
-#### **Specificities for equipment in a datacenter**
-
-Data that affects the Impact:
-- **Associated Data center**: The datacenter where the equipment is running.
-
-### **Virtual Equipment**
-
-Virtual Equipment in the G4IT context is used to estimate the impact of an application portfolio.
-> NOTE 1:
-> Virtual Equipment is more encompassing than a Virtual Machine. It represents everything needed for an application (including a dedicated server. In that latter case, see here).
-> When you know the hosted technical architecture.
->
-#### **Hosting under control**
-In that case, you need to know the underlying physical equipment because G4IT will consider a virtual equipment (a Virtual Machine, a Pod, a hypervisor, a Switch...) as a part of it.
-To determine the portion of this virtual equipment, G4IT uses four types of information:
-- For compute servers: the portion will be determined as the quantity of vCPUs of this Virtual Machine divided by the sum of vCPUs of all Virtual Equipment linked to the corresponding Physical Equipment.
-- For storage servers: the portion will be determined as the storage capacity of this Virtual Machine divided by the sum of storage capacity of all Virtual Equipment linked to the corresponding Physical Equipment.
-- If one piece of Virtual Equipment does not have this previous information, the portion will be determined by dividing 1 EqP by the Number of Virtual Equipment.
-- In all cases, you can apply your own allocation factor; this will be prioritized over the rest.
-
-Data that informs users:
-- **Entity**: the name of the entity within the organization responsible for the equipment.
-
->NOTE
-> 1) A cluster can be considered as a sum of Physical Equipment.
-> 2) In a dynamic allocation of resources, such as in a containerization context, it is very hard to define this portion beforehand. It is easier to do it a posteriori using real consumption of resources if tooling is in place (like FinOps or billing).
-> 3) In the case of a private cloud, you have to consider as your own resources those allocated to you from the moment they are not available to others, even if they are not used.
-> 4) You can consider as Virtual Equipment the part of a laptop used to develop an application.
-> 5) A dedicated server for an application must be defined as Virtual Equipment with an allocation factor of 100%.
 ---
-#### **Hosting unknown - Cloud Services (IaaS - Infrastructure as a Service)**
 
-In that case, information on hosting will be approximated based on the following information:
+## Datacenter
 
-- **Cloud Provider**:
-    - The service provider hosting the infrastructure (e.g., Microsoft Azure, Amazon Web Services).
+### Data That Affects the Impact
 
-- **Cloud Subscription Information**:
-    - **Instance Type**: Specific configuration of the virtual machines (e.g., instance type in AWS, series of virtual machines used in Azure).
-    - **Location**: The geographical region where the cloud infrastructure is hosted.
+- **Location**  
+  The country or region where the datacenter is located.
 
-- **Usage of Cloud Instances**:
-    - **Operating Time**: The duration for which the cloud instances are actively running.
-    - **Average workload**: Percentage of server load.
+- **Power Usage Effectiveness (PUE)**  
+  A measure of energy efficiency. Lower values indicate better performance by comparing total facility power to IT
+  equipment power.
 
+### Data for Informational Purposes
 
-### **Applicative infrastructure**
-An Application in G4IT corresponds to a sum of Virtual Machines (according to the definition given in the previous paragraph).
+- **Entity**  
+  The name of the organizational unit responsible for the equipment.
 
-Data that informs users:
-- **Environment type**: makes it possible to distinguish different categories of environments like "production," "integration," "development"...
-- **Domain** and **subdomain**: allow grouping applications in the G4IT GUI.
+---
+
+## Physical Equipment
+
+### Data That Affects the Impact
+
+- **Equipment Characteristics**  
+  Includes server model, CPU type, RAM, storage, etc.
+
+- **Quantity**  
+  Number of identical equipment units.
+
+- **Lifespan** (if known)  
+  Expected operational life of the equipment.
+
+- **Energy Consumption** (if known)  
+  Average yearly energy use in kilowatt-hours (kWh).
+
+- **Location**  
+  The country where the equipment is located.
+
+### Data for Informational Purposes
+
+- **Status**  
+  Indicates whether the equipment is in use, in storage, in transit, etc.
+
+- **Entity**  
+  The responsible organizational unit.
+
+### For Equipment in a Datacenter
+
+- **Associated Datacenter**  
+  Specifies the datacenter hosting the equipment.
+
+---
+
+## Virtual Equipment
+
+Virtual Equipment in G4IT includes any virtual or logical infrastructure component necessary for application operation (
+e.g., VMs, Pods, containers, routers).
+
+### Hosting Under Control
+
+When the underlying physical equipment is known and managed internally:
+
+#### Allocation Calculation
+
+- **Compute Servers**:  
+  Allocation = vCPUs used by this Virtual Equipment ÷ total vCPUs on the physical host.
+
+- **Storage Servers**:  
+  Allocation = storage capacity used by this Virtual Equipment ÷ total available on the host.
+
+- **Default Allocation**:  
+  If data is missing, assume equal distribution among all Virtual Equipment.
+
+- **Custom Allocation Factor**:  
+  User-defined values override automatic calculations.
+
+#### Notes
+
+1. Clusters = Sum of physical resources.
+2. In containerized/dynamic environments, allocate based on actual usage when possible.
+3. Private cloud resources are considered "owned" once allocated—even if unused.
+4. Developer laptops can be modeled as Virtual Equipment.
+5. Dedicated application servers should be treated as 100% allocated Virtual Equipment.
+
+### Data for Informational Purposes
+
+- **Entity**  
+  The responsible organizational unit.
+
+---
+
+### Hosting Unknown – Cloud Services (IaaS)
+
+When infrastructure details are abstracted (e.g., public cloud services):
+
+- **Cloud Provider**  
+  e.g., AWS, Microsoft Azure, Google Cloud.
+
+- **Subscription Details**:
+    - **Instance Type**  
+      e.g., AWS t3.large, Azure D-series.
+    - **Location**  
+      Geographical region of the cloud instance.
+
+- **Usage Metrics**:
+    - **Operating Time**  
+      Duration the instance is running.
+    - **Average Workload**  
+      Percentage of compute capacity used.
+
+---
+
+## Application Infrastructure
+
+In G4IT, an application is defined as a group of Virtual Equipment.
+
+### Data for Informational Purposes
+
+- **Environment Type**  
+  Categorizes environments (e.g., production, development, staging).
+
+- **Domain** and **Subdomain**  
+  Helps organize and group applications in the GUI.
+
+---
 
 [Detailed documentation about the module](../../../../2-functional-documentation/use_cases/uc_inventory/_index.md)

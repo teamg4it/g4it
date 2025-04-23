@@ -1,131 +1,161 @@
 ---
-title: "How to load the collected data in G4IT ?"
-description: "This section is a user guide to explain where the data need to be loaded in the application"
+title: "How to Load the Collected Data into G4IT?"
+description: "This section is a user guide explaining where and how to load collected data in the application."
 weight: 20
 ---
 
-## **Step 1**: Transform your collected data
-This step takes place out of G4IT. The aim is to create files understandable by G4IT, so concretely respect the format describe in the data model file.
-![screen to see where retrieved the data model](../images/Datamodel_download.png "screen to see where retrieved the data model")
+## **Step 1**: Prepare Your Collected Data
 
-4 type of files can be load in G4IT:  
+> This step occurs **outside** G4IT. The goal is to format your data to match G4IT’s expected structure, as described in
+> the data model file.
 
-- **_Datacenter_** : permit to take into account efficiency of a datacenter
-- **_Physical Equipment_** : it is a key component : G4IT's objective is to bring digital back to its physical dimension, which is a source of impact.
-- **_Virtual Equipment_** : It represents actually a part of Physical Equipment and permit to compute impact of an application. It can be Virtual Machine, Pod, part of an hypervisor or a router...
-- **_Application_** : an application is a sum of Virtual Equipment.
+![Screenshot showing where to download the data model file in the interface.](../images/Datamodel_download.png "Interface screenshot for downloading the G4IT data model.")
 
-You will be able to load each type of file in several stages to complete your inventory
-You can also load the same item several times, G4IT will take the last characteristic sent (the distinction is made on the first column on each file). In consequence, be sure of the uniqueness of this data.
-You can produce .csv, .xlsx ou .odt files.
+G4IT accepts four types of data files:
 
-To produce this file you can have 3 approach:
-- _Manually_ : starting  
-  - from scratch with an empty template that you can find in the loading side panel 
-  - with an sample file or pre-filled that are available in that page. 
-- _Automatically_ : using 
-  - an ETL
-  - a python program (Beta version on demand)
-  - a solution as PowerQuery or BigQuery 
+- **Datacenter**: To assess the efficiency of data centers.
+- **Physical Equipment**: A critical file—G4IT aims to reconnect digital services to their physical impact.
+- **Virtual Equipment**: Represents a portion of physical infrastructure used by applications (VMs, Pods, routers,
+  etc.).
+- **Application**: Represents a collection of virtual resources.
 
-You can find in the following paragraphs Pre Filled and a sample file for each type of files.
+You can upload these files in multiple stages. If the same item is uploaded multiple times, G4IT will use the most
+recently uploaded version (identified by the first column of the file). Ensure each entry is unique.
 
-### **1.1**: Datacenter file
-A Datacenter file is necessary for all physical equipment located in data centres (so mainly servers). It permits for now to take into account the efficiency of this datacenter that is measure with PUE indicator. Power usage effectiveness (PUE) is a ratio that describes how much energy is used by the computing equipment in contrast to cooling and other overhead that supports the equipment.
+Supported formats: `.csv`, `.xlsx`, `.odt`
 
-| type       | Templates                                                |
-|------------|----------------------------------------------------------|
-| pre-filled | [pre-filled file](../documents/datacenter_toFillIn.xlsx) |
-| example    | [Example file](../documents/datacenter_Sample.csv)       |
+### File Preparation Methods
 
-### **1.2**: Physical Equipment file
-A Physical Equipment file is the most important file in G4IT. It often comes from an extract of a CMDB (Configuration management database).  
+You can create these files using:
 
-| type       | Templates                                                       |
-|------------|-----------------------------------------------------------------|
-| pre-filled | [pre-filled file](../documents/physicalEquipment_toFillIn.xlsx) |
-| example    | [Example file](../documents/physicalEquipment_Sample.csv)       |
+- **Manual Input**:
+    - Start from a blank template available in the loading panel.
+    - Use the pre-filled or sample files provided below.
 
-> Note : you can play with the quantity for a shared equipment (example : for a TV shared with several teams half-time, you can put 0,5 in the quantity to take intro account only the part dedicated to your perimeter)
+- **Automated Processes**:
+    - ETL tools (Extract, Transform, Load)
+    - Python script (Beta version available on request)
+    - Tools like PowerQuery or BigQuery
 
-### **1.3**: Virtual Equipment file
-
-| type       | Templates                                                      |
-|------------|----------------------------------------------------------------|
-| pre-filled | [pre-filled file](../documents/virtualEquipment_toFillIn.xlsx) |
-| example    | [Example file](../documents/virtualEquipment_Sample.csv)       |
-
-### **1.4**: Application file
-
-| type       | Templates                                                   |
-|------------|-------------------------------------------------------------|
-| pre-filled | [pre-filled file](../documents/application_toFillIn.xlsx)   |
-| example    | [Example file](../documents/application_Sample.csv)         |
+Below are links to pre-filled templates and sample files for each file type.
 
 ---
 
-## **Step 2**: Load inventory data in G4IT
+### **Step 1.1**: Datacenter File
+
+This file is required for physical equipment located in data centers (primarily servers). It enables G4IT to assess data
+center efficiency using the PUE (Power Usage Effectiveness) metric.
+
+| File Type  | Templates                                                         |
+|------------|-------------------------------------------------------------------|
+| Pre-filled | [Download pre-filled file](../documents/datacenter_toFillIn.xlsx) |
+| Example    | [Download example file](../documents/datacenter_Sample.csv)       |
+
+---
+
+### **Step 1.2**: Physical Equipment File
+
+This is the most important file in G4IT, typically exported from a CMDB (Configuration Management Database).
+
+| File Type  | Templates                                                                |
+|------------|--------------------------------------------------------------------------|
+| Pre-filled | [Download pre-filled file](../documents/physicalEquipment_toFillIn.xlsx) |
+| Example    | [Download example file](../documents/physicalEquipment_Sample.csv)       |
+
+> Note: For shared equipment, you can use fractional quantities.  
+> Example: A TV shared half-time between two teams can be entered with a quantity of `0.5`.
+
+---
+
+### **Step 1.3**: Virtual Equipment File
+
+| File Type  | Templates                                                               |
+|------------|-------------------------------------------------------------------------|
+| Pre-filled | [Download pre-filled file](../documents/virtualEquipment_toFillIn.xlsx) |
+| Example    | [Download example file](../documents/virtualEquipment_Sample.csv)       |
+
+---
+
+### **Step 1.4**: Application File
+
+| File Type  | Templates                                                          |
+|------------|--------------------------------------------------------------------|
+| Pre-filled | [Download pre-filled file](../documents/application_toFillIn.xlsx) |
+| Example    | [Download example file](../documents/application_Sample.csv)       |
+
+---
+
+## **Step 2**: Load Your Data into G4IT
 
 ### **Step 2.1**: Access the Inventory Module
 
-- **Action**: Click on the earth icon to access the module.
+- Click the earth icon in the navigation bar to open the Inventory Module.
 
-![Screenshot showing the user interface with an icon for accessing the Inventory Module.](../images/01_IS_Module_access.png "Screenshot of the user interface with an icon for accessing the Inventory Module.")
-
-### **Step 2.2**: Creating a New Inventory
-
-Click on the "New Inventory" button to begin creating a new Inventory.
-
-![Screenshot showing the "New Inventory" button highlighted on the interface.](../images/02_create_an_inventory_1.png "Screenshot of the button 'New Inventory' button highlighted on the interface.")
-
-A side panel is opening to put details on your inventory.
-![Screenshot showing the inventory creation form on the interface.](../images/02_create_an_inventory_2.png "Screenshot of the New inventory forms")
-
-1) Choose your type of inventory you want to create
-    - use "IS version" mode to make an official photography of your inventory. A version is defined by a date (a month and a year)
-    - use "simulation" for other use case. A simulation is just defined by a character string.
-2) Load your file (not mandatory to create a new inventory). See next paragraph to have more details.
-3) Notes that you can Load several .csv, .ods or .xls file, by click on the "add" button.
-4) A starter pack provide you template file (empty file without any data) and a data model file details all what is expected by G4IT to do the evaluations.
-5) When you have selected at least 1 files, click on "Add" button to create your inventory
-
-After this last click, you will return on the list of inventory with a focus on the one that has just been created.
-![Screenshot showing the inventory creation form on the interface.](../images/02_create_an_inventory_2.png "Screenshot of the New inventory forms")
+![Screenshot showing where to access the Inventory Module in the user interface.](../images/01_IS_Module_access.png "Access Inventory Module.")
 
 ---
 
-## **Step 3**: load your files
-At each moment, you can complete your inventory adding new files (screen is quite similar to that one describe in previous paragraph, only with frame 2 to 5).
-By default, a kind of each type of file is loadable, but to make a first estimation, you need at least one Physical Equipment.
+### **Step 2.2**: Create a New Inventory
+
+1. Click **"New Inventory"**.
+2. A side panel will open where you can configure your inventory.
+
+![Screenshot of the inventory creation interface with the 'New Inventory' button highlighted.](../images/02_create_an_inventory_1.png "Create a new inventory.")
+
+![Screenshot of the inventory creation form.](../images/02_create_an_inventory_2.png "Inventory configuration panel.")
+
+#### Configure Your Inventory:
+
+1. **Choose the Inventory Type**:
+    - **IS Version**: For official snapshots, defined by month and year.
+    - **Simulation**: For test cases or scenarios, labeled with a custom string.
+
+2. **Load Your Files** (Optional at creation).
+
+3. **Multiple File Uploads**: Click **"Add"** to include multiple `.csv`, `.ods`, or `.xlsx` files.
+
+4. **Starter Pack**:
+    - Includes empty templates and a detailed data model for G4IT compatibility.
+
+5. Once at least one file is selected, click **"Add"** to finalize inventory creation.
+
+Afterward, you'll return to the inventory list, with your newly created inventory highlighted.
 
 ---
 
-## **Step 4**: control your inventory
+## **Step 3**: Add More Files Anytime
 
-At the end of the loading, an icon says the status of your load :
+You can continue uploading files at any time after inventory creation. The upload interface is similar to the one used
+during initial creation.
 
-| use case                 | GUI behaviour                                  | Action expected                                                                                                                                                                                                                                                                                                                                                                                           |
-|--------------------------|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| all data are well loaded | ![Loading OK](../images/loadOK.png)            | Nothing !                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Some error appears       | ![Load in error](../images/loadInError.png)    | you can view only the line in error by downloaded the error file (click on the icon in the right side). This will automatically download in your browser and .Zip file. If you open it, you will see only line in error (the other lines are well loaded) with a message in the rightmost column to explain what is expected by G4IT. You can correct the line directly in this error file and reload it. |
-| something unexpected has happened | ![Loading KO](../images/loadIKO.png)  | probably an error on header, unexpected format, disconnect...       contact you administrator if you don't find the reason.                                                                                                                                                                                                                                                                               |
-
-You can also control the number of item loaded regarding on the left side of the inventory
-![Screenshot showing the number of item loaded on the interface.](../images/control_number_of_item.png "Screenshot of inventory control zone")
+Note: At a minimum, one Physical Equipment file is required to perform an impact estimation.
 
 ---
 
-## **Step 5**: Estimate your impact
+## **Step 4**: Review Your Upload Status
 
-It is not necessary to have a green icon to do an estimation, just at least one physical equipment.
-![Screenshot showing the launch or update estimation button.](../images/update_estimation.png "Screenshot of launch estimation button")
+After uploading, G4IT displays an icon to indicate the result:
 
-> Note that the calculation uses hardware resources, so use the function sparingly !
+| Status                       | Icon                                       | Action                                                                                                                 |
+|------------------------------|--------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| All data loaded successfully | ![Green checkmark](../images/loadOK.png)   | No action needed.                                                                                                      |
+| Some errors found            | ![Warning icon](../images/loadInError.png) | Click the icon to download a `.zip` file with only the erroneous rows. Fix and re-upload the corrected file.           |
+| Unexpected issue             | ![Error icon](../images/loadKOpng.png)     | Likely due to a format issue or disconnection. Check your file headers and format. Contact an administrator if needed. |
 
+You can also verify the number of loaded items from the inventory overview panel.
 
+![Screenshot showing the number of items loaded.](../images/control_number_of_item.png "Number of items loaded in the inventory.")
 
 ---
 
+## **Step 5**: Estimate the Impact
+
+At least one valid Physical Equipment file is required to run an estimation.
+
+![Screenshot showing the estimation launch button.](../images/update_estimation.png "Button to launch or update impact estimation.")
+
+Note: The estimation process uses computing resources. Please avoid frequent unnecessary runs.
+
 ---
 
-For detailed information about this module, refer to the [Functional Documentation for Information System Module](../../../../2-functional-documentation/use_cases/uc_inventory/_index.md).
+For detailed information, see the [Functional Documentation for the Inventory Module](../../../../2-functional-documentation/use_cases/uc_inventory/_index.md)
