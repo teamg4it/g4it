@@ -81,6 +81,7 @@ export class TopHeaderComponent implements OnInit {
     selectedPage = signal("");
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
     @ViewChildren("radioItem") radioItems!: QueryList<ElementRef>;
+    spaceSidebarVisible: boolean = false;
 
     constructor() {}
     ngOnInit() {

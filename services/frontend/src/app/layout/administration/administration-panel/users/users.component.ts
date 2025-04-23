@@ -60,8 +60,6 @@ export class UsersComponent {
     subscriber!: Subscriber;
     firstPage: number = 0;
 
-    spaceSidebarVisible: boolean = false;
-
     constructor(
         private administrationService: AdministrationService,
         private formBuilder: FormBuilder,
