@@ -24,3 +24,15 @@ databaseChangeLog:
         - createSequence:
             incrementBy: 100
             sequenceName: out_application_id_seq
+        - createSequence: 
+            incrementBy: 20
+            sequenceName: check_inv_load_datacenter_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: check_inv_load_physical_equipment_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: check_inv_load_virtual_equipment_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: check_inv_load_application_id_seq

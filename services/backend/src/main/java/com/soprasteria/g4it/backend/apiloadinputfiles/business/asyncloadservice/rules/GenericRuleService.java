@@ -38,12 +38,12 @@ public class GenericRuleService {
      * @param location   the location
      * @return error
      */
-    public Optional<LineError> checkLocation(Locale locale, String subscriber, int line, String location) {
+    public Optional<LineError> checkLocation(Locale locale, String subscriber, String filename, int line, String location) {
 
         if (referentialGetService.getCountries(subscriber).contains(location)) return Optional.empty();
         if (referentialGetService.getCountries(null).contains(location)) return Optional.empty();
 
-        return Optional.of(new LineError(line, messageSource.getMessage("referential.location.not.exist", new String[]{location}, locale)));
+        return Optional.of(new LineError(filename,line, messageSource.getMessage("referential.location.not.exist", new String[]{location}, locale)));
     }
 
     /**
@@ -53,12 +53,12 @@ public class GenericRuleService {
      * @param type       the location
      * @return error
      */
-    public Optional<LineError> checkType(Locale locale, String subscriber, int line, String type) {
+    public Optional<LineError> checkType(Locale locale, String subscriber, String filename, int line, String type) {
 
         if (!referentialGetService.getItemTypes(type, subscriber).isEmpty()) return Optional.empty();
         if (!referentialGetService.getItemTypes(type, null).isEmpty()) return Optional.empty();
 
-        return Optional.of(new LineError(line, messageSource.getMessage("referential.type.not.exist", new String[]{type}, locale)));
+        return Optional.of(new LineError(filename,line, messageSource.getMessage("referential.type.not.exist", new String[]{type}, locale)));
     }
 
     /**
@@ -68,7 +68,7 @@ public class GenericRuleService {
      * @param line   the line number
      * @return the LineError if violation
      */
-    public Optional<LineError> checkViolations(final Object object, final int line) {
-        return ValidationUtils.getViolations(validator.validate(object)).map(s -> new LineError(line, s));
+    public Optional<LineError> checkViolations(final Object object, String filename, final int line) {
+        return ValidationUtils.getViolations(validator.validate(object)).map(s -> new LineError(filename,line, s));
     }
 }

@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-comments-in-digital-service-tables
+      author: G4IT Dev Team
+      changes:
+        - setTableRemarks:
+            tableName: digital_service
+            remarks: That table defines the list of digital services and characteristics associated.
+        - setTableRemarks:
+            tableName: digital_service_link
+            remarks: That table stores the link generated from a digital services and its characteristics like expiration date.
+        - setTableRemarks:
+            tableName: digital_service_shared
+            remarks: That table stores the association between a user and a shared digital service.

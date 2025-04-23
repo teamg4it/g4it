@@ -18,10 +18,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ApplicationRepository extends AbstractValidationBaseEntityRepository<Application>, JpaRepository<Application, Long> {
+public interface ApplicationRepository extends AbstractValidationBaseEntityRepository<Application>,
+        JpaRepository<Application, Long> {
 
     /**
      * Find application by the functionally unique fields
@@ -32,7 +34,9 @@ public interface ApplicationRepository extends AbstractValidationBaseEntityRepos
      * @param nomVM             VM name
      * @return return a list of application
      */
-    Optional<Application> findByInventoryIdAndNomApplicationAndTypeEnvironnementAndNomEquipementVirtuel(final long inventoryId, final String nomApplication, final String typeEnvironnement, final String nomVM);
+    Optional<Application> findByInventoryIdAndNomApplicationAndTypeEnvironnementAndNomEquipementVirtuel(
+            final long inventoryId, final String nomApplication, final String typeEnvironnement,
+            final String nomVM);
 
     /**
      * Find application not linked to a Virtual Equipment.
@@ -47,7 +51,8 @@ public interface ApplicationRepository extends AbstractValidationBaseEntityRepos
             where a.inventory_id = ev.inventory_id
             and a.nom_vm = ev.nom_vm)
              """, nativeQuery = true)
-    Page<Application> findApplicationNotLinkedToVirtualEquipment(final Date sessionDate, final Pageable pageable);
+    Page<Application> findApplicationNotLinkedToVirtualEquipment(final Date sessionDate,
+                                                                 final Pageable pageable);
 
     /**
      * Count distinct application name from application and inApplication table.
@@ -99,5 +104,7 @@ public interface ApplicationRepository extends AbstractValidationBaseEntityRepos
      */
     @Query(value = "select count(distinct a.nomApplication) from Application a where a.inventoryId = :inventoryId")
     long countDistinctNomApplicationByInventoryId(@Param("inventoryId") final Long inventoryId);
+
+    List<Application> findByInventoryId(long inventoryId);
 
 }

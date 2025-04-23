@@ -35,7 +35,8 @@
         "peopleeq-min": "hab. eq.",
         "no-data": "Aucun résultats disponibles",
         "loading": "Chargement en cours",
-        "choose-csv": "Importer un ficher .csv",
+        "choose-file": "Importer un fichier",
+        "allowed-extensions": "Extensions prises en charges :",
         "firstName": "Prénom",
         "lastName": "Nom",
         "email": "Email",
@@ -647,6 +648,7 @@
         "title": "Panneau d'administration",
         "manage-users": "Gérer les utilisateurs",
         "manage-organizations": "Gérer les organisations",
+        "super-admin-title": "Super Admin",
         "subsriber-placeholder": "Sélectionnez le souscripteur",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
@@ -708,6 +710,9 @@
             "error": "Au moins un critère doit être sélectionné",
             "information-system-module": "Information system",
             "digital-service-module": "Digital service module"
+        },
+        "super-admin": {
+            "migrate-data-title": "Migrer les données vers le nouveau format"
         }
     },
     "error-graph": {

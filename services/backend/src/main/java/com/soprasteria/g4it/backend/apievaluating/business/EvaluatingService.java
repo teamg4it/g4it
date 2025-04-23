@@ -202,7 +202,7 @@ public class EvaluatingService {
 
         // check tasks to restart
         inProgressLoadingTasks.stream()
-                .filter(task -> task.getLastUpdateDate().plusMinutes(1).isBefore(now) && task.getInventory() != null)
+                .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now) && task.getInventory() != null)
                 .forEach(task -> {
                     task.setStatus(TaskStatus.TO_START.toString());
                     task.setLastUpdateDate(now);
@@ -258,5 +258,6 @@ public class EvaluatingService {
                     exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
                 });
     }
+
 
 }

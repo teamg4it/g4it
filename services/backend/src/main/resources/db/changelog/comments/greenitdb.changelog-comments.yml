@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-comments-in-tables
+      author: G4IT Dev Team
+      changes:
+        - setTableRemarks:
+            tableName: inventory
+            remarks: That table defines the list of information systems and characteristics associated.
+        - setTableRemarks:
+            tableName: note
+            remarks: That table defines the notes associated with the Information Systems and Digital Services.
+        - setTableRemarks:
+            tableName: task
+            remarks: That table follows the treatments done on Information System or Digital Service as integration report data, evaluation report data, export report data.

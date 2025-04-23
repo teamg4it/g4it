@@ -1,0 +1,25 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Administrator
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: administrator-actions
+    description: Endpoint for subscriber administration actions
+
+paths:
+  /administrator-actions/migrate-data-to-new-format:
+    post:
+      tags:
+        - administrator-actions
+      summary: Migrate data to new format
+      operationId: migrateDataToNewFormat
+      x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
+      responses:
+        '200':
+          description: The task id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskIdRest"

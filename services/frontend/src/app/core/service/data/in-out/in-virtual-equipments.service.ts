@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Constants } from "src/constants";
@@ -43,6 +43,22 @@ export class InVirtualEquipmentsService {
             equipment,
             {
                 headers: this.HEADERS,
+            },
+        );
+    }
+
+    updateAllVms(
+        equipment: InVirtualEquipmentRest[],
+        digitalServiceUid: string,
+        physicalEquipmentId: number,
+    ): Observable<InVirtualEquipmentRest> {
+        const params = new HttpParams().set("physicalEqpId", physicalEquipmentId);
+        return this.http.put<InVirtualEquipmentRest>(
+            `${endpoint}/${digitalServiceUid}/inputs/${this.API}`,
+            equipment,
+            {
+                headers: this.HEADERS,
+                params,
             },
         );
     }

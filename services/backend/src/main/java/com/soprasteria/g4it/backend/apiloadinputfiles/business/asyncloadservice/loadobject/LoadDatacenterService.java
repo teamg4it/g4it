@@ -13,6 +13,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject.CheckDatacenterService;
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
@@ -45,7 +46,7 @@ public class LoadDatacenterService {
     private EntityManager entityManager;
 
     @Transactional
-    public List<LineError> execute(final Context context, final int pageNumber, List<InDatacenterRest> datacenters) {
+    public List<LineError> execute(final Context context, final FileToLoad fileToLoad, final int pageNumber, List<InDatacenterRest> datacenters) {
         if (datacenters.isEmpty()) return List.of();
 
         log.info("Load datacenters for {}, size = {}", context.log(), datacenters.size());
@@ -56,12 +57,15 @@ public class LoadDatacenterService {
 
         for (int i = 0; i < datacenters.size(); i++) {
             int line = Constants.BATCH_SIZE * pageNumber + i + 2;
+            List<LineError> coherenceErrorInLine =  fileToLoad.getCoherenceErrorByLineNumer().getOrDefault(line, List.of());
 
-            final List<LineError> checkErrors = checkDatacenterService.checkRules(context, datacenters.get(i), line);
-            if (checkErrors.isEmpty()) {
+            final List<LineError> checkErrors = checkDatacenterService.checkRules(context, datacenters.get(i),fileToLoad.getFilename(), line);
+            if (checkErrors.isEmpty() && coherenceErrorInLine.isEmpty()) {
+                //No check line error and no line coherence and duplication error
                 datacentersToSave.add(inDatacenterMapper.toEntity(datacenters.get(i)));
             } else {
                 errors.addAll(checkErrors);
+                errors.addAll(coherenceErrorInLine);
             }
         }
 

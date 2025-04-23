@@ -1,0 +1,99 @@
+{
+    "tableGroups": [
+        {
+            "name": "Users Management",
+            "description": "These tables present the structure of Subscriber (customer of the plateform), Organization (Subscriber-defined structuring element) and User (Person authorized who accesses G4IT’s modules). Role are put in place : Administrator (at Subcriber level and at Organization level), Read/Write on G4IT’s modules (information system and/or digital services).",
+            "tables": [
+                "g4it_organization",
+                "g4it_subscriber",
+                "g4it_user_organization",
+                "g4it_role",
+                "g4it_user_role_organization",
+                "g4it_user_subscriber",
+                "g4it_user_role_subscriber",
+                "g4it_user"
+            ]
+        },
+        {
+            "name": "Digital Service Sharing Function",
+            "description": "Digital Service Sharing Function",
+            "tables": [
+                "digital_service",
+                "digital_service_link",
+                "digital_service_shared",
+                "g4it_user",
+                "g4it_organization"
+            ]
+        },
+        {
+            "name": "Information Sytem input data",
+            "description": "These tables present the datacenter informations provided by a user for each Information System (datacenter, physical equipment, virtual equipment or application association) in order to evaluate its environmental footprint.",
+            "tables": [
+                "inventory",
+                "in_application",
+                "in_datacenter",
+                "in_physical_equipment",
+                "in_virtual_equipment",
+                "note"
+            ]
+        },
+        {
+            "name": "Digital Service input data",
+            "description": "These tables present the datas provide by a user for each Digital Service (terminals, networks and servers) in order to evaluate its environmental footprint.",
+            "tables": [
+                "digital_service",
+                "in_application",
+                "in_datacenter",
+                "in_physical_equipment",
+                "in_virtual_equipment",
+                "note"
+            ]
+        },
+        {
+            "name": "Common References Tables",
+            "description": "These tables are references tables for environmental impact assessment : list of the stages of the life cycle, list of possible criteria in G4IT and table to convert to the \"people equivalent\" unit.",
+            "tables": [
+                "ref_criterion",
+                "ref_lifecycle_step",
+                "ref_sustainable_individual_package"
+            ]
+        },
+        {
+            "name": "Digital Service definition",
+            "description": "These tables are the datas available in the Digital Service module and their correspondance with the item for which impact datas are configured in G4IT",
+            "tables": [
+                "ref_server_host",
+                "ref_network_type",
+                "ref_device_type",
+                "ref_item_type"
+            ]
+        },
+        {
+            "name": "Correspondences for Impact Calculation",
+            "description": "These tables are the tables taken into account to make the correspondance between the entry datas in the inventory and the items for which impact datas are configured in G4IT. Before to launch the calculation, some hypothesis are applied like PUE, device lifetime, BYOD usage rate and also COPE usage rate.",
+            "tables": ["ref_item_impact", "ref_hypothesis", "ref_matching_item"]
+        },
+        {
+            "name": "Information Sytem output data",
+            "description": "Theses tables present the datamodel to store the environmental footprint calculated indicators for Information System.",
+            "tables": [
+                "inventory",
+                "task",
+                "out_application",
+                "out_physical_equipment",
+                "out_virtual_equipment"
+            ]
+        },
+        {
+            "name": "Digital Service output data",
+            "description": "Theses tables present the datamodel to store the environmental footprint calculated indicators for Digital Service.",
+            "tables": [
+                "digital_service",
+                "task",
+                "out_application",
+                "out_physical_equipment",
+                "out_virtual_equipment"
+            ]
+        }
+    ]
+}

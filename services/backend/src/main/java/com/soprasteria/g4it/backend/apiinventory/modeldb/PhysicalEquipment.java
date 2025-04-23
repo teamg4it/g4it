@@ -74,7 +74,7 @@ public class PhysicalEquipment extends AbstractValidationBaseEntity implements S
     @Pattern(regexp = "\\d*", message = "{nbcoeur.pattern}")
     private String nbCoeur;
 
-    @Pattern(regexp = "\\d*", message = "{consoelecannuelle.pattern}")
+    @Pattern(regexp = "^\\+?(\\.\\d+|\\d+\\.?\\d*)$|", message = "{consoelecannuelle.pattern}")
     private String consoElecAnnuelle;
 
     @Size(max = 255, message = "{nomcourtdatacenter.size}")

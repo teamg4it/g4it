@@ -245,3 +245,15 @@ databaseChangeLog:
               - column:
                   name: workload
                   type: float
+  - changeSet:
+      id: in-out-add-index-virtual-equipment-case-check
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: in_virtual_equipment
+            indexName: idx_in_virtual_equipment_inventory_id_name
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: name

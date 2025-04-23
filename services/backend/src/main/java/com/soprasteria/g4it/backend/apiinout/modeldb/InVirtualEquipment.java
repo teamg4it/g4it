@@ -7,7 +7,6 @@ package com.soprasteria.g4it.backend.apiinout.modeldb;/*
  */
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -84,7 +83,6 @@ public class InVirtualEquipment {
     private Double sizeDiskGb;
 
     @Min(0)
-    @Max(1)
     private Double allocationFactor;
 
     private List<String> commonFilters;

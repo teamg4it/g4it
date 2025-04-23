@@ -8,5 +8,15 @@
 
 package com.soprasteria.g4it.backend.common.model;
 
-public record LineError(int line, String error) {
+import java.util.Optional;
+
+public record LineError(String filename, int line, String error, Optional<String> equipementName){
+    public LineError(String filename, int line, String error) {
+        this(filename, line, error, Optional.empty());
+    }
+
+    public LineError(String filename, int line, String error, String equipementName) {
+        this(filename, line, error, Optional.of(equipementName));
+    }
+
 }

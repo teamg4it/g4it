@@ -36,14 +36,14 @@ public class CheckApplicationService {
      * @param line        the line number
      * @return the list of errors
      */
-    public List<LineError> checkRules(final Context context, final InApplicationRest application, final int line) {
+    public List<LineError> checkRules(final Context context, final InApplicationRest application, final String filename, final int line) {
         List<LineError> errors = new ArrayList<>();
 
         // check InApplicationRest constraint violations
-        genericRuleService.checkViolations(application, line).ifPresent(errors::add);
+        genericRuleService.checkViolations(application, filename, line).ifPresent(errors::add);
 
         // check application has a virtual equipment linked
-        ruleApplicationService.checkVirtualEquipmentLinked(context.getLocale(), line, application.getVirtualEquipmentName())
+        ruleApplicationService.checkVirtualEquipmentLinked(context.getLocale(),filename, line, application.getVirtualEquipmentName())
                 .ifPresent(errors::add);
 
         return errors;

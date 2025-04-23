@@ -23,6 +23,7 @@ describe("UserDataService", () => {
         firstName: "prenom",
         lastName: "nom",
         id: 1,
+        isSuperAdmin: true,
         subscribers: [
             {
                 id: 1,

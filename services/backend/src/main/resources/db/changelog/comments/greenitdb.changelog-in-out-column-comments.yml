@@ -1,0 +1,627 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-column-comments-in-in_application-table
+      author: G4IT Dev Team
+      changes:
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: id
+            remarks: Auto incremented unique application identifier
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: name
+            remarks: Name of Application
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: inventory_id
+            remarks: Foreign key to the inventory
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: digital_service_uid
+            remarks: Foreign key to the digital service
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: physical_equipment_name
+            remarks: Name of physical equipment
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: virtual_equipment_name
+            remarks: Name of Virtual Equipment
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: environment
+            remarks: Name of Environment
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: common_filters
+            remarks: Common Filter of Application
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: filters
+            remarks: Domain and Subdomain filters in application view
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: creation_date
+            remarks: Creation Date of Application
+        - setColumnRemarks:
+            tableName: in_application
+            columnName: last_update_date
+            remarks: Last update date of Application
+
+  - changeSet:
+      id: add-column-comments-in-in_datacenter-table
+      author: G4IT Dev Team
+      changes:
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: id
+            remarks: Auto incremented unique datacenter identifier
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: name
+            remarks: Name of Datacenter
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: inventory_id
+            remarks: Foreign key to the inventory
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: digital_service_uid
+            remarks: Foreign key to the digital service
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: full_name
+            remarks: Full Name of Datacenter
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: location
+            remarks: Location of Datacenter
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: pue
+            remarks: Power Usage Effectiveness of Datacenter
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: creation_date
+            remarks: Creation Date of Datacenter
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: last_update_date
+            remarks: Last update of Datacenter
+        - setColumnRemarks:
+            tableName: in_datacenter
+            columnName: common_filters
+            remarks: Common filters of Datacenter
+
+  - changeSet:
+      id: add-column-comments-in-in_physical_equipment-table
+      author: G4IT Dev Team
+      changes:
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: id
+            remarks: Auto incremented unique physical equipment identifier
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: name
+            remarks: Name of Physical Equipment
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: inventory_id
+            remarks: Foreign key to the Inventory
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: digital_service_uid
+            remarks: Foreign key to the Digital Service
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: datacenter_name
+            remarks: Name of Datacenter
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: location
+            remarks: Location of physical equipment
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: quantity
+            remarks: Quantity of physical equipment
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: type
+            remarks: Type of Equipment
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: model
+            remarks: Physical equipment Model Name
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: manufacturer
+            remarks: Physical equipment Manufacturer
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: date_purchase
+            remarks: Date of purchase of physical equipment
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: date_withdrawal
+            remarks: Date withdrawal of physical equipment
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: cpu_type
+            remarks: CPU type of physical equipment
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: cpu_core_number
+            remarks: CPU core number
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: size_disk_gb
+            remarks: Size disk in gb
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: size_memory_gb
+            remarks: Size disk in gb
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: source
+            remarks: Source
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: quality
+            remarks: Quality
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: electricity_consumption
+            remarks: Electricity consumption
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: common_filters
+            remarks: Common filters
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: filters
+            remarks: Filters
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: creation_date
+            remarks: Phyical Equipment Creation Date
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: last_update_date
+            remarks: Phyical Equipment Last update date
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: duration_hour
+            remarks: Duration hour
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: description
+            remarks: Description
+        - setColumnRemarks:
+            tableName: in_physical_equipment
+            columnName: nb_user
+            remarks: Number of users
+
+  - changeSet:
+      id: add-column-comments-in-in_virtual_equipment-table
+      author: G4IT Dev Team
+      changes:
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: id
+            remarks: Auto incremented unique virtual equipment identifier
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: name
+            remarks: Name of Virtual Equipment
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: inventory_id
+            remarks: Foreign key to the Inventory
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: digital_service_uid
+            remarks: Foreign key to the Digital service
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: datacenter_name
+            remarks: Name of Datacenter
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: physical_equipment_name
+            remarks: Name of physical equipment
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: quantity
+            remarks: Quantity of Virtual Equipment
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: infrastructure_type
+            remarks: Virtual Equipment Infrastructure type
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: instance_type
+            remarks: Virtual Equipment Instance type
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: type
+            remarks: Type of virtual equipment
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: provider
+            remarks: Virtual Equipment Provider
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: location
+            remarks: Virtual Equipment Location
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: duration_hour
+            remarks: Duration hour
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: workload
+            remarks: Workload
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: electricity_consumption
+            remarks: Electricity consumption
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: vcpu_core_number
+            remarks: Number of Vcpu core
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: size_memory_gb
+            remarks: Size memory in gb
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: size_disk_gb
+            remarks: Size disk in gb
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: allocation_factor
+            remarks: Allocation factor
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: common_filters
+            remarks: Common filters
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: filters
+            remarks: Filters
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: creation_date
+            remarks: Virtual equipment Creation Date
+        - setColumnRemarks:
+            tableName: in_virtual_equipment
+            columnName: last_update_date
+            remarks: Virtual equipment Last update date
+
+  - changeSet:
+      id: add-column-comments-in-out_application-table
+      author: G4IT Dev Team
+      changes:
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: id
+            remarks: Auto incremented unique application identifier
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: name
+            remarks: Name of Application
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: criterion
+            remarks: Application Criterion
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: lifecycle_step
+            remarks: Application Lifecycle step
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: task_id
+            remarks: Foreign key to the task
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: environment
+            remarks: Application Environment
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: equipment_type
+            remarks: Application Equipment type
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: location
+            remarks: Application Location
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: engine_name
+            remarks: Application Engine name
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: engine_version
+            remarks: Application Engine Version
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: referential_version
+            remarks: Referential version
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: status_indicator
+            remarks: Status indicator
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: quantity
+            remarks: Quantity
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: unit_impact
+            remarks: Unit impact of Application
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: people_eq_impact
+            remarks: People equivalent impact
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: electricity_consumption
+            remarks: Electricity consumption
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: unit
+            remarks: Unit of Application
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: common_filters
+            remarks: Common filters
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: filters
+            remarks: Filters
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: filters_physical_equipment
+            remarks: Filters of physical equipment
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: filters_virtual_equipment
+            remarks: Filters of virtual equipment
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: errors
+            remarks: Errors
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: count_value
+            remarks: Count value
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: virtual_equipment_name
+            remarks: Name of Virtual Equipment
+        - setColumnRemarks:
+            tableName: out_application
+            columnName: provider
+            remarks: Provider
+
+  - changeSet:
+      id: add-column-comments-in-out_physical_equipment-table
+      author: G4IT Dev Team
+      changes:
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: id
+            remarks: Auto incremented unique physical equipment identifier
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: name
+            remarks: Name of Physical Equipment
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: criterion
+            remarks: Equipment Criterion
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: lifecycle_step
+            remarks: Equipment Lifecycle Step
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: task_id
+            remarks: Foreign key to the inventory
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: lifespan
+            remarks: Lifespan of Equipment
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: location
+            remarks: Location of Equipment
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: equipment_type
+            remarks: Equipment type of Equipment
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: engine_name
+            remarks: Engine name
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: engine_version
+            remarks: Engine version
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: referential_version
+            remarks: Referential version
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: status_indicator
+            remarks: Status indicator
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: quantity
+            remarks: Equipment Quantity
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: unit_impact
+            remarks: Equipment Unit Impact
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: people_eq_impact
+            remarks: People equivalent impact
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: electricity_consumption
+            remarks: Electricity consumption
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: unit
+            remarks: Equipment Unit
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: common_filters
+            remarks: Common filters
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: filters
+            remarks: Filters
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: errors
+            remarks: Errors
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: count_value
+            remarks: Count value
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: reference
+            remarks: Referenced physical equipment
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: hosting_efficiency
+            remarks: Equipment Hosting efficiency
+        - setColumnRemarks:
+            tableName: out_physical_equipment
+            columnName: nb_user
+            remarks: Number of users
+
+  - changeSet:
+      id: add-column-comments-in-out_virtual_equipment-table
+      author: G4IT Dev Team
+      changes:
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: id
+            remarks: Auto incremented unique virtual equipment identifier
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: name
+            remarks: Name of Virtual Equipment
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: criterion
+            remarks: Equipment Criterion
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: lifecycle_step
+            remarks: Equipment Lifecycle Step
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: task_id
+            remarks: Foreign key to the inventory
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: infrastructure_type
+            remarks: Equipment Infrastructure type
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: datacenter_name
+            remarks: Name of Datacenter
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: physical_equipment_name
+            remarks: Name of physical equipment
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: provider
+            remarks: Equipment Provider
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: instance_type
+            remarks: Equipment Instance type
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: type
+            remarks: Cloud Type
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: equipment_type
+            remarks: Equipment type
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: location
+            remarks: Location of virtual equipment
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: engine_name
+            remarks: Engine Name
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: engine_version
+            remarks: Engine version
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: referential_version
+            remarks: Referential version
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: status_indicator
+            remarks: Status indicator
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: quantity
+            remarks: Quantity of virtual equipment
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: unit_impact
+            remarks: Unit Impact
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: people_eq_impact
+            remarks: People equivalent impact
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: electricity_consumption
+            remarks: Electricity consumption
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: unit
+            remarks: Unit
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: common_filters
+            remarks: Common filters
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: filters
+            remarks: Filters
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: filters_physical_equipment
+            remarks: Filters physical equipment
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: errors
+            remarks: Errors
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: count_value
+            remarks: Count value
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: usage_duration
+            remarks: Usage duration of virtual equipment
+        - setColumnRemarks:
+            tableName: out_virtual_equipment
+            columnName: workload
+            remarks: Average Workload

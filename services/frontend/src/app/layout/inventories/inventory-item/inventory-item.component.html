@@ -11,13 +11,15 @@
         >
             <div class="flex align-items-center text-lg">
                 {{ inventory.name | monthYear }}
-                @if (inventory.isNewArch) {
-                    <span class="ml-2 text-green-600"> [Beta APIs] </span>
-                    @if (inventory.doExport) {
-                        <span class="ml-2 text-green-600"> [Export] </span>
-                    }
-                    @if (inventory.doExportVerbose) {
-                        <span class="ml-2 text-green-600"> [Verbose] </span>
+                @if (showBetaFeatures === "true") {
+                    @if (inventory.isNewArch) {
+                        <span class="ml-2 text-green-600"> [Beta APIs] </span>
+                        @if (inventory.doExport) {
+                            <span class="ml-2 text-green-600"> [Export] </span>
+                        }
+                        @if (inventory.doExportVerbose) {
+                            <span class="ml-2 text-green-600"> [Verbose] </span>
+                        }
                     }
                 }
             </div>

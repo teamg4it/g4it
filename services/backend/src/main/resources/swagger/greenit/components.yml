@@ -142,6 +142,14 @@ components:
         type: integer
         format: int64
       required: true
+    physicalEqpIdQueryParam:
+      in: query
+      name: physicalEqpId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The physical equipment id
 
   responses:
     InternalServerError:
@@ -187,6 +195,8 @@ components:
           type: string
         lastName:
           type: string
+        isSuperAdmin:
+          type: boolean
         subscribers:
           type: array
           items:

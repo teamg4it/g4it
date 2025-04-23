@@ -145,6 +145,14 @@
             <div class="input-loading-files overflow-auto max-h-21rem mt-4">
                 <ng-container #uploaderContainer> </ng-container>
             </div>
+
+            <div class="mt-4 mb-4 font-italic">
+                <p>
+                    {{ "common.allowed-extensions" | translate }}
+                    {{ allowedFileExtensions.join(", ") }}
+                </p>
+            </div>
+
             <p-button
                 (click)="addComponent()"
                 label="+ {{ 'common.add' | translate }}"

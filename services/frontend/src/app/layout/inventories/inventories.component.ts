@@ -39,9 +39,9 @@ export class InventoriesComponent implements OnInit {
     sidebarType = "FILE"; // or NOTE
     id: number = 0;
     name: any = "";
-    isNewArch = false;
-    doExport = false;
-    doExportVerbose = false;
+    isNewArch = true;
+    doExport = true;
+    doExportVerbose = true;
     inventories: Map<string, Inventory[]> = new Map();
     inventoriesForSimulationsAll: Inventory[] = [];
     inventoriesOpen: Set<number> = new Set();
@@ -251,9 +251,9 @@ export class InventoriesComponent implements OnInit {
         for (let value of this.inventories.values()) {
             const inventory = value.find((inventory) => inventory.id === id);
             if (inventory) {
-                this.isNewArch = inventory?.isNewArch || false;
-                this.doExport = inventory.doExport || false;
-                this.doExportVerbose = inventory.doExportVerbose || false;
+                this.isNewArch = inventory?.isNewArch ?? true;
+                this.doExport = inventory.doExport ?? true;
+                this.doExportVerbose = inventory.doExportVerbose ?? true;
                 this.name = inventory.name;
                 break;
             }
@@ -356,6 +356,12 @@ export class InventoriesComponent implements OnInit {
     childCloseTab(event: any) {
         this.inventoriesOpen.delete(event);
         this.updateLocalStorage();
+    }
+
+    setNewArchButtons(value: boolean): void {
+        this.isNewArch = value;
+        this.doExport = value;
+        this.doExportVerbose = value;
     }
 
     updateLocalStorage() {

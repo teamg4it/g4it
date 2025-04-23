@@ -151,6 +151,7 @@ public class DigitalServiceService {
                 .organization(linkedOrganization)
                 .creationDate(now)
                 .lastUpdateDate(now)
+                .isNewArch(true)
                 .build();
         digitalServiceToSave.addDatacenter(DatacenterDigitalService.builder()
                 .name("Default DC")

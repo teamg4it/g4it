@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-comments-in-in_-tables
+      author: G4IT Dev Team
+      changes:
+        - setTableRemarks:
+            tableName: in_application
+            remarks: That table presents the application data provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint.
+        - setTableRemarks:
+            tableName: in_datacenter
+            remarks: That table present the datacenter information provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint.
+        - setTableRemarks:
+            tableName: in_physical_equipment
+            remarks: That table present the physical equipment data provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint.
+        - setTableRemarks:
+            tableName: in_virtual_equipment
+            remarks: That table present the virtual equipment data provided by a user for each  Information System or Digital Service. in order to evaluate its environmental footprint.
+
+  - changeSet:
+      id: add-table-comments-in-out_-tables
+      author: G4IT Dev Team
+      changes:
+        - setTableRemarks:
+            tableName: out_application
+            remarks: That table stores the environmental footprint calculated indicators for Digital Service or Information System at application level.
+        - setTableRemarks:
+            tableName: out_physical_equipment
+            remarks: That table stores the environmental footprint calculated indicators for Digital Service or Information System at physical equipment level.
+        - setTableRemarks:
+            tableName: out_virtual_equipment
+            remarks: That table stores the environmental footprint calculated indicators for Digital Service or Information System at virtual equipment level.

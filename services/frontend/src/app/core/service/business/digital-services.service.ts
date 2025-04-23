@@ -89,19 +89,29 @@ export class DigitalServiceBusinessService {
 
             if (server.id) {
                 physicalEquipment.id = server.id;
+                const isSharedServer = server.mutualizationType === "Shared";
                 await firstValueFrom(
                     this.inPhysicalEquipmentsService.update(physicalEquipment),
                 );
-                for (const vm of server.vm) {
-                    if (vm.uid === "") {
+                const existingVms = server.vm.filter((vm) => vm.uid !== "");
+                const newVms = server.vm.filter((vm) => vm.uid === "");
+                let allVms: InVirtualEquipmentRest[] = [];
+                if (existingVms.length && isSharedServer) {
+                    allVms = existingVms.map((vm) =>
+                        this.toInVirtualEquipment(vm, server, digitalService.uid),
+                    );
+                }
+                await firstValueFrom(
+                    this.inVirtualEquipmentsService.updateAllVms(
+                        allVms,
+                        digitalService.uid,
+                        physicalEquipment.id,
+                    ),
+                );
+                if (isSharedServer) {
+                    for (const vm of newVms) {
                         await firstValueFrom(
                             this.inVirtualEquipmentsService.create(
-                                this.toInVirtualEquipment(vm, server, digitalService.uid),
-                            ),
-                        );
-                    } else {
-                        await firstValueFrom(
-                            this.inVirtualEquipmentsService.update(
                                 this.toInVirtualEquipment(vm, server, digitalService.uid),
                             ),
                         );
@@ -200,6 +210,14 @@ export class DigitalServiceBusinessService {
             vcpuCoreNumber: vm.vCpu,
             sizeDiskGb: vm.disk,
             physicalEquipmentName: server.name,
+            allocationFactor:
+                server.type === "Compute" && server.mutualizationType === "Shared"
+                    ? (vm.vCpu / server.totalVCpu!) *
+                      (vm.annualOperatingTime / 8760) *
+                      vm.quantity
+                    : (vm.disk / server.totalDisk!) *
+                      (vm.annualOperatingTime / 8760) *
+                      vm.quantity,
         } as InVirtualEquipmentRest;
     }
 

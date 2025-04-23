@@ -43,7 +43,11 @@ public class FileSystemService {
     /**
      * Content types.
      */
-    private static final List<String> TYPES = List.of("text/csv", "application/vnd.ms-excel", "application/octet-stream");
+    private static final List<String> TYPES = List.of("text/csv",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.oasis.opendocument.spreadsheet",
+            "application/octet-stream");
     /**
      * File System.
      */
@@ -204,18 +208,8 @@ public class FileSystemService {
     private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) {
         final Path tempPath = Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString());
         try {
-            BufferedReader br = getBufferedReader(file);
-            // if the encoding was not utf8, we open the file again with an encoding adapted to ANSI
-            File outputFile = tempPath.toFile();
-            try (Writer out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    out.append(line).append("\n");
-                }
-                out.flush();
-            }
-            InputStream tmpInputStream = new FileInputStream(outputFile);
+            Files.copy(file.getInputStream(), tempPath);
+            InputStream tmpInputStream = new FileInputStream(tempPath.toFile());
             var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
             var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
             tmpInputStream.close();

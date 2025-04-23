@@ -43,6 +43,14 @@ export class AdministrationPanelComponent {
                     id: "organizations-tab",
                 });
             }
+
+            if (user.isSuperAdmin) {
+                this.tabMenuList.push({
+                    label: this.translate.instant("administration.super-admin-title"),
+                    routerLink: "actions",
+                    id: "super-admin-tab",
+                });
+            }
         });
     }
 }

@@ -1009,3 +1009,22 @@ databaseChangeLog:
         - sql: update inventory set do_export = false where do_export is null;
         - sql: update inventory set do_export_verbose = false where do_export_verbose is null;
 
+  - changeSet:
+      id: add-column-is_migrated-inventory
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: is_migrated
+                  type: boolean
+                  defaultValue: false
+        - sql: update inventory set is_migrated = false where is_migrated is null;
+
+  - changeSet:
+      id: update-default-arch-status-inventory-table
+      author: G4IT Dev Team
+      changes:
+        - sql: update inventory set is_new_arch = false where is_new_arch is null;
+        - sql: update inventory set is_migrated = false where is_migrated is null;

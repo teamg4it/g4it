@@ -10,5 +10,6 @@ package com.soprasteria.g4it.backend.common.task.model;
 public enum TaskType {
     LOADING,
     EVALUATING,
-    EVALUATING_DIGITAL_SERVICE
+    EVALUATING_DIGITAL_SERVICE,
+    MIGRATING_NEW_TABLE
 }

@@ -24,12 +24,12 @@ public class RuleDateService {
     @Autowired
     MessageSource messageSource;
 
-    public Optional<LineError> checkDatesPurcaseRetrieval(Locale locale, int line, LocalDate datePurchase, LocalDate dateRetrieval) {
+    public Optional<LineError> checkDatesPurcaseRetrieval(Locale locale,String filename, int line, LocalDate datePurchase, LocalDate dateRetrieval) {
 
         if (datePurchase == null) return Optional.empty();
 
         if (datePurchase.isEqual(Constants.ERROR_DATE_FORMAT)) {
-            return Optional.of(new LineError(line, messageSource.getMessage(
+            return Optional.of(new LineError(filename, line, messageSource.getMessage(
                     "date.format.purchase.incorrect",
                     new String[]{},
                     locale)));
@@ -37,14 +37,14 @@ public class RuleDateService {
 
         if (dateRetrieval == null) return Optional.empty();
         if (dateRetrieval.isEqual(Constants.ERROR_DATE_FORMAT)) {
-            return Optional.of(new LineError(line, messageSource.getMessage(
+            return Optional.of(new LineError(filename, line, messageSource.getMessage(
                     "date.format.retrieval.incorrect",
                     new String[]{},
                     locale)));
         }
 
         if (datePurchase.isAfter(dateRetrieval)) {
-            return Optional.of(new LineError(line, messageSource.getMessage(
+            return Optional.of(new LineError(filename, line, messageSource.getMessage(
                     "date.purchase.retrieval.incorrect",
                     new String[]{},
                     locale)));

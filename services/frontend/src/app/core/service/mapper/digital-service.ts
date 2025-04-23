@@ -41,12 +41,16 @@ export const convertToGlobalVision = (
         }
     });
     const data = physicalEquipments.filter((pe) =>
-        ["Dedicated Server", "Shared Server"].includes(pe.equipmentType),
+        ["Dedicated Server"].includes(pe.equipmentType),
     );
-    if (data.length > 0) {
+    const vms = virtualEquipments.filter((pe) =>
+        ["Shared Server"].includes(pe.equipmentType),
+    );
+    const physicalEqpsAndVms = [...data, ...vms];
+    if (physicalEqpsAndVms.length > 0) {
         globalVision.push({
             tier: "Server",
-            impacts: aggregateAndMap(data),
+            impacts: aggregateAndMap(physicalEqpsAndVms),
         });
     }
 
@@ -434,25 +438,26 @@ const getImpactsForServer = (
         )?.type!;
 
         for (const serverName in serversByServer) {
-            const impactStep = serversByServer[serverName].map(
-                (server: OutPhysicalEquipmentRest) => {
-                    return {
-                        acvStep: getLifeCycleMapReverse().get(server.lifecycleStep),
-                        countValue: server.countValue,
-                        sipValue: server.peopleEqImpact,
-                        rawValue: server.unitImpact,
-                        status: server.statusIndicator,
-                        unit: server.unit,
-                    } as ImpactACVStep;
-                },
-            );
+            const vms = vmsByServer[serverName] || undefined;
+            const impactStep = (
+                vms
+                    ? aggregateImpacts(vms, ["lifecycleStep", "unit", "statusIndicator"])
+                    : serversByServer[serverName]
+            ).map((server: OutPhysicalEquipmentRest) => {
+                return {
+                    acvStep: getLifeCycleMapReverse().get(server.lifecycleStep),
+                    countValue: server.countValue,
+                    sipValue: server.peopleEqImpact,
+                    rawValue: server.unitImpact,
+                    status: server.statusIndicator,
+                    unit: server.unit,
+                } as ImpactACVStep;
+            });
 
             const unit = impactStep.find((impact: any) => impact.unit !== "null");
             const hostingEfficiency = serversByServer[serverName].find(
                 (item: any) => item.hostingEfficiency,
             ).hostingEfficiency;
-
-            const vms = vmsByServer[serverName] || undefined;
 
             let impactVmDisk: ImpactSipValue[] = [];
             if (vms === undefined) {

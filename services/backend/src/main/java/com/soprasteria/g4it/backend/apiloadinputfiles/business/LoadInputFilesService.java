@@ -21,6 +21,7 @@ import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -149,7 +150,7 @@ public class LoadInputFilesService {
 
         // check tasks to restart
         inProgressLoadingTasks.stream()
-                .filter(task -> task.getLastUpdateDate().plusMinutes(1).isBefore(now))
+                .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now))
                 .forEach(task -> {
                     task.setStatus(TaskStatus.TO_START.toString());
                     task.setLastUpdateDate(now);
@@ -191,7 +192,13 @@ public class LoadInputFilesService {
     private List<String> newFilenames(List<MultipartFile> files, final FileType type) {
         if (files == null) return new ArrayList<>();
         return files.stream()
-                .map(file -> String.format("%s_%s_%s.csv", type.toString(), file.getOriginalFilename(), UUID.randomUUID()))
+                .map(file -> {
+                    String originalFilename = file.getOriginalFilename();
+                    // ensures the original filename can be properly matched with regex later
+                    originalFilename = originalFilename == null ? "" : originalFilename.replace("_", "-");
+                    String extension = StringUtils.getFilenameExtension(originalFilename);
+                    return String.format("%s_%s_%s.%s", type.toString(), originalFilename, UUID.randomUUID(), extension);
+                })
                 .toList();
     }
 }

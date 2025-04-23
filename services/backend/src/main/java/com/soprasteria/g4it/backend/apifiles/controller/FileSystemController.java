@@ -284,7 +284,12 @@ public class FileSystemController implements FileSystemApiDelegate {
                         String.format("Error processing file %s", filePath), e);
             }
         } else {
-            final String filePath = String.join("/", subscriber, organization.toString(),
+            Inventory inventoryEntity = inventoryRepository.findById(inventoryId).orElseThrow();
+            if (Boolean.TRUE.equals(inventoryEntity.getIsMigrated())) {
+                Task task = taskRepository.findById(Long.valueOf(batchName)).orElseThrow();
+                filename = fileSystemService.getFilenameFromUrl(task.getResultFileUrl(), 1);
+            }
+            String filePath = String.join("/", subscriber, organization.toString(),
                     FileFolder.OUTPUT.getFolderName(), filename);
             try {
                 InputStream inputStream = fileSystemService.downloadFile(subscriber, organization, FileFolder.OUTPUT, filename);

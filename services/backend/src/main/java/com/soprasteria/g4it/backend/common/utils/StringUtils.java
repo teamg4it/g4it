@@ -17,6 +17,20 @@ public final class StringUtils {
     }
 
     /**
+     * Extracts the file extension for a given filename.
+     *
+     * @param filename the name of the file
+     * @return the file's extension (e.g. "file.txt" => "txt") or an empty string if none was found
+     */
+    public static String getFilenameExtension(String filename) {
+        if (filename == null) {
+            return "";
+        }
+
+        return filename.substring(filename.lastIndexOf(".") + 1);
+    }
+
+    /**
      * Checks if a given string is in kebab-case format.
      *
      * @param value The string to check.
@@ -54,5 +68,10 @@ public final class StringUtils {
     public static String snakeToKebabCase(final String str) {
         if (str == null) return null;
         return str.toLowerCase(Locale.getDefault()).replace('_', '-');
+    }
+
+    public static String capitalize(final String str) {
+        if (str == null) return null;
+        return str.substring(0, 1).toUpperCase(Locale.getDefault()) + str.substring(1).toLowerCase(Locale.getDefault());
     }
 }

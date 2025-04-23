@@ -35,7 +35,8 @@
         "peopleeq-min": "people. eq.",
         "no-data": "No results available",
         "loading": "Loading in progress",
-        "choose-csv": "Choose a .csv file",
+        "choose-file": "Choose a file",
+        "allowed-extensions": "Supported extensions:",
         "firstName": "First Name",
         "lastName": "Last Name",
         "email": "Email",
@@ -648,6 +649,7 @@
         "title": "Administration panel",
         "manage-users": "Manage users",
         "manage-organizations": "Manage organizations",
+        "super-admin-title": "Super Admin",
         "subsriber-placeholder": "Choose subscriber",
         "accessibility": {
             "placeholder": "Subscriber selection, {{name}} currently selected",
@@ -710,6 +712,9 @@
             "error": "At least one criteria must be selected",
             "information-system-module": "Module système d'information",
             "digital-service-module": "Module de services numériques"
+        },
+        "super-admin": {
+            "migrate-data-title": "Migrate data to new format"
         }
     },
     "error-graph": {

@@ -13,8 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -78,6 +80,15 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     List<InVirtualEquipment> findByDigitalServiceUidAndPhysicalEquipmentName(String digitalServiceUid, String physicalEquipmentName, Pageable pageable);
 
     /**
+     * Find virtual equipments of one inventory and one physical equipment name
+     *
+     * @param digitalServiceUid     digitalServiceUid
+     * @param physicalEquipmentName physicalEquipmentName
+     * @return return a list of virtual equipments
+     */
+    List<InVirtualEquipment> findByDigitalServiceUidAndPhysicalEquipmentName(String digitalServiceUid, String physicalEquipmentName);
+
+    /**
      * Count virtual equipments linked to an inventory
      *
      * @param inventoryId inventory Id
@@ -129,4 +140,45 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     long countByDigitalServiceUidAndInfrastructureType(final String digitalServiceUid, final String infrastructureType);
 
     long countByInventoryIdAndInfrastructureType(final Long inventoryId, final String infrastructureType);
+
+    @Transactional
+    @Modifying
+    void deleteByInventoryIdAndPhysicalEquipmentNameIn(Long inventoryId, Set<String> names);
+
+    @Transactional
+    @Modifying
+    void deleteByInventoryId(Long inventoryId);
+
+    /**
+     * delete by digital service uid and Infrastructure type
+     *
+     * @param digitalServiceUid  uid
+     * @param infrastructureType infrastructure type
+     */
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceUidAndInfrastructureType(final String digitalServiceUid, final String infrastructureType);
+
+    /**
+     * delete by inventory id and Infrastructure type
+     *
+     * @param inventoryId        id
+     * @param infrastructureType infrastructure type
+     */
+    @Transactional
+    @Modifying
+    void deleteByInventoryIdAndInfrastructureType(final Long inventoryId, final String infrastructureType);
+
+    /**
+     * Find virtual equipments of one inventory and virtual equipment names
+     *
+     * @param inventoryId           inventory i
+     * @param virtualEquipmentNames set of name
+     * @return return a list of virtual equipments
+     */
+    @Query("SELECT v FROM InVirtualEquipment v WHERE v.inventoryId = :inventoryId AND v.name IN :names")
+    List<InVirtualEquipment> findByInventoryIdAndVirtualEquipmentName(
+            @Param("inventoryId") Long inventoryId,
+            @Param("names") Collection<String> virtualEquipmentNames
+    );
 }

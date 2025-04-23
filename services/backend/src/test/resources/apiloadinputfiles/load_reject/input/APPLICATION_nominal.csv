@@ -3,3 +3,7 @@ application-1;Test;virtual-eq-1-1;;Domain 1;Sub Domain 1;Entity 1;physical-eq-1;
 application-1;Developpement;virtual-eq-1-2;;Domain 1;Sub Domain 1;Entity 1;physical-eq-1;;
 application-2;Test;virtual-eq-2-1;;Domain 1;Sub Domain 2;Entity 1;physical-eq-2;;
 application-2;;virtual-eq-2-2;;Domain 1;Sub Domain 2;Entity 1;physical-eq-2;;
+application-doublon;Test;MyMagicalVE;;Domain 1;Sub Domain 2;Entity 1;physical-eq-2;;
+application-doublon;Test;MyMagicalVE;;Domain 1;Sub Domain 2;Entity 1;physical-eq-2;;
+application-parent-is-doublon;Test;dupl-virt-equip;;Domain 1;Sub Domain 2;Entity 1;physical-eq-2;;
+application-parent-is-not-present;Test;VIRT_NOT_EXIST;;Domain 1;Sub Domain 2;Entity 1;physical-eq-2;;

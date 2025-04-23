@@ -1,4 +1,21 @@
 [
+
+  {
+    "id": -1,
+    "allocationFactor" : 0.5,
+    "datacenterName" : "default",
+    "durationHour" : 33.0,
+    "electricityConsumption" : 22.0,
+    "infrastructureType" : "infrastructureType",
+    "location" : "France",
+    "name" : "MyMagicalVE",
+    "physicalEquipmentName" : "MyMagicalPE",
+    "quantity" : 12.0,
+    "sizeDiskGb" : 234.0,
+    "sizeMemoryGb" : 3.0,
+    "vcpuCoreNumber" : 2.0,
+    "workload" : 33.0
+  },
   {
     "commonFilters": [
       "Entity 1"

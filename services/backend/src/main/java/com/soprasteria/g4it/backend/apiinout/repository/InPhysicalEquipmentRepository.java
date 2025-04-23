@@ -82,5 +82,9 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
 
     @Transactional
     @Modifying
+    void deleteByInventoryId(Long inventoryId);
+
+    @Transactional
+    @Modifying
     void deleteByDigitalServiceUid(String digitalServiceUid);
 }

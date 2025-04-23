@@ -13,6 +13,7 @@ export interface User {
     lastName: string;
     id: number;
     subscribers: Subscriber[];
+    isSuperAdmin: boolean;
 }
 
 export interface UserInfo {

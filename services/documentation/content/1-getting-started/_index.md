@@ -7,9 +7,7 @@ toc_hide: true
 
 ## Overview
 
-A really interesting chapter 💥 to get started with the application.
-
-Most of content related to basic installation and usage should go here.
+A fascinating chapter 💥 to get started with the application.
 
 ## Table of contents
 

@@ -3,3 +3,8 @@ virtual-eq-1-1;physical-eq-1;;;4;Cluster 1;;calcul;;Entity 1;;
 virtual-eq-1-2;physical-eq-1;;;2;Cluster 1;;calcul;;Entity 1;;
 virtual-eq-2-1;;;;2;Cluster 2;;calcul;;Entity 1;;
 virtual-eq-2-2;;;;1;Cluster 2;;calcul;;Entity 1;;
+virt-rejected-phys-not-exsist;DONTEXIST;;;4;Cluster 1;;calcul;;Entity 1;;
+virt-rejected-phys-load-duplicate;dupl-phys-eq;;;4;Cluster 1;;calcul;;Entity 1;;
+virt-parent-in-inv;MyMagicalPE;;;4;Cluster 1;;calcul;;Entity 1;;
+dupl-virt-equip;physical-eq-1;;;2;Cluster 1;;calcul;;Entity 1;;
+dupl-virt-equip;physical-eq-1;;;2;Cluster 1;;calcul;;Entity 1;;

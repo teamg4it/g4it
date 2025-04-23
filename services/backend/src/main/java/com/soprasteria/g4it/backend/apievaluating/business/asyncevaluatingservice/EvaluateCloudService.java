@@ -97,7 +97,7 @@ public class EvaluateCloudService {
 
         Map<String, Double> refSipByCriteria = referentialService.getSipValueMap(activeCriteria);
 
-        Map<String, AggValuesBO> aggregationVirtualEquipments = new HashMap<>();
+        Map<List<String>, AggValuesBO> aggregationVirtualEquipments = new HashMap<>();
 
         String digitalServiceUid = task.getDigitalServiceUid();
 

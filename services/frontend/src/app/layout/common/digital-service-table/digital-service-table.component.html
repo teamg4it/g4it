@@ -9,7 +9,7 @@
     <ng-template pTemplate="caption">
         <div class="table-header">
             <div class="table-head">
-                {{ translationPrefix + "." + title | translate }}
+                {{ translationPrefix + "." + titleText | translate }}
             </div>
             <p-button
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
@@ -23,7 +23,7 @@
     <ng-template pTemplate="header">
         <caption class="visually-hidden">
             {{
-                title | translate
+                translationPrefix + "." + titleText | translate
             }}
         </caption>
         <tr>

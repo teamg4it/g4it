@@ -63,12 +63,12 @@ public class SaveService {
      * @return the size of saved data
      */
     @Transactional
-    public int saveOutPhysicalEquipments(Map<String, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
+    public int saveOutPhysicalEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutPhysicalEquipment> outPhysicalEquipments = new ArrayList<>(Constants.BATCH_SIZE);
-        Iterator<Map.Entry<String, AggValuesBO>> iterator = aggregation.entrySet().iterator();
+        Iterator<Map.Entry<List<String>, AggValuesBO>> iterator = aggregation.entrySet().iterator();
         int i = 0;
         while (iterator.hasNext()) {
-            Map.Entry<String, AggValuesBO> pair = iterator.next();
+            Map.Entry<List<String>, AggValuesBO> pair = iterator.next();
             outPhysicalEquipments.add(aggregationToOutput.mapPhysicalEquipment(pair.getKey(), pair.getValue(), taskId, refShortcutBO));
             i++;
             if (i >= Constants.BATCH_SIZE) {
@@ -93,12 +93,12 @@ public class SaveService {
      * @return the size of saved data
      */
     @Transactional
-    public int saveOutVirtualEquipments(Map<String, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
+    public int saveOutVirtualEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutVirtualEquipment> outVirtualEquipments = new ArrayList<>(Constants.BATCH_SIZE);
-        Iterator<Map.Entry<String, AggValuesBO>> iterator = aggregation.entrySet().iterator();
+        Iterator<Map.Entry<List<String>, AggValuesBO>> iterator = aggregation.entrySet().iterator();
         int i = 0;
         while (iterator.hasNext()) {
-            Map.Entry<String, AggValuesBO> pair = iterator.next();
+            Map.Entry<List<String>, AggValuesBO> pair = iterator.next();
             outVirtualEquipments.add(aggregationToOutput.mapVirtualEquipment(pair.getKey(), pair.getValue(), taskId, refShortcutBO));
             i++;
             if (i >= Constants.BATCH_SIZE) {
@@ -122,12 +122,12 @@ public class SaveService {
      * @return the size of saved data
      */
     @Transactional
-    public int saveOutApplications(Map<String, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
+    public int saveOutApplications(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutApplication> outApplications = new ArrayList<>(Constants.BATCH_SIZE);
-        Iterator<Map.Entry<String, AggValuesBO>> iterator = aggregation.entrySet().iterator();
+        Iterator<Map.Entry<List<String>, AggValuesBO>> iterator = aggregation.entrySet().iterator();
         int i = 0;
         while (iterator.hasNext()) {
-            Map.Entry<String, AggValuesBO> pair = iterator.next();
+            Map.Entry<List<String>, AggValuesBO> pair = iterator.next();
             outApplications.add(aggregationToOutput.mapApplication(pair.getKey(), pair.getValue(), taskId, refShortcutBO));
             i++;
             if (i >= Constants.BATCH_SIZE) {
@@ -151,12 +151,12 @@ public class SaveService {
      * @return the size of saved data
      */
     @Transactional
-    public int saveOutCloudVirtualEquipments(Map<String, AggValuesBO> aggregation, Long taskId) {
+    public int saveOutCloudVirtualEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId) {
         List<OutVirtualEquipment> outVirtualEquipments = new ArrayList<>(Constants.BATCH_SIZE);
-        Iterator<Map.Entry<String, AggValuesBO>> iterator = aggregation.entrySet().iterator();
+        Iterator<Map.Entry<List<String>, AggValuesBO>> iterator = aggregation.entrySet().iterator();
         int i = 0;
         while (iterator.hasNext()) {
-            Map.Entry<String, AggValuesBO> pair = iterator.next();
+            Map.Entry<List<String>, AggValuesBO> pair = iterator.next();
             outVirtualEquipments.add(aggregationToOutput.mapCloudVirtualEquipment(pair.getKey(), pair.getValue(), taskId));
             i++;
             if (i >= Constants.BATCH_SIZE) {

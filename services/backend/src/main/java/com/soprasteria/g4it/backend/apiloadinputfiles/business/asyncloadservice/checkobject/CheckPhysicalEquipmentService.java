@@ -36,22 +36,22 @@ public class CheckPhysicalEquipmentService {
      * @param line              the line number
      * @return the list of errors
      */
-    public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment, final int line) {
+    public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment,final String filename, final int line) {
         List<LineError> errors = new ArrayList<>();
 
         // check InPhysicalEquipmentRest constraint violations
-        genericRuleService.checkViolations(physicalEquipment, line).ifPresent(errors::add);
+        genericRuleService.checkViolations(physicalEquipment,filename, line).ifPresent(errors::add);
 
         // check location is in country referential (itemImpacts - category = 'electricity-mix')
-        genericRuleService.checkLocation(context.getLocale(), context.getSubscriber(), line, physicalEquipment.getLocation())
+        genericRuleService.checkLocation(context.getLocale(), context.getSubscriber(), filename, line, physicalEquipment.getLocation())
                 .ifPresent(errors::add);
 
         // check type is in itemTypes referential
-        genericRuleService.checkType(context.getLocale(), context.getSubscriber(), line, physicalEquipment.getType())
+        genericRuleService.checkType(context.getLocale(), context.getSubscriber(),filename, line, physicalEquipment.getType())
                 .ifPresent(errors::add);
 
         // check date purchase < date retrieval
-        ruleDateService.checkDatesPurcaseRetrieval(context.getLocale(), line, physicalEquipment.getDatePurchase(), physicalEquipment.getDateWithdrawal())
+        ruleDateService.checkDatesPurcaseRetrieval(context.getLocale(), filename, line, physicalEquipment.getDatePurchase(), physicalEquipment.getDateWithdrawal())
                 .ifPresent(errors::add);
 
         return errors;

@@ -12,7 +12,7 @@ export class DigitalServiceTableComponent {
 
     @Input() data: any[] = [];
 
-    @Input() title = "";
+    @Input() titleText = "";
     @Input() addButton = "";
     @Input() translationPrefix = "";
     @Input() headerFields: string[] = [];

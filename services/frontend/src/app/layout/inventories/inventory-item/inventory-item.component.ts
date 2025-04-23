@@ -29,6 +29,7 @@ import { FootprintDataService } from "src/app/core/service/data/footprint-data.s
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-inventory-item",
@@ -52,6 +53,7 @@ export class InventoryItemComponent implements OnInit {
     displayPopup = false;
     selectedCriteria: string[] = [];
     subscriber: SubscriberCriteriaRest = { criteria: [] };
+    showBetaFeatures: string = environment.showBetaFeatures;
     organization: OrganizationCriteriaRest = {
         subscriberId: 0,
         name: "",
@@ -92,7 +94,7 @@ export class InventoryItemComponent implements OnInit {
             this.integrationReports = this.inventory.integrationReports.map((ir) => {
                 if (ir.batchStatusCode === "COMPLETED" && this.inventory.tasks) {
                     for (const task of this.inventory.tasks.sort(
-                        sortByProperty("creationDate", "asc"),
+                        sortByProperty("creationDate", "desc"),
                     )) {
                         const diff = differenceInSeconds(
                             ir.createTime,

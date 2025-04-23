@@ -93,8 +93,8 @@ public class ExportBatchConfiguration {
 
     /**
      * Parallel Data extraction Flow.
+     * // @param inventoryToExportExtractionFlow                  the flow to extract Inventory data.
      *
-     * @param inventoryToExportExtractionFlow                  the flow to extract Inventory data.
      * @param dataCenterToExportExtractionFlow                 the flow to extract DataCenter data.
      * @param physicalEquipmentToExportExtractionFlow          the flow to extract PhysicalEquipment data.
      * @param virtualEquipmentToExportExtractionFlow           the flow to extract VirtualEquipment data.
@@ -105,17 +105,20 @@ public class ExportBatchConfiguration {
      * @return the configured Flow.
      */
     @Bean
-    public Flow extractDataToExportFlow(final Flow inventoryToExportExtractionFlow,
-                                        final Flow dataCenterToExportExtractionFlow,
-                                        final Flow physicalEquipmentToExportExtractionFlow,
-                                        final Flow virtualEquipmentToExportExtractionFlow,
-                                        final Flow applicationToExportExtractionFlow,
-                                        final Flow physicalEquipmentIndicatorToExportExtractionFlow,
-                                        final Flow virtualEquipmentIndicatorToExportExtractionFlow,
-                                        final Flow applicationIndicatorToExportExtractionFlow) {
+    public Flow extractDataToExportFlow(
+            //skip export of inventory file
+            //final Flow inventoryToExportExtractionFlow,
+            final Flow dataCenterToExportExtractionFlow,
+            final Flow physicalEquipmentToExportExtractionFlow,
+            final Flow virtualEquipmentToExportExtractionFlow,
+            final Flow applicationToExportExtractionFlow,
+            final Flow physicalEquipmentIndicatorToExportExtractionFlow,
+            final Flow virtualEquipmentIndicatorToExportExtractionFlow,
+            final Flow applicationIndicatorToExportExtractionFlow) {
         return new FlowBuilder<SimpleFlow>("extractDataToExportFlow")
                 .split(extractDataToExportTaskExecutor())
-                .add(inventoryToExportExtractionFlow,
+                .add(
+                        // inventoryToExportExtractionFlow,
                         dataCenterToExportExtractionFlow,
                         physicalEquipmentToExportExtractionFlow,
                         virtualEquipmentToExportExtractionFlow,
