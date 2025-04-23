@@ -31,6 +31,68 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
+  /users/organizations:
+    post:
+      tags:
+        - user
+      summary: Create a new organization
+      operationId: createNewOrganization
+      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('DIGITAL_SERVICE_READ')"
+      requestBody:
+        description: Mandatory organization details to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationUpsertRest"
+      responses:
+        '201':
+          description: Organization has been created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
+          description: Organization already exists.
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/RestError"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/domain-subscribers:
+    post:
+      tags:
+        - user
+      summary: get subscribers for domain
+      operationId: getDomainSubscribers
+      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('DIGITAL_SERVICE_READ')"
+      requestBody:
+        description: user's email.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDetailsRest"
+      responses:
+        '200':
+          description: Return subscribers information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubscriberDetailsRest"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
 components:
   securitySchemes:
     Oauth2Authentication:
