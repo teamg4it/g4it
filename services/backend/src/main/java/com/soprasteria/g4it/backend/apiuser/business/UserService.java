@@ -113,6 +113,7 @@ public class UserService {
                 .firstName(userReturned.getFirstName())
                 .lastName(userReturned.getLastName())
                 .email(userReturned.getEmail())
+                .isSuperAdmin(Constants.SUPER_ADMIN_EMAIL.equals(userReturned.getEmail()))
                 .subscribers(subscriberBOList)
                 .adminMode(userInfo.isAdminMode())
                 .build();
@@ -207,6 +208,7 @@ public class UserService {
                 .firstName("Admin")
                 .lastName("No Security Mode")
                 .email(Constants.SUPER_ADMIN_EMAIL)
+                .isSuperAdmin(true)
                 .subscribers(withSubscribers ? buildSubscribersForSuperAdmin() : null)
                 .adminMode(true)
                 .domain(Constants.SUPER_ADMIN_EMAIL.split("@")[1])

@@ -59,4 +59,5 @@ export interface InVirtualEquipmentRest {
     filters?: string[];
     creationDate?: string;
     lastUpdatedDate?: string;
+    allocationFactor?: number;
 }

@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-comments-in-ref_-tables
+      author: G4IT Dev Team
+      changes:
+        - setTableRemarks:
+            tableName: ref_criterion
+            remarks: This table defines the list of possible criteria for environmental impact assessment
+        - setTableRemarks:
+            tableName: ref_lifecycle_step
+            remarks: This table lists the stages of the life cycle of an equipment as defined in the life cycle analysis (LCA) methodology.
+        - setTableRemarks:
+            tableName: ref_sustainable_individual_package
+            remarks: This table defines for each criteria the conversion ratio to be taken into account to convert from the criterion unit to the "people equivalent" unit.
+        - setTableRemarks:
+            tableName: ref_server_host
+            remarks: This table lists the server type which can be selected for the Digital Service definition
+        - setTableRemarks:
+            tableName: ref_network_type
+            remarks: This table lists the network type which can be selected for the Digital Service definition
+        - setTableRemarks:
+            tableName: ref_device_type
+            remarks: This table lists the device type which can be selected for the Digital Service definition
+        - setTableRemarks:
+            tableName: ref_item_type
+            remarks: This table defines the correspondence between an equipment type in the inventory and an equipment in the reference inserted in G4IT.
+        - setTableRemarks:
+            tableName: ref_item_impact
+            remarks: This table defines the impact factor as well as the average electrical consumption to be taken into account for each piece of equipment depending on the desired criterion and the stage of the life cycle.
+        - setTableRemarks:
+            tableName: ref_hypothesis
+            remarks: This table defines default values such as PUE, device lifetime, BYOD usage rate (rate of employees using their own work devices to access company resources) and also COPE usage rate (rate of employees using company-provided mobile devices for personal use)
+        - setTableRemarks:
+            tableName: ref_matching_item
+            remarks: This table defines the correspondence between an equipment model in the inventory and an equipment in the reference inserted in G4IT.

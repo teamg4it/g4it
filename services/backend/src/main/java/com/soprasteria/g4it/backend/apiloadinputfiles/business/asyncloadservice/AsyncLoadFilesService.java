@@ -8,48 +8,46 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice;
 
-import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
-import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
-import com.soprasteria.g4it.backend.common.filesystem.business.local.LocalFileService;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+
+import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkmetadata.CheckMetadataInventoryFileService;
+import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata.AsyncLoadMetadataService;
+import com.soprasteria.g4it.backend.apiloadinputfiles.util.FileLoadingUtils;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.model.FileToLoad;
+import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.task.model.ITaskExecute;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
-import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 @Service
 @Slf4j
 public class AsyncLoadFilesService implements ITaskExecute {
 
     @Autowired
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
     @Autowired
-    LoadFileService loadFileService;
+    private LoadFileService loadFileService;
     @Autowired
-    LocalFileService localFileService;
-    @Value("${local.working.folder}")
-    private String localWorkingFolder;
+    private AsyncLoadMetadataService asyncLoadMetadataService;
+
     @Autowired
-    private FileSystem fileSystem;
+    private CheckMetadataInventoryFileService checkMetadataInventoryFileService;
+
+    @Autowired
+    private FileLoadingUtils fileLoadingUtils;
+    public static final String TOO_MANY_ERRORS_MESSAGE = "Too many errors in the file ";
 
     /**
      * Execute the Task of type LOADING
@@ -61,7 +59,6 @@ public class AsyncLoadFilesService implements ITaskExecute {
         log.info("Start load input files for {}", context.log());
 
         long start = System.currentTimeMillis();
-        final List<String> filenames = task.getFilenames();
 
         final List<String> details = new ArrayList<>();
         details.add(LogUtils.info("Start task"));
@@ -70,27 +67,72 @@ public class AsyncLoadFilesService implements ITaskExecute {
         task.setStatus(TaskStatus.IN_PROGRESS.toString());
         taskRepository.save(task);
         final List<String> errors = new ArrayList<>();
+        List<String> filenames = task.getFilenames();
+        context.initFileToLoad(fileLoadingUtils.mapFileToLoad(filenames));
+        context.initTaskId(task.getId());
 
-        int fileNumber = 0;
         try {
+            //Download all files
+            fileLoadingUtils.downloadAllFileToLoad(context);
+
+            //Convert all files
+            fileLoadingUtils.convertAllFileToLoad(context);
+
+            //Load Metadata files
+            asyncLoadMetadataService.loadInventoryMetadata(context);
+
+            Map<String, Map<Integer, List<LineError>>> coherenceErrors = checkMetadataInventoryFileService.checkMetadataInventoryFile(task.getId(), context.getInventoryId());
+
+            //  Check if any file is exceeding the error threshold before processing any files.
+            for (FileToLoad fileToLoad : context.getFilesToLoad()) {
+                Map<Integer, List<LineError>> specificFileError = coherenceErrors.getOrDefault(fileToLoad.getFilename(), Map.of());
+                long errorNumberInFile = specificFileError.entrySet().stream().flatMap(entry -> entry.getValue().stream()).count();
+                if (errorNumberInFile > 50000) {
+                    errors.add(LogUtils.error(TOO_MANY_ERRORS_MESSAGE + fileToLoad.getOriginalFileName() + " : " + errorNumberInFile));
+                    log.error("Task with id '{}' failed due to too many errors in the file '{}' for '{}'", task.getId(), fileToLoad.getOriginalFileName(), context.log());
+                    task.setStatus(TaskStatus.FAILED.toString());
+                    details.add(TOO_MANY_ERRORS_MESSAGE + fileToLoad.getOriginalFileName() + " : " + errorNumberInFile);
+                    task.setErrors(errors);
+                    task.setDetails(details);
+                    taskRepository.save(task);
+
+                    long end = System.currentTimeMillis();
+                    log.info("End load input files for {}. Time taken: {}s", context.log(), (end - start) / 1000);
+                    return;
+                }
+            }
+
+            int fileNumber = 0;
             for (FileType fileType : List.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.INVENTORY_VIRTUAL_EQUIPMENT_CLOUD, FileType.APPLICATION)) {
-                for (String filename : filenames) {
-                    if (filename.startsWith(fileType.toString())) {
-                        details.add(LogUtils.info("Manage file " + loadFileService.getOriginalFilename(fileType, filename)));
-                        errors.addAll(loadFileService.manageFile(context, fileType, filename));
+                for (FileToLoad fileToLoad : context.getFilesToLoad()) {
+                    if (fileType.equals(fileToLoad.getFileType())) {
+
+                        Map<Integer, List<LineError>> specificFileError = coherenceErrors.getOrDefault(fileToLoad.getFilename(), Map.of());
+                        fileToLoad.setCoherenceErrorByLineNumer(specificFileError);
+
+                        long errorNumberInFile = specificFileError.entrySet().stream().flatMap(entry -> entry.getValue().stream()).count();
+
+                        details.add(LogUtils.info("Manage file " + fileToLoad.getOriginalFileName()));
+
+                        if (errorNumberInFile > 50000) {
+                            errors.add(LogUtils.error(TOO_MANY_ERRORS_MESSAGE + fileToLoad.getOriginalFileName() + " : " + errorNumberInFile));
+                        } else {
+                            errors.addAll(loadFileService.manageFile(context, fileToLoad));
+                        }
 
                         fileNumber++;
 
-                        task.setProgressPercentage(fileNumber * 100 / filenames.size() + "%");
+                        task.setProgressPercentage(fileNumber * 100 / task.getFilenames().size() + "%");
                         task.setLastUpdateDate(LocalDateTime.now());
                         taskRepository.save(task);
+
                     }
                 }
             }
 
-            FileStorage fileStorage = fileSystem.mount(context.getSubscriber(), context.getOrganizationId().toString());
-            boolean hasRejectedFile = uploadZip(context, task, fileStorage);
-            clean(fileStorage, filenames);
+            boolean hasRejectedFile = fileLoadingUtils.handelRejectedFiles(context.getSubscriber(), context.getOrganizationId(), task.getInventory().getId(), task.getId(), filenames);
+
+            fileLoadingUtils.cleanConvertedFiles(context);
 
             details.add(LogUtils.info("Finished task successfully"));
 
@@ -99,6 +141,10 @@ public class AsyncLoadFilesService implements ITaskExecute {
 
         } catch (AsyncTaskException e) {
             log.error("Async task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
+            task.setStatus(TaskStatus.FAILED.toString());
+            details.add(LogUtils.error(e.getMessage()));
+        } catch (RuntimeException e) {
+            log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
             task.setStatus(TaskStatus.FAILED.toString());
             details.add(LogUtils.error(e.getMessage()));
         } finally {
@@ -114,52 +160,5 @@ public class AsyncLoadFilesService implements ITaskExecute {
         log.info("End load input files for {}. Time taken: {}s", context.log(), (end - start) / 1000);
     }
 
-    /**
-     * Upload rejected zip file
-     *
-     * @param context     the context
-     * @param task        the task
-     * @param fileStorage the file storage
-     * @return true if has any zip uploaded
-     */
-    private boolean uploadZip(Context context, Task task, FileStorage fileStorage) {
-        try {
-            final Path rejectedFolderPath = Path.of(localWorkingFolder).resolve("rejected").resolve(String.valueOf(context.getInventoryId()));
-            if (Files.exists(rejectedFolderPath) && !localFileService.isEmpty(rejectedFolderPath)) {
-                // create rejected zip file
-                final File rejectedZipFile = localFileService.createZipFile(rejectedFolderPath, rejectedFolderPath.resolve(Constants.REJECTED_FILES_ZIP));
-
-                // send zip to file storage
-                fileStorage.upload(rejectedZipFile.getAbsolutePath(), FileFolder.OUTPUT, task.getId() + "/" + rejectedZipFile.getName());
-
-                // clear directory
-                Arrays.stream(Objects.requireNonNull(rejectedFolderPath.toFile().listFiles())).forEach(File::delete);
-                return true;
-            }
-            return false;
-        } catch (IOException e) {
-            throw new AsyncTaskException("An error occurred on file upload of rejected zip file", e);
-        }
-    }
-
-    /**
-     * Clean filenames from local and file storage
-     *
-     * @param fileStorage the file storage
-     * @param filenames   the filename list
-     */
-    private void clean(FileStorage fileStorage, List<String> filenames) {
-        try {
-            for (String filename : filenames) {
-                Files.delete(Path.of(localWorkingFolder).resolve("input/inventory").resolve(filename));
-            }
-
-            for (String filename : filenames) {
-                fileStorage.delete(FileFolder.INPUT, filename);
-            }
-        } catch (IOException e) {
-            throw new AsyncTaskException("An error occurred on cleaning files in local or remote storage", e);
-        }
-    }
 
 }

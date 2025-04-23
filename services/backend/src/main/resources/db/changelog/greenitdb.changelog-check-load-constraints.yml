@@ -1,0 +1,319 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-check-load-datacenter
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: check_inv_load_datacenter
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 20
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: check_inv_load_datacenter_pk
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: check_inv_load_datacenter_task_id_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: datacenter_name
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: filename
+                  type: varchar(255)
+              - column:
+                  name: line_nb
+                  type: int
+        - createIndex:
+            tableName: check_inv_load_datacenter
+            indexName: idx_task_id_check_datacenter
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: task_id
+        - createIndex:
+            tableName: check_inv_load_datacenter
+            indexName: idx_datacenter_name_check_datacenter
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: datacenter_name
+        - createIndex:
+            tableName: check_inv_load_datacenter
+            indexName: idx_filename_check_datacenter
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: filename
+
+  - changeSet:
+      id: create-check-load-physical-equipment
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: check_inv_load_physical_equipment
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: check_load_physical_eqp_pk
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: check_load_physical_eqp_task_id_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: datacenter_name
+                  type: varchar(255)
+              - column:
+                  name: physical_equipment_name
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: filename
+                  type: varchar(255)
+              - column:
+                  name: line_nb
+                  type: int
+        - createIndex:
+            tableName: check_inv_load_physical_equipment
+            indexName: idx_task_id_check-physical_eqp
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: task_id
+        - createIndex:
+            tableName: check_inv_load_physical_equipment
+            indexName: idx_datacenter_name_check-physical_eqp
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: datacenter_name
+        - createIndex:
+            tableName: check_inv_load_physical_equipment
+            indexName: idx_physical_eqp_name_check-physical_eqp
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: physical_equipment_name
+        - createIndex:
+            tableName: check_inv_load_physical_equipment
+            indexName: idx_filename_check_physical_eqp
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: filename
+
+  - changeSet:
+      id: create-check-load-virtual-equipment
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: check_inv_load_virtual_equipment
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: check_load_virtual_eqp_pk
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: check_load_virtual_eqp_task_id_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: physical_equipment_name
+                  type: varchar(255)
+              - column:
+                  name: virtual_equipment_name
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: filename
+                  type: varchar(255)
+              - column:
+                  name: line_nb
+                  type: int
+        - createIndex:
+            tableName: check_inv_load_virtual_equipment
+            indexName: idx_task_id_check-virtual_eqp
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: task_id
+        - createIndex:
+            tableName: check_inv_load_virtual_equipment
+            indexName: idx_physical_eqp_name_check-virtual_eqp
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: physical_equipment_name
+        - createIndex:
+            tableName: check_inv_load_virtual_equipment
+            indexName: idx_virtual_eqp_name_check-virtual_eqp
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: virtual_equipment_name
+        - createIndex:
+            tableName: check_inv_load_virtual_equipment
+            indexName: idx_filename_check_virtual_eqp
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: filename
+  - changeSet:
+      id: create-check-load-application
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: check_inv_load_application
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: check_load_application_pk
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: check_load_application_task_id_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: application_name
+                  type: varchar(255)
+              - column:
+                  name: virtual_equipment_name
+                  type: varchar(255)
+              - column:
+                  name: environment_type
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: filename
+                  type: varchar(255)
+              - column:
+                  name: line_nb
+                  type: int
+        - createIndex:
+            tableName: check_inv_load_application
+            indexName: idx_task_id_check_application
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: task_id
+        - createIndex:
+            tableName: check_inv_load_application
+            indexName: idx_application_name_check-application
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: application_name
+        - createIndex:
+            tableName: check_inv_load_application
+            indexName: idx_virtual_eqp_name_check-application
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: virtual_equipment_name
+        - createIndex:
+            tableName: check_inv_load_application
+            indexName: idx_environment_type_check-application
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: environment_type
+        - createIndex:
+            tableName: check_inv_load_application
+            indexName: idx_filename_check_application
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: filename
+
+  - changeSet:
+      id: add-typeInfrastructure-check_inv_load_virtual_equipment-table
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: check_inv_load_virtual_equipment
+            columns:
+              - column:
+                  name: infrastructure_type
+                  type: varchar(255)
+        - createIndex:
+            tableName: check_inv_load_virtual_equipment
+            indexName: idx_infrastructure_type_check_inv_load_virtual_equipment
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: infrastructure_type

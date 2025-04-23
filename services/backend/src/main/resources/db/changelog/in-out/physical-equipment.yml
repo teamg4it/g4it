@@ -275,3 +275,17 @@ databaseChangeLog:
                   type: float
                   defaultValue: 0
 
+  - changeSet:
+      id: in-out-add-index-physical-equipment-case-check
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: in_physical_equipment
+            indexName: idx_in_physical_equipment_inventory_id_name
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: name
+
+

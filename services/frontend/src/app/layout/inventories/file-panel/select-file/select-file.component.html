@@ -12,7 +12,8 @@
         id="file{{ index }}"
         mode="basic"
         chooseLabel="{{ fileUploadText }}"
-        accept=".csv"
+        [ariaLabel]="fileUploadText"
+        accept="{{ allowedFileExtensions.join(',') }}"
         [customUpload]="true"
         (onSelect)="onFileChange($event)"
     >

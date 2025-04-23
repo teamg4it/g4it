@@ -34,6 +34,8 @@ databaseChangeLog:
   - includeAll:
       path: db/changelog/in-out/
       endsWithFilter: .yml
+  - include:
+      file: db/changelog/greenitdb.changelog-check-load-constraints.yml
   # Liquibase with H2 does not create the sequences with incrementBy 100, but does with Postgres
   - include:
       file: db/changelog/test-greenitdb.changelog-sequences.yml

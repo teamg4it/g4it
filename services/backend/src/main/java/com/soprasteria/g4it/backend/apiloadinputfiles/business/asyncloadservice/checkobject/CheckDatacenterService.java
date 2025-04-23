@@ -32,14 +32,14 @@ public class CheckDatacenterService {
      * @param line       the line number
      * @return the list of errors
      */
-    public List<LineError> checkRules(final Context context, final InDatacenterRest datacenter, final int line) {
+    public List<LineError> checkRules(final Context context, final InDatacenterRest datacenter,final String filename, final int line) {
         List<LineError> errors = new ArrayList<>();
 
         // check InDatacenterRest constraint violations
-        genericRuleService.checkViolations(datacenter, line).ifPresent(errors::add);
+        genericRuleService.checkViolations(datacenter,filename, line).ifPresent(errors::add);
 
         // check location is in country referential
-        genericRuleService.checkLocation(context.getLocale(), context.getSubscriber(), line, datacenter.getLocation()).ifPresent(errors::add);
+        genericRuleService.checkLocation(context.getLocale(), context.getSubscriber(), filename, line, datacenter.getLocation()).ifPresent(errors::add);
 
         return errors;
     }

@@ -22,10 +22,10 @@ public class RuleApplicationService {
     @Autowired
     MessageSource messageSource;
 
-    public Optional<LineError> checkVirtualEquipmentLinked(Locale locale, int line, final String virtualEquipmentName) {
+    public Optional<LineError> checkVirtualEquipmentLinked(Locale locale,final String filename, int line, final String virtualEquipmentName) {
 
         if (virtualEquipmentName == null) {
-            return Optional.of(new LineError(line, messageSource.getMessage(
+            return Optional.of(new LineError(filename, line, messageSource.getMessage(
                     "application.must.have.virtual.equipment",
                     new String[]{},
                     locale)));

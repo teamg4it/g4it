@@ -28,14 +28,15 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.soprasteria.g4it.backend.common.utils.CsvUtils.print;
+import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
 
 @Mapper(componentModel = "spring")
 public interface AggregationToOutput {
 
-    default String keyPhysicalEquipment(InPhysicalEquipment physicalEquipment,
-                                        InDatacenter datacenter,
-                                        ImpactEquipementPhysique impact,
-                                        RefShortcutBO refShortcutBO, boolean isDigitalService) {
+    default List<String> keyPhysicalEquipment(InPhysicalEquipment physicalEquipment,
+                                              InDatacenter datacenter,
+                                              ImpactEquipementPhysique impact,
+                                              RefShortcutBO refShortcutBO, boolean isDigitalService) {
 
         String hostingEfficiency = null;
         if (datacenter != null && datacenter.getPue() != null) {
@@ -46,7 +47,7 @@ public interface AggregationToOutput {
             hostingEfficiency = quartile == null ? "Bad" : HostUtils.buildHostingEfficiency(quartile, datacenter.getPue());
         }
         String numberOfUsers = Objects.toString(physicalEquipment.getNumberOfUsers(), "0.0");
-        return String.join("|",
+        return Arrays.asList(
                 isDigitalService ? physicalEquipment.getName() : "",
                 physicalEquipment.getType(),
                 refShortcutBO.criterionMap().get(impact.getCritere()),
@@ -64,8 +65,8 @@ public interface AggregationToOutput {
     /**
      * From aggregated data to Output objects
      */
-    default OutPhysicalEquipment mapPhysicalEquipment(String key, AggValuesBO agg, Long taskId, RefShortcutBO refShortcutBO) {
-        String[] values = key.split("\\|", -1);
+    default OutPhysicalEquipment mapPhysicalEquipment(List<String> key, AggValuesBO agg, Long taskId, RefShortcutBO refShortcutBO) {
+        String[] values = key.toArray(new String[0]);
 
         String criterion = refShortcutBO.criterionMap().inverse().get(values[2]);
 
@@ -93,8 +94,8 @@ public interface AggregationToOutput {
                 .build();
     }
 
-    default String keyVirtualEquipment(InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment,
-                                       ImpactEquipementVirtuel impact, RefShortcutBO refShortcutBO, EvaluateReportBO evaluateReportBO) {
+    default List<String> keyVirtualEquipment(InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment,
+                                             ImpactEquipementVirtuel impact, RefShortcutBO refShortcutBO, EvaluateReportBO evaluateReportBO) {
 
         String equipmentName = physicalEquipment == null ? "" : physicalEquipment.getName();
         String equipmentType = physicalEquipment == null ? "" : physicalEquipment.getType();
@@ -109,7 +110,7 @@ public interface AggregationToOutput {
         List<String> commonFilters = virtualEquipment.getCommonFilters() == null ? List.of() : virtualEquipment.getCommonFilters();
         List<String> filters = virtualEquipment.getFilters() == null ? List.of() : virtualEquipment.getFilters();
 
-        return String.join("|",
+        return Arrays.asList(
                 virtualEquipment.getName(),
                 equipmentType,
                 refShortcutBO.criterionMap().get(impact.getCritere()),
@@ -127,8 +128,8 @@ public interface AggregationToOutput {
         );
     }
 
-    default OutVirtualEquipment mapVirtualEquipment(String key, AggValuesBO agg, Long taskId, RefShortcutBO refShortcutBO) {
-        String[] values = key.split("\\|", -1);
+    default OutVirtualEquipment mapVirtualEquipment(List<String> key, AggValuesBO agg, Long taskId, RefShortcutBO refShortcutBO) {
+        String[] values = key.toArray(new String[0]);
         String criterion = refShortcutBO.criterionMap().inverse().get(values[2]);
 
         return OutVirtualEquipment.builder()
@@ -158,17 +159,23 @@ public interface AggregationToOutput {
                 .build();
     }
 
-    default String keyApplication(InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment, InApplication application,
-                                  ImpactApplication impact, RefShortcutBO refShortcutBO) {
+    default List<String> keyApplication(InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment, InApplication application,
+                                        ImpactApplication impact, RefShortcutBO refShortcutBO) {
 
-        String equipmentType = physicalEquipment == null ? "" : physicalEquipment.getType();
+        String equipmentType;
+        if (CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType())) {
+            equipmentType = "Cloud " + virtualEquipment.getProvider().toUpperCase();
+        } else {
+            equipmentType = physicalEquipment != null ? physicalEquipment.getType() : "";
+        }
+
         String location = physicalEquipment == null ? "" : physicalEquipment.getLocation();
         List<String> physicalEquipmentFilters = physicalEquipment == null ? List.of() : physicalEquipment.getFilters();
         List<String> virtualEquipmentFilters = virtualEquipment.getFilters() == null ? List.of() : virtualEquipment.getFilters();
         List<String> commonFilters = application.getCommonFilters() == null ? List.of() : application.getCommonFilters();
         List<String> filters = application.getFilters() == null ? List.of() : application.getFilters();
 
-        return String.join("|",
+        return Arrays.asList(
                 application.getName(),
                 virtualEquipment.getName(),
                 equipmentType,
@@ -186,9 +193,8 @@ public interface AggregationToOutput {
         );
     }
 
-    default OutApplication mapApplication(String key, AggValuesBO agg, Long taskId, RefShortcutBO refShortcutBO) {
-        String[] values = key.split("\\|", -1);
-
+    default OutApplication mapApplication(List<String> key, AggValuesBO agg, Long taskId, RefShortcutBO refShortcutBO) {
+        String[] values = key.toArray(new String[0]);
         String criterion = refShortcutBO.criterionMap().inverse().get(values[3]);
 
         return OutApplication.builder()
@@ -206,7 +212,7 @@ public interface AggregationToOutput {
                 .filtersPhysicalEquipment(Arrays.asList(values[10].split(";")))
                 .filtersVirtualEquipment(Arrays.asList(values[11].split(";")))
                 .commonFilters(Arrays.asList(values[12].split(";")))
-                .filters(Arrays.asList(values[13].split(";")))
+                .filters(Arrays.stream(values[13].split(";")).map(String::trim).toList())
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .electricityConsumption(agg.getElectricityConsumption())
@@ -217,8 +223,9 @@ public interface AggregationToOutput {
                 .build();
     }
 
-    default String keyCloudVirtualEquipment(InVirtualEquipment virtualEquipment, ImpactBO impactBO) {
-        return String.join("|",
+
+    default List<String> keyCloudVirtualEquipment(InVirtualEquipment virtualEquipment, ImpactBO impactBO) {
+        return Arrays.asList(
                 impactBO.getCriterion(),
                 impactBO.getLifecycleStep(),
                 virtualEquipment.getName(),
@@ -231,8 +238,8 @@ public interface AggregationToOutput {
         );
     }
 
-    default OutVirtualEquipment mapCloudVirtualEquipment(String key, AggValuesBO agg, Long taskId) {
-        String[] values = key.split("\\|", -1);
+    default OutVirtualEquipment mapCloudVirtualEquipment(List<String> key, AggValuesBO agg, Long taskId) {
+        String[] values = key.toArray(new String[0]);
 
         return OutVirtualEquipment.builder()
                 .taskId(taskId)

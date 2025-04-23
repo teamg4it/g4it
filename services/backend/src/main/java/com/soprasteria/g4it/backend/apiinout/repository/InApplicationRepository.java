@@ -76,4 +76,8 @@ public interface InApplicationRepository extends JpaRepository<InApplication, Lo
      */
     @Query("select count(distinct a.name) from InApplication a where a.inventoryId = :inventoryId")
     Long countDistinctNameByInventoryId(@Param("inventoryId") final Long inventoryId);
+
+    @Transactional
+    @Modifying
+    void deleteByInventoryId(Long inventoryId);
 }

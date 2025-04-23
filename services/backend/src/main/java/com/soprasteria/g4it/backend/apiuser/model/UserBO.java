@@ -42,6 +42,10 @@ public class UserBO {
     private String lastName;
 
     /**
+     * Is the user a super admin
+     */
+    private Boolean isSuperAdmin;
+    /**
      * The subject of the user.
      */
     @EqualsAndHashCode.Exclude

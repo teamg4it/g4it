@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject.CheckVirtualEquipmentService;
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
@@ -52,7 +53,7 @@ public class LoadVirtualEquipmentService {
     private EntityManager entityManager;
 
     @Transactional
-    public List<LineError> execute(final Context context, final int pageNumber, List<InVirtualEquipmentRest> virtualEquipments) {
+    public List<LineError> execute(final Context context, final FileToLoad fileToLoad, final int pageNumber, List<InVirtualEquipmentRest> virtualEquipments) {
         if (virtualEquipments.isEmpty()) return List.of();
 
         log.info("Load virtual equipments for {}, size = {}", context.log(), virtualEquipments.size());
@@ -62,12 +63,14 @@ public class LoadVirtualEquipmentService {
         Set<String> virtualEquipmentNames = new HashSet<>();
         for (int i = 0; i < virtualEquipments.size(); i++) {
             int line = Constants.BATCH_SIZE * pageNumber + i + 2;
+            List<LineError> coherenceErrorInLine =  fileToLoad.getCoherenceErrorByLineNumer().getOrDefault(line, List.of());
 
-            final List<LineError> checkErrors = checkVirtualEquipmentService.checkRules(context, virtualEquipments.get(i), line, virtualEquipmentNames);
-            if (checkErrors.isEmpty()) {
+            final List<LineError> checkErrors = checkVirtualEquipmentService.checkRules(context, virtualEquipments.get(i), fileToLoad.getFilename(), line, virtualEquipmentNames);
+            if (checkErrors.isEmpty() && coherenceErrorInLine.isEmpty()) {
                 virtualEquipmentsToSave.add(inVirtualEquipmentMapper.toEntity(virtualEquipments.get(i)));
             } else {
                 errors.addAll(checkErrors);
+                errors.addAll(coherenceErrorInLine);
             }
         }
         virtualEquipmentNames.clear();

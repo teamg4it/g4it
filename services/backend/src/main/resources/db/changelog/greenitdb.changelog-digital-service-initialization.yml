@@ -616,3 +616,23 @@ databaseChangeLog:
                   type: boolean
                   defaultValue: false
         - sql: update digital_service set is_new_arch = false where is_new_arch is null;
+
+  - changeSet:
+      id: add-column-is_migrated-digital_service
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: is_migrated
+                  type: boolean
+                  defaultValue: false
+        - sql: update digital_service set is_migrated = false where is_migrated is null;
+
+  - changeSet:
+      id: update-default-arch-status-digital_service-table
+      author: G4IT Dev Team
+      changes:
+        - sql: update digital_service set is_new_arch = false where is_new_arch is null;
+        - sql: update digital_service set is_migrated = false where is_migrated is null;

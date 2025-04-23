@@ -34,14 +34,14 @@ class RuleDateServiceTest {
 
     @Test
     void testRuleDateOk() {
-        var actual = ruleDateService.checkDatesPurcaseRetrieval(Locale.getDefault(), 1, LocalDate.now(), LocalDate.now().plusDays(1));
+        var actual = ruleDateService.checkDatesPurcaseRetrieval(Locale.getDefault(), "filename",1, LocalDate.now(), LocalDate.now().plusDays(1));
         Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
     void testRuleDateError() {
         Mockito.when(messageSource.getMessage(any(), any(), any())).thenReturn("error test");
-        var actual = ruleDateService.checkDatesPurcaseRetrieval(Locale.getDefault(), 1, LocalDate.now().plusDays(1), LocalDate.now());
-        Assertions.assertEquals(new LineError(1, "error test"), actual.get());
+        var actual = ruleDateService.checkDatesPurcaseRetrieval(Locale.getDefault(),"filename", 1, LocalDate.now().plusDays(1), LocalDate.now());
+        Assertions.assertEquals(new LineError("filename",1, "error test"), actual.get());
     }
 }

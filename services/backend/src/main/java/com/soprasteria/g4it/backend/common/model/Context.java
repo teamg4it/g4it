@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @SuperBuilder
@@ -28,9 +30,21 @@ public class Context {
     private LocalDateTime datetime;
     private boolean hasVirtualEquipments;
     private boolean hasApplications;
+    private List<FileToLoad> filesToLoad = new ArrayList<>();
+    private Long taskId;
 
     public String log() {
         return this.log("/");
+    }
+
+    public void addFileToLoad(FileToLoad fileToLoad) {
+        filesToLoad.add(fileToLoad);
+    }
+    public void initFileToLoad(List<FileToLoad> fileToLoadList) {
+        filesToLoad = fileToLoadList;
+    }
+    public void initTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
     public String log(String delim) {

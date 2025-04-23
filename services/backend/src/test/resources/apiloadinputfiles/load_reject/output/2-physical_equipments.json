@@ -1,5 +1,23 @@
 [
   {
+    "id": -1,
+    "cpuCoreNumber" : 2.0,
+    "cpuType" : "cpuType",
+    "datacenterName" : "default",
+    "datePurchase" : "2020-01-01",
+    "description" : "OldPE",
+    "durationHour" : 24,
+    "electricityConsumption" : 234.0,
+    "location" : "France",
+    "manufacturer" : "manufacturer",
+    "model" : "model",
+    "name" : "MyMagicalPE",
+    "quantity" : 12.0,
+    "sizeDiskGb" : 2353.0,
+    "sizeMemoryGb" : 234.0,
+    "type" : "type"
+  },
+  {
     "commonFilters": [
       "Entity 1"
     ],

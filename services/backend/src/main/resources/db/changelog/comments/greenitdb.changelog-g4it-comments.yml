@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-comments-in-g4it_-tables
+      author: G4IT Dev Team
+      changes:
+        - setTableRemarks:
+            tableName: g4it_organization
+            remarks: That table defines the list of the existing organisations for a subscriber and configuration associated.
+        - setTableRemarks:
+            tableName: g4it_subscriber
+            remarks: That table defines the list of the existing subscriber (customer of the platform) and configuration associated.
+        - setTableRemarks:
+            tableName: g4it_user_organization
+            remarks: That table defines the association between user and organization.
+        - setTableRemarks:
+            tableName: g4it_role
+            remarks: That table defines the possible roles on G4IT and for each module.
+        - setTableRemarks:
+            tableName: g4it_user_role_organization
+            remarks: That table defines the role of the user for a organization.
+        - setTableRemarks:
+            tableName: g4it_user_subscriber
+            remarks: That table defines the association between user and subscriber.
+        - setTableRemarks:
+            tableName: g4it_user_role_subscriber
+            remarks: This table defines the correspondence between an equipment type in the inventory and an equipment in the reference inserted in G4IT.
+        - setTableRemarks:
+            tableName: g4it_user
+            remarks: That table defines the list of the G4IT users and configuration associated.
+        - setTableRemarks:
+            tableName: g4it_organization
+            remarks: That table defines the list of the existing organisations for a subscriber and configuration associated.

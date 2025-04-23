@@ -1,34 +1,42 @@
-[
-  {
-    "commonFilters": [
-      "Entity 1"
-    ],
-    "filters": [
-      "Cluster 1"
-    ],
-    "id": 5,
-    "infrastructureType": "NON_CLOUD_SERVERS",
-    "inventoryId": 1,
-    "name": "virtual-eq-1-1",
-    "physicalEquipmentName": "physical-eq-1",
-    "quantity": 1.0,
-    "type": "calcul",
-    "vcpuCoreNumber": 4.0
-  },
-  {
-    "commonFilters": [
-      "Entity 1"
-    ],
-    "filters": [
-      "Cluster 1"
-    ],
-    "id": 6,
-    "infrastructureType": "NON_CLOUD_SERVERS",
-    "inventoryId": 1,
-    "name": "virtual-eq-1-2",
-    "physicalEquipmentName": "physical-eq-1",
-    "quantity": 1.0,
-    "type": "calcul",
-    "vcpuCoreNumber": 2.0
-  }
-]
+[ {
+  "allocationFactor" : 0.5,
+  "datacenterName" : "default",
+  "durationHour" : 33.0,
+  "electricityConsumption" : 22.0,
+  "infrastructureType" : "infrastructureType",
+  "location" : "France",
+  "name" : "MyMagicalVE",
+  "physicalEquipmentName" : "MyMagicalPE",
+  "quantity" : 12.0,
+  "sizeDiskGb" : 234.0,
+  "sizeMemoryGb" : 3.0,
+  "vcpuCoreNumber" : 2.0,
+  "workload" : 33.0
+}, {
+  "commonFilters" : [ "Entity 1" ],
+  "filters" : [ "Cluster 1" ],
+  "infrastructureType" : "NON_CLOUD_SERVERS",
+  "name" : "virtual-eq-1-1",
+  "physicalEquipmentName" : "physical-eq-1",
+  "quantity" : 1.0,
+  "type" : "calcul",
+  "vcpuCoreNumber" : 4.0
+}, {
+  "commonFilters" : [ "Entity 1" ],
+  "filters" : [ "Cluster 1" ],
+  "infrastructureType" : "NON_CLOUD_SERVERS",
+  "name" : "virtual-eq-1-2",
+  "physicalEquipmentName" : "physical-eq-1",
+  "quantity" : 1.0,
+  "type" : "calcul",
+  "vcpuCoreNumber" : 2.0
+}, {
+  "commonFilters" : [ "Entity 1" ],
+  "filters" : [ "Cluster 1" ],
+  "infrastructureType" : "NON_CLOUD_SERVERS",
+  "name" : "virt-parent-in-inv",
+  "physicalEquipmentName" : "MyMagicalPE",
+  "quantity" : 1.0,
+  "type" : "calcul",
+  "vcpuCoreNumber" : 4.0
+} ]

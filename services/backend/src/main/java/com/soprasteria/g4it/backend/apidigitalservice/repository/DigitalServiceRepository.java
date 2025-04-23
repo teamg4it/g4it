@@ -56,4 +56,13 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
     @Transactional
     @Query("UPDATE DigitalService ds SET ds.lastUpdateDate = ?1 where ds.uid = ?2")
     void updateLastUpdateDate(LocalDateTime lastUpdateDate, String digitalServiceUid);
+
+    /**
+     * Find by new arch false
+     *
+     * @return a list of matching digital services
+     */
+    List<DigitalService> findByIsNewArchFalse();
+
+    long countByIsNewArch(Boolean isNewArch);
 }

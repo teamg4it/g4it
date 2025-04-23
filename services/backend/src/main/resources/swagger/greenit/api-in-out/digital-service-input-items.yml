@@ -265,6 +265,38 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - digital-service-inputs-virtual-equipment
+      summary: Update or delete virtual equipments from one digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      parameters:
+        - $ref: "#/components/parameters/physicalEqpIdQueryParam"
+      operationId: updateDigitalServiceInputsVirtualEquipmentRest
+      requestBody:
+        description: virtual equipment
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/InVirtualEquipmentRest"
+      responses:
+        '200':
+          description: return digital service in virtual equipment with id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InVirtualEquipmentRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
     post:
       tags:
         - digital-service-inputs-virtual-equipment

@@ -62,6 +62,7 @@ public interface InventoryMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "lastUpdateDate", ignore = true)
+    @Mapping(target = "isMigrated", ignore = true)
     Inventory toEntity(final Organization organization, final InventoryCreateRest inventoryCreate);
 
     @Mapping(target = "organization", ignore = true)

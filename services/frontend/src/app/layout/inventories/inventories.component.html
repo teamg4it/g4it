@@ -52,7 +52,11 @@
         *ngIf="userService.isAllowedInventoryWrite$ | async"
         styleClass="black-button"
         (click)="
-            name = ''; sidebarPurpose = 'new'; sidebarType = 'FILE'; sidebarVisible = true
+            name = '';
+            sidebarPurpose = 'new';
+            sidebarType = 'FILE';
+            sidebarVisible = true;
+            setNewArchButtons(true)
         "
         id="new-inventory"
         >{{ "inventories.add" | translate }}</p-button

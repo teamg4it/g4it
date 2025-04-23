@@ -71,6 +71,7 @@ export abstract class Constants {
         users: "users",
         subscribers: "administrator/subscribers",
         organizations: "administrator/organizations",
+        actions: "administrator-actions",
         version: "version",
         businessHours: "business-hours",
         templateFiles: "template-files",
@@ -81,12 +82,7 @@ export abstract class Constants {
         410: "expired",
     };
 
-    static readonly CSV_FILES_TYPES = [
-        "datacenter",
-        "physical",
-        "virtual",
-        "application",
-    ];
+    static readonly FILE_TYPES = ["datacenter", "physical", "virtual", "application"];
 
     static readonly INTEGRATION_BATCH_COMPLETED_FAILED_STATUSES = [
         "COMPLETED",

@@ -18,7 +18,7 @@ const endpoint = Constants.ENDPOINTS.inventories;
 export class FileSystemDataService {
     constructor(private http: HttpClient) {}
 
-    postFileSystemUploadCSV(inventoryId: number, formData: FormData): Observable<any> {
+    postFileSystemUploadFile(inventoryId: number, formData: FormData): Observable<any> {
         return this.http.post(`${endpoint}/${inventoryId}/files`, formData);
     }
 

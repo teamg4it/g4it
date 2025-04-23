@@ -86,7 +86,12 @@ public class DigitalService {
      * is new arch
      */
     private Boolean isNewArch;
-    
+
+    /**
+     * is migrated to new arc
+     */
+    private Boolean isMigrated;
+
     /**
      * Attached note.
      */

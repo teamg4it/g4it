@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject.CheckPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -49,7 +50,7 @@ public class LoadPhysicalEquipmentService {
     private EntityManager entityManager;
 
     @Transactional
-    public List<LineError> execute(final Context context, final int pageNumber, List<InPhysicalEquipmentRest> physicalEquipments) {
+    public List<LineError> execute(final Context context, final FileToLoad fileToLoad, final int pageNumber, List<InPhysicalEquipmentRest> physicalEquipments) {
         if (physicalEquipments.isEmpty()) return List.of();
 
         log.info("Load physical equipments for {}, size = {}", context.log(), physicalEquipments.size());
@@ -60,12 +61,14 @@ public class LoadPhysicalEquipmentService {
 
         for (int i = 0; i < physicalEquipments.size(); i++) {
             int line = Constants.BATCH_SIZE * pageNumber + i + 2;
+            List<LineError> coherenceErrorInLine =  fileToLoad.getCoherenceErrorByLineNumer().getOrDefault(line, List.of());
 
-            final List<LineError> checkErrors = checkPhysicalEquipmentService.checkRules(context, physicalEquipments.get(i), line);
-            if (checkErrors.isEmpty()) {
+            final List<LineError> checkErrors = checkPhysicalEquipmentService.checkRules(context, physicalEquipments.get(i),fileToLoad.getFilename(),  line);
+            if (checkErrors.isEmpty() && coherenceErrorInLine.isEmpty()) {
                 physicalEquipmentsToSave.add(inPhysicalEquipmentMapper.toEntity(physicalEquipments.get(i)));
             } else {
                 errors.addAll(checkErrors);
+                errors.addAll(coherenceErrorInLine);
             }
         }
 

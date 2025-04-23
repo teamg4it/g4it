@@ -51,9 +51,9 @@ export class FilePanelComponent implements OnInit {
     @Input() purpose: string = "";
     @Input() name: string = ""; // inventoryDate (for IS Type)
     @Input() inventoryId?: number = 0;
-    @Input() isNewArch: boolean = false;
-    @Input() doExport: boolean = false;
-    @Input() doExportVerbose: boolean = false;
+    @Input() isNewArch: boolean = true;
+    @Input() doExport: boolean = true;
+    @Input() doExportVerbose: boolean = true;
     @Input() allSimulations: Inventory[] = [];
     @Input() inventories: Inventory[] = [];
 
@@ -74,6 +74,7 @@ export class FilePanelComponent implements OnInit {
     inventoryType = Constants.INVENTORY_TYPE;
     showBetaFeatures: string = environment.showBetaFeatures;
     isFileUploaded = signal(false);
+    allowedFileExtensions = [".csv", ".xlsx", ".ods"];
 
     ngUnsubscribe = new Subject<void>();
 
@@ -177,7 +178,7 @@ export class FilePanelComponent implements OnInit {
                     }
                     if (res.name.includes("csv")) {
                         templateFileDescription.type = "csv";
-                        Constants.CSV_FILES_TYPES.forEach((csvFileType) => {
+                        Constants.FILE_TYPES.forEach((csvFileType) => {
                             if (res.name.includes(csvFileType)) {
                                 templateFileDescription.displayFileName =
                                     this.translate.instant(
@@ -197,8 +198,8 @@ export class FilePanelComponent implements OnInit {
 
                 csvFiles.sort(
                     (a, b) =>
-                        Constants.CSV_FILES_TYPES.indexOf(a.csvFileType || "") -
-                        Constants.CSV_FILES_TYPES.indexOf(b.csvFileType || ""),
+                        Constants.FILE_TYPES.indexOf(a.csvFileType || "") -
+                        Constants.FILE_TYPES.indexOf(b.csvFileType || ""),
                 );
                 this.templateFiles = [zipFile, ...csvFiles, xlsxFile];
             });
@@ -228,6 +229,7 @@ export class FilePanelComponent implements OnInit {
     addComponent(type = this.fileTypes[0]) {
         const componentRef = this.uploaderContainer.createComponent(SelectFileComponent);
         componentRef.setInput("fileTypes", this.fileTypes);
+        componentRef.setInput("allowedFileExtensions", this.allowedFileExtensions);
         componentRef.instance.type = type;
         this.arrayComponents.push(componentRef);
         this.uploaderOutpoutHandlerReset$.next();
@@ -340,7 +342,7 @@ export class FilePanelComponent implements OnInit {
             });
         } else {
             this.filesSystemService
-                .postFileSystemUploadCSV(inventoryId, formData)
+                .postFileSystemUploadFile(inventoryId, formData)
                 .subscribe({
                     next: async () => {
                         this.loadingService

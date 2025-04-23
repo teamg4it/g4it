@@ -11,7 +11,9 @@ package com.soprasteria.g4it.backend.apiinout.business;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InVirtualEquipmentMapper;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
@@ -22,9 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -35,6 +36,7 @@ public class InVirtualEquipmentService {
     private InVirtualEquipmentMapper inVirtualEquipmentMapper;
     private DigitalServiceRepository digitalServiceRepository;
     private InventoryRepository inventoryRepository;
+    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
 
     /**
      * Get the virtual equipments list linked to a digital service.
@@ -116,6 +118,62 @@ public class InVirtualEquipmentService {
         inVirtualEquipmentRepository.save(objectToUpdate);
         return inVirtualEquipmentMapper.toRest(objectToUpdate);
     }
+
+    public List<InVirtualEquipmentRest> updateOrDeleteInVirtualEquipments(final String digitalServiceUid,
+                                                                          final Long physicalEqpId,
+                                                                          final List<InVirtualEquipmentRest> inVirtualEquipmentList) {
+
+        List<InVirtualEquipmentRest> updatedEquipments = new ArrayList<>();
+        InPhysicalEquipment physicalEqpEntity = inPhysicalEquipmentRepository.findById(physicalEqpId)
+                .orElseThrow(() -> new G4itRestException("404", String.format(
+                        "The digitalService id provided: %s has no physical equipment with id: %s",
+                        digitalServiceUid, physicalEqpId
+                )));
+        String physicalEqpName = physicalEqpEntity.getName();
+
+        // All the vms related to a server are deleted
+        if(inVirtualEquipmentList.isEmpty()){
+            List<InVirtualEquipment> virtualEqpToDelete = inVirtualEquipmentRepository.findByDigitalServiceUidAndPhysicalEquipmentName(digitalServiceUid, physicalEqpName);
+            if (!virtualEqpToDelete.isEmpty()) {
+                inVirtualEquipmentRepository.deleteAll(virtualEqpToDelete);
+            }
+            return updatedEquipments;
+        }
+
+        // Get existing equipment from repository
+        List<InVirtualEquipment> existingEquipments = inVirtualEquipmentRepository
+                .findByDigitalServiceUidAndPhysicalEquipmentName(
+                        digitalServiceUid,
+                        physicalEqpName
+                );
+
+        // Get list of IDs from input list
+        List<Long> inputEquipmentIds = inVirtualEquipmentList.stream()
+                .map(InVirtualEquipmentRest::getId)
+                .toList();
+
+        // Find and delete equipment that exists in repository but not in input list
+        List<InVirtualEquipment> equipmentsToDelete = existingEquipments.stream()
+                .filter(equipment -> !inputEquipmentIds.contains(equipment.getId()))
+                .toList();
+
+        // Delete equipment that exists in repository but not in input list
+        if (!equipmentsToDelete.isEmpty()) {
+            inVirtualEquipmentRepository.deleteAll(equipmentsToDelete);
+        }
+
+        // Updates the other equipments
+        for (InVirtualEquipmentRest inVirtualEquipment : inVirtualEquipmentList) {
+            InVirtualEquipmentRest inVirtualEquipmentRest = updateInVirtualEquipment(
+                    digitalServiceUid,
+                    inVirtualEquipment.getId(),
+                    inVirtualEquipment
+            );
+            updatedEquipments.add(inVirtualEquipmentRest);
+        }
+        return updatedEquipments;
+    }
+
 
     // *** INVENTORY PART ***
 

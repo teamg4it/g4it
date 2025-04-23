@@ -69,6 +69,10 @@ public class AsyncEvaluatingService implements ITaskExecute {
             log.error("Async task with id '{}' failed for '{}' with error: ", taskId, context.log(), e);
             task.setStatus(TaskStatus.FAILED.toString());
             details.add(LogUtils.error(e.getMessage()));
+        } catch (RuntimeException e) {
+            log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
+            task.setStatus(TaskStatus.FAILED.toString());
+            details.add(LogUtils.error(e.getMessage()));
         } finally {
             task.setDetails(details);
         }

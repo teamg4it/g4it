@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.repository;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -41,7 +41,8 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
      * @param organization the unique organization identifier.
      * @return a list of matching inventories
      */
-    Optional<Inventory> findByOrganizationAndId(final Organization organization, final Long inventoryId);
+    Optional<Inventory> findByOrganizationAndId(final Organization organization,
+                                                final Long inventoryId);
 
     /**
      * Find by subscriber and organization then return a list of inventories
@@ -61,4 +62,12 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
      */
     Optional<Inventory> findByOrganizationAndName(final Organization organization, final String name);
 
+    /**
+     * Find by new arch false
+     *
+     * @return a list of matching inventories
+     */
+    List<Inventory> findByIsNewArchFalse();
+
+    long countByIsNewArch(Boolean isNewArch);
 }

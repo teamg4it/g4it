@@ -1,0 +1,8 @@
+{
+    "host":"host.containers.internal",
+    "port":5432,
+    "database":"postgres",
+    "schema":"public",
+    "user":"postgres",
+    "password":"postgres"
+}

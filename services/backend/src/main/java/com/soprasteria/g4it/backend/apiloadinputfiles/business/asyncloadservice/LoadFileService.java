@@ -7,8 +7,6 @@
  */
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice;
-
-import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadApplicationService;
@@ -17,11 +15,12 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadVirtualEquipmentService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.mapper.CsvToInMapper;
 import com.soprasteria.g4it.backend.common.filesystem.model.CsvFileMapperInfo;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
+import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
@@ -33,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -44,16 +42,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+
 import static java.util.stream.Collectors.*;
 
 @Service
 @Slf4j
 public class LoadFileService {
 
-    private static final String CSV_SEPARATOR = ";";
     private static final String REJECTED = "rejected";
-    @Autowired
-    FileSystemService fileSystemService;
+
     @Autowired
     CsvFileMapperInfo csvFileMapperInfo;
     @Autowired
@@ -79,39 +76,49 @@ public class LoadFileService {
     }
 
     /**
-     * Manage a datacenter file
+     * Manage an uploaded file
+     * <p>
+     * Converts the original file to a CSV file and processes the data
      *
      * @param context  the context
-     * @param fileType the file type
-     * @param filename the filename
+     * @param fileToLoad the file to load
+     * @return the list of errors that occurred while processing the data
+     */
+    public List<String> manageFile(final Context context, FileToLoad fileToLoad) {
+
+
+        List<String> errors = new ArrayList<>();
+        errors.addAll(manageConvertedFile(context, fileToLoad));
+        return errors;
+    }
+
+    /**
+     * Manage a csv formatted file
+     *
+     * @param context          the context
+     * @param fileToLoad       the file to load
      * @return the list of errors
      */
-    public List<String> manageFile(final Context context, final FileType fileType, final String filename) {
-
-        final String originalFileName = getOriginalFilename(fileType, filename);
-
-        // download file
-        Path filePath = downloadFile(context, filename, originalFileName);
-
+    private List<String> manageConvertedFile(final Context context, FileToLoad fileToLoad) {
         List<String> errors = new ArrayList<>();
         List<LineError> readErrors;
 
-        try (Reader reader = new FileReader(filePath.toFile())) {
-
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad.getConvertedFile()))) {
             CSVParser records = CSVFormat.RFC4180.builder()
                     .setHeader()
-                    .setDelimiter(CSV_SEPARATOR)
+                    .setDelimiter(CsvUtils.DELIMITER)
                     .setAllowMissingColumnNames(true)
                     .setSkipHeaderRecord(false)
-                    .build().parse(reader);
+                    .build()
+                    .parse(reader);
 
-            Set<String> mandatoryHeaderFields = csvFileMapperInfo.getHeaderFields(fileType, true);
+            Set<String> mandatoryHeaderFields = csvFileMapperInfo.getHeaderFields(fileToLoad.getFileType(), true);
             records.getHeaderNames().forEach(mandatoryHeaderFields::remove);
 
             if (!mandatoryHeaderFields.isEmpty()) {
                 errors.add(messageSource.getMessage(
                         "header.mandatory",
-                        new String[]{originalFileName, String.join(", ", mandatoryHeaderFields)},
+                        new String[]{fileToLoad.getOriginalFileName(), String.join(", ", mandatoryHeaderFields)},
                         context.getLocale())
                 );
                 return errors;
@@ -119,65 +126,33 @@ public class LoadFileService {
 
             Set<String> fileHeader = new HashSet<>(records.getHeaderNames());
             fileHeader.remove("");
-            csvFileMapperInfo.getHeaderFields(fileType, false).forEach(fileHeader::remove);
+            csvFileMapperInfo.getHeaderFields(fileToLoad.getFileType(), false).forEach(fileHeader::remove);
             if (!fileHeader.isEmpty()) {
                 errors.add(messageSource.getMessage(
                         "header.unknown",
-                        new String[]{originalFileName, String.join(", ", fileHeader)},
+                        new String[]{fileToLoad.getOriginalFileName(), String.join(", ", fileHeader)},
                         context.getLocale()));
             }
 
-            readErrors = switch (fileType) {
-                case FileType.DATACENTER -> readDatacenters(context, records);
-                case FileType.EQUIPEMENT_PHYSIQUE -> readPhysicalEquipments(context, records);
-                case FileType.INVENTORY_VIRTUAL_EQUIPMENT_CLOUD -> readVirtualEquipments(context, records);
-                case FileType.APPLICATION -> readApplications(context, records);
+            readErrors = switch (fileToLoad.getFileType()) {
+                case DATACENTER -> readDatacenters(context, fileToLoad, records);
+                case EQUIPEMENT_PHYSIQUE -> readPhysicalEquipments(context, fileToLoad, records);
+                case INVENTORY_VIRTUAL_EQUIPMENT_CLOUD -> readVirtualEquipments(context, fileToLoad, records);
+                case APPLICATION -> readApplications(context, fileToLoad, records);
                 default -> throw new IllegalArgumentException();
             };
-
         } catch (IOException e) {
-            throw new AsyncTaskException(String.format("%s - Cannot read local csv file %s", context.log(), originalFileName), e);
+            throw new AsyncTaskException(String.format("%s - Error while managing converted file '%s'", context.log(),
+                    fileToLoad.getConvertedFile().getName()), e);
         }
 
         if (!readErrors.isEmpty()) {
-            writeRejected(context, readErrors, fileType, filePath, originalFileName);
+            writeRejected(context, readErrors, fileToLoad.getFileType(), fileToLoad.getConvertedFile().toPath(), fileToLoad.getOriginalFileName());
         }
 
         return errors;
     }
 
-    /**
-     * Get original filename
-     *
-     * @param fileType the file type
-     * @param filename the filename
-     * @return the original filename
-     */
-    public String getOriginalFilename(final FileType fileType, final String filename) {
-        return filename.substring(fileType.toString().length() + 1, filename.length() - 5 - UUID.randomUUID().toString().length());
-    }
-
-    /**
-     * Download a file from file storage and put it in storagetmp/input/inventory
-     *
-     * @param context          the context
-     * @param filename         the filename
-     * @param originalFileName the original file name
-     * @return the file path
-     */
-    private Path downloadFile(final Context context, final String filename, final String originalFileName) {
-
-        Path filePath;
-        try (InputStream is = fileSystemService.downloadFile(context.getSubscriber(), context.getOrganizationId(), FileFolder.INPUT, filename)) {
-
-            filePath = Path.of(localWorkingFolder).resolve("input/inventory").resolve(filename);
-            // copy file to local storage tmp
-            FileUtils.copyInputStreamToFile(is, filePath.toFile());
-        } catch (IOException e) {
-            throw new AsyncTaskException(String.format("%s - Cannot download file %s from storage", context.log(), originalFileName), e);
-        }
-        return filePath;
-    }
 
     /**
      * Append file rejected_${fileType.getFileName()}_local_date-time.csv
@@ -210,7 +185,7 @@ public class LoadFileService {
             String line = br.readLine();
             if (line != null) {
                 // add to header
-                writer.write(String.join(CSV_SEPARATOR, line, "inputFileName", "lineNumber", "message"));
+                writer.write(String.join(CsvUtils.DELIMITER, line, "inputFileName", "lineNumber", "message"));
                 writer.newLine();
             }
 
@@ -218,7 +193,7 @@ public class LoadFileService {
                 line = br.readLine();
                 List<String> errorLines = errorsByLine.get(lineNumber);
                 if (errorLines != null) {
-                    writer.write(String.join(CSV_SEPARATOR, line, originalFileName, String.valueOf(lineNumber), String.join(", ", errorLines)));
+                    writer.write(String.join(CsvUtils.DELIMITER, line, originalFileName, String.valueOf(lineNumber), String.join(", ", errorLines)));
                     writer.newLine();
                 }
                 lineNumber++;
@@ -235,7 +210,7 @@ public class LoadFileService {
      * @param records the CSVParser records
      * @return the list of error
      */
-    private List<LineError> readDatacenters(final Context context, final CSVParser records) {
+    private List<LineError> readDatacenters(final Context context,FileToLoad fileToLoad, final CSVParser records) {
         int row = 1;
         int pageNumber = 0;
         List<LineError> errors = new ArrayList<>();
@@ -246,7 +221,7 @@ public class LoadFileService {
         for (CSVRecord csvRecord : records) {
             objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId()));
             if (row >= Constants.BATCH_SIZE) {
-                errors.addAll(loadDatacenterService.execute(context, pageNumber, objects));
+                errors.addAll(loadDatacenterService.execute(context,fileToLoad, pageNumber, objects));
                 objects.clear();
                 row = 1;
                 pageNumber++;
@@ -255,7 +230,7 @@ public class LoadFileService {
             }
         }
 
-        errors.addAll(loadDatacenterService.execute(context, pageNumber, objects));
+        errors.addAll(loadDatacenterService.execute(context,fileToLoad, pageNumber, objects));
         objects.clear();
 
         return errors;
@@ -268,7 +243,7 @@ public class LoadFileService {
      * @param records the CSVParser records
      * @return the list of error
      */
-    private List<LineError> readPhysicalEquipments(final Context context, final CSVParser records) {
+    private List<LineError> readPhysicalEquipments(final Context context,final FileToLoad fileToLoad, final CSVParser records) {
         int row = 1;
         int pageNumber = 0;
         List<LineError> errors = new ArrayList<>();
@@ -279,7 +254,7 @@ public class LoadFileService {
         for (CSVRecord csvRecord : records) {
             objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId()));
             if (row >= Constants.BATCH_SIZE) {
-                errors.addAll(loadPhysicalEquipmentService.execute(context, pageNumber, objects));
+                errors.addAll(loadPhysicalEquipmentService.execute(context,fileToLoad, pageNumber, objects));
                 objects.clear();
                 row = 1;
                 pageNumber++;
@@ -288,7 +263,7 @@ public class LoadFileService {
             }
         }
 
-        errors.addAll(loadPhysicalEquipmentService.execute(context, pageNumber, objects));
+        errors.addAll(loadPhysicalEquipmentService.execute(context,fileToLoad, pageNumber, objects));
         objects.clear();
 
         return errors;
@@ -301,7 +276,7 @@ public class LoadFileService {
      * @param records the CSVParser records
      * @return the list of error
      */
-    private List<LineError> readVirtualEquipments(final Context context, final CSVParser records) {
+    private List<LineError> readVirtualEquipments(final Context context,final FileToLoad fileToLoad, final CSVParser records) {
         int row = 1;
         int pageNumber = 0;
         List<LineError> errors = new ArrayList<>();
@@ -312,7 +287,7 @@ public class LoadFileService {
         for (CSVRecord csvRecord : records) {
             objects.add(csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, context.getInventoryId()));
             if (row >= Constants.BATCH_SIZE) {
-                errors.addAll(loadVirtualEquipmentService.execute(context, pageNumber, objects));
+                errors.addAll(loadVirtualEquipmentService.execute(context,fileToLoad, pageNumber, objects));
                 objects.clear();
                 row = 1;
                 pageNumber++;
@@ -321,7 +296,7 @@ public class LoadFileService {
             }
         }
 
-        errors.addAll(loadVirtualEquipmentService.execute(context, pageNumber, objects));
+        errors.addAll(loadVirtualEquipmentService.execute(context,fileToLoad, pageNumber, objects));
         objects.clear();
 
         return errors;
@@ -334,7 +309,7 @@ public class LoadFileService {
      * @param records the CSVParser records
      * @return the list of error
      */
-    private List<LineError> readApplications(final Context context, final CSVParser records) {
+    private List<LineError> readApplications(final Context context,final FileToLoad fileToLoad, final CSVParser records) {
         int row = 1;
         int pageNumber = 0;
         List<LineError> errors = new ArrayList<>();
@@ -345,7 +320,7 @@ public class LoadFileService {
         for (CSVRecord csvRecord : records) {
             objects.add(csvToInMapper.csvInApplicationToRest(csvRecord, context.getInventoryId()));
             if (row >= Constants.BATCH_SIZE) {
-                errors.addAll(loadApplicationService.execute(context, pageNumber, objects));
+                errors.addAll(loadApplicationService.execute(context,fileToLoad, pageNumber, objects));
                 objects.clear();
                 row = 1;
                 pageNumber++;
@@ -354,7 +329,7 @@ public class LoadFileService {
             }
         }
 
-        errors.addAll(loadApplicationService.execute(context, pageNumber, objects));
+        errors.addAll(loadApplicationService.execute(context,fileToLoad, pageNumber, objects));
         objects.clear();
 
         return errors;
@@ -373,5 +348,7 @@ public class LoadFileService {
         }
         inventoryRepository.save(inventory);
     }
+
+
 
 }

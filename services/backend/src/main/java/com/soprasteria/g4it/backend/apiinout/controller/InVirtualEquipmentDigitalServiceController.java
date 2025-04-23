@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceSer
 import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceInputsVirtualEquipmentApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -85,5 +86,15 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
                                                                                               final InVirtualEquipmentRest inVirtualEquipmentRest) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inVirtualEquipmentService.updateInVirtualEquipment(digitalServiceUid, id, inVirtualEquipmentRest), HttpStatus.OK);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<InVirtualEquipmentRest>> updateDigitalServiceInputsVirtualEquipmentRest(String subscriber, Long organization,
+                                                                                                       String digitalServiceUid, Long physicalEqpId,
+                                                                                                       List<InVirtualEquipmentRest> inVirtualEquipmentRest) {
+        return ResponseEntity.ok().body(inVirtualEquipmentService.updateOrDeleteInVirtualEquipments(digitalServiceUid, physicalEqpId, inVirtualEquipmentRest));
     }
 }
