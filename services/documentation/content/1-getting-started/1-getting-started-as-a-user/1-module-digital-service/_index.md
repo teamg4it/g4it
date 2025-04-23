@@ -1,5 +1,5 @@
 ---
-title: "I want to evaluate the impact of a digital service"
+title: "I Want to Evaluate the Impact of a Digital Service"
 description: "This section describes everything you need to know to evaluate the impact of a digital service"
 weight: 1
 ---
