@@ -89,7 +89,7 @@
         },
         "confirmMessageForEditor": "Êtes-vous sûr de vouloir supprimer cette note ?",
         "cancelConfirmMsgForEditor": "En quittant cette page, tout travail non sauvegardé sera perdu. Êtes-vous sûr de vouloir continuer ?",
-        "versions": "Versions",
+        "versions": "G4IT version",
         "updateInProgress": "mise à jour en cours",
         "preparingResults": "Résultats en cours de préparation",
         "fileNoLongerAvailable": "La fichier n'est plus disponible",
@@ -107,7 +107,21 @@
         "left-navigation": "Navigation à gauche",
         "font-selectbox": "Sélectionnez une police",
         "size-selectbox": "Sélectionnez une taille",
-        "position-selectbox": "Sélectionnez la position du contenu"
+        "position-selectbox": "Sélectionnez la position du contenu",
+        "about": "À propos de G4IT",
+        "workspaces": "Vos espaces de travail",
+        "logout": "DÉCONNEXION",
+        "useful-info": "Informations utiles",
+        "useful-line": "Vous trouverez ici quelques informations utiles concernant G4IT.",
+        "support": "Contact d'assistance",
+        "account-settings": "Paramètres du compte",
+        "help-center": "Centre d'aide",
+        "github-link": "Accéder à G4IT GitHub",
+        "doc-link": "Aller à la documentation",
+        "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
+        "inventories": "Inventaires",
+        "digital-services": "Services numériques",
+        "skip-to-main-content": "Accéder au contenu principal"
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"

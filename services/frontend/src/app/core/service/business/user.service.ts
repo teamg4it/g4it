@@ -13,6 +13,7 @@ import { Organization, Subscriber, User } from "./../../interfaces/user.interfac
 import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { Constants } from "src/constants";
 import { BasicRoles, Role } from "../../interfaces/roles.interfaces";
 
 @Injectable({
@@ -156,6 +157,10 @@ export class UserService {
             organization = this.getOrganization(subscriber);
         }
 
+        if (subscribers === Constants.USEFUL_INFORMATION) {
+            this.setSubscriberAndOrganization(subscriber, organization!);
+            return;
+        }
         if (subscribers === "administration") {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
@@ -273,6 +278,10 @@ export class UserService {
     ): boolean {
         let roles: Role[] = this.getRoles(subscriber, organization);
 
+        if (uri === Constants.USEFUL_INFORMATION) {
+            return true;
+        }
+
         if (uri === "inventories" && roles.includes(Role.InventoryRead)) {
             return true;
         }
@@ -310,6 +319,10 @@ export class UserService {
     ): void {
         if (this.checkIfAllowed(subscriber, organization, page)) {
             this.setSubscriberAndOrganization(subscriber, organization);
+            if (page === Constants.USEFUL_INFORMATION) {
+                this.router.navigateByUrl(`useful-information`);
+                return;
+            }
             this.router.navigateByUrl(
                 `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
             );

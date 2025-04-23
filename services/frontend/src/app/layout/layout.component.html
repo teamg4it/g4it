@@ -1,9 +1,24 @@
 <app-spinner></app-spinner>
-<div class="flex h-full">
-    <header class="header" role="banner">
-        <app-header></app-header>
+<div class="flex h-screen w-screen">
+    <!-- Header -->
+    <header class="header w-full fixed top-0 left-0 z-10 flex items-center" role="banner">
+        <app-top-header />
     </header>
-    <main role="main">
-        <router-outlet></router-outlet>
-    </main>
+
+    <!-- Sidebar + Main content container -->
+    <div class="flex w-full">
+        <!-- Sidebar -->
+        <aside class="left-sidebar">
+            <app-left-sidebar />
+        </aside>
+        <!-- Main content area -->
+        <main
+            class="flex-1 mt-8 full-height-width"
+            [ngClass]="{
+                'overflow-auto': globalStore.zoomLevel() >= 150,
+            }"
+        >
+            <router-outlet></router-outlet>
+        </main>
+    </div>
 </div>

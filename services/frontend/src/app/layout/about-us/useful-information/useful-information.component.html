@@ -1,0 +1,96 @@
+<div class="flex h-screen w-screen">
+    <!-- Skip to Main Content Button -->
+    <button
+        class="hidden-focus-button"
+        (click)="focusFirstElement()"
+        [attr.aria-label]="'common.skip-to-main-content' | translate"
+    ></button>
+    <!-- Header -->
+    <header class="header w-full fixed top-0 left-0 z-10 flex items-center">
+        <app-top-header />
+    </header>
+
+    <!-- Sidebar + Main content container -->
+    <div class="flex w-full">
+        <!-- Sidebar -->
+        <aside class="left-sidebar">
+            <app-left-sidebar />
+        </aside>
+
+        <!-- Main content area -->
+        <main
+            class="flex-1 mt-8 full-height-width"
+            #mainContent
+            [ngClass]="{
+                'overflow-auto': globalStore.zoomLevel() >= 150,
+            }"
+        >
+            <section class="useful-page">
+                <div class="breadcrumb mb-4">
+                    <span
+                        ><u>{{ "common.homepage" | translate }} </u></span
+                    >
+                    <i class="pi pi-angle-right separator"></i>
+                    <span>{{ "common.about" | translate }}</span>
+                    <i class="pi pi-angle-right separator"></i>
+                    <span class="active">{{ "common.useful-info" | translate }} </span>
+                </div>
+                <h1 class="font-semibold">{{ "common.useful-info" | translate }}</h1>
+                <div class="my-4">
+                    <span class="text-2xl">{{ "common.useful-line" | translate }}</span>
+                </div>
+
+                <div class="my-4">
+                    <div class="text-4xl font-semibold">
+                        {{ "common.versions" | translate }}
+                    </div>
+                    <div class="w-10rem">
+                        <ul aria-labelledby="openVersion">
+                            <li
+                                class="flex justify-content-between flex-wrap text-base"
+                                *ngFor="let software of versions"
+                            >
+                                <span>{{ software.name | uppercase }}</span>
+                                <span>{{ software.version }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="my-4">
+                    <div class="text-4xl font-semibold">
+                        {{ "common.open-hours" | translate }}
+                    </div>
+
+                    <div class="w-16rem">
+                        <ul aria-labelledby="openTitle">
+                            <li
+                                class="flex justify-content-between flex-wrap text-base"
+                                *ngFor="let data of businessHoursData"
+                            >
+                                <span>{{ "common.week." + data.day | translate }}</span
+                                ><span *ngIf="data.start_time"
+                                    >{{ data.start_time | businessHoursRenderer }} -
+                                    {{ data.end_time | businessHoursRenderer
+                                    }}<span *ngIf="selectedLanguage === 'en'"> UTC</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="my-4">
+                    <div class="text-4xl font-semibold mb-4">
+                        {{ "common.support" | translate }}
+                    </div>
+                    <p-button
+                        autofocus="true"
+                        styleClass="bg-light-green text-white"
+                        (onClick)="composeEmail()"
+                        >{{ "common.mailTo" | translate }}
+                    </p-button>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+.logo-icon {
+    z-index: 1000;
+}
+
+nav a:hover .nav-span-text {
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.ds-text {
+    text-align: center;
+    float: inline-start;
+}
+
+nav a {
+    text-decoration: unset;
+}

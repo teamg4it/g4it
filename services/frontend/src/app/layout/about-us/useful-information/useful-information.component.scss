@@ -1,0 +1,19 @@
+.breadcrumb {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+}
+
+.breadcrumb .active {
+    color: var(--light-green-color);
+    font-weight: bold;
+}
+
+.breadcrumb .separator {
+    margin: 0 10px;
+    font-size: 16px;
+}
