@@ -85,6 +85,7 @@ describe("InventoryComponent", () => {
     it("should disable estimation if physicalEquipmentCount is zero", () => {
         component.inventory = {
             physicalEquipmentCount: 0,
+            virtualEquipmentCount: 0,
         } as Inventory;
         const result = component.isEstimationDisabled();
         expect(result).toBeTrue();

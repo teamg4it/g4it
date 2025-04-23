@@ -102,6 +102,7 @@ export interface Impact {
     statusIndicator: string;
     countValue: number;
     quantity?: number;
+    unit?: string;
 }
 
 export interface ImpactEntity extends Impact {
