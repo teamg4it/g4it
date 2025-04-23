@@ -3,6 +3,21 @@ title: "How to Load the Collected Data into G4IT?"
 description: "This section is a user guide explaining where and how to load collected data in the application."
 weight: 20
 ---
+<!-- TOC -->
+  * [**Step 1**: Prepare Your Collected Data](#step-1-prepare-your-collected-data)
+    * [File Preparation Methods](#file-preparation-methods)
+    * [**Step 1.1**: Datacenter File](#step-11-datacenter-file)
+    * [**Step 1.2**: Physical Equipment File](#step-12-physical-equipment-file)
+    * [**Step 1.3**: Virtual Equipment File](#step-13-virtual-equipment-file)
+    * [**Step 1.4**: Application File](#step-14-application-file)
+  * [**Step 2**: Load Your Data into G4IT](#step-2-load-your-data-into-g4it)
+    * [**Step 2.1**: Access the Inventory Module](#step-21-access-the-inventory-module)
+    * [**Step 2.2**: Create a New Inventory](#step-22-create-a-new-inventory)
+      * [Configure Your Inventory:](#configure-your-inventory)
+  * [**Step 3**: Add More Files Anytime](#step-3-add-more-files-anytime)
+  * [**Step 4**: Review Your Upload Status](#step-4-review-your-upload-status)
+  * [**Step 5**: Estimate the Impact](#step-5-estimate-the-impact)
+<!-- TOC -->
 
 ## **Step 1**: Prepare Your Collected Data
 

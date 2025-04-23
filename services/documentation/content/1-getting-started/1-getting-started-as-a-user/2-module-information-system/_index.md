@@ -3,6 +3,11 @@ title: "I Want to Evaluate the Impact of an Inventory"
 description: "This section outlines everything you need to know to evaluate the impact of an inventory."
 weight: 2
 ---
+<!-- TOC -->
+  * [Introduction to Assessing the Environmental Impact of an Inventory](#introduction-to-assessing-the-environmental-impact-of-an-inventory)
+  * [Global Approach](#global-approach)
+  * [Using G4IT for the Assessment](#using-g4it-for-the-assessment)
+<!-- TOC -->
 
 ## Introduction to Assessing the Environmental Impact of an Inventory
 

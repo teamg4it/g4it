@@ -3,6 +3,11 @@ title: "I Want to Evaluate the Impact of a Digital Service"
 description: "This section describes everything you need to know to evaluate the impact of a digital service"
 weight: 1
 ---
+<!-- TOC -->
+  * [Introduction to Assessing the Environmental Impact of a Digital Service](#introduction-to-assessing-the-environmental-impact-of-a-digital-service)
+  * [Steps to Eco-Design a Digital Service](#steps-to-eco-design-a-digital-service)
+  * [Using G4IT for the Assessment](#using-g4it-for-the-assessment)
+<!-- TOC -->
 
 ## Introduction to Assessing the Environmental Impact of a Digital Service
 
