@@ -225,4 +225,14 @@
         <p-toast></p-toast>
         <p-confirmDialog [style]="{ width: '40vw' }"></p-confirmDialog>
     </div>
+
+    <p-button (click)="spaceSidebarVisible = !spaceSidebarVisible">Create Space</p-button>
+    <p-sidebar
+        [(visible)]="spaceSidebarVisible"
+        position="right"
+        styleClass="p-sidebar-lg"
+        ariaCloseLabel="Close"
+    >
+        <app-space (sidebarVisibleChange)="spaceSidebarVisible = $event"></app-space>
+    </p-sidebar>
 </div>

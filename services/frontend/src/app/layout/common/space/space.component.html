@@ -1,0 +1,127 @@
+<div class="app-space">
+    <ul class="space-menu" *ngIf="spaceDetails && spaceDetails['menu']">
+        <li
+            *ngFor="
+                let spaceMenu of spaceDetails['menu'];
+                let panelIndex = index;
+                let lastIndex = last
+            "
+            class="space-menu-item"
+            [ngClass]="{ active: spaceMenu.active }"
+            (click)="selectTab(panelIndex)"
+        >
+            <ng-container *ngIf="!spaceMenu['hidden']">
+                <p class="space-menu-sub-title">{{ spaceMenu.subTitle }}</p>
+                <p class="space-menu-title">{{ spaceMenu.title }}</p>
+                <!-- Not valid field  OR  optional field with empty value -->
+                @if (
+                    !spaceForm.get(spaceDetails["form"][panelIndex]["name"])?.valid ||
+                    (spaceMenu["optional"] &&
+                        (spaceForm.get(spaceDetails["form"][panelIndex]["name"])
+                            ?.value === "" ||
+                            spaceForm.get(spaceDetails["form"][panelIndex]["name"])
+                                ?.value === null))
+                ) {
+                    <p class="space-menu-description">
+                        {{ spaceMenu.description }}
+                        <i [ngClass]="spaceMenu['iconClass']"></i>
+                    </p>
+                } @else {
+                    <!-- Mandatory valid field  OR  optional field without empty value -->
+                    <p class="space-menu-description completed">
+                        Completed
+                        <i class="pi pi-check-circle"></i>
+                    </p>
+                }
+            </ng-container>
+        </li>
+    </ul>
+    <div class="space-form" *ngIf="spaceDetails && spaceDetails['form']">
+        <h2>Create new workspace</h2>
+        <p class="mb-3">
+            This workspace lets you run simulations and retrieve data. You can invite and
+            manage contributors, edit and delete your workspace.
+        </p>
+        <hr />
+        <form [formGroup]="spaceForm" class="mt-3">
+            <div
+                class="space-form--input"
+                *ngFor="
+                    let spaceDetail of spaceDetails['form'];
+                    let menuIndex = index;
+                    let lastIndex = last
+                "
+                [ngClass]="{
+                    active: selectedMenuIndex === menuIndex,
+                }"
+            >
+                <label [for]="spaceDetail['name'] + '-' + menuIndex">{{
+                    spaceDetail["label"]
+                }}</label>
+                <small
+                    [id]="spaceDetail['name'] + '-' + menuIndex + '-help'"
+                    class="help-text mt-2"
+                    >{{ spaceDetail["hintText"] }}</small
+                >
+                <input
+                    *ngIf="spaceDetail['type'] === 'text'"
+                    pInputText
+                    [id]="spaceDetail['name'] + '-' + menuIndex"
+                    [attr.aria-describedby]="
+                        spaceDetail['name'] + '-' + menuIndex + '-help'
+                    "
+                    [placeholder]="spaceDetail['placeholder']"
+                    [formControlName]="spaceDetail['name']"
+                    class="mt-2"
+                />
+
+                <p-dropdown
+                    *ngIf="spaceDetail['type'] === 'select'"
+                    [formControlName]="spaceDetail['name']"
+                    [placeholder]="spaceDetail['placeholder']"
+                    class="w-full md:w-56"
+                    styleClass="mt-2"
+                    [options]="organizationlist"
+                    optionLabel="displayLabel"
+                    name="organizationName"
+                    optionValue="organizationId"
+                />
+
+                <div
+                    class="space-form--button-group flex align-content-end justify-content-end flex-wrap"
+                >
+                    <p-button
+                        class="cancel-creation"
+                        styleClass="cancel-creation-button"
+                        (click)="closeSidebar()"
+                        >Cancel Creation</p-button
+                    >
+                    <p-button
+                        *ngIf="
+                            menuIndex > 0 &&
+                            !spaceDetails['menu'][menuIndex - 1]['hidden']
+                        "
+                        styleClass="button-secondary"
+                        (click)="previousTab(menuIndex)"
+                        >Previous</p-button
+                    >
+                    <p-button
+                        *ngIf="!lastIndex"
+                        (click)="createSpace()"
+                        [disabled]="spaceForm.invalid"
+                        >Create Workspace</p-button
+                    >
+                    <p-button *ngIf="lastIndex" (click)="createInventory()"
+                        >Create Inventory</p-button
+                    >
+                    <p-button
+                        *ngIf="!lastIndex"
+                        styleClass="button-secondary"
+                        (click)="nextTab(menuIndex)"
+                        >Next</p-button
+                    >
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
