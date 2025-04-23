@@ -987,3 +987,19 @@ components:
       properties:
         response:
           type: string
+
+    UserDetailsRest:
+      description: user email
+      type: object
+      properties:
+        email:
+          type: string
+
+    SubscriberDetailsRest:
+      description: subscribers linked to user's domain
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string

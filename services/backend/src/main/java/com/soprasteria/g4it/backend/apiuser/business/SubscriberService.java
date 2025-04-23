@@ -7,12 +7,16 @@
  */
 package com.soprasteria.g4it.backend.apiuser.business;
 
+import com.soprasteria.g4it.backend.apiuser.model.SubscriberDetailsBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Organization service.
@@ -41,4 +45,13 @@ public class SubscriberService {
                 );
     }
 
+    public List<SubscriberDetailsBO> searchSubscribersByDomainName(final String userEmail) {
+        String domainName = userEmail.substring(userEmail.indexOf("@") + 1);
+        List<Subscriber> subscribers = subscriberRepository.findByAuthorizedDomainsContaining(domainName);
+        List<SubscriberDetailsBO> lstSubscriber = new ArrayList<>();
+        for (Subscriber subscriber : subscribers) {
+            lstSubscriber.add(SubscriberDetailsBO.builder().id(subscriber.getId()).name(subscriber.getName()).build());
+        }
+        return lstSubscriber;
+    }
 }
