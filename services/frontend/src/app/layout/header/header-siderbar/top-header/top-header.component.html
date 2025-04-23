@@ -88,6 +88,9 @@
             </span>
             <span class="pi pi-chevron-down ml-3"></span>
         </button>
+        <p-button (click)="spaceSidebarVisible = !spaceSidebarVisible"
+            >Create Space</p-button
+        >
     </div>
 
     <!-- Organization Menu -->
@@ -249,3 +252,14 @@
         </p-button>
     </div>
 </div>
+
+<p-sidebar
+    [(visible)]="spaceSidebarVisible"
+    position="right"
+    styleClass="p-sidebar-lg"
+    ariaCloseLabel="Close"
+>
+    <ng-template pTemplate="headless">
+        <app-space (sidebarVisibleChange)="spaceSidebarVisible = $event"></app-space>
+    </ng-template>
+</p-sidebar>
