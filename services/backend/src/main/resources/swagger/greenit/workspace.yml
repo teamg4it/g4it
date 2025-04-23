@@ -1,20 +1,20 @@
 openapi: "3.0.3"
 info:
-  title: Swagger GreenIT - Open API 3.0 - Security
+  title: Swagger GreenIT - Open API 3.0 - workspace
   description: This is a Inventory Server based on the OpenAPI 3.0 specification.
   version: '1.0.0'
 
 tags:
-  - name: user
-    description: All endpoint for an user
+  - name: workspace
+    description: All endpoint for a workspace
 
 paths:
-  /users/organizations:
+  /workspace/organizations:
     post:
       tags:
-        - user
-      summary: Create a new organization
-      operationId: createNewOrganization
+        - workspace
+      summary: Create workspace
+      operationId: createWorkspace
       requestBody:
         description: Mandatory organization details to create.
         required: true
@@ -24,7 +24,7 @@ paths:
               $ref: "#/components/schemas/OrganizationUpsertRest"
       responses:
         '201':
-          description: Organization has been created
+          description: workspace has been created
           content:
             application/json:
               schema:
@@ -32,7 +32,7 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '409':
-          description: Organization already exists.
+          description: workspace already exists.
           content:
             'application/json':
               schema:
@@ -40,10 +40,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /users/domain-subscribers:
+  /workspace/domain-subscribers:
     post:
       tags:
-        - user
+        - workspace
       summary: get subscribers for domain
       operationId: getDomainSubscribers
       requestBody:
