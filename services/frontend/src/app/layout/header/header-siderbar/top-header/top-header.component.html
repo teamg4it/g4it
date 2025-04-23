@@ -88,9 +88,6 @@
             </span>
             <span class="pi pi-chevron-down ml-3"></span>
         </button>
-        <p-button (click)="spaceSidebarVisible = !spaceSidebarVisible"
-            >Create Space</p-button
-        >
     </div>
 
     <!-- Organization Menu -->
@@ -102,8 +99,8 @@
 
         <div
             [ngClass]="{
-                'max-h-10rem': isZoomedIn(),
-                'max-h-15rem': !isZoomedIn(),
+                'max-h-8rem': isZoomedIn(),
+                'max-h-13rem': !isZoomedIn(),
                 'mt-2': isZoomedIn(),
                 'mt-5': !isZoomedIn(),
             }"
@@ -141,6 +138,9 @@
                 </label>
             </div>
         </div>
+        <p-button (click)="spaceSidebarVisible = !spaceSidebarVisible"
+            >Create Space</p-button
+        >
     </div>
 
     <div class="flex align-items-center gap-2 ml-4">

@@ -1093,3 +1093,7 @@ app-top-header {
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
+
+.p-component-overlay {
+    display: none !important;
+}
