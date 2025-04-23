@@ -7,12 +7,9 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
-import { Role } from "src/app/core/interfaces/roles.interfaces";
-import { Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
-import { UserService } from "src/app/core/service/business/user.service";
-import { Constants } from "src/constants";
+import { UserDataService } from "src/app/core/service/data/user-data.service";
 
 interface SpaceDetails {
     menu: {
@@ -98,12 +95,11 @@ export class SpaceComponent implements OnInit {
 
     selectedMenuIndex: number | null = null;
     subscribersDetails: any;
-    organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
-    organizationlist: OrganizationWithSubscriber[] = [];
+    organizationlist: DomainSubscribers[] = [];
 
     constructor(
         private administrationService: AdministrationService,
-        private userService: UserService,
+        private userDataService: UserDataService,
     ) {}
 
     spaceForm = new FormGroup({
@@ -143,41 +139,26 @@ export class SpaceComponent implements OnInit {
     }
 
     getUsers() {
-        this.administrationService.getUsers().subscribe((res) => {
-            this.subscribersDetails = res;
+        this.userDataService.fetchUserInfo().subscribe((userInfo) => {
+            if (userInfo?.email) {
+                const body = {
+                    email: userInfo?.email,
+                };
+                this.administrationService.getDomainSubscribers(body).subscribe((res) => {
+                    this.organizationlist = res;
 
-            const list: OrganizationWithSubscriber[] = [];
-            this.subscribersDetails.forEach((subscriber: Subscriber) => {
-                subscriber.organizations.forEach((org: any) => {
-                    const roles = this.userService.getRoles(subscriber, org);
                     if (
-                        org.status === Constants.ORGANIZATION_STATUSES.ACTIVE &&
-                        (roles.includes(Role.SubscriberAdmin) ||
-                            roles.includes(Role.OrganizationAdmin))
+                        Array.isArray(this.organizationlist) &&
+                        this.organizationlist.length === 1 &&
+                        this.organizationlist[0]["id"]
                     ) {
-                        list.push({
-                            subscriberName: subscriber.name,
-                            subscriberId: subscriber.id,
-                            organizationName: org.name,
-                            organizationId: org.id,
-                            status: org.status,
-                            dataRetentionDays: org.dataRetentionDays,
-                            displayLabel: `${org.name} - (${subscriber.name})`,
-                            criteriaDs: org.criteriaDs,
-                            criteriaIs: org.criteriaIs,
-                            authorizedDomains: subscriber.authorizedDomains,
-                        });
+                        this.spaceForm.controls["organization"].setValue(
+                            this.organizationlist[0]["id"],
+                        );
+                        this.spaceDetails["menu"][0]["hidden"] = true;
+                        this.selectTab(1);
                     }
                 });
-            });
-
-            this.organizationlist = list;
-            if (this.organizationlist.length === 1) {
-                this.spaceForm.controls["organization"].setValue(
-                    this.organizationlist[0]["organizationId"],
-                );
-                this.spaceDetails["menu"][0]["hidden"] = true;
-                this.selectTab(1);
             }
         });
     }

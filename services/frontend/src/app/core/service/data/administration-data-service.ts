@@ -11,6 +11,7 @@ import { Observable } from "rxjs";
 
 import { Constants } from "src/constants";
 import {
+    DomainSubscribers,
     OrganizationCriteriaRest,
     OrganizationUpsertRest,
     Subscriber,
@@ -93,5 +94,9 @@ export class AdministrationDataService {
         return this.http.delete<any>(`${endpointForOrg}/users`, {
             body,
         });
+    }
+
+    getDomainSubscribers(body: { email: string }): Observable<DomainSubscribers[]> {
+        return this.http.post<DomainSubscribers[]>(`users/domain-subscribers`, body);
     }
 }

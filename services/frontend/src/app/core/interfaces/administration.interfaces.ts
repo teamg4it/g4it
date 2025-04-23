@@ -55,3 +55,8 @@ export interface OrganizationCriteriaRest {
     criteriaIs: string[];
     criteriaDs: string[];
 }
+
+export interface DomainSubscribers {
+    id?: number;
+    name?: string;
+}

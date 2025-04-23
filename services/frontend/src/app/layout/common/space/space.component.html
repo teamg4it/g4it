@@ -38,6 +38,14 @@
     </ul>
     <div class="space-form" *ngIf="spaceDetails && spaceDetails['form']">
         <h2>Create new workspace</h2>
+        <p-button
+            (onClick)="closeSidebar()"
+            [link]="true"
+            [rounded]="true"
+            ariaLabel="Outlined Close Button"
+            icon="pi pi-times"
+            styleClass="space-sidebar-close-button text-black-alpha-60"
+        ></p-button>
         <p class="mb-3">
             This workspace lets you run simulations and retrieve data. You can invite and
             manage contributors, edit and delete your workspace.
@@ -82,9 +90,9 @@
                     class="w-full md:w-56"
                     styleClass="mt-2"
                     [options]="organizationlist"
-                    optionLabel="displayLabel"
+                    optionLabel="name"
                     name="organizationName"
-                    optionValue="organizationId"
+                    optionValue="id"
                 />
 
                 <div

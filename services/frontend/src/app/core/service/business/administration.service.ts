@@ -9,6 +9,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import {
+    DomainSubscribers,
     OrganizationCriteriaRest,
     OrganizationUpsertRest,
     Subscriber,
@@ -83,5 +84,9 @@ export class AdministrationService {
 
     postOrganization(body: any): Observable<any> {
         return this.administrationDataService.postOrganization(body);
+    }
+
+    getDomainSubscribers(body: { email: string }): Observable<DomainSubscribers[]> {
+        return this.administrationDataService.getDomainSubscribers(body);
     }
 }

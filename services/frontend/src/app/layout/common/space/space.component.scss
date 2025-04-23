@@ -1,6 +1,6 @@
 ::ng-deep .app-space {
     display: flex;
-    height: 90vh;
+    height: 100vh;
 
     .p-button {
         height: 43px;
@@ -23,6 +23,28 @@
         border: 1px solid #cacbca;
         background-color: #f4f4f4;
         color: var(--black-color);
+    }
+
+    .space-sidebar-close-button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        color: rgba(0, 0, 0, 0.6);
+        border: 0 none;
+        background: transparent;
+        border-radius: 50%;
+        transition:
+            background-color 0.2s,
+            color 0.2s,
+            box-shadow 0.2s;
+        align-items: center;
+    }
+
+    .space-sidebar-close-button:enabled:hover {
+        border-color: transparent;
+        background: rgba(0, 0, 0, 0.04);
     }
 
     .space-menu {
@@ -94,6 +116,6 @@
         right: 0;
         min-width: 100%;
         gap: 8px;
-        padding: 0 1.5rem;
+        padding: 0 1.5rem 1.5rem;
     }
 }
