@@ -7,9 +7,10 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { firstValueFrom } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
-import { UserDataService } from "src/app/core/service/data/user-data.service";
+import { UserService } from "src/app/core/service/business/user.service";
 
 interface SpaceDetails {
     menu: {
@@ -47,20 +48,13 @@ export class SpaceComponent implements OnInit {
                 title: "Choose an organization",
                 description: "No organization chosen",
                 iconClass: "pi pi-exclamation-circle",
-                active: true,
+                hidden: true,
             },
             {
                 subTitle: "Mandatory",
                 title: "Set a workspace name",
                 description: "No space name indicated",
                 iconClass: "pi pi-exclamation-circle",
-            },
-            {
-                subTitle: "Optional",
-                title: "Invite contributors",
-                description: "No contributor indicated",
-                iconClass: "pi pi-arrow-right-arrow-left",
-                optional: true,
             },
         ],
         form: [
@@ -80,14 +74,6 @@ export class SpaceComponent implements OnInit {
                 type: "text",
                 placeholder: "Type the space name",
             },
-            {
-                name: "contributor",
-                label: "Select contributors",
-                hintText:
-                    "Please enter the email addresses of your contributors, separated by comma. This step is optional",
-                type: "text",
-                placeholder: "Type the contributor address",
-            },
         ],
     };
 
@@ -99,17 +85,16 @@ export class SpaceComponent implements OnInit {
 
     constructor(
         private administrationService: AdministrationService,
-        private userDataService: UserDataService,
+        private userService: UserService,
     ) {}
 
     spaceForm = new FormGroup({
-        organization: new FormControl<number | null>(null, Validators.required),
-        spaceName: new FormControl("", Validators.required),
-        contributor: new FormControl(""),
+        organization: new FormControl<number | undefined>(undefined, Validators.required),
+        spaceName: new FormControl<string | undefined>(undefined, Validators.required),
     });
 
     ngOnInit() {
-        this.getUsers();
+        this.getDomainSubscribersList();
         this.selectTab(0);
     }
 
@@ -138,36 +123,48 @@ export class SpaceComponent implements OnInit {
         this.sidebarVisibleChange.emit(false);
     }
 
-    getUsers() {
-        this.userDataService.fetchUserInfo().subscribe((userInfo) => {
-            if (userInfo?.email) {
-                const body = {
-                    email: userInfo?.email,
-                };
-                this.administrationService.getDomainSubscribers(body).subscribe((res) => {
-                    this.organizationlist = res;
+    async getDomainSubscribersList() {
+        const userEmail = (await firstValueFrom(this.userService.user$)).email;
+        if (userEmail) {
+            const body = {
+                email: userEmail,
+            };
+            this.administrationService.getDomainSubscribers(body).subscribe((res) => {
+                this.organizationlist = res;
 
-                    if (
-                        Array.isArray(this.organizationlist) &&
-                        this.organizationlist.length === 1 &&
-                        this.organizationlist[0]["id"]
-                    ) {
-                        this.spaceForm.controls["organization"].setValue(
-                            this.organizationlist[0]["id"],
-                        );
-                        this.spaceDetails["menu"][0]["hidden"] = true;
-                        this.selectTab(1);
-                    }
-                });
-            }
+                if (
+                    Array.isArray(this.organizationlist) &&
+                    this.organizationlist.length === 1 &&
+                    this.organizationlist[0]["id"]
+                ) {
+                    this.spaceForm.controls["organization"].setValue(
+                        this.organizationlist[0]["id"],
+                    );
+                    this.selectTab(1);
+                } else {
+                    this.spaceDetails["menu"][0]["hidden"] = false;
+                }
+            });
+        }
+    }
+
+    getValidMenu() {
+        return this.spaceDetails["menu"].filter((menu) => {
+            return menu.hidden !== true;
         });
     }
 
     createSpace() {
-        console.log(this.spaceForm);
-    }
-
-    createInventory() {
-        console.log(this.spaceForm);
+        if (this.spaceForm.valid) {
+            const body = {
+                subscriberId: this.spaceForm.value["organization"] ?? undefined,
+                name: this.spaceForm.value["spaceName"] ?? undefined,
+                status: "ACTIVE",
+            };
+            this.administrationService.postUserWorkspace(body).subscribe((res) => {
+                this.closeSidebar();
+                this.spaceForm.reset();
+            });
+        }
     }
 }

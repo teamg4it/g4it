@@ -6,6 +6,7 @@
 
 - 885 | New Header with Menu added, Left sidebar, Useful information page
 - 1038 | Allow to estimate a inventory if only virtual equipments = CLOUD_SERVICES
+- 1002 | Add a button to create its own personnal organization
 
 ### Minor Changes
 

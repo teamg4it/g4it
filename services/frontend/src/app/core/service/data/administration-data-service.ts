@@ -16,6 +16,7 @@ import {
     OrganizationUpsertRest,
     Subscriber,
     SubscriberCriteriaRest,
+    workspace,
 } from "../../interfaces/administration.interfaces";
 
 const endpoint = Constants.ENDPOINTS.subscribers;
@@ -96,7 +97,15 @@ export class AdministrationDataService {
         });
     }
 
-    getDomainSubscribers(body: { email: string }): Observable<DomainSubscribers[]> {
+    getDomainSubscribers(body: { email?: string }): Observable<DomainSubscribers[]> {
         return this.http.post<DomainSubscribers[]>(`users/domain-subscribers`, body);
+    }
+
+    postUserWorkspace(body: {
+        subscriberId?: number;
+        name?: string;
+        status?: string;
+    }): Observable<workspace> {
+        return this.http.post<workspace>(`users/organizations`, body);
     }
 }

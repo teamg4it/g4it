@@ -60,3 +60,10 @@ export interface DomainSubscribers {
     id?: number;
     name?: string;
 }
+
+export interface workspace {
+    id?: number;
+    name?: string;
+    status?: string;
+    defaultFlag?: boolean;
+}
