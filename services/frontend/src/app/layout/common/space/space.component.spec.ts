@@ -1,6 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { TranslateModule, TranslateService } from "@ngx-translate/core"; // Import TranslateStore
+import { MessageService } from "primeng/api"; // Import MessageService and Message interface
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
 import { of } from "rxjs";
@@ -16,9 +18,9 @@ describe("SpaceComponent", () => {
 
     beforeEach(async () => {
         mockAdministrationService = jasmine.createSpyObj("AdministrationService", [
-            "getUsers",
+            "getDomainSubscribers",
         ]);
-        mockAdministrationService.getUsers.and.returnValue(of({})); // Ensure it returns an observable
+        mockAdministrationService.getDomainSubscribers.and.returnValue(of([])); // Ensure it returns an observable
 
         mockUserService = jasmine.createSpyObj("UserService", ["getRoles"]);
         mockUserService.getRoles.and.returnValue([]); // Ensure it returns a valid value
@@ -31,10 +33,13 @@ describe("SpaceComponent", () => {
                 FormsModule,
                 DropdownModule,
                 ButtonModule,
+                TranslateModule.forRoot(),
             ],
             providers: [
                 { provide: AdministrationService, useValue: mockAdministrationService },
                 { provide: UserService, useValue: mockUserService },
+                MessageService,
+                TranslateService,
             ],
         }).compileComponents();
 
@@ -47,10 +52,10 @@ describe("SpaceComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should initialize with default spaceDetails and call getUsers", () => {
-        spyOn(component, "getUsers");
+    it("should initialize with default spaceDetails and call getDomainSubscribersList", () => {
+        spyOn(component, "getDomainSubscribersList");
         component.ngOnInit();
-        expect(component.getUsers).toHaveBeenCalled();
+        expect(component.getDomainSubscribersList).toHaveBeenCalled();
         expect(component.selectedMenuIndex).toBe(0);
     });
 
@@ -77,17 +82,5 @@ describe("SpaceComponent", () => {
         spyOn(component.sidebarVisibleChange, "emit");
         component.closeSidebar();
         expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
-    });
-
-    it("should log the form when createSpace is called", () => {
-        spyOn(console, "log");
-        component.createSpace();
-        expect(console.log).toHaveBeenCalledWith(component.spaceForm);
-    });
-
-    it("should log the form when createInventory is called", () => {
-        spyOn(console, "log");
-        component.createInventory();
-        expect(console.log).toHaveBeenCalledWith(component.spaceForm);
     });
 });

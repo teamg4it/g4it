@@ -122,7 +122,23 @@
         "useful-info-desc": "G4IT versions, business hours and support contact",
         "inventories": "Inventories",
         "digital-services": "Digital services",
-        "skip-to-main-content": "Skip to Main Content"
+        "skip-to-main-content": "Skip to Main Content",
+        "workspace": {
+            "create": "Create new workspace",
+            "mandatory": "Mandatory",
+            "choose-organisation": "Choose an organization",
+            "no-organization-chosen": "No organization chosen",
+            "set-workspace-name": "Set a workspace name",
+            "no-space-name": "No space name indicated",
+            "hint-text": "Before creating your space, please check in which organization it will be located.",
+            "select-organisation": "Select an organization",
+            "type-space-name": "Type the space name",
+            "workspace-created": "Workspace created",
+            "completed": "Completed",
+            "form-description": "This workspace lets you run simulations and retrieve data. You can invite and manage contributors, edit and delete your workspace.",
+            "cancel": "Cancel Creation",
+            "create-workspace": "Create Workspace"
+        }
     },
     "errors": {
         "error-occurred": "An error occurred"

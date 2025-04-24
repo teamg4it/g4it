@@ -7,6 +7,7 @@
  */
 import { Component, ElementRef, inject, ViewChild } from "@angular/core";
 import { GlobalStoreService } from "../core/store/global.store";
+import { TopHeaderComponent } from "./header/header-siderbar/top-header/top-header.component";
 
 @Component({
     selector: "app-layout",
@@ -16,6 +17,7 @@ export class LayoutComponent {
     public globalStore = inject(GlobalStoreService);
 
     @ViewChild("mainContent") mainContent!: ElementRef;
+    @ViewChild(TopHeaderComponent) topHeader!: TopHeaderComponent;
 
     focusFirstElement() {
         const mainElement = this.mainContent.nativeElement;

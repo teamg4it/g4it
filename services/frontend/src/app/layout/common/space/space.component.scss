@@ -25,10 +25,20 @@
         color: var(--black-color);
     }
 
-    .space-sidebar-close-button {
+    .button-secondary-green {
+        border: 2px solid var(--light-green-color);
+        color: var(--light-green-color);
+        background-color: #f4f4f4;
+    }
+
+    .space-sidebar-close {
         position: absolute;
         right: 0;
         top: 0;
+        padding: 0.5rem;
+    }
+
+    .space-sidebar-close-button {
         width: 2.5rem;
         height: 2.5rem;
         color: rgba(0, 0, 0, 0.6);
@@ -93,6 +103,7 @@
     .space-form {
         padding: 1.5rem;
         position: relative;
+        flex: 1 1 auto;
 
         .p-inputtext,
         .p-dropdown {

@@ -121,7 +121,23 @@
         "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
         "inventories": "Inventaires",
         "digital-services": "Services numériques",
-        "skip-to-main-content": "Accéder au contenu principal"
+        "skip-to-main-content": "Accéder au contenu principal",
+        "workspace": {
+            "create": "Créer un nouvel espace de travail",
+            "mandatory": "Obligatoire",
+            "choose-organisation": "Choisissez une organisation",
+            "no-organization-chosen": "Aucune organisation choisie",
+            "set-workspace-name": "Définir un nom d'espace de travail",
+            "no-space-name": "Aucun nom d'espace indiqué",
+            "hint-text": "Avant de créer votre espace, veuillez vérifier dans quelle organisation il sera situé.",
+            "select-organisation": "Sélectionnez une organisation",
+            "type-space-name": "Tapez le nom de l'espace",
+            "workspace-created": "Espace de travail créé",
+            "completed": "Complété",
+            "form-description": "Cet espace de travail vous permet d'exécuter des simulations et de récupérer des données. Vous pouvez inviter et gérer des contributeurs, ainsi que modifier et supprimer votre espace de travail.",
+            "cancel": "Annuler la création",
+            "create-workspace": "Créer un espace de travail"
+        }
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"

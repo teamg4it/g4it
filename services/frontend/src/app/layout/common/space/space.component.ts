@@ -7,6 +7,8 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { TranslateService } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { firstValueFrom } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
@@ -44,35 +46,37 @@ export class SpaceComponent implements OnInit {
     @Input() spaceDetails: SpaceDetails = {
         menu: [
             {
-                subTitle: "Mandatory",
-                title: "Choose an organization",
-                description: "No organization chosen",
+                subTitle: this.translate.instant("common.workspace.mandatory"),
+                title: this.translate.instant("common.workspace.choose-organisation"),
+                description: this.translate.instant(
+                    "common.workspace.no-organization-chosen",
+                ),
                 iconClass: "pi pi-exclamation-circle",
                 hidden: true,
             },
             {
-                subTitle: "Mandatory",
-                title: "Set a workspace name",
-                description: "No space name indicated",
+                subTitle: this.translate.instant("common.workspace.mandatory"),
+                title: this.translate.instant("common.workspace.set-workspace-name"),
+                description: this.translate.instant("common.workspace.no-space-name"),
                 iconClass: "pi pi-exclamation-circle",
             },
         ],
         form: [
             {
                 name: "organization",
-                label: "Choose an organization",
-                hintText:
-                    "Before creating your space, please check in which organization it will be located.",
+                label: this.translate.instant("common.workspace.choose-organisation"),
+                hintText: this.translate.instant("common.workspace.hint-text"),
                 type: "select",
-                placeholder: "Select an organization",
+                placeholder: this.translate.instant(
+                    "common.workspace.select-organisation",
+                ),
             },
             {
                 name: "spaceName",
-                label: "Set a workspace name",
-                hintText:
-                    "Before creating your space, please check in which organization it will be located.",
+                label: this.translate.instant("common.workspace.set-workspace-name"),
+                hintText: this.translate.instant("common.workspace.hint-text"),
                 type: "text",
-                placeholder: "Type the space name",
+                placeholder: this.translate.instant("common.workspace.type-space-name"),
             },
         ],
     };
@@ -86,6 +90,8 @@ export class SpaceComponent implements OnInit {
     constructor(
         private administrationService: AdministrationService,
         private userService: UserService,
+        private messageService: MessageService,
+        private translate: TranslateService,
     ) {}
 
     spaceForm = new FormGroup({
@@ -164,6 +170,10 @@ export class SpaceComponent implements OnInit {
             this.administrationService.postUserWorkspace(body).subscribe((res) => {
                 this.closeSidebar();
                 this.spaceForm.reset();
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.workspace.workspace-created"),
+                });
             });
         }
     }
