@@ -249,14 +249,3 @@
         </p-button>
     </div>
 </div>
-
-<p-sidebar
-    [(visible)]="spaceSidebarVisible"
-    position="right"
-    styleClass="p-sidebar-lg"
-    ariaCloseLabel="Close"
->
-    <ng-template pTemplate="headless">
-        <app-space (sidebarVisibleChange)="spaceSidebarVisible = $event"></app-space>
-    </ng-template>
-</p-sidebar>
