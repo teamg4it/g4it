@@ -6,7 +6,8 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom } from "rxjs";
@@ -86,22 +87,51 @@ export class SpaceComponent implements OnInit {
     selectedMenuIndex: number | null = null;
     subscribersDetails: any;
     organizationlist: DomainSubscribers[] = [];
+    subscribersList: any;
+    existingOrganization: any = [];
 
     constructor(
         private administrationService: AdministrationService,
         private userService: UserService,
         private messageService: MessageService,
         private translate: TranslateService,
+        private router: Router,
     ) {}
 
     spaceForm = new FormGroup({
         organization: new FormControl<number | undefined>(undefined, Validators.required),
-        spaceName: new FormControl<string | undefined>(undefined, Validators.required),
+        spaceName: new FormControl<string | undefined>(undefined, [
+            Validators.required,
+            this.spaceDuplicateValidator.bind(this),
+        ]),
     });
 
     ngOnInit() {
         this.getDomainSubscribersList();
         this.selectTab(0);
+
+        this.spaceForm.get("organization")?.valueChanges.subscribe((value) => {
+            if (value) {
+                this.existingOrganization = this.subscribersList.find(
+                    (subscriber: any) => subscriber.id === value,
+                )?.organizations;
+                this.spaceForm.get("spaceName")?.updateValueAndValidity();
+            }
+        });
+    }
+
+    spaceDuplicateValidator(control: AbstractControl) {
+        if (control && control?.value?.trim().includes(" ")) {
+            return { spaceNotAllowed: true };
+        } else {
+            const getSpaceName = this.existingOrganization.find(
+                (data: any) => data.name == control.value,
+            );
+            if (getSpaceName) {
+                return { duplicate: true };
+            }
+        }
+        return null;
     }
 
     previousTab(index: number) {
@@ -117,20 +147,22 @@ export class SpaceComponent implements OnInit {
     }
 
     selectTab(index: number) {
+        if (
+            index > 0 &&
+            this.spaceForm.get(this.spaceDetails["form"][index - 1]["name"])?.invalid
+        ) {
+            return;
+        }
         this.selectedMenuIndex = index;
         this.spaceDetails["menu"].forEach((detail, i) => {
             detail.active = i === index;
         });
     }
 
-    closeSidebar() {
-        this.selectTab(0);
-        this.spaceForm.reset();
-        this.sidebarVisibleChange.emit(false);
-    }
-
     async getDomainSubscribersList() {
         const userEmail = (await firstValueFrom(this.userService.user$)).email;
+        this.subscribersList = (await firstValueFrom(this.userService.user$)).subscribers;
+
         if (userEmail) {
             const body = {
                 email: userEmail,
@@ -168,13 +200,28 @@ export class SpaceComponent implements OnInit {
                 status: "ACTIVE",
             };
             this.administrationService.postUserWorkspace(body).subscribe((res) => {
+                const subscriber =
+                    this.organizationlist.find(
+                        (subscriber: any) =>
+                            subscriber.id === this.spaceForm.value["organization"],
+                    ) ?? undefined;
                 this.closeSidebar();
-                this.spaceForm.reset();
+                if (subscriber) {
+                    this.router.navigateByUrl(
+                        `subscribers/${subscriber.name}/organizations/${res.id}/inventories`,
+                    );
+                }
                 this.messageService.add({
                     severity: "success",
                     summary: this.translate.instant("common.workspace.workspace-created"),
                 });
             });
         }
+    }
+
+    closeSidebar() {
+        this.selectTab(0);
+        this.spaceForm.reset();
+        this.sidebarVisibleChange.emit(false);
     }
 }

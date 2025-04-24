@@ -9,15 +9,22 @@
                 @if (!spaceMenu["hidden"]) {
                     <li
                         class="space-menu-item"
-                        [ngClass]="{ active: spaceMenu.active }"
+                        [ngClass]="{
+                            active: spaceMenu.active,
+                            disabled:
+                                panelIndex > 0 &&
+                                spaceForm.get(
+                                    spaceDetails['form'][panelIndex - 1]['name']
+                                )?.invalid,
+                        }"
                         (click)="selectTab(panelIndex)"
                     >
                         <p class="space-menu-sub-title">{{ spaceMenu.subTitle }}</p>
                         <p class="space-menu-title">{{ spaceMenu.title }}</p>
                         <!-- Not valid field  OR  optional field with empty value -->
                         @if (
-                            !spaceForm.get(spaceDetails["form"][panelIndex]["name"])
-                                ?.valid ||
+                            spaceForm.get(spaceDetails["form"][panelIndex]["name"])
+                                ?.invalid ||
                             (spaceMenu["optional"] &&
                                 (spaceForm.get(spaceDetails["form"][panelIndex]["name"])
                                     ?.value === "" ||
@@ -89,6 +96,25 @@
                                 [formControlName]="spaceDetail['name']"
                                 class="mt-2"
                             />
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.["duplicate"]
+                            ) {
+                                <p class="error-text">
+                                    {{ "common.workspace.duplicate-error" | translate }}
+                                </p>
+                            }
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.[
+                                    "spaceNotAllowed"
+                                ]
+                            ) {
+                                <p class="error-text">
+                                    {{
+                                        "administration.organization.spaceValidation"
+                                            | translate
+                                    }}
+                                </p>
+                            }
                         }
 
                         @if (spaceDetail["type"] === "select") {
@@ -135,10 +161,15 @@
                             ></p-button>
                             @if (!lastIndex) {
                                 <p-button
-                                    styleClass="button-secondary-green"
+                                    styleClass="button-secondary-green p-button"
                                     (click)="nextTab(menuIndex)"
                                     [label]="'common.next' | translate"
                                     [ariaLabel]="'common.next' | translate"
+                                    [disabled]="
+                                        spaceForm.get(
+                                            spaceDetails['form'][menuIndex]['name']
+                                        )?.invalid
+                                    "
                                 ></p-button>
                             }
                         </div>

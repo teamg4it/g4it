@@ -137,7 +137,8 @@
             "completed": "Completed",
             "form-description": "This workspace lets you run simulations and retrieve data. You can invite and manage contributors, edit and delete your workspace.",
             "cancel": "Cancel Creation",
-            "create-workspace": "Create Workspace"
+            "create-workspace": "Create Workspace",
+            "duplicate-error": "Workspace name already exists"
         }
     },
     "errors": {

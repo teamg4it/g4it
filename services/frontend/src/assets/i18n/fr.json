@@ -136,7 +136,8 @@
             "completed": "Complété",
             "form-description": "Cet espace de travail vous permet d'exécuter des simulations et de récupérer des données. Vous pouvez inviter et gérer des contributeurs, ainsi que modifier et supprimer votre espace de travail.",
             "cancel": "Annuler la création",
-            "create-workspace": "Créer un espace de travail"
+            "create-workspace": "Créer un espace de travail",
+            "duplicate-error": "Le nom de l'espace de travail existe déjà"
         }
     },
     "errors": {

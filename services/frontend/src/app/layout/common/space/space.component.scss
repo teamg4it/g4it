@@ -25,7 +25,7 @@
         color: var(--black-color);
     }
 
-    .button-secondary-green {
+    .button-secondary-green:not(:disabled) {
         border: 2px solid var(--light-green-color);
         color: var(--light-green-color);
         background-color: #f4f4f4;
@@ -69,7 +69,11 @@
 
     .space-menu-item {
         padding: 1.5rem;
-        cursor: pointer;
+        cursor: default;
+
+        &:not(.disabled) {
+            cursor: pointer;
+        }
 
         &.active {
             background-color: var(--tertiary-color);
