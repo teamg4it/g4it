@@ -98,7 +98,10 @@ export class AdministrationDataService {
     }
 
     getDomainSubscribers(body: { email?: string }): Observable<DomainSubscribers[]> {
-        return this.http.post<DomainSubscribers[]>(`workspace/domain-subscribers`, body);
+        return this.http.post<DomainSubscribers[]>(
+            `${Constants.ENDPOINTS.workspace}/domain-subscribers`,
+            body,
+        );
     }
 
     postUserWorkspace(body: {
@@ -106,6 +109,9 @@ export class AdministrationDataService {
         name?: string;
         status?: string;
     }): Observable<workspace> {
-        return this.http.post<workspace>(`workspace/organizations`, body);
+        return this.http.post<workspace>(
+            `${Constants.ENDPOINTS.workspace}/organizations`,
+            body,
+        );
     }
 }
