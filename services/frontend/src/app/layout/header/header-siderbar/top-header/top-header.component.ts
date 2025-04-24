@@ -163,7 +163,11 @@ export class TopHeaderComponent implements OnInit {
                         outsideLink: true,
                         borderClass: "border-light-grey-color",
                         command: () => {
-                            window.open("https://github.com/G4ITTeam/g4it", "_blank");
+                            window.open(
+                                "https://github.com/G4ITTeam/g4it",
+                                "_blank",
+                                "noopener",
+                            );
                         },
                     },
                     {
@@ -172,7 +176,11 @@ export class TopHeaderComponent implements OnInit {
                         outsideLink: true,
                         borderClass: "border-light-grey-color",
                         command: () => {
-                            window.open("https://saas-g4it.com/documentation/", "_blank");
+                            window.open(
+                                "https://saas-g4it.com/documentation/",
+                                "_blank",
+                                "noopener",
+                            );
                         },
                     },
                 ],
