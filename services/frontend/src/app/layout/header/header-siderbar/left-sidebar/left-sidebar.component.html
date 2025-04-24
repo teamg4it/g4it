@@ -13,7 +13,7 @@
             />
         </a>
     </div>
-    <div class="flex align-items-center justify-content-center h-14rem"></div>
+    <div class="flex align-items-center justify-content-center h-10rem"></div>
     <div
         class="flex align-items-center justify-content-center my-2"
         [ngClass]="{ 'bg-light-green': selectedPage() === 'inventories' }"
@@ -34,7 +34,7 @@
                     [attr.title]="inventoriesTitle()"
                 />
             </div>
-            <span class="text-white text-xs nav-span-text">{{
+            <span class="text-white span-font nav-span-text">{{
                 "common.inventories" | translate
             }}</span>
         </a>
@@ -46,7 +46,7 @@
     >
         <a
             *ngIf="userService.isAllowedDigitalServiceRead$ | async"
-            class="py-3 px-4"
+            class="py-3 px-2"
             [routerLink]="selectedPath + '/digital-services'"
             id="digital-services"
         >
@@ -62,7 +62,7 @@
                 />
             </div>
 
-            <span class="text-white text-xs nav-span-text ds-text">{{
+            <span class="text-white span-font nav-span-text ds-text">{{
                 "common.digital-services" | translate
             }}</span>
         </a>
@@ -76,7 +76,7 @@
         <a
             routerLink="/administration/users"
             *ngIf="isAdminOnSubscriberOrOrganization"
-            class="py-3 px-2"
+            class="py-3 px-1"
             id="administration"
         >
             <div class="flex justify-content-center">
@@ -88,7 +88,7 @@
                     width="25"
                 />
             </div>
-            <span class="text-white text-xs nav-span-text">{{
+            <span class="text-white span-font nav-span-text">{{
                 "common.administration" | translate
             }}</span>
         </a>
