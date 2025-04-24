@@ -37,6 +37,7 @@ export class UsefulInformationComponent {
     versions: Version[] = [];
     businessHoursData: BusinessHours[] = [];
     selectedLanguage: string = "en";
+    @ViewChild(TopHeaderComponent) topHeader!: TopHeaderComponent;
     constructor(private readonly titleService: Title) {}
     ngOnInit() {
         this.translate.get("common.useful-info").subscribe((translatedTitle: string) => {

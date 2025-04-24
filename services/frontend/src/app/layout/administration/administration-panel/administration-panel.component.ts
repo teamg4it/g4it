@@ -11,6 +11,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-header.component";
 
 @Component({
     selector: "app-administration-panel",
@@ -21,6 +22,7 @@ export class AdministrationPanelComponent {
 
     tabMenuList!: MenuItem[];
     @ViewChild("mainContent") mainContent!: ElementRef;
+    @ViewChild(TopHeaderComponent) topHeader!: TopHeaderComponent;
     constructor(
         public userService: UserService,
         public router: Router,
