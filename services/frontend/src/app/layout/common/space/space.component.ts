@@ -5,15 +5,16 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, take } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { UserDataService } from "src/app/core/service/data/user-data.service";
 
 interface SpaceDetails {
     menu: {
@@ -44,6 +45,7 @@ interface SpaceDetails {
     styleUrls: ["./space.component.scss"],
 })
 export class SpaceComponent implements OnInit {
+    private readonly userDataService = inject(UserDataService);
     @Input() spaceDetails: SpaceDetails = {
         menu: [
             {
@@ -207,9 +209,14 @@ export class SpaceComponent implements OnInit {
                     ) ?? undefined;
                 this.closeSidebar();
                 if (subscriber) {
-                    this.router.navigateByUrl(
-                        `subscribers/${subscriber.name}/organizations/${res.id}/inventories`,
-                    );
+                    this.userDataService
+                        .fetchUserInfo()
+                        .pipe(take(1))
+                        .subscribe(() => {
+                            this.router.navigateByUrl(
+                                `subscribers/${subscriber.name}/organizations/${res.id}/inventories`,
+                            );
+                        });
                 }
                 this.messageService.add({
                     severity: "success",
