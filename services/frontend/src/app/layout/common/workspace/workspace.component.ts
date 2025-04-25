@@ -170,10 +170,6 @@ export class WorkspaceComponent implements OnInit {
                 email: userEmail,
             };
             this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
-                res = [
-                    { id: 2, name: "SUBSCRIBER-DEMO" },
-                    { id: 1, name: "SUBSCRIBER-DEMO2" },
-                ];
                 this.organizationlist = res;
 
                 if (
@@ -196,6 +192,28 @@ export class WorkspaceComponent implements OnInit {
         return this.spaceDetails["menu"].filter((menu) => {
             return menu.hidden !== true;
         });
+    }
+
+    handleKeydown(event: KeyboardEvent, panelIndex: number) {
+        let nextIndex = panelIndex;
+        if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+            nextIndex = panelIndex + 1;
+            this.focusElement("space-menu-item-" + nextIndex);
+        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+            nextIndex = panelIndex - 1;
+            this.focusElement("space-menu-item-" + nextIndex);
+        } else if (event.key === "Enter" || event.key === " ") {
+            this.selectTab(nextIndex);
+            event.preventDefault();
+        }
+        return;
+    }
+
+    focusElement(elm: string) {
+        if (!document.getElementById(elm)?.classList.contains("disabled")) {
+            document.getElementById(elm)?.focus();
+        }
+        return;
     }
 
     createSpace() {
