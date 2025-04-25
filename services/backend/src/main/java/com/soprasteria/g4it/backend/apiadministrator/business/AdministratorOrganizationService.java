@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.apiadministrator.business;
 
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
@@ -28,10 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -61,6 +59,8 @@ public class AdministratorOrganizationService {
     UserRestMapper userRestMapper;
     @Autowired
     UserService userService;
+    @Autowired
+    AuthService authService;
 
     /**
      * Get the list of active organizations with admin role attached to subscriber
@@ -123,6 +123,11 @@ public class AdministratorOrganizationService {
 
         final OrganizationBO result = organizationService.createOrganization(organizationUpsertRest, user, subscriberId);
         userService.clearUserCache(user);
+        if (!checkAdminRole) {
+            UserRoleRest userRoleRest = UserRoleRest.builder().userId(user.getId()).roles(List.of("ROLE_ORGANIZATION_ADMINISTRATOR")).build();
+            LinkUserRoleRest linkUserRoleRest = LinkUserRoleRest.builder().organizationId(result.getId()).users(Collections.singletonList(userRoleRest)).build();
+            linkUserToOrg(linkUserRoleRest, authService.getUser(), false);
+        }
 
         return result;
     }
@@ -191,15 +196,16 @@ public class AdministratorOrganizationService {
      * @param linkUserRoleRest the linkUserRoleRest
      * @param user             the user
      */
-    public List<UserInfoBO> linkUserToOrg(final LinkUserRoleRest linkUserRoleRest, final UserBO user) {
+    public List<UserInfoBO> linkUserToOrg(final LinkUserRoleRest linkUserRoleRest, final UserBO user, boolean checkAdminRole) {
 
         Long organizationId = linkUserRoleRest.getOrganizationId();
 
         final Organization organization = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new G4itRestException("404", String.format("OrganizationId %s is not found in database", organizationId)));
 
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organization.getSubscriber().getId(), organizationId);
-
+        if (checkAdminRole) {
+            administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organization.getSubscriber().getId(), organizationId);
+        }
         List<UserInfoBO> userInfoList = new ArrayList<>();
 
         List<Role> allRoles = roleService.getAllRoles();
