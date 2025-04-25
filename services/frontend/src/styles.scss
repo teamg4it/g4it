@@ -276,6 +276,12 @@ main {
     color: #2b2b2b;
 }
 
+.button-secondary-green:not(:disabled) {
+    border: 2px solid var(--light-green-color);
+    color: var(--light-green-color);
+    background-color: #f4f4f4;
+}
+
 .grey-button,
 .grey-button-sidebar {
     background: rgb(205, 205, 205);
@@ -1105,12 +1111,6 @@ app-top-header {
         height: 43px;
         padding: 13px 24px;
         align-items: stretch;
-    }
-
-    .button-secondary-green:not(:disabled) {
-        border: 2px solid var(--light-green-color);
-        color: var(--light-green-color);
-        background-color: #f4f4f4;
     }
 
     .space-form {
