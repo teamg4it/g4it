@@ -129,9 +129,13 @@
                 <label
                     [for]="'org-' + organization.id"
                     class="ml-2"
-                    [attr.aria-label]="'common.organization' | translate"
+                    [attr.aria-label]="
+                        ('common.workspace-name' | translate) +
+                        ' ' +
+                        organization.organization!.name
+                    "
                 >
-                    {{ "common.organization" | translate }}
+                    {{ "common.workspace-name" | translate }}
                     {{ organization.organization!.name }} ({{
                         organization.subscriber!.name
                     }})
@@ -195,13 +199,17 @@
             {{ "common.lang" | translate }}
         </div>
         <div role="group" aria-labelledby="langTitle" class="">
-            <ul aria-labelledby="langTitle" class="mt-2 mb-3">
+            <ul
+                aria-labelledby="langTitle"
+                class="mt-2 mb-3"
+                (keydown)="handleKeydownLanguage($event)"
+            >
                 <li class="inline-block">
                     <p-radioButton
                         name="language"
                         value="en"
                         [(ngModel)]="selectedLanguage"
-                        (ngModelChange)="changeLanguage('en')"
+                        (click)="changeLanguage('en')"
                         aria-labelledby="enLabel"
                     ></p-radioButton>
                     <label
@@ -218,7 +226,7 @@
                         name="language"
                         value="fr"
                         [(ngModel)]="selectedLanguage"
-                        (ngModelChange)="changeLanguage('fr')"
+                        (click)="changeLanguage('fr')"
                         aria-labelledby="frLabel"
                     ></p-radioButton>
                     <label

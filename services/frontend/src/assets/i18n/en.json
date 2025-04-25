@@ -55,6 +55,8 @@
         "parameters": "Parameters",
         "administration": "Administration",
         "homepage": "Homepage",
+        "home": "Home",
+        "workspace-name": "Workspace",
         "access-filters": "Access filters for your footprint data",
         "refresh": "Refresh",
         "details-alt": "Access footprint data of",
