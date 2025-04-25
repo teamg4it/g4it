@@ -55,6 +55,8 @@
         "parameters": "Paramètres",
         "administration": "Administration",
         "homepage": "Page d'accueil",
+        "home": "Maison",
+        "workspace-name": "Espace de travail",
         "access-filters": "Accéder aux filtres de mes indicateurs",
         "refresh": "Actualiser",
         "all": "Tout sélectionner",
