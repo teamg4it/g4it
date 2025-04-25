@@ -43,7 +43,7 @@ export class AdministrationPanelComponent {
 
             if (this.userService.hasAnySubscriberAdminRole(user)) {
                 this.tabMenuList.push({
-                    label: this.translate.instant("administration.manage-organizations"),
+                    label: this.translate.instant("administration.manage-workspaces"),
                     routerLink: "organizations",
                     id: "organizations-tab",
                 });

@@ -683,7 +683,7 @@
     "administration": {
         "title": "Panneau d'administration",
         "manage-users": "Gérer les utilisateurs",
-        "manage-organizations": "Gérer les espaces de travail",
+        "manage-workspaces": "Gérer les espaces de travail",
         "super-admin-title": "Super Admin",
         "subsriber-placeholder": "Choisissez l'organisation",
         "accessibility": {
@@ -720,7 +720,7 @@
             "searchEmailValidation": "Les caractères spéciaux ne sont pas autorisés sauf @.-_",
             "delete-message": "L'utilisateur {{FirstName}} {{LastName}} n'aura plus accès à cette organisation. Êtes-vous sur de vouloir continuer ?",
             "search": "Recherche",
-            "choose-criteria": "Choisir les critères d'organisation {{subscriber}}",
+            "choose-criteria": "Choisissez les critères pour l'organisation {{subscriber}}",
             "error": "Au moins un critère doit être sélectionné",
             "is-header": "Module système d'information",
             "ds-header": "Module service numérique",

@@ -684,7 +684,7 @@
     "administration": {
         "title": "Administration panel",
         "manage-users": "Manage users",
-        "manage-organizations": "Manage workspaces",
+        "manage-workspaces": "Manage workspaces",
         "super-admin-title": "Super Admin",
         "subsriber-placeholder": "Choose organization",
         "accessibility": {
@@ -693,7 +693,7 @@
             "on-edit": "Change the organization's name",
             "select-criteria": "Manage criteria on this subscriber"
         },
-        "user-placeholder": "Choose a wokspace",
+        "user-placeholder": "Choose a workspace",
         "delete": "DELETE",
         "cancel-deletion": "Cancel delete",
         "cancel-deletion-accessibility": "Cancel deletion of {{organizationName}} organization",
@@ -722,7 +722,7 @@
             "searchEmailValidation": "Special characters are not allowed except @.-_",
             "delete-message": "The user {{FirstName}} {{LastName}} will no longer have access to this organization. Are you sure you want to proceed ?",
             "search": "Search",
-            "choose-criteria": "Choose criteria for subscriber {{subscriber}}",
+            "choose-criteria": "Choose criteria for organization {{subscriber}}",
             "error": "At least one criteria must be selected",
             "is-header": "Information system module",
             "ds-header": "Digital service module",
