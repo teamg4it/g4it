@@ -683,21 +683,21 @@
     "administration": {
         "title": "Panneau d'administration",
         "manage-users": "Gérer les utilisateurs",
-        "manage-organizations": "Gérer les organisations",
+        "manage-organizations": "Gérer les espaces de travail",
         "super-admin-title": "Super Admin",
-        "subsriber-placeholder": "Sélectionnez le souscripteur",
+        "subsriber-placeholder": "Choisissez l'organisation",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
             "on-deletion": "Confirmez la suppresion de la suppression de toutes les données de l'organisation.",
             "on-edit": "Changer le nom de l'organisation"
         },
-        "user-placeholder": "Choisissez l'organisation",
+        "user-placeholder": "Choisissez un espace de travail",
         "delete": "Supprimer",
         "cancel-deletion": "Annuler la suppression",
         "cancel-deletion-accessibility": "Annuler la suppresion de l'organisation {{organizationName}}",
         "cancel-deletion-message": "Les données de l'organisation seront supprimées le {{date}}",
         "delete-confirmation": "Confirmation de la suppresion",
-        "delete-message": "Au bout de 7 jours, toutes les données relatives à l'organisation seront supprimées. Êtes-vous sûr de vouloir supprimer cette organisation ?",
+        "delete-message": "Après 7 jours, toutes les données de votre espace de travail seront supprimées. Voulez-vous vraiment supprimer cet espace de travail ?",
         "user": {
             "accessAndRole": "Sélectionnez l'accès et le rôle",
             "access": "Accéder",
@@ -706,7 +706,7 @@
             "role": "Rôle",
             "actions": "Actions",
             "add": "AJOUTER À L'ORGANISATION",
-            "select-org": "Sélectionnez une organisation",
+            "select-org": "Sélectionnez un espace de travail",
             "search-user": "Rechercher un utilisateur référencé",
             "list-members": "Liste des membres",
             "members": "membres",
@@ -720,7 +720,7 @@
             "searchEmailValidation": "Les caractères spéciaux ne sont pas autorisés sauf @.-_",
             "delete-message": "L'utilisateur {{FirstName}} {{LastName}} n'aura plus accès à cette organisation. Êtes-vous sur de vouloir continuer ?",
             "search": "Recherche",
-            "choose-criteria": "Choississez les critères pour le souscripteur {{subscriber}}",
+            "choose-criteria": "Choisir les critères d'organisation {{subscriber}}",
             "error": "Au moins un critère doit être sélectionné",
             "is-header": "Module système d'information",
             "ds-header": "Module service numérique",
@@ -734,15 +734,15 @@
             "admin": "Administrateur"
         },
         "organization": {
-            "new": "Nouvelle organisation",
-            "addAnOrganization": "Ajouter une organisation",
+            "new": "Nouvel espace de travail",
+            "addAnOrganization": "Ajouter un espace de travail",
             "addAnOrganizationValidation": "Les caractères spéciaux ne sont pas autorisés sauf -_",
             "duplicateOrganizationValidation": "L'organisation existe déjà",
             "spaceValidation": "L'espace n'est pas autorisé",
             "accessibility": {
-                "addAnOrganization": "Ajouter l'organisation"
+                "addAnOrganization": "Ajouter un espace de travail"
             },
-            "choose-criteria": "Choisissez les critères pour l'organisation {{organizationName}}",
+            "choose-criteria": "Choisissez les critères de l'espace de travail {{organizationName}}",
             "error": "Au moins un critère doit être sélectionné",
             "information-system-module": "Information system",
             "digital-service-module": "Digital service module"
