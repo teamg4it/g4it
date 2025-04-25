@@ -686,7 +686,7 @@
         "manage-users": "Manage users",
         "manage-workspaces": "Manage workspaces",
         "super-admin-title": "Super Admin",
-        "subsriber-placeholder": "Choose organization",
+        "organization-placeholder": "Choose organization",
         "accessibility": {
             "placeholder": "Subscriber selection, {{name}} currently selected",
             "on-deletion": "Confirm the deletion of all organization data.",

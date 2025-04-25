@@ -685,7 +685,7 @@
         "manage-users": "Gérer les utilisateurs",
         "manage-workspaces": "Gérer les espaces de travail",
         "super-admin-title": "Super Admin",
-        "subsriber-placeholder": "Choisissez l'organisation",
+        "organization-placeholder": "Choisissez l'organisation",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
             "on-deletion": "Confirmez la suppresion de la suppression de toutes les données de l'organisation.",
