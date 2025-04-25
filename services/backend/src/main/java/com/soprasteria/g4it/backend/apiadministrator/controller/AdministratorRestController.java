@@ -123,7 +123,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
     @Override
     public ResponseEntity<List<UserInfoRest>> linkUserToOrg(final LinkUserRoleRest linkUserRoleRest) {
         return new ResponseEntity<>
-                (userRestMapper.toListRest(administratorOrganizationService.linkUserToOrg(linkUserRoleRest, authService.getUser())), HttpStatus.OK);
+                (userRestMapper.toListRest(administratorOrganizationService.linkUserToOrg(linkUserRoleRest, authService.getUser(), true)), HttpStatus.OK);
     }
 
     /**
@@ -132,7 +132,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
     @Override
     public ResponseEntity<List<UserInfoRest>> updateRoleAccess(final LinkUserRoleRest linkUserRoleRest) {
         return new ResponseEntity<>(
-                userRestMapper.toListRest(administratorOrganizationService.linkUserToOrg(linkUserRoleRest, authService.getUser())), HttpStatus.OK);
+                userRestMapper.toListRest(administratorOrganizationService.linkUserToOrg(linkUserRoleRest, authService.getUser(), true)), HttpStatus.OK);
     }
 
     /**
