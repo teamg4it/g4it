@@ -268,6 +268,12 @@ main {
     color: #2b2b2b;
 }
 
+.button-secondary-green:not(:disabled) {
+    border: 2px solid var(--light-green-color);
+    color: var(--light-green-color);
+    background-color: #f4f4f4;
+}
+
 .grey-button,
 .grey-button-sidebar {
     background: rgb(205, 205, 205);
@@ -1085,4 +1091,26 @@ app-top-header {
     border: none;
     cursor: pointer;
     transition: opacity 0.3s ease;
+}
+
+.app-workspace {
+    .cancel-creation-button {
+        border: 1px solid #cacbca;
+        background-color: #f4f4f4;
+        color: var(--black-color);
+    }
+
+    .p-button {
+        height: 43px;
+        padding: 13px 24px;
+        align-items: stretch;
+    }
+
+    .space-form {
+        .p-inputtext,
+        .p-dropdown {
+            height: 48px;
+            min-width: 390px;
+        }
+    }
 }

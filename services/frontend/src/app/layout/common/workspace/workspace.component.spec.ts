@@ -6,27 +6,27 @@ import { MessageService } from "primeng/api"; // Import MessageService and Messa
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
 import { of } from "rxjs";
-import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
-import { SpaceComponent } from "./space.component";
+import { WorkspaceService } from "src/app/core/service/business/workspace.service";
+import { WorkspaceComponent } from "./workspace.component";
 
-describe("SpaceComponent", () => {
-    let component: SpaceComponent;
-    let fixture: ComponentFixture<SpaceComponent>;
-    let mockAdministrationService: jasmine.SpyObj<AdministrationService>;
+describe("WorkspaceComponent", () => {
+    let component: WorkspaceComponent;
+    let fixture: ComponentFixture<WorkspaceComponent>;
+    let mockWorkspaceService: jasmine.SpyObj<WorkspaceService>;
     let mockUserService: jasmine.SpyObj<UserService>;
 
     beforeEach(async () => {
-        mockAdministrationService = jasmine.createSpyObj("AdministrationService", [
+        mockWorkspaceService = jasmine.createSpyObj("WorkspaceService", [
             "getDomainSubscribers",
         ]);
-        mockAdministrationService.getDomainSubscribers.and.returnValue(of([])); // Ensure it returns an observable
+        mockWorkspaceService.getDomainSubscribers.and.returnValue(of([])); // Ensure it returns an observable
 
         mockUserService = jasmine.createSpyObj("UserService", ["getRoles"]);
         mockUserService.getRoles.and.returnValue([]); // Ensure it returns a valid value
 
         await TestBed.configureTestingModule({
-            declarations: [SpaceComponent],
+            declarations: [WorkspaceComponent],
             imports: [
                 ReactiveFormsModule,
                 CommonModule,
@@ -36,14 +36,14 @@ describe("SpaceComponent", () => {
                 TranslateModule.forRoot(),
             ],
             providers: [
-                { provide: AdministrationService, useValue: mockAdministrationService },
+                { provide: WorkspaceService, useValue: mockWorkspaceService },
                 { provide: UserService, useValue: mockUserService },
                 MessageService,
                 TranslateService,
             ],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(SpaceComponent);
+        fixture = TestBed.createComponent(WorkspaceComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

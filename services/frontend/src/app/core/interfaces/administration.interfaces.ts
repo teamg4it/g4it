@@ -57,13 +57,13 @@ export interface OrganizationCriteriaRest {
 }
 
 export interface DomainSubscribers {
-    id?: number;
-    name?: string;
+    id: number;
+    name: string;
 }
 
-export interface workspace {
-    id?: number;
-    name?: string;
-    status?: string;
-    defaultFlag?: boolean;
+export interface Workspace {
+    id: number;
+    name: string;
+    status: string;
+    defaultFlag: boolean;
 }

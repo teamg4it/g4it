@@ -1,4 +1,4 @@
-<div class="app-space">
+<div class="app-workspace">
     @if (spaceDetails && spaceDetails["menu"] && getValidMenu().length > 1) {
         <ul class="space-menu">
             @for (
@@ -8,6 +8,7 @@
             ) {
                 @if (!spaceMenu["hidden"]) {
                     <li
+                        [id]="'space-menu-item-' + panelIndex"
                         class="space-menu-item"
                         [ngClass]="{
                             active: spaceMenu.active,
@@ -18,6 +19,14 @@
                                 )?.invalid,
                         }"
                         (click)="selectTab(panelIndex)"
+                        [tabindex]="
+                            panelIndex > 0 &&
+                            spaceForm.get(spaceDetails['form'][panelIndex - 1]['name'])
+                                ?.invalid
+                                ? -1
+                                : 0
+                        "
+                        (keydown)="handleKeydown($event, panelIndex)"
                     >
                         <p class="space-menu-sub-title">{{ spaceMenu.subTitle }}</p>
                         <p class="space-menu-title">{{ spaceMenu.title }}</p>
@@ -95,6 +104,7 @@
                                 [placeholder]="spaceDetail['placeholder']"
                                 [formControlName]="spaceDetail['name']"
                                 class="mt-2"
+                                autofocus="true"
                             />
                             @if (
                                 spaceForm.get(spaceDetail["name"])?.errors?.["duplicate"]
@@ -127,6 +137,7 @@
                                 optionLabel="name"
                                 name="organizationName"
                                 optionValue="id"
+                                autofocus="true"
                             />
                         }
 
@@ -135,8 +146,8 @@
                         >
                             <p-button
                                 class="cancel-creation"
-                                styleClass="cancel-creation-button"
-                                (click)="closeSidebar()"
+                                styleClass="cancel-creation-button uppercase"
+                                (onClick)="closeSidebar()"
                                 [label]="'common.workspace.cancel' | translate"
                                 [ariaLabel]="'common.workspace.cancel' | translate"
                             ></p-button>
@@ -145,7 +156,7 @@
                                 !spaceDetails["menu"][menuIndex - 1]["hidden"]
                             ) {
                                 <p-button
-                                    styleClass="button-secondary-green"
+                                    styleClass="button-secondary-green uppercase"
                                     (click)="previousTab(menuIndex)"
                                     [label]="'common.previous' | translate"
                                     [ariaLabel]="'common.previous' | translate"
@@ -153,6 +164,7 @@
                             }
                             <p-button
                                 (click)="createSpace()"
+                                styleClass="uppercase bg-light-green"
                                 [disabled]="spaceForm.invalid"
                                 [label]="'common.workspace.create-workspace' | translate"
                                 [ariaLabel]="
@@ -161,7 +173,7 @@
                             ></p-button>
                             @if (!lastIndex) {
                                 <p-button
-                                    styleClass="button-secondary-green p-button"
+                                    styleClass="button-secondary-green p-button uppercase"
                                     (click)="nextTab(menuIndex)"
                                     [label]="'common.next' | translate"
                                     [ariaLabel]="'common.next' | translate"

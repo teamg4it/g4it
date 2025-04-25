@@ -1,34 +1,9 @@
-::ng-deep .app-space {
+.app-workspace {
     display: flex;
     height: 100vh;
 
-    .p-button {
-        height: 43px;
-        padding: 13px 24px;
-        text-transform: uppercase;
-        align-items: stretch;
-    }
-
-    .p-button.button-secondary {
-        color: var(--light-green-color);
-        background-color: white;
-        border: 2px solid;
-    }
-
     .cancel-creation {
         flex: 1 0 auto;
-    }
-
-    .cancel-creation-button {
-        border: 1px solid #cacbca;
-        background-color: #f4f4f4;
-        color: var(--black-color);
-    }
-
-    .button-secondary-green:not(:disabled) {
-        border: 2px solid var(--light-green-color);
-        color: var(--light-green-color);
-        background-color: #f4f4f4;
     }
 
     .space-sidebar-close {
@@ -76,7 +51,7 @@
         }
 
         &.active {
-            background-color: var(--tertiary-color);
+            background-color: var(--light-green-color);
             color: var(--light-grey-color);
         }
 
@@ -93,7 +68,7 @@
         }
 
         .space-menu-description.completed {
-            color: var(--highlight-text-color);
+            color: #086308;
             font-weight: 700;
         }
     }
@@ -108,12 +83,6 @@
         padding: 1.5rem;
         position: relative;
         flex: 1 1 auto;
-
-        .p-inputtext,
-        .p-dropdown {
-            height: 48px;
-            min-width: 390px;
-        }
     }
 
     .space-form--input:not(.active) {

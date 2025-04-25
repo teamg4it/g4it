@@ -9,12 +9,10 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import {
-    DomainSubscribers,
     OrganizationCriteriaRest,
     OrganizationUpsertRest,
     Subscriber,
     SubscriberCriteriaRest,
-    workspace,
 } from "../../interfaces/administration.interfaces";
 import { AdministrationDataService } from "../data/administration-data-service";
 
@@ -85,17 +83,5 @@ export class AdministrationService {
 
     postOrganization(body: any): Observable<any> {
         return this.administrationDataService.postOrganization(body);
-    }
-
-    getDomainSubscribers(body: { email?: string }): Observable<DomainSubscribers[]> {
-        return this.administrationDataService.getDomainSubscribers(body);
-    }
-
-    postUserWorkspace(body: {
-        subscriberId?: number;
-        name?: string;
-        status?: string;
-    }): Observable<workspace> {
-        return this.administrationDataService.postUserWorkspace(body);
     }
 }

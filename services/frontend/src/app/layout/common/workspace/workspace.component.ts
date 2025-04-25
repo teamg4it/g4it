@@ -12,8 +12,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
-import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 
 interface SpaceDetails {
@@ -40,11 +40,11 @@ interface SpaceDetails {
 }
 
 @Component({
-    selector: "app-space",
-    templateUrl: "./space.component.html",
-    styleUrls: ["./space.component.scss"],
+    selector: "app-workspace",
+    templateUrl: "./workspace.component.html",
+    styleUrls: ["./workspace.component.scss"],
 })
-export class SpaceComponent implements OnInit {
+export class WorkspaceComponent implements OnInit {
     private readonly userDataService = inject(UserDataService);
     @Input() spaceDetails: SpaceDetails = {
         menu: [
@@ -93,7 +93,7 @@ export class SpaceComponent implements OnInit {
     existingOrganization: any = [];
 
     constructor(
-        private administrationService: AdministrationService,
+        private workspaceService: WorkspaceService,
         private userService: UserService,
         private messageService: MessageService,
         private translate: TranslateService,
@@ -169,7 +169,7 @@ export class SpaceComponent implements OnInit {
             const body = {
                 email: userEmail,
             };
-            this.administrationService.getDomainSubscribers(body).subscribe((res) => {
+            this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
                 this.organizationlist = res;
 
                 if (
@@ -194,6 +194,28 @@ export class SpaceComponent implements OnInit {
         });
     }
 
+    handleKeydown(event: KeyboardEvent, panelIndex: number) {
+        let nextIndex = panelIndex;
+        if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+            nextIndex = panelIndex + 1;
+            this.focusElement("space-menu-item-" + nextIndex);
+        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+            nextIndex = panelIndex - 1;
+            this.focusElement("space-menu-item-" + nextIndex);
+        } else if (event.key === "Enter" || event.key === " ") {
+            this.selectTab(nextIndex);
+            event.preventDefault();
+        }
+        return;
+    }
+
+    focusElement(elm: string) {
+        if (!document.getElementById(elm)?.classList.contains("disabled")) {
+            document.getElementById(elm)?.focus();
+        }
+        return;
+    }
+
     createSpace() {
         if (this.spaceForm.valid) {
             const body = {
@@ -201,7 +223,7 @@ export class SpaceComponent implements OnInit {
                 name: this.spaceForm.value["spaceName"] ?? undefined,
                 status: "ACTIVE",
             };
-            this.administrationService.postUserWorkspace(body).subscribe((res) => {
+            this.workspaceService.postUserWorkspace(body).subscribe((res) => {
                 const subscriber =
                     this.organizationlist.find(
                         (subscriber: any) =>
