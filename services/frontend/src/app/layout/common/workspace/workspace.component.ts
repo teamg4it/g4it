@@ -40,11 +40,11 @@ interface SpaceDetails {
 }
 
 @Component({
-    selector: "app-space",
-    templateUrl: "./space.component.html",
-    styleUrls: ["./space.component.scss"],
+    selector: "app-workspace",
+    templateUrl: "./workspace.component.html",
+    styleUrls: ["./workspace.component.scss"],
 })
-export class SpaceComponent implements OnInit {
+export class WorkspaceComponent implements OnInit {
     private readonly userDataService = inject(UserDataService);
     @Input() spaceDetails: SpaceDetails = {
         menu: [
@@ -170,6 +170,10 @@ export class SpaceComponent implements OnInit {
                 email: userEmail,
             };
             this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
+                res = [
+                    { id: 2, name: "SUBSCRIBER-DEMO" },
+                    { id: 1, name: "SUBSCRIBER-DEMO2" },
+                ];
                 this.organizationlist = res;
 
                 if (

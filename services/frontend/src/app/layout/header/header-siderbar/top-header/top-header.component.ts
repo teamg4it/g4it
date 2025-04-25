@@ -252,6 +252,14 @@ export class TopHeaderComponent implements OnInit {
 
     toggleOrgMenu() {
         this.isOrgMenuVisible = !this.isOrgMenuVisible;
+        if (this.isOrgMenuVisible) {
+            const elementToView = document.querySelector(
+                `#org-${this.modelOrganization}`,
+            );
+            setTimeout(() => {
+                elementToView?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 0);
+        }
     }
 
     changeLanguage(lang: string): void {

@@ -1,4 +1,4 @@
-<div class="app-space">
+<div class="app-workspace">
     @if (spaceDetails && spaceDetails["menu"] && getValidMenu().length > 1) {
         <ul class="space-menu">
             @for (
@@ -135,8 +135,8 @@
                         >
                             <p-button
                                 class="cancel-creation"
-                                styleClass="cancel-creation-button"
-                                (click)="closeSidebar()"
+                                styleClass="cancel-creation-button uppercase"
+                                (onClick)="closeSidebar()"
                                 [label]="'common.workspace.cancel' | translate"
                                 [ariaLabel]="'common.workspace.cancel' | translate"
                             ></p-button>
@@ -145,7 +145,7 @@
                                 !spaceDetails["menu"][menuIndex - 1]["hidden"]
                             ) {
                                 <p-button
-                                    styleClass="button-secondary-green"
+                                    styleClass="button-secondary-green uppercase"
                                     (click)="previousTab(menuIndex)"
                                     [label]="'common.previous' | translate"
                                     [ariaLabel]="'common.previous' | translate"
@@ -153,6 +153,7 @@
                             }
                             <p-button
                                 (click)="createSpace()"
+                                styleClass="uppercase bg-light-green"
                                 [disabled]="spaceForm.invalid"
                                 [label]="'common.workspace.create-workspace' | translate"
                                 [ariaLabel]="
@@ -161,7 +162,7 @@
                             ></p-button>
                             @if (!lastIndex) {
                                 <p-button
-                                    styleClass="button-secondary-green p-button"
+                                    styleClass="button-secondary-green p-button uppercase"
                                     (click)="nextTab(menuIndex)"
                                     [label]="'common.next' | translate"
                                     [ariaLabel]="'common.next' | translate"

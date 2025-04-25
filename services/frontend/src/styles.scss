@@ -1094,7 +1094,30 @@ app-top-header {
     transition: opacity 0.3s ease;
 }
 
-.app-space {
-    p-button {
+.app-workspace {
+    .cancel-creation-button {
+        border: 1px solid #cacbca;
+        background-color: #f4f4f4;
+        color: var(--black-color);
+    }
+
+    .p-button {
+        height: 43px;
+        padding: 13px 24px;
+        align-items: stretch;
+    }
+
+    .button-secondary-green:not(:disabled) {
+        border: 2px solid var(--light-green-color);
+        color: var(--light-green-color);
+        background-color: #f4f4f4;
+    }
+
+    .space-form {
+        .p-inputtext,
+        .p-dropdown {
+            height: 48px;
+            min-width: 390px;
+        }
     }
 }
