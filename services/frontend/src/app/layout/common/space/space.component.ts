@@ -12,8 +12,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
-import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 
 interface SpaceDetails {
@@ -93,7 +93,7 @@ export class SpaceComponent implements OnInit {
     existingOrganization: any = [];
 
     constructor(
-        private administrationService: AdministrationService,
+        private workspaceService: WorkspaceService,
         private userService: UserService,
         private messageService: MessageService,
         private translate: TranslateService,
@@ -169,7 +169,7 @@ export class SpaceComponent implements OnInit {
             const body = {
                 email: userEmail,
             };
-            this.administrationService.getDomainSubscribers(body).subscribe((res) => {
+            this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
                 this.organizationlist = res;
 
                 if (
@@ -201,7 +201,7 @@ export class SpaceComponent implements OnInit {
                 name: this.spaceForm.value["spaceName"] ?? undefined,
                 status: "ACTIVE",
             };
-            this.administrationService.postUserWorkspace(body).subscribe((res) => {
+            this.workspaceService.postUserWorkspace(body).subscribe((res) => {
                 const subscriber =
                     this.organizationlist.find(
                         (subscriber: any) =>
