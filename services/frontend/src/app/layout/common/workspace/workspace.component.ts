@@ -151,12 +151,13 @@ export class WorkspaceComponent implements OnInit {
     selectTab(index: number) {
         if (
             index > 0 &&
-            this.spaceForm.get(this.spaceDetails["form"][index - 1]["name"])?.invalid
+            this.spaceDetails.form[index - 1] &&
+            this.spaceForm.get(this.spaceDetails.form[index - 1].name)?.invalid
         ) {
             return;
         }
         this.selectedMenuIndex = index;
-        this.spaceDetails["menu"].forEach((detail, i) => {
+        this.spaceDetails.menu.forEach((detail, i) => {
             detail.active = i === index;
         });
     }
