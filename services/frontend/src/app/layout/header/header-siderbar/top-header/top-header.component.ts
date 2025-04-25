@@ -82,6 +82,7 @@ export class TopHeaderComponent implements OnInit {
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
     @ViewChildren("radioItem") radioItems!: QueryList<ElementRef>;
     spaceSidebarVisible: boolean = false;
+    languages = ["en", "fr"];
 
     constructor() {}
     ngOnInit() {
@@ -236,6 +237,29 @@ export class TopHeaderComponent implements OnInit {
         );
     }
 
+    handleKeydownLanguage(event: KeyboardEvent): void {
+        const currentIndex = this.languages.findIndex((l) => l === this.selectedLanguage);
+
+        let nextIndex = currentIndex;
+
+        if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+            nextIndex = (currentIndex + 1) % this.languages.length;
+        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+            nextIndex =
+                (currentIndex - 1 + this.languages.length) % this.languages.length;
+        } else if (event.key === "Enter" || event.key === " ") {
+            this.changeLanguage(this.languages[currentIndex]);
+            event.preventDefault();
+            return;
+        }
+
+        if (nextIndex !== currentIndex) {
+            this.selectedLanguage = this.languages[nextIndex];
+
+            event.preventDefault();
+        }
+    }
+
     getCapitaleLetter(str: string) {
         if (str === undefined) return "";
         return str.charAt(0).toLocaleUpperCase();
@@ -252,6 +276,14 @@ export class TopHeaderComponent implements OnInit {
 
     toggleOrgMenu() {
         this.isOrgMenuVisible = !this.isOrgMenuVisible;
+        if (this.isOrgMenuVisible) {
+            const elementToView = document.querySelector(
+                `#org-${this.modelOrganization}`,
+            );
+            setTimeout(() => {
+                elementToView?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 0);
+        }
     }
 
     changeLanguage(lang: string): void {

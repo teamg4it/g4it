@@ -100,7 +100,7 @@ class AdministratorOrganizationServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(User.builder().id(userId).build()));
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
 
-        List<UserInfoBO> users = administratorOrganizationService.linkUserToOrg(linkUserRoleRest, TestUtils.createUserBOAdminSub());
+        List<UserInfoBO> users = administratorOrganizationService.linkUserToOrg(linkUserRoleRest, TestUtils.createUserBOAdminSub(), true);
         assertEquals(1, users.size());
         assertEquals(ROLE, users.getFirst().getRoles().getFirst());
         verify(userOrganizationRepository, times(1)).save(any(UserOrganization.class));
@@ -119,7 +119,7 @@ class AdministratorOrganizationServiceTest {
         when(userRepository.findById(userRoleRest.getUserId())).thenReturn(Optional.of(User.builder().id(userId).build()));
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
 
-        List<UserInfoBO> users = administratorOrganizationService.linkUserToOrg(linkUserRoleRest, TestUtils.createUserBOAdminSub());
+        List<UserInfoBO> users = administratorOrganizationService.linkUserToOrg(linkUserRoleRest, TestUtils.createUserBOAdminSub(), true);
         assertEquals(1, users.size());
         assertEquals(List.of(), users.getFirst().getRoles());
         verify(userOrganizationRepository, times(1)).save(any(UserOrganization.class));

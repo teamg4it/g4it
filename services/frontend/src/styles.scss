@@ -42,7 +42,7 @@ li {
 h2,
 h1,
 .h2-title {
-    font-size: 44px;
+    font-size: 40px;
     line-height: 48px;
     font-weight: 300;
     margin-top: 0;
@@ -74,6 +74,9 @@ main {
     @include styleclass("py-4 px-5");
     background-color: var(--light-grey-color);
     overflow-y: clip;
+    height: calc(100vh - 70px);
+    width: calc(100vw - 80px);
+    margin-top: 70px;
     background-image: url("assets/images/background/blue-elipse.svg"),
         url("assets/images/background/yellow-elipse.svg"),
         url("assets/images/background/fingerprint-background.svg");
@@ -174,7 +177,7 @@ main {
 }
 
 /* Header */
-
+/* header height px match with main margin top*/
 .header {
     background-color: var(--black-color);
     color: white;
@@ -182,15 +185,7 @@ main {
     position: sticky;
     top: 0;
     z-index: 1000;
-    height: 80px;
-}
-
-.full-height-width {
-    height: calc(100vh - 80px);
-    width: calc(100vw - 80px);
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    height: 70px;
 }
 
 .left-sidebar {
@@ -242,10 +237,7 @@ main {
     border: none;
     font-weight: 500;
     letter-spacing: 2px;
-    padding-right: 25px;
-    padding-left: 25px;
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding: 16px 24px;
     margin-left: 20px !important;
     text-transform: uppercase;
 }
@@ -1050,13 +1042,14 @@ app-top-header {
     }
     .orgNameMenuBtn {
         background-color: rgba(255, 255, 255, 0.2) !important;
-        padding: 10px;
+        padding: 8px;
+        border-radius: 4px;
     }
     .aboutMenuBtn.aboutMenuOpen,
     .orgNameMenuBtn.orgMenuOpen {
         background-color: var(--light-green-color) !important;
-        padding-top: 27px;
-        padding-bottom: 27px;
+        padding-top: 22px;
+        padding-bottom: 22px;
     }
 
     .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus {

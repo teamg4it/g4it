@@ -55,6 +55,8 @@
         "parameters": "Parameters",
         "administration": "Administration",
         "homepage": "Homepage",
+        "home": "Home",
+        "workspace-name": "Workspace",
         "access-filters": "Access filters for your footprint data",
         "refresh": "Refresh",
         "details-alt": "Access footprint data of",
@@ -684,22 +686,22 @@
     "administration": {
         "title": "Administration panel",
         "manage-users": "Manage users",
-        "manage-organizations": "Manage organizations",
+        "manage-workspaces": "Manage workspaces",
         "super-admin-title": "Super Admin",
-        "subsriber-placeholder": "Choose subscriber",
+        "organization-placeholder": "Choose organization",
         "accessibility": {
             "placeholder": "Subscriber selection, {{name}} currently selected",
             "on-deletion": "Confirm the deletion of all organization data.",
             "on-edit": "Change the organization's name",
             "select-criteria": "Manage criteria on this subscriber"
         },
-        "user-placeholder": "Choose organisation",
+        "user-placeholder": "Choose a workspace",
         "delete": "DELETE",
         "cancel-deletion": "Cancel delete",
         "cancel-deletion-accessibility": "Cancel deletion of {{organizationName}} organization",
         "cancel-deletion-message": "Your organization's data will be deleted on {{date}}",
         "delete-confirmation": "Deletion confirmation",
-        "delete-message": "After 7 days, all your organization's data will be deleted. Are you sure you want to delete this organization ?",
+        "delete-message": "After 7 days, all your workspace's data will be deleted. Are you sure you want to delete this workspace ?",
         "user": {
             "accessAndRole": "Select access and role",
             "access": "Access",
@@ -708,7 +710,7 @@
             "role": "Role",
             "actions": "Actions",
             "add": "ADD TO ORGANIZATION",
-            "select-org": "Select an organization",
+            "select-org": "Select a workspace",
             "search-user": "Search for a referenced user",
             "list-members": "List of members",
             "members": "members",
@@ -722,7 +724,7 @@
             "searchEmailValidation": "Special characters are not allowed except @.-_",
             "delete-message": "The user {{FirstName}} {{LastName}} will no longer have access to this organization. Are you sure you want to proceed ?",
             "search": "Search",
-            "choose-criteria": "Choose criteria for subscriber {{subscriber}}",
+            "choose-criteria": "Choose criteria for organization {{subscriber}}",
             "error": "At least one criteria must be selected",
             "is-header": "Information system module",
             "ds-header": "Digital service module",
@@ -736,15 +738,15 @@
             "admin": "Administrator"
         },
         "organization": {
-            "new": "New organization",
-            "addAnOrganization": "Add an organization",
+            "new": "New workspace",
+            "addAnOrganization": "Add a workspace",
             "addAnOrganizationValidation": "Special characters are not allowed except -_",
             "duplicateOrganizationValidation": "Organization already exist",
             "spaceValidation": "Space is not allowed",
             "accessibility": {
-                "addAnOrganization": "Add an organization"
+                "addAnOrganization": "Add a workspace"
             },
-            "choose-criteria": "Choose criteria for organization {{organizationName}}",
+            "choose-criteria": "Choose criteria for workspace {{organizationName}}",
             "error": "At least one criteria must be selected",
             "information-system-module": "Module système d'information",
             "digital-service-module": "Module de services numériques"
