@@ -34,6 +34,7 @@ import { TooltipModule } from "primeng/tooltip";
 import { CommonEditorComponent } from "src/app/layout/common/common-editor/common-editor.component";
 import { CriteriaPopupComponent } from "src/app/layout/common/criteria-popup/criteria-popup.component";
 import { InformationCardComponent } from "src/app/layout/common/information-card/information-card.component";
+import { SpaceComponent } from "src/app/layout/common/space/space.component";
 import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
 import { StackBarChartComponent } from "src/app/layout/common/stack-bar-chart/stack-bar-chart.component";
 import { StatsComponent } from "src/app/layout/common/stats/stats.component";
@@ -60,6 +61,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         CriteriaPopupComponent,
         AutofocusDirective,
         StackBarChartComponent,
+        SpaceComponent,
     ],
     imports: [
         CommonModule,
@@ -126,6 +128,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         CriteriaPopupComponent,
         AutofocusDirective,
         StackBarChartComponent,
+        SpaceComponent,
     ],
     providers: [DecimalsPipe, IntegerPipe],
 })

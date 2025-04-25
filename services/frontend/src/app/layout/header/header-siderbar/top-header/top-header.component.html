@@ -99,10 +99,10 @@
 
         <div
             [ngClass]="{
-                'max-h-10rem': isZoomedIn(),
-                'max-h-15rem': !isZoomedIn(),
-                'mt-2': isZoomedIn(),
-                'mt-5': !isZoomedIn(),
+                'max-h-7rem': isZoomedIn(),
+                'max-h-13rem': !isZoomedIn(),
+                'my-2': isZoomedIn(),
+                'my-3': !isZoomedIn(),
             }"
             class="flex flex-column gap-2 overflow-y-auto"
             role="radiogroup"
@@ -138,6 +138,13 @@
                 </label>
             </div>
         </div>
+        <p-button
+            (click)="spaceSidebarVisible = !spaceSidebarVisible; isOrgMenuVisible = false"
+            icon="pi pi-plus-circle"
+            iconPos="right"
+            [label]="'common.workspace.create' | translate | uppercase"
+            [ariaLabel]="'common.workspace.create' | translate"
+        ></p-button>
     </div>
 
     <div class="flex align-items-center gap-2 ml-4">

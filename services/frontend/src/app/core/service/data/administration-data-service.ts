@@ -11,10 +11,12 @@ import { Observable } from "rxjs";
 
 import { Constants } from "src/constants";
 import {
+    DomainSubscribers,
     OrganizationCriteriaRest,
     OrganizationUpsertRest,
     Subscriber,
     SubscriberCriteriaRest,
+    workspace,
 } from "../../interfaces/administration.interfaces";
 
 const endpoint = Constants.ENDPOINTS.subscribers;
@@ -93,5 +95,23 @@ export class AdministrationDataService {
         return this.http.delete<any>(`${endpointForOrg}/users`, {
             body,
         });
+    }
+
+    getDomainSubscribers(body: { email?: string }): Observable<DomainSubscribers[]> {
+        return this.http.post<DomainSubscribers[]>(
+            `${Constants.ENDPOINTS.workspace}/domain-subscribers`,
+            body,
+        );
+    }
+
+    postUserWorkspace(body: {
+        subscriberId?: number;
+        name?: string;
+        status?: string;
+    }): Observable<workspace> {
+        return this.http.post<workspace>(
+            `${Constants.ENDPOINTS.workspace}/organizations`,
+            body,
+        );
     }
 }
