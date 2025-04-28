@@ -5,7 +5,8 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-package com.soprasteria.g4it.backend.apiuser.controller;
+
+package com.soprasteria.g4it.backend.apiworkspace.controller;
 
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrganizationService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
@@ -13,18 +14,23 @@ import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberDetailsRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
-import com.soprasteria.g4it.backend.server.gen.api.UserApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.UserRest;
+import com.soprasteria.g4it.backend.server.gen.api.WorkspaceApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.SubscriberDetailsRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.UserDetailsRest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
- * User Rest Service.
+ * Workspace Rest Service.
  */
 @Service
-public class UserRestController implements UserApiDelegate {
-
+public class WorkspaceController implements WorkspaceApiDelegate {
     /**
      * Auth Service.
      */
@@ -53,8 +59,17 @@ public class UserRestController implements UserApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<UserRest> getUser() {
-        return ResponseEntity.ok(userRestMapper.toDto(authService.getUser()));
+    public ResponseEntity<OrganizationRest> createWorkspace(OrganizationUpsertRest organizationUpsertRest) {
+        return new ResponseEntity<>(organizationRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser(), false)),
+                HttpStatus.OK);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<SubscriberDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
+        return new ResponseEntity<>(
+                subscriberDetailsRestMapper.toDto(this.subscriberService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
+    }
 }

@@ -99,10 +99,10 @@
 
         <div
             [ngClass]="{
-                'max-h-10rem': isZoomedIn(),
-                'max-h-15rem': !isZoomedIn(),
-                'mt-2': isZoomedIn(),
-                'mt-5': !isZoomedIn(),
+                'max-h-7rem': isZoomedIn(),
+                'max-h-13rem': !isZoomedIn(),
+                'my-2': isZoomedIn(),
+                'my-3': !isZoomedIn(),
             }"
             class="flex flex-column gap-2 overflow-y-auto"
             role="radiogroup"
@@ -129,15 +129,27 @@
                 <label
                     [for]="'org-' + organization.id"
                     class="ml-2"
-                    [attr.aria-label]="'common.organization' | translate"
+                    [attr.aria-label]="
+                        ('common.workspace-name' | translate) +
+                        ' ' +
+                        organization.organization!.name
+                    "
                 >
-                    {{ "common.organization" | translate }}
+                    {{ "common.workspace-name" | translate }}
                     {{ organization.organization!.name }} ({{
                         organization.subscriber!.name
                     }})
                 </label>
             </div>
         </div>
+        <p-button
+            (click)="spaceSidebarVisible = !spaceSidebarVisible; isOrgMenuVisible = false"
+            icon="pi pi-plus-circle"
+            styleClass="uppercase bg-light-green text-white"
+            iconPos="right"
+            [label]="'common.workspace.create' | translate | uppercase"
+            [ariaLabel]="'common.workspace.create' | translate"
+        ></p-button>
     </div>
 
     <div class="flex align-items-center gap-2 ml-4">
@@ -188,13 +200,17 @@
             {{ "common.lang" | translate }}
         </div>
         <div role="group" aria-labelledby="langTitle" class="">
-            <ul aria-labelledby="langTitle" class="mt-2 mb-3">
+            <ul
+                aria-labelledby="langTitle"
+                class="mt-2 mb-3"
+                (keydown)="handleKeydownLanguage($event)"
+            >
                 <li class="inline-block">
                     <p-radioButton
                         name="language"
                         value="en"
                         [(ngModel)]="selectedLanguage"
-                        (ngModelChange)="changeLanguage('en')"
+                        (click)="changeLanguage('en')"
                         aria-labelledby="enLabel"
                     ></p-radioButton>
                     <label
@@ -211,7 +227,7 @@
                         name="language"
                         value="fr"
                         [(ngModel)]="selectedLanguage"
-                        (ngModelChange)="changeLanguage('fr')"
+                        (click)="changeLanguage('fr')"
                         aria-labelledby="frLabel"
                     ></p-radioButton>
                     <label

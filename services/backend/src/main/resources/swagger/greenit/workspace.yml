@@ -1,0 +1,70 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - workspace
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: "1.0.0"
+
+tags:
+  - name: workspace
+    description: All endpoint for a workspace
+
+paths:
+  /workspace/organizations:
+    post:
+      tags:
+        - workspace
+      summary: Create workspace
+      operationId: createWorkspace
+      requestBody:
+        description: Mandatory organization details to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationUpsertRest"
+      responses:
+        "201":
+          description: workspace has been created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationRest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          description: workspace already exists.
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/RestError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /workspace/domain-subscribers:
+    post:
+      tags:
+        - workspace
+      summary: get subscribers for domain
+      operationId: getDomainSubscribers
+      requestBody:
+        description: user's email.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDetailsRest"
+      responses:
+        "200":
+          description: Return subscribers information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubscriberDetailsRest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
