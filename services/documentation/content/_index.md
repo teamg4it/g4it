@@ -82,7 +82,7 @@ G4IT is at the service of :
 
 ## In a nutshell
 #### [ENG] G4IT overview
-{{< vid "https://certg4itint.blob.core.windows.net/public/media/Formation_G4IT_ENG_V2.mp4" "my-5" >}}
+{{< vid "https://certg4it3prd.blob.core.windows.net/public/media/Formation_G4IT_ENG_V2.mp4" "my-5" >}}
 #### [FR] G4IT overview
-{{< vid "https://certg4itint.blob.core.windows.net/public/media/Formation_G4IT_ENG_V2.mp4" "my-5" >}}
+{{< vid "https://certg4it3prd.blob.core.windows.net/public/media/Formation_G4IT_ENG_V2.mp4" "my-5" >}}
 

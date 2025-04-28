@@ -75,6 +75,7 @@ export abstract class Constants {
         version: "version",
         businessHours: "business-hours",
         templateFiles: "template-files",
+        workspace: "workspace",
     };
 
     static readonly ERRORS: any = {
