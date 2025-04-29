@@ -133,14 +133,18 @@
             "set-workspace-name": "Set a workspace name",
             "no-space-name": "No space name indicated",
             "hint-text": "Before creating your space, please check in which organization it will be located.",
+            "hint-text-workspace-name": "Choose a name for your workspace. It must be no longer than 20 characters and cannot include spaces or special characters.",
             "select-organisation": "Select an organization",
             "type-space-name": "Type the space name",
             "workspace-created": "Workspace created",
             "completed": "Completed",
-            "form-description": "This workspace lets you run simulations and retrieve data. You can invite and manage contributors, edit and delete your workspace.",
+            "form-description": "This workspace enables you to evaluate the environmental impact of your digital services and inventories. You can also invite and manage contributors to collaborate on your assessments.",
             "cancel": "Cancel Creation",
             "create-workspace": "Create Workspace",
-            "duplicate-error": "Workspace name already exists"
+            "duplicate-error": "Workspace name already exists",
+            "no-organization": "No eligible organization was found based on your domain name. Please contact your administrator to request access or verify your organization's configuration.",
+            "space-name-maxlength": "The workspace name must be no longer than 20 characters.",
+            "space-name-pattern": "Special characters @ / ; ? are not allowed."
         }
     },
     "errors": {
@@ -699,7 +703,7 @@
         "delete": "DELETE",
         "cancel-deletion": "Cancel delete",
         "cancel-deletion-accessibility": "Cancel deletion of {{organizationName}} organization",
-        "cancel-deletion-message": "Your organization's data will be deleted on {{date}}",
+        "cancel-deletion-message": "Your workspace's data will be deleted on {{date}}",
         "delete-confirmation": "Deletion confirmation",
         "delete-message": "After 7 days, all your workspace's data will be deleted. Are you sure you want to delete this workspace ?",
         "user": {

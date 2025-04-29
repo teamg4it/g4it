@@ -77,7 +77,9 @@ export class WorkspaceComponent implements OnInit {
             {
                 name: "spaceName",
                 label: this.translate.instant("common.workspace.set-workspace-name"),
-                hintText: this.translate.instant("common.workspace.hint-text"),
+                hintText: this.translate.instant(
+                    "common.workspace.hint-text-workspace-name",
+                ),
                 type: "text",
                 placeholder: this.translate.instant("common.workspace.type-space-name"),
             },
@@ -105,6 +107,8 @@ export class WorkspaceComponent implements OnInit {
         spaceName: new FormControl<string | undefined>(undefined, [
             Validators.required,
             this.spaceDuplicateValidator.bind(this),
+            Validators.maxLength(20),
+            Validators.pattern(/^[^@\/;?]*$/),
         ]),
     });
 
@@ -114,21 +118,27 @@ export class WorkspaceComponent implements OnInit {
 
         this.spaceForm.get("organization")?.valueChanges.subscribe((value) => {
             if (value) {
-                this.existingOrganization = this.subscribersList.find(
-                    (subscriber: any) => subscriber.id === value,
-                )?.organizations;
+                this.existingOrganization =
+                    this.subscribersList?.find(
+                        (subscriber: any) => subscriber.id === value,
+                    )?.organizations ?? [];
                 this.spaceForm.get("spaceName")?.updateValueAndValidity();
             }
         });
+    }
+
+    organizationValidator() {
+        return this.organizationlist.length === 0 ? { noOrganization: true } : null;
     }
 
     spaceDuplicateValidator(control: AbstractControl) {
         if (control && control?.value?.trim().includes(" ")) {
             return { spaceNotAllowed: true };
         } else {
-            const getSpaceName = this.existingOrganization.find(
-                (data: any) => data.name == control.value,
-            );
+            const getSpaceName =
+                this.existingOrganization?.find(
+                    (data: any) => data.name == control.value,
+                ) ?? undefined;
             if (getSpaceName) {
                 return { duplicate: true };
             }
@@ -172,6 +182,10 @@ export class WorkspaceComponent implements OnInit {
             };
             this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
                 this.organizationlist = res;
+                this.spaceForm
+                    .get("organization")
+                    ?.addValidators([this.organizationValidator.bind(this)]);
+                this.spaceForm.get("organization")?.updateValueAndValidity();
 
                 if (
                     Array.isArray(this.organizationlist) &&
@@ -226,7 +240,7 @@ export class WorkspaceComponent implements OnInit {
             };
             this.workspaceService.postUserWorkspace(body).subscribe((res) => {
                 const subscriber =
-                    this.organizationlist.find(
+                    this.organizationlist?.find(
                         (subscriber: any) =>
                             subscriber.id === this.spaceForm.value["organization"],
                     ) ?? undefined;

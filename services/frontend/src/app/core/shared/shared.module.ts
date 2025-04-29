@@ -21,6 +21,7 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DialogModule } from "primeng/dialog";
 import { DropdownModule } from "primeng/dropdown";
 import { EditorModule } from "primeng/editor";
+import { FocusTrapModule } from "primeng/focustrap";
 import { InputTextModule } from "primeng/inputtext";
 import { OverlayModule } from "primeng/overlay";
 import { RadioButtonModule } from "primeng/radiobutton";
@@ -91,6 +92,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
             echarts: () => import("echarts"),
         }),
         DialogModule,
+        FocusTrapModule,
     ],
     exports: [
         TooltipModule,
