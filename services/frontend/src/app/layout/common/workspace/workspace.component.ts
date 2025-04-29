@@ -91,7 +91,6 @@ export class WorkspaceComponent implements OnInit {
     selectedMenuIndex: number | null = null;
     subscribersDetails: any;
     organizationlist: DomainSubscribers[] = [];
-    subscribersList: any;
     existingOrganization: any = [];
 
     constructor(
@@ -119,7 +118,7 @@ export class WorkspaceComponent implements OnInit {
         this.spaceForm.get("organization")?.valueChanges.subscribe((value) => {
             if (value) {
                 this.existingOrganization =
-                    this.subscribersList?.find(
+                    this.organizationlist?.find(
                         (subscriber: any) => subscriber.id === value,
                     )?.organizations ?? [];
                 this.spaceForm.get("spaceName")?.updateValueAndValidity();
@@ -134,10 +133,10 @@ export class WorkspaceComponent implements OnInit {
     spaceDuplicateValidator(control: AbstractControl) {
         if (control && control?.value?.trim().includes(" ")) {
             return { spaceNotAllowed: true };
-        } else {
+        } else if (control?.value) {
             const getSpaceName =
                 this.existingOrganization?.find(
-                    (data: any) => data.name == control.value,
+                    (data: any) => data.name.toLowerCase() == control.value.toLowerCase(),
                 ) ?? undefined;
             if (getSpaceName) {
                 return { duplicate: true };
@@ -174,7 +173,6 @@ export class WorkspaceComponent implements OnInit {
 
     async getDomainSubscribersList() {
         const userEmail = (await firstValueFrom(this.userService.user$)).email;
-        this.subscribersList = (await firstValueFrom(this.userService.user$)).subscribers;
 
         if (userEmail) {
             const body = {
@@ -235,7 +233,7 @@ export class WorkspaceComponent implements OnInit {
         if (this.spaceForm.valid) {
             const body = {
                 subscriberId: this.spaceForm.value["organization"] ?? undefined,
-                name: this.spaceForm.value["spaceName"] ?? undefined,
+                name: this.spaceForm.value["spaceName"]?.trim() ?? undefined,
                 status: "ACTIVE",
             };
             this.workspaceService.postUserWorkspace(body).subscribe((res) => {
