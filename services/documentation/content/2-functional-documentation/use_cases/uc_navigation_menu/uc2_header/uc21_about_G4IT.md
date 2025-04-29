@@ -6,7 +6,7 @@ weight: 5021
 
 ## Table of contents
 
--   [Focus to main content Button](#focus-main)
+-   [Focus to main content Button](#focus-to-main-content-button)
 -   [About G4IT](#about-g4it)
 -   [Accessibility](#accessibility)
 -   [Useful information](#useful-information) 

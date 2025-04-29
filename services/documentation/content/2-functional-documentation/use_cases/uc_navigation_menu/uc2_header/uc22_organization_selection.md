@@ -39,6 +39,8 @@ To navigating between menu list Arrow up/Arrow left and Arrow down/Arrow right c
 ## Table of contents
 
 -   [Description](#description)
+-   [State Diagram](#state-diagram)
+-   [Create new Organization button](#create-new-organization-button)
 -   [Mockup](#mockup)
 
 ## Description
