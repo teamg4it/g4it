@@ -1,0 +1,11 @@
+nomEquipementPhysique;modele;quantite;nomCourtDatacenter;dateAchat;dateRetrait;type;statut;paysDUtilisation;consoElecAnnuelle;utilisateur;nomSourceDonnee;nomEntite
+<Unique EqP Name>;<Model existing in plateform>;<quantity>;<Unique_Short_Name_if_DC>;<PurchaseDate_YYYYMMDD>;<ExpectedRetirementDate_YYYYMMDD>;<Authorized Type>;In use;<Authorized Country>;<Annual Electricity Consumpiton in kWh>;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
