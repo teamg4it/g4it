@@ -6,9 +6,9 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 
-package com.soprasteria.g4it.backend.apiuser.mapper;
+package com.soprasteria.g4it.backend.apiworkspace.mapper;
 
-import com.soprasteria.g4it.backend.apiuser.model.SubscriberDetailsBO;
+import com.soprasteria.g4it.backend.apiworkspace.model.SubscriberDetailsBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.SubscriberDetailsRest;
 import org.mapstruct.Mapper;
 

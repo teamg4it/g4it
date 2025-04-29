@@ -9,7 +9,6 @@
 package com.soprasteria.g4it.backend.apiuser.business;
 
 
-import com.soprasteria.g4it.backend.apiuser.model.SubscriberDetailsBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
