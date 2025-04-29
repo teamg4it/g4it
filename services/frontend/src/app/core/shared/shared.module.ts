@@ -37,8 +37,7 @@ import { InformationCardComponent } from "src/app/layout/common/information-card
 import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
 import { StackBarChartComponent } from "src/app/layout/common/stack-bar-chart/stack-bar-chart.component";
 import { StatsComponent } from "src/app/layout/common/stats/stats.component";
-import { CompaniesMenuComponent } from "src/app/layout/header/companies-menu/companies-menu.component";
-import { HeaderComponent } from "src/app/layout/header/header.component";
+import { WorkspaceComponent } from "src/app/layout/common/workspace/workspace.component";
 import { DatavizFilterComponent } from "src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component";
 import { InventoriesHeaderFootprintComponent } from "src/app/layout/inventories-footprint/header/inventories-header-footprint.component";
 import { AutofocusDirective } from "../directives/auto-focus.directive";
@@ -56,14 +55,13 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         InformationCardComponent,
         InventoriesHeaderFootprintComponent,
         DatavizFilterComponent,
-        CompaniesMenuComponent,
         CommonEditorComponent,
-        HeaderComponent,
         BusinessHoursRendererPipe,
         StatsComponent,
         CriteriaPopupComponent,
         AutofocusDirective,
         StackBarChartComponent,
+        WorkspaceComponent,
     ],
     imports: [
         CommonModule,
@@ -105,7 +103,6 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         TranslateModule,
         ToastModule,
         InformationCardComponent,
-        CompaniesMenuComponent,
         CardModule,
         ScrollPanelModule,
         InventoriesHeaderFootprintComponent,
@@ -122,7 +119,6 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DropdownModule,
         ConfirmDialogModule,
         TableModule,
-        HeaderComponent,
         TabMenuModule,
         AccordionModule,
         BusinessHoursRendererPipe,
@@ -132,6 +128,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         CriteriaPopupComponent,
         AutofocusDirective,
         StackBarChartComponent,
+        WorkspaceComponent,
     ],
     providers: [DecimalsPipe, IntegerPipe],
 })

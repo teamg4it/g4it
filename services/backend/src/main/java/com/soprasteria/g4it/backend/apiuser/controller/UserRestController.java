@@ -11,16 +11,13 @@ import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrgan
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
-import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberDetailsRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
+import com.soprasteria.g4it.backend.apiworkspace.mapper.SubscriberDetailsRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.UserApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import com.soprasteria.g4it.backend.server.gen.api.dto.UserRest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * User Rest Service.
@@ -60,15 +57,4 @@ public class UserRestController implements UserApiDelegate {
         return ResponseEntity.ok(userRestMapper.toDto(authService.getUser()));
     }
 
-    @Override
-    public ResponseEntity<OrganizationRest> createNewOrganization(OrganizationUpsertRest organizationUpsertRest) {
-        return new ResponseEntity<>(organizationRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser(), false)),
-                HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<List<SubscriberDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
-        return new ResponseEntity<>(
-                subscriberDetailsRestMapper.toDto(this.subscriberService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
-    }
 }

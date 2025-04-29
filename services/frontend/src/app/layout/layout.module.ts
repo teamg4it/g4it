@@ -7,12 +7,14 @@
  */
 import { NgModule } from "@angular/core";
 import { SharedModule } from "../core/shared/shared.module";
+import { LeftSidebarComponent } from "./header/header-siderbar/left-sidebar/left-sidebar.component";
+import { TopHeaderComponent } from "./header/header-siderbar/top-header/top-header.component";
 import { LayoutComponent } from "./layout.component";
 import { layoutRouter } from "./layout.router";
 
 @NgModule({
     declarations: [LayoutComponent],
 
-    imports: [SharedModule, layoutRouter],
+    imports: [SharedModule, layoutRouter, TopHeaderComponent, LeftSidebarComponent],
 })
 export class LayoutModule {}

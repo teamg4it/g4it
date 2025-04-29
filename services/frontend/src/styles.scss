@@ -42,7 +42,7 @@ li {
 h2,
 h1,
 .h2-title {
-    font-size: 44px;
+    font-size: 40px;
     line-height: 48px;
     font-weight: 300;
     margin-top: 0;
@@ -72,9 +72,11 @@ p {
 
 main {
     @include styleclass("py-4 px-5");
-    flex-grow: 1;
     background-color: var(--light-grey-color);
     overflow-y: clip;
+    height: calc(100vh - 70px);
+    width: calc(100vw - 80px);
+    margin-top: 70px;
     background-image: url("assets/images/background/blue-elipse.svg"),
         url("assets/images/background/yellow-elipse.svg"),
         url("assets/images/background/fingerprint-background.svg");
@@ -104,6 +106,9 @@ main {
 }
 .bg-tertiary {
     background-color: var(--tertiary-color);
+}
+.bg-light-green {
+    background-color: var(--light-green-color);
 }
 .force-bg-white {
     background-color: white;
@@ -172,17 +177,23 @@ main {
 }
 
 /* Header */
-
+/* header height px match with main margin top*/
 .header {
+    background-color: var(--black-color);
+    color: white;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 70px;
+}
+
+.left-sidebar {
     position: relative;
     width: 80px;
+    height: 100vh;
     flex-shrink: 0;
-    background-color: var(--header-color);
-    height: 100%;
-    background-image: url("assets/images/background/fingerprint.svg");
-    background-repeat: no-repeat;
-    background-position: top -46px left -104px;
-    background-size: 489px 992px;
+    background-color: var(--black-color);
 }
 
 /* Header Panel */
@@ -226,10 +237,7 @@ main {
     border: none;
     font-weight: 500;
     letter-spacing: 2px;
-    padding-right: 25px;
-    padding-left: 25px;
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding: 16px 24px;
     margin-left: 20px !important;
     text-transform: uppercase;
 }
@@ -258,6 +266,12 @@ main {
     margin-right: 8px;
     font-size: 16px;
     color: #2b2b2b;
+}
+
+.button-secondary-green:not(:disabled) {
+    border: 2px solid var(--light-green-color);
+    color: var(--light-green-color);
+    background-color: #f4f4f4;
 }
 
 .grey-button,
@@ -1020,4 +1034,83 @@ div.label-input-div-medium {
 
 .header-share-count .p-button span.pi-users {
     font-size: 2rem;
+}
+app-top-header {
+    .aboutMenuBtn {
+        background-color: transparent !important;
+        padding: 10px;
+    }
+    .orgNameMenuBtn {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        padding: 8px;
+        border-radius: 4px;
+    }
+    .aboutMenuBtn.aboutMenuOpen,
+    .orgNameMenuBtn.orgMenuOpen {
+        background-color: var(--light-green-color) !important;
+        padding-top: 22px;
+        padding-bottom: 22px;
+    }
+
+    .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus {
+        outline: 1px solid green;
+    }
+
+    .p-menu.p-menu-overlay {
+        width: 375px;
+        padding: 15px;
+    }
+
+    li.p-submenu-header:empty {
+        display: none; /* or any other style */
+    }
+
+    .p-menu .p-submenu-header {
+        padding: 0;
+    }
+
+    .p-menu .p-menuitem-link {
+        color: var(--tints-black-80);
+    }
+
+    .p-menu .p-menuitem-link:hover {
+        font-weight: 700;
+        transition: 0.2s;
+    }
+}
+
+.border-light-grey-color {
+    border-color: var(--tints-black-60);
+}
+
+.hidden-focus-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.app-workspace {
+    .cancel-creation-button {
+        border: 1px solid #cacbca;
+        background-color: #f4f4f4;
+        color: var(--black-color);
+    }
+
+    .p-button {
+        height: 43px;
+        padding: 13px 24px;
+        align-items: stretch;
+    }
+
+    .space-form {
+        .p-inputtext,
+        .p-dropdown {
+            height: 48px;
+            min-width: 390px;
+        }
+    }
 }

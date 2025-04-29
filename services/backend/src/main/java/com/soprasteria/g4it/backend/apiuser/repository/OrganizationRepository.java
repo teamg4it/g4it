@@ -87,4 +87,12 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     @Query("UPDATE Organization org SET org.status = ?2 WHERE org.id = ?1")
     void setStatusForOrganization(Long id, String status);
 
+    /**
+     * Find organization by subscriber's id.
+     *
+     * @param subscriberId the subscriber's id
+     * @return Organization
+     */
+    List<Organization> findBySubscriberId(final Long subscriberId);
+
 }
