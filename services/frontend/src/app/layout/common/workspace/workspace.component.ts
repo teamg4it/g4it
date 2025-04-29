@@ -131,7 +131,7 @@ export class WorkspaceComponent implements OnInit {
     }
 
     spaceDuplicateValidator(control: AbstractControl) {
-        if (control && control?.value?.trim().includes(" ")) {
+        if (control && control?.value?.includes(" ")) {
             return { spaceNotAllowed: true };
         } else if (control?.value) {
             const getSpaceName =
