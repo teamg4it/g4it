@@ -320,7 +320,7 @@
         "inventory": "Inventory",
         "page-title": "My Information System",
         "equipment-page-title": "My impact G4IT",
-        "title": "My Information System - Organization {{OrganizationName}}",
+        "title": "My Information System - {{OrganizationName}}",
         "add": "New inventory",
         "created": "created",
         "details.equipment": "EQUIPMENT",

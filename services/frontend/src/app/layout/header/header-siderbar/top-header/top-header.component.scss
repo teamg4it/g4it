@@ -17,19 +17,21 @@
     display: none;
     position: absolute;
     color: black;
-    top: 80px;
+    top: 70px;
     right: 25px;
     max-height: 360px;
+    z-index: 100;
 }
 
 .account-menu {
     display: none;
     color: var(--tints-black-100);
-    top: 80px;
+    top: 70px;
     right: 22px;
     width: 324px;
     position: absolute;
     height: 300px;
+    z-index: 100;
 }
 
 p-button .name-circle {
