@@ -10,10 +10,10 @@ package com.soprasteria.g4it.backend.apiworkspace.controller;
 
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrganizationService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
-import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberDetailsRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
+import com.soprasteria.g4it.backend.apiworkspace.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiworkspace.mapper.SubscriberDetailsRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.WorkspaceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
@@ -53,7 +53,7 @@ public class WorkspaceController implements WorkspaceApiDelegate {
     SubscriberDetailsRestMapper subscriberDetailsRestMapper;
 
     @Autowired
-    SubscriberService subscriberService;
+    WorkspaceService workspaceService;
 
     /**
      * {@inheritDoc}
@@ -70,6 +70,6 @@ public class WorkspaceController implements WorkspaceApiDelegate {
     @Override
     public ResponseEntity<List<SubscriberDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
         return new ResponseEntity<>(
-                subscriberDetailsRestMapper.toDto(this.subscriberService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
+                subscriberDetailsRestMapper.toDto(this.workspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
     }
 }
