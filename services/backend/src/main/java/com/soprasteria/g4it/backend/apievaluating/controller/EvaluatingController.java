@@ -57,7 +57,7 @@ public class EvaluatingController implements InventoryEvaluatingApiDelegate {
     ) {
         return ResponseEntity.ok(taskMapper.mapTaskId(
                 evaluatingService.evaluatingDigitalService(
-                        subscriber, organization, digitalServiceUid, false
+                        subscriber, organization, digitalServiceUid
                 )
         ));
     }

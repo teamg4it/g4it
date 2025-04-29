@@ -401,7 +401,7 @@ public class FunctionalTests {
         inPE.setDatacenterName("default");
         inPE.setDatePurchase(LocalDate.of(2020, 1, 1));
         inPE.setDescription("OldPE");
-        inPE.setDurationHour(24l);
+        inPE.setDurationHour(24.0);
         inPE.setLocation("France");
         inPE.setLastUpdateDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
 

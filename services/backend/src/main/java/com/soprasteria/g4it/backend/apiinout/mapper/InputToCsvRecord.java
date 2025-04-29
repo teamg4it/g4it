@@ -60,7 +60,7 @@ public interface InputToCsvRecord {
         );
     }
 
-    default List<String> toCsv(InVirtualEquipment virtualEquipment) {
+    default List<String> toCsv(InVirtualEquipment virtualEquipment, String location) {
 
         String entityName = virtualEquipment.getCommonFilters() == null ? null : virtualEquipment.getCommonFilters().getFirst();
         String cluster = virtualEquipment.getFilters() == null ? null : virtualEquipment.getFilters().getFirst();
@@ -71,7 +71,7 @@ public interface InputToCsvRecord {
                 print(virtualEquipment.getQuantity()), //quantite
                 print(virtualEquipment.getCloudProvider()), //cloudProvider
                 print(virtualEquipment.getInstanceType()), //InstanceType
-                print(virtualEquipment.getLocation()), //location
+                print(location), //location
                 print(virtualEquipment.getWorkload()), //averageWorkload
                 print(virtualEquipment.getUsageDuration()), //annualUsageDuration
                 print(virtualEquipment.getPhysicalEquipmentName()),

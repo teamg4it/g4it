@@ -44,13 +44,14 @@ The connected user must have the write access for that module on the selected or
 {{< mermaid align="center">}}
 
 graph TD;
-Step1[Loading files] --> |Click on 'UPLOAD' button|Step2[Checking Files] --> Decision1{Errors in the headers ?}
-Decision1 --> |Yes|Step3[Display Error: 'Failed headers']
-Decision1 --> |No|Step4[Display Pending:<br> 'To start process'] --> Decision2{Any task in progress ?}
+Step1[Loading files] --> |Click on 'UPLOAD' button|Step2[Checking Files] --> Step4[Display Pending:<br> 'To start process'] --> Decision2{Any task in progress ?}
 Decision2 --> |Yes|Step4
-Decision2 --> |No|Step5[Display Progress:<br> 'In progress'] --> Decision3{Any validation errors ?}
-Decision3 --> |Yes|Step8[Display Warning:<br> 'Completed with errors']
-Decision3 --> |No|Step9[Display Validated:<br>'Completed']
+Decision2 --> |No|Step5[Display Progress:<br> 'In progress'] --> Decision3{Any mandatory header missing?}
+Decision3 --> |Yes|Step6[Display Task as failed with a download button to display error details:<br> 'Failed']
+Decision3 --> |No|Decision4{Any validation errors ?}
+Decision4{Any validation errors ?}
+Decision4 --> |Yes|Step8[Display Warning:<br> 'Completed with errors', with a download button]
+Decision4 --> |No|Step9[Display Validated:<br>'Completed']
 
 {{</ mermaid >}}
 
@@ -64,14 +65,14 @@ Decision3 --> |No|Step9[Display Validated:<br>'Completed']
 
 #### Loading History
 
-| Reference | Group           | Elements          | Sub-Elements | Type   | Description                                                                                                                                                                                                                                                                               |
-| --------- | --------------- | ----------------- | ------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|           | Loading History |                   |              | button | Access inventory footprint for the application<br><br><li><u>_initialization rules_</u>: Details of the behaviour is described in [1.2. Create or update an inventory (IS version or simulation)](uc2_create_inventory.md).                                                               |
-| 1         |                 | Load files        |              | list   | <li><u>_initialization rules_</u>: The list is ordered by try date desc                                                                                                                                                                                                                   |
-|           |                 | Loading files try |              | label  |                                                                                                                                                                                                                                                                                           |
-| 2         |                 |                   | Status icon  | label  | <li><u>_initialization rules_</u>: 5 existing types: Pending (If any other inventory loading or estimation task is in progress), In Progress (Loading in progress), Error (Loading could not be performed), Completed with errors (Loading is completed with errors) and Completed (Loading is completed).                                                                                                                                                                                          |
-| 3         |                 |                   | Try dates    | label  |                                                                                                                                                                                                                                                                                           |
-| 4         |                 |                   | Download     | button | <li><u>_initialization rules_</u>: The button is displayed in case of "Completed with errors" which means some items could not be loaded on the inventory. That trigger the download of a file containing the items in error. Items can be then corrected in the file and uploaded later. |
+| Reference | Group           | Elements          | Sub-Elements | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------- | --------------- | ----------------- | ------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|           | Loading History |                   |              | button | Access inventory footprint for the application<br><br><li><u>_initialization rules_</u>: Details of the behaviour is described in [1.2. Create or update an inventory (IS version or simulation)](uc2_create_inventory.md).                                                                                                                                                                                         |
+| 1         |                 | Load files        |              | list   | <li><u>_initialization rules_</u>: The list is ordered by try date desc                                                                                                                                                                                                                                                                                                                                             |
+|           |                 | Loading files try |              | label  |                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| 2         |                 |                   | Status icon  | label  | <li><u>_initialization rules_</u>: 5 existing types: Pending (If any other inventory loading or estimation task is in progress), In Progress (Loading in progress), FAILED/Error (Loading could not be performed), Completed with errors (Loading is completed with errors) and Completed (Loading is completed).                                                                                                   |
+| 3         |                 |                   | Try dates    | label  |                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| 4         |                 |                   | Download     | button | <li><u>_initialization rules_</u>: The button is displayed in case of "Completed with errors" which means some items could not be loaded on the inventory or in case of a 'Failed' task. Button with 'Completed with errors' trigger the download of a file containing the items in error. Items can be then corrected in the file and uploaded later. <br> Button with a 'Failed' task displays the error details. |
 
 #### Loading control and process
 
@@ -109,7 +110,7 @@ front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_id}
 back-->> front: Get the updated inventory
 back ->> front: Display the updated loading history
 front ->> RND : Display the 'completed' button if all the uploaded data is correct
-front -->> RND : Display the 'error' button if most of the uploaded data is incorrect
+front -->> RND : Display the 'failed' button if most of the uploaded data is incorrect or <br> mandatory headers missing
 front ->> RND : Display the 'completed with errors' and 'download' button if some of the uploaded data is incorrect
 RND ->> front : Click the 'completed with errors' button to download the rejected data
 front -->> back: GET /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/output/{taskId}

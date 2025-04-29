@@ -115,15 +115,15 @@ filesystem.config.headers:
       optional: true
     - name: "quantite"
       optional: true
-    - name: "cloudProvider"
+    - name: "provider"
       optional: true
-    - name: "instanceType"
+    - name: "typeInstance"
       optional: true
     - name: "location"
       optional: true
-    - name: "averageWorkload"
+    - name: "chargeMoy"
       optional: true
-    - name: "annualUsageDuration"
+    - name: "dureeUtilisationAnnuelle"
       optional: true
     - name: "nomEquipementPhysique"
       optional: true
@@ -337,7 +337,6 @@ filesystem.config.headers:
     - name: "acvStep"
       optional: false
     - name: "criteria"
-      dbName: "commonCriteria"
       optional: false
     - name: "source"
       optional: false
@@ -350,7 +349,6 @@ filesystem.config.headers:
     - name: "averagePowerConsumption"
       optional: false
     - name: "unitImpact"
-      dbName: "commonUnitImpact"
       optional: false
     - name: "quantity"
       optional: false
@@ -378,62 +376,58 @@ filesystem.config.headers:
       optional: false
     - name: "sipImpact"
       optional: false
-  virtualEquipmentIndicatorCloudInstance:
+  virtualEquipmentIndicatorDigitalService:
     - name: "digitalServiceName"
       optional: false
     - name: "calculationDate"
       optional: false
-    - name: "organizationId"
+    - name: "batchDate"
       optional: false
-    - name: "taskId"
+    - name: "batchName"
       optional: false
-    - name: "lifecycleStep"
+    - name: "acvStep"
       optional: false
-    - name: "criterion"
+    - name: "criteria"
       optional: false
-    - name: "source"
+    - name: "organizationName"
       optional: false
-    - name: "name"
+    - name: "dataSourceName"
       optional: false
-    - name: "instanceType"
+    - name: "equipmentName"
+      optional: false
+    - name: "virtualEquipmentName"
+      optional: false
+    - name: "infrastructureType"
       optional: false
     - name: "provider"
       optional: false
-    - name: "location"
+    - name: "instanceType"
       optional: false
-    - name: "engineName"
+    - name: "entityName"
       optional: false
-    - name: "engineVersion"
+    - name: "source"
       optional: false
-    - name: "referential"
-      dbName: "referentialVersion"
+    - name: "indicatorStatus"
       optional: false
-    - name: "statusIndicator"
+    - name: "trace"
       optional: false
-    - name: "unit"
+    - name: "calculationVersion"
       optional: false
     - name: "unitImpact"
       optional: false
-    - name: "peopleEqImpact"
+    - name: "unit"
       optional: false
-    - name: "quantity"
+    - name: "averagePowerConsumption"
       optional: false
-    - name: "errors"
+    - name: "cluster"
       optional: false
-  virtualEquipmentCloudInstance:
-    - name: "digitalServiceName"
+    - name: "batchDateDiscriminator"
       optional: false
-    - name: "name"
+    - name: "organizationNameDiscriminator"
       optional: false
-    - name: "cloudProvider"
+    - name: "entityNameDiscriminator"
       optional: false
-    - name: "instanceType"
+    - name: "dataSourceNameDiscriminator"
       optional: false
-    - name: "quantity"
-      optional: false
-    - name: "location"
-      optional: false
-    - name: "usageDuration"
-      optional: false
-    - name: "averageWorkload"
+    - name: "sipImpact"
       optional: false

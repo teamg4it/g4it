@@ -980,3 +980,42 @@ components:
           format: float
         quantity:
           type: number
+
+    AllEvaluationStatusRest:
+      description: evaluation status
+      type: object
+      properties:
+        response:
+          type: string
+
+    UserDetailsRest:
+      description: user email
+      type: object
+      properties:
+        email:
+          type: string
+
+    SubscriberDetailsRest:
+      description: subscribers linked to user's domain
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        organizations:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrganizationDetailsRest"
+
+    OrganizationDetailsRest:
+      description: organizations linked to subscribers
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        status:
+          type: string

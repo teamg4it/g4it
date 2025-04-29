@@ -1,0 +1,106 @@
+<nav
+    class="flex flex-column align-items-stretch h-screen"
+    role="navigation"
+    [attr.aria-label]="'common.left-navigation' | translate"
+>
+    <div class="flex align-items-center justify-content-center mb-2 mt-4 logo-icon">
+        <a routerLink="/">
+            <img
+                src="assets/images/logos/logo-overgreen.svg"
+                alt="{{ 'common.homepage' | translate }}"
+                class="cursor-pointer"
+                width="50"
+            />
+        </a>
+    </div>
+    <div class="flex align-items-center justify-content-center extra-div"></div>
+    <div
+        class="flex align-items-center justify-content-center my-2"
+        [ngClass]="{ 'bg-light-green': selectedPage() === 'inventories' }"
+    >
+        <a
+            class="py-3 px-3"
+            *ngIf="userService.isAllowedInventoryRead$ | async"
+            [routerLink]="selectedPath + '/inventories'"
+            id="information-system"
+        >
+            <div class="flex justify-content-center">
+                <img
+                    src="assets/images/icons/icon-dashboard.svg"
+                    alt="{{
+                        'inventories.title'
+                            | translate: { OrganizationName: selectedOrganization.name }
+                    }}"
+                    [attr.title]="inventoriesTitle()"
+                />
+            </div>
+            <span class="text-white span-font nav-span-text">{{
+                "common.inventories" | translate
+            }}</span>
+        </a>
+    </div>
+    <div
+        class="flex align-items-center justify-content-center my-2"
+        [attr.aria-label]="'header.menu' | translate"
+        [ngClass]="{ 'bg-light-green': selectedPage() === 'digital-services' }"
+    >
+        <a
+            *ngIf="userService.isAllowedDigitalServiceRead$ | async"
+            class="py-3 px-2"
+            [routerLink]="selectedPath + '/digital-services'"
+            id="digital-services"
+        >
+            <div class="flex justify-content-center">
+                <img
+                    src="assets/images/icons/icon-digital-service.svg"
+                    alt="{{
+                        'digital-services.title'
+                            | translate: { OrganizationName: selectedOrganization.name }
+                    }}"
+                    [attr.title]="digitalServicesTitle()"
+                    [attr.aria-current]="digitalServicesAriaCurrent()"
+                />
+            </div>
+
+            <span class="text-white span-font nav-span-text ds-text">{{
+                "common.digital-services" | translate
+            }}</span>
+        </a>
+    </div>
+
+    <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
+    <div
+        class="flex align-items-center justify-content-center mt-2 mb-5"
+        [ngClass]="{ 'bg-light-green': selectedPage() === 'administration' }"
+    >
+        <a
+            routerLink="/administration/users"
+            *ngIf="isAdminOnSubscriberOrOrganization"
+            class="py-3 px-1"
+            id="administration"
+        >
+            <div class="flex justify-content-center">
+                <img
+                    src="assets/images/icons/icon-key.svg"
+                    alt="{{ 'common.administration' | translate }}"
+                    [attr.title]="administrationTitle()"
+                    [attr.aria-current]="administrationAriaCurrent()"
+                    width="25"
+                />
+            </div>
+            <span class="text-white span-font nav-span-text">{{
+                "common.administration" | translate
+            }}</span>
+        </a>
+    </div>
+    @if (!isZoomedIn()) {
+        <div class="flex align-items-center justify-content-center mb-5">
+            <img
+                src="assets/images/logos/logo-ssg.svg"
+                alt="{{ 'common.homepage' | translate }}"
+                class="cursor-pointer"
+                width="38"
+            />
+        </div>
+    }
+</nav>

@@ -32,5 +32,11 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
      */
     Optional<Subscriber> findByName(String subscriberName);
 
+    /**
+     * Find Subscribers for given domain name
+     *
+     * @return the subscribers with authorizedDomains.
+     */
+    List<Subscriber> findByAuthorizedDomainsContaining(String domainName);
 
 }

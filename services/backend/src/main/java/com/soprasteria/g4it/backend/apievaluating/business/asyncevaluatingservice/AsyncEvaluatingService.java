@@ -80,7 +80,7 @@ public class AsyncEvaluatingService implements ITaskExecute {
         taskRepository.save(task);
 
         long end = System.currentTimeMillis();
-        log.info("End load input files for {}/{}. Time taken: {}s", context.log(), taskId, (end - start) / 1000);
+        log.info("End evaluating for {}/{}. Time taken: {}s", context.log(), taskId, (end - start) / 1000);
     }
 
 }

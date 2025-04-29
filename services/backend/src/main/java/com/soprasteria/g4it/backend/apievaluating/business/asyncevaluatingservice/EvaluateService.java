@@ -36,6 +36,7 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
 import lombok.extern.slf4j.Slf4j;
@@ -103,6 +104,8 @@ public class EvaluateService {
     EvaluateBoaviztapiService evaluateBoaviztapiService;
     @Autowired
     InternalToNumEcoEvalImpact internalToNumEcoEvalImpact;
+    @Autowired
+    BoaviztapiService boaviztapiService;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
@@ -185,9 +188,12 @@ public class EvaluateService {
                 inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(context.getInventoryId(), CLOUD_SERVICES.name());
 
         long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments;
-
-        try (CSVPrinter csvPhysicalEquipment = csvFileService.getPrinter(FileType.PHYSICAL_EQUIPMENT_INDICATOR, exportDirectory);
-             CSVPrinter csvVirtualEquipment = csvFileService.getPrinter(FileType.VIRTUAL_EQUIPMENT_INDICATOR, exportDirectory);
+        FileType physicalEquipmentIndicator = context.getDigitalServiceUid() == null ? FileType.PHYSICAL_EQUIPMENT_INDICATOR :
+                FileType.PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE;
+        FileType virtualEquipmentIndicator = context.getDigitalServiceUid() == null ? FileType.VIRTUAL_EQUIPMENT_INDICATOR :
+                FileType.VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE;
+        try (CSVPrinter csvPhysicalEquipment = csvFileService.getPrinter(physicalEquipmentIndicator, exportDirectory);
+             CSVPrinter csvVirtualEquipment = csvFileService.getPrinter(virtualEquipmentIndicator, exportDirectory);
              CSVPrinter csvApplication = csvFileService.getPrinter(FileType.APPLICATION_INDICATOR, exportDirectory);
              CSVPrinter csvInDatacenter = csvFileService.getPrinter(FileType.DATACENTER, exportDirectory);
              CSVPrinter csvInPhysicalEquipment = csvFileService.getPrinter(FileType.EQUIPEMENT_PHYSIQUE, exportDirectory);
@@ -355,6 +361,12 @@ public class EvaluateService {
             if (virtualEquipments.isEmpty()) {
                 break;
             }
+            Map<String, String> countryMap = boaviztapiService.getCountryMap();
+
+            // Reverse the map to create a code-to-countryLabel mapping
+            Map<String, String> codeToCountryMap = countryMap.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 
             for (InVirtualEquipment virtualEquipment : virtualEquipments) {
                 List<ImpactEquipementVirtuel> impactEquipementVirtuelList;
@@ -373,9 +385,9 @@ public class EvaluateService {
                             virtualEquipments.size(), totalVpcuCore, totalStorage
                     );
                 }
-
+                String location = isCloudService ? codeToCountryMap.get(virtualEquipment.getLocation()) : virtualEquipment.getLocation();
                 if (evaluateReportBO.isExport()) {
-                    csvInVirtualEquipment.printRecord(inputToCsvRecord.toCsv(virtualEquipment));
+                    csvInVirtualEquipment.printRecord(inputToCsvRecord.toCsv(virtualEquipment, location));
                 }
 
                 // Aggregate virtual equipment indicators in memory

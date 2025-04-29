@@ -49,12 +49,6 @@ export class DigitalServicesTerminalsComponent implements OnInit {
             .inPhysicalEquipments()
             .filter((item) => item.type === "Terminal")
             .map((item) => {
-                let numberOfUsers = 0;
-
-                if (item.durationHour) {
-                    numberOfUsers = (item.quantity * (365 * 24)) / item.durationHour;
-                }
-
                 const deviceType = deviceTypes.find((type) => type.code === item.model);
 
                 return {
@@ -64,7 +58,7 @@ export class DigitalServicesTerminalsComponent implements OnInit {
                     lifespan:
                         differenceInDays(item.dateWithdrawal!, item.datePurchase!) / 365,
                     country: item.location,
-                    numberOfUsers,
+                    numberOfUsers: item.numberOfUsers,
                     yearlyUsageTimePerUser: item.durationHour,
                 } as DigitalServiceTerminalConfig;
             });

@@ -1,5 +1,21 @@
 # G4IT
 
+## 3.1.0
+
+### Major Changes
+
+- 885 | New Header with Menu added, Left sidebar, Useful information page
+- 1038 | Allow to estimate a inventory if only virtual equipments = CLOUD_SERVICES
+- 1002 | Add a button to create its own personnal organization
+
+### Minor Changes
+
+- 1035| [Back-end] Improve the test cases and coverage for the new architecture
+- 1005| Prod : Manage Users - bug on the users list when organization changes
+- 1078| 2 files where without explicit error
+- 988 | [Digital service] Edit a value with a decimal reset the values to 0
+- 985 | Issue while exporting virtual equipment with new architecture
+
 ## 3.0.1
 
 ### Minor Changes

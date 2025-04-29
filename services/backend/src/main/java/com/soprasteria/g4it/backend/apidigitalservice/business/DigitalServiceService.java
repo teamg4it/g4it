@@ -15,7 +15,6 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceShar
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
-import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.EvaluateCloudService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
@@ -83,8 +82,7 @@ public class DigitalServiceService {
     private String localWorkingPath;
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private EvaluateCloudService evaluateCloudService;
+
     @Autowired
     private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
     @Autowired

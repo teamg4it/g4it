@@ -145,7 +145,7 @@ public class EvaluatingService {
      */
     public Task evaluatingDigitalService(final String subscriber,
                                          final Long organizationId,
-                                         final String digitalServiceUid, boolean asynExecution) {
+                                         final String digitalServiceUid) {
 
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
@@ -194,12 +194,7 @@ public class EvaluatingService {
         taskRepository.save(task);
 
         // run loading async task
-        if (asynExecution) {
-            taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
-        } else {
-            asyncEvaluatingService.execute(context, task);
-        }
-
+        asyncEvaluatingService.execute(context, task);
 
         digitalService.setLastCalculationDate(LocalDateTime.now());
         digitalServiceRepository.save(digitalService);

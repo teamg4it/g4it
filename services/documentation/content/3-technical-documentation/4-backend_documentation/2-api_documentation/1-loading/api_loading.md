@@ -8,7 +8,7 @@ mermaid: true
 ## API PATH
 
 | API                                                                                                    | Swagger                                                                                                       | Use Cases                                                                                                  |
-|:-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
+| :----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- |
 | POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
 
 ## Description
@@ -49,11 +49,12 @@ The asynchronous loading process follows these steps:
 
 flowchart LR
 A[Download files] --> B(Transform files into CSV)
-B --> C[Load files in metadata checking tables, then wait for complete loading]
-C --> D[Check coherence errors]
-D --> E[Bulk parse files]
-E --> F[Handle rejected files]
-F --> G[Update task status]
+B--> C[Check for missing mandatory headers]
+C --> D[Load files in metadata checking tables, then wait for complete loading]
+D --> E[Check coherence errors]
+E --> F[Bulk parse files]
+F --> G[Handle rejected files]
+G --> H[Update task status]
 
 {{</ mermaid >}}
 
@@ -61,6 +62,8 @@ This process is done in
 the [AsyncLoadFilesService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/AsyncLoadFilesService.java).
 
 ### Checking process
+
+Before any checking process starts, a check for missing mandatory headers is done. In case there is any mandatory field mising for any of the uploaded files, the task fails with status 'FAILED' and no further processing is done.
 
 The main purpose of the checking process is to check the global coherence of the files to be loaded between each other
 and
@@ -82,7 +85,7 @@ the [LoadMetadataService class]() using loaders depending on the file type.
 Bellow you will find the entities used to load the metadata of the files to load.
 
 | Package                                                | Entity                 | table                                                                                                                                    |
-|--------------------------------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckApplication       | [check_inv_load_application](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)        |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckDatacenter        | [check_inv_load_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckPhysicalEquipment | [check_inv_load_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
@@ -134,7 +137,7 @@ as 100). This is present in the package apiinout.modeldb as a class public class
 Bellow you will find the entities used to load the metadata of the files to load.
 
 | Package                                       | Entity              | table                                                                                                                        |
-|-----------------------------------------------|---------------------|------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InApplication       | [in_application](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)        |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InDatacenter        | [in_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InPhysicalEquipment | [in_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |

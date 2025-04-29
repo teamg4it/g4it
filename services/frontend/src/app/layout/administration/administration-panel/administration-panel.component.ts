@@ -5,23 +5,28 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, ElementRef, inject, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
+import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-header.component";
 
 @Component({
     selector: "app-administration-panel",
     templateUrl: "./administration-panel.component.html",
 })
 export class AdministrationPanelComponent {
-    tabMenuList!: MenuItem[];
+    public globalStore = inject(GlobalStoreService);
 
+    tabMenuList!: MenuItem[];
+    @ViewChild("mainContent") mainContent!: ElementRef;
+    @ViewChild(TopHeaderComponent) topHeader!: TopHeaderComponent;
     constructor(
         public userService: UserService,
         public router: Router,
-        private translate: TranslateService,
+        private readonly translate: TranslateService,
     ) {}
 
     ngOnInit() {
@@ -38,7 +43,7 @@ export class AdministrationPanelComponent {
 
             if (this.userService.hasAnySubscriberAdminRole(user)) {
                 this.tabMenuList.push({
-                    label: this.translate.instant("administration.manage-organizations"),
+                    label: this.translate.instant("administration.manage-workspaces"),
                     routerLink: "organizations",
                     id: "organizations-tab",
                 });
@@ -52,5 +57,16 @@ export class AdministrationPanelComponent {
                 });
             }
         });
+    }
+
+    focusFirstElement() {
+        const mainElement = this.mainContent.nativeElement;
+        const focusableElements = mainElement.querySelectorAll(
+            'a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
+        );
+
+        if (focusableElements.length > 0) {
+            (focusableElements[0] as HTMLElement).focus();
+        }
     }
 }

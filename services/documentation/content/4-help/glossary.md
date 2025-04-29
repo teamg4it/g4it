@@ -1,7 +1,7 @@
 ---
 title: 'Glossary'
 description: "G4IT glossary"
-weight: 100
+weight: 10
 pre: 📝
 ---
 

@@ -81,7 +81,7 @@ public class InPhysicalEquipment {
 
     @Min(0)
     @Max(8760)
-    private Long durationHour;
+    private Double durationHour;
 
     private List<String> commonFilters;
 

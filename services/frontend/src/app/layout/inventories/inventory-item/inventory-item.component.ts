@@ -102,7 +102,9 @@ export class InventoryItemComponent implements OnInit {
 
     showEquipment = () => {
         return (
-            this.inventory.lastTaskEvaluating && this.inventory.physicalEquipmentCount > 0
+            this.inventory.lastTaskEvaluating &&
+            (this.inventory.physicalEquipmentCount > 0 ||
+                this.inventory.virtualEquipmentCount > 0)
         );
     };
 
@@ -140,7 +142,11 @@ export class InventoryItemComponent implements OnInit {
         const criteriaArrayLength = this.inventory?.criteria?.length;
         let uri = undefined;
 
-        if (redirectTo === "equipment" && this.inventory.physicalEquipmentCount > 0) {
+        if (
+            redirectTo === "equipment" &&
+            (this.inventory.physicalEquipmentCount > 0 ||
+                this.inventory.virtualEquipmentCount > 0)
+        ) {
             uri =
                 criteriaArrayLength! === 1
                     ? this.inventory?.criteria![0]
@@ -179,8 +185,12 @@ export class InventoryItemComponent implements OnInit {
     }
 
     isEstimationDisabled() {
-        // If there is no physical equipement, disable button
-        if (this.inventory.physicalEquipmentCount <= 0) return true;
+        // If there is no physical equipement and no virtual equipment, disable button
+        if (
+            this.inventory.physicalEquipmentCount <= 0 &&
+            this.inventory.virtualEquipmentCount <= 0
+        )
+            return true;
 
         // If there is already an loading running
         if (this.inventory.lastTaskLoading) {

@@ -75,6 +75,7 @@ export abstract class Constants {
         version: "version",
         businessHours: "business-hours",
         templateFiles: "template-files",
+        workspace: "workspace",
     };
 
     static readonly ERRORS: any = {
@@ -208,4 +209,5 @@ export abstract class Constants {
     ];
 
     static readonly TOTAL_VISIBLE_GRAPH_ITEMS = 10;
+    static readonly USEFUL_INFORMATION = "useful-information";
 }

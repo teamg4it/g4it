@@ -58,6 +58,7 @@ export class UsersComponent {
     selectedCriteriaDS: string[] = [];
     defaultCriteria: string[] = [];
     subscriber!: Subscriber;
+    firstPage: number = 0;
 
     constructor(
         private administrationService: AdministrationService,
@@ -172,6 +173,7 @@ export class UsersComponent {
         this.administrationService
             .getUserDetails(this.organization.organizationId)
             .subscribe((res) => {
+                this.firstPage = 0; // To reset the paginator to the first page
                 this.membersList = res.map((user: any) => this.enrichAdmin(user));
                 this.filteredMembers = [...this.membersList];
             });

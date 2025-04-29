@@ -6,7 +6,7 @@
     "datacenterName" : "default",
     "datePurchase" : "2020-01-01",
     "description" : "OldPE",
-    "durationHour" : 24,
+    "durationHour" : 24.0,
     "electricityConsumption" : 234.0,
     "location" : "France",
     "manufacturer" : "manufacturer",

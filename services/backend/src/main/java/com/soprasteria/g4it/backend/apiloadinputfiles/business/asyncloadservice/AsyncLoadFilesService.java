@@ -76,6 +76,19 @@ public class AsyncLoadFilesService implements ITaskExecute {
             //Convert all files
             fileLoadingUtils.convertAllFileToLoad(context);
 
+            // Task fails if mandatory headers are missing
+            List<String> mandatoryHeaderErrors = loadFileService.mandatoryHeadersCheck(context);
+            if (mandatoryHeaderErrors != null && !mandatoryHeaderErrors.isEmpty()) {
+                task.setErrors(mandatoryHeaderErrors);
+                task.setStatus(TaskStatus.FAILED.toString());
+                details.addAll(mandatoryHeaderErrors.stream().map(LogUtils::error).toList());
+                details.add(LogUtils.info("Task failed"));
+                task.setDetails(details);
+                taskRepository.save(task);
+                log.error("Task with id '{}' failed due to missing mandatory headers: {}", task.getId(), mandatoryHeaderErrors);
+                return;
+            }
+
             //Load Metadata files
             asyncLoadMetadataService.loadInventoryMetadata(context);
 

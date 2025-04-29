@@ -288,4 +288,24 @@ databaseChangeLog:
               - column:
                   name: name
 
+  - changeSet:
+      id: modify-DataType-duration_Hour-in-physical-equipment-table
+      author: G4IT Dev Team
+      changes:
+        - modifyDataType:
+            columnName: duration_hour
+            newDataType: float
+            schemaName: public
+            tableName: in_physical_equipment
 
+  - changeSet:
+      id: modify-column-nb_user-table-in_physical_equipment
+      author: G4IT Dev Team
+      changes:
+        - sql: update in_physical_equipment set nb_user = (quantity  *(365*24))/duration_hour where type = 'Terminal' and quantity <> 0 and duration_hour <> 0 and nb_user is null;
+
+  - changeSet:
+      id: modify-column-duration_hour-table-in_physical_equipment
+      author: G4IT Dev Team
+      changes:
+        - sql: update in_physical_equipment set duration_hour = (quantity  *(365*24))/nb_user  where type = 'Terminal' and quantity <> 0 and nb_user <> 0 and duration_hour = 0;
