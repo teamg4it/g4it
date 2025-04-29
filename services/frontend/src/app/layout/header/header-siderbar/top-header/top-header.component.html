@@ -252,8 +252,14 @@
             icon="pi pi-sign-out"
             [label]="'common.logout' | translate"
             iconPos="right"
-            (onBlur)="isAccountMenuVisible = false"
+            (keydown.tab)="isAccountMenuVisible = false"
         >
         </p-button>
     </div>
 </div>
+
+<div
+    *ngIf="isAccountMenuVisible || isOrgMenuVisible"
+    (click)="isOrgMenuVisible = false; isAccountMenuVisible = false"
+    class="full-screen"
+></div>
