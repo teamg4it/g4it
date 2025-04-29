@@ -47,38 +47,96 @@ class InDatacenterServiceTest {
     private InDatacenterService inDatacenterService;
 
     @Test
-    void getByDigitalService_returnsDatacenters_whenDigitalServiceExists() {
-        String digitalServiceUid = "service-123";
+    void getByInventory_returnsDatacenters_whenInventoryExists() {
+        Long inventoryId = 1L;
         List<InDatacenter> datacenters = List.of(new InDatacenter());
         List<InDatacenterRest> datacenterRests = List.of(new InDatacenterRest());
 
-        when(inDatacenterRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(datacenters);
+        when(inDatacenterRepository.findByInventoryId(inventoryId)).thenReturn(datacenters);
         when(inDatacenterMapper.toRest(datacenters)).thenReturn(datacenterRests);
 
-        List<InDatacenterRest> result = inDatacenterService.getByDigitalService(digitalServiceUid);
+        List<InDatacenterRest> result = inDatacenterService.getByInventory(inventoryId);
 
         assertEquals(datacenterRests, result);
-        verify(inDatacenterRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(inDatacenterRepository).findByInventoryId(inventoryId);
         verify(inDatacenterMapper).toRest(datacenters);
     }
 
     @Test
-    void getByDigitalServiceAndId_throwsException_whenDatacenterNotFound() {
-        String digitalServiceUid = "service-123";
+    void getByInventoryAndId_throwsException_whenDatacenterNotFound() {
+        Long inventoryId = 1L;
         Long id = 1L;
 
-        when(inDatacenterRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
+        when(inDatacenterRepository.findByInventoryIdAndId(inventoryId, id)).thenReturn(Optional.empty());
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inDatacenterService.getByInventoryAndId(inventoryId, id));
+
+        assertEquals("404", exception.getCode());
+        verify(inDatacenterRepository).findByInventoryIdAndId(inventoryId, id);
+    }
+
+    @Test
+    void createInDatacenterInventory_throwsException_whenInventoryDoesNotExist() {
+        Long inventoryId = 1L;
+        InDatacenterRest inDatacenterRest = new InDatacenterRest();
+
+        when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.empty());
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inDatacenterService.createInDatacenterInventory(inventoryId, inDatacenterRest));
+
+        assertEquals("404", exception.getCode());
+        verify(inventoryRepository).findById(inventoryId);
+    }
+
+    @Test
+    void updateInDatacenter_throwsException_whenInventoryDatacenterNotFound() {
+        Long inventoryId = 1L;
+        Long id = 1L;
+        InDatacenterRest inDatacenterUpdateRest = new InDatacenterRest();
+
+        when(inDatacenterRepository.findByInventoryIdAndId(inventoryId, id)).thenReturn(Optional.empty());
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inDatacenterService.updateInDatacenter(inventoryId, id, inDatacenterUpdateRest));
+
+        assertEquals("404", exception.getCode());
+        verify(inDatacenterRepository).findByInventoryIdAndId(inventoryId, id);
+    }
+
+    @Test
+    void getByDigitalService_returnsEmptyList_whenNoDatacentersExist() {
+        String digitalServiceUid = "nonexistent-uid";
+
+        when(inDatacenterRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(List.of());
+
+        List<InDatacenterRest> result = inDatacenterService.getByDigitalService(digitalServiceUid);
+
+        assertEquals(0, result.size());
+        verify(inDatacenterRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(inDatacenterMapper).toRest(List.of());
+    }
+
+    @Test
+    void getByDigitalServiceAndId_throwsException_whenDigitalServiceUidMismatch() {
+        String digitalServiceUid = "uid1";
+        Long id = 1L;
+        InDatacenter inDatacenter = new InDatacenter();
+        inDatacenter.setDigitalServiceUid("uid2");
+
+        when(inDatacenterRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(inDatacenter));
 
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
                 inDatacenterService.getByDigitalServiceAndId(digitalServiceUid, id));
 
-        assertEquals("404", exception.getCode());
+        assertEquals("409", exception.getCode());
         verify(inDatacenterRepository).findByDigitalServiceUidAndId(digitalServiceUid, id);
     }
 
     @Test
     void createInDatacenterDigitalService_throwsException_whenDigitalServiceDoesNotExist() {
-        String digitalServiceUid = "service-123";
+        String digitalServiceUid = "nonexistent-uid";
         InDatacenterRest inDatacenterRest = new InDatacenterRest();
 
         when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.empty());
@@ -91,22 +149,24 @@ class InDatacenterServiceTest {
     }
 
     @Test
-    void updateInDatacenter_throwsException_whenDatacenterNotFound() {
-        String digitalServiceUid = "service-123";
+    void updateInDatacenter_throwsException_whenDigitalServiceUidMismatch() {
+        String digitalServiceUid = "uid1";
         Long id = 1L;
         InDatacenterRest inDatacenterUpdateRest = new InDatacenterRest();
+        InDatacenter inDatacenter = new InDatacenter();
+        inDatacenter.setDigitalServiceUid("uid2");
 
-        when(inDatacenterRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
+        when(inDatacenterRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(inDatacenter));
 
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
                 inDatacenterService.updateInDatacenter(digitalServiceUid, id, inDatacenterUpdateRest));
 
-        assertEquals("404", exception.getCode());
+        assertEquals("409", exception.getCode());
         verify(inDatacenterRepository).findByDigitalServiceUidAndId(digitalServiceUid, id);
     }
 
     @Test
-    void deleteInDatacenter_deletesDatacenter_whenIdExists() {
+    void deleteInDatacenter_doesNotThrowException_whenDatacenterExists() {
         Long id = 1L;
 
         doNothing().when(inDatacenterRepository).deleteById(id);
@@ -115,4 +175,6 @@ class InDatacenterServiceTest {
 
         verify(inDatacenterRepository).deleteById(id);
     }
+
+    
 }

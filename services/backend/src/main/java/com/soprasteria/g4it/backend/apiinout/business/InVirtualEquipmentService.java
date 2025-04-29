@@ -284,6 +284,5 @@ public class InVirtualEquipmentService {
         inVirtualEquipmentRepository.deleteById(id);
     }
 
-
 }
 

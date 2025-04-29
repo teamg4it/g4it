@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apiinout.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InVirtualEquipmentMapper;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
@@ -108,5 +109,76 @@ class InVirtualEquipmentServiceTest {
 
         assertEquals("404", exception.getCode());
         verify(inVirtualEquipmentRepository).findByDigitalServiceUidAndId(digitalServiceUid, id);
+    }
+
+    @Test
+    void updateOrDeleteInVirtualEquipments_handlesEmptyRepositoryList_whenNoExistingVirtualEquipments() {
+        String digitalServiceUid = "service-123";
+        Long physicalEqpId = 1L;
+        String physicalEqpName = "Physical Equipment 1";
+
+        InPhysicalEquipment physicalEquipment = new InPhysicalEquipment();
+        physicalEquipment.setName(physicalEqpName);
+
+        InVirtualEquipmentRest inputEquipment = new InVirtualEquipmentRest();
+        inputEquipment.setId(1L);
+        List<InVirtualEquipmentRest> inVirtualEquipmentList = List.of(inputEquipment);
+
+        when(inPhysicalEquipmentRepository.findById(physicalEqpId)).thenReturn(Optional.of(physicalEquipment));
+        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndPhysicalEquipmentName(digitalServiceUid, physicalEqpName)).thenReturn(List.of());
+        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, inputEquipment.getId())).thenReturn(Optional.empty());
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inVirtualEquipmentService.updateOrDeleteInVirtualEquipments(digitalServiceUid, physicalEqpId, inVirtualEquipmentList));
+
+        assertEquals("404", exception.getCode());
+        verify(inPhysicalEquipmentRepository).findById(physicalEqpId);
+    }
+
+
+    @Test
+    void updateOrDeleteInVirtualEquipments_throwsException_whenPhysicalEquipmentIdIsNull() {
+        String digitalServiceUid = "service-123";
+        Long physicalEqpId = null;
+        List<InVirtualEquipmentRest> inVirtualEquipmentList = List.of();
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inVirtualEquipmentService.updateOrDeleteInVirtualEquipments(digitalServiceUid, physicalEqpId, inVirtualEquipmentList));
+
+        assertEquals("404", exception.getCode());
+        assertEquals("The digitalService id provided: service-123 has no physical equipment with id: null", exception.getMessage());
+    }
+
+    @Test
+    void updateOrDeleteInVirtualEquipments_throwsException_whenInputListContainsNullElement() {
+        String digitalServiceUid = "service-123";
+        Long physicalEqpId = 1L;
+        List<InVirtualEquipmentRest> inVirtualEquipmentList = List.of(new InVirtualEquipmentRest());
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inVirtualEquipmentService.updateOrDeleteInVirtualEquipments(digitalServiceUid, physicalEqpId, inVirtualEquipmentList));
+
+        assertEquals("404", exception.getCode());
+        assertEquals("The digitalService id provided: service-123 has no physical equipment with id: 1", exception.getMessage());
+    }
+
+    @Test
+    void updateOrDeleteInVirtualEquipments_throwsException_whenInputListHasDuplicateIds() {
+        String digitalServiceUid = "service-123";
+        Long physicalEqpId = 1L;
+
+        InVirtualEquipmentRest equipment1 = new InVirtualEquipmentRest();
+        equipment1.setId(1L);
+
+        InVirtualEquipmentRest equipment2 = new InVirtualEquipmentRest();
+        equipment2.setId(1L);
+
+        List<InVirtualEquipmentRest> inVirtualEquipmentList = List.of(equipment1, equipment2);
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inVirtualEquipmentService.updateOrDeleteInVirtualEquipments(digitalServiceUid, physicalEqpId, inVirtualEquipmentList));
+
+        assertEquals("404", exception.getCode());
+        assertEquals("The digitalService id provided: service-123 has no physical equipment with id: 1", exception.getMessage());
     }
 }
