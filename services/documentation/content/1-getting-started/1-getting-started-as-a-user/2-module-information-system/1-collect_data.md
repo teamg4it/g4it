@@ -37,7 +37,7 @@ G4IT requires four main types of data:
 Each data type can be imported independently, multiple times, and supports automation via API.
 
 Some of this data directly affects impact calculations, while other data is used for categorization and user interface
-clarity.
+clarity. Find below details for each type of data.
 
 ---
 
@@ -49,7 +49,7 @@ clarity.
   The country or region where the datacenter is located.
 
 - **Power Usage Effectiveness (PUE)**  
-  A measure of energy efficiency. Lower values indicate better performance by comparing total facility power to IT
+  A measure of energy efficiency of the datacenter. The closer the value is to 1, the more efficient the datacenter. This indicator compare total facility power to IT
   equipment power.
 
 ### Data for Informational Purposes
@@ -70,13 +70,13 @@ clarity.
   Number of identical equipment units.
 
 - **Lifespan** (if known)  
-  Expected operational life of the equipment.
+  Expected operational life of the equipment. 1st life (in case of refurbishment) and 3rd life (beyond the period of use within the organization) can be considered if justified
 
 - **Energy Consumption** (if known)  
-  Average yearly energy use in kilowatt-hours (kWh).
+  Yearly energy use in kilowatt-hours (kWh).
 
 - **Location**  
-  The country where the equipment is located.
+  The country where the equipment is most commonly used.
 
 ### Data for Informational Purposes
 
@@ -105,10 +105,10 @@ When the underlying physical equipment is known and managed internally:
 #### Allocation Calculation
 
 - **Compute Servers**:  
-  Allocation = vCPUs used by this Virtual Equipment ÷ total vCPUs on the physical host.
+  Allocation = vCPUs used by this Virtual Equipment (will be divided by total vCPUs on the physical host).
 
 - **Storage Servers**:  
-  Allocation = storage capacity used by this Virtual Equipment ÷ total available on the host.
+  Allocation = storage capacity used by this Virtual Equipment (will be divided by total storage on the physical host).
 
 - **Default Allocation**:  
   If data is missing, assume equal distribution among all Virtual Equipment.
@@ -118,10 +118,10 @@ When the underlying physical equipment is known and managed internally:
 
 #### Notes
 
-1. Clusters = Sum of physical resources.
-2. In containerized/dynamic environments, allocate based on actual usage when possible.
-3. Private cloud resources are considered "owned" once allocated—even if unused.
-4. Developer laptops can be modeled as Virtual Equipment.
+1. a Clusters can be consider as a sum of physical resources.
+2. In dynamic environments (for example in a containerized environment), allocate based on actual usage when possible, using Custom Allocation Factor. 
+3. Private cloud resources are considered "owned" once allocated — even if unused.
+4. Developer laptops can be modeled as Virtual Equipment in proportion to their use during the development phases.
 5. Dedicated application servers should be treated as 100% allocated Virtual Equipment.
 
 ### Data for Informational Purposes
