@@ -4,6 +4,14 @@ description: ""
 weight: 5021
 ---
 
+## Table of contents
+
+-   [Focus to main content Button](#focus-main)
+-   [About G4IT](#about-g4it)
+-   [Accessibility](#accessibility)
+-   [Useful information](#useful-information) 
+-   [Help Center](#help-center)
+
 ## Focus to main content Button
 
 There is a hidden button in the top header. When you use tab to focus initially on application first focus will be on this hidden button. On click of this button it will redirect the focus on the main content of page.
