@@ -51,7 +51,7 @@ actor RND as Sustainable IT Leader
 participant front as G4IT Front-End
 participant back as G4IT Back-End
 
-RND ->> front: Access the G4IT app and proceed to the 'Settings' icon on bottom left.
+RND ->> front: Access the G4IT app and proceed to the 'About Us' menu in menu list we have 'Useful Information' page link.
 front ->> back: GET /api/business-hours
 back -->> front: Fetch the business hours data from the G4IT business_hours table.
 
@@ -67,9 +67,9 @@ back -->> front: Fetch the business hours data from the G4IT business_hours tabl
 
 Need support from G4IT? Here's how:
 
-1. Locate the "Settings" icon in the navigation bar.
+1. Locate the 'About Us' menu button at top header. On click of menu button a menu list will be visible in that list we have 'Useful Information' page link.  On click of that link it redirect to Useful information page.
 
-2. Click on the **`support.g4it@soprasteria.com`** button.
+2. There is a section of 'Support contact'. Click on the **`support.g4it@soprasteria.com`** button.
 
 3. Your default mail client will then open with the following details pre-filled:
 
