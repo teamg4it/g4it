@@ -35,7 +35,7 @@ The connected user must have the write access for that module one the selected o
 
 {{< mermaid align="center">}}
 graph TD;
-Step1[List of inventory view] --> Step2[Load files in the inventory] --> Decision1{Is there valid physical<br> equipment file ?}
+Step1[List of inventory view] --> Step2[Load files in the inventory] --> Decision1{Is there valid <br>physical equipment file or<br> virtual equipment file ?}
 Decision1 -->|No|Step3[Button 'Launch estimate'<br> disable]
 Decision1 -->|Yes|Decision2{Is there already a<br> loading running ?}
 Decision2 -->|Yes|Step3
