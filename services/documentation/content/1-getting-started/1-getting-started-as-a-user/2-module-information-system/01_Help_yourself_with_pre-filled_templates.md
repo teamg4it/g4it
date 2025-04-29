@@ -1,7 +1,7 @@
 ---
-title: "1- Help with pre-filled templates"
+title: "Help with pre-filled templates"
 description: "This section gives you pre-filled templates to create inventory in Information System module"
-weight: 10
+weight: 40
 ---
 
 ## Datacenter pre-filled template
