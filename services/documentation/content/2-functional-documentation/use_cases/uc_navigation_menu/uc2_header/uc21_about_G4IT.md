@@ -4,6 +4,28 @@ description: ""
 weight: 5021
 ---
 
+## About G4IT
+
+### Description
+
+The "About G4IT" menu provides users with essential resources and useful information.
+This menu is designed to help users easily find the support and information they need regarding G4IT's services.
+
+![about_g4it.PNG](../images/about_g4it.PNG)
+
+## Behavior Rules
+
+{{% expand title="Show the detail" expanded="false" %}}
+
+| Reference                        | Group               | Elements                  | Sub-Elements | Type        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|----------------------------------|---------------------|---------------------------|--------------|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1                                | About G4IT          |                           |              | Menu        | "About G4IT" menu provides users with essential resources and useful information                                                                                                                                                                                                                                                                                                                                                    |
+| 2                                |                     |  Useful Information       |              | Link        | Access useful information, G4IT versions, Business hours and support contact.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 3                                |                     |  Help Center              |              | External Links| Quick access to two important external resources (github and documentation) related to G4IT for additional help or information.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+
+
+{{% /expand %}}
+
 ## Useful information
 
 ### Description
@@ -11,9 +33,9 @@ weight: 5021
 For a seamless experience and to make the most of your time on the platform, here's how you can easily find out when it'
 s open for use:
 
-1. Click on the "Settings" icon located in the navigation bar.
+1. Click on the "About Us" menu button then click on "Useful information" link located in the navigation bar.
 
-2. Within the settings menu, locate the 'Service Opening Hours' section, Here, you'll find all the information you need
+2. Within the useful information page, locate the 'Service Opening Hours' section, Here, you'll find all the information you need
    regarding the platform's operating hours.
 
 #### Sequence Diagram
@@ -58,3 +80,18 @@ Need support from G4IT? Here's how:
 ![support_mail.PNG](../images/support_mail.PNG)
 
 Feel free to reach out for any support you require!
+
+
+## Help Center
+
+
+### Description
+For a seamless experience and to make the most of your time on the platform, here's how you can easily find out when it'
+s open for use:
+
+1. Click on the "About Us" menu button then click on links link located in the navigation bar.
+
+2. Within the "About Us" Menu, locate the "Go to G4IT GitHub" link, "Go to the documentation" links. On click of these links it will open in new tab.
+
+
+
