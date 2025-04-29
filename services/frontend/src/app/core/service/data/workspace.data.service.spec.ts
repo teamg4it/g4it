@@ -27,8 +27,22 @@ describe("WorkspaceDataService", () => {
     describe("getDomainSubscribers", () => {
         it("should send a POST request to the correct endpoint and return DomainSubscribers[]", () => {
             const mockResponse = [
-                { id: 1, name: "test1@example.com" },
-                { id: 2, name: "test2@example.com" },
+                {
+                    id: 1,
+                    name: "test1@example.com",
+                    organizations: [
+                        { id: 22, name: "org1", status: "active" },
+                        { id: 32, name: "org2", status: "inactive" },
+                    ],
+                },
+                {
+                    id: 2,
+                    name: "test2@example.com",
+                    organizations: [
+                        { id: 33, name: "org3", status: "active" },
+                        { id: 23, name: "org4", status: "inactive" },
+                    ],
+                },
             ];
             const requestBody = { email: "test@example.com" };
             const expectedUrl = `${Constants.ENDPOINTS.workspace}/domain-subscribers`;

@@ -11,6 +11,7 @@ import {
     computed,
     DestroyRef,
     ElementRef,
+    HostListener,
     inject,
     OnInit,
     QueryList,
@@ -305,6 +306,27 @@ export class TopHeaderComponent implements OnInit {
             await this.keycloak.logout();
         } else {
             console.error("keycloak is not enabled");
+        }
+    }
+
+    @HostListener("document:click", ["$event"])
+    handleGlobalClick(event: Event) {
+        const accountContainer = document.querySelector(".account-menu");
+        const accountBtnContainer = document.querySelector(".account-menu-btn");
+        if (
+            !accountContainer?.contains(event.target as Node) &&
+            !accountBtnContainer?.contains(event.target as Node)
+        ) {
+            this.isAccountMenuVisible = false;
+        }
+
+        const orgContainer = document.querySelector(".org-menu-new");
+        const orgBtnContainer = document.querySelector(".org-menu-new-btn");
+        if (
+            !orgContainer?.contains(event.target as Node) &&
+            !orgBtnContainer?.contains(event.target as Node)
+        ) {
+            this.isOrgMenuVisible = false;
         }
     }
 }

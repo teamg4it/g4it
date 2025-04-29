@@ -11,8 +11,8 @@ import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrgan
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
-import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberDetailsRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
+import com.soprasteria.g4it.backend.apiworkspace.mapper.SubscriberDetailsRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.UserApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +56,5 @@ public class UserRestController implements UserApiDelegate {
     public ResponseEntity<UserRest> getUser() {
         return ResponseEntity.ok(userRestMapper.toDto(authService.getUser()));
     }
-    
+
 }
