@@ -315,7 +315,7 @@
         "inventory": "Inventaire",
         "page-title": "Mon Système d'information",
         "equipment-page-title": "Mon impact G4IT",
-        "title": "Mon Système d'information - Organisation {{OrganizationName}}",
+        "title": "Mon Système d'information - {{OrganizationName}}",
         "add": "Nouvel Inventaire",
         "created": "créé",
         "details.equipment": "EQUIPEMENT",
