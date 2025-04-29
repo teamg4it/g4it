@@ -88,7 +88,7 @@ If there is only one Organization, then left panel will not displayed and auto s
 
 ![create_organization_name_space.PNG](../images/create_organization_name_space.PNG)
 
-## Accessibility
+## Accessibility in Create new Organization (Right panel)
 
 On initialize, first focus will be on form field which is displayed.
 On left menu panel, Arrow up/Arrow left and Arrow down/Arrow right can be used for navigating between menu list.

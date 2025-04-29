@@ -26,6 +26,11 @@ This menu is designed to help users easily find the support and information they
 
 {{% /expand %}}
 
+## Accessibility 
+
+User can use tab to focus on "About Us" menu button and to navigate to other menu buttons like "My Workspace" menu button.
+To access the about us menu list- Arrow up and Arrow down can be used for navigating between menu list.
+
 ## Useful information
 
 ### Description
