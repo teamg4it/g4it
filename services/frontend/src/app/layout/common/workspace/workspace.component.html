@@ -1,4 +1,4 @@
-<div class="app-workspace">
+<div pFocusTrap class="app-workspace">
     @if (spaceDetails && spaceDetails["menu"] && getValidMenu().length > 1) {
         <ul class="space-menu">
             @for (
@@ -125,6 +125,25 @@
                                     }}
                                 </p>
                             }
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.["maxlength"]
+                            ) {
+                                <p class="error-text">
+                                    {{
+                                        "common.workspace.space-name-maxlength"
+                                            | translate
+                                    }}
+                                </p>
+                            }
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.["pattern"]
+                            ) {
+                                <p class="error-text">
+                                    {{
+                                        "common.workspace.space-name-pattern" | translate
+                                    }}
+                                </p>
+                            }
                         }
 
                         @if (spaceDetail["type"] === "select") {
@@ -139,6 +158,15 @@
                                 optionValue="id"
                                 autofocus="true"
                             />
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.[
+                                    "noOrganization"
+                                ]
+                            ) {
+                                <p class="error-text">
+                                    {{ "common.workspace.no-organization" | translate }}
+                                </p>
+                            }
                         }
 
                         <div
