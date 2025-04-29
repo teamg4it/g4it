@@ -1,7 +1,7 @@
 ---
 title: '5.2. Header'
-description: ""
+description: "My description"
 weight: 502
 ---
 
-{{% children description="true" %}}
+{{% children %}}

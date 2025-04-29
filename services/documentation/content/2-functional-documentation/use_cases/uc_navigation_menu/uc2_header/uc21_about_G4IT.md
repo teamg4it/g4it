@@ -1,114 +1,90 @@
 ---
-title: '5.2.1 Header - About G4IT'
-description: ""
+title: '5.2.1 Header-About G4IT'
+description: "About G4IT Description"
 weight: 5021
 ---
 
-## Table of contents
+## Table of Contents
 
--   [Focus to main content Button](#focus-to-main-content-button)
--   [About G4IT](#about-g4it)
--   [Accessibility](#accessibility)
--   [Useful information](#useful-information) 
--   [Help Center](#help-center)
+<!-- TOC -->
+  * [Table of Contents](#table-of-contents)
+  * [Focus on the Main Content Button](#focus-on-the-main-content-button)
+  * [About G4IT](#about-g4it)
+    * [Description](#description)
+    * [Behavior Rules](#behavior-rules)
+    * [Accessibility](#accessibility)
+  * [Useful Information](#useful-information)
+    * [Description](#description-1)
+      * [Sequence Diagram](#sequence-diagram)
+<!-- TOC -->
 
-## Focus to main content Button
+---
 
-There is a hidden button in the top header. When you use tab to focus initially on application first focus will be on this hidden button. On click of this button it will redirect the focus on the main content of page.
+## Focus on the Main Content Button
+
+A hidden skip link button is located in the top header.  
+It becomes visible when navigating via **keyboard (Tab key)**.  
+When focused and activated, it redirects the focus to the main content area of the page — improving keyboard
+accessibility for all users.
+
+---
 
 ## About G4IT
 
 ### Description
 
-The "About G4IT" menu provides users with essential resources and useful information.
-This menu is designed to help users easily find the support and information they need regarding G4IT's services.
+The **About G4IT** menu provides access to helpful resources such as support, documentation, and business information.  
+It helps users find key information about the platform.
 
-![about_g4it.PNG](../images/about_g4it.PNG)
+![Screenshot of the About G4IT menu showing Useful Information and Help Center links](../images/about_g4it.PNG)
 
-## Behavior Rules
+---
 
-{{% expand title="Show the detail" expanded="false" %}}
+### Behavior Rules
 
-| Reference                        | Group               | Elements                  | Sub-Elements | Type        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|----------------------------------|---------------------|---------------------------|--------------|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1                                | About G4IT          |                           |              | Menu        | "About G4IT" menu provides users with essential resources and useful information                                                                                                                                                                                                                                                                                                                                                    |
-| 2                                |                     |  Useful Information       |              | Link        | Access useful information, G4IT versions, Business hours and support contact.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| 3                                |                     |  Help Center              |              | External Links| Quick access to two important external resources (github and documentation) related to G4IT for additional help or information.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+{{% expand title="Show details" expanded="false" %}}
 
+| Ref | Group      | Element            | Sub-Element | Type           | Description                                                                                                                |
+|-----|------------|--------------------|-------------|----------------|----------------------------------------------------------------------------------------------------------------------------|
+| 1   | About G4IT |                    |             | Menu           | The "About G4IT" menu groups links to documentation, support, and business-related details.                                |
+| 2   |            | Useful Information |             | Link           | Links to a page containing platform versions, business hours, and contact details for support.                             |
+| 3   |            | Help Center        |             | External Links | Opens two external resources in a new tab: the G4IT GitHub repository and official documentation site for additional help. |
 
 {{% /expand %}}
 
-## Accessibility 
+---
 
-User can use tab to focus on "About Us" menu button and to navigate to other menu buttons like "My Workspace" menu button.
-To access the about us menu list- Arrow up and Arrow down can be used for navigating between menu list.
+### Accessibility
 
-## Useful information
+- The **"About G4IT"** menu is fully accessible via keyboard.
+- Use **Tab** to focus the menu.
+- Use **Arrow Up** and **Arrow Down** to navigate within the menu list.
+- All interactive elements are reachable and operable without a mouse.
+
+---
+
+## Useful Information
 
 ### Description
 
-For a seamless experience and to make the most of your time on the platform, here's how you can easily find out when it'
-s open for use:
+To check the platform's availability and support information:
 
-1. Click on the "About Us" menu button then click on "Useful information" link located in the navigation bar.
+1. Open the **About G4IT** menu and click the **Useful Information** link.
+2. The **Business Hours** section provides the platform's operating hours.
+3. The **Support Contact** section allows you to easily contact G4IT support.
 
-2. Within the useful information page, locate the 'Business hours' section, Here, you'll find all the information you need
-   regarding the platform's operating hours.
+---
 
 #### Sequence Diagram
 
-{{< mermaid >}}
+Illustrates how G4IT retrieves business hours from the backend when accessing the "Useful Information" page.
+
+```mermaid
 sequenceDiagram
 actor RND as Sustainable IT Leader
 participant front as G4IT Front-End
 participant back as G4IT Back-End
 
-RND ->> front: Access the G4IT app and proceed to the 'About Us' menu in menu list we have 'Useful Information' page link.
+RND ->> front: Access G4IT > About Us > Useful Information
 front ->> back: GET /api/business-hours
-back -->> front: Fetch the business hours data from the G4IT business_hours table.
-
-{{< /mermaid >}}
-
-#### Business hours section view
-
-![business_hours.PNG](../images/business_hours.PNG)
-
-## Support to G4IT
-
-### Description
-
-Need support from G4IT? Here's how:
-
-1. Locate the 'About Us' menu button at top header. On click of menu button a menu list will be visible in that list we have 'Useful Information' page link.  On click of that link it redirect to Useful information page.
-
-2. There is a section of 'Support contact'. Click on the **`support.g4it@soprasteria.com`** button.
-
-3. Your default mail client will then open with the following details pre-filled:
-
-    * Recipient: support.g4it@soprasteria.com
-    * Subject: [{SubscriberName}/{OrganizationId}] Support Request
-
-#### Button view
-
-![send_mail_button.PNG](../images/send_mail_button.PNG)
-
-#### Default mail view
-
-![support_mail.PNG](../images/support_mail.PNG)
-
-Feel free to reach out for any support you require!
-
-
-## Help Center
-
-
-### Description
-For a seamless experience and to make the most of your time on the platform, here's how you can easily find out when it'
-s open for use:
-
-1. Click on the "About Us" menu button then click on links link located in the navigation bar.
-
-2. Within the "About Us" Menu, locate the "Go to G4IT GitHub" link, "Go to the documentation" links. On click of these links it will open in new tab.
-
-
-
+back -->> front: Return data from business_hours table

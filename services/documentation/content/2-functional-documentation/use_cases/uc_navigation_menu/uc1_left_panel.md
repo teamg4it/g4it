@@ -1,30 +1,31 @@
 ---
-title: '5.1. Left panel'
-description: ""
+title: '5.1. Left Panel'
+description: "Description of the left panel"
 weight: 501
 ---
+## Overview
 
-## Left Panel
+The **Left Panel** is a navigation menu that provides access to the main sections of G4IT:
 
-### Description
+- **Inventories**
+- **Digital Services**
+- **Administrator**
 
-The "Left panel" provides the link to "Inventories", "Digital Services" and "Administator" pages. menu provides users with user details, feature of changing the language between English and French and it also covers the logout functionality.
-This panel is designed to help users easily find the different modules of G4IT.
+It is always visible on the left side of the screen to facilitate consistent navigation across the application.
 
-![left_panel.png](../images/left_panel.png)
+![Screenshot of the left navigation panel showing links to Inventories, Digital Services, and Administrator modules](../images/left_panel.png)
 
 ## Behavior Rules
 
-{{% expand title="Show the detail" expanded="false" %}}
+{{% expand title="Show details" expanded="false" %}}
 
-| Reference                        | Group               | Elements                  | Sub-Elements | Type        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|----------------------------------|---------------------|---------------------------|--------------|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1                                | Left Panel          |                           |              | Panel       | Left panel contains the useful link to modules of G4IT.                                                                                                                                                                                                                                                                                                                                                     |
-| 2                                |                     |  Home Icon                |              | Link        | On click of this icon user will be redirect to the inventories page.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| 3                                |                     |  Invetories               |              | Link        | User must have read role of Inventory to access the link. On click of this icon user will be redirect to the inventories page. Green background color signifies the current active page selected.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| 4                                |                     |  Digital Services         |              | Link        | User must have read role of Digital Service to access the link. On click of this icon user will be redirect to the Digitial Services page.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| 5                                |                     |  Administator             |              | Link        | User must have admin role to access this link. If there is no admin role then this link will not be visible.  On click of this icon user will be redirect to the Administator page.                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| 6                                |                     |  Soprasteria Icon         |              | Icon        | This is only a image of Soprasteria logo and it is not clickable.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-
+| Ref | Group      | Element           | Sub-Element | Type  | Description                                                                                                                                                                           |
+|-----|------------|-------------------|-------------|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1   | Left Panel |                   |             | Panel | The left panel is a permanent navigation component that helps users access different G4IT modules efficiently.                                                                        |
+| 2   |            | Home Icon         |             | Link  | Clicking this icon takes the user to the **Inventories** page. It is accessible to all users and is placed at the top for quick access.                                               |
+| 3   |            | Inventories       |             | Link  | Visible only if the user has the **read** permission for inventories. Clicking it takes the user to the **Inventories** page. The active page is highlighted with a green background. |
+| 4   |            | Digital Services  |             | Link  | Visible only if the user has the **read** permission for digital services. Clicking it redirects to the **Digital Services** page.                                                    |
+| 5   |            | Administrator     |             | Link  | Visible only to users with the **admin** role. If the user lacks this role, the link is hidden. Clicking it takes the user to the **Administrator** module.                           |
+| 6   |            | Sopra Steria Icon |             | Icon  | This is a non-interactive image displaying the **Sopra Steria** logo. It is decorative only and should be marked as such for screen readers (`alt=""`).                               |
 
 {{% /expand %}}
