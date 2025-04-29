@@ -4,6 +4,10 @@ description: ""
 weight: 5021
 ---
 
+## Focus to main content Button
+
+There is a hidden button in the top header. When you use tab to focus initially on application first focus will be on this hidden button. On click of this button it will redirect the focus on the main content of page.
+
 ## About G4IT
 
 ### Description
@@ -40,7 +44,7 @@ s open for use:
 
 1. Click on the "About Us" menu button then click on "Useful information" link located in the navigation bar.
 
-2. Within the useful information page, locate the 'Service Opening Hours' section, Here, you'll find all the information you need
+2. Within the useful information page, locate the 'Business hours' section, Here, you'll find all the information you need
    regarding the platform's operating hours.
 
 #### Sequence Diagram
@@ -57,7 +61,7 @@ back -->> front: Fetch the business hours data from the G4IT business_hours tabl
 
 {{< /mermaid >}}
 
-#### Service Opening Hours section view
+#### Business hours section view
 
 ![business_hours.PNG](../images/business_hours.PNG)
 

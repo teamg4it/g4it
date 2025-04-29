@@ -28,6 +28,12 @@ The "Workspace Selection" menu bar provides feature for users to select the Work
 
 {{% /expand %}}
 
+
+## Accessibility in Workspace selection
+
+Workspace selection menu can be accessed using tab button. On click of menu button a menu list will open 
+To navigating between menu list Arrow up/Arrow left and Arrow down/Arrow right can be used.
+
 ## Workspace creation
 
 ## Table of contents
