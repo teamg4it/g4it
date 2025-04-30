@@ -25,13 +25,13 @@ see a new button to create their own workspace (new organization).
 
 ## State Diagram
 
-![State diagram illustrating the process of creating a new organization](../images/organization_creation_state_diagram.PNG)
+![State diagram illustrating the process of creating a new organization](../images/organization_creation_state_diagram.png)
 
 ## Create New Organization Button
 
 The "Create New Organization" button is located in the organization list menu at the top header.
 
-![Create new organization button located in the organization list menu at the top header](../images/create_organization_button.PNG)
+![Create new organization button located in the organization list menu at the top header](../images/create_organization_button.png)
 
 ## Create a New Organization (Right Panel)
 
@@ -46,7 +46,7 @@ auto-selected. Only the "Set a Workspace Name" field will appear.
 
 ## Mockup
 
-![The form for creating a new organization, with options for selecting an organization and setting a workspace name](../images/create_organization_form_id.PNG)
+![The form for creating a new organization, with options for selecting an organization and setting a workspace name](../images/create_organization_form_id.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
@@ -65,11 +65,11 @@ auto-selected. Only the "Set a Workspace Name" field will appear.
 
 ### Organization Name Duplicate Error
 
-![Error message indicating that the organization name is duplicated](../images/create_organization_name_duplicate.PNG)
+![Error message indicating that the organization name is duplicated](../images/create_organization_name_duplicate.png)
 
 ### Organization Name Space Error
 
-![Error message indicating that the organization name has invalid spaces](../images/create_organization_name_space.PNG)
+![Error message indicating that the organization name has invalid spaces](../images/create_organization_name_space.png)
 
 ## Accessibility in Create New Organization (Right Panel)
 
