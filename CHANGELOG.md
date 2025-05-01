@@ -1,5 +1,11 @@
 # G4IT
 
+## 3.2.0
+
+### Minor Changes
+
+- 795 | Update the docker image of BoaviztAPI
+
 ## 3.1.0
 
 ### Major Changes
