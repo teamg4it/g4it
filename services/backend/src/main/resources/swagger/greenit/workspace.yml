@@ -15,7 +15,6 @@ paths:
         - workspace
       summary: Create workspace
       operationId: createWorkspace
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('DIGITAL_SERVICE_READ')"
       requestBody:
         description: Mandatory organization details to create.
         required: true
@@ -47,7 +46,6 @@ paths:
         - workspace
       summary: get subscribers for domain
       operationId: getDomainSubscribers
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('DIGITAL_SERVICE_READ')"
       requestBody:
         description: user's email.
         required: true
