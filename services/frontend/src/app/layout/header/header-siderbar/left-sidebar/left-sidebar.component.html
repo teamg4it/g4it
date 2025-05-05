@@ -4,7 +4,7 @@
     [attr.aria-label]="'common.left-navigation' | translate"
 >
     <div class="flex align-items-center justify-content-center mb-2 mt-4 logo-icon">
-        <a routerLink="/">
+        <a [routerLink]="constants.WELCOME_PAGE">
             <img
                 src="assets/images/logos/logo-overgreen.svg"
                 alt="{{ 'common.homepage' | translate }}"
@@ -16,10 +16,10 @@
     <div class="flex align-items-center justify-content-center extra-div"></div>
     <div
         class="flex align-items-center justify-content-center my-1"
-        [ngClass]="{ 'bg-light-green': selectedPage() === 'home' }"
+        [ngClass]="{ 'bg-light-green': selectedPage() === constants.WELCOME_PAGE }"
     >
         <a
-            [routerLink]="selectedPath + '/home'"
+            [routerLink]="constants.WELCOME_PAGE"
             id="home"
             [ngClass]="{
                 'p-2': isZoomedIn,

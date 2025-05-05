@@ -21,6 +21,7 @@ import {
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { generateColor } from "src/app/core/utils/color";
+import { Constants } from "src/constants";
 
 @Component({
     standalone: true,
@@ -35,6 +36,7 @@ export class LeftSidebarComponent implements OnInit {
     public userService = inject(UserService);
     private readonly translate = inject(TranslateService);
     private readonly keycloak = inject(KeycloakService);
+    constants = Constants;
     homeTitle = computed(() => this.getTitle("welcome-page.title", "home"));
     digitalServicesTitle = computed(() =>
         this.getTitle("digital-services.title", "digital-services"),
@@ -118,7 +120,11 @@ export class LeftSidebarComponent implements OnInit {
 
     setSelectedPage() {
         let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
-        this.selectedPage.set(subscribers === "administration" ? "administration" : page);
+        this.selectedPage.set(
+            subscribers === "administration" || this.constants.WELCOME_PAGE
+                ? subscribers
+                : page,
+        );
     }
 
     getTitle(name: string, page: string): any {

@@ -323,7 +323,7 @@ export class UserService {
         if (this.checkIfAllowed(subscriber, organization, page)) {
             this.setSubscriberAndOrganization(subscriber, organization);
             if (page === Constants.USEFUL_INFORMATION) {
-                this.router.navigateByUrl(`useful-information`);
+                this.router.navigateByUrl(Constants.USEFUL_INFORMATION);
                 return;
             }
             this.router.navigateByUrl(
