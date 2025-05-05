@@ -80,7 +80,11 @@ export class DigitalServicesTerminalsSidePanelComponent {
         const countryList = await lastValueFrom(
             this.digitalDataService.getCountryReferential(),
         );
-        this.countries = countryList.sort().map((item) => ({ value: item, label: item }));
+        const exclusions = ["Non spécifié", "France-CNR"];
+        this.countries = countryList
+            .sort()
+            .filter((item) => !exclusions.includes(item))
+            .map((item) => ({ value: item, label: item }));
     }
 
     resetTerminal() {
