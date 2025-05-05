@@ -157,7 +157,10 @@ export class UserService {
             organization = this.getOrganization(subscriber);
         }
 
-        if (subscribers === Constants.USEFUL_INFORMATION || subscribers === "home") {
+        if (
+            subscribers === Constants.USEFUL_INFORMATION ||
+            subscribers === "welcome-page"
+        ) {
             this.setSubscriberAndOrganization(subscriber, organization!);
             return;
         }

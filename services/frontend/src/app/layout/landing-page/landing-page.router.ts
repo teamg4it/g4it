@@ -30,9 +30,11 @@ export const appRoutes: Routes = [
         canActivate,
     },
     {
-        path: "home",
+        path: "welcome-page",
         loadComponent: () =>
-            import("../home/home.component").then((m) => m.HomeComponent),
+            import("../welcome-page/welcome-page.component").then(
+                (m) => m.WelcomePageComponent,
+            ),
         pathMatch: "full",
         canActivate,
     },

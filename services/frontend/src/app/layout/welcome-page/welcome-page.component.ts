@@ -9,10 +9,10 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 
 @Component({
-    selector: "home",
-    templateUrl: "./home.component.html",
-    styleUrls: ["./home.component.scss"],
+    selector: "app-welcome-page",
+    templateUrl: "./welcome-page.component.html",
+    styleUrls: ["./welcome-page.component.scss"],
     standalone: true,
     imports: [CommonModule],
 })
-export class HomeComponent {}
+export class WelcomePageComponent {}
