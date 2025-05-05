@@ -30,7 +30,7 @@ export const appRoutes: Routes = [
         canActivate,
     },
     {
-        path: "welcome-page",
+        path: Constants.WELCOME_PAGE,
         loadComponent: () =>
             import("../welcome-page/welcome-page.component").then(
                 (m) => m.WelcomePageComponent,
