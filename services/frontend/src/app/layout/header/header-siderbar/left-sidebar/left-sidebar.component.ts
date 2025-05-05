@@ -37,7 +37,9 @@ export class LeftSidebarComponent implements OnInit {
     private readonly translate = inject(TranslateService);
     private readonly keycloak = inject(KeycloakService);
     constants = Constants;
-    homeTitle = computed(() => this.getTitle("welcome-page.title", "home"));
+    homeTitle = computed(() =>
+        this.getTitle("welcome-page.title", this.constants.WELCOME_PAGE),
+    );
     digitalServicesTitle = computed(() =>
         this.getTitle("digital-services.title", "digital-services"),
     );
@@ -121,7 +123,8 @@ export class LeftSidebarComponent implements OnInit {
     setSelectedPage() {
         let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
         this.selectedPage.set(
-            subscribers === "administration" || this.constants.WELCOME_PAGE
+            subscribers === "administration" ||
+                subscribers === this.constants.WELCOME_PAGE
                 ? subscribers
                 : page,
         );
