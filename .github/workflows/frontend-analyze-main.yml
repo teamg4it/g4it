@@ -1,0 +1,32 @@
+name: Frontend - Analyse - on main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: services/frontend/package-lock.json
+      - name: Install dependencies and run tests
+        run: |
+          cd services/frontend
+          npm ci
+          npm run test:ci
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v3.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: g4itteam_g4it_frontend
+          SONAR_ORGANIZATION: g4itteam
+        with:
+          projectBaseDir: services/frontend
+
