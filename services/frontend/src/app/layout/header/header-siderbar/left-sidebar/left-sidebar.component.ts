@@ -35,6 +35,7 @@ export class LeftSidebarComponent implements OnInit {
     public userService = inject(UserService);
     private readonly translate = inject(TranslateService);
     private readonly keycloak = inject(KeycloakService);
+    homeTitle = computed(() => this.getTitle("welcome-page.title", "home"));
     digitalServicesTitle = computed(() =>
         this.getTitle("digital-services.title", "digital-services"),
     );
@@ -45,7 +46,7 @@ export class LeftSidebarComponent implements OnInit {
     digitalServicesAriaCurrent = computed(() => this.getAriaCurrent("digital-services"));
     inventoriesAriaCurrent = computed(() => this.getAriaCurrent("inventories"));
     administrationAriaCurrent = computed(() => this.getAriaCurrent("administration"));
-    private globalStore = inject(GlobalStoreService);
+    public globalStore = inject(GlobalStoreService);
     selectedPage = signal("");
 
     selectedLanguage: string = "en";
