@@ -157,7 +157,10 @@ export class UserService {
             organization = this.getOrganization(subscriber);
         }
 
-        if (subscribers === Constants.USEFUL_INFORMATION) {
+        if (
+            subscribers === Constants.USEFUL_INFORMATION ||
+            subscribers === Constants.WELCOME_PAGE
+        ) {
             this.setSubscriberAndOrganization(subscriber, organization!);
             return;
         }
@@ -278,7 +281,7 @@ export class UserService {
     ): boolean {
         let roles: Role[] = this.getRoles(subscriber, organization);
 
-        if (uri === Constants.USEFUL_INFORMATION) {
+        if (uri === Constants.USEFUL_INFORMATION || uri === Constants.WELCOME_PAGE) {
             return true;
         }
 
