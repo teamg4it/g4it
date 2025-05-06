@@ -1,1 +1,59 @@
-Welcome page
+<p-scrollPanel [style]="{ width: '100%', height: '88%' }">
+    <div class="welcome-page-container px-3 pt-4">
+        <h1 class="welcome-page-title font-semibold line-height-3">
+            {{ "welcome-page.hello" | translate }},
+            <span class="username">{{ userName }}</span>
+        </h1>
+        <p
+            class="text-2xl line-height-3"
+            [innerHTML]="'welcome-page.about-g4it' | translate"
+        ></p>
+
+        <h2 class="getting-started">{{ "welcome-page.getting-started" | translate }}</h2>
+        <p class="text-xl mt-4 line-height-3">
+            {{ "welcome-page.getting-started-text" | translate }}
+        </p>
+
+        <p-button
+            (click)="openWorkspaceSidebar()"
+            icon="pi pi-plus-circle"
+            styleClass="uppercase bg-light-green text-white mt-4"
+            iconPos="right"
+            [label]="'common.workspace.create' | translate | uppercase"
+            [ariaLabel]="'common.workspace.create' | translate"
+        ></p-button>
+
+        <h3 class="font-normal text-2xl ml-0 mt-5">
+            {{ "welcome-page.modules-access" | translate }}
+        </h3>
+        <p-card
+            class="selection-card-container col"
+            [ngClass]="{ 'p-disabled': false }"
+            styleClass="selection-card flex"
+        >
+            <ng-template pTemplate="header">
+                <div class="py-4 pl-5">
+                    <div class="custom-icon custom-globe-icon"></div>
+                </div>
+            </ng-template>
+            <div class="p-card-title font-normal line-height-1">
+                {{ "welcome-page.inventories.title" | translate }}
+            </div>
+            <p class="selection-card-content text-lg mt-3">
+                {{ "welcome-page.inventories.description" | translate }}
+            </p>
+
+            <div class="p-card-footer p-0">
+                <p-button
+                    (click)="inventories()"
+                    icon="pi pi-arrow-circle-right"
+                    styleClass="uppercase inventories-button navigation-button mt-5"
+                    iconPos="right"
+                    [label]="'welcome-page.inventories.button' | translate | uppercase"
+                    [ariaLabel]="'welcome-page.inventories.button' | translate"
+                    [disabled]="false"
+                ></p-button>
+            </div>
+        </p-card>
+    </div>
+</p-scrollPanel>

@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, ReplaySubject } from "rxjs";
 import { DomainSubscribers, Workspace } from "../../interfaces/administration.interfaces";
 import { WorkspaceDataService } from "../data/workspace.data.service";
 
@@ -8,6 +8,9 @@ import { WorkspaceDataService } from "../data/workspace.data.service";
 })
 export class WorkspaceService {
     private readonly workspaceDataService = inject(WorkspaceDataService);
+
+    private isOpen$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+
     getDomainSubscribers(body: { email?: string }): Observable<DomainSubscribers[]> {
         return this.workspaceDataService.getDomainSubscribers(body);
     }
@@ -18,5 +21,13 @@ export class WorkspaceService {
         status?: string;
     }): Observable<Workspace> {
         return this.workspaceDataService.postUserWorkspace(body);
+    }
+
+    public setOpen(value: boolean): void {
+        this.isOpen$.next(value);
+    }
+
+    public getIsOpen(): Observable<boolean> {
+        return this.isOpen$.asObservable();
     }
 }

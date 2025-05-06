@@ -1,0 +1,51 @@
+.welcome-page-container {
+    .welcome-page-title {
+        .username {
+            color: var(--light-green-color);
+        }
+    }
+
+    .getting-started {
+        margin-top: 3.5rem;
+    }
+
+    .selection-card-container {
+        .selection-card {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .pi {
+            font-size: 8.5rem;
+            padding: 1rem;
+        }
+
+        .selection-card-content {
+            line-height: 1.75rem;
+        }
+
+        .custom-icon {
+            width: 154px;
+            height: 154px;
+            background-color: var(--blue-color);
+        }
+
+        &.p-disabled {
+            .p-card-title {
+                color: var(--tints-black-80);
+            }
+        }
+
+        &:not(.p-disabled):hover {
+            .p-card-title {
+                color: var(--blue-color);
+            }
+        }
+    }
+
+    .selection-card-container.p-disabled {
+        .custom-icon {
+            background-color: #888a88;
+        }
+    }
+}
