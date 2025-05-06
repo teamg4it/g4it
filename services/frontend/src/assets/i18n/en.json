@@ -299,6 +299,10 @@
         "tooltip_average_workload": "Average workload",
         "tooltip_annual_usage": "Annual usage"
     },
+    "welcome-page": {
+        "title": "Welcome Page",
+        "name": "Home"
+    },
     "Jan": "Jan",
     "Feb": "Feb",
     "Mar": "Mar",

@@ -40,6 +40,6 @@ export const appRoutes: Routes = [
     },
     {
         path: "**",
-        redirectTo: "home",
+        redirectTo: Constants.WELCOME_PAGE,
     },
 ];

@@ -298,6 +298,10 @@
         "tooltip_average_workload": "Charge de travail moyenne",
         "tooltip_annual_usage": "Utilisation annuelle"
     },
+    "welcome-page": {
+        "title": "Page de bienvenue",
+        "name": "Maison"
+    },
     "Jan": "janv",
     "Feb": "févr",
     "Mar": "mars",
