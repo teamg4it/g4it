@@ -7,6 +7,7 @@
  */
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
@@ -20,7 +21,14 @@ import { WorkspaceService } from "src/app/core/service/business/workspace.servic
     templateUrl: "./welcome-page.component.html",
     styleUrls: ["./welcome-page.component.scss"],
     standalone: true,
-    imports: [CommonModule, ButtonModule, TranslateModule, CardModule, ScrollPanelModule],
+    imports: [
+        CommonModule,
+        ButtonModule,
+        TranslateModule,
+        CardModule,
+        RouterModule,
+        ScrollPanelModule,
+    ],
 })
 export class WelcomePageComponent {
     userName: string = "";
