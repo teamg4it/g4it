@@ -229,13 +229,7 @@ export class TopHeaderComponent implements OnInit {
     }
 
     setSelectedPage() {
-        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
-        this.selectedPage.set(
-            subscribers === "administration" ||
-                subscribers === Constants.USEFUL_INFORMATION
-                ? subscribers
-                : page,
-        );
+        this.selectedPage.set(this.userService.getSelectedPage());
     }
 
     handleKeydownLanguage(event: KeyboardEvent): void {

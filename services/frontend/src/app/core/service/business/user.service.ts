@@ -326,11 +326,25 @@ export class UserService {
                 this.router.navigateByUrl(Constants.USEFUL_INFORMATION);
                 return;
             }
+            if (page === Constants.WELCOME_PAGE) {
+                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                return;
+            }
             this.router.navigateByUrl(
                 `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
             );
         } else {
             this.router.navigateByUrl(`something-went-wrong/403`);
         }
+    }
+
+    getSelectedPage(): string {
+        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
+
+        return subscribers === "administration" ||
+            subscribers === Constants.USEFUL_INFORMATION ||
+            subscribers === Constants.WELCOME_PAGE
+            ? subscribers
+            : page;
     }
 }

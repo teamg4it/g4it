@@ -121,13 +121,7 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     setSelectedPage() {
-        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
-        this.selectedPage.set(
-            subscribers === "administration" ||
-                subscribers === this.constants.WELCOME_PAGE
-                ? subscribers
-                : page,
-        );
+        this.selectedPage.set(this.userService.getSelectedPage());
     }
 
     getTitle(name: string, page: string): any {
