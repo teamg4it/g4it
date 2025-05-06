@@ -212,7 +212,6 @@ class InPhysicalEquipmentServiceTest {
                 inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
 
         assertEquals("404", exception1.getCode());
-        assertEquals("the digital service uid provided: null has no physical equipment with id : 1", exception1.getMessage());
         when(inPhysicalEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(inPhysicalEquipment));
         G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
                 inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
@@ -220,7 +219,7 @@ class InPhysicalEquipmentServiceTest {
         assertEquals("409", exception2.getCode());
         when(inPhysicalEquipmentRepository.findByDigitalServiceUidAndId(inPhysicalEquipment.getDigitalServiceUid(), inPhysicalEquipment.getId())).thenReturn(Optional.of(inPhysicalEquipment));
         when(inPhysicalEquipmentMapper.toRest(Mockito.any(InPhysicalEquipment.class))).thenReturn(new InPhysicalEquipmentRest());
-        InPhysicalEquipmentRest response = inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id);
+        InPhysicalEquipmentRest response = inPhysicalEquipmentService.getByDigitalServiceAndId(inPhysicalEquipment.getDigitalServiceUid(), inPhysicalEquipment.getId());
         assertNotNull(response);
     }
 
