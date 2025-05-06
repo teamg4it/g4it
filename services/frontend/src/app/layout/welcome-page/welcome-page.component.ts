@@ -10,6 +10,7 @@ import { Component } from "@angular/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
+import { ScrollPanelModule } from "primeng/scrollpanel";
 import { firstValueFrom } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
@@ -19,7 +20,7 @@ import { WorkspaceService } from "src/app/core/service/business/workspace.servic
     templateUrl: "./welcome-page.component.html",
     styleUrls: ["./welcome-page.component.scss"],
     standalone: true,
-    imports: [CommonModule, ButtonModule, TranslateModule, CardModule],
+    imports: [CommonModule, ButtonModule, TranslateModule, CardModule, ScrollPanelModule],
 })
 export class WelcomePageComponent {
     userName: string = "";
