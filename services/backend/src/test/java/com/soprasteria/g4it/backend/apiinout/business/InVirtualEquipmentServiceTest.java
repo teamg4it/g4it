@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InVirtualEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -84,12 +85,40 @@ class InVirtualEquipmentServiceTest {
     }
 
     @Test
+    void createInVirtualEquipmentDigitalServiceTest() {
+        String digitalServiceId = "dummy_id";
+        var organization = Organization.builder()
+                .name("DEMO")
+                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .build();
+        var digitalService = DigitalService.builder()
+                .name("DS_Name")
+                .organization(organization)
+                .build();
+        InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).build();
+        InVirtualEquipment inVirtualEquipment = InVirtualEquipment.builder().id(1L).name("MyVE").physicalEquipmentName("MyPE")
+                .allocationFactor(0.5).datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).infrastructureType("CLOUD_SERVERS").quantity(12.0).sizeDiskGb(234.0).
+                sizeMemoryGb(3.0).vcpuCoreNumber(2.0).workload(33.0).location("France").build();
+
+        when(digitalServiceRepository.findById(digitalServiceId)).thenReturn(Optional.empty());
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inVirtualEquipmentService.createInVirtualEquipmentDigitalService(digitalServiceId, inVirtualEquipmentRest));
+        assertEquals("404", exception.getCode());
+        when(digitalServiceRepository.findById(digitalServiceId)).thenReturn(Optional.of(digitalService));
+        when(inVirtualEquipmentMapper.toEntity(inVirtualEquipmentRest)).thenReturn(inVirtualEquipment);
+        when(inVirtualEquipmentMapper.toRest(inVirtualEquipment)).thenReturn(inVirtualEquipmentRest);
+        InVirtualEquipmentRest responseRest = inVirtualEquipmentService.createInVirtualEquipmentDigitalService(digitalServiceId, inVirtualEquipmentRest);
+        assertNotNull(responseRest);
+    }
+
+    @Test
     void updateInVirtualEquipmentTest() {
         String digitalServiceUid = "service-123";
         Long id = 1L;
-        InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).build();
+        Long inventoryId = 12L;
+        InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceUid("dummyid").inventoryId(11L).durationHour(33.0).electricityConsumption(22.0).build();
         InVirtualEquipment virtualEquipment = InVirtualEquipment.builder().id(1L).name("MyVE").physicalEquipmentName("MyPE")
-                .allocationFactor(0.5).datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).infrastructureType("CLOUD_SERVERS").quantity(12.0).sizeDiskGb(234.0).
+                .allocationFactor(0.5).datacenterName("default").digitalServiceUid("dummyid").inventoryId(11L).durationHour(33.0).electricityConsumption(22.0).infrastructureType("CLOUD_SERVERS").quantity(12.0).sizeDiskGb(234.0).
                 sizeMemoryGb(3.0).vcpuCoreNumber(2.0).workload(33.0).location("France").build();
 
         when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(virtualEquipment));
@@ -101,6 +130,20 @@ class InVirtualEquipmentServiceTest {
         when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(inVirtualEquipmentRest.getDigitalServiceUid(), inVirtualEquipmentRest.getId())).thenReturn(Optional.of(virtualEquipment));
         InVirtualEquipmentRest responseRest = inVirtualEquipmentService.updateInVirtualEquipment(inVirtualEquipmentRest.getDigitalServiceUid(), inVirtualEquipmentRest.getId(), inVirtualEquipmentRest);
         assertNotNull(responseRest);
+
+        when(inVirtualEquipmentRepository.findByInventoryIdAndId(inventoryId, id)).thenReturn(Optional.of(virtualEquipment));
+        G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
+                inVirtualEquipmentService.updateInVirtualEquipment(inventoryId, id, inVirtualEquipmentRest));
+        assertEquals("409", exception2.getCode());
+
+        when(inVirtualEquipmentRepository.findByInventoryIdAndId(inventoryId, id)).thenReturn(Optional.empty());
+        G4itRestException exception3 = assertThrows(G4itRestException.class, () ->
+                inVirtualEquipmentService.updateInVirtualEquipment(inventoryId, id, inVirtualEquipmentRest));
+        assertEquals("404", exception3.getCode());
+
+        when(inVirtualEquipmentRepository.findByInventoryIdAndId(virtualEquipment.getInventoryId(), virtualEquipment.getId())).thenReturn(Optional.of(virtualEquipment));
+        InVirtualEquipmentRest inventoryResponseRest = inVirtualEquipmentService.updateInVirtualEquipment(inVirtualEquipmentRest.getInventoryId(), inVirtualEquipmentRest.getId(), inVirtualEquipmentRest);
+        assertNotNull(inventoryResponseRest);
     }
 
     @Test
@@ -108,7 +151,7 @@ class InVirtualEquipmentServiceTest {
         String digitalServiceUid = "service-123";
         Long id = 1L;
         Long inventoryId = 1L;
-        InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).build();
+        InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceUid("dummyid").inventoryId(11L).durationHour(33.0).electricityConsumption(22.0).build();
         InVirtualEquipment virtualEquipment = InVirtualEquipment.builder().id(1L).name("MyVE").physicalEquipmentName("MyPE")
                 .allocationFactor(0.5).datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).infrastructureType("CLOUD_SERVERS").quantity(12.0).sizeDiskGb(234.0).
                 sizeMemoryGb(3.0).vcpuCoreNumber(2.0).workload(33.0).location("France").build();
@@ -116,14 +159,13 @@ class InVirtualEquipmentServiceTest {
         when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
         G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
                 inVirtualEquipmentService.deleteInVirtualEquipment(digitalServiceUid, id));
-
         assertEquals("404", exception1.getCode());
 
         when(inVirtualEquipmentRepository.findByInventoryIdAndId(inventoryId, id)).thenReturn(Optional.empty());
         G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
                 inVirtualEquipmentService.deleteInVirtualEquipment(inventoryId, id));
-
         assertEquals("404", exception2.getCode());
+
         when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, inVirtualEquipmentRest.getId())).thenReturn(Optional.of(virtualEquipment));
         inVirtualEquipmentService.deleteInVirtualEquipment(digitalServiceUid, id);
         when(inVirtualEquipmentRepository.findByInventoryIdAndId(inventoryId, inVirtualEquipmentRest.getId())).thenReturn(Optional.of(virtualEquipment));
@@ -204,7 +246,7 @@ class InVirtualEquipmentServiceTest {
     }
 
     @Test
-    void createInVirtualEquipmentDigitalService_throwsException_whenDigitalServiceDoesNotExist() {
+    void createInVirtualEquipmentDigitalServiceThrowsExceptionWhenDigitalServiceDoesNotExist() {
         String digitalServiceUid = "service-123";
         InVirtualEquipmentRest inVirtualEquipmentRest = new InVirtualEquipmentRest();
 
@@ -218,7 +260,7 @@ class InVirtualEquipmentServiceTest {
     }
 
     @Test
-    void deleteInVirtualEquipment_throwsException_whenVirtualEquipmentNotFound() {
+    void deleteInVirtualEquipmentThrowsExceptionWhenVirtualEquipmentNotFound() {
         String digitalServiceUid = "service-123";
         Long id = 1L;
 
@@ -232,7 +274,7 @@ class InVirtualEquipmentServiceTest {
     }
 
     @Test
-    void updateOrDeleteInVirtualEquipments_handlesEmptyRepositoryList_whenNoExistingVirtualEquipments() {
+    void updateOrDeleteInVirtualEquipmentsHandlesEmptyRepositoryListWhenNoExistingVirtualEquipments() {
         String digitalServiceUid = "service-123";
         Long physicalEqpId = 1L;
         String physicalEqpName = "Physical Equipment 1";
@@ -257,7 +299,7 @@ class InVirtualEquipmentServiceTest {
 
 
     @Test
-    void updateOrDeleteInVirtualEquipments_throwsException_whenPhysicalEquipmentIdIsNull() {
+    void updateOrDeleteInVirtualEquipmentsThrowsExceptionWhenPhysicalEquipmentIdIsNull() {
         String digitalServiceUid = "service-123";
         Long physicalEqpId = null;
         List<InVirtualEquipmentRest> inVirtualEquipmentList = List.of();
@@ -270,7 +312,7 @@ class InVirtualEquipmentServiceTest {
     }
 
     @Test
-    void updateOrDeleteInVirtualEquipments_throwsException_whenInputListContainsNullElement() {
+    void updateOrDeleteInVirtualEquipmentsThrowsExceptionWhenInputListContainsNullElement() {
         String digitalServiceUid = "service-123";
         Long physicalEqpId = 1L;
         List<InVirtualEquipmentRest> inVirtualEquipmentList = List.of(new InVirtualEquipmentRest());
@@ -283,7 +325,7 @@ class InVirtualEquipmentServiceTest {
     }
 
     @Test
-    void updateOrDeleteInVirtualEquipments_throwsException_whenInputListHasDuplicateIds() {
+    void updateOrDeleteInVirtualEquipmentsThrowsExceptionWhenInputListHasDuplicateIds() {
         String digitalServiceUid = "service-123";
         Long physicalEqpId = 1L;
 
