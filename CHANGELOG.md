@@ -5,6 +5,7 @@
 ### Minor Changes
 
 - 795 | Update the docker image of BoaviztAPI
+- 1102| Regression on total electricity consumption compute
 
 ## 3.1.0
 
