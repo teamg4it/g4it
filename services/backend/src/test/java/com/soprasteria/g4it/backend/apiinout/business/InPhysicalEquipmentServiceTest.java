@@ -9,24 +9,28 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -200,15 +204,24 @@ class InPhysicalEquipmentServiceTest {
     }
 
     @Test
-    void getByDigitalServiceAndId_throwsException_whenDigitalServiceUidIsNull() {
-        String digitalServiceUid = null;
+    void getByDigitalServiceAndId() {
+        String digitalServiceUid = "test-exception";
         Long id = 1L;
-
-        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+        InPhysicalEquipment inPhysicalEquipment = InPhysicalEquipment.builder().digitalServiceUid("dummy_id").id(31L).build();
+        G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
                 inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
 
-        assertEquals("404", exception.getCode());
-        assertEquals("the digital service uid provided: null has no physical equipment with id : 1", exception.getMessage());
+        assertEquals("404", exception1.getCode());
+        assertEquals("the digital service uid provided: null has no physical equipment with id : 1", exception1.getMessage());
+        when(inPhysicalEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(inPhysicalEquipment));
+        G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
+                inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
+
+        assertEquals("409", exception2.getCode());
+        when(inPhysicalEquipmentRepository.findByDigitalServiceUidAndId(inPhysicalEquipment.getDigitalServiceUid(), inPhysicalEquipment.getId())).thenReturn(Optional.of(inPhysicalEquipment));
+        when(inPhysicalEquipmentMapper.toRest(Mockito.any(InPhysicalEquipment.class))).thenReturn(new InPhysicalEquipmentRest());
+        InPhysicalEquipmentRest response = inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id);
+        assertNotNull(response);
     }
 
     @Test
@@ -255,4 +268,62 @@ class InPhysicalEquipmentServiceTest {
         assertEquals("404", exception.getCode());
         assertEquals("Physical equipment 1 not found in digital service null", exception.getMessage());
     }
+
+    @Test
+    void createInVirtualEquipmentInventoryTest() {
+        var organization = Organization.builder()
+                .name("DEMO")
+                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .build();
+        var inventory = Inventory.builder()
+                .name("Inventory Name")
+                .organization(organization)
+                .doExportVerbose(true)
+                .build();
+        Long inventoryId = 1L;
+        InPhysicalEquipmentRest inVirtualEquipmentRest = InPhysicalEquipmentRest.builder().datacenterName("default").name("MyPE").name("MyVE").id(1L).digitalServiceUid("dummyid").electricityConsumption(22.0).build();
+        InPhysicalEquipment inVirtualEquipment = InPhysicalEquipment.builder().id(1L).name("MyVE").name("MyPE")
+                .datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).sizeDiskGb(234.0).
+                sizeMemoryGb(3.0).build();
+
+        when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.empty());
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inPhysicalEquipmentService.createInPhysicalEquipmentInventory(inventoryId, inVirtualEquipmentRest));
+        assertEquals("404", exception.getCode());
+        when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
+        when(inPhysicalEquipmentMapper.toEntity(inVirtualEquipmentRest)).thenReturn(inVirtualEquipment);
+        when(inPhysicalEquipmentMapper.toRest(inVirtualEquipment)).thenReturn(inVirtualEquipmentRest);
+        InPhysicalEquipmentRest responseRest = inPhysicalEquipmentService.createInPhysicalEquipmentInventory(inventoryId, inVirtualEquipmentRest);
+        assertNotNull(responseRest);
+    }
+
+
+    @Test
+    void createInPhysicalEquipmentDigitalServiceTest() {
+        String digitalServiceId = "dummy_id";
+        var organization = Organization.builder()
+                .name("DEMO")
+                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .build();
+        var digitalService = DigitalService.builder()
+                .name("DS_Name")
+                .organization(organization)
+                .build();
+        InPhysicalEquipmentRest inVirtualEquipmentRest = InPhysicalEquipmentRest.builder().datacenterName("default").name("MyPE").name("MyVE").id(1L).digitalServiceUid("dummyid").electricityConsumption(22.0).build();
+        InPhysicalEquipment inVirtualEquipment = InPhysicalEquipment.builder().id(1L).name("MyVE").name("MyPE")
+                .datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).quantity(12.0).sizeDiskGb(234.0).
+                sizeMemoryGb(3.0).location("France").build();
+
+        when(digitalServiceRepository.findById(digitalServiceId)).thenReturn(Optional.empty());
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inPhysicalEquipmentService.createInPhysicalEquipmentDigitalService(digitalServiceId, inVirtualEquipmentRest));
+        assertEquals("404", exception.getCode());
+        when(digitalServiceRepository.findById(digitalServiceId)).thenReturn(Optional.of(digitalService));
+        when(inPhysicalEquipmentMapper.toEntity(inVirtualEquipmentRest)).thenReturn(inVirtualEquipment);
+        when(inPhysicalEquipmentMapper.toRest(inVirtualEquipment)).thenReturn(inVirtualEquipmentRest);
+        InPhysicalEquipmentRest responseRest = inPhysicalEquipmentService.createInPhysicalEquipmentDigitalService(digitalServiceId, inVirtualEquipmentRest);
+        assertNotNull(responseRest);
+    }
+
+
 }
