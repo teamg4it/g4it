@@ -1,4 +1,4 @@
-<p-scrollPanel [style]="{ width: '100%', height: '88%' }">
+<p-scrollPanel [style]="{ width: '100%', height: '100%' }">
     <div class="welcome-page-container px-3 pt-4">
         <h1 class="welcome-page-title font-semibold line-height-3">
             {{ "welcome-page.hello" | translate }},
@@ -26,34 +26,72 @@
         <h3 class="font-normal text-2xl ml-0 mt-5">
             {{ "welcome-page.modules-access" | translate }}
         </h3>
-        <p-card
-            class="selection-card-container col"
-            [ngClass]="{ 'p-disabled': false }"
-            styleClass="selection-card flex"
-        >
-            <ng-template pTemplate="header">
-                <div class="py-4 pl-5">
-                    <div class="custom-icon custom-globe-icon"></div>
+        <div class="grid gap-6">
+            <!-- Inventories -->
+            <p-card
+                class="selection-card-container col"
+                [ngClass]="{ 'p-disabled': false }"
+                styleClass="selection-card flex"
+            >
+                <ng-template pTemplate="header">
+                    <div class="py-4 pl-5">
+                        <div class="custom-icon custom-globe-icon"></div>
+                    </div>
+                </ng-template>
+                <div class="p-card-title font-normal line-height-1">
+                    {{ "welcome-page.inventories.title" | translate }}
                 </div>
-            </ng-template>
-            <div class="p-card-title font-normal line-height-1">
-                {{ "welcome-page.inventories.title" | translate }}
-            </div>
-            <p class="selection-card-content text-lg mt-3">
-                {{ "welcome-page.inventories.description" | translate }}
-            </p>
+                <p class="selection-card-content text-lg mt-3">
+                    {{ "welcome-page.inventories.description" | translate }}
+                </p>
 
-            <div class="p-card-footer p-0">
-                <p-button
-                    (click)="inventories()"
-                    icon="pi pi-arrow-circle-right"
-                    styleClass="uppercase inventories-button navigation-button mt-5"
-                    iconPos="right"
-                    [label]="'welcome-page.inventories.button' | translate | uppercase"
-                    [ariaLabel]="'welcome-page.inventories.button' | translate"
-                    [disabled]="false"
-                ></p-button>
-            </div>
-        </p-card>
+                <div class="p-card-footer p-0">
+                    <p-button
+                        (click)="inventories()"
+                        icon="pi pi-arrow-circle-right"
+                        styleClass="uppercase inventories-button navigation-button mt-5"
+                        iconPos="right"
+                        [label]="
+                            'welcome-page.inventories.button' | translate | uppercase
+                        "
+                        [ariaLabel]="'welcome-page.inventories.button' | translate"
+                        [disabled]="false"
+                    ></p-button>
+                </div>
+            </p-card>
+
+            <!-- Digital Services -->
+            <p-card
+                class="selection-card-container col"
+                [ngClass]="{ 'p-disabled': false }"
+                styleClass="selection-card flex"
+            >
+                <ng-template pTemplate="header">
+                    <div class="py-4 pl-5">
+                        <div class="custom-icon custom-at-symbol-icon"></div>
+                    </div>
+                </ng-template>
+                <div class="p-card-title font-normal line-height-1">
+                    {{ "welcome-page.digital-service.title" | translate }}
+                </div>
+                <p class="selection-card-content text-lg mt-3">
+                    {{ "welcome-page.digital-service.description" | translate }}
+                </p>
+
+                <div class="p-card-footer p-0">
+                    <p-button
+                        (click)="digitalServices()"
+                        icon="pi pi-arrow-circle-right"
+                        styleClass="uppercase digital-service-button navigation-button mt-5"
+                        iconPos="right"
+                        [label]="
+                            'welcome-page.digital-service.button' | translate | uppercase
+                        "
+                        [ariaLabel]="'welcome-page.digital-service.button' | translate"
+                        [disabled]="false"
+                    ></p-button>
+                </div>
+            </p-card>
+        </div>
     </div>
 </p-scrollPanel>

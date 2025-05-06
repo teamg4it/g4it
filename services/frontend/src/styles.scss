@@ -1126,6 +1126,12 @@ app-top-header {
                 contain;
         }
 
+        .custom-at-symbol-icon {
+            mask: url("assets/images/icons/icon-at-symbol.svg") no-repeat center / contain;
+            -webkit-mask: url("assets/images/icons/icon-at-symbol.svg") no-repeat center /
+                contain;
+        }
+
         .navigation-button:not(:disabled) {
             color: var(--blue-color);
             border: 2px solid var(--blue-color);
