@@ -37,7 +37,7 @@ import java.io.Serializable;
         equipment_type            AS type,
         common_filters[1]         AS nom_entite,
         filters[1]                AS statut ,
-        sum(ope.electricity_consumption) / :criteriaNumber as elec_consumption
+        sum(ope.electricity_consumption) / :criteriaNumber * ope.quantity as elec_consumption
         FROM out_physical_equipment ope
         WHERE lifecycle_step = 'USING'
         AND task_id = :taskId
@@ -45,7 +45,8 @@ import java.io.Serializable;
           "location" ,
           equipment_type,
           common_filters,
-          filters;
+          filters,
+          quantity;
         """)
 @Data
 @Entity

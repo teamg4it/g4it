@@ -12,13 +12,17 @@ package com.soprasteria.g4it.backend.apiinout.business;
 import com.soprasteria.g4it.backend.apiinout.mapper.InApplicationMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -43,7 +47,7 @@ class InApplicationServiceTest {
     private InApplicationService inApplicationService;
 
     @Test
-    void getByInventory_returnsApplications_whenInventoryExists() {
+    void getByInventoryReturnsApplicationsWhenInventoryExists() {
         Long inventoryId = 1L;
         List<InApplication> applications = List.of(new InApplication());
         List<InApplicationRest> applicationRests = List.of(new InApplicationRest());
@@ -59,22 +63,32 @@ class InApplicationServiceTest {
     }
 
     @Test
-    void getByInventoryAndId_throwsException_whenApplicationNotFound() {
+    void getByInventoryAndIdThrowsException() {
         Long inventoryId = 1L;
         Long applicationId = 2L;
-
+        InApplication existingApplication = new InApplication();
+        existingApplication.setInventoryId(3L);
+        existingApplication.setId(5L);
         when(inApplicationRepository.findByInventoryIdAndId(inventoryId, applicationId)).thenReturn(Optional.empty());
 
-        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+        G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
                 inApplicationService.getByInventoryAndId(inventoryId, applicationId));
 
-        assertEquals("404", exception.getCode());
-        assertTrue(exception.getMessage().contains("has no application with id"));
+        assertEquals("404", exception1.getCode());
+        assertTrue(exception1.getMessage().contains("has no application with id"));
         verify(inApplicationRepository).findByInventoryIdAndId(inventoryId, applicationId);
+
+        when(inApplicationRepository.findByInventoryIdAndId(inventoryId, applicationId)).thenReturn(Optional.of(existingApplication));
+
+        G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
+                inApplicationService.getByInventoryAndId(inventoryId, applicationId));
+
+        assertEquals("409", exception2.getCode());
+        assertTrue(exception2.getMessage().contains("not compatible with the inventory id"));
     }
 
     @Test
-    void createInApplicationInventory_throwsException_whenInventoryDoesNotExist() {
+    void createInApplicationInventoryThrowsExceptionWhenInventoryDoesNotExist() {
         Long inventoryId = 1L;
         InApplicationRest inApplicationRest = new InApplicationRest();
 
@@ -89,25 +103,72 @@ class InApplicationServiceTest {
     }
 
     @Test
-    void updateInApplication_throwsException_whenInventoryIdMismatch() {
+    void createInApplicationInventory() {
+        Long inventoryId = 1L;
+        InApplication existingApplication = new InApplication();
+        existingApplication.setInventoryId(3L);
+        existingApplication.setId(5L);
+        InApplicationRest inApplicationRest = new InApplicationRest();
+        var organization = Organization.builder()
+                .name("DEMO")
+                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .build();
+        var inventory = Inventory.builder()
+                .name("Inventory Name")
+                .id(1L)
+                .organization(organization)
+                .doExportVerbose(true)
+                .build();
+        when(inventoryRepository.findById(inventory.getId())).thenReturn(Optional.of(inventory));
+        when(inApplicationMapper.toEntity(inApplicationRest)).thenReturn(existingApplication);
+        when(inApplicationMapper.toRest(Mockito.any(InApplication.class))).thenReturn(inApplicationRest);
+        InApplicationRest response = inApplicationService.createInApplicationInventory(inventoryId, inApplicationRest);
+        assertNotNull(response);
+    }
+
+    @Test
+    void updateInApplicationThrowsException() {
         Long inventoryId = 1L;
         Long applicationId = 2L;
         InApplicationRest inApplicationUpdateRest = new InApplicationRest();
         InApplication existingApplication = new InApplication();
         existingApplication.setInventoryId(3L);
+        existingApplication.setId(5L);
 
         when(inApplicationRepository.findByInventoryIdAndId(inventoryId, applicationId)).thenReturn(Optional.of(existingApplication));
 
-        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+        G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
                 inApplicationService.updateInApplication(inventoryId, applicationId, inApplicationUpdateRest));
 
-        assertEquals("409", exception.getCode());
-        assertTrue(exception.getMessage().contains("is not compatible with the inventory id"));
+        assertEquals("409", exception1.getCode());
+        assertTrue(exception1.getMessage().contains("is not compatible with the inventory id"));
         verify(inApplicationRepository).findByInventoryIdAndId(inventoryId, applicationId);
+
+        when(inApplicationRepository.findByInventoryIdAndId(inventoryId, applicationId)).thenReturn(Optional.empty());
+
+        G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
+                inApplicationService.updateInApplication(inventoryId, applicationId, inApplicationUpdateRest));
+
+        assertEquals("404", exception2.getCode());
+        assertTrue(exception2.getMessage().contains("has no application with id"));
     }
 
     @Test
-    void deleteInApplication_deletesApplication_whenIdExists() {
+    void updateInApplication() {
+        InApplicationRest inApplicationUpdateRest = new InApplicationRest();
+        InApplication existingApplication = new InApplication();
+        existingApplication.setInventoryId(3L);
+        existingApplication.setId(5L);
+
+        when(inApplicationRepository.findByInventoryIdAndId(existingApplication.getInventoryId(), existingApplication.getId())).thenReturn(Optional.of(existingApplication));
+        when(inApplicationMapper.toEntity(inApplicationUpdateRest)).thenReturn(existingApplication);
+        when(inApplicationMapper.toRest(Mockito.any(InApplication.class))).thenReturn(inApplicationUpdateRest);
+        InApplicationRest response = inApplicationService.updateInApplication(existingApplication.getInventoryId(), existingApplication.getId(), inApplicationUpdateRest);
+        assertNotNull(response);
+    }
+
+    @Test
+    void deleteInApplicationDeletesApplicationWhenIdExists() {
         Long applicationId = 1L;
 
         doNothing().when(inApplicationRepository).deleteById(applicationId);

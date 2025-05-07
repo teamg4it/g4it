@@ -1,5 +1,5 @@
 ---
-title: "What are the data to be collected?"
+title: "What Data Needs to Be Collected?"
 description: "This section explains the kind of data you need to collect before starting an assessment"
 weight: 10
 ---

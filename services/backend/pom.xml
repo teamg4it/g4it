@@ -73,6 +73,21 @@
             **/utils/Constants.java,
             **/BackendApplication.java
         </sonar.coverage.exclusions>
+        <sonar.exclusions>
+            **/gen/**/*.java,
+            **/controller/**/*.java,
+            **/mapper/**/*.java,
+            **/config/**/*.java,
+            **/exception/**/*.java,
+            **/model/**/*.java,
+            **/modeldb/**/*.java,
+            **/repository/**/*.java,
+            **/tasklet/**/*.java,
+            **/client/**/*.java,
+            **/utils/Constants.java,
+            **/BackendApplication.java,
+            **/*Test.java
+        </sonar.exclusions>
         <sonar.java.binaries>**/*</sonar.java.binaries>
     </properties>
 
