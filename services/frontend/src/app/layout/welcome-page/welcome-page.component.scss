@@ -48,4 +48,26 @@
             background-color: #888a88;
         }
     }
+
+    footer {
+        a {
+            color: var(--tints-black-80);
+            text-decoration: none;
+        }
+    }
+
+    .help-center a:not(.p-disabled):hover {
+        background: rgba(0, 0, 0, 0.04);
+        font-weight: 700;
+    }
+
+    .useful-info .hover-text:not(.p-disabled):hover {
+        background: rgba(0, 0, 0, 0.04);
+        font-weight: 700;
+    }
+
+    .help-center a:not(.p-disabled):focus,
+    .useful-info a:focus {
+        outline: 2px solid #28a745;
+    }
 }
