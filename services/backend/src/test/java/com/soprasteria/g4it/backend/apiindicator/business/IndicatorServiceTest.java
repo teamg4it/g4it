@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapp
 import com.soprasteria.g4it.backend.apiindicator.mapper.EquipmentIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -50,25 +52,24 @@ class IndicatorServiceTest {
     @InjectMocks
     private IndicatorService indicatorService;
 
-//    @Test
-//    void getEquipmentIndicators_returnsMappedIndicators_whenTaskIdIsValid() {
-//        Long taskId = 1L;
-//        List<OutPhysicalEquipment> equipmentList = List.of(new OutPhysicalEquipment());
-//        Map<String, List<OutPhysicalEquipment>> groupedEquipment = Map.of("criterion", equipmentList);
-//        EquipmentIndicatorBO indicatorBO = new EquipmentIndicatorBO();
-//
-//        when(outPhysicalEquipmentRepository.findByTaskId(taskId)).thenReturn(equipmentList);
-//        when(equipmentIndicatorMapper.outToDto(equipmentList)).thenReturn(indicatorBO);
-//
-//        Map<String, EquipmentIndicatorBO> result = indicatorService.getEquipmentIndicators(taskId);
-//
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        assertEquals(indicatorBO, result.get("criterion"));
-//    }
+    @Test
+    void getEquipmentIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
+        Long taskId = 1L;
+        List<OutPhysicalEquipment> equipmentList = List.of(OutPhysicalEquipment.builder().id(3L).criterion("Resource_Group").build());
+        Map<String, List<OutPhysicalEquipment>> groupedEquipment = Map.of("criterion", equipmentList);
+        EquipmentIndicatorBO indicatorBO = EquipmentIndicatorBO.builder().build();
+
+        when(outPhysicalEquipmentRepository.findByTaskId(taskId)).thenReturn(equipmentList);
+        when(equipmentIndicatorMapper.outToDto(equipmentList)).thenReturn(indicatorBO);
+
+        Map<String, EquipmentIndicatorBO> result = indicatorService.getEquipmentIndicators(taskId);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
 
     @Test
-    void getApplicationIndicators_returnsMappedIndicators_whenTaskIdIsValid() {
+    void getApplicationIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
         Long taskId = 1L;
         List<OutApplication> applications = List.of(new OutApplication());
         List<ApplicationIndicatorBO<ApplicationImpactBO>> mappedIndicators = List.of(new ApplicationIndicatorBO<>());
@@ -83,7 +84,7 @@ class IndicatorServiceTest {
     }
 
     @Test
-    void getDataCenterIndicators_returnsIndicators_whenInventoryIdIsValid() {
+    void getDataCenterIndicatorsReturnsIndicatorsWhenInventoryIdIsValid() {
         Long inventoryId = 1L;
         List<DataCentersInformationBO> indicators = List.of(new DataCentersInformationBO());
 
@@ -96,7 +97,7 @@ class IndicatorServiceTest {
     }
 
     @Test
-    void getPhysicalEquipmentAvgAge_returnsIndicators_whenInventoryIdIsValid() {
+    void getPhysicalEquipmentAvgAgeReturnsIndicatorsWhenInventoryIdIsValid() {
         long inventoryId = 1L;
         List<PhysicalEquipmentsAvgAgeBO> avgAgeIndicators = List.of(new PhysicalEquipmentsAvgAgeBO());
 
@@ -109,7 +110,7 @@ class IndicatorServiceTest {
     }
 
     @Test
-    void getPhysicalEquipmentsLowImpact_returnsIndicators_whenParametersAreValid() {
+    void getPhysicalEquipmentsLowImpactReturnsIndicatorsWhenParametersAreValid() {
         String subscriber = "subscriber";
         Long organizationId = 1L;
         Long inventoryId = 1L;
@@ -125,7 +126,7 @@ class IndicatorServiceTest {
     }
 
     @Test
-    void getPhysicalEquipmentElecConsumption_returnsIndicators_whenParametersAreValid() {
+    void getPhysicalEquipmentElecConsumptionReturnsIndicatorsWhenParametersAreValid() {
         Long taskId = 1L;
         Long criteriaNumber = 2L;
         List<PhysicalEquipmentElecConsumptionBO> elecConsumptionIndicators = List.of(new PhysicalEquipmentElecConsumptionBO());

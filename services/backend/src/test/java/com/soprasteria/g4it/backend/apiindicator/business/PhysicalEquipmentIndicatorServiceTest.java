@@ -66,7 +66,7 @@ class PhysicalEquipmentIndicatorServiceTest {
     private PhysicalEquipmentIndicatorService service;
 
     @Test
-    void getPhysicalEquipmentAvgAge_returnsMappedIndicators_whenValidInventoryId() {
+    void getPhysicalEquipmentAvgAgeReturnsMappedIndicatorsWhenValidInventoryId() {
         Long inventoryId = 1L;
         Task task = new Task();
         task.setId(10L);
@@ -86,7 +86,7 @@ class PhysicalEquipmentIndicatorServiceTest {
     }
 
     @Test
-    void getPhysicalEquipmentAvgAge_throwsException_whenTaskNotFound() {
+    void getPhysicalEquipmentAvgAgeThrowsExceptionWhenTaskNotFound() {
         Long inventoryId = 1L;
 
         when(taskRepository.findByInventoryAndLastCreationDate(any(Inventory.class))).thenReturn(Optional.empty());
@@ -97,7 +97,7 @@ class PhysicalEquipmentIndicatorServiceTest {
     }
 
     @Test
-    void getPhysicalEquipmentsLowImpact_returnsMappedIndicators_whenValidInputs() {
+    void getPhysicalEquipmentsLowImpactReturnsMappedIndicatorsWhenValidInputs() {
         String subscriber = "subscriber";
         Long organizationId = 1L;
         Long inventoryId = 2L;
@@ -119,7 +119,7 @@ class PhysicalEquipmentIndicatorServiceTest {
     }
 
     @Test
-    void getPhysicalEquipmentElecConsumption_returnsMappedIndicators_whenValidInputs() {
+    void getPhysicalEquipmentElecConsumptionReturnsMappedIndicatorsWhenValidInputs() {
         Long taskId = 1L;
         Long criteriaNumber = 2L;
         List<InPhysicalEquipmentElecConsumptionView> repositoryResult = List.of(InPhysicalEquipmentElecConsumptionView.builder().elecConsumption(32.0).build());
