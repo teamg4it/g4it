@@ -22,8 +22,8 @@
             [routerLink]="constants.WELCOME_PAGE"
             id="home"
             [ngClass]="{
-                'p-2': isZoomedIn,
-                'p-3': !isZoomedIn,
+                'home-padding-zoomin': isZoomedIn(),
+                'home-padding': !isZoomedIn(),
             }"
         >
             <div class="flex justify-content-center">
@@ -47,8 +47,8 @@
             [routerLink]="selectedPath + '/inventories'"
             id="information-system"
             [ngClass]="{
-                'p-2': isZoomedIn,
-                'p-3': !isZoomedIn,
+                'inventory-padding-zoomin': isZoomedIn(),
+                'inventory-padding': !isZoomedIn(),
             }"
         >
             <div class="flex justify-content-center">
@@ -73,12 +73,11 @@
     >
         <a
             *ngIf="userService.isAllowedDigitalServiceRead$ | async"
-            class="py-3 px-2"
             [routerLink]="selectedPath + '/digital-services'"
             id="digital-services"
             [ngClass]="{
-                'p-2': isZoomedIn,
-                'py-3 px-2': !isZoomedIn,
+                'digital-padding-zoomin': isZoomedIn(),
+                'digital-padding': !isZoomedIn(),
             }"
         >
             <div class="flex justify-content-center">
@@ -109,8 +108,8 @@
             *ngIf="isAdminOnSubscriberOrOrganization"
             id="administration"
             [ngClass]="{
-                'p-2': isZoomedIn,
-                'py-3 px-1': !isZoomedIn,
+                'admin-padding-zoomin': isZoomedIn(),
+                'admin-padding': !isZoomedIn(),
             }"
         >
             <div class="flex justify-content-center">
