@@ -30,8 +30,10 @@
             <!-- Inventories -->
             <p-card
                 class="selection-card-container col"
-                [ngClass]="{ 'p-disabled': false }"
-                styleClass="selection-card flex"
+                [ngClass]="{
+                    'p-disabled': !(userService.isAllowedInventoryRead$ | async),
+                }"
+                styleClass="selection-card flex h-full"
             >
                 <ng-template pTemplate="header">
                     <div class="py-4 pl-5">
@@ -55,7 +57,7 @@
                             'welcome-page.inventories.button' | translate | uppercase
                         "
                         [ariaLabel]="'welcome-page.inventories.button' | translate"
-                        [disabled]="false"
+                        [disabled]="!(userService.isAllowedInventoryRead$ | async)"
                     ></p-button>
                 </div>
             </p-card>
@@ -63,8 +65,10 @@
             <!-- Digital Services -->
             <p-card
                 class="selection-card-container col"
-                [ngClass]="{ 'p-disabled': false }"
-                styleClass="selection-card flex"
+                [ngClass]="{
+                    'p-disabled': !(userService.isAllowedDigitalServiceRead$ | async),
+                }"
+                styleClass="selection-card flex h-full"
             >
                 <ng-template pTemplate="header">
                     <div class="py-4 pl-5">
@@ -88,7 +92,7 @@
                             'welcome-page.digital-service.button' | translate | uppercase
                         "
                         [ariaLabel]="'welcome-page.digital-service.button' | translate"
-                        [disabled]="false"
+                        [disabled]="!(userService.isAllowedDigitalServiceRead$ | async)"
                     ></p-button>
                 </div>
             </p-card>

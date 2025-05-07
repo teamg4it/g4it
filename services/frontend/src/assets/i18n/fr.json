@@ -308,12 +308,12 @@
         "modules-access": "Accès aux modules",
         "inventories": {
             "title": "Inventaires",
-            "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusa doloremque laudantium",
+            "description": "Calculez l'impact d'un ensemble d'équipements (physiques ou virtuels) qui constituent tout ou partie du système d'information d'une organisation, d'un parc applicatif, d'un projet, d'une équipe…",
             "button": "Aller au service"
         },
         "digital-service": {
             "title": "Services numériques",
-            "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusa doloremque laudantium",
+            "description": "Calculez l'impact d'un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs finaux du service (ordinateurs, smartphones...), le volume de données qui transitent sur le réseau (fixe ou mobile), les serveurs et infrastructures d'hébergement.",
             "button": "Demander de l'aide"
         }
     },
