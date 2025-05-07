@@ -5,7 +5,8 @@
 ### Minor Changes
 
 - 795 | Update the docker image of BoaviztAPI
-- 1102| Regression on total electricity consumption compute
+- 1102 | Regression on total electricity consumption compute
+- 1144 | G4IT KO with "not specified" location
 
 ## 3.1.0
 

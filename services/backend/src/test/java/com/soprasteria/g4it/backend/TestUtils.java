@@ -69,6 +69,7 @@ public class TestUtils {
                         .name(SUBSCRIBER)
                         .organizations(List.of(OrganizationBO.builder()
                                 .name(ORGANIZATION)
+                                .status(OrganizationStatus.ACTIVE.name())
                                 .roles(userRoles)
                                 .build()))
                         .build()))
