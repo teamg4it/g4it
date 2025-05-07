@@ -301,7 +301,22 @@
     },
     "welcome-page": {
         "title": "Welcome Page",
-        "name": "Home"
+        "name": "Home",
+        "hello": "Hello",
+        "about-g4it": "G4IT is an application designed to help <strong>digital industrial organizations</strong> implement a <strong>sustainable digital approach</strong> for their <strong>information systems</strong> and <strong>digital services</strong>.",
+        "getting-started": "Getting started",
+        "getting-started-text": "You are in your first Demo Space : you can switch from a workspace to another by using the select menu (on top right of the application). You can also create a new workspace within your [Sopra Steria] organisation. You'll be able to run your first simulations, evaluations and so on.",
+        "modules-access": "Modules access",
+        "inventories": {
+            "title": "Inventories",
+            "description": "Calculate the impact of a set of equipments that make up all or part of an organization's information system, an application pool, a project, a team...",
+            "button": "Go to Service"
+        },
+        "digital-service": {
+            "title": "Digital Services",
+            "description": "Calculate the impact of a digital service involves three levels: the end-user terminals of the service, the volume of data passing through the network, and the servers and hosting infrastructures.",
+            "button": "Ask for support"
+        }
     },
     "Jan": "Jan",
     "Feb": "Feb",

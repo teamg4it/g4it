@@ -6,13 +6,69 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, DestroyRef, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Router, RouterModule } from "@angular/router";
+import { TranslateModule } from "@ngx-translate/core";
+import { ButtonModule } from "primeng/button";
+import { CardModule } from "primeng/card";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { firstValueFrom } from "rxjs";
+import { Subscriber } from "src/app/core/interfaces/administration.interfaces";
+import { UserService } from "src/app/core/service/business/user.service";
+import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 
 @Component({
     selector: "app-welcome-page",
     templateUrl: "./welcome-page.component.html",
     styleUrls: ["./welcome-page.component.scss"],
     standalone: true,
-    imports: [CommonModule],
+    imports: [
+        CommonModule,
+        ButtonModule,
+        TranslateModule,
+        CardModule,
+        ScrollPanelModule,
+        RouterModule,
+    ],
 })
-export class WelcomePageComponent {}
+export class WelcomePageComponent {
+    userName: string = "";
+    selectedPath: string = "";
+    currentSubscriber: Subscriber = {} as Subscriber;
+
+    private readonly destroyRef = inject(DestroyRef);
+    public userService = inject(UserService);
+
+    constructor(
+        private workspaceService: WorkspaceService,
+        private readonly router: Router,
+    ) {}
+
+    async ngOnInit() {
+        const userDetails = await firstValueFrom(this.userService.user$);
+        this.userName = userDetails?.firstName + " " + userDetails?.lastName;
+
+        this.userService.currentSubscriber$.subscribe(
+            (subscriber: any) => (this.currentSubscriber = subscriber),
+        );
+
+        this.userService.currentOrganization$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((organization: any) => {
+                this.selectedPath = `/subscribers/${this.currentSubscriber.name}/organizations/${organization?.id}`;
+            });
+    }
+
+    openWorkspaceSidebar() {
+        this.workspaceService.setOpen(true);
+    }
+
+    inventories() {
+        this.router.navigateByUrl(`${this.selectedPath}/inventories`);
+    }
+
+    digitalServices() {
+        this.router.navigateByUrl(`${this.selectedPath}/digital-services`);
+    }
+}
