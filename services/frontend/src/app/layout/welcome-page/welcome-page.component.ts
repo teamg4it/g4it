@@ -42,7 +42,7 @@ export class WelcomePageComponent {
 
     constructor(
         private workspaceService: WorkspaceService,
-        private readonly router: Router,
+        public readonly router: Router,
     ) {}
 
     async ngOnInit() {

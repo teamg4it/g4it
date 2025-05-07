@@ -56,18 +56,38 @@
         }
     }
 
-    .help-center a:not(.p-disabled):hover {
-        background: rgba(0, 0, 0, 0.04);
-        font-weight: 700;
-    }
-
     .useful-info .hover-text:not(.p-disabled):hover {
         background: rgba(0, 0, 0, 0.04);
         font-weight: 700;
     }
 
-    .help-center a:not(.p-disabled):focus,
     .useful-info a:focus {
         outline: 2px solid #28a745;
+    }
+
+    .help-center a:not(.p-disabled) {
+        outline-width: 0;
+
+        &:before {
+            bottom: 0;
+            content: "";
+            display: block;
+            height: 100%;
+            left: 0;
+            outline-color: #28a745;
+            outline-offset: 2px;
+            outline-style: inherit;
+            outline-width: 2px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        &:hover:before {
+            background: rgba(0, 0, 0, 0.04);
+            font-weight: 700;
+        }
     }
 }
