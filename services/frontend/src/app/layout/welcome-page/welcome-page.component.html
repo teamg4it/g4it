@@ -97,5 +97,70 @@
                 </div>
             </p-card>
         </div>
+        <!-- Footer -->
+        <footer>
+            <h2 class="mt-5">
+                {{ "common.about" | translate }}
+            </h2>
+            <div class="grid">
+                <div class="col useful-info">
+                    <div class="pt-3"></div>
+                    <a routerLink="/useful-information" tabindex="0" role="link">
+                        <div class="text-2xl align-items-center flex py-3 hover-text">
+                            <span
+                                ><u>{{ "common.useful-info" | translate }}</u></span
+                            >
+                            <span class="pi pi-arrow-right ml-auto"></span>
+                        </div>
+                        <div>
+                            <span class="text-black">{{
+                                "common.useful-info-desc" | translate
+                            }}</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col"></div>
+                <div class="col help-center">
+                    <div class="p-3 border-round-sm">
+                        <span
+                            class="help-center-color pl-2 mt-3 flex align-items-center text-2xl"
+                        >
+                            {{ "common.help-center" | translate }}</span
+                        >
+
+                        <div class="p-2">
+                            <div class="border border-left-1 border-light-grey-color">
+                                <a
+                                    target="_blank"
+                                    role="link"
+                                    href="https://github.com/G4ITTeam/g4it"
+                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base"
+                                    ><span
+                                        ><u>{{
+                                            "common.github-link" | translate
+                                        }}</u></span
+                                    >
+                                    <span class="pi pi-sign-out ml-auto"></span
+                                ></a>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <div class="border border-left-1 border-light-grey-color">
+                                <a
+                                    target="_blank"
+                                    role="link"
+                                    href="https://saas-g4it.com/documentation/"
+                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base"
+                                    ><span
+                                        ><u>{{ "common.doc-link" | translate }}</u></span
+                                    >
+                                    <span class="pi pi-sign-out ml-auto"></span
+                                ></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
 </p-scrollPanel>
