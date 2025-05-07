@@ -309,12 +309,12 @@
         "modules-access": "Modules access",
         "inventories": {
             "title": "Inventories",
-            "description": "Calculate the impact of a set of devices (physical or virtual) that make up all or part of an organization's information system, an application pool, a project, a team...",
+            "description": "Calculate the impact of a set of equipments that make up all or part of an organization's information system, an application pool, a project, a team...",
             "button": "Go to Service"
         },
         "digital-service": {
             "title": "Digital Services",
-            "description": "Calculate the impact of a digital service involves three levels: the end-user terminals of the service (computers, smartphones...), the volume of data passing through the network (fixed or mobile), and the servers and hosting infrastructures.",
+            "description": "Calculate the impact of a digital service involves three levels: the end-user terminals of the service, the volume of data passing through the network, and the servers and hosting infrastructures.",
             "button": "Ask for support"
         }
     },
