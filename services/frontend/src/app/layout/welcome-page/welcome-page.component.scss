@@ -61,7 +61,8 @@
         font-weight: 700;
     }
 
-    .useful-info a:focus {
+    .useful-info a:focus,
+    .help-center a:not(.p-disabled):focus:before {
         outline: 2px solid #28a745;
     }
 
@@ -78,10 +79,6 @@
             position: absolute;
             right: 0;
             width: 100%;
-        }
-
-        &:focus:before {
-            outline: 2px solid #28a745;
         }
 
         &:hover:before {
