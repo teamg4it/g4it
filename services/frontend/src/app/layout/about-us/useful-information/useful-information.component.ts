@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, inject, ViewChild } from "@angular/core";
+import { Component, DestroyRef, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
@@ -10,24 +10,18 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
 import { VersionDataService } from "src/app/core/service/data/version-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
-import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
-import { LeftSidebarComponent } from "../../header/header-siderbar/left-sidebar/left-sidebar.component";
-import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-header.component";
 @Component({
     selector: "app-useful-information",
     standalone: true,
-    imports: [SharedModule, TopHeaderComponent, LeftSidebarComponent],
+    imports: [SharedModule],
     templateUrl: "./useful-information.component.html",
     styleUrl: "./useful-information.component.scss",
 })
 export class UsefulInformationComponent {
-    @ViewChild("mainContent") mainContent!: ElementRef;
-
     private readonly translate = inject(TranslateService);
     private readonly businessHoursService = inject(BusinessHoursService);
     private readonly destroyRef = inject(DestroyRef);
-    public globalStore = inject(GlobalStoreService);
 
     private readonly versionDataService = inject(VersionDataService);
     private readonly userService = inject(UserService);
@@ -37,7 +31,6 @@ export class UsefulInformationComponent {
     versions: Version[] = [];
     businessHoursData: BusinessHours[] = [];
     selectedLanguage: string = "en";
-    @ViewChild(TopHeaderComponent) topHeader!: TopHeaderComponent;
     constructor(private readonly titleService: Title) {}
     ngOnInit() {
         this.translate.get("common.useful-info").subscribe((translatedTitle: string) => {
@@ -82,16 +75,5 @@ export class UsefulInformationComponent {
         let subject = `[${this.currentSubscriber.name}/${this.selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
         let email = `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
         window.location.href = email;
-    }
-
-    focusFirstElement() {
-        const mainElement = this.mainContent.nativeElement;
-        const focusableElements = mainElement.querySelectorAll(
-            'a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
-        );
-
-        if (focusableElements.length > 0) {
-            (focusableElements[0] as HTMLElement).focus();
-        }
     }
 }

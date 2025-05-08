@@ -264,6 +264,7 @@ export class WorkspaceComponent implements OnInit {
     closeSidebar() {
         this.selectTab(0);
         this.spaceForm.reset();
+        this.workspaceService.setOpen(false);
         this.sidebarVisibleChange.emit(false);
     }
 }

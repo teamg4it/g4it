@@ -20,6 +20,7 @@ describe("WorkspaceComponent", () => {
     beforeEach(async () => {
         mockWorkspaceService = jasmine.createSpyObj("WorkspaceService", [
             "getDomainSubscribers",
+            "setOpen", // Add setOpen to the mock
         ]);
         mockWorkspaceService.getDomainSubscribers.and.returnValue(of([])); // Ensure it returns an observable
 
@@ -93,6 +94,7 @@ describe("WorkspaceComponent", () => {
     it("should emit sidebarVisibleChange when closeSidebar is called", () => {
         spyOn(component.sidebarVisibleChange, "emit");
         component.closeSidebar();
+        expect(mockWorkspaceService.setOpen).toHaveBeenCalledWith(false); // Verify setOpen is called
         expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
     });
 });

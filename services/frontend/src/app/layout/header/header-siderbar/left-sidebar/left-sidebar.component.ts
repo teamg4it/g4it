@@ -21,6 +21,7 @@ import {
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { generateColor } from "src/app/core/utils/color";
+import { Constants } from "src/constants";
 
 @Component({
     standalone: true,
@@ -35,6 +36,10 @@ export class LeftSidebarComponent implements OnInit {
     public userService = inject(UserService);
     private readonly translate = inject(TranslateService);
     private readonly keycloak = inject(KeycloakService);
+    constants = Constants;
+    homeTitle = computed(() =>
+        this.getTitle("welcome-page.title", this.constants.WELCOME_PAGE),
+    );
     digitalServicesTitle = computed(() =>
         this.getTitle("digital-services.title", "digital-services"),
     );
@@ -45,7 +50,7 @@ export class LeftSidebarComponent implements OnInit {
     digitalServicesAriaCurrent = computed(() => this.getAriaCurrent("digital-services"));
     inventoriesAriaCurrent = computed(() => this.getAriaCurrent("inventories"));
     administrationAriaCurrent = computed(() => this.getAriaCurrent("administration"));
-    private globalStore = inject(GlobalStoreService);
+    public globalStore = inject(GlobalStoreService);
     selectedPage = signal("");
 
     selectedLanguage: string = "en";
@@ -116,8 +121,7 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     setSelectedPage() {
-        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
-        this.selectedPage.set(subscribers === "administration" ? "administration" : page);
+        this.selectedPage.set(this.userService.getSelectedPage());
     }
 
     getTitle(name: string, page: string): any {
