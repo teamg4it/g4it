@@ -73,20 +73,15 @@
         outline-width: 0;
 
         &:before {
-            bottom: 0;
             content: "";
-            display: block;
             height: 100%;
-            left: 0;
-            outline-color: #28a745;
-            outline-offset: 2px;
-            outline-style: inherit;
-            outline-width: 2px;
             position: absolute;
             right: 0;
-            top: 0;
             width: 100%;
-            z-index: 1;
+        }
+
+        &:focus:before {
+            outline: 2px solid #28a745;
         }
 
         &:hover:before {
