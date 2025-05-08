@@ -8,12 +8,14 @@ mermaid: true
 ## API PATH
 
 | API                                                                                                         | Swagger                                                                                                              | Use Cases                                                                                                                      |
-| :---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+|:------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
 | POST /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-evaluating/launchEvaluatingDigitalService) | [Estimate a digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md" %}}) |
 
 ## Description
 
-The use case allows a project team to launch the calculation for the estimation of impacts of the Digital Service. The calculation is based on different indicators that contextualize the impacts observed. The user sends an digitalServiceUid as pair as an organisation and subscriber.
+The use case allows a project team to launch the calculation for the estimation of impacts of the Digital Service. The
+calculation is based on different indicators that contextualize the impacts observed. The user sends an
+digitalServiceUid as pair as an organisation and subscriber.
 The user will receive a response with a task id.
 
 ## API Call Processing
@@ -35,7 +37,8 @@ The API call is handled
 by [EvaluatingController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/controller/EvaluatingController.java)
 and the business logic is handled
 by [EvaluatingService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/EvaluatingService.java).
-The EvaluatingService retrieves active criteria for evaluation or defaults to predefined criteria if none are active and then handles the logic for initiating and managing evaluation tasks.
+The EvaluatingService retrieves active criteria for evaluation or defaults to predefined criteria if none are active and
+then handles the logic for initiating and managing evaluation tasks.
 
 ## Asynchronous Execution
 
@@ -58,7 +61,8 @@ the [AsyncEvaluatingService class](https://github.com/G4ITTeam/g4it/blob/main/se
 
 ## Evaluation Process
 
-The digital service data is evaluated using active criteria in the [EvaluateService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateService.java).
+The digital service data is evaluated using active criteria in
+the [EvaluateService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateService.java).
 Note: active criteria here refers to the criteria set for the a digital service to calculate the impacts for.
 
 ### Impact Calculation
@@ -68,15 +72,20 @@ Following this evaluation, it aggregates the results using active criteria and l
 
 #### Cloud Virtual Equipment:
 
-Virtual equipment entities are retrieved from the database in batches via the [InVirtualEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InVirtualEquipmentRepository.java).
+Virtual equipment entities are retrieved from the database in batches via
+the [InVirtualEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InVirtualEquipmentRepository.java).
 Processes virtual equipment associated with cloud services based on infrastructure type.
 
-The external service [BoaviztapiService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/boaviztapi/EvaluateBoaviztapiService.java) method 'evaluate' is used for cloud-based evaluations.
-The results for virtual equipment indicators are aggregated in memory, and both the input data and generated indicators are written to CSV files.
+The external
+service [BoaviztapiService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/boaviztapi/EvaluateBoaviztapiService.java)
+method 'evaluate' is used for cloud-based evaluations.
+The results for virtual equipment indicators are aggregated in memory, and both the input data and generated indicators
+are written to CSV files.
 
 #### Physical Equipment:
 
-Physical equipment entities are retrieved from the database in batches via the [InPhysicalEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InPhysicalEquipmentRepository.java).
+Physical equipment entities are retrieved from the database in batches via
+the [InPhysicalEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InPhysicalEquipmentRepository.java).
 
 For each piece of equipment, its type
 
@@ -90,27 +99,36 @@ ref_item_impact.name = ref_item_type.ref_default_item
 
 and location are matched against referential data to ensure accuracy.
 
-The external [EvaluateNumEcoEvalService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/numecoeval/EvaluateNumEcoEvalService.java) is used to calculate impacts for each piece of equipment based on criteria, lifecycle steps, and hypotheses.
-The results for physical equipment indicators are aggregated in memory, and both the input data and generated indicators are written to CSV files.
+The
+external [EvaluateNumEcoEvalService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/numecoeval/EvaluateNumEcoEvalService.java)
+is used to calculate impacts for each piece of equipment based on criteria, lifecycle steps, and hypotheses.
+The results for physical equipment indicators are aggregated in memory, and both the input data and generated indicators
+are written to CSV files.
 
 #### Virtual Equipment:
 
-Virtual equipment entities corresponding to each physicalEquipment are retrieved from the database in batches via the [InVirtualEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InVirtualEquipmentRepository.java).
+Virtual equipment entities corresponding to each physicalEquipment are retrieved from the database in batches via
+the [InVirtualEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InVirtualEquipmentRepository.java).
 Processes virtual equipment associated with physical equipment.
 
-The [EvaluateNumEcoEvalService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/numecoeval/EvaluateNumEcoEvalService.java) from numEcoEval library is used for the traditional virtual equipment.
-The results for virtual equipment indicators are aggregated in memory, and both the input data and generated indicators are written to CSV files.
+The [EvaluateNumEcoEvalService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/numecoeval/EvaluateNumEcoEvalService.java)
+from numEcoEval library is used for the traditional virtual equipment.
+The results for virtual equipment indicators are aggregated in memory, and both the input data and generated indicators
+are written to CSV files.
 
 ### Models to save indicators
 
 Below you will find the entities used to save the generated indicators in the database.
 
 | Package                                       | Entity               | table                                                                                                                           |
-| --------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+|-----------------------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutPhysicalEquipment | [out_physical_equipment](../../db_documentation/information_system_and_digital_service_output_data/digital_service_output_data) |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutVirtualEquipment  | [out_virtual_equipment](../../db_documentation/information_system_and_digital_service_output_data/digital_service_output_data)  |
 
-These entities are by saved by the [SaveService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/SaveService.java) using the 'out' repositories in the [package](https://github.com/G4ITTeam/g4it/tree/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository).
+These entities are by saved by
+the [SaveService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/SaveService.java)
+using the 'out' repositories in
+the [package](https://github.com/G4ITTeam/g4it/tree/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository).
 
 ### Export Process
 
@@ -119,7 +137,8 @@ Local directory is cleaned up after successful uploads.
 
 ### Task life cycle:
 
-The task progress percentage is updated dynamically during processing and sets to COMPLETED upon successful execution with progress set to 100%.
+The task progress percentage is updated dynamically during processing and sets to COMPLETED upon successful execution
+with progress set to 100%.
 Any errors encountered during execution are logged, and the task status is marked as FAILED.
 
 Here is the status of the task:
