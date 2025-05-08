@@ -267,11 +267,51 @@ export class TopHeaderComponent implements OnInit {
     }
 
     selectCompany(organization: OrganizationData) {
-        this.userService.checkAndRedirect(
-            organization.subscriber!,
-            organization.organization as Organization,
-            this.selectedPage(),
-        );
+        if (this.selectedPage() === "administration") {
+            if (
+                this.userService.checkIfAllowed(
+                    organization.subscriber!,
+                    organization.organization as Organization,
+                    "administration",
+                )
+            ) {
+                this.userService.checkAndRedirect(
+                    organization.subscriber!,
+                    organization.organization as Organization,
+                    "administration",
+                );
+            } else if (
+                this.userService.checkIfAllowed(
+                    organization.subscriber!,
+                    organization.organization as Organization,
+                    "inventories",
+                )
+            ) {
+                this.userService.checkAndRedirect(
+                    organization.subscriber!,
+                    organization.organization as Organization,
+                    "inventories",
+                );
+            } else if (
+                this.userService.checkIfAllowed(
+                    organization.subscriber!,
+                    organization.organization as Organization,
+                    "digital-services",
+                )
+            ) {
+                this.userService.checkAndRedirect(
+                    organization.subscriber!,
+                    organization.organization as Organization,
+                    "digital-services",
+                );
+            }
+        } else {
+            this.userService.checkAndRedirect(
+                organization.subscriber!,
+                organization.organization as Organization,
+                this.selectedPage(),
+            );
+        }
         this.isOrgMenuVisible = false;
     }
 
