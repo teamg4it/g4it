@@ -262,49 +262,31 @@ export class TopHeaderComponent implements OnInit {
     }
 
     selectCompany(organization: OrganizationData) {
-        if (this.selectedPage() === "administration") {
-            if (
-                this.userService.checkIfAllowed(
-                    organization.subscriber!,
-                    organization.organization as Organization,
-                    "administration",
-                )
-            ) {
-                this.userService.checkAndRedirect(
-                    organization.subscriber!,
-                    organization.organization as Organization,
-                    "administration",
-                );
-            } else if (
-                this.userService.checkIfAllowed(
-                    organization.subscriber!,
-                    organization.organization as Organization,
-                    "inventories",
-                )
-            ) {
-                this.userService.checkAndRedirect(
-                    organization.subscriber!,
-                    organization.organization as Organization,
-                    "inventories",
-                );
-            } else if (
-                this.userService.checkIfAllowed(
-                    organization.subscriber!,
-                    organization.organization as Organization,
-                    "digital-services",
-                )
-            ) {
-                this.userService.checkAndRedirect(
-                    organization.subscriber!,
-                    organization.organization as Organization,
-                    "digital-services",
-                );
+        const allowedPages = ["administration", "inventories", "digital-services"];
+        const selectedPage = this.selectedPage();
+
+        if (selectedPage === "administration") {
+            for (const page of allowedPages) {
+                if (
+                    this.userService.checkIfAllowed(
+                        organization.subscriber!,
+                        organization.organization as Organization,
+                        page,
+                    )
+                ) {
+                    this.userService.checkAndRedirect(
+                        organization.subscriber!,
+                        organization.organization as Organization,
+                        page,
+                    );
+                    break;
+                }
             }
         } else {
             this.userService.checkAndRedirect(
                 organization.subscriber!,
                 organization.organization as Organization,
-                this.selectedPage(),
+                selectedPage,
             );
         }
         this.isOrgMenuVisible = false;
