@@ -4,6 +4,7 @@
 
 ### Minor Changes
 
+- 1108 | Workspace navigation from Admin module if i am not admin of the workspace
 - 795 | Update the docker image of BoaviztAPI
 - 1102 | Regression on total electricity consumption compute
 - 1144 | G4IT KO with "not specified" location
