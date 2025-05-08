@@ -65,6 +65,10 @@
         outline: 2px solid #28a745;
     }
 
+    .help-center a:not(.p-disabled):hover {
+        font-weight: 700;
+    }
+
     .help-center a:not(.p-disabled) {
         outline-width: 0;
 
@@ -87,7 +91,6 @@
 
         &:hover:before {
             background: rgba(0, 0, 0, 0.04);
-            font-weight: 700;
         }
     }
 }
