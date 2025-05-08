@@ -3,7 +3,7 @@ import { init, reportA11yViolations, save, setPage } from "../utilsCypress";
 describe("Information System", () => {
     before(() => {
         cy.visit("/");
-        cy.get('[id="information-system"]');
+        cy.get('[id="information-system"]').click();
         window.localStorage.setItem("lang", "en");
         cy.injectAxe();
         init("Information System", Cypress.env("mode"));

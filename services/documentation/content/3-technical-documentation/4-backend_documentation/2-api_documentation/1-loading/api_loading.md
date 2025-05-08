@@ -8,7 +8,7 @@ mermaid: true
 ## API PATH
 
 | API                                                                                                    | Swagger                                                                                                       | Use Cases                                                                                                  |
-| :----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- |
+|:-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
 | POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
 
 ## Description
@@ -63,7 +63,8 @@ the [AsyncLoadFilesService class](https://github.com/G4ITTeam/g4it/blob/main/ser
 
 ### Checking process
 
-Before any checking process starts, a check for missing mandatory headers is done. In case there is any mandatory field mising for any of the uploaded files, the task fails with status 'FAILED' and no further processing is done.
+Before any checking process starts, a check for missing mandatory headers is done. In case there is any mandatory field
+mising for any of the uploaded files, the task fails with status 'FAILED' and no further processing is done.
 
 The main purpose of the checking process is to check the global coherence of the files to be loaded between each other
 and
@@ -85,7 +86,7 @@ the [LoadMetadataService class]() using loaders depending on the file type.
 Bellow you will find the entities used to load the metadata of the files to load.
 
 | Package                                                | Entity                 | table                                                                                                                                    |
-| ------------------------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------------------------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckApplication       | [check_inv_load_application](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)        |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckDatacenter        | [check_inv_load_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
 | com.soprasteria.g4it.backend.apiloadinputfiles.modeldb | CheckPhysicalEquipment | [check_inv_load_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
@@ -137,7 +138,7 @@ as 100). This is present in the package apiinout.modeldb as a class public class
 Bellow you will find the entities used to load the metadata of the files to load.
 
 | Package                                       | Entity              | table                                                                                                                        |
-| --------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+|-----------------------------------------------|---------------------|------------------------------------------------------------------------------------------------------------------------------|
 | com.soprasteria.g4it.backend.apiinout.modeldb | InApplication       | [in_application](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)        |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InDatacenter        | [in_datacenter](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data)         |
 | com.soprasteria.g4it.backend.apiinout.modeldb | InPhysicalEquipment | [in_physical_equipment](../../db_documentation/information_system_and_digital_service_input_data/digital_service_input_data) |
@@ -176,7 +177,8 @@ stateDiagram-v2
 [] --> TO_START: creation of the loading task
 TO_START --> IN_PROGRESS: Launching of the asynchronous loading process
 IN_PROGRESS --> COMPLETED: Loading process is completed without error
-IN_PROGRESS --> COMPLETED_WITH_ERRORS : Loading process is completed with some loading errors (there is rejected lines in the rejected files)
+IN_PROGRESS --> COMPLETED_WITH_ERRORS : Loading process is completed with some loading errors (there is rejected lines
+in the rejected files)
 IN_PROGRESS --> FAILED : Blocking error during the loading process (details of the error persisted in the task)
 IN_PROGRESS --> TO_START : Retry of the stuck loading process
 {{</ mermaid >}}

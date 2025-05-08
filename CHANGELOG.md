@@ -2,6 +2,10 @@
 
 ## 3.2.0
 
+### Major Changes
+
+- 1004 | Welcome page
+
 ### Minor Changes
 
 - 1108 | Workspace navigation from Admin module if i am not admin of the workspace

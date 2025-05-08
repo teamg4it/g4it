@@ -1,0 +1,43 @@
+<app-spinner></app-spinner>
+<div class="flex h-screen w-screen">
+    <!-- Skip to Main Content Button -->
+    <button
+        class="hidden-focus-button"
+        (click)="focusFirstElement()"
+        [attr.aria-label]="'common.skip-to-main-content' | translate"
+    ></button>
+
+    <!-- Header -->
+    <header class="header w-full fixed top-0 left-0 z-10 flex items-center" role="banner">
+        <app-top-header />
+    </header>
+
+    <!-- Sidebar + Main content container -->
+    <div class="flex w-full">
+        <!-- Sidebar -->
+        <aside class="left-sidebar">
+            <app-left-sidebar />
+        </aside>
+        <!-- Main content area -->
+        <main
+            class="flex-1"
+            #mainContent
+            [ngClass]="{
+                'overflow-auto': globalStore.zoomLevel() >= 150,
+            }"
+        >
+            <router-outlet></router-outlet>
+        </main>
+        <!-- Create workspace -->
+        <p-sidebar
+            [(visible)]="spaceSidebarVisible"
+            position="right"
+            styleClass="p-sidebar-lg"
+            ariaCloseLabel="Close"
+        >
+            <ng-template pTemplate="headless">
+                <app-workspace (sidebarVisibleChange)="spaceSidebarVisible = $event" />
+            </ng-template>
+        </p-sidebar>
+    </div>
+</div>

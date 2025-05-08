@@ -35,6 +35,7 @@ import {
     UserInfo,
 } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
+import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { generateColor } from "src/app/core/utils/color";
@@ -82,10 +83,10 @@ export class TopHeaderComponent implements OnInit {
     selectedPage = signal("");
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
     @ViewChildren("radioItem") radioItems!: QueryList<ElementRef>;
-    spaceSidebarVisible: boolean = false;
     languages = ["en", "fr"];
 
-    constructor() {}
+    constructor(private workspaceService: WorkspaceService) {}
+
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
         this.setSelectedPage();
@@ -229,13 +230,7 @@ export class TopHeaderComponent implements OnInit {
     }
 
     setSelectedPage() {
-        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
-        this.selectedPage.set(
-            subscribers === "administration" ||
-                subscribers === Constants.USEFUL_INFORMATION
-                ? subscribers
-                : page,
-        );
+        this.selectedPage.set(this.userService.getSelectedPage());
     }
 
     handleKeydownLanguage(event: KeyboardEvent): void {
@@ -325,6 +320,10 @@ export class TopHeaderComponent implements OnInit {
                 elementToView?.scrollIntoView({ behavior: "smooth", block: "start" });
             }, 0);
         }
+    }
+
+    openWorkspaceSidebar() {
+        this.workspaceService.setOpen(true);
     }
 
     changeLanguage(lang: string): void {

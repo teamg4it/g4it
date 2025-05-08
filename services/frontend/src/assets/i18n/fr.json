@@ -298,6 +298,25 @@
         "tooltip_average_workload": "Charge de travail moyenne",
         "tooltip_annual_usage": "Utilisation annuelle"
     },
+    "welcome-page": {
+        "title": "Page de bienvenue",
+        "name": "Maison",
+        "hello": "Bonjour",
+        "about-g4it": "G4IT est une application conçue pour accompagner <strong>les organisations industrielles du numérique</strong> dans la mise en œuvre d'une <strong>démarche numérique durable</strong> pour leurs <strong>systèmes d'information</strong> et leurs <strong>services numériques</strong>.",
+        "getting-started": "Commencer",
+        "getting-started-text": "Vous êtes dans votre premier espace de démonstration : vous pouvez passer d'un espace de travail à l'autre grâce au menu de sélection (en haut à droite de l'application). Vous pouvez également créer un nouvel espace de travail au sein de votre organisation [Sopra Steria]. Vous pourrez ainsi réaliser vos premières simulations, évaluations, etc.",
+        "modules-access": "Accès aux modules",
+        "inventories": {
+            "title": "Inventaires",
+            "description": "Calculez l'impact d'un ensemble d'équipements qui constituent tout ou partie du système d'information d'une organisation, d'un parc applicatif, d'un projet, d'une équipe…",
+            "button": "Aller au service"
+        },
+        "digital-service": {
+            "title": "Services numériques",
+            "description": "Calculez l'impact d'un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs finaux du service, le volume de données qui transitent sur le réseau, les serveurs et infrastructures d'hébergement.",
+            "button": "Demander de l'aide"
+        }
+    },
     "Jan": "janv",
     "Feb": "févr",
     "Mar": "mars",
