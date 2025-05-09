@@ -262,33 +262,11 @@ export class TopHeaderComponent implements OnInit {
     }
 
     selectCompany(organization: OrganizationData) {
-        const allowedPages = ["administration", "inventories", "digital-services"];
-        const selectedPage = this.selectedPage();
-
-        if (selectedPage === "administration") {
-            for (const page of allowedPages) {
-                if (
-                    this.userService.checkIfAllowed(
-                        organization.subscriber!,
-                        organization.organization as Organization,
-                        page,
-                    )
-                ) {
-                    this.userService.checkAndRedirect(
-                        organization.subscriber!,
-                        organization.organization as Organization,
-                        page,
-                    );
-                    break;
-                }
-            }
-        } else {
-            this.userService.checkAndRedirect(
-                organization.subscriber!,
-                organization.organization as Organization,
-                selectedPage,
-            );
-        }
+        this.userService.checkAndRedirect(
+            organization.subscriber!,
+            organization.organization as Organization,
+            this.selectedPage(),
+        );
         this.isOrgMenuVisible = false;
     }
 
