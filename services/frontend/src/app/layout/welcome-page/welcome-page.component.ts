@@ -49,12 +49,16 @@ export class WelcomePageComponent {
 
     async ngOnInit() {
         const userDetails = await firstValueFrom(this.userService.user$);
-        this.isAllowedInventory = await firstValueFrom(
-            this.userService.isAllowedInventoryRead$,
-        );
-        this.isAllowedDigitalService = await firstValueFrom(
-            this.userService.isAllowedDigitalServiceRead$,
-        );
+        this.userService.isAllowedInventoryRead$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isAllowed: boolean) => {
+                this.isAllowedInventory = isAllowed;
+            });
+        this.userService.isAllowedDigitalServiceRead$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isAllowed: boolean) => {
+                this.isAllowedDigitalService = isAllowed;
+            });
         this.userName = userDetails?.firstName + " " + userDetails?.lastName;
 
         this.userService.currentSubscriber$.subscribe(

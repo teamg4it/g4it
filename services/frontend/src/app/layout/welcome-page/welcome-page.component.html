@@ -34,7 +34,7 @@
             <p-card
                 class="selection-card-container col md:col-12 lg:col"
                 [ngClass]="{
-                    disabled: !isAllowedInventory,
+                    disabled: !(userService.isAllowedInventoryRead$ | async),
                 }"
                 styleClass="selection-card flex h-full"
             >
@@ -56,11 +56,13 @@
                         icon="pi pi-arrow-circle-right"
                         [styleClass]="
                             'uppercase inventories-button navigation-button mt-5 white-space-nowrap' +
-                            (isAllowedInventory ? '' : ' disabled')
+                            ((userService.isAllowedInventoryRead$ | async)
+                                ? ''
+                                : ' disabled')
                         "
                         iconPos="right"
                         [label]="
-                            isAllowedInventory
+                            (userService.isAllowedInventoryRead$ | async)
                                 ? ('welcome-page.inventories.button'
                                   | translate
                                   | uppercase)
@@ -69,7 +71,7 @@
                                   | uppercase)
                         "
                         [ariaLabel]="
-                            isAllowedInventory
+                            (userService.isAllowedInventoryRead$ | async)
                                 ? ('welcome-page.inventories.button' | translate)
                                 : ('welcome-page.inventories.button-disabled' | translate)
                         "
@@ -81,7 +83,7 @@
             <p-card
                 class="selection-card-container col md:col-12 lg:col"
                 [ngClass]="{
-                    disabled: !isAllowedDigitalService,
+                    disabled: !(userService.isAllowedDigitalServiceRead$ | async),
                 }"
                 styleClass="selection-card flex h-full"
             >
@@ -103,11 +105,13 @@
                         icon="pi pi-arrow-circle-right"
                         [styleClass]="
                             'uppercase digital-service-button navigation-button mt-5 white-space-nowrap' +
-                            (isAllowedDigitalService ? '' : ' disabled')
+                            ((userService.isAllowedDigitalServiceRead$ | async)
+                                ? ''
+                                : ' disabled')
                         "
                         iconPos="right"
                         [label]="
-                            isAllowedDigitalService
+                            (userService.isAllowedDigitalServiceRead$ | async)
                                 ? ('welcome-page.digital-service.button'
                                   | translate
                                   | uppercase)
@@ -116,7 +120,7 @@
                                   | uppercase)
                         "
                         [ariaLabel]="
-                            isAllowedDigitalService
+                            (userService.isAllowedDigitalServiceRead$ | async)
                                 ? ('welcome-page.digital-service.button' | translate)
                                 : ('welcome-page.digital-service.button-disabled'
                                   | translate)
