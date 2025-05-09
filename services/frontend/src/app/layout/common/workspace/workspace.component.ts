@@ -258,22 +258,22 @@ export class WorkspaceComponent implements OnInit {
                                 this.router.navigateByUrl(
                                     `subscribers/${subscriber.name}/organizations/${res.id}/${page}`,
                                 );
-                            }
-
-                            if (page === Constants.WELCOME_PAGE) {
-                                // const newSubscriber = user.subscribers.find(
-                                //     (type) => type.name === subscriber.name,
-                                // );
-                                // let newOrganization;
-                                // if (newSubscriber && newSubscriber?.organizations) {
-                                //     newOrganization = newSubscriber?.organizations.find(
-                                //         (type) => type.id === res.id,
-                                //     );
-                                // }
-                                // this.userService.setSubscriberAndOrganization(
-                                //     subscriber,
-                                //     newOrganization!,
-                                // );
+                            } else {
+                                const newSubscriber = user.subscribers.find(
+                                    (type) => type.name === subscriber.name,
+                                );
+                                let newOrganization;
+                                if (newSubscriber && newSubscriber?.organizations) {
+                                    newOrganization = newSubscriber?.organizations.find(
+                                        (type) => type.id === res.id,
+                                    );
+                                }
+                                if (newSubscriber && newOrganization) {
+                                    this.userService.setSubscriberAndOrganization(
+                                        newSubscriber,
+                                        newOrganization,
+                                    );
+                                }
                                 this.router.navigate([this.router.url]);
                             }
                         });
