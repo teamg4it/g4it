@@ -168,18 +168,15 @@ export class UserService {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
                 return;
-            } else if (this.checkIfAllowed(subscriber, organization!, "inventories")) {
-                this.router.navigateByUrl(
-                    `subscribers/${subscriber.name}/organizations/${organization?.id}/inventories`,
-                );
-                return;
-            } else if (
-                this.checkIfAllowed(subscriber, organization!, "digital-services")
-            ) {
-                this.router.navigateByUrl(
-                    `subscribers/${subscriber.name}/organizations/${organization?.id}/digital-services`,
-                );
-                return;
+            }
+            for (const type of ["inventories", "digital-services"]) {
+                if (this.checkIfAllowed(subscriber, organization!, type)) {
+                    this.setSubscriberAndOrganization(subscriber, organization!);
+                    this.router.navigateByUrl(
+                        `subscribers/${subscriber.name}/organizations/${organization?.id}/${type}`,
+                    );
+                    break;
+                }
             }
         }
 
@@ -332,8 +329,8 @@ export class UserService {
         organization: Organization,
         page: string,
     ): void {
-        this.setSubscriberAndOrganization(subscriber, organization);
         if ([Constants.USEFUL_INFORMATION, Constants.WELCOME_PAGE].includes(page)) {
+            this.setSubscriberAndOrganization(subscriber, organization);
             this.router.navigateByUrl(page);
             return;
         }
@@ -341,6 +338,7 @@ export class UserService {
         if (page === "administration") {
             for (const apage of allowedPages) {
                 if (this.checkIfAllowed(subscriber, organization, apage)) {
+                    this.setSubscriberAndOrganization(subscriber, organization);
                     if (page !== apage) {
                         this.router.navigateByUrl(
                             `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
@@ -352,10 +350,12 @@ export class UserService {
         }
         if (page === "inventories" || page === "digital-services") {
             if (this.checkIfAllowed(subscriber, organization, page)) {
+                this.setSubscriberAndOrganization(subscriber, organization);
                 this.router.navigateByUrl(
                     `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
                 );
             } else {
+                this.setSubscriberAndOrganization(subscriber, organization);
                 this.router.navigateByUrl(`welcome-page`);
             }
         }
