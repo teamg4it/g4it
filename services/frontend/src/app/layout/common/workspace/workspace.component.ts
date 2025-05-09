@@ -12,9 +12,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
+import { User } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
+import { Constants } from "src/constants";
 
 interface SpaceDetails {
     menu: {
@@ -244,7 +246,37 @@ export class WorkspaceComponent implements OnInit {
                     ) ?? undefined;
                 this.closeSidebar();
                 if (subscriber) {
-                    this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
+                    this.userDataService
+                        .fetchUserInfo()
+                        .pipe(take(1))
+                        .subscribe((user: User) => {
+                            const page = this.router.url.split("/").pop();
+                            if (
+                                page === Constants.ENDPOINTS.digitalServices ||
+                                page === Constants.ENDPOINTS.inventories
+                            ) {
+                                this.router.navigateByUrl(
+                                    `subscribers/${subscriber.name}/organizations/${res.id}/${page}`,
+                                );
+                            }
+
+                            if (page === Constants.WELCOME_PAGE) {
+                                // const newSubscriber = user.subscribers.find(
+                                //     (type) => type.name === subscriber.name,
+                                // );
+                                // let newOrganization;
+                                // if (newSubscriber && newSubscriber?.organizations) {
+                                //     newOrganization = newSubscriber?.organizations.find(
+                                //         (type) => type.id === res.id,
+                                //     );
+                                // }
+                                // this.userService.setSubscriberAndOrganization(
+                                //     subscriber,
+                                //     newOrganization!,
+                                // );
+                                this.router.navigate([this.router.url]);
+                            }
+                        });
                 }
                 this.messageService.add({
                     severity: "success",
