@@ -260,12 +260,12 @@ export class WorkspaceComponent implements OnInit {
                                 );
                             } else {
                                 const newSubscriber = user.subscribers.find(
-                                    (type) => type.name === subscriber.name,
+                                    (sub) => sub.name === subscriber.name,
                                 );
                                 let newOrganization;
                                 if (newSubscriber && newSubscriber?.organizations) {
                                     newOrganization = newSubscriber?.organizations.find(
-                                        (type) => type.id === res.id,
+                                        (org) => org.id === res.id,
                                     );
                                 }
                                 if (newSubscriber && newOrganization) {
