@@ -11,7 +11,10 @@
 
         <h2 class="getting-started">{{ "welcome-page.getting-started" | translate }}</h2>
         <p class="text-xl mt-4 line-height-3">
-            {{ "welcome-page.getting-started-text" | translate }}
+            {{
+                "welcome-page.getting-started-text"
+                    | translate: { subscriberName: currentSubscriber.name }
+            }}
         </p>
 
         <p-button
@@ -29,9 +32,9 @@
         <div class="grid gap-6">
             <!-- Inventories -->
             <p-card
-                class="selection-card-container col"
+                class="selection-card-container col md:col-12 lg:col"
                 [ngClass]="{
-                    'p-disabled': !(userService.isAllowedInventoryRead$ | async),
+                    disabled: !(userService.isAllowedInventoryRead$ | async),
                 }"
                 styleClass="selection-card flex h-full"
             >
@@ -51,22 +54,36 @@
                     <p-button
                         (click)="inventories()"
                         icon="pi pi-arrow-circle-right"
-                        styleClass="uppercase inventories-button navigation-button mt-5"
+                        [styleClass]="
+                            'uppercase inventories-button navigation-button mt-5 white-space-nowrap' +
+                            ((userService.isAllowedInventoryRead$ | async)
+                                ? ''
+                                : ' disabled')
+                        "
                         iconPos="right"
                         [label]="
-                            'welcome-page.inventories.button' | translate | uppercase
+                            (userService.isAllowedInventoryRead$ | async)
+                                ? ('welcome-page.inventories.button'
+                                  | translate
+                                  | uppercase)
+                                : ('welcome-page.inventories.button-disabled'
+                                  | translate
+                                  | uppercase)
                         "
-                        [ariaLabel]="'welcome-page.inventories.button' | translate"
-                        [disabled]="!(userService.isAllowedInventoryRead$ | async)"
+                        [ariaLabel]="
+                            (userService.isAllowedInventoryRead$ | async)
+                                ? ('welcome-page.inventories.button' | translate)
+                                : ('welcome-page.inventories.button-disabled' | translate)
+                        "
                     ></p-button>
                 </div>
             </p-card>
 
             <!-- Digital Services -->
             <p-card
-                class="selection-card-container col"
+                class="selection-card-container col md:col-12 lg:col"
                 [ngClass]="{
-                    'p-disabled': !(userService.isAllowedDigitalServiceRead$ | async),
+                    disabled: !(userService.isAllowedDigitalServiceRead$ | async),
                 }"
                 styleClass="selection-card flex h-full"
             >
@@ -86,13 +103,28 @@
                     <p-button
                         (click)="digitalServices()"
                         icon="pi pi-arrow-circle-right"
-                        styleClass="uppercase digital-service-button navigation-button mt-5"
+                        [styleClass]="
+                            'uppercase digital-service-button navigation-button mt-5 white-space-nowrap' +
+                            ((userService.isAllowedDigitalServiceRead$ | async)
+                                ? ''
+                                : ' disabled')
+                        "
                         iconPos="right"
                         [label]="
-                            'welcome-page.digital-service.button' | translate | uppercase
+                            (userService.isAllowedDigitalServiceRead$ | async)
+                                ? ('welcome-page.digital-service.button'
+                                  | translate
+                                  | uppercase)
+                                : ('welcome-page.digital-service.button-disabled'
+                                  | translate
+                                  | uppercase)
                         "
-                        [ariaLabel]="'welcome-page.digital-service.button' | translate"
-                        [disabled]="!(userService.isAllowedDigitalServiceRead$ | async)"
+                        [ariaLabel]="
+                            (userService.isAllowedDigitalServiceRead$ | async)
+                                ? ('welcome-page.digital-service.button' | translate)
+                                : ('welcome-page.digital-service.button-disabled'
+                                  | translate)
+                        "
                     ></p-button>
                 </div>
             </p-card>
