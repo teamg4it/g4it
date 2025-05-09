@@ -144,7 +144,7 @@ export class UserService {
         if (this.checkIfAllowed(subscriber, organization, page)) {
             this.setSubscriberAndOrganization(subscriber, organization);
         } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
+            this.router.navigateByUrl(`welcome-page`);
         }
     }
 
@@ -168,7 +168,16 @@ export class UserService {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
                 return;
-            } else this.router.navigateByUrl(`something-went-wrong/403`);
+            }
+            for (const type of ["inventories", "digital-services"]) {
+                if (this.checkIfAllowed(subscriber, organization!, type)) {
+                    this.setSubscriberAndOrganization(subscriber, organization!);
+                    this.router.navigateByUrl(
+                        `subscribers/${subscriber.name}/organizations/${organization?.id}/${type}`,
+                    );
+                    break;
+                }
+            }
         }
 
         if (subscriber && organization) {
@@ -320,21 +329,35 @@ export class UserService {
         organization: Organization,
         page: string,
     ): void {
-        if (this.checkIfAllowed(subscriber, organization, page)) {
+        if ([Constants.USEFUL_INFORMATION, Constants.WELCOME_PAGE].includes(page)) {
             this.setSubscriberAndOrganization(subscriber, organization);
-            if (page === Constants.USEFUL_INFORMATION) {
-                this.router.navigateByUrl(Constants.USEFUL_INFORMATION);
-                return;
+            this.router.navigateByUrl(page);
+            return;
+        }
+        const allowedPages = ["administration", "inventories", "digital-services"];
+        if (page === "administration") {
+            for (const apage of allowedPages) {
+                if (this.checkIfAllowed(subscriber, organization, apage)) {
+                    this.setSubscriberAndOrganization(subscriber, organization);
+                    if (page !== apage) {
+                        this.router.navigateByUrl(
+                            `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
+                        );
+                    }
+                    break;
+                }
             }
-            if (page === Constants.WELCOME_PAGE) {
-                this.router.navigateByUrl(Constants.WELCOME_PAGE);
-                return;
+        }
+        if (page === "inventories" || page === "digital-services") {
+            if (this.checkIfAllowed(subscriber, organization, page)) {
+                this.setSubscriberAndOrganization(subscriber, organization);
+                this.router.navigateByUrl(
+                    `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
+                );
+            } else {
+                this.setSubscriberAndOrganization(subscriber, organization);
+                this.router.navigateByUrl(`welcome-page`);
             }
-            this.router.navigateByUrl(
-                `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
-            );
-        } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
         }
     }
 
