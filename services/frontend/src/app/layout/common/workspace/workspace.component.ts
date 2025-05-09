@@ -244,14 +244,7 @@ export class WorkspaceComponent implements OnInit {
                     ) ?? undefined;
                 this.closeSidebar();
                 if (subscriber) {
-                    this.userDataService
-                        .fetchUserInfo()
-                        .pipe(take(1))
-                        .subscribe(() => {
-                            this.router.navigateByUrl(
-                                `subscribers/${subscriber.name}/organizations/${res.id}/inventories`,
-                            );
-                        });
+                    this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
                 }
                 this.messageService.add({
                     severity: "success",
