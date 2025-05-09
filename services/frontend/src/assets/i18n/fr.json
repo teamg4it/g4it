@@ -300,21 +300,23 @@
     },
     "welcome-page": {
         "title": "Page de bienvenue",
-        "name": "Maison",
+        "name": "Accueil",
         "hello": "Bonjour",
-        "about-g4it": "G4IT est une application conçue pour accompagner <strong>les organisations industrielles du numérique</strong> dans la mise en œuvre d'une <strong>démarche numérique durable</strong> pour leurs <strong>systèmes d'information</strong> et leurs <strong>services numériques</strong>.",
-        "getting-started": "Commencer",
-        "getting-started-text": "Vous êtes dans votre premier espace de démonstration : vous pouvez passer d'un espace de travail à l'autre grâce au menu de sélection (en haut à droite de l'application). Vous pouvez également créer un nouvel espace de travail au sein de votre organisation [Sopra Steria]. Vous pourrez ainsi réaliser vos premières simulations, évaluations, etc.",
+        "about-g4it": "G4IT est conçu pour vous aider à mettre en œuvre une <strong>approche numérique durable</strong> pour vos <strong>systèmes d’information</strong> et vos <strong>services numériques.</strong>",
+        "getting-started": "Prêt à démarrer",
+        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d’un espace de travail à un autre via le menu situé en haut à droite de l’application (le nom de l’espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation [{{ subscriberName }}], afin de réaliser vos propres évaluations et inviter d’autres utilisateurs à vous y rejoindre.",
         "modules-access": "Accès aux modules",
         "inventories": {
             "title": "Inventaires",
-            "description": "Calculez l'impact d'un ensemble d'équipements qui constituent tout ou partie du système d'information d'une organisation, d'un parc applicatif, d'un projet, d'une équipe…",
-            "button": "Aller au service"
+            "description": "Évaluez l’impact d’un ensemble d’équipements représentant tout ou partie du système d’information d’une organisation, d’un parc applicatif, d’un projet ou d’une équipe…",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
         },
         "digital-service": {
             "title": "Services numériques",
-            "description": "Calculez l'impact d'un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs finaux du service, le volume de données qui transitent sur le réseau, les serveurs et infrastructures d'hébergement.",
-            "button": "Demander de l'aide"
+            "description": "Évaluez l’impact d’un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
         }
     },
     "Jan": "janv",
