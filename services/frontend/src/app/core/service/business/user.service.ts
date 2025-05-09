@@ -144,7 +144,7 @@ export class UserService {
         if (this.checkIfAllowed(subscriber, organization, page)) {
             this.setSubscriberAndOrganization(subscriber, organization);
         } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
+            this.router.navigateByUrl(`welcome-page`);
         }
     }
 
@@ -168,7 +168,19 @@ export class UserService {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
                 return;
-            } else this.router.navigateByUrl(`something-went-wrong/403`);
+            } else if (this.checkIfAllowed(subscriber, organization!, "inventories")) {
+                this.router.navigateByUrl(
+                    `subscribers/${subscriber.name}/organizations/${organization?.id}/inventories`,
+                );
+                return;
+            } else if (
+                this.checkIfAllowed(subscriber, organization!, "digital-services")
+            ) {
+                this.router.navigateByUrl(
+                    `subscribers/${subscriber.name}/organizations/${organization?.id}/digital-services`,
+                );
+                return;
+            }
         }
 
         if (subscriber && organization) {
