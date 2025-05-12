@@ -140,10 +140,8 @@ export class UserService {
             this.router.navigateByUrl("/");
             return;
         }
-
-        if (this.checkIfAllowed(subscriber, organization, page)) {
-            this.setSubscriberAndOrganization(subscriber, organization);
-        } else {
+        this.setSubscriberAndOrganization(subscriber, organization);
+        if (!this.checkIfAllowed(subscriber, organization, page)) {
             this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
@@ -168,7 +166,10 @@ export class UserService {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
                 return;
-            } else this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            } else {
+                this.setSubscriberAndOrganization(subscriber, organization!);
+                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            }
         }
 
         if (subscriber && organization) {
@@ -320,15 +321,14 @@ export class UserService {
         organization: Organization,
         page: string,
     ): void {
+        this.setSubscriberAndOrganization(subscriber, organization);
         if (this.checkIfAllowed(subscriber, organization, page)) {
-            this.setSubscriberAndOrganization(subscriber, organization);
             if (page === "inventories" || page === "digital-services") {
                 this.router.navigateByUrl(
                     `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
                 );
             }
         } else {
-            this.setSubscriberAndOrganization(subscriber, organization);
             this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
