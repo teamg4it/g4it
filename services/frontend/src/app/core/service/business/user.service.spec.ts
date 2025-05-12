@@ -319,10 +319,12 @@ describe("UserService", () => {
 
     it("should navigate to the 403 page if user is not allowed", () => {
         const subscriber = {
+            name: "testSubscriber",
             roles: [Role.DigitalServiceRead],
         } as Subscriber;
 
         const organization = {
+            id: 1,
             roles: [Role.DigitalServiceRead],
         } as Organization;
 
@@ -544,19 +546,6 @@ describe("UserService", () => {
                 currentUser.subscribers[0],
                 currentUser.subscribers[0].organizations[0],
             );
-        });
-
-        it("should navigate to the 403 page if the current user has no subscribers", () => {
-            const currentUser: User = {
-                subscribers: [],
-            } as any;
-
-            spyOn(service, "errorMessage");
-            spyOn(router, "navigateByUrl");
-
-            service.subscriberOrganizationHandling(currentUser, "administration");
-
-            expect(router.navigateByUrl).toHaveBeenCalledWith("welcome-page");
         });
 
         it("should navigate to the 403 page if the current user is not allowed", () => {

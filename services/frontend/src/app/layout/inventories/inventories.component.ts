@@ -102,17 +102,19 @@ export class InventoriesComponent implements OnInit {
         }
 
         this.router.events.subscribe((event: Event) => {
-            if (event instanceof NavigationEnd && this.isAllowedInventory) {
+            if (event instanceof NavigationEnd) {
                 clearInterval(this.inventoryInterval);
                 if (event.url.includes("/footprint")) {
                     return;
                 }
 
-                this.reloadInventories().then(() => {
-                    if (this.doLoop) {
-                        this.loopLoadInventories();
-                    }
-                });
+                if (this.isAllowedInventory) {
+                    this.reloadInventories().then(() => {
+                        if (this.doLoop) {
+                            this.loopLoadInventories();
+                        }
+                    });
+                }
             }
         });
     }
