@@ -8,9 +8,10 @@
 import { Component, DestroyRef, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { take } from "rxjs";
+import { firstValueFrom, take } from "rxjs";
 import {
     OrganizationCriteriaRest,
     OrganizationWithSubscriber,
@@ -68,6 +69,7 @@ export class UsersComponent {
         private userService: UserService,
         private userDataService: UserDataService,
         private globalStore: GlobalStoreService,
+        private readonly router: Router,
     ) {}
 
     ngOnInit() {
@@ -209,7 +211,8 @@ export class UsersComponent {
         return userRoles[0] || "";
     }
 
-    deleteUserDetails(event: Event, user: UserDetails) {
+    async deleteUserDetails(event: Event, user: UserDetails) {
+        const userId = (await firstValueFrom(this.userService.user$)).id;
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             message: this.translate.instant("administration.user.delete-message", {
@@ -236,7 +239,20 @@ export class UsersComponent {
                     ],
                 };
                 this.administrationService.deleteUserDetails(body).subscribe((res) => {
-                    this.searchList();
+                    const currentUserRoles = body.users.find(
+                        (u) => u.userId === userId,
+                    )?.roles;
+                    if (currentUserRoles?.includes(Role.OrganizationAdmin)) {
+                        this.userDataService
+                            .fetchUserInfo()
+                            .pipe(take(1))
+                            .subscribe(() => {
+                                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                                return;
+                            });
+                    } else {
+                        this.searchList();
+                    }
                 });
             },
         });
