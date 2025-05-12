@@ -5,12 +5,27 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+    Component,
+    DestroyRef,
+    EventEmitter,
+    inject,
+    Input,
+    Output,
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Role, RoleValue } from "src/app/core/interfaces/roles.interfaces";
-import { UserDetails } from "src/app/core/interfaces/user.interfaces";
+import {
+    Organization,
+    Subscriber,
+    UserDetails,
+} from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
+import { UserService } from "src/app/core/service/business/user.service";
+import { UserDataService } from "src/app/core/service/data/user-data.service";
 
 @Component({
     selector: "app-add-organization",
@@ -37,10 +52,15 @@ export class AddOrganizationComponent {
 
     isAdmin: boolean = false;
     isAdminRoleDisabled: boolean = false;
-
+    currentSubscriber: Subscriber = {} as Subscriber;
+    selectedOrganization: Organization = {} as Organization;
+    private destroyRef = inject(DestroyRef);
     constructor(
         public administrationService: AdministrationService,
         private translate: TranslateService,
+        private userDataService: UserDataService,
+        private userService: UserService,
+        private router: Router,
     ) {}
     ngOnInit() {
         this.isModuleValues = this.isRoles.map((role) => this.getRoleValue(role));
@@ -59,6 +79,16 @@ export class AddOrganizationComponent {
         ];
 
         this.restrictAdminRoleByDomain();
+
+        this.userService.currentSubscriber$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((subscriber) => (this.currentSubscriber = subscriber));
+
+        this.userService.currentOrganization$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((organization: Organization) => {
+                this.selectedOrganization = organization;
+            });
     }
 
     ngOnChanges() {
@@ -132,7 +162,38 @@ export class AddOrganizationComponent {
         this.administrationService
             .postUserToOrganizationAndAddRoles(this.getOrganizationBody())
             .subscribe(() => {
-                this.close.emit(false);
+                this.userService.user$
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe((user) => {
+                        const currentUserRoles = this.getOrganizationBody().users.find(
+                            (u) => u.userId === user.id,
+                        )?.roles;
+                        const isAdmin =
+                            currentUserRoles?.includes(Role.SubscriberAdmin) ||
+                            currentUserRoles?.includes(Role.OrganizationAdmin);
+                        if (!isAdmin && currentUserRoles) {
+                            if (
+                                currentUserRoles?.includes(Role.InventoryRead) ||
+                                currentUserRoles?.includes(Role.InventoryWrite)
+                            ) {
+                                this.router.navigateByUrl(
+                                    `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization.id}/inventories`,
+                                );
+                                return;
+                            } else if (
+                                currentUserRoles?.includes(Role.DigitalServiceRead) ||
+                                currentUserRoles?.includes(Role.DigitalServiceWrite)
+                            ) {
+                                this.router.navigateByUrl(
+                                    `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization.id}/digital-services`,
+                                );
+                                return;
+                            } else {
+                                this.close.emit(false);
+                            }
+                        }
+                        this.close.emit(false);
+                    });
             });
     }
 

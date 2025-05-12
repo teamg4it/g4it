@@ -53,7 +53,7 @@ export class InventoriesComponent implements OnInit {
     searchFieldTouched = true;
     selectedInventory: Inventory = {} as Inventory;
     selectedOrganization!: string;
-
+    isAllowedInventory: boolean = false;
     constructor(
         private inventoryService: InventoryService,
         public router: Router,
@@ -67,6 +67,12 @@ export class InventoriesComponent implements OnInit {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
+            });
+
+        this.userService.isAllowedInventoryRead$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isAllowed: boolean) => {
+                this.isAllowedInventory = isAllowed;
             });
         this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
             ? new Set(
@@ -96,7 +102,7 @@ export class InventoriesComponent implements OnInit {
         }
 
         this.router.events.subscribe((event: Event) => {
-            if (event instanceof NavigationEnd) {
+            if (event instanceof NavigationEnd && this.isAllowedInventory) {
                 clearInterval(this.inventoryInterval);
                 if (event.url.includes("/footprint")) {
                     return;

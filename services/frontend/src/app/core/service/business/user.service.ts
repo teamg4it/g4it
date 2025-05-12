@@ -341,7 +341,7 @@ export class UserService {
                     this.setSubscriberAndOrganization(subscriber, organization);
                     if (page !== apage) {
                         this.router.navigateByUrl(
-                            `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
+                            `subscribers/${subscriber.name}/organizations/${organization.id}/${apage}`,
                         );
                     }
                     break;

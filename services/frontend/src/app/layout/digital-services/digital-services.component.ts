@@ -32,7 +32,7 @@ export class DigitalServicesComponent {
     myDigitalServices: DigitalService[] = [];
     sharedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
-
+    isAllowedDigitalService: boolean = false;
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -50,13 +50,20 @@ export class DigitalServicesComponent {
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
             });
+        this.userService.isAllowedDigitalServiceRead$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isAllowed: boolean) => {
+                this.isAllowedDigitalService = isAllowed;
+            });
         this.global.setLoading(true);
         await this.retrieveDigitalServices();
         this.global.setLoading(false);
 
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
-                this.retrieveDigitalServices();
+                if (this.isAllowedDigitalService) {
+                    this.retrieveDigitalServices();
+                }
             }
         });
     }
