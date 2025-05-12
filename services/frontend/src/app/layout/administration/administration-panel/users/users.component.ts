@@ -81,6 +81,10 @@ export class UsersComponent {
         this.userService.currentSubscriber$.subscribe((res) => {
             this.subscriber = res;
         });
+
+        this.administrationService.usersSubject$.subscribe(() => {
+            this.getUsers();
+        });
     }
 
     getUsers(updateOrganization: boolean = false) {

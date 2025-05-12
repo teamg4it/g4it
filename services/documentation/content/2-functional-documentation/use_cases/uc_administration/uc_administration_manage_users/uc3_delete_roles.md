@@ -27,8 +27,10 @@ The connected user must have access to the previous page (Administration panel /
 {{< mermaid >}}
 graph TD;
 Step1[View of the users list] --> |Click on Delete Button for one user|Decision1{Confirmation?}
-Decision1 -->|Delete|Step2[Link between the user and the organization deleted] --> Step1
+Decision1 -->|Delete|Decision2{Is Own Account rights deleted?}
 Decision1 -->|No|Step1
+Decision2 --> |Yes|Step2[Navigate to Home page] --> Step4
+Decision2 --> |No|Step3[Stay on same module] --> Step4[Link between the user and the organization deleted] --> Step1
 {{< /mermaid >}}
 
 ## Mockup
@@ -66,4 +68,37 @@ front ->> back: DELETE /api/administrator/organizations/{OrganizationID}/users{U
 back --> DataBase: delete user's permissions and role
 back ->> front: Display the users in the suited list
 
+{{< /mermaid >}}
+
+
+## Remove the admin privilege on the workspace
+
+{{< mermaid >}}
+graph TD;
+Step1[View of the users list] --> |Click on Edit Button|Step2[Change Admin to User Access for own Account]
+Step2 --> Decision1{Save?}
+Decision1 -->|Yes|Step3[Navigate to Home page]
+Decision1 -->|Cancel|Step1
+{{< /mermaid >}}
+
+
+## Move to another workspace from admin module
+
+{{< mermaid >}}
+graph TD;
+Step1[View of the users list] --> Step2[Change Workspace on Top banner]
+Step2 --> Decision1{Have Admin access for selected workspace?}
+Decision1 -->|Yes|Step3[Stay on the manage user page]
+Decision1 -->|No|Step4[Navigate to Home page]
+{{< /mermaid >}}
+
+
+## Move to another workspace from Inventories or Digital Services Module 
+
+{{< mermaid >}}
+graph TD;
+Step1[On Inventories or Digital Services Module] --> Step2[Change Workspace on Top banner]
+Step2 --> Decision1{Have respective module access for selected workspace?}
+Decision1 -->|Yes|Step3[Stay on the same module]
+Decision1 -->|No|Step4[Navigate to Home page]
 {{< /mermaid >}}

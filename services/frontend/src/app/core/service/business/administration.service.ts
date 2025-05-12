@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, ReplaySubject } from "rxjs";
 import {
     OrganizationCriteriaRest,
     OrganizationUpsertRest,
@@ -21,6 +21,14 @@ import { AdministrationDataService } from "../data/administration-data-service";
 })
 export class AdministrationService {
     constructor(private administrationDataService: AdministrationDataService) {}
+
+    private usersSubject = new ReplaySubject<void>(1);
+
+    usersSubject$ = this.usersSubject.asObservable();
+
+    refreshGetUsers() {
+        this.usersSubject.next();
+    }
 
     getOrganizations(): Observable<Subscriber[]> {
         return this.administrationDataService.getOrganizations();
