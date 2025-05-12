@@ -336,7 +336,7 @@ describe("UserService", () => {
             organization,
             "administration",
         );
-        expect(router.navigateByUrl).toHaveBeenCalledWith("something-went-wrong/403");
+        expect(router.navigateByUrl).toHaveBeenCalledWith("welcome-page");
     });
 
     it("should set the subscriber, organization, and roles", () => {
@@ -556,7 +556,7 @@ describe("UserService", () => {
 
             service.subscriberOrganizationHandling(currentUser, "administration");
 
-            expect(router.navigateByUrl).toHaveBeenCalledWith("something-went-wrong/403");
+            expect(router.navigateByUrl).toHaveBeenCalledWith("welcome-page");
         });
 
         it("should navigate to the 403 page if the current user is not allowed", () => {
