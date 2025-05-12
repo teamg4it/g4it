@@ -17,6 +17,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { take } from "rxjs";
 import { Role, RoleValue } from "src/app/core/interfaces/roles.interfaces";
 import {
     Organization,
@@ -165,34 +166,44 @@ export class AddOrganizationComponent {
                 this.userService.user$
                     .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe((user) => {
-                        const currentUserRoles = this.getOrganizationBody().users.find(
-                            (u) => u.userId === user.id,
-                        )?.roles;
-                        const isAdmin =
-                            currentUserRoles?.includes(Role.SubscriberAdmin) ||
-                            currentUserRoles?.includes(Role.OrganizationAdmin);
-                        if (!isAdmin && currentUserRoles) {
-                            if (
-                                currentUserRoles?.includes(Role.InventoryRead) ||
-                                currentUserRoles?.includes(Role.InventoryWrite)
-                            ) {
-                                this.router.navigateByUrl(
-                                    `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization.id}/inventories`,
-                                );
-                                return;
-                            } else if (
-                                currentUserRoles?.includes(Role.DigitalServiceRead) ||
-                                currentUserRoles?.includes(Role.DigitalServiceWrite)
-                            ) {
-                                this.router.navigateByUrl(
-                                    `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization.id}/digital-services`,
-                                );
-                                return;
-                            } else {
+                        this.userDataService
+                            .fetchUserInfo()
+                            .pipe(take(1))
+                            .subscribe(() => {
+                                const currentUserRoles =
+                                    this.getOrganizationBody().users.find(
+                                        (u) => u.userId === user.id,
+                                    )?.roles;
+                                const isAdmin =
+                                    currentUserRoles?.includes(Role.SubscriberAdmin) ||
+                                    currentUserRoles?.includes(Role.OrganizationAdmin);
+                                if (!isAdmin && currentUserRoles) {
+                                    if (
+                                        currentUserRoles?.includes(Role.InventoryRead) ||
+                                        currentUserRoles?.includes(Role.InventoryWrite)
+                                    ) {
+                                        this.router.navigateByUrl(
+                                            `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization.id}/inventories`,
+                                        );
+                                        return;
+                                    } else if (
+                                        currentUserRoles?.includes(
+                                            Role.DigitalServiceRead,
+                                        ) ||
+                                        currentUserRoles?.includes(
+                                            Role.DigitalServiceWrite,
+                                        )
+                                    ) {
+                                        this.router.navigateByUrl(
+                                            `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization.id}/digital-services`,
+                                        );
+                                        return;
+                                    } else {
+                                        this.close.emit(false);
+                                    }
+                                }
                                 this.close.emit(false);
-                            }
-                        }
-                        this.close.emit(false);
+                            });
                     });
             });
     }

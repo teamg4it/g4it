@@ -17,6 +17,7 @@ import {
     InventoryCriteriaRest,
 } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
+import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -69,11 +70,10 @@ export class InventoriesComponent implements OnInit {
                 this.selectedOrganization = organization.name;
             });
 
-        this.userService.isAllowedInventoryRead$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((isAllowed: boolean) => {
-                this.isAllowedInventory = isAllowed;
-            });
+        this.userService.roles$.subscribe((roles: Role[]) => {
+            this.isAllowedInventory =
+                roles.includes(Role.InventoryRead) || roles.includes(Role.InventoryWrite);
+        });
         this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
             ? new Set(
                   localStorage
