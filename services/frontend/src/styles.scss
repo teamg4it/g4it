@@ -1132,14 +1132,20 @@ app-top-header {
                 contain;
         }
 
-        .navigation-button:not(:disabled) {
+        .navigation-button.disabled {
+            color: var(--tints-black-80);
+            border: 2px solid var(--gray-300);
+            background: var(--gray-300);
+        }
+
+        .navigation-button:not(.disabled) {
             color: var(--blue-color);
             border: 2px solid var(--blue-color);
             background: var(--surface-0);
         }
 
-        &:not(.p-disabled) {
-            .navigation-button:not(:disabled):hover {
+        &:not(.disabled) {
+            .navigation-button:not(.disabled):hover {
                 color: var(--surface-0);
                 background: var(--blue-color);
             }

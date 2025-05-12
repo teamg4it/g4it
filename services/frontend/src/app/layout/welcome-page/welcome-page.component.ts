@@ -36,6 +36,8 @@ export class WelcomePageComponent {
     userName: string = "";
     selectedPath: string = "";
     currentSubscriber: Subscriber = {} as Subscriber;
+    isAllowedInventory: boolean = false;
+    isAllowedDigitalService: boolean = false;
 
     private readonly destroyRef = inject(DestroyRef);
     public userService = inject(UserService);
@@ -47,6 +49,16 @@ export class WelcomePageComponent {
 
     async ngOnInit() {
         const userDetails = await firstValueFrom(this.userService.user$);
+        this.userService.isAllowedInventoryRead$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isAllowed: boolean) => {
+                this.isAllowedInventory = isAllowed;
+            });
+        this.userService.isAllowedDigitalServiceRead$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isAllowed: boolean) => {
+                this.isAllowedDigitalService = isAllowed;
+            });
         this.userName = userDetails?.firstName + " " + userDetails?.lastName;
 
         this.userService.currentSubscriber$.subscribe(
@@ -65,10 +77,18 @@ export class WelcomePageComponent {
     }
 
     inventories() {
-        this.router.navigateByUrl(`${this.selectedPath}/inventories`);
+        if (this.isAllowedInventory) {
+            this.router.navigateByUrl(`${this.selectedPath}/inventories`);
+        } else {
+            this.router.navigateByUrl("/useful-information");
+        }
     }
 
     digitalServices() {
-        this.router.navigateByUrl(`${this.selectedPath}/digital-services`);
+        if (this.isAllowedDigitalService) {
+            this.router.navigateByUrl(`${this.selectedPath}/digital-services`);
+        } else {
+            this.router.navigateByUrl("/useful-information");
+        }
     }
 }

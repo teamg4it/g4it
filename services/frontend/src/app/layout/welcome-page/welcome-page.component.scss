@@ -10,11 +10,6 @@
     }
 
     .selection-card-container {
-        .selection-card {
-            display: flex;
-            flex-direction: row;
-        }
-
         .pi {
             font-size: 8.5rem;
             padding: 1rem;
@@ -30,20 +25,20 @@
             background-color: var(--blue-color);
         }
 
-        &.p-disabled {
+        &.disabled {
             .p-card-title {
                 color: var(--tints-black-80);
             }
         }
 
-        &:not(.p-disabled):hover {
+        &:not(.disabled):hover {
             .p-card-title {
                 color: var(--blue-color);
             }
         }
     }
 
-    .selection-card-container.p-disabled {
+    .selection-card-container.disabled {
         .custom-icon {
             background-color: #888a88;
         }
