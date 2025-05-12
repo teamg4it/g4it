@@ -19,14 +19,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { take } from "rxjs";
 import { Role, RoleValue } from "src/app/core/interfaces/roles.interfaces";
-import {
-    Organization,
-    Subscriber,
-    UserDetails,
-} from "src/app/core/interfaces/user.interfaces";
+import { UserDetails } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
+import { Constants } from "src/constants";
 
 @Component({
     selector: "app-add-organization",
@@ -53,8 +50,6 @@ export class AddOrganizationComponent {
 
     isAdmin: boolean = false;
     isAdminRoleDisabled: boolean = false;
-    currentSubscriber: Subscriber = {} as Subscriber;
-    selectedOrganization: Organization = {} as Organization;
     private destroyRef = inject(DestroyRef);
     constructor(
         public administrationService: AdministrationService,
@@ -80,16 +75,6 @@ export class AddOrganizationComponent {
         ];
 
         this.restrictAdminRoleByDomain();
-
-        this.userService.currentSubscriber$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((subscriber) => (this.currentSubscriber = subscriber));
-
-        this.userService.currentOrganization$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((organization: Organization) => {
-                this.selectedOrganization = organization;
-            });
     }
 
     ngOnChanges() {
@@ -178,29 +163,8 @@ export class AddOrganizationComponent {
                                     currentUserRoles?.includes(Role.SubscriberAdmin) ||
                                     currentUserRoles?.includes(Role.OrganizationAdmin);
                                 if (!isAdmin && currentUserRoles) {
-                                    if (
-                                        currentUserRoles?.includes(Role.InventoryRead) ||
-                                        currentUserRoles?.includes(Role.InventoryWrite)
-                                    ) {
-                                        this.router.navigateByUrl(
-                                            `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization.id}/inventories`,
-                                        );
-                                        return;
-                                    } else if (
-                                        currentUserRoles?.includes(
-                                            Role.DigitalServiceRead,
-                                        ) ||
-                                        currentUserRoles?.includes(
-                                            Role.DigitalServiceWrite,
-                                        )
-                                    ) {
-                                        this.router.navigateByUrl(
-                                            `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization.id}/digital-services`,
-                                        );
-                                        return;
-                                    } else {
-                                        this.close.emit(false);
-                                    }
+                                    this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                                    return;
                                 }
                                 this.close.emit(false);
                             });
