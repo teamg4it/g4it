@@ -304,7 +304,7 @@
         "hello": "Bonjour",
         "about-g4it": "G4IT est conçu pour vous aider à mettre en œuvre une <strong>approche numérique durable</strong> pour vos <strong>systèmes d’information</strong> et vos <strong>services numériques.</strong>",
         "getting-started": "Prêt à démarrer",
-        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d’un espace de travail à un autre via le menu situé en haut à droite de l’application (le nom de l’espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation [{{ subscriberName }}], afin de réaliser vos propres évaluations et inviter d’autres utilisateurs à vous y rejoindre.",
+        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d’un espace de travail à un autre via le menu situé en haut à droite de l’application (le nom de l’espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation {{ subscriberName }}, afin de réaliser vos propres évaluations et inviter d’autres utilisateurs à vous y rejoindre.",
         "modules-access": "Accès aux modules",
         "inventories": {
             "title": "Inventaires",

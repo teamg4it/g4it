@@ -12,6 +12,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -32,7 +33,7 @@ export class DigitalServicesComponent {
     myDigitalServices: DigitalService[] = [];
     sharedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
-
+    isAllowedDigitalService: boolean = false;
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -50,13 +51,20 @@ export class DigitalServicesComponent {
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
             });
+        this.userService.roles$.subscribe((roles: Role[]) => {
+            this.isAllowedDigitalService =
+                roles.includes(Role.DigitalServiceRead) ||
+                roles.includes(Role.DigitalServiceWrite);
+        });
         this.global.setLoading(true);
         await this.retrieveDigitalServices();
         this.global.setLoading(false);
 
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
-                this.retrieveDigitalServices();
+                if (this.isAllowedDigitalService) {
+                    this.retrieveDigitalServices();
+                }
             }
         });
     }

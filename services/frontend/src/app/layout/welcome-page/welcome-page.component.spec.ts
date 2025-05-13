@@ -91,12 +91,12 @@ describe("WelcomePageComponent", () => {
     it("should render the inventories button as enabled", () => {
         const compiled = fixture.nativeElement;
         const inventoriesButton = compiled.querySelector(".inventories-button");
-        expect(inventoriesButton.disabled).toBeFalse();
+        expect(inventoriesButton.classList.contains("disabled")).toBeFalse();
     });
 
     it("should render the digital services button as disabled", () => {
         const compiled = fixture.nativeElement;
         const digitalServicesButton = compiled.querySelector(".digital-service-button");
-        expect(digitalServicesButton.disabled).toBeTrue();
+        expect(digitalServicesButton.classList.contains("disabled")).toBeTrue();
     });
 });

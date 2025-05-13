@@ -305,7 +305,7 @@
         "hello": "Hello",
         "about-g4it": "G4IT is designed to help to implement a <strong>sustainable digital approach</strong> for your <strong>information systems</strong> and <strong>digital services.</strong>",
         "getting-started": "Getting started",
-        "getting-started-text": "When you first log in, a demo workspace is available to you. You can switch between workspaces at any time via the menu in the top right corner of the application (the name of the current workspace is displayed). You also have the option to create a new workspace within your [{{ subscriberName }}] organization to conduct your own assessments and invite other users to join you.",
+        "getting-started-text": "When you first log in, a demo workspace is available to you. You can switch between workspaces at any time via the menu in the top right corner of the application (the name of the current workspace is displayed). You also have the option to create a new workspace within your {{ subscriberName }} organization to conduct your own assessments and invite other users to join you.",
         "modules-access": "Modules access",
         "inventories": {
             "title": "Inventories",
