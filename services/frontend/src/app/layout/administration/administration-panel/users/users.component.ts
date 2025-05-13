@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, effect, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -70,7 +70,13 @@ export class UsersComponent {
         private userDataService: UserDataService,
         private globalStore: GlobalStoreService,
         private readonly router: Router,
-    ) {}
+    ) {
+        effect(() => {
+            if (this.administrationService.getUsersTriggered()) {
+                this.getUsers();
+            }
+        });
+    }
 
     ngOnInit() {
         this.getUsers();
@@ -82,10 +88,6 @@ export class UsersComponent {
         });
         this.userService.currentSubscriber$.subscribe((res) => {
             this.subscriber = res;
-        });
-
-        this.administrationService.usersSubject$.subscribe(() => {
-            this.getUsers();
         });
     }
 
