@@ -1,0 +1,29 @@
+{
+  "data": [
+    {
+      "modelName": "llama3",
+      "parameters": "13b",
+      "framework": "llamacpp",
+      "quantization": "q2k"
+    },
+    {
+      "modelName": "llama3",
+      "parameters": "8b",
+      "framework": "vllm",
+      "quantization": "none"
+    },
+    {
+      "modelName": "llama3",
+      "parameters": "13b",
+      "framework": "vllm",
+      "quantization": "none"
+    },
+    {
+      "modelName": "llama2",
+      "parameters": "13b",
+      "framework": "vllm",
+      "quantization": "none"
+    }
+  ]
+
+}
