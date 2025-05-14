@@ -46,6 +46,7 @@ export class UserService {
         map((roles) => roles.includes(Role.DigitalServiceRead)),
     );
 
+
     isAllowedInventoryRead$ = this.roles$.pipe(
         map((roles) => roles.includes(Role.InventoryRead)),
     );
@@ -56,6 +57,14 @@ export class UserService {
 
     isAllowedDigitalServiceWrite$ = this.roles$.pipe(
         map((roles) => roles.includes(Role.DigitalServiceWrite)),
+    );
+
+    isAllowedEcoMinAiRead$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.EcoMinAiRead)),
+    );
+
+    isAllowedEcoMinAiWrite$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.EcoMinAiWrite)),
     );
 
     constructor(
@@ -104,7 +113,7 @@ export class UserService {
             return;
         }
 
-        if (page !== undefined && ["inventories", "digital-services"].includes(page)) {
+        if (page !== undefined && ["inventories", "digital-services", "eco-min-ai"].includes(page)) {
             return this.handlePageRouting(
                 currentUser,
                 subscriberName,
@@ -299,6 +308,10 @@ export class UserService {
             (roles.includes(Role.SubscriberAdmin) ||
                 roles.includes(Role.OrganizationAdmin))
         ) {
+            return true;
+        }
+
+        if (uri === "eco-min-ai" && roles.includes(Role.EcoMinAiRead)) {
             return true;
         }
 

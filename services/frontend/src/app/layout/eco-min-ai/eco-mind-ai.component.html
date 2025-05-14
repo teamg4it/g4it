@@ -1,0 +1,92 @@
+<p-toast #toast position="bottom-center"></p-toast>
+<div class="flex justify-content-between align-items-center flex-wrap mr-4 mb-4">
+    <h1>
+        {{
+            "eco-min-ai.title"
+                | translate: { OrganizationName: selectedOrganization }
+        }}
+    </h1>
+    <p-button
+        styleClass="black-button"
+        (onClick)="createNewDigitalService()"
+        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+        id="add-digital"
+    >
+        {{ "eco-min-ai.add" | translate }}
+    </p-button>
+</div>
+<p-scrollPanel [style]="{ width: '100%', height: '95%' }">
+    <p-accordion class="transparentBackgound" [multiple]="true">
+        <p-accordionTab
+            [header]="
+                'digital-services.headerForCreatedByMe'
+                    | translate
+                        : {
+                              count: myDigitalServices.length,
+                              plural: myDigitalServices.length > 1 ? 'S' : '',
+                          }
+            "
+            headerStyleClass="font-bold bg-transparent"
+            tabStyleClass="shadow-none"
+            [selected]="true"
+        >
+            <ul>
+                <li *ngFor="let digitalService of myDigitalServices">
+                    <app-digital-services-item
+                        [digitalService]="digitalService"
+                        (noteOpened)="itemNoteOpened($event)"
+                        (deleteUid)="itemDelete($event)"
+                    >
+                    </app-digital-services-item>
+                </li>
+            </ul>
+        </p-accordionTab>
+    </p-accordion>
+    <p-accordion class="transparentBackgound" [multiple]="true">
+        <p-accordionTab
+            [header]="
+                'digital-services.headerForSharedWithMe'
+                    | translate
+                        : {
+                              count: sharedDigitalServices.length,
+                              plural: sharedDigitalServices.length > 1 ? 'S' : '',
+                          }
+            "
+            headerStyleClass="font-bold bg-transparent"
+            tabStyleClass="shadow-none"
+            [selected]="true"
+        >
+            <ul>
+                <li *ngFor="let digitalService of sharedDigitalServices">
+                    <app-digital-services-item
+                        [digitalService]="digitalService"
+                        (noteOpened)="itemNoteOpened($event)"
+                        (unlinkUid)="itemUnlink($event)"
+                    >
+                    </app-digital-services-item>
+                </li>
+            </ul>
+        </p-accordionTab>
+    </p-accordion>
+    @if (sidebarVisible) {
+        <p-sidebar
+            [(visible)]="sidebarVisible"
+            position="right"
+            styleClass="p-sidebar-md w-7"
+            [showCloseIcon]="true"
+            (onHide)="sidebarVisible = false"
+            ariaCloseLabel="Close"
+        >
+            <app-common-editor
+                [content]="selectedDigitalService.note?.content"
+                [title]="'Note - ' + selectedDigitalService.name"
+                [showButtons]="userService.isAllowedDigitalServiceWrite$ | async"
+                (saveValue)="noteSaveValue($event)"
+                (close)="sidebarVisible = $event"
+                (delete)="noteDelete(); sidebarVisible = $event"
+                styleClass="mx-7"
+            >
+            </app-common-editor>
+        </p-sidebar>
+    }
+</p-scrollPanel>

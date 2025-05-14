@@ -29,7 +29,7 @@
         <h3 class="font-normal text-2xl ml-0 mt-5">
             {{ "welcome-page.modules-access" | translate }}
         </h3>
-        <div class="grid gap-6">
+        <div class="grid gap-12">
             <!-- Inventories -->
             <p-card
                 class="selection-card-container col md:col-12 lg:col"
@@ -124,6 +124,55 @@
                                 ? ('welcome-page.digital-service.button' | translate)
                                 : ('welcome-page.digital-service.button-disabled'
                                   | translate)
+                        "
+                    ></p-button>
+                </div>
+            </p-card>
+
+            <!-- EcoMinAi -->
+            <p-card
+                class="selection-card-container col md:col-12 lg:col"
+                [ngClass]="{
+                    disabled: !(userService.isAllowedEcoMinAiRead$ | async)
+                }"
+                styleClass="selection-card flex h-full"
+            >
+                <ng-template pTemplate="header">
+                    <div class="py-4 pl-5">
+                        <div class="custom-icon custom-at-symbol-icon"></div>
+                    </div>
+                </ng-template>
+                <div class="p-card-title font-normal line-height-1">
+                    {{ "welcome-page.eco-min-ai.title" | translate }}
+                </div>
+                <p class="selection-card-content text-lg mt-3">
+                    {{ "welcome-page.eco-min-ai.description" | translate }}
+                </p>
+
+                <div class="p-card-footer p-0">
+                    <p-button
+                        (click)="ecoMinAi()"
+                        icon="pi pi-arrow-circle-right"
+                        [styleClass]="
+                            'uppercase eco-min-ai-button navigation-button mt-5 white-space-nowrap' +
+                            ((userService.isAllowedEcoMinAiRead$ | async)
+                                ? ''
+                                : ' disabled')
+                        "
+                        iconPos="right"
+                        [label]="
+                            (userService.isAllowedEcoMinAiRead$ | async)
+                                ? ('welcome-page.eco-min-ai.button'
+                                  | translate
+                                  | uppercase)
+                                : ('welcome-page.eco-min-ai.button-disabled'
+                                  | translate
+                                  | uppercase)
+                        "
+                        [ariaLabel]="
+                            (userService.isAllowedEcoMinAiRead$ | async)
+                                ? ('welcome-page.eco-min-ai.button' | translate)
+                                : ('welcome-page.eco-min-ai.button-disabled' | translate)
                         "
                     ></p-button>
                 </div>

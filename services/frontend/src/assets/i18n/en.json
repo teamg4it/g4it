@@ -185,6 +185,43 @@
         "delete-criteria": "Delete digital service {{digitalServiceName}}",
         "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}"
     },
+
+    "eco-min-ai": {
+        "headerForCreatedByMe": "CREATED BY ME ({{count}})",
+        "headerForSharedWithMe": "SHARED WITH ME ({{count}})",
+        "copyLink": "COPY LINK",
+        "not-found": "Digital service does not exist.",
+        "expired": "Digital service link is expired.",
+        "linkCopied": "LINK COPIED !",
+        "title": "My Digital Services AI - {{OrganizationName}}",
+        "page-title": "My Digital Services",
+        "add": "Evaluate New Service AI",
+        "empty-digital-services": "You do not have any digital service.",
+        "impacts": "IMPACTS",
+        "raw": "Raw value",
+        "peopleeq": "People eq.",
+        "Terminal": "Terminals",
+        "Server": "Non-Cloud Servers",
+        "CloudService": "Cloud Services",
+        "Network": "Networks",
+        "visualize": "Visualize",
+        "lifecycle": "Lifecycle",
+        "vm": "Vm",
+        "country": "Country",
+        "type": "Type",
+        "creatorInfo": "Creator",
+        "membersInfo": "Members",
+        "popup": {
+            "delete-question": "Are you sure you want to delete the digital service",
+            "delete-text": "All information and associated footprint indicators will be definitely deleted.",
+            "delete-question-shared": "By removing the link to this digital service, you will no longer have access to it. Are you sure ?"
+        },
+        "return": "Return to my digital services list",
+        "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",
+        "delete-criteria": "Delete digital service {{digitalServiceName}}",
+        "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}"
+    },
+
     "digital-services-terminals": {
         "new": "New Device",
         "devices": "Devices",
@@ -316,6 +353,12 @@
         "digital-service": {
             "title": "Digital Services",
             "description": "Calculate the impact of a digital service involves three levels: the end-user terminals, the volume of data passing through the network, and the hosting infrastructures.",
+            "button": "Go to Service",
+            "button-disabled": "Ask for support"
+        },
+        "eco-min-ai": {
+            "title": "EcoMinAi (experimental)",
+            "description": "Estimating the environnement impact of an AI project",
             "button": "Go to Service",
             "button-disabled": "Ask for support"
         }
@@ -571,7 +614,7 @@
         },
         "server-lifecycle": {
             "title": "Analysis and ecoconception leverage",
-            "content": "Here is the distribution of your server impact according to its lifecycle step. ​<br> <br>In order to reduce the use’s impact, you need to reduce the amount of energy consumed by your server or VM. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a href='https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiSivi34pqBAxWAVaQEHUXMCAkQFnoECA8QAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FPower_usage_effectiveness&usg=AOvVaw2-B8wi_Zi1A27IGSjPYaEQ&opi=89978449' target='_blank'>PUE</a> and in a country with a less impacting electric mix – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>see table on the impact of electricity mixes</a>).​ ​<br> <br>For a compute server, the aim is to reduce the calculation’s quantity (by selecting <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see good practices in digital service ecodesign for software developers</a>).​ ​<br> <br>For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. ​​<br> <br>For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level. "
+            "content": "Here is the distribution of your server impact according to its lifecycle step. ​<br> <br>In order to reduce the use's impact, you need to reduce the amount of energy consumed by your server or VM. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a href='https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiSivi34pqBAxWAVaQEHUXMCAkQFnoECA8QAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FPower_usage_effectiveness&usg=AOvVaw2-B8wi_Zi1A27IGSjPYaEQ&opi=89978449' target='_blank'>PUE</a> and in a country with a less impacting electric mix – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>see table on the impact of electricity mixes</a>).​ ​<br> <br>For a compute server, the aim is to reduce the calculation's quantity (by selecting <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see good practices in digital service ecodesign for software developers</a>).​ ​<br> <br>For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. ​​<br> <br>For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level. "
         },
         "cloudservice": {
             "title": "Analysis and ecoconception leverage",
@@ -579,7 +622,7 @@
         },
         "cloud-lifecycle": {
             "title": "Analysis and ecoconception leverage",
-            "content": "Here is the distribution of your instance type impact according to its lifecycle step. ​<br/><br/> In order to reduce the use’s impact, you need to reduce the amount of energy consumed. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a target='_blank' href='https://en.wikipedia.org/wiki/Power_usage_effectiveness'>PUE</a> and in a country with a less impacting electric mix – <a target='_blank' href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md'>see table on the impact of electricity mixes</a>). <br/><br/> For a compute server, the aim is to reduce the calculation’s quantity (by selecting <a target='_blank' href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see more</a>).​ <br/><br/> For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. <br/><br/> For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level."
+            "content": "Here is the distribution of your instance type impact according to its lifecycle step. ​<br/><br/> In order to reduce the use's impact, you need to reduce the amount of energy consumed. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a target='_blank' href='https://en.wikipedia.org/wiki/Power_usage_effectiveness'>PUE</a> and in a country with a less impacting electric mix – <a target='_blank' href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md'>see table on the impact of electricity mixes</a>). <br/><br/> For a compute server, the aim is to reduce the calculation's quantity (by selecting <a target='_blank' href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see more</a>).​ <br/><br/> For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. <br/><br/> For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level."
         }
     },
     "acvStep": {

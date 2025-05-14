@@ -123,6 +123,7 @@
         "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
         "inventories": "Inventaires",
         "digital-services": "Services numériques",
+        "eco-min-ai" : "EcoMinAi (experimental)",
         "skip-to-main-content": "Accéder au contenu principal",
         "workspace": {
             "create": "Créer un nouvel espace de travail",
@@ -137,11 +138,11 @@
             "type-space-name": "Tapez le nom de l'espace",
             "workspace-created": "Espace de travail créé",
             "completed": "Complété",
-            "form-description": "Cet espace de travail vous permet d’évaluer l’impact environnemental de vos services numériques et de vos inventaires. Vous pouvez également inviter et gérer des contributeurs pour collaborer à vos évaluations.",
+            "form-description": "Cet espace de travail vous permet d'évaluer l'impact environnemental de vos services numériques et de vos inventaires. Vous pouvez également inviter et gérer des contributeurs pour collaborer à vos évaluations.",
             "cancel": "Annuler la création",
             "create-workspace": "Créer un espace de travail",
             "duplicate-error": "Le nom de l'espace de travail existe déjà",
-            "no-organization": "Aucune organisation correspondant à votre nom de domaine n’a été trouvée. Veuillez contacter votre administrateur pour demander l’accès ou vérifier la configuration de votre organisation.",
+            "no-organization": "Aucune organisation correspondant à votre nom de domaine n'a été trouvée. Veuillez contacter votre administrateur pour demander l'accès ou vérifier la configuration de votre organisation.",
             "space-name-maxlength": "Le nom de l'espace de travail ne doit pas dépasser 20 caractères.",
             "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés."
         }
@@ -183,6 +184,44 @@
         "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
         "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
     },
+
+
+    "eco-min-ai": {
+        "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
+        "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
+        "copyLink": "COPIER LE LIEN",
+        "not-found": "Le service numérique n'existe pas.",
+        "expired": "Le lien de service numérique a expiré.",
+        "linkCopied": "LIEN COPIÉ !",
+        "title": "Mes Services Numériques IA - {{OrganizationName}}",
+        "page-title": "Mes Services Numériques",
+        "add": "Evaluer Un Nouveau Service IA",
+        "empty-digital-services": "Vous n'avez pas de service numérique.",
+        "impacts": "IMPACTS",
+        "raw": "Unité",
+        "Terminal": "Terminaux",
+        "Server": "Serveurs hors Cloud",
+        "CloudService": "Services Cloud",
+        "Network": "Réseaux",
+        "visualize": "Visualiser",
+        "lifecycle": "Cycle de vie",
+        "vm": "VM",
+        "country": "Pays",
+        "type": "Type",
+        "creatorInfo": "Créateur",
+        "membersInfo": "Membres",
+        "popup": {
+            "delete-question": "Êtes-vous sûr de vouloir supprimer le service numérique",
+            "delete-text": "Toutes les informations et les indicateurs d'impact associés seront définitivement supprimés.",
+            "delete-question-shared": "En supprimant le lien vers ce service numérique, vous n'y aurez plus accès. Êtes-vous sûr ?"
+        },
+        "return": "Retourner à la liste de mes services numériques",
+        "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",
+        "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
+        "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
+    },
+
+
     "digital-services-terminals": {
         "new": "Nouveau terminal",
         "devices": "Terminaux",
@@ -302,19 +341,25 @@
         "title": "Page de bienvenue",
         "name": "Accueil",
         "hello": "Bonjour",
-        "about-g4it": "G4IT est conçu pour vous aider à mettre en œuvre une <strong>approche numérique durable</strong> pour vos <strong>systèmes d’information</strong> et vos <strong>services numériques.</strong>",
+        "about-g4it": "G4IT est conçu pour vous aider à mettre en œuvre une <strong>approche numérique durable</strong> pour vos <strong>systèmes d'information</strong> et vos <strong>services numériques.</strong>",
         "getting-started": "Prêt à démarrer",
-        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d’un espace de travail à un autre via le menu situé en haut à droite de l’application (le nom de l’espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation {{ subscriberName }}, afin de réaliser vos propres évaluations et inviter d’autres utilisateurs à vous y rejoindre.",
+        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d'un espace de travail à un autre via le menu situé en haut à droite de l'application (le nom de l'espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation {{ subscriberName }}, afin de réaliser vos propres évaluations et inviter d'autres utilisateurs à vous y rejoindre.",
         "modules-access": "Accès aux modules",
         "inventories": {
             "title": "Inventaires",
-            "description": "Évaluez l’impact d’un ensemble d’équipements représentant tout ou partie du système d’information d’une organisation, d’un parc applicatif, d’un projet ou d’une équipe…",
+            "description": "Évaluez l'impact d'un ensemble d'équipements représentant tout ou partie du système d'information d'une organisation, d'un parc applicatif, d'un projet ou d'une équipe…",
             "button": "Aller au service",
             "button-disabled": "Demander de l'aide"
         },
         "digital-service": {
             "title": "Services numériques",
-            "description": "Évaluez l’impact d’un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
+            "description": "Évaluez l'impact d'un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
+        },
+        "eco-min-ai": {
+            "title": "EcoMinAi (expérimental)",
+            "description": "Estimer l'impact environnemental d'un projet d'IA",
             "button": "Aller au service",
             "button-disabled": "Demander de l'aide"
         }
@@ -554,7 +599,7 @@
     "digital-services-cards": {
         "global-vision": {
             "title": "Vers l'écoconception de votre service",
-            "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères mentionnés à gauche de l’écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>principes de l'éco-conception</a>). L’une des manières d’éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3 role='content'>​ Une échelle adaptée à l'analyse multicritère : l’équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>consultez ce rapport sur l'impact environnemental des TIC</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d’Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
+            "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l'ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l'ensemble des critères mentionnés à gauche de l'écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>principes de l'éco-conception</a>). L'une des manières d'éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3 role='content'>​ Une échelle adaptée à l'analyse multicritère : l'équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l'on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l'équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d'externalité négatives admise par le système Terre (définit <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d'habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d'action d'écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d'impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>consultez ce rapport sur l'impact environnemental des TIC</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d'Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
         },
         "terminal": {
             "title": "Analyse et levier de l'écoconception",
@@ -603,7 +648,7 @@
             "inventory-title": "Changement climatique (kg éq. CO2)",
             "inventory-text": "Phénomène climatique mondial caractérisé par une augmentation générale des températures moyennes, modifiant de manière permanente les équilibres météorologiques et les écosystèmes.",
             "digital-services-card-title": "Pourquoi le changement climatique est-il important et comment agir ?",
-            "digital-services-card-content": "<strong>Changement climatique (kg CO<sub>2</sub> éq.) :</strong> ce critère mesure le forçage radiatif en tant que potentiel de réchauffement global (PRG100) qui augmente la température globale moyenne résultant des émissions de gaz à effet de serre. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Changement climatique (kg CO<sub>2</sub> éq.) :</strong> ce critère mesure le forçage radiatif en tant que potentiel de réchauffement global (PRG100) qui augmente la température globale moyenne résultant des émissions de gaz à effet de serre. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>, <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/eco-min-ai/' target='_blank'>EcoMinAi</a>.",
             "icon": "climate"
         },
         "resource-use": {
