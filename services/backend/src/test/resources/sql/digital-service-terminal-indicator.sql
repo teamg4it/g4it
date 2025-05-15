@@ -20,11 +20,11 @@ merge into g4it_user_organization(id, user_id, organization_id, default_flag) va
 
 INSERT INTO public.digital_service(uid, name, user_id, organization_id) VALUES ('uid', 'my service test', 100, 101);
 
-INSERT INTO public.ref_Critere VALUES ('Acidification',	'Air acidification is linked to emissions of nitrogen oxides, sulfur oxides, ammonia and hydrochloric acid. These pollutants turn into acids in the presence of moisture, and their fallout can damage ecosystems as well as buildings.',	'mol H+ eq');
-INSERT INTO public.ref_Critere VALUES ('Climate change',	'Greenhouse gases (GHG) are gaseous components which absorb the infrared radiation emitted by the earths surface 1 and thus contribute to the greenhouse effect.',	'kg CO2 eq');
-INSERT INTO public.ref_Critere VALUES ('Ionising radiation',	'Corresponds to the effects of radioactivity. This impact corresponds to the radioactive waste resulting from the production of nuclear electricity.',	'kBq U-235 eq');
-INSERT INTO public.ref_Critere VALUES ('Particulate matter and respiratory inorganics',	'The presence of small-diameter fine particles in the air - especially those with a diameter of less than 10 microns - represents a human health problem, since their inhalation can cause respiratory and cardiovascular problems.',	'Disease incidence');
-INSERT INTO public.ref_Critere VALUES ('Resource use (minerals and metals)',	'Industrial exploitation leads to a decrease in available resources whose reserves are limited. This indicator assesses the amount of mineral and metallic resources extracted from nature as if they were antimony.',	'kg Sb eq');
+INSERT INTO public.ref_Criterion VALUES ('Acidification',	'Air acidification is linked to emissions of nitrogen oxides, sulfur oxides, ammonia and hydrochloric acid. These pollutants turn into acids in the presence of moisture, and their fallout can damage ecosystems as well as buildings.',	'mol H+ eq');
+INSERT INTO public.ref_Criterion VALUES ('Climate change',	'Greenhouse gases (GHG) are gaseous components which absorb the infrared radiation emitted by the earths surface 1 and thus contribute to the greenhouse effect.',	'kg CO2 eq');
+INSERT INTO public.ref_Criterion VALUES ('Ionising radiation',	'Corresponds to the effects of radioactivity. This impact corresponds to the radioactive waste resulting from the production of nuclear electricity.',	'kBq U-235 eq');
+INSERT INTO public.ref_Criterion VALUES ('Particulate matter and respiratory inorganics',	'The presence of small-diameter fine particles in the air - especially those with a diameter of less than 10 microns - represents a human health problem, since their inhalation can cause respiratory and cardiovascular problems.',	'Disease incidence');
+INSERT INTO public.ref_Criterion VALUES ('Resource use (minerals and metals)',	'Industrial exploitation leads to a decrease in available resources whose reserves are limited. This indicator assesses the amount of mineral and metallic resources extracted from nature as if they were antimony.',	'kg Sb eq');
 
 INSERT INTO public.terminal VALUES ('uid2', 'uid', 4, 'France', 15, 100, '2023-09-29 14:16:00.650979', '2023-09-29 14:16:00.651979', 5);
 
