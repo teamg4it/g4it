@@ -101,12 +101,12 @@
     <div
         class="flex align-items-center justify-content-center my-1"
         [attr.aria-label]="'header.menu' | translate"
-        [ngClass]="{ 'bg-light-green': selectedPage() === 'eco-min-ai' }"
+        [ngClass]="{ 'bg-light-green': selectedPage() === 'eco-mind-ai' }"
     >
         <a
-            *ngIf="userService.isAllowedEcoMinAiRead$ | async"
-            [routerLink]="selectedPath + '/eco-min-ai'"
-            id="eco-min-ai"
+            *ngIf="userService.isAllowedEcoMindAiRead$ | async"
+            [routerLink]="selectedPath + '/eco-mind-ai'"
+            id="eco-mind-ai"
             [ngClass]="{
                 'digital-padding-zoomin': isZoomedIn(),
                 'digital-padding': !isZoomedIn(),
@@ -116,7 +116,7 @@
                 <img
                     src="assets/images/icons/icon-digital-service.svg"
                     alt="{{
-                        'eco-min-ai.title'
+                        'eco-mind-ai.title'
                             | translate: { OrganizationName: selectedOrganization.name }
                     }}"
                     [attr.title]="digitalServicesTitle()"
@@ -125,7 +125,7 @@
             </div>
 
             <span class="text-white span-font nav-span-text ds-text">{{
-                "common.eco-min-ai" | translate
+                "common.eco-mind-ai" | translate
             }}</span>
         </a>
     </div>

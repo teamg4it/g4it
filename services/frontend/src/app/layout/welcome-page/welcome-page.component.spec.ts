@@ -21,6 +21,7 @@ describe("WelcomePageComponent", () => {
             currentOrganization$: new BehaviorSubject({ id: "123" }),
             isAllowedInventoryRead$: of(true),
             isAllowedDigitalServiceRead$: of(false),
+            isAllowedEcoMindAiRead$: of(false),
         };
 
         // Mock WorkspaceService
@@ -98,5 +99,11 @@ describe("WelcomePageComponent", () => {
         const compiled = fixture.nativeElement;
         const digitalServicesButton = compiled.querySelector(".digital-service-button");
         expect(digitalServicesButton.classList.contains("disabled")).toBeTrue();
+    });
+
+    it("should render the eco mind ai button as disabled", () => {
+        const compiled = fixture.nativeElement;
+        const EcoMindAiButton = compiled.querySelector(".eco-mind-ai-button");
+        expect(EcoMindAiButton.classList.contains("disabled")).toBeTrue();
     });
 });

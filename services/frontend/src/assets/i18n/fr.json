@@ -123,7 +123,7 @@
         "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
         "inventories": "Inventaires",
         "digital-services": "Services numériques",
-        "eco-min-ai" : "EcoMinAi (experimental)",
+        "eco-mind-ai": "EcoMindAi (experimental)",
         "skip-to-main-content": "Accéder au contenu principal",
         "workspace": {
             "create": "Créer un nouvel espace de travail",
@@ -185,8 +185,7 @@
         "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
     },
 
-
-    "eco-min-ai": {
+    "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
         "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
         "copyLink": "COPIER LE LIEN",
@@ -220,7 +219,6 @@
         "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
         "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
     },
-
 
     "digital-services-terminals": {
         "new": "Nouveau terminal",
@@ -357,8 +355,8 @@
             "button": "Aller au service",
             "button-disabled": "Demander de l'aide"
         },
-        "eco-min-ai": {
-            "title": "EcoMinAi (expérimental)",
+        "eco-mind-ai": {
+            "title": "EcoMindAi (expérimental)",
             "description": "Estimer l'impact environnemental d'un projet d'IA",
             "button": "Aller au service",
             "button-disabled": "Demander de l'aide"
@@ -648,7 +646,7 @@
             "inventory-title": "Changement climatique (kg éq. CO2)",
             "inventory-text": "Phénomène climatique mondial caractérisé par une augmentation générale des températures moyennes, modifiant de manière permanente les équilibres météorologiques et les écosystèmes.",
             "digital-services-card-title": "Pourquoi le changement climatique est-il important et comment agir ?",
-            "digital-services-card-content": "<strong>Changement climatique (kg CO<sub>2</sub> éq.) :</strong> ce critère mesure le forçage radiatif en tant que potentiel de réchauffement global (PRG100) qui augmente la température globale moyenne résultant des émissions de gaz à effet de serre. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>, <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/eco-min-ai/' target='_blank'>EcoMinAi</a>.",
+            "digital-services-card-content": "<strong>Changement climatique (kg CO<sub>2</sub> éq.) :</strong> ce critère mesure le forçage radiatif en tant que potentiel de réchauffement global (PRG100) qui augmente la température globale moyenne résultant des émissions de gaz à effet de serre. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>, <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/eco-mind-ai/' target='_blank'>EcoMindAi</a>.",
             "icon": "climate"
         },
         "resource-use": {

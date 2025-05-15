@@ -12,8 +12,8 @@ export enum Role {
     DigitalServiceWrite = "ROLE_DIGITAL_SERVICE_WRITE",
     SubscriberAdmin = "ROLE_SUBSCRIBER_ADMINISTRATOR",
     OrganizationAdmin = "ROLE_ORGANIZATION_ADMINISTRATOR",
-    EcoMinAiRead = "ROLE_ECO_MIN_AI_WRITE",
-    EcoMinAiWrite = "ROLE_ECO_MIN_AI_READ",
+    EcoMindAiRead = "ROLE_ECO_MIN_AI_WRITE",
+    EcoMindAiWrite = "ROLE_ECO_MIN_AI_READ",
 }
 
 export let BasicRoles = [
@@ -21,8 +21,8 @@ export let BasicRoles = [
     Role.InventoryWrite,
     Role.DigitalServiceRead,
     Role.DigitalServiceWrite,
-    Role.EcoMinAiRead,
-    Role.EcoMinAiWrite,
+    Role.EcoMindAiRead,
+    Role.EcoMindAiWrite,
 ];
 
 export let RoleRightMap: any = {

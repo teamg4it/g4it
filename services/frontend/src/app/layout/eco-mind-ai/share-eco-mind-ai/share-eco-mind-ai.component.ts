@@ -32,6 +32,6 @@ export class ShareDigitalServiceComponent {
 
     goToTerminals(id: string) {
         let [_, _1, subscriber, _2, organization] = this.router.url.split("/");
-        return `/subscribers/${subscriber}/organizations/${organization}/digital-services/${id}/footprint/terminals`;
+        return `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai/${id}/footprint/terminals`;
     }
 }

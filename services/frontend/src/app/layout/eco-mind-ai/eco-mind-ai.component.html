@@ -1,10 +1,7 @@
 <p-toast #toast position="bottom-center"></p-toast>
 <div class="flex justify-content-between align-items-center flex-wrap mr-4 mb-4">
     <h1>
-        {{
-            "eco-min-ai.title"
-                | translate: { OrganizationName: selectedOrganization }
-        }}
+        {{ "eco-mind-ai.title" | translate: { OrganizationName: selectedOrganization } }}
     </h1>
     <p-button
         styleClass="black-button"
@@ -12,7 +9,7 @@
         *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
         id="add-digital"
     >
-        {{ "eco-min-ai.add" | translate }}
+        {{ "eco-mind-ai.add" | translate }}
     </p-button>
 </div>
 <p-scrollPanel [style]="{ width: '100%', height: '95%' }">

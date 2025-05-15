@@ -13,9 +13,6 @@ const routes: Routes = [
         path: "",
         component: LayoutComponent,
         children: [
-
-           
-
             {
                 path: "digital-services",
                 loadChildren: () =>
@@ -25,11 +22,19 @@ const routes: Routes = [
             },
 
             {
-                path: "eco-min-ai",
+                path: "eco-mind-ai",
                 loadChildren: () =>
-                    import("./eco-min-ai/eco-mind-ai.module").then(
+                    import("./eco-mind-ai/eco-mind-ai.module").then(
                         (modules) => modules.EcoMindAiModule,
                     ),
+            },
+
+            {
+                path: "eco-mind-ai/:digitalServiceId/footprint",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-footprint/digital-services-footprint.module"
+                    ).then((modules) => modules.DigitalServicesFootprintModule),
             },
 
             {

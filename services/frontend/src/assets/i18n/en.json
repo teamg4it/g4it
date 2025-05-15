@@ -186,7 +186,7 @@
         "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}"
     },
 
-    "eco-min-ai": {
+    "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",
         "headerForSharedWithMe": "SHARED WITH ME ({{count}})",
         "copyLink": "COPY LINK",
@@ -356,8 +356,8 @@
             "button": "Go to Service",
             "button-disabled": "Ask for support"
         },
-        "eco-min-ai": {
-            "title": "EcoMinAi (experimental)",
+        "eco-mind-ai": {
+            "title": "EcoMindAi (experimental)",
             "description": "Estimating the environnement impact of an AI project",
             "button": "Go to Service",
             "button-disabled": "Ask for support"
