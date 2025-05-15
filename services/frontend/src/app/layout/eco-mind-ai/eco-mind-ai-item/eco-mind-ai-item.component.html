@@ -1,0 +1,107 @@
+<p-card
+    styleClass="digital-services-card"
+    role="button"
+    [attr.aria-label]="digitalService.name"
+>
+    <div class="flex align-items-center justify-content-between">
+        <span class="w-full mr-2">
+            <p-button
+                styleClass="w-full font-bold text-xl text-left text-gray-900"
+                (click)="goToDigitalServiceFootprint(digitalService.uid)"
+                [label]="digitalService.name"
+                [text]="true"
+                [plain]="true"
+                role="heading"
+                [ariaLevel]="3"
+            />
+        </span>
+        @if (digitalService.members.length) {
+            <p-button
+                styleClass="mx-1 p-button-lg"
+                [rounded]="true"
+                (click)="sidebarVisible = true"
+                [text]="true"
+                [plain]="true"
+                icon="pi pi-users"
+                [ariaLabel]="'common.accessibility.sharedUsers' | translate"
+            />
+            <span class="mr-5 font-normal text-base"
+                >({{ digitalService.members.length }})</span
+            >
+        }
+        <p-button
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
+            styleClass="black-button-small font-bold mx-1"
+            icon="pi pi-link"
+            (click)="copyUrl()"
+            [label]="'digital-services.copyLink' | translate"
+            [ariaLabel]="'digital-services.copyLink' | translate"
+        />
+
+        <p-button
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && isLinkCopied"
+            styleClass="black-button-small font-bold mx-1"
+            [disabled]="true"
+            class="disabled-text-black"
+            [ariaLabel]="'digital-services.linkCopied' | translate"
+            [label]="'digital-services.linkCopied' | translate"
+        />
+
+        <p-button
+            (click)="openNote()"
+            styleClass="inventory-add-button-small font-bold mx-1"
+            *ngIf="
+                (userService.isAllowedDigitalServiceWrite$ | async) &&
+                !digitalService.note
+            "
+            icon="pi pi-plus-circle"
+            [label]="'common.note.add' | translate"
+        />
+
+        <p-button
+            (click)="openNote()"
+            styleClass="inventory-attached-button-small font-bold mx-1"
+            *ngIf="digitalService.note"
+            [label]="'common.note.attached' | translate"
+            icon="pi pi-clipboard"
+        />
+
+        @if (!isShared) {
+            <p-button
+                styleClass="mx-1"
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                [rounded]="true"
+                (click)="confirmDelete($event, digitalService)"
+                [text]="true"
+                [plain]="true"
+                icon="pi pi-trash"
+                [ariaLabel]="
+                    'digital-services.delete-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
+            />
+        } @else {
+            <p-button
+                styleClass="mx-1"
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                [rounded]="true"
+                (click)="confirmUnlink($event, digitalService)"
+                [text]="true"
+                [plain]="true"
+                icon="pi pi-eye-slash"
+                [ariaLabel]="
+                    'digital-services.unlink-digital-service'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
+            />
+        }
+        <p-confirmPopup [style]="{ width: '450px' }"> </p-confirmPopup>
+    </div>
+</p-card>
+
+<app-side-panel-ds-shared-users
+    [visible]="sidebarVisible"
+    [creator]="digitalService.creator"
+    [members]="digitalService.members"
+    (sidenavClose)="sidebarVisible = false"
+></app-side-panel-ds-shared-users>

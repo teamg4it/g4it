@@ -19,11 +19,11 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
-    selector: "app-digital-services",
-    templateUrl: "./digital-services.component.html",
+    selector: "app-eco-mind-ai",
+    templateUrl: "./eco-mind-ai.component.html",
     providers: [MessageService, ConfirmationService],
 })
-export class DigitalServicesComponent {
+export class EcoMindAiComponent {
     private global = inject(GlobalStoreService);
 
     digitalServices: DigitalService[] = [];

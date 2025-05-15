@@ -13,6 +13,7 @@ import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
 import { User } from "src/app/core/interfaces/user.interfaces";
+import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
@@ -101,6 +102,7 @@ export class WorkspaceComponent implements OnInit {
         private messageService: MessageService,
         private translate: TranslateService,
         private router: Router,
+        private administrationService: AdministrationService,
     ) {}
 
     spaceForm = new FormGroup({
@@ -250,7 +252,8 @@ export class WorkspaceComponent implements OnInit {
                         .fetchUserInfo()
                         .pipe(take(1))
                         .subscribe((user: User) => {
-                            const page = this.router.url.split("/").pop();
+                            const routeSplit = this.router.url.split("/");
+                            const page = routeSplit.pop();
                             if (
                                 page === Constants.ENDPOINTS.digitalServices ||
                                 page === Constants.ENDPOINTS.inventories
@@ -269,10 +272,15 @@ export class WorkspaceComponent implements OnInit {
                                     );
                                 }
                                 if (newSubscriber && newOrganization) {
+                                    // To set the new subscriber and organization in the user service. So that Top component is updated with new workspace which created
                                     this.userService.setSubscriberAndOrganization(
                                         newSubscriber,
                                         newOrganization,
                                     );
+                                }
+                                if (routeSplit.includes("administration")) {
+                                    // To refresh workspace list in Admin page.
+                                    this.administrationService.refreshGetUsers();
                                 }
                                 this.router.navigate([this.router.url]);
                             }

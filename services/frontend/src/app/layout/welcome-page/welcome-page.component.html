@@ -29,7 +29,7 @@
         <h3 class="font-normal text-2xl ml-0 mt-5">
             {{ "welcome-page.modules-access" | translate }}
         </h3>
-        <div class="grid gap-6">
+        <div class="grid gap-12">
             <!-- Inventories -->
             <p-card
                 class="selection-card-container col md:col-12 lg:col"
@@ -124,6 +124,55 @@
                                 ? ('welcome-page.digital-service.button' | translate)
                                 : ('welcome-page.digital-service.button-disabled'
                                   | translate)
+                        "
+                    ></p-button>
+                </div>
+            </p-card>
+
+            <!-- EcoMindAi -->
+            <p-card
+                class="selection-card-container col md:col-12 lg:col"
+                [ngClass]="{
+                    disabled: !(userService.isAllowedEcoMindAiRead$ | async),
+                }"
+                styleClass="selection-card flex h-full"
+            >
+                <ng-template pTemplate="header">
+                    <div class="py-4 pl-5">
+                        <div class="custom-icon custom-at-symbol-icon"></div>
+                    </div>
+                </ng-template>
+                <div class="p-card-title font-normal line-height-1">
+                    {{ "welcome-page.eco-mind-ai.title" | translate }}
+                </div>
+                <p class="selection-card-content text-lg mt-3">
+                    {{ "welcome-page.eco-mind-ai.description" | translate }}
+                </p>
+
+                <div class="p-card-footer p-0">
+                    <p-button
+                        (click)="ecoMindAi()"
+                        icon="pi pi-arrow-circle-right"
+                        [styleClass]="
+                            'uppercase eco-mind-ai-button navigation-button mt-5 white-space-nowrap' +
+                            ((userService.isAllowedEcoMindAiRead$ | async)
+                                ? ''
+                                : ' disabled')
+                        "
+                        iconPos="right"
+                        [label]="
+                            (userService.isAllowedEcoMindAiRead$ | async)
+                                ? ('welcome-page.eco-mind-ai.button'
+                                  | translate
+                                  | uppercase)
+                                : ('welcome-page.eco-mind-ai.button-disabled'
+                                  | translate
+                                  | uppercase)
+                        "
+                        [ariaLabel]="
+                            (userService.isAllowedEcoMindAiRead$ | async)
+                                ? ('welcome-page.eco-mind-ai.button' | translate)
+                                : ('welcome-page.eco-mind-ai.button-disabled' | translate)
                         "
                     ></p-button>
                 </div>

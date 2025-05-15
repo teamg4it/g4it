@@ -38,6 +38,7 @@ export class WelcomePageComponent {
     currentSubscriber: Subscriber = {} as Subscriber;
     isAllowedInventory: boolean = false;
     isAllowedDigitalService: boolean = false;
+    isAllowedEcoMindAi: boolean = false;
 
     private readonly destroyRef = inject(DestroyRef);
     public userService = inject(UserService);
@@ -58,6 +59,11 @@ export class WelcomePageComponent {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((isAllowed: boolean) => {
                 this.isAllowedDigitalService = isAllowed;
+            });
+        this.userService.isAllowedEcoMindAiRead$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isAllowed: boolean) => {
+                this.isAllowedEcoMindAi = isAllowed;
             });
         this.userName = userDetails?.firstName + " " + userDetails?.lastName;
 
@@ -87,6 +93,14 @@ export class WelcomePageComponent {
     digitalServices() {
         if (this.isAllowedDigitalService) {
             this.router.navigateByUrl(`${this.selectedPath}/digital-services`);
+        } else {
+            this.router.navigateByUrl("/useful-information");
+        }
+    }
+
+    ecoMindAi() {
+        if (this.isAllowedEcoMindAi) {
+            this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`);
         } else {
             this.router.navigateByUrl("/useful-information");
         }
