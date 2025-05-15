@@ -54,7 +54,7 @@
         <zt-zip.version>1.17</zt-zip.version>
         <vavr.version>0.10.5</vavr.version>
 
-        <maven-openapi-generator-plugin.version>7.10.0</maven-openapi-generator-plugin.version>
+        <maven-openapi-generator-plugin.version>7.13.0</maven-openapi-generator-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <shedlock.version>6.0.2</shedlock.version>
@@ -163,8 +163,19 @@
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+            <version>26.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-starter</artifactId>
             <version>${keycloak-spring-boot-starter.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.keycloak</groupId>
+                    <artifactId>keycloak-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Database -->
         <dependency>
@@ -282,6 +293,12 @@
                 <version>${keycloak-adapter-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.keycloak</groupId>
+                        <artifactId>keycloak-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
