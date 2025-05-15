@@ -455,6 +455,31 @@ databaseChangeLog:
   - changeSet:
       id: rename-organization-to-default-in-indicators-and-entry-numecoeval-table
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - tableExists:
+            tableName: en_equipement_physique
+        - tableExists:
+            tableName: en_data_center
+        - tableExists:
+            tableName: en_equipement_virtuel
+        - tableExists:
+            tableName: en_application
+        - tableExists:
+            tableName: en_messagerie
+        - tableExists:
+            tableName: en_entite
+        - tableExists:
+            tableName: en_donnees_entrees
+        - tableExists:
+            tableName: ind_indicateur_impact_equipement_virtuel
+        - tableExists:
+            tableName: ind_indicateur_impact_reseau
+        - tableExists:
+            tableName: ind_indicateur_impact_application
+        - tableExists:
+            tableName: ind_indicateur_impact_messagerie
       changes:
         - update:
             columns:

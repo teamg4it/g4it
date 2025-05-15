@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.12</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
+        <version>3.4.5</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -31,12 +31,12 @@
     <properties>
         <numecoeval.version>2.2.0-SNAPSHOT</numecoeval.version>
         <java.version>21</java.version>
-        <swagger.version>2.2.26</swagger.version>
+        <swagger.version>2.2.30</swagger.version>
         <mapstruct.dependency.version>1.6.3</mapstruct.dependency.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
 
         <lombok.dependency.version>1.18.36</lombok.dependency.version>
-        <liquibase-core.version>4.30.0</liquibase-core.version>
+        <liquibase-core.version>4.31.1</liquibase-core.version>
 
         <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version>
         <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version>
@@ -54,7 +54,7 @@
         <zt-zip.version>1.17</zt-zip.version>
         <vavr.version>0.10.5</vavr.version>
 
-        <maven-openapi-generator-plugin.version>7.10.0</maven-openapi-generator-plugin.version>
+        <maven-openapi-generator-plugin.version>7.13.0</maven-openapi-generator-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <shedlock.version>6.0.2</shedlock.version>
@@ -163,8 +163,19 @@
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+            <version>26.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-starter</artifactId>
             <version>${keycloak-spring-boot-starter.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.keycloak</groupId>
+                    <artifactId>keycloak-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Database -->
         <dependency>
@@ -266,6 +277,12 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>4.3.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -276,6 +293,12 @@
                 <version>${keycloak-adapter-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.keycloak</groupId>
+                        <artifactId>keycloak-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
