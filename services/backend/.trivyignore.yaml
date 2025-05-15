@@ -1,0 +1,25 @@
+vulnerabilities:
+  - id: CVE-2023-6378
+    paths:
+      - "target/generated-sources/openapi/pom.xml"
+  - id: CVE-2025-24970
+    paths:
+      - "target/generated-sources/openapi/pom.xml"
+  - id: CVE-2024-22243
+    paths:
+      - "target/generated-sources/openapi/pom.xml"
+  - id: CVE-2024-22259
+    paths:
+      - "target/generated-sources/openapi/pom.xml"
+  - id: CVE-2024-22262
+    paths:
+      - "target/generated-sources/openapi/pom.xml"
+  - id: CVE-2024-38816
+    paths:
+      - "target/generated-sources/openapi/pom.xml"
+  - id: CVE-2024-38819
+    paths:
+      - "target/generated-sources/openapi/pom.xml"
+  - id: CVE-2022-1471
+    paths:
+      - "target/generated-sources/openapi/pom.xml"
