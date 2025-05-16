@@ -40,8 +40,8 @@ public class AiService {
      */
     @SneakyThrows
     @Cacheable("GetAIModelConfigurations")
-    public java.util.List<AIModelConfigBO> getAIModelConfigurations() {
-        String configs =  aiModelapiClient.getAiModelConfig();
+    public java.util.List<AIModelConfigBO> getAIModelConfigurations(String type) {
+        String configs =  aiModelapiClient.getAiModelConfig(type);
         ObjectMapper mapper = new ObjectMapper();
         return (java.util.List<AIModelConfigBO>) mapper.readValue(configs, new TypeReference<List<AIModelConfigBO>>() {});
     }

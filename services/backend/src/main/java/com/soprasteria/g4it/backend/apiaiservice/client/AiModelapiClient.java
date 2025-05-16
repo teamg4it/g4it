@@ -36,7 +36,7 @@ public class AiModelapiClient {
      *
      * @return the response
      */
-    public String getAiModelConfig() {
+    public String getAiModelConfig(String type) {
         try {
             String response = webModelAiConfigapi.get().uri("/data").retrieve()
                     .bodyToMono(String.class).block();

@@ -36,7 +36,7 @@ public class AiServiceRestController implements AiServiceApiDelegate{
     @Override
     public ResponseEntity<List<AIModelConfigRest>> getAIModelConfigurations(String type) {
         return ResponseEntity.ok(
-                aiModelConfigMapper.toAIModelConfigRest(aiService.getAIModelConfigurations())
+                aiModelConfigMapper.toAIModelConfigRest(aiService.getAIModelConfigurations(type))
         );
     }
 
