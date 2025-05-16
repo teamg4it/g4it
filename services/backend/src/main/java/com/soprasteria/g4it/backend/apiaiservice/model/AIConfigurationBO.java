@@ -1,0 +1,27 @@
+package com.soprasteria.g4it.backend.apiaiservice.model;
+
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
+
+import java.util.Objects;
+
+/**
+ * Estimations and recommendations made for of an AI Service configuration
+ */
+
+@Data
+@SuperBuilder
+public class AIConfigurationBO {
+
+  private String modelName;
+
+  private String nbParameters;
+
+  private String framework;
+
+  private String quantization;
+
+  private Long totalGeneratedTokens;
+
+}
+
