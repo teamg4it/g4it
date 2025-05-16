@@ -48,26 +48,28 @@
                     [style]="{ width: '96%', height: '240px' }"
                 >
                     <ul>
-                        <li *ngFor="let item of allFilters[tab]">
-                            <p-checkbox
-                                tabindex="0"
-                                [ariaLabel]="item?.toString()"
-                                name="groupname"
-                                [value]="item"
-                                label="{{
-                                    item === all
-                                        ? ('common.all' | translate)
-                                        : item === empty
-                                          ? ('common.empty' | translate)
-                                          : item
-                                }}"
-                                [(ngModel)]="footprintStore.filters()[tab]"
-                                (ngModelChange)="
-                                    onFilterSelected($event, tab, item.toString())
-                                "
-                                [id]="item"
-                            ></p-checkbox>
-                        </li>
+                        @for (item of allFilters[tab]; track $index) {
+                            <li>
+                                <p-checkbox
+                                    tabindex="0"
+                                    [ariaLabel]="item?.toString()"
+                                    name="groupname"
+                                    [value]="item"
+                                    label="{{
+                                        item === all
+                                            ? ('common.all' | translate)
+                                            : item === empty
+                                              ? ('common.empty' | translate)
+                                              : item
+                                    }}"
+                                    [ngModel]="footprintStore.filters()[tab]"
+                                    (ngModelChange)="
+                                        onCheckboxChange($event, tab, item.toString())
+                                    "
+                                    [id]="item"
+                                ></p-checkbox>
+                            </li>
+                        }
                     </ul>
                 </p-scrollPanel>
             </p-tabPanel>

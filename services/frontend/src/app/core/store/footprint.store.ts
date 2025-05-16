@@ -54,6 +54,10 @@ export class FootprintStoreService {
         this._store.update((s) => ({ ...s, filters: { ...filters } }));
     }
 
+    setCustomFilters(filters: any, tab: string) {
+        this._store.update((s) => ({ ...s, filters: { ...s.filters, [tab]: filters } }));
+    }
+
     readonly unit = computed(() => this._store().unit);
     setUnit(unit: string) {
         this._store.update((s) => ({ ...s, unit }));
