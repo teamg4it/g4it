@@ -207,10 +207,28 @@ services:
     image: ghcr.io/boavizta/boaviztapi:1.3.10
     container_name: boaviztapi
     ports:
-      - "5000:5000"
+      - "5001:5000"
     networks:
       - numecoeval
-      
+
+  ecomind-api-config:
+    image: clue/json-server
+    container_name: ecomind-api-config
+    ports:
+      - "3000:80"
+    volumes:
+      - ./../ecomind-api/ouput_get_config.json:/data/ouput_get_config.json:Z
+    command: --watch /data/ouput_get_config.json
+
+  ecomind-api-estimate:
+    image: clue/json-server
+    container_name: ecomind-api-estimate
+    ports:
+      - "3001:80"
+    volumes:
+      - ./../ecomind-api/output_post_estimate.json:/data/output_post_estimate.json:Z
+    command: --watch /data/output_post_estimate.json
+
 volumes:
   numecoeval_kafka_data:
     driver: local
