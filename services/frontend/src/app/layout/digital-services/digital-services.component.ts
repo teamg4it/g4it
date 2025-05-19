@@ -10,7 +10,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { finalize, firstValueFrom, lastValueFrom, Subscription } from "rxjs";
+import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { Organization } from "src/app/core/interfaces/user.interfaces";
@@ -34,7 +34,6 @@ export class DigitalServicesComponent {
     sharedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
     isAllowedDigitalService: boolean = false;
-    routerEventsSubscription!: Subscription;
 
     private destroyRef = inject(DestroyRef);
 
@@ -62,13 +61,15 @@ export class DigitalServicesComponent {
         await this.retrieveDigitalServices();
         this.global.setLoading(false);
 
-        this.routerEventsSubscription = this.router.events.subscribe((event) => {
-            if (event instanceof NavigationEnd) {
-                if (this.isAllowedDigitalService) {
-                    this.retrieveDigitalServices();
+        this.router.events
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((event) => {
+                if (event instanceof NavigationEnd) {
+                    if (this.isAllowedDigitalService) {
+                        this.retrieveDigitalServices();
+                    }
                 }
-            }
-        });
+            });
     }
 
     async retrieveDigitalServices() {
@@ -166,11 +167,5 @@ export class DigitalServicesComponent {
             });
         });
         this.selectedDigitalService.note = undefined;
-    }
-
-    ngOnDestroy() {
-        if (this.routerEventsSubscription) {
-            this.routerEventsSubscription.unsubscribe();
-        }
     }
 }
