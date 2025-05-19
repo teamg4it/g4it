@@ -34,6 +34,7 @@ export class DigitalServicesComponent {
     sharedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
     isAllowedDigitalService: boolean = false;
+
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -60,13 +61,15 @@ export class DigitalServicesComponent {
         await this.retrieveDigitalServices();
         this.global.setLoading(false);
 
-        this.router.events.subscribe((event) => {
-            if (event instanceof NavigationEnd) {
-                if (this.isAllowedDigitalService) {
-                    this.retrieveDigitalServices();
+        this.router.events
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((event) => {
+                if (event instanceof NavigationEnd) {
+                    if (this.isAllowedDigitalService) {
+                        this.retrieveDigitalServices();
+                    }
                 }
-            }
-        });
+            });
     }
 
     async retrieveDigitalServices() {
