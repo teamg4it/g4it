@@ -20,6 +20,23 @@ const routes: Routes = [
                         (modules) => modules.DigitalServicesModule,
                     ),
             },
+
+            {
+                path: "eco-mind-ai",
+                loadChildren: () =>
+                    import("./eco-mind-ai/eco-mind-ai.module").then(
+                        (modules) => modules.EcoMindAiModule,
+                    ),
+            },
+
+            {
+                path: "eco-mind-ai/:digitalServiceId/footprint",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-footprint/digital-services-footprint.module"
+                    ).then((modules) => modules.DigitalServicesFootprintModule),
+            },
+
             {
                 path: "digital-services/:digitalServiceId/footprint",
                 loadChildren: () =>

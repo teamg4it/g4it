@@ -32,7 +32,8 @@ export class DigitalServicesComponent {
     myDigitalServices: DigitalService[] = [];
     sharedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
-
+    isAllowedDigitalService: boolean = false;
+    isEcoMindAi = false;
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -59,6 +60,8 @@ export class DigitalServicesComponent {
                 this.retrieveDigitalServices();
             }
         });
+
+        this.isEcoMindAi = this.router.url.includes('eco-mind-ai');
     }
 
     async retrieveDigitalServices() {

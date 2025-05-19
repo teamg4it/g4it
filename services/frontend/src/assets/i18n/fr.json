@@ -165,6 +165,8 @@
         "Terminal": "Terminaux",
         "Server": "Serveurs hors Cloud",
         "CloudService": "Services Cloud",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "Paramètres AI",
         "Network": "Réseaux",
         "visualize": "Visualiser",
         "lifecycle": "Cycle de vie",

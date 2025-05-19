@@ -169,6 +169,8 @@
         "CloudService": "Cloud Services",
         "Network": "Networks",
         "visualize": "Visualize",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "AI Parameters",
         "lifecycle": "Lifecycle",
         "vm": "Vm",
         "country": "Country",

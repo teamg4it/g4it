@@ -78,6 +78,18 @@ const routes: Routes = [
                 ...titleResolveObject,
             },
             {
+                path: "infrastructure",
+                component: DigitalServicesCloudServicesComponent,
+                ...titleResolveObject,
+            },
+
+            {
+                path: "AiParameters",
+                component: DigitalServicesCloudServicesComponent,
+                ...titleResolveObject,
+            },
+
+            {
                 path: "",
                 redirectTo: "dashboard",
                 pathMatch: "full",

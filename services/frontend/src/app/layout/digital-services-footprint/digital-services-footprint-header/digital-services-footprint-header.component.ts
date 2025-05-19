@@ -59,6 +59,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
+    isEcoMindAi = false;
 
     enableCalcul = computed(() => {
         const digitalService = this.digitalServiceStore.digitalService();
@@ -125,6 +126,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.organization.criteriaDs = organization.criteriaDs!;
             this.organization.criteriaIs = organization.criteriaIs!;
         });
+
+        this.isEcoMindAi = this.router.url.includes('eco-mind-ai');
     }
 
     onNameUpdate(digitalServiceName: string) {
@@ -238,8 +241,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let [_, _1, subscriber, _2, organization] = this.router.url.split("/");
-        return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
+        let [_, _1, subscriber, _2, organization, serviceType] = this.router.url.split("/");
+        // serviceType sera 'digital-services' ou 'eco-mind-ai'
+        if (serviceType === 'eco-mind-ai') {
+            return `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai`;
+        } else {
+            return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
+        }
     }
 
     noteSaveValue(event: any) {
