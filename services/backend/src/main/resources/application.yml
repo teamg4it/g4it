@@ -19,8 +19,19 @@ num-eco-eval-referential:
 
 #Boaviztapi configs
 boaviztapi:
-  version: 1.3
+  version: 1.3.10
   base-url: http://localhost:5000
+
+#AI Model configs
+aimodelconfigapi:
+  version: 1.0
+  base-url: http://localhost:3000
+
+#AI Model Estimation configs
+aimodelestimationapi:
+  version: 1.0
+  base-url: http://localhost:3001
+
 
 g4it:
   criteria: "Climate change, Particulate matter and respiratory inorganics, Ionising radiation, Acidification, Resource use (minerals and metals)"
