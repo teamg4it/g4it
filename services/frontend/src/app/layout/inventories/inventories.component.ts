@@ -10,7 +10,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Event, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, Subscription, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
     Inventory,
@@ -55,6 +55,8 @@ export class InventoriesComponent implements OnInit {
     selectedInventory: Inventory = {} as Inventory;
     selectedOrganization!: string;
     isAllowedInventory: boolean = false;
+    routerEventsSubscription!: Subscription;
+
     constructor(
         private inventoryService: InventoryService,
         public router: Router,
@@ -101,7 +103,7 @@ export class InventoriesComponent implements OnInit {
             this.loopLoadInventories();
         }
 
-        this.router.events.subscribe((event: Event) => {
+        this.routerEventsSubscription = this.router.events.subscribe((event: Event) => {
             if (event instanceof NavigationEnd) {
                 clearInterval(this.inventoryInterval);
                 if (event.url.includes("/footprint")) {
@@ -291,6 +293,10 @@ export class InventoriesComponent implements OnInit {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
         clearInterval(this.inventoryInterval);
+
+        if (this.routerEventsSubscription) {
+            this.routerEventsSubscription.unsubscribe();
+        }
     }
 
     searchList() {
