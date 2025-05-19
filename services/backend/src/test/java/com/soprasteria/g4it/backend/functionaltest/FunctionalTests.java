@@ -415,8 +415,6 @@ public class FunctionalTests {
 
 
         InVirtualEquipment inVe = new InVirtualEquipment();
-
-        //inVe.setId(-1l);
         inVe.setName("MyMagicalVE");
         inVe.setPhysicalEquipmentName("MyMagicalPE");
         inVe.setInventoryId(inv.getId());
