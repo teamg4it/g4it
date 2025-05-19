@@ -20,6 +20,9 @@ import {
     Datacenter,
     Impact,
     PhysicalEquipment,
+    PhysicalEquipmentAvgAge,
+    PhysicalEquipmentLowImpact,
+    PhysicalEquipmentsElecConsumption,
 } from "../../interfaces/footprint.interface";
 import { InventoryFilterSet } from "../../interfaces/inventory.interfaces";
 import { DecimalsPipe } from "../../pipes/decimal.pipe";
@@ -420,67 +423,39 @@ describe("InventoryUtilService", () => {
     });
 
     describe("computeEquipmentStats", () => {
-        it("should compute equipment statistics based on filters and footprint", () => {
-            // Arrange
-            const equipments = [
-                [
-                    {
-                        inventoryName: "08-2024",
-                        country: "France_CNR",
-                        type: "Wifi",
-                        nomEntite: "",
-                        statut: "In use",
-                        poids: 1,
-                        ageMoyen: 1,
-                    },
-                    {
-                        inventoryName: "08-2024",
-                        country: "France_CNR",
-                        type: "monitor",
-                        nomEntite: "",
-                        statut: "In use",
-                        poids: 1,
-                        ageMoyen: 1,
-                    },
-                ],
-                [
-                    {
-                        inventoryName: "08-2024",
-                        country: "France_CNR",
-                        type: "Wifi",
-                        nomEntite: "",
-                        statut: "In use",
-                        quantite: 1,
-                        lowImpact: false,
-                    },
-                ],
-                [
-                    {
-                        country: "France",
-                        type: "Server",
-                        statut: "In use",
-                        elecConsumption: 2477328,
-                    },
-                ],
-            ] as any;
-            const filters: Filter<string> = {
-                country: ["France"],
-                entity: ["Entity"],
-                equipment: ["Equipment"],
-                status: ["Status"],
+        it("should compute stats with all filters applied", async () => {
+            const equipments: [
+                PhysicalEquipmentAvgAge[],
+                PhysicalEquipmentLowImpact[],
+                PhysicalEquipmentsElecConsumption[],
+            ] = [
+                [{ poids: 10, ageMoyen: 5 }] as PhysicalEquipmentAvgAge[],
+                [{ quantite: 20, lowImpact: true }] as PhysicalEquipmentLowImpact[],
+                [{ elecConsumption: 100 }] as PhysicalEquipmentsElecConsumption[],
+            ];
+
+            const filters: Filter<string> = { country: ["ALL"] };
+            const filterFields = ["country"];
+            const footprint: Criterias = {
+                "climate-change": {
+                    impacts: [
+                        {
+                            acvStep: "UTILISATION",
+                            status: "ACTIVE",
+                            countValue: 50,
+                        } as Impact,
+                    ],
+                } as any,
             };
 
-            const filterFields = ["country", "entity", "equipment", "status"];
-
-            // Act
-            const result = service.computeEquipmentStats(
+            const stats = await service.computeEquipmentStats(
                 equipments,
                 filters,
                 filterFields,
                 footprint,
             );
 
-            expect(result.length).toEqual(4);
+            expect(stats.length).toEqual(4);
         });
 
         it("should return an array with count and avgPue", () => {
