@@ -54,7 +54,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedSubscriberName = "";
     selectedOrganizationId!: number;
     selectedOrganizationName = "";
-    isShared = false;
     displayPopup = false;
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
@@ -106,9 +105,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                     );
                 }),
             )
-            .subscribe(() => {
-                this.digitalServiceIsShared();
-            });
+            .subscribe();
 
         this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
             this.selectedSubscriberName = subscriber.name;
@@ -291,15 +288,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 severity: "error",
                 summary: this.translate.instant("common.fileNoLongerAvailable"),
             });
-        }
-    }
-
-    async digitalServiceIsShared() {
-        const userId = (await firstValueFrom(this.userService.user$)).id;
-        if (this.digitalService.creator?.id !== userId) {
-            this.isShared = true;
-        } else {
-            this.isShared = false;
         }
     }
 

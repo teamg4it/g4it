@@ -16,58 +16,32 @@
     </p-button>
 </div>
 <p-scrollPanel [style]="{ width: '100%', height: '95%' }">
-    <p-accordion class="transparentBackgound" [multiple]="true">
-        <p-accordionTab
+    <!-- <p-accordion class="transparentBackgound" [multiple]="true">
+         <p-accordionTab
             [header]="
                 'digital-services.headerForCreatedByMe'
                     | translate
                         : {
-                              count: myDigitalServices.length,
-                              plural: myDigitalServices.length > 1 ? 'S' : '',
+                              count: allDigitalServices.length,
+                              plural: allDigitalServices.length > 1 ? 'S' : '',
                           }
             "
             headerStyleClass="font-bold bg-transparent"
             tabStyleClass="shadow-none"
             [selected]="true"
-        >
-            <ul>
-                <li *ngFor="let digitalService of myDigitalServices">
-                    <app-digital-services-item
-                        [digitalService]="digitalService"
-                        (noteOpened)="itemNoteOpened($event)"
-                        (deleteUid)="itemDelete($event)"
-                    >
-                    </app-digital-services-item>
-                </li>
-            </ul>
-        </p-accordionTab>
-    </p-accordion>
-    <p-accordion class="transparentBackgound" [multiple]="true">
-        <p-accordionTab
-            [header]="
-                'digital-services.headerForSharedWithMe'
-                    | translate
-                        : {
-                              count: sharedDigitalServices.length,
-                              plural: sharedDigitalServices.length > 1 ? 'S' : '',
-                          }
-            "
-            headerStyleClass="font-bold bg-transparent"
-            tabStyleClass="shadow-none"
-            [selected]="true"
-        >
-            <ul>
-                <li *ngFor="let digitalService of sharedDigitalServices">
-                    <app-digital-services-item
-                        [digitalService]="digitalService"
-                        (noteOpened)="itemNoteOpened($event)"
-                        (unlinkUid)="itemUnlink($event)"
-                    >
-                    </app-digital-services-item>
-                </li>
-            </ul>
-        </p-accordionTab>
-    </p-accordion>
+        > -->
+    <ul>
+        <li *ngFor="let digitalService of allDigitalServices">
+            <app-digital-services-item
+                [digitalService]="digitalService"
+                (noteOpened)="itemNoteOpened($event)"
+                (deleteUid)="itemDelete($event)"
+            >
+            </app-digital-services-item>
+        </li>
+    </ul>
+    <!-- </p-accordionTab>
+    </p-accordion> -->
     @if (sidebarVisible) {
         <p-sidebar
             [(visible)]="sidebarVisible"

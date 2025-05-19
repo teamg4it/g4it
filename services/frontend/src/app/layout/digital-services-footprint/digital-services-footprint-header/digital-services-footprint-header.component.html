@@ -93,7 +93,7 @@
             icon="pi pi-clipboard"
             [label]="'common.note.attached' | translate"
         />
-        @if (digitalService.members && digitalService.members.length) {
+        <!-- @if (digitalService.members && digitalService.members.length) {
             <p-button
                 class="header-share-count"
                 styleClass="ml-1 "
@@ -106,7 +106,7 @@
                 size="large"
             />
             <span class="ml-1 mr-4 text-xl">({{ digitalService.members.length }})</span>
-        }
+        } -->
 
         <p-button
             *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
@@ -169,48 +169,30 @@
             (onSaveDs)="handleSaveDs($event)"
             (onClose)="displayPopup = false"
         ></app-criteria-popup>
-        @if (!isShared) {
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="ml-2"
-                [rounded]="true"
-                [text]="true"
-                [raised]="true"
-                [plain]="true"
-                (click)="confirmDelete($event)"
-                icon="pi pi-trash"
-                size="large"
-                [ariaLabel]="
-                    'digital-services.delete-criteria'
-                        | translate: { digitalServiceName: digitalService.name }
-                "
-                id="delete-service"
-            />
-        } @else {
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="ml-2"
-                [rounded]="true"
-                [text]="true"
-                [raised]="true"
-                [plain]="true"
-                (click)="confirmUnlink($event)"
-                icon="pi pi-eye-slash"
-                size="large"
-                [ariaLabel]="
-                    'digital-services.unlink-digital-service'
-                        | translate: { digitalServiceName: digitalService.name }
-                "
-            />
-        }
+        <p-button
+            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            styleClass="ml-2"
+            [rounded]="true"
+            [text]="true"
+            [raised]="true"
+            [plain]="true"
+            (click)="confirmDelete($event)"
+            icon="pi pi-trash"
+            size="large"
+            [ariaLabel]="
+                'digital-services.delete-criteria'
+                    | translate: { digitalServiceName: digitalService.name }
+            "
+            id="delete-service"
+        />
     </div>
 </div>
 
-@if (digitalService) {
+<!-- @if (digitalService) {
     <app-side-panel-ds-shared-users
         [visible]="sidebarDsVisible"
         [creator]="digitalService.creator"
         [members]="digitalService.members"
         (sidenavClose)="sidebarDsVisible = false"
     ></app-side-panel-ds-shared-users>
-}
+} -->

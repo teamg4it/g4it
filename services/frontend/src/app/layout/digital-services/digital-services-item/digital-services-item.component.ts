@@ -23,7 +23,6 @@ export class DigitalServicesItemComponent {
 
     isLinkCopied = false;
     sidebarVisible = false;
-    isShared = false;
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -34,13 +33,6 @@ export class DigitalServicesItemComponent {
         public userService: UserService,
         private clipboardService: ClipboardService,
     ) {}
-
-    async ngOnInit(): Promise<void> {
-        const userId = (await firstValueFrom(this.userService.user$)).id;
-        if (this.digitalService.creator?.id !== userId) {
-            this.isShared = true;
-        }
-    }
 
     async copyUrl() {
         this.isLinkCopied = true;
