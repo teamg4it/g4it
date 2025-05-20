@@ -6,9 +6,9 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 
-package com.soprasteria.g4it.backend.apiaiservice.client;
+package com.soprasteria.g4it.backend.external.apiaiservice.client;
 
-import com.soprasteria.g4it.backend.apiaiservice.model.AIConfigurationBO;
+import com.soprasteria.g4it.backend.external.apiaiservice.model.AIConfigurationBO;
 import com.soprasteria.g4it.backend.exception.ExternalApiException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

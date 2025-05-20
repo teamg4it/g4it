@@ -1,4 +1,4 @@
-package com.soprasteria.g4it.backend.apiaiservice;
+package com.soprasteria.g4it.backend.external.apiaiservice;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

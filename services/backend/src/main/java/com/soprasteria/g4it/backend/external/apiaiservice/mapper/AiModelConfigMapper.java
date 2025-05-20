@@ -1,6 +1,6 @@
-package com.soprasteria.g4it.backend.apiaiservice.mapper;
+package com.soprasteria.g4it.backend.external.apiaiservice.mapper;
 
-import com.soprasteria.g4it.backend.apiaiservice.model.AIModelConfigBO;
+import com.soprasteria.g4it.backend.external.apiaiservice.model.AIModelConfigBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIModelConfigRest;
 import org.mapstruct.Mapper;
 
