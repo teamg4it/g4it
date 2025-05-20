@@ -82,6 +82,13 @@ components:
         format: int64
       required: false
       description: The organization id.
+    isAIPathParam:
+      in: query
+      name: isAI
+      schema:
+        type: boolean
+      required: false
+      description: AI service if true.
     subscriberIdQueryParam:
       in: query
       name: subscriberId
@@ -612,6 +619,8 @@ components:
         note:
           type: object
           $ref: "#/components/schemas/NoteRest"
+        isAI:
+          type: boolean
 
     DigitalServicesIndicatorsRest:
       type: object
