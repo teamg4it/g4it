@@ -26,9 +26,11 @@ The connected user must have access to the previous page (Administration panel /
 
 {{< mermaid >}}
 graph TD;
-Step1[View of the users list] --> |Click on Delete Button for one user|Decision1{Confirmation?}
-Decision1 -->|Delete|Step2[Link between the user and the organization deleted] --> Step1
+Step1[View of the users list] --> |Click on Delete Button<br> for one user|Decision1{Confirmation?}
+Decision1 -->|Delete|Decision2{Is Own Account<br> Administration rights<br> deleted?}
 Decision1 -->|No|Step1
+Decision2 --> |Yes|Step2[Navigate to Home page] --> Step4
+Decision2 --> |No|Step3[Stay on same module] --> Step4[Link between the user and the organization deleted] --> Step1
 {{< /mermaid >}}
 
 ## Mockup
@@ -45,7 +47,7 @@ Decision1 -->|No|Step1
 |---------------------------|---------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Deletion confirmation** |                     | Section |                                                                                                                                                                         |
 |                           | Information message | label   | <li><u>*initialization rules*</u>: The message display is "The user user selected>will no longer have access to this organization. Are-you sure you want to proceed ?". |
-| 1                         | Delete              | Button  | <li><u>*action rules*</u>: A click on the Delete button remove the link between a user and an organization and close the message window.                                |
+| 1                         | Delete              | Button  | <li><u>*action rules*</u>: A click on the Delete button remove the link between a user and an organization. If the loggedIn user delete the own access then it redirects to home page else it close the message window.                              |
 | 2                         | Cancel / Close      | Button  | <li><u>*action rules*</u>: A click on the cross don't proceed to the deletion and close the message window.                                                             |
 
 {{% /expand %}}

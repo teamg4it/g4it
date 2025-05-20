@@ -33,6 +33,27 @@ The **"Workspace Selection"** menu bar allows users to select a workspace from a
 
 {{% /expand %}}
 
+##  Move to another workspace from admin module
+
+{{< mermaid >}}
+graph TD;
+Step1[View of the users list] --> Step2[Change Workspace from<br> Top banner]
+Step2 --> Decision1{Have Admin access for<br> selected workspace?}
+Decision1 -->|Yes|Step3[Stay on the<br> manage user page]
+Decision1 -->|No|Step4[Navigate to Home page]
+{{< /mermaid >}}
+
+
+## Move to another workspace from Inventories or Digital Services Module 
+
+{{< mermaid >}}
+graph TD;
+Step1[On Inventories or<br> Digital Services Module] --> Step2[Change Workspace<br> on Top banner]
+Step2 --> Decision1{Have respective module<br> access for selected<br> workspace?}
+Decision1 -->|Yes|Step3[Stay on the same module]
+Decision1 -->|No|Step4[Navigate to Home page]
+{{< /mermaid >}}
+
 ### Accessibility in Workspace Selection
 
 The **Workspace Selection** menu is accessible via the **Tab** key. Upon clicking the menu button, a list of available

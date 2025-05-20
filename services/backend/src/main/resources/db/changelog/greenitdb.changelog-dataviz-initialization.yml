@@ -40,6 +40,11 @@ databaseChangeLog:
   - changeSet:
       id: add-index-ind_indicateur_impact_equipement_physique
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - tableExists:
+            tableName: ind_indicateur_impact_equipement_physique
       changes:
         - sql: CREATE INDEX IF NOT EXISTS idx_ind_eq_p__nom_lot_etapeacv ON ind_indicateur_impact_equipement_physique (nom_lot, etapeacv);
   - changeSet:

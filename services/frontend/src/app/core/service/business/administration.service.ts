@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { Observable } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -21,6 +21,8 @@ import { AdministrationDataService } from "../data/administration-data-service";
 })
 export class AdministrationService {
     constructor(private administrationDataService: AdministrationDataService) {}
+
+    getUsersTriggered = signal<boolean>(false);
 
     getOrganizations(): Observable<Subscriber[]> {
         return this.administrationDataService.getOrganizations();
@@ -83,5 +85,12 @@ export class AdministrationService {
 
     postOrganization(body: any): Observable<any> {
         return this.administrationDataService.postOrganization(body);
+    }
+
+    refreshGetUsers() {
+        this.getUsersTriggered.set(true);
+        setTimeout(() => {
+            this.getUsersTriggered.set(false);
+        });
     }
 }
