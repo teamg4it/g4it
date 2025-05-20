@@ -246,7 +246,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         if (serviceType === 'eco-mind-ai') {
             return `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai`;
         } else {
-            return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
+        return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
         }
     }
 

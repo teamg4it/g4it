@@ -49,6 +49,8 @@ export class DigitalServicesFootprintComponent implements OnInit {
         // Therefore we can continue without those verifications.
         this.digitalService = digitalService;
 
+        console.log("digitalService", digitalService);
+
         this.digitalServiceStore.setDigitalService(this.digitalService);
         await this.digitalServiceStore.initInPhysicalEquipments(uid);
         await this.digitalServiceStore.initInVirtualEquipments(uid);
@@ -99,7 +101,10 @@ export class DigitalServicesFootprintComponent implements OnInit {
         ]);
 
         this.global.setLoading(false);
-        this.isEcoMindAi = this.router.url.includes('eco-mind-ai');
+
+        //TODO : this.router.url.includes("eco-mind-ai") à remplacer par this.digitalService.isAi
+        this.isEcoMindAi = this.router.url.includes("eco-mind-ai");
+        
         this.updateTabItems();
         this.digitalBusinessService.initCountryMap();
     }
@@ -115,35 +120,35 @@ export class DigitalServicesFootprintComponent implements OnInit {
                 {
                     label: this.translate.instant("digital-services.AiParameters"),
                     routerLink: "AiParameters",
-                    id: "cloudServices",
+                    id: "AiParameterss",
                 },
             ];
         } else {
             this.tabItems = [
                 {
-                    label: this.translate.instant('digital-services.Terminal'),
-                    routerLink: 'terminals',
-                    id: 'terminals',
+                    label: this.translate.instant("digital-services.Terminal"),
+                    routerLink: "terminals",
+                    id: "terminals",
                 },
                 {
-                    label: this.translate.instant('digital-services.Network'),
-                    routerLink: 'networks',
-                    id: 'networks',
+                    label: this.translate.instant("digital-services.Network"),
+                    routerLink: "networks",
+                    id: "networks",
                 },
                 {
-                    label: this.translate.instant('digital-services.Server'),
-                    routerLink: 'servers',
-                    id: 'servers',
+                    label: this.translate.instant("digital-services.Server"),
+                    routerLink: "servers",
+                    id: "servers",
                 },
                 {
-                    label: this.translate.instant('digital-services.CloudService'),
-                    routerLink: 'cloudServices',
-                    id: 'cloudServices',
+                    label: this.translate.instant("digital-services.CloudService"),
+                    routerLink: "cloudServices",
+                    id: "cloudServices",
                 },
                 {
-                    label: this.translate.instant('digital-services.visualize'),
-                    routerLink: 'dashboard',
-                    id: 'dashboard',
+                    label: this.translate.instant("digital-services.visualize"),
+                    routerLink: "dashboard",
+                    id: "dashboard",
                 },
             ];
         }

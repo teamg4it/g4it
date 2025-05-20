@@ -23,9 +23,10 @@ const routes: Routes = [
 
             {
                 path: "eco-mind-ai",
+                data: { isIa: true },
                 loadChildren: () =>
-                    import("./eco-mind-ai/eco-mind-ai.module").then(
-                        (modules) => modules.EcoMindAiModule,
+                    import("./digital-services/digital-services.module").then(
+                        (modules) => modules.DigitalServicesModule,
                     ),
             },
 

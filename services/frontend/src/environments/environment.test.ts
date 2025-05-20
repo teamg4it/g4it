@@ -10,7 +10,7 @@
 
 export const environment = {
     production: false,
-    securedEndpoints: ["inventories", "digital-services", "template-files"],
+    securedEndpoints: ["inventories", "digital-services", "eco-mind-ai", "template-files"],
     apiBaseUrl: "",
     frontEndUrl: "http://localhost:4200",
     keycloak: {

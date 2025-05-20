@@ -123,6 +123,7 @@
         "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
         "inventories": "Inventaires",
         "digital-services": "Services numériques",
+        "eco-mind-ai": "EcoMind AI (experimental)",
         "skip-to-main-content": "Accéder au contenu principal",
         "workspace": {
             "create": "Créer un nouvel espace de travail",
@@ -184,6 +185,42 @@
         "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",
         "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
         "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
+    },
+    "eco-mind-ai": {
+        "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
+        "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
+        "copyLink": "COPIER LE LIEN",
+        "not-found": "Le service numérique IA n'existe pas.",
+        "expired": "Le lien de service numérique IA a expiré.",
+        "linkCopied": "LIEN COPIÉ !",
+        "title": "Mes Services Numériques IA - {{OrganizationName}}",
+        "page-title": "Mes Services Numériques IA",
+        "add": "Evaluer Un Nouveau Service IA",
+        "empty-digital-services": "Vous n'avez pas de service numérique.",
+        "impacts": "IMPACTS",
+        "raw": "Unité",
+        "Terminal": "Terminaux",
+        "Server": "Serveurs hors Cloud",
+        "CloudService": "Services Cloud",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "Paramètres IA",
+        "Network": "Réseaux",
+        "visualize": "Visualiser",
+        "lifecycle": "Cycle de vie",
+        "vm": "VM",
+        "country": "Pays",
+        "type": "Type",
+        "creatorInfo": "Créateur",
+        "membersInfo": "Membres",
+        "popup": {
+            "delete-question": "Êtes-vous sûr de vouloir supprimer le service numérique IA",
+            "delete-text": "Toutes les informations et les indicateurs d'impact associés seront définitivement supprimés.",
+            "delete-question-shared": "En supprimant le lien vers ce service numérique IA, vous n'y aurez plus accès. Êtes-vous sûr ?"
+        },
+        "return": "Retourner à la liste de mes services numériques IA",
+        "choose-criteria": "Choisir les critères pour le service numérique IA {{digitalServiceName}}",
+        "delete-criteria": "Supprimer le service numérique IA {{digitalServiceName}}",
+        "unlink-digital-service": "Supprimer le lien avec le service IA {{digitalServiceName}}"
     },
     "digital-services-terminals": {
         "new": "Nouveau terminal",
@@ -316,6 +353,12 @@
         },
         "digital-service": {
             "title": "Services numériques",
+            "description": "Évaluez l’impact d’un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
+        },
+        "eco-mind-ai": {
+            "title": "EcoMind AI",
             "description": "Évaluez l’impact d’un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
             "button": "Aller au service",
             "button-disabled": "Demander de l'aide"

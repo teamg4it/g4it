@@ -60,8 +60,9 @@ export class DigitalServicesComponent {
                 this.retrieveDigitalServices();
             }
         });
-
-        this.isEcoMindAi = this.router.url.includes('eco-mind-ai');
+        this.route.data.subscribe((data) => {
+            this.isEcoMindAi = data["isIa"] === true;
+        });
     }
 
     async retrieveDigitalServices() {

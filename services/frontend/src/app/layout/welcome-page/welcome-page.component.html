@@ -4,40 +4,20 @@
             {{ "welcome-page.hello" | translate }},
             <span class="username">{{ userName }}</span>
         </h1>
-        <p
-            class="text-2xl line-height-3"
-            [innerHTML]="'welcome-page.about-g4it' | translate"
-        ></p>
-
+        <p class="text-2xl line-height-3" [innerHTML]="'welcome-page.about-g4it' | translate"></p>
         <h2 class="getting-started">{{ "welcome-page.getting-started" | translate }}</h2>
         <p class="text-xl mt-4 line-height-3">
-            {{
-                "welcome-page.getting-started-text"
-                    | translate: { subscriberName: currentSubscriber.name }
-            }}
+            {{ "welcome-page.getting-started-text" | translate: { subscriberName: currentSubscriber.name } }}
         </p>
-
-        <p-button
-            (click)="openWorkspaceSidebar()"
-            icon="pi pi-plus-circle"
-            styleClass="uppercase bg-light-green text-white mt-4"
-            iconPos="right"
-            [label]="'common.workspace.create' | translate | uppercase"
-            [ariaLabel]="'common.workspace.create' | translate"
-        ></p-button>
-
+        <p-button (click)="openWorkspaceSidebar()" icon="pi pi-plus-circle" styleClass="uppercase bg-light-green text-white mt-4" iconPos="right" [label]="'common.workspace.create' | translate | uppercase" [ariaLabel]="'common.workspace.create' | translate"></p-button>
         <h3 class="font-normal text-2xl ml-0 mt-5">
             {{ "welcome-page.modules-access" | translate }}
         </h3>
-        <div class="grid gap-6">
+        <div class="grid gap-12">
             <!-- Inventories -->
-            <p-card
-                class="selection-card-container col md:col-12 lg:col"
-                [ngClass]="{
+            <p-card class="selection-card-container col md:col-12 lg:col-4" [ngClass]="{
                     disabled: !(userService.isAllowedInventoryRead$ | async),
-                }"
-                styleClass="selection-card flex h-full"
-            >
+                }" styleClass="selection-card flex h-full">
                 <ng-template pTemplate="header">
                     <div class="py-4 pl-5">
                         <div class="custom-icon custom-globe-icon"></div>
@@ -49,19 +29,13 @@
                 <p class="selection-card-content text-lg mt-3">
                     {{ "welcome-page.inventories.description" | translate }}
                 </p>
-
                 <div class="p-card-footer p-0">
-                    <p-button
-                        (click)="inventories()"
-                        icon="pi pi-arrow-circle-right"
-                        [styleClass]="
+                    <p-button (click)="inventories()" icon="pi pi-arrow-circle-right" [styleClass]="
                             'uppercase inventories-button navigation-button mt-5 white-space-nowrap' +
                             ((userService.isAllowedInventoryRead$ | async)
                                 ? ''
                                 : ' disabled')
-                        "
-                        iconPos="right"
-                        [label]="
+                        " iconPos="right" [label]="
                             (userService.isAllowedInventoryRead$ | async)
                                 ? ('welcome-page.inventories.button'
                                   | translate
@@ -69,24 +43,17 @@
                                 : ('welcome-page.inventories.button-disabled'
                                   | translate
                                   | uppercase)
-                        "
-                        [ariaLabel]="
+                        " [ariaLabel]="
                             (userService.isAllowedInventoryRead$ | async)
                                 ? ('welcome-page.inventories.button' | translate)
                                 : ('welcome-page.inventories.button-disabled' | translate)
-                        "
-                    ></p-button>
+                        "></p-button>
                 </div>
             </p-card>
-
             <!-- Digital Services -->
-            <p-card
-                class="selection-card-container col md:col-12 lg:col"
-                [ngClass]="{
+            <p-card class="selection-card-container col md:col-12 lg:col-4" [ngClass]="{
                     disabled: !(userService.isAllowedDigitalServiceRead$ | async),
-                }"
-                styleClass="selection-card flex h-full"
-            >
+                }" styleClass="selection-card flex h-full">
                 <ng-template pTemplate="header">
                     <div class="py-4 pl-5">
                         <div class="custom-icon custom-at-symbol-icon"></div>
@@ -98,19 +65,13 @@
                 <p class="selection-card-content text-lg mt-3">
                     {{ "welcome-page.digital-service.description" | translate }}
                 </p>
-
                 <div class="p-card-footer p-0">
-                    <p-button
-                        (click)="digitalServices()"
-                        icon="pi pi-arrow-circle-right"
-                        [styleClass]="
+                    <p-button (click)="digitalServices()" icon="pi pi-arrow-circle-right" [styleClass]="
                             'uppercase digital-service-button navigation-button mt-5 white-space-nowrap' +
                             ((userService.isAllowedDigitalServiceRead$ | async)
                                 ? ''
                                 : ' disabled')
-                        "
-                        iconPos="right"
-                        [label]="
+                        " iconPos="right" [label]="
                             (userService.isAllowedDigitalServiceRead$ | async)
                                 ? ('welcome-page.digital-service.button'
                                   | translate
@@ -118,14 +79,48 @@
                                 : ('welcome-page.digital-service.button-disabled'
                                   | translate
                                   | uppercase)
-                        "
-                        [ariaLabel]="
+                        " [ariaLabel]="
                             (userService.isAllowedDigitalServiceRead$ | async)
                                 ? ('welcome-page.digital-service.button' | translate)
                                 : ('welcome-page.digital-service.button-disabled'
                                   | translate)
-                        "
-                    ></p-button>
+                        "></p-button>
+                </div>
+            </p-card>
+            <!-- EcoMinAi -->
+            <p-card class="selection-card-container col md:col-12 lg:col-4" [ngClass]="{
+    disabled: !(userService.isAllowedEcoMindAiRead$ | async)
+}" styleClass="selection-card flex h-full">
+                <ng-template pTemplate="header">
+                    <div class="py-4 pl-5">
+                        <div class="custom-icon custom-at-symbol-icon"></div>
+                    </div>
+                </ng-template>
+                <div class="p-card-title font-normal line-height-1">
+                    {{ "welcome-page.eco-mind-ai.title" | translate }}
+                </div>
+                <p class="selection-card-content text-lg mt-3">
+                    {{ "welcome-page.eco-mind-ai.description" | translate }}
+                </p>
+                <div class="p-card-footer p-0">
+                    <p-button (click)="ecoMindAi()" icon="pi pi-arrow-circle-right" [styleClass]="
+            'uppercase eco-mind-ai-button navigation-button mt-5 white-space-nowrap' +
+            ((userService.isAllowedEcoMindAiRead$ | async)
+                ? ''
+                : ' disabled')
+        " iconPos="right" [label]="
+            (userService.isAllowedEcoMindAiRead$ | async)
+                ? ('welcome-page.eco-mind-ai.button'
+                  | translate
+                  | uppercase)
+                : ('welcome-page.eco-mind-ai.button-disabled'
+                  | translate
+                  | uppercase)
+        " [ariaLabel]="
+            (userService.isAllowedEcoMindAiRead$ | async)
+                ? ('welcome-page.eco-mind-ai.button' | translate)
+                : ('welcome-page.eco-mind-ai.button-disabled' | translate)
+        "></p-button>
                 </div>
             </p-card>
         </div>
@@ -137,16 +132,9 @@
             <div class="grid">
                 <div class="col useful-info">
                     <div class="pt-3"></div>
-                    <a
-                        class="p-2 w-auto inline-block"
-                        routerLink="/useful-information"
-                        tabindex="0"
-                        role="link"
-                    >
+                    <a class="p-2 w-auto inline-block" routerLink="/useful-information" tabindex="0" role="link">
                         <div class="text-2xl align-items-center flex py-3 hover-text">
-                            <span
-                                ><u>{{ "common.useful-info" | translate }}</u></span
-                            >
+                            <span><u>{{ "common.useful-info" | translate }}</u></span>
                             <span class="pi pi-arrow-right ml-auto"></span>
                         </div>
                         <div>
@@ -158,42 +146,23 @@
                 </div>
                 <div class="col help-center">
                     <div class="p-3 border-round-sm w-auto inline-block">
-                        <span
-                            class="help-center-color pl-2 mt-3 flex align-items-center text-2xl"
-                        >
-                            {{ "common.help-center" | translate }}</span
-                        >
-
+                        <span class="help-center-color pl-2 mt-3 flex align-items-center text-2xl">
+              {{ "common.help-center" | translate }}
+            </span>
                         <div class="p-1 relative">
                             <div class="border border-left-1 border-light-grey-color">
-                                <a
-                                    target="_blank"
-                                    role="link"
-                                    href="https://github.com/G4ITTeam/g4it"
-                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
-                                    tabindex="0"
-                                    ><span
-                                        ><u>{{
+                                <a target="_blank" role="link" href="https://github.com/G4ITTeam/g4it" class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap" tabindex="0"><span
+                  ><u>{{
                                             "common.github-link" | translate
-                                        }}</u></span
-                                    >
-                                    <span class="pi pi-sign-out ml-auto"></span
-                                ></a>
+                                        }}</u></span>
+                  <span class="pi pi-sign-out ml-auto"></span></a>
                             </div>
                         </div>
                         <div class="p-1 relative">
                             <div class="border border-left-1 border-light-grey-color">
-                                <a
-                                    target="_blank"
-                                    role="link"
-                                    href="https://saas-g4it.com/documentation/"
-                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
-                                    tabindex="0"
-                                    ><span
-                                        ><u>{{ "common.doc-link" | translate }}</u></span
-                                    >
-                                    <span class="pi pi-sign-out ml-3 lg:ml-4"></span
-                                ></a>
+                                <a target="_blank" role="link" href="https://saas-g4it.com/documentation/" class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap" tabindex="0"><span
+                  ><u>{{ "common.doc-link" | translate }}</u></span>
+                  <span class="pi pi-sign-out ml-3 lg:ml-4"></span></a>
                             </div>
                         </div>
                     </div>
