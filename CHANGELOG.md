@@ -1,5 +1,11 @@
 # G4IT
 
+## 3.2.1
+
+### Minor Changes
+
+- 1215 | Back-end is crashing then restarting automatically
+
 ## 3.2.0
 
 ### Major Changes
