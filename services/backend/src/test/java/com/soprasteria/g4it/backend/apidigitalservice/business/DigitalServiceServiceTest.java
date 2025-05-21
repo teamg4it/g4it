@@ -90,13 +90,13 @@ class DigitalServiceServiceTest {
     void shouldCreateNewDigitalService_first() {
 
         final String organizationName = "test";
-        final Organization linkedOrganization = Organization.builder().name(organizationName).id(User_ID).build();
+        final Organization linkedOrganization = Organization.builder().name(organizationName).build();
         final User user = User.builder().id(User_ID).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
         final String expectedName = "Digital Service 1";
         final List<DigitalService> existingDigitalService = new ArrayList<>();
 
-        final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).isAI(false).build();
+        final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).isAI(IS_AI).build();
         when(digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, User_ID)).thenReturn(existingDigitalService);
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
@@ -118,19 +118,19 @@ class DigitalServiceServiceTest {
     void shouldCreateNewDigitalService_withExistingDigitalService() {
         final String organizationName = "test";
         final User user = User.builder().id(User_ID).build();
-        final Organization linkedOrganization = Organization.builder().name(organizationName).id(User_ID).build();
+        final Organization linkedOrganization = Organization.builder().name(organizationName).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
         final String expectedName = "Digital Service 2";
-        final List<DigitalService> existingDigitalService = List.of(DigitalService.builder().name("Digital Service 1").isAI(IS_AI).build(), DigitalService.builder().name("My Digital Service").isAI(IS_AI).build());
+        final List<DigitalService> existingDigitalService = List.of(DigitalService.builder().name("Digital Service 1").build(), DigitalService.builder().name("My Digital Service").build());
 
-        final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).isAI(IS_AI).name(expectedName).build();
+        final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).isAI(IS_AI).build();
         when(digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, User_ID)).thenReturn(existingDigitalService);
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID,IS_AI );
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
@@ -144,12 +144,12 @@ class DigitalServiceServiceTest {
     @Test
     void shouldListDigitalService() {
         final String organizationName = "test";
-        final Organization linkedOrganization = Organization.builder().name(organizationName).id(User_ID).build();
+        final Organization linkedOrganization = Organization.builder().name(organizationName).build();
         User creator = User.builder().id(1L).firstName("first").lastName("last").build();
         User member = User.builder().id(2L).firstName("test").lastName("").build();
 
-        DigitalService digitalService = DigitalService.builder().name("name").user(creator).isAI(IS_AI).build();
-        List<DigitalServiceShared> sharedDigitalServices = List.of(DigitalServiceShared.builder().digitalService(DigitalService.builder().name("digitalService-2").user(member).isAI(IS_AI).build()).build());
+        DigitalService digitalService = DigitalService.builder().name("name").user(creator).build();
+        List<DigitalServiceShared> sharedDigitalServices = List.of(DigitalServiceShared.builder().digitalService(DigitalService.builder().name("digitalService-2").user(member).build()).build());
         final DigitalServiceBO digitalServiceBo = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
 
         when(digitalServiceMapper.toBusinessObject(anyList())).thenReturn(List.of(digitalServiceBo));
@@ -174,13 +174,13 @@ class DigitalServiceServiceTest {
 
     @Test
     void shouldUpdateDigitalService() {
-        final UserBO userBO = UserBO.builder().id(1).adminMode(false).build();
+        final UserBO userBO = UserBO.builder().id(1).build();
         final User user = User.builder().id(1).build();
 
         final DigitalServiceBO inputDigitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
         final DigitalServiceBO digitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
-        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).isAI(IS_AI).build();
-        final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).name("name").isAI(IS_AI).build();
+        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
+        final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
@@ -200,13 +200,13 @@ class DigitalServiceServiceTest {
 
     @Test
     void shouldUpdateDigitalService_withRemovedTerminalAndNetwork() {
-        final UserBO userBO = UserBO.builder().id(1).adminMode(false).build();
+        final UserBO userBO = UserBO.builder().id(1).build();
         final User user = User.builder().id(1).build();
 
         final DigitalServiceBO inputDigitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
-        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).isAI(IS_AI).build();
+        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
         final DigitalServiceBO digitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
-        final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).name("name").isAI(IS_AI).build();
+        final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
@@ -228,7 +228,7 @@ class DigitalServiceServiceTest {
     void whenNoChange_thenDigitalServiceEntityNotChange() {
 
         final DigitalServiceBO digitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
-        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).isAI(IS_AI).build();
+        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
@@ -258,7 +258,7 @@ class DigitalServiceServiceTest {
     void shouldGetDigitalService() {
         User user = User.builder().id(1L).firstName("first").lastName("last").build();
 
-        final DigitalService digitalService = DigitalService.builder().user(user).isAI(IS_AI).build();
+        final DigitalService digitalService = DigitalService.builder().user(user).build();
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
         final DigitalServiceBO digitalServiceBo = DigitalServiceBO.builder().build();
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBo);
@@ -289,9 +289,9 @@ class DigitalServiceServiceTest {
         String subscriber = "subscriber";
         Long organizationId = 1L;
 
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(DigitalService.builder().uid(DIGITAL_SERVICE_UID).isAI(IS_AI).build()));
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(DigitalService.builder().uid(DIGITAL_SERVICE_UID).build()));
 
-        DigitalServiceLink savedDigitalServiceLink = DigitalServiceLink.builder().digitalService(DigitalService.builder().uid(DIGITAL_SERVICE_UID).isAI(IS_AI).build()).uid("mockedUid").build();
+        DigitalServiceLink savedDigitalServiceLink = DigitalServiceLink.builder().digitalService(DigitalService.builder().uid(DIGITAL_SERVICE_UID).build()).uid("mockedUid").build();
         savedDigitalServiceLink.setUid("mockedUid");
 
         String expectedUrl = String.format("/subscribers/%s/organizations/%d/digital-services/%s/share/%s",
@@ -324,7 +324,7 @@ class DigitalServiceServiceTest {
 
         String sharedUid = "57d82582-b9ae-46b9-a430-b485b5e0367e";
 
-        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).isAI(IS_AI).build();
+        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
 
         // if the link has expired
         when(digitalServiceLinkRepository.findById(sharedUid)).thenReturn(Optional.empty());
@@ -359,7 +359,7 @@ class DigitalServiceServiceTest {
 
     @Test
     void shouldUnlinkSharedDigitalServiceWhenPresent() {
-        DigitalServiceShared digitalServiceShared = DigitalServiceShared.builder().digitalService(DigitalService.builder().name("digitalService-2").isAI(IS_AI).build()).build();
+        DigitalServiceShared digitalServiceShared = DigitalServiceShared.builder().digitalService(DigitalService.builder().name("digitalService-2").build()).build();
 
         when(digitalServiceSharedRepository.findByDigitalServiceUidAndUserId(DIGITAL_SERVICE_UID, User_ID))
                 .thenReturn(Optional.of(digitalServiceShared));

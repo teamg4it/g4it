@@ -49,9 +49,8 @@ public class DigitalService {
     private String name;
 
     /**
-     *Indique si le service utilise IA
+     *Indique si c'est un service IA
      */
-    @NotNull
     private boolean isAI;
 
     /**
