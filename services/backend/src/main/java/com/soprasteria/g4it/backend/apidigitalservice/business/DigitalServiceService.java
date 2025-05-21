@@ -93,6 +93,7 @@ public class DigitalServiceService {
      *
      * @param organizationId the linked organization's id.
      * @param userId         the userId.
+     * @param isAI AI service if true
      * @return the business object corresponding on the digital service created.
      */
     public DigitalServiceBO createDigitalService(final Long organizationId, final long userId, final Boolean isAI) {
@@ -134,6 +135,7 @@ public class DigitalServiceService {
      *
      * @param organizationId the organization's id.
      * @param userId         the userId.
+     * @param isAI  AI service if true
      * @return the digital service list.
      */
     public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId, final Boolean isAI) {

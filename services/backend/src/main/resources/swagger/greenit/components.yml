@@ -87,6 +87,7 @@ components:
       name: isAI
       schema:
         type: boolean
+        default: false
       required: false
       description: AI service if true.
     subscriberIdQueryParam:
