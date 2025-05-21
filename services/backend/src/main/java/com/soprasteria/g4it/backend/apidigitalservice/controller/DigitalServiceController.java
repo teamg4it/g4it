@@ -101,32 +101,6 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
         )));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<String> shareDigitalService(String subscriber, Long organization, String digitalServiceUid) {
-        return ResponseEntity.ok(digitalServiceService.shareDigitalService(subscriber, organization, digitalServiceUid));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<Void> linkDigitalServiceToUser(String subscriber, Long organization, String digitalServiceUid, String sharedUid) {
-        digitalServiceService.linkDigitalServiceToUser(subscriber, organization, digitalServiceUid, sharedUid, authService.getUser().getId());
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<Void> unlinkSharedDigitalService(String subscriber, Long organization, String digitalServiceUid) {
-        digitalServiceService.unlinkSharedDigitalService(digitalServiceUid, authService.getUser().getId());
-        return ResponseEntity.noContent().build();
-    }
-
 }
 
 

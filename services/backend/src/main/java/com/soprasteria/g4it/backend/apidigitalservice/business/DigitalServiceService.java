@@ -137,44 +137,7 @@ public class DigitalServiceService {
      */
     public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-
-        // Retrieve digital services created by the user
-        List<DigitalService> digitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
-
-        // Retrieve shared digital services for the user
-        List<DigitalService> sharedDigitalServices = digitalServiceSharedRepository.findByOrganizationAndUserId(linkedOrganization, userId)
-                .stream()
-                .map(DigitalServiceShared::getDigitalService)
-                .toList();
-
-        final List<DigitalService> combinedDigitalServices = Stream.concat(digitalServices.stream(), sharedDigitalServices.stream())
-                .toList();
-        List<DigitalServiceBO> allDigitalServicesBO = digitalServiceMapper.toBusinessObject(combinedDigitalServices);
-
-
-        return allDigitalServicesBO.stream().peek(digitalServiceBO -> {
-            User user = getDigitalServiceEntity(digitalServiceBO.getUid()).getUser();
-            //set creator info
-            digitalServiceBO.setCreator(UserInfoBO.builder().id(user.getId())
-                    .firstName(user.getFirstName())
-                    .lastName(user.getLastName()).build());
-
-            List<DigitalServiceShared> shared = digitalServiceSharedRepository.findByDigitalServiceUid(digitalServiceBO.getUid());
-            List<UserInfoBO> members = null;
-            if (shared != null) {
-                members = shared.stream().map(
-                        sharedDigitalService -> {
-                            User userEntity = sharedDigitalService.getUser();
-                            return UserInfoBO.builder().id(userEntity.getId())
-                                    .firstName(userEntity.getFirstName())
-                                    .lastName(userEntity.getLastName())
-                                    .build();
-                        }).collect(Collectors.toList());
-            }
-            //set member info
-            digitalServiceBO.setMembers(members);
-
-        }).toList();
+        return digitalServiceMapper.toBusinessObject(digitalServiceRepository.findByOrganization(linkedOrganization));
     }
 
     /**
@@ -215,10 +178,7 @@ public class DigitalServiceService {
         digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService, User.builder().id(user.getId()).build());
 
         // Save the updated digital service.
-        DigitalServiceBO updateDigitalServiceBO = digitalServiceMapper.toFullBusinessObject(digitalServiceRepository.save(digitalServiceToUpdate));
-        updateDigitalServiceBO.setCreator(digitalService.getCreator());
-        updateDigitalServiceBO.setMembers(digitalService.getMembers());
-        return updateDigitalServiceBO;
+        return digitalServiceMapper.toFullBusinessObject(digitalServiceRepository.save(digitalServiceToUpdate));
     }
 
     /**
@@ -228,112 +188,12 @@ public class DigitalServiceService {
      * @return the business object.
      */
     public DigitalServiceBO getDigitalService(final String digitalServiceUid) {
-        DigitalService digitalServiceEntity = getDigitalServiceEntity(digitalServiceUid);
-
-        DigitalServiceBO digitalServiceBO = digitalServiceMapper.toFullBusinessObject(digitalServiceEntity);
-
-        // Set the creator information
-        User user = digitalServiceEntity.getUser();
-        digitalServiceBO.setCreator(UserInfoBO.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .build());
-
-        List<DigitalServiceShared> sharedDigitalServices = digitalServiceSharedRepository.findByDigitalServiceUid(digitalServiceUid);
-
-        List<UserInfoBO> members = sharedDigitalServices.stream()
-                .map(sharedDigitalService -> {
-                    User sharedUser = sharedDigitalService.getUser();
-                    return UserInfoBO.builder()
-                            .id(sharedUser.getId())
-                            .firstName(sharedUser.getFirstName())
-                            .lastName(sharedUser.getLastName())
-                            .build();
-                })
-                .collect(Collectors.toList());
-        // Set the members' information
-        digitalServiceBO.setMembers(members);
-
-        return digitalServiceBO;
+        return digitalServiceMapper.toFullBusinessObject(getDigitalServiceEntity(digitalServiceUid));
     }
-
 
     private DigitalService getDigitalServiceEntity(final String digitalServiceUid) {
         return digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
-    }
-
-    /**
-     * Generate the link to share the digital service
-     *
-     * @param subscriber        the client subscriber name.
-     * @param organizationId    the linked organization's id.
-     * @param digitalServiceUid the digital service id.
-     * @return the url.
-     */
-    public String shareDigitalService(final String subscriber, final Long organizationId,
-                                      final String digitalServiceUid) {
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
-                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, subscriber, organizationId))
-        );
-
-        DigitalServiceLink linkToCreate = DigitalServiceLink.builder()
-                .digitalService(digitalService)
-                .expirationDate(LocalDateTime.now().plusDays(1))
-                .build();
-        String uid = digitalServiceLinkRepository.save(linkToCreate).getUid();
-        return String.format("/subscribers/%s/organizations/%d/digital-services/%s/share/%s",
-                subscriber, organizationId, digitalServiceUid, uid);
-    }
-
-    /**
-     * Associate the digital service to the user accessing the shared link
-     *
-     * @param subscriber        the client subscriber name.
-     * @param organizationId    the linked organization's id.
-     * @param digitalServiceUid the digital service id.
-     * @param sharedUid         the unique id of url shared
-     * @param userId            userId of the user accessing the link
-     */
-    public void linkDigitalServiceToUser(final String subscriber, final Long organizationId,
-                                         final String digitalServiceUid, final String sharedUid, final long userId) {
-        // Check if digital service exists
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
-                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, subscriber, organizationId))
-        );
-
-        // Validate if the shared url is not expired
-        Optional<DigitalServiceLink> sharedLink = digitalServiceLinkRepository.findById(sharedUid);
-        if (sharedLink.isEmpty()) {
-            throw new G4itRestException("410", String.format("The shared url for Digital service %s/%s/%d has expired.", digitalServiceUid, subscriber, organizationId));
-        }
-
-        User user = userRepository.findById(userId).orElseThrow();
-
-        // if the current user owns or has already accessed the digital service then return
-        if (digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, userId) ||
-                digitalServiceSharedRepository.existsByDigitalServiceUidAndUserId(digitalServiceUid, userId)) {
-            return;
-        }
-
-        DigitalServiceShared newDigitalServiceShared = DigitalServiceShared.builder().digitalService(digitalService)
-                .user(user).organization(organizationService.getOrganizationById(organizationId))
-                .build();
-        digitalServiceSharedRepository.save(newDigitalServiceShared);
-
-    }
-
-    /**
-     * Unlink the shared digital service from user
-     *
-     * @param digitalServiceUid the shared digital service's uid
-     * @param userId            the user id
-     */
-    public void unlinkSharedDigitalService(final String digitalServiceUid, final long userId) {
-
-        Optional<DigitalServiceShared> optDigitalServiceShared = digitalServiceSharedRepository.findByDigitalServiceUidAndUserId(digitalServiceUid, userId);
-        optDigitalServiceShared.ifPresent(digitalServiceShared -> digitalServiceSharedRepository.delete(digitalServiceShared));
     }
 
 }
