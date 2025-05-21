@@ -93,9 +93,10 @@ public class DigitalServiceService {
      *
      * @param organizationId the linked organization's id.
      * @param userId         the userId.
+     * @param isAI AI service if true
      * @return the business object corresponding on the digital service created.
      */
-    public DigitalServiceBO createDigitalService(final Long organizationId, final long userId) {
+    public DigitalServiceBO createDigitalService(final Long organizationId, final long userId, final Boolean isAI) {
         // Get the linked organization.
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
@@ -119,6 +120,7 @@ public class DigitalServiceService {
                 .name(DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1))
                 .user(user)
                 .organization(linkedOrganization)
+                .isAI(isAI)
                 .creationDate(now)
                 .lastUpdateDate(now)
                 .build();
@@ -133,9 +135,10 @@ public class DigitalServiceService {
      *
      * @param organizationId the organization's id.
      * @param userId         the userId.
+     * @param isAI  AI service if true
      * @return the digital service list.
      */
-    public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId) {
+    public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId, final Boolean isAI) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
         // Retrieve digital services created by the user

@@ -49,6 +49,11 @@ public class DigitalService {
     private String name;
 
     /**
+     *Indique si c'est un service IA
+     */
+    private boolean isAI;
+
+    /**
      * The Criterias key.
      */
     private List<String> criteria;
