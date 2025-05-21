@@ -1,5 +1,7 @@
 databaseChangeLog:
   - include:
+      file: db/changelog/greenitdb.changelog-ai-parameter-input.yml
+  - include:
       file: db/changelog/greenitdb.changelog-security-user.yml
   - include:
       file: db/changelog/greenitdb.changelog-inventory-initialization.yml

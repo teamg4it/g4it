@@ -927,6 +927,35 @@ components:
           items:
             type: string
 
+    AiParameterRest:
+      description: Estimations and recommendations made for of an AI Parameter
+      type: object
+      properties:
+        modelName:
+          type: string
+        nbParameters:
+          type: string
+        framework:
+          type: string
+        quantization:
+          type: string
+        totalGeneratedTokens:
+          type: integer
+          format: int64
+        numberUserYear:
+          type: integer
+          format: int64
+        averageNumberRequest:
+          type: integer
+          format: int64
+        averageNumberToken:
+          type: integer
+          format: int64
+        isInference:
+          type: boolean
+        isFinetuning:
+          type: boolean
+
     CriteriaRest:
       description: Criteria to evaluate the impact
       type: object

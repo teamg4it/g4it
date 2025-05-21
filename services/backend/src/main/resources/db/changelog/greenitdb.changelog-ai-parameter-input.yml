@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ai-parameter
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ai_parameters
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ai_parameters_id_pk
+              - column:
+                  name: properties
+                  type: varchar(255)
+              - column:
+                - name: nbParameters
+                - type: varchar(255)
+              - column:
+                - name: framework
+                - type: varchar(255)
+              - column:
+                  - name: quantization
+                  - type: varchar(255)
+              - column:
+                  - name: totalGeneratedTokens
+                  - type: bigint
+              - column:
+                  - name: numberUserYear
+                  - type: bigint
+              - column:
+                  - name: averageNumberRequest
+                  - type: bigint
+              - column:
+                  - name: averageNumberToken
+                  - type: bigint
+              - column:
+                  - name: isInference
+                  - type: boolean
+              - column:
+                  - name: isFinetuning
+                  - type: boolean
+
+
+
+
