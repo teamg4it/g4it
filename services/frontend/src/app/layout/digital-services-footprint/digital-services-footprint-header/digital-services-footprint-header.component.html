@@ -108,14 +108,14 @@
             <span class="ml-1 mr-4 text-xl">({{ digitalService.members.length }})</span>
         } -->
 
-        <p-button
+        <!-- <p-button
             *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
             styleClass="bg-black text-white header-button"
             (click)="copyUrl()"
             [ariaLabel]="'digital-services.copyLink' | translate"
             icon="pi pi-link"
             [label]="'digital-services.copyLink' | translate"
-        />
+        /> -->
 
         <p-button
             *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && isLinkCopied"
