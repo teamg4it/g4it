@@ -1,0 +1,277 @@
+---
+title: "Migrate digital services to new workspace"
+description: "How to migrate digital services from DEMO workspace to new workspace"
+date: 2025-05-20T14:28:06+01:00
+weight: 3
+---
+
+## Migrate all the digital services of DEMO workspace to new workspaces for each user
+
+### Migration script
+
+1. Execute the migrate procedure script :
+
+```sql
+create or replace procedure migrate_ds_to_new_workspace()
+language plpgsql
+as $$
+declare
+	rec record;
+	ds_rec record;
+	shared_user_rec record;
+	new_organization_id int;
+	new_organization_name varchar;
+	new_user_organization_id int;
+	role_org_admin_id int;
+	role_ds_write_id int;
+begin
+	select id into role_org_admin_id from g4it_role where "name" = 'ROLE_ORGANIZATION_ADMINISTRATOR';
+	select id into role_ds_write_id from g4it_role where "name" = 'ROLE_DIGITAL_SERVICE_WRITE';
+
+	raise notice 'Launch of digital services migration script from DEMO workspace to new workspace';
+
+	-- check number of users concerned by the migration, if 0 then no migration needed
+	if not exists ( 
+		select 1 
+		from (
+			select distinct ds.user_id as creator_id, gio.subscriber_id, u.last_name, u.email
+			from digital_service ds 
+			inner join g4it_organization gio on ds.organization_id = gio.id and gio."name" like 'DEMO' 
+			inner join g4it_user u on ds.user_id = u.id
+		) check_nb_users
+	) then
+		raise notice 'No user linked to DEMO workspace. Script ended';
+		return;
+	end if;
+
+	for rec in
+		select distinct ds.user_id as creator_id, gio.subscriber_id, u.last_name, u.email
+		from digital_service ds 
+		inner join g4it_organization gio on ds.organization_id = gio.id and gio."name" like 'DEMO' 
+		inner join g4it_user u on ds.user_id = u.id
+	loop
+		perform 1;
+		raise notice 'Creation of the organization for user % - %', rec.creator_id, rec.email;
+		
+		-- check if organization already exists, if it's the case then we take the current id to use it later. Otherwise we insert the new organization
+
+		new_organization_id = create_organization_from_demo_organization(format('DEMO-%s-#%s',rec.last_name,rec.creator_id), rec.subscriber_id);
+		
+		-- Insertion of creators in g4it_user_organization
+
+		new_user_organization_id = link_user_to_organization(rec.creator_id, rec.email, new_organization_id, true);
+		
+		-- Adding admin role to users
+
+		perform assign_role_to_user_organization(new_user_organization_id, role_org_admin_id, rec.creator_id, rec.email);
+		
+		-- Associating the digital service to the new organization
+		for ds_rec in
+			update digital_service
+			set organization_id = new_organization_id
+			where user_id = rec.creator_id
+			and organization_id in
+			(select id from g4it_organization where name = 'DEMO')
+		returning uid, name
+		loop
+			raise notice 'Digital service % % now associated with organization %', ds_rec.uid, ds_rec.name, new_organization_id;
+
+		-- Shared users
+			for shared_user_rec in
+				select distinct dss.user_id as shared_user_id, u.email
+				from digital_service_shared dss
+				join g4it_user u ON u.id = dss.user_id
+				where dss.user_id != rec.creator_id and dss.digital_service_uid = ds_rec.uid
+			loop
+				raise notice 'Shared user % - % detected', shared_user_rec.shared_user_id, shared_user_rec.email;
+				
+				-- Insertion of shared users in g4it_user_organization
+
+				new_user_organization_id = link_user_to_organization(shared_user_rec.shared_user_id, shared_user_rec.email, new_organization_id, false);
+				
+				-- Adding write role to shared users
+
+				perform assign_role_to_user_organization(new_user_organization_id, role_ds_write_id, shared_user_rec.shared_user_id, shared_user_rec.email);
+			
+				-- Associating the digital service shared to the new organization
+				update digital_service_shared
+				set organization_id = new_organization_id
+				where digital_service_uid = ds_rec.uid
+				and user_id = shared_user_rec.shared_user_id;
+				raise notice 'Digital service shared % now associated with organization %', shared_user_rec.shared_user_id, new_organization_id;
+
+			end loop;
+		end loop;
+		commit;
+		raise notice 'Migration around user % - % commited', rec.creator_id, rec.email;
+	end loop;
+
+	raise notice 'Migration ended with success';
+end;
+$$
+```
+
+2. Execute create organization function (which is used in our procedure script)
+
+```sql
+create or replace function create_organization_from_demo_organization(
+	new_organization_name text,
+	subscriber_id_organization int8) returns int
+language plpgsql
+as $$
+declare
+	new_organization_id int;
+begin
+	if exists (
+		select 1 from g4it_organization
+		where name = new_organization_name
+		and g4it_organization.subscriber_id = subscriber_id_organization
+	) then
+		raise notice 'Organization name % with subscriber % already exists', new_organization_name, subscriber_id_organization;
+			
+		select id into new_organization_id 
+		from g4it_organization
+		where name = new_organization_name
+		and g4it_organization.subscriber_id = subscriber_id_organization;
+	else
+		insert into g4it_organization ("name", subscriber_id, status) 
+		values (new_organization_name, subscriber_id_organization, 'ACTIVE')
+		returning id into new_organization_id;
+	
+		raise notice 'Organization with id: % name: % created', new_organization_id, new_organization_name;
+	end if;
+	return new_organization_id;
+end;
+$$
+```
+
+3. Execute link user to organization function (which is used in procedure script)
+
+```sql
+create or replace function link_user_to_organization(
+	creator_id int8,
+	user_email varchar,
+	new_organization_id int,
+	default_flag boolean) returns int
+language plpgsql
+as $$
+declare
+	new_user_organization_id int;
+begin
+	if exists (
+		select 1 from g4it_user_organization
+		where user_id = creator_id
+		and organization_id = new_organization_id
+	) then 
+		raise notice 'Link between user % - % and organization % already exists', creator_id, user_email, new_organization_id;
+			
+		select id into new_user_organization_id
+		from g4it_user_organization
+		where user_id = creator_id
+		and organization_id = new_organization_id;
+	else
+		insert into g4it_user_organization(user_id, organization_id, default_flag)
+		values (creator_id, new_organization_id, default_flag) -- true or false ?
+		returning id into new_user_organization_id;
+
+		raise notice 'User % - % linked to organization %', creator_id, user_email, new_organization_id;
+	end if;
+	return new_user_organization_id;
+end;
+$$
+```
+
+4. Execute assign role to user organization function (which is used in procedure script)
+
+```sql
+create or replace function assign_role_to_user_organization(
+	new_user_organization_id int,
+	role_to_assign_id int,
+	creator_id int8,
+	user_email varchar) returns void
+language plpgsql
+as $$
+declare
+	role_name varchar;
+begin
+	if exists (
+		select 1 from g4it_user_role_organization
+		where user_organization_id = new_user_organization_id
+		and role_id = role_to_assign_id
+	) then
+		raise notice 'Role % is already assigned to user_organization %', role_to_assign_id, new_user_organization_id;
+	else
+
+		select name into role_name from g4it_role where id = role_to_assign_id;
+		insert into g4it_user_role_organization(user_organization_id, role_id)
+		values (new_user_organization_id, role_to_assign_id);
+	
+		raise notice 'Role % - % assigned to user % - %', role_to_assign_id, role_name, creator_id, user_email;
+	end if;
+end;
+$$
+```
+
+5. Run the procedure
+
+```sql
+call migrate_ds_to_new_workspace();
+```
+
+### Rollback script
+
+1. Execute the rollback procedure
+
+```sql
+create or replace procedure rollback_ds_migration_to_new_workspace()
+language plpgsql
+as $$
+begin
+	raise notice 'Launch of digital services migration rollback script';
+
+	--delete new user_role_organization rows
+	delete from g4it_user_role_organization giuro
+	using g4it_user_organization giuo, g4it_organization gio
+	where giuo.id = giuro.user_organization_id 
+	and gio.id = giuo.organization_id
+	and gio."name" like 'DEMO-%';
+	raise notice 'New users role for organization deleted';
+	
+	--delete new g4it_user_organization rows
+	delete from g4it_user_organization giuo 
+	using g4it_organization gio
+	where gio.id = giuo.organization_id
+	and gio."name" like 'DEMO-%';
+	raise notice 'New users link with organization deleted';
+	
+	--update digital_service to bring back the old link with DEMO organization
+	update digital_service ds
+	set organization_id = subquery.id
+	from (select id, name from g4it_organization gio where name like 'DEMO') as subquery, g4it_organization gio
+	where gio.id = ds.organization_id
+	and gio."name" like 'DEMO-%';
+	raise notice 'Organizations linked with digital services rollbacked - DEMO is now the new organization linked as before the migration';
+	
+	--update digital_service_shared to bring back the old link with DEMO organization
+	update digital_service_shared dss 
+	set organization_id = subquery.id
+	from (select id, name from g4it_organization gio where name like 'DEMO') as subquery, g4it_organization gio
+	where gio.id = dss.organization_id
+	and gio."name" like 'DEMO-%';
+	raise notice 'Organizations linked with digital services shared rollbacked - DEMO is now the new organization linked as before the migration';
+	
+	--delete the new organizations
+	delete from g4it_organization gio
+	where gio."name" like 'DEMO-%';
+	raise notice 'New organizations created with the migration deleted';
+
+	raise notice 'Rollback ended with success';
+	end;
+$$
+```
+
+2. Run the procedure
+
+```sql
+call rollback_ds_migration_to_new_workspace();
+```

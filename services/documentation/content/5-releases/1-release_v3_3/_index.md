@@ -18,3 +18,4 @@ weight: 40
 
 ## Installation Notes
 
+Digital services migration from DEMO workspace to new workspace : [here](1-ds_migration)
