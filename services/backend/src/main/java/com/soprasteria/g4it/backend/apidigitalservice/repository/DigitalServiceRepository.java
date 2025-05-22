@@ -44,16 +44,6 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
     List<DigitalService> findByOrganizationAndUserId(final Organization organization, final long userId);
 
     /**
-     * Verify if the digitalService exists by the uid and userId.
-     *
-     * @param uid    the uid.
-     * @param userId the userId to find.
-     * @return the boolean.
-     */
-    @Cacheable("existsByUidAndUserId")
-    boolean existsByUidAndUserId(final String uid, final long userId);
-
-    /**
      * Find by organization and the digitalServiceUid and return the matching digitalService
      *
      * @param organization the unique organization identifier.

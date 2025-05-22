@@ -122,10 +122,9 @@ public class DigitalServiceService {
      * Get the digital service list linked to a user.
      *
      * @param organizationId the organization's id.
-     * @param userId         the userId.
      * @return the digital service list.
      */
-    public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId) {
+    public List<DigitalServiceBO> getDigitalServices(final Long organizationId) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         return digitalServiceMapper.toBusinessObject(digitalServiceRepository.findByOrganization(linkedOrganization));
     }

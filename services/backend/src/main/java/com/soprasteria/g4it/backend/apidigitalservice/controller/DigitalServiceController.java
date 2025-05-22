@@ -63,7 +63,7 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      */
     @Override
     public ResponseEntity<List<DigitalServiceRest>> getDigitalServices(final String subscriber, final Long organization) {
-        final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(organization, authService.getUser().getId());
+        final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(organization);
         return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceBOs));
     }
 
