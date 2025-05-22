@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Digital Service repository.
@@ -51,6 +52,15 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
      */
     @Cacheable("existsByUidAndUserId")
     boolean existsByUidAndUserId(final String uid, final long userId);
+
+    /**
+     * Find by organization and the digitalServiceUid and return the matching digitalService
+     *
+     * @param organization the unique organization identifier.
+     * @return matching digitalService
+     */
+    Optional<DigitalService> findByOrganizationAndUid(final Organization organization,
+                                                final String digitalServiceUid);
 
     @Modifying
     @Transactional

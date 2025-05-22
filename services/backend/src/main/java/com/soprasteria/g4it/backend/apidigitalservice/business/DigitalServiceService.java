@@ -10,11 +10,7 @@ package com.soprasteria.g4it.backend.apidigitalservice.business;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceLink;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceShared;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
@@ -23,7 +19,6 @@ import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentReposi
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.model.UserInfoBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
@@ -34,14 +29,13 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Objects;
 
 /**
  * Digital-Service service.
@@ -52,15 +46,11 @@ public class DigitalServiceService {
 
     private static final String DEFAULT_NAME_PREFIX = "Digital Service";
     @Autowired
-    private DigitalServiceSharedRepository digitalServiceSharedRepository;
-    @Autowired
     private DigitalServiceRepository digitalServiceRepository;
     @Autowired
     private DigitalServiceReferentialService digitalServiceReferentialService;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private DigitalServiceLinkRepository digitalServiceLinkRepository;
     @Autowired
     private DigitalServiceMapper digitalServiceMapper;
 
@@ -100,8 +90,8 @@ public class DigitalServiceService {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
         // Get last index to create digital service.
-        final List<DigitalService> userDigitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
-        final Integer lastDigitalServiceDefaultNumber = userDigitalServices
+        final List<DigitalService> orgDigitalServices = digitalServiceRepository.findByOrganization(linkedOrganization);
+        final Integer lastDigitalServiceDefaultNumber = orgDigitalServices
                 .stream()
                 .map(DigitalService::getName)
                 .filter(name -> name.matches("^" + DEFAULT_NAME_PREFIX + " \\d+$"))
@@ -195,5 +185,19 @@ public class DigitalServiceService {
         return digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
     }
-
+    /**
+     * Returns true if the inventory exists and linked to subscriber, organizationId and inventoryId
+     *
+     * @param subscriberName subscriberName
+     * @param organizationId organizationId
+     * @param digitalServiceUid    digitalServiceUid
+     */
+    @Cacheable("digitalServiceExists")
+    public boolean digitalServiceExists(final String subscriberName, final Long organizationId, final String digitalServiceUid) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        if (!Objects.equals(subscriberName, linkedOrganization.getSubscriber().getName())) {
+            return false;
+        }
+        return digitalServiceRepository.findByOrganizationAndUid(linkedOrganization, digitalServiceUid).isPresent();
+    }
 }
