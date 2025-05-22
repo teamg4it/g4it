@@ -1,9 +1,7 @@
-package com.soprasteria.g4it.backend.external.apiaiservice.model;
+package com.soprasteria.g4it.backend.external.ecomindai.model;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
-
-import java.util.Objects;
 
 /**
  * Estimations and recommendations made for of an AI Service configuration

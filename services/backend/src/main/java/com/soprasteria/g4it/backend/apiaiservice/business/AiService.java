@@ -1,12 +1,11 @@
-package com.soprasteria.g4it.backend.external.apiaiservice.business;
+package com.soprasteria.g4it.backend.apiaiservice.business;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soprasteria.g4it.backend.external.apiaiservice.client.AiModelapiClient;
-import com.soprasteria.g4it.backend.external.apiaiservice.mapper.AiConfigurationMapper;
-import com.soprasteria.g4it.backend.external.apiaiservice.model.AIModelConfigBO;
-import com.soprasteria.g4it.backend.external.apiaiservice.model.AIServiceEstimationBO;
-import com.soprasteria.g4it.backend.external.apiaiservice.model.AIConfigurationBO;
+import com.soprasteria.g4it.backend.external.ecomindai.client.AiModelapiClient;
+import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
+import com.soprasteria.g4it.backend.external.ecomindai.model.AIModelConfigBO;
+import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import java.util.List;
 import jakarta.validation.Valid;

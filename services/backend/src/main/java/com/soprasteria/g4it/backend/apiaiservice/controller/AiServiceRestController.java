@@ -1,12 +1,9 @@
-package com.soprasteria.g4it.backend.external.apiaiservice.controller;
+package com.soprasteria.g4it.backend.apiaiservice.controller;
 
-import com.soprasteria.g4it.backend.external.apiaiservice.business.AiService;
-import com.soprasteria.g4it.backend.external.apiaiservice.mapper.AiConfigurationMapper;
-import com.soprasteria.g4it.backend.external.apiaiservice.mapper.AiModelConfigMapper;
-import com.soprasteria.g4it.backend.external.apiaiservice.mapper.AiServiceEstimationMapper;
+import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
+import com.soprasteria.g4it.backend.apiaiservice.mapper.AiModelConfigMapper;
+import com.soprasteria.g4it.backend.apiaiservice.mapper.AiServiceEstimationMapper;
 import com.soprasteria.g4it.backend.server.gen.api.AiServiceApiDelegate;
-import com.soprasteria.g4it.backend.external.apiaiservice.model.AIConfigurationBO;
-import com.soprasteria.g4it.backend.external.apiaiservice.model.AIServiceEstimationBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIModelConfigRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIServiceEstimationRest;

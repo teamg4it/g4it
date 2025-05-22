@@ -1,4 +1,4 @@
-package com.soprasteria.g4it.backend.external.apiaiservice.model;
+package com.soprasteria.g4it.backend.external.ecomindai.model;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

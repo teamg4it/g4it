@@ -1,12 +1,11 @@
 package com.soprasteria.g4it.backend.apiaiservice.business;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soprasteria.g4it.backend.external.apiaiservice.business.AiService;
-import com.soprasteria.g4it.backend.external.apiaiservice.client.AiModelapiClient;
-import com.soprasteria.g4it.backend.external.apiaiservice.mapper.AiConfigurationMapper;
-import com.soprasteria.g4it.backend.external.apiaiservice.model.AIConfigurationBO;
-import com.soprasteria.g4it.backend.external.apiaiservice.model.AIModelConfigBO;
-import com.soprasteria.g4it.backend.external.apiaiservice.model.AIServiceEstimationBO;
+import com.soprasteria.g4it.backend.external.ecomindai.client.AiModelapiClient;
+import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
+import com.soprasteria.g4it.backend.external.ecomindai.model.AIConfigurationBO;
+import com.soprasteria.g4it.backend.external.ecomindai.model.AIModelConfigBO;
+import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;

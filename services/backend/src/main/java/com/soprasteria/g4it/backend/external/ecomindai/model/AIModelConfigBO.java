@@ -1,4 +1,4 @@
-package com.soprasteria.g4it.backend.external.apiaiservice.model;
+package com.soprasteria.g4it.backend.external.ecomindai.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
