@@ -298,6 +298,24 @@
         "tooltip_average_workload": "Charge de travail moyenne",
         "tooltip_annual_usage": "Utilisation annuelle"
     },
+    "digital-services-ai-parameter": {
+        "new": "Nouveau terminal",
+        "devices": "Algorithme",
+        "device": "Algorithme",
+        "id": "#",
+        "country":"Pays",
+        "model": "Modèle details",
+        "parameter": "Paramètre",
+        "framework": "Framework",
+        "quantization": "Qualification",
+        "stages": "Etape",
+        "inference": "Inférence",
+        "fintuning": "Fintuning",
+        "numberOfUsers": "Nombre d'utilisateur par an",
+        "averageRequest": "Moyenne de requête annuel",
+        "averageToken": "Moyenne de token generé par an",
+        "totalTokenGenerate":"Nombre totale de token annuel"
+    },
     "welcome-page": {
         "title": "Page de bienvenue",
         "name": "Accueil",

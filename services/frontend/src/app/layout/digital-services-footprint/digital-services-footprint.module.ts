@@ -38,6 +38,7 @@ import { DigitalServicesFootprintComponent } from "./digital-services-footprint.
 import { digitalServicesFootprintRouter } from "./digital-services-footprint.router";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
+import { DigitalServiceParameter } from "./digital-services-parameter/digital-services-parameter.component";
 import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
 import PanelDatacenterComponent from "./digital-services-servers/side-panel/add-datacenter/datacenter.component";
 import { PanelAddVmComponent } from "./digital-services-servers/side-panel/add-vm/add-vm.component";
@@ -69,6 +70,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         PanelServerParametersComponent,
         PanelAddVmComponent,
         PanelListVmComponent,
+        DigitalServiceParameter
     ],
     imports: [
         CommonModule,
@@ -94,6 +96,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DividerModule,
         digitalServicesFootprintRouter,
         SidePanelDsSharedUsersComponent,
+        TableModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],
