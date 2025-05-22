@@ -636,3 +636,16 @@ databaseChangeLog:
       changes:
         - sql: update digital_service set is_new_arch = false where is_new_arch is null;
         - sql: update digital_service set is_migrated = false where is_migrated is null;
+
+
+  - changeSet:
+      id: add-column-is_ai
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: is_ai
+                  type: boolean
+                  defaultValue: false
