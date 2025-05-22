@@ -19,7 +19,7 @@ This usecase allows a project team to delete one of its digital service
 
 **Navigation Path**
 
--   My Digital Services / "Created by me" section / Delete button
+-   My Digital Services / Digital Service list view / Delete button
 -   My Digital Services / Digital Service view / Delete button
 
 **Access Conditions**
@@ -49,9 +49,9 @@ Decision2 -->|Yes|Step4[Digital Service deleted] -->Step1
 -   On click of the delete button, a warning and confirmation message appears :
     ![uc5_confirmationmessage.png](../images/uc5_confirmationmessage.png)
 
-| Management rules | Title  | Rule description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ---------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1                | Delete | <li><u>_initialization rules_</u>: The button is displayed only if the digital service is on the section "Created with me".<br><li><u>_action rules_</u>: The confirmation message : "Are you sure you want to delete the digital service "Digital Service name" ? All information and associated footprint indicators will be definitely deleted." is displayed.<br> If the user click on "no", the window is closed and no change.<br>If the user click on "Yes", the digital service is deleted. |
+| Management rules | Title  | Rule description                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1                | Delete | <li><u>_initialization rules_</u>: The button is displayed only if user has the write access. <br><li><u>_action rules_</u>: The confirmation message : "Are you sure you want to delete the digital service "Digital Service name" ? All information and associated footprint indicators will be definitely deleted." is displayed.<br> If the user click on "no", the window is closed and no change.<br>If the user click on "Yes", the digital service is deleted. |
 
 ## Sequence Diagram
 
