@@ -639,13 +639,13 @@ databaseChangeLog:
 
 
   - changeSet:
-      id: add-column-is_AI
+      id: add-column-is_ai
       author: G4IT Dev Team
       changes:
         - addColumn:
             tableName: digital_service
             columns:
               - column:
-                  name: is_AI
+                  name: is_ai
                   type: boolean
                   defaultValue: false
