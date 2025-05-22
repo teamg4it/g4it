@@ -1019,3 +1019,35 @@ components:
           type: string
         status:
           type: string
+    AiInfraRest:
+      description: Version
+      type: object
+      required: [ infrastructureType, location ]
+      properties:
+        infrastructureType:
+          type: string
+          enum: [ SERVER_DC, PHYSICAL_EQUIPMENT, VIRTUAL_EQUIPMENT ]
+        nbCpuCores:
+          type: integer
+          format: int64
+        nbGpu:
+          type: integer
+          format: int64
+        gpuMemory:
+          type: integer
+          format: int64
+        ramSize:
+          type: integer
+          format: int64
+        digitalServiceUid:
+          type: string
+          maxLength: 255
+        location:
+          type: string
+          maxLength: 50
+          pattern: "^[A-Za-z ]*$"
+        pue:
+          type: number
+          format: double
+          minimum: 0
+
