@@ -1,110 +1,48 @@
 <div class="lg-file-panel-margin">
     @if (isNew) {
-        <div
-            class="side-panel-title"
-            role="heading"
-            aria-level="2"
-            appAutofocus
-            tabindex="-1"
-        >
-            {{ "digital-services-terminals.new" | translate }}
-        </div>
+    <div class="side-panel-title" role="heading" aria-level="2" appAutofocus tabindex="-1">
+        {{ "digital-services-terminals.new" | translate }}
+    </div>
     } @else {
-        <div
-            class="side-panel-title"
-            role="heading"
-            aria-level="2"
-            appAutofocus
-            tabindex="-1"
-        >
-            {{ "digital-services-terminals.device" | translate }} #{{ terminal.idFront }}
-        </div>
+    <div class="side-panel-title" role="heading" aria-level="2" appAutofocus tabindex="-1">
+        {{ "digital-services-terminals.device" | translate }} #{{ terminal.idFront }}
+    </div>
     }
 
-    <form
-        [formGroup]="terminalsForm"
-        (ngSubmit)="submitFormData()"
-        class="terminal-grid-form"
-    >
+    <form [formGroup]="terminalsForm" (ngSubmit)="submitFormData()" class="terminal-grid-form">
         <div class="label-input-div">
             <label for="typeInput">{{
                 "digital-services-terminals.type" | translate
             }}</label>
-            <p-dropdown
-                appendTo="body"
-                [options]="terminalDeviceTypes"
-                optionLabel="value"
-                styleClass="dropdown-terminal"
-                formControlName="type"
-                [required]="true"
-                [(ngModel)]="terminal.type"
-                name="type"
-                inputId="typeInput"
-                (onChange)="terminal.lifespan = $event.value.lifespan"
-                ngDefaultControl
-                lang="en"
-                [ariaLabel]="'digital-services-terminals.type' | translate"
-            >
+            <p-dropdown appendTo="body" [options]="terminalDeviceTypes" optionLabel="value" styleClass="dropdown-terminal" formControlName="type" [required]="true" [(ngModel)]="terminal.type" name="type" inputId="typeInput" (onChange)="terminal.lifespan = $event.value.lifespan"
+                ngDefaultControl lang="en" [ariaLabel]="'digital-services-terminals.type' | translate">
             </p-dropdown>
             <p class="error-text" *ngIf="terminalsForm.get('type')?.hasError('required')">
-                {{ "digital-services-terminals.type" | translate }}
-                {{ "common.mandatory" | translate }}
+                {{ "digital-services-terminals.type" | translate }} {{ "common.mandatory" | translate }}
             </p>
         </div>
         <div class="label-input-div">
             <label for="countryInput">{{
                 "digital-services-terminals.country" | translate
             }}</label>
-            <p-dropdown
-                appendTo="body"
-                [options]="countries"
-                styleClass="dropdown-terminal"
-                formControlName="country"
-                [required]="true"
-                [(ngModel)]="terminal.country"
-                [filter]="true"
-                filterBy="label"
-                filterPlaceholder="Search"
-                name="country"
-                inputId="countryInput"
-                ngDefaultControl
-                lang="en"
-                [ariaLabel]="'digital-services-terminals.country' | translate"
-            >
+            <p-dropdown appendTo="body" [options]="countries" styleClass="dropdown-terminal" formControlName="country" [required]="true" [(ngModel)]="terminal.country" [filter]="true" filterBy="label" filterPlaceholder="Search" name="country" inputId="countryInput"
+                ngDefaultControl lang="en" [ariaLabel]="'digital-services-terminals.country' | translate">
             </p-dropdown>
-            <p
-                class="error-text"
-                *ngIf="terminalsForm.get('country')?.hasError('required')"
-            >
-                {{ "digital-services-terminals.type" | translate }}
-                {{ "common.mandatory" | translate }}
+            <p class="error-text" *ngIf="terminalsForm.get('country')?.hasError('required')">
+                {{ "digital-services-terminals.type" | translate }} {{ "common.mandatory" | translate }}
             </p>
         </div>
         <div class="label-input-div">
             <label for="numberOfUsers">{{
                 "digital-services-terminals.nb-user" | translate
             }}</label>
-            <p-inputNumber
-                formControlName="numberOfUsers"
-                [required]="true"
-                [min]="0"
-                [(ngModel)]="terminal.numberOfUsers"
-                name="numberOfUsers"
-                inputId="numberOfUsers"
-                ngDefaultControl
-                locale="fr-FR"
-            />
-            <p
-                class="error-text"
-                *ngIf="terminalsForm.get('numberOfUsers')?.hasError('required')"
-            >
-                {{ "digital-services-terminals.nb-user" | translate }}
-                {{ "common.mandatory" | translate }}
+            <p-inputNumber formControlName="numberOfUsers" [required]="true" [min]="0" [(ngModel)]="terminal.numberOfUsers" name="numberOfUsers" inputId="numberOfUsers" ngDefaultControl locale="fr-FR" />
+            <p class="error-text" *ngIf="terminalsForm.get('numberOfUsers')?.hasError('required')">
+                {{ "digital-services-terminals.nb-user" | translate }} {{ "common.mandatory" | translate }}
             </p>
         </div>
         <div class="label-input-div">
-            <label for="yearlyUsageTimePerUser"
-                >{{ "digital-services-terminals.yearly-usage" | translate }} ({{
+            <label for="yearlyUsageTimePerUser">{{ "digital-services-terminals.yearly-usage" | translate }} ({{
                     "digital-services-terminals.hours" | translate
                 }})</label
             >
@@ -133,51 +71,21 @@
             <label for="lifespanInput"
                 >{{ "digital-services-terminals.lifespan" | translate }}
             </label>
-            <p-inputNumber
-                formControlName="lifespan"
-                mode="decimal"
-                inputId="minmaxfraction"
-                [minFractionDigits]="1"
-                styleClass="inputnumber-small"
-                [required]="true"
-                [min]="0"
-                [(ngModel)]="terminal.lifespan"
-                name="lifespan"
-                inputId="lifespanInput"
-                ngDefaultControl
-                locale="fr-FR"
-            />
-            <p
-                class="error-text"
-                *ngIf="terminalsForm.get('lifespan')?.hasError('required')"
-            >
-                {{ "digital-services-terminals.lifespan" | translate }}
-                {{ "common.mandatory" | translate }}
+            <p-inputNumber formControlName="lifespan" mode="decimal" inputId="minmaxfraction" [minFractionDigits]="1" styleClass="inputnumber-small" [required]="true" [min]="0" [(ngModel)]="terminal.lifespan" name="lifespan" inputId="lifespanInput" ngDefaultControl
+                locale="fr-FR" />
+            <p class="error-text" *ngIf="terminalsForm.get('lifespan')?.hasError('required')">
+                {{ "digital-services-terminals.lifespan" | translate }} {{ "common.mandatory" | translate }}
             </p>
         </div>
 
         <div class="button-bottom-right">
-            <p-button
-                styleClass="grey-button"
-                *ngIf="!isNew && (userService.isAllowedDigitalServiceWrite$ | async)"
-                (click)="deleteTerminal()"
-                >{{ "common.delete" | translate }}</p-button
-            >
-            <p-button styleClass="white-button" (click)="close()">{{
-                "common.cancel" | translate
-            }}</p-button>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="yellow-button"
-                [disabled]="terminalsForm.invalid"
-                type="submit"
-                id="submit-terminals"
-            >
+            <p-button styleClass="grey-button" *ngIf="!isNew && (userService.isAllowedDigitalServiceWrite$ | async)" (click)="deleteTerminal()">{{ "common.delete" | translate }}</p-button>
+            <p-button styleClass="white-button" (click)="close()">{{ "common.cancel" | translate }}
+            </p-button>
+            <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async" styleClass="yellow-button" [disabled]="terminalsForm.invalid" type="submit" id="submit-terminals">
                 @if (isNew) {
-                    <span>{{ "common.add" | translate }}</span>
-                } @else {
-                    <span>{{ "common.save" | translate }}</span>
-                }
+                <span>{{ "common.add" | translate }}</span> } @else {
+                <span>{{ "common.save" | translate }}</span> }
             </p-button>
         </div>
     </form>
