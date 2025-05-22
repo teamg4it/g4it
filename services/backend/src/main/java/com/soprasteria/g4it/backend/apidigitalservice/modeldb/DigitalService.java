@@ -51,7 +51,7 @@ public class DigitalService {
     /**
      *Indique si c'est un service IA
      */
-    private boolean isAI;
+    private boolean isAi;
 
     /**
      * The Criterias key.

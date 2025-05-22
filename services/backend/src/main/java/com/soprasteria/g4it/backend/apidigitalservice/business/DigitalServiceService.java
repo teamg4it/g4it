@@ -120,7 +120,7 @@ public class DigitalServiceService {
                 .name(DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1))
                 .user(user)
                 .organization(linkedOrganization)
-                .isAI(isAI)
+                .isAi(isAI)
                 .creationDate(now)
                 .lastUpdateDate(now)
                 .build();
