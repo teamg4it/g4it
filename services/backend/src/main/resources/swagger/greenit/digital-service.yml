@@ -14,6 +14,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/isAIPathParam'
     post:
       tags:
         - digital-service
