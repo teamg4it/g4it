@@ -3,6 +3,11 @@ networks:
   numecoeval: {}
 
 services:
+  kafka:
+    extends:
+      file: shared-docker-compose.yml
+      service: kafka
+
   postgresdb:
     extends:
       file: shared-docker-compose.yml
@@ -13,11 +18,30 @@ services:
       file: shared-docker-compose.yml
       service: keycloak
 
+  api-referentiel:
+    extends:
+      file: shared-docker-compose.yml
+      service: api-referentiel
+
+  api-expositiondonneesentrees:
+    extends:
+      file: shared-docker-compose.yml
+      service: api-expositiondonneesentrees
+
+  api-event-donneesentrees:
+    extends:
+      file: shared-docker-compose.yml
+      service: api-event-donneesentrees
+
+  api-event-calculs:
+    extends:
+      file: shared-docker-compose.yml
+      service: api-event-calculs
+
   boaviztapi:
     extends:
       file: shared-docker-compose.yml
       service: boaviztapi
-
 
   ecomind-api-config:
     extends:
