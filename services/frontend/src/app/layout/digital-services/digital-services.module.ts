@@ -9,6 +9,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/cor
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { PaginatorModule } from "primeng/paginator";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
@@ -20,6 +21,7 @@ import { digitalServicesRouter } from "./digital-services.router";
     imports: [
         ButtonModule,
         ScrollPanelModule,
+        PaginatorModule,
         CardModule,
         SharedModule,
         ConfirmPopupModule,
