@@ -5,8 +5,9 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, SimpleChanges, computed, inject } from "@angular/core";
+import { Component, computed, inject, Input, SimpleChanges } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import { debounceTime, Subject } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
@@ -52,13 +53,24 @@ export class DatavizFilterComponent {
         );
     }
 
-    onFilterSelected(selectedValues: string[], tab: string, selection: string) {
-        const f = this.footprintStore.filters();
-        f[tab] = this.filterService.getUpdateSelectedValues(
+    async onFilterSelected(selectedValues: string[], tab: string, selection: string) {
+        const updatedFilter = await this.filterService.getUpdateSelectedValues(
             selectedValues,
             this.allFilters[tab],
             selection,
         );
-        this.footprintStore.setFilters(f);
+        this.footprintStore.setCustomFilters(updatedFilter, tab);
+    }
+
+    private checkboxChange$ = new Subject<any>();
+
+    constructor() {
+        this.checkboxChange$.pipe(debounceTime(200)).subscribe((change) => {
+            this.onFilterSelected(change.selectedValues, change.tab, change.selection);
+        });
+    }
+
+    onCheckboxChange(selectedValues: string[], tab: string, selection: string): void {
+        this.checkboxChange$.next({ selectedValues, tab, selection });
     }
 }

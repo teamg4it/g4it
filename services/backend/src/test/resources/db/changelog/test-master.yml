@@ -1,12 +1,5 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/numecoeval/greenitdb.changelog-numecoeval-entry-table.yml
-  - include:
-      file: db/changelog/numecoeval/greenitdb.changelog-numecoeval-ref.yml
-  - include:
-      file: db/changelog/numecoeval/greenitdb.changelog-numecoeval-indicateur.yml
-  # includes all configs files from src/main/resources/db.changelog
-  - include:
       file: db/changelog/greenitdb.changelog-security-user.yml
   - include:
       file: db/changelog/greenitdb.changelog-inventory-initialization.yml
@@ -22,20 +15,28 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-security-multi-orga.yml
   - include:
       file: db/changelog/greenitdb.changelog-security-user-after.yml
-  # use test file for business-hours due to issue on h2 database with day field
   - include:
-      file: db/changelog/test-greenitdb.changelog-business-hours.yml
+      file: db/changelog/greenitdb.changelog-business-hours.yml
   - include:
       file: db/changelog/greenitdb.changelog-digital-service-next.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-shedlock.yml
   - include:
       file: db/changelog/greenitdb.changelog-referential-initialization.yml
   - include:
       file: db/changelog/greenitdb.changelog-task-initialization.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-check-load-constraints.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-clean-old-digital-service.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-clean-old-inventory.yml
   - includeAll:
       path: db/changelog/in-out/
       endsWithFilter: .yml
-  - include:
-      file: db/changelog/greenitdb.changelog-check-load-constraints.yml
+  - includeAll:
+      path: db/changelog/comments/
+      endsWithFilter: .yml
   # Liquibase with H2 does not create the sequences with incrementBy 100, but does with Postgres
   - include:
       file: db/changelog/test-greenitdb.changelog-sequences.yml

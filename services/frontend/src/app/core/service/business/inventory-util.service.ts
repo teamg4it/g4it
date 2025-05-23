@@ -68,7 +68,7 @@ export class InventoryUtilService {
         return [maxCriteria, maxStep];
     }
 
-    computeEquipmentStats(
+    async computeEquipmentStats(
         equipments: [
             PhysicalEquipmentAvgAge[],
             PhysicalEquipmentLowImpact[],
@@ -77,83 +77,68 @@ export class InventoryUtilService {
         filters: Filter<string>,
         filterFields: string[],
         footprint: Criterias,
-    ): Stat[] {
-        const equipmentsAvgAge = equipments[0];
-        const equipmentsLowImpact = equipments[1];
-        const equipmentsElecConsumption = equipments[2];
+    ): Promise<Stat[]> {
+        const [equipmentsAvgAge, equipmentsLowImpact, equipmentsElecConsumption] =
+            equipments;
 
-        const filtersSet: InventoryFilterSet = {};
-        filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
+        const filtersSet = this.createFiltersSet(filters, filterFields);
+        const hasAllFilters = this.checkAllFilters(filtersSet);
 
-        const hasAllFilters = Object.keys(filtersSet).every((item) =>
-            filtersSet[item].has(Constants.ALL),
+        const [maxCriteria, maxStep] = this.maxCriteriaAndStep(footprint);
+        const impacts = footprint[maxCriteria]?.impacts.filter(
+            (impact) =>
+                impact.acvStep === maxStep && impact.status !== Constants.CLOUD_SERVICES,
         );
 
-        const impacts = footprint[this.maxCriteriaAndStep(footprint)[0]]?.impacts
-            .filter((impact) => impact.acvStep === this.maxCriteriaAndStep(footprint)[1])
-            .filter((i) => i.status !== Constants.CLOUD_SERVICES);
+        const physicalEquipmentCount =
+            impacts
+                ?.filter(
+                    (impact) => hasAllFilters || this.isItemPresent(impact, filtersSet),
+                )
+                ?.reduce((n, impact) => n + impact.countValue, 0) || 0;
 
-        const physicalEquipmentCount = hasAllFilters
-            ? impacts?.reduce((n, impact) => n + impact.countValue, 0)
-            : impacts
-                  ?.filter((impact) => this.isItemPresent(impact, filtersSet))
-                  ?.reduce((n, impact) => n + impact.countValue, 0);
+        const filteredEquipmentsAvgAge = equipmentsAvgAge.filter(
+            (equipment) =>
+                hasAllFilters || this.isEquipmentPresent(equipment, filtersSet, false),
+        );
 
-        const filteredEquipmentsAvgAge = hasAllFilters
-            ? equipmentsAvgAge
-            : equipmentsAvgAge.filter((equipment) => {
-                  return this.isEquipmentPresent(equipment, filtersSet, false);
-              });
+        const { physicalEquipmentSum, poidsSum } = filteredEquipmentsAvgAge.reduce(
+            (acc, { poids = 0, ageMoyen = 0 }) => {
+                acc.physicalEquipmentSum += poids * ageMoyen;
+                acc.poidsSum += poids;
+                return acc;
+            },
+            { physicalEquipmentSum: 0, poidsSum: 0 },
+        );
 
-        let physicalEquipmentSum = 0;
-        let poidsSum = 0;
+        const filteredEquipmentsLowImpact = equipmentsLowImpact.filter(
+            (equipment) =>
+                hasAllFilters || this.isEquipmentPresent(equipment, filtersSet, true),
+        );
 
-        filteredEquipmentsAvgAge.forEach((physicalEquipment) => {
-            let { poids, ageMoyen } = physicalEquipment;
-            poids = poids || 0;
-            ageMoyen = ageMoyen || 0;
+        const { physicalEquipmentTotalCount, lowImpactPhysicalEquipmentCount } =
+            filteredEquipmentsLowImpact.reduce(
+                (acc, { quantite = 0, lowImpact }) => {
+                    acc.physicalEquipmentTotalCount += quantite;
+                    if (lowImpact) acc.lowImpactPhysicalEquipmentCount += quantite;
+                    return acc;
+                },
+                { physicalEquipmentTotalCount: 0, lowImpactPhysicalEquipmentCount: 0 },
+            );
 
-            physicalEquipmentSum += poids * ageMoyen;
-            poidsSum += poids;
-        });
+        const filteredEquipmentsElecConsumption = equipmentsElecConsumption.filter(
+            (equipment) =>
+                hasAllFilters || this.isEquipmentPresent(equipment, filtersSet, false),
+        );
 
-        const filteredEquipmentsLowImpact = hasAllFilters
-            ? equipmentsLowImpact
-            : equipmentsLowImpact.filter((equipment) => {
-                  return this.isEquipmentPresent(equipment, filtersSet, true);
-              });
-
-        let physicalEquipmentTotalCount = 0;
-        let lowImpactPhysicalEquipmentCount = 0;
-
-        filteredEquipmentsLowImpact.forEach((physicalEquipment) => {
-            let { quantite, lowImpact: isLowImpact } = physicalEquipment;
-
-            quantite = quantite || 0;
-
-            physicalEquipmentTotalCount += quantite;
-            if (isLowImpact) {
-                lowImpactPhysicalEquipmentCount += quantite;
-            }
-        });
-
-        const filteredEquipmentsElecConsumption = hasAllFilters
-            ? equipmentsElecConsumption
-            : equipmentsElecConsumption.filter((equipment) => {
-                  return this.isEquipmentPresent(equipment, filtersSet, false);
-              });
-
-        let elecConsumptionSum = 0;
-
-        filteredEquipmentsElecConsumption.forEach((physicalEquipment) => {
-            let { elecConsumption } = physicalEquipment;
-
-            elecConsumptionSum += elecConsumption;
-        });
+        const elecConsumptionSum = filteredEquipmentsElecConsumption.reduce(
+            (sum, { elecConsumption = 0 }) => sum + elecConsumption,
+            0,
+        );
 
         return this.getEquipmentStats(
             physicalEquipmentCount,
-            physicalEquipmentCount == 0 ? undefined : physicalEquipmentSum / poidsSum,
+            physicalEquipmentCount === 0 ? undefined : physicalEquipmentSum / poidsSum,
             (lowImpactPhysicalEquipmentCount / physicalEquipmentTotalCount) * 100,
             elecConsumptionSum,
         );
@@ -264,12 +249,11 @@ export class InventoryUtilService {
         filterFields: string[],
         datacenters: Datacenter[] = [],
     ): Stat[] {
-        const filtersSet: InventoryFilterSet = {};
-        filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
-
-        const hasAllFilters = Object.keys(filtersSet).every((item) =>
-            filtersSet[item].has(Constants.ALL),
+        const filtersSet: InventoryFilterSet = this.createFiltersSet(
+            filters,
+            filterFields,
         );
+        const hasAllFilters = this.checkAllFilters(filtersSet);
 
         const filteredDatacenters = hasAllFilters
             ? datacenters

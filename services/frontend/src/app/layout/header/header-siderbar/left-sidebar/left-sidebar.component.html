@@ -4,14 +4,11 @@
     [attr.aria-label]="'common.left-navigation' | translate"
 >
     <div class="flex align-items-center justify-content-center mb-2 mt-4 logo-icon">
-        <a [routerLink]="constants.WELCOME_PAGE">
-            <img
-                src="assets/images/logos/logo-overgreen.svg"
-                alt="{{ 'common.homepage' | translate }}"
-                class="cursor-pointer"
-                width="50"
-            />
-        </a>
+        <img
+            src="assets/images/logos/logo-overgreen.svg"
+            alt="{{ 'common.overgreen-logo' | translate }}"
+            width="50"
+        />
     </div>
     <div class="flex align-items-center justify-content-center extra-div"></div>
     <div
@@ -97,6 +94,37 @@
             }}</span>
         </a>
     </div>
+    <div
+        class="flex align-items-center justify-content-center my-1"
+        [attr.aria-label]="'header.menu' | translate"
+        [ngClass]="{ 'bg-light-green': selectedPage() === 'eco-mind-ai' }"
+    >
+        <a
+            *ngIf="userService.isAllowedEcoMindAiRead$ | async"
+            [routerLink]="selectedPath + '/eco-mind-ai'"
+            id="eco-mind-ai"
+            [ngClass]="{
+                'digital-padding-zoomin': isZoomedIn(),
+                'digital-padding': !isZoomedIn(),
+            }"
+        >
+            <div class="flex justify-content-center">
+                <img
+                    src="assets/images/icons/icon-digital-service.svg"
+                    alt="{{
+                        'eco-mind-ai.title'
+                            | translate: { OrganizationName: selectedOrganization.name }
+                    }}"
+                    [attr.title]="ecoMindAiTitle()"
+                    [attr.aria-current]="ecoMindAiAriaCurrent()"
+                />
+            </div>
+
+            <span class="text-white span-font nav-span-text ds-text">{{
+                "common.eco-mind-ai" | translate
+            }}</span>
+        </a>
+    </div>
 
     <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
     <div
@@ -130,8 +158,7 @@
         <div class="flex align-items-center justify-content-center mb-5">
             <img
                 src="assets/images/logos/logo-ssg.svg"
-                alt="{{ 'common.homepage' | translate }}"
-                class="cursor-pointer"
+                alt="{{ 'common.soprasteria-logo' | translate }}"
                 width="38"
             />
         </div>

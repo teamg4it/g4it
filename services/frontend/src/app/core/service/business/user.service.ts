@@ -58,6 +58,14 @@ export class UserService {
         map((roles) => roles.includes(Role.DigitalServiceWrite)),
     );
 
+    isAllowedEcoMindAiRead$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.EcoMindAiRead)),
+    );
+
+    isAllowedEcoMindAiWrite$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.EcoMindAiWrite)),
+    );
+
     constructor(
         private readonly router: Router,
         private readonly userDataService: UserDataService,
@@ -104,7 +112,7 @@ export class UserService {
             return;
         }
 
-        if (page !== undefined && ["inventories", "digital-services"].includes(page)) {
+        if (page !== undefined && ["inventories", "digital-services", "eco-mind-ai"].includes(page)) {
             return this.handlePageRouting(
                 currentUser,
                 subscriberName,
@@ -140,11 +148,9 @@ export class UserService {
             this.router.navigateByUrl("/");
             return;
         }
-
-        if (this.checkIfAllowed(subscriber, organization, page)) {
-            this.setSubscriberAndOrganization(subscriber, organization);
-        } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
+        this.setSubscriberAndOrganization(subscriber, organization);
+        if (!this.checkIfAllowed(subscriber, organization, page)) {
+            this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 
@@ -168,7 +174,10 @@ export class UserService {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
                 return;
-            } else this.router.navigateByUrl(`something-went-wrong/403`);
+            } else {
+                this.setSubscriberAndOrganization(subscriber, organization!);
+                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            }
         }
 
         if (subscriber && organization) {
@@ -271,6 +280,10 @@ export class UserService {
             roles.push(Role.DigitalServiceRead);
         }
 
+        if (organization.roles.includes(Role.EcoMindAiWrite)) {
+            roles.push(Role.EcoMindAiRead);
+        }
+
         return roles;
     }
 
@@ -290,6 +303,10 @@ export class UserService {
         }
 
         if (uri === "digital-services" && roles.includes(Role.DigitalServiceRead)) {
+            return true;
+        }
+
+        if (uri === "eco-mind-ai" && roles.includes(Role.EcoMindAiRead)) {
             return true;
         }
 
@@ -320,21 +337,15 @@ export class UserService {
         organization: Organization,
         page: string,
     ): void {
+        this.setSubscriberAndOrganization(subscriber, organization);
         if (this.checkIfAllowed(subscriber, organization, page)) {
-            this.setSubscriberAndOrganization(subscriber, organization);
-            if (page === Constants.USEFUL_INFORMATION) {
-                this.router.navigateByUrl(Constants.USEFUL_INFORMATION);
-                return;
+            if (page === "inventories" || page === "digital-services") {
+                this.router.navigateByUrl(
+                    `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
+                );
             }
-            if (page === Constants.WELCOME_PAGE) {
-                this.router.navigateByUrl(Constants.WELCOME_PAGE);
-                return;
-            }
-            this.router.navigateByUrl(
-                `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
-            );
         } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
+            this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 

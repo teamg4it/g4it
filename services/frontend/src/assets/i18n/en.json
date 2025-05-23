@@ -124,7 +124,10 @@
         "useful-info-desc": "G4IT versions, business hours and support contact",
         "inventories": "Inventories",
         "digital-services": "Digital services",
+        "eco-mind-ai": "EcoMind AI (experimental)",
         "skip-to-main-content": "Skip to Main Content",
+        "overgreen-logo": "Overgreen Logo",
+        "soprasteria-logo": "Sopra Steria logo",
         "workspace": {
             "create": "Create new workspace",
             "mandatory": "Mandatory",
@@ -169,6 +172,8 @@
         "CloudService": "Cloud Services",
         "Network": "Networks",
         "visualize": "Visualize",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "AI Parameters",
         "lifecycle": "Lifecycle",
         "vm": "Vm",
         "country": "Country",
@@ -184,6 +189,43 @@
         "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",
         "delete-criteria": "Delete digital service {{digitalServiceName}}",
         "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}"
+    },
+    "eco-mind-ai": {
+        "headerForCreatedByMe": "CREATED BY ME ({{count}})",
+        "headerForSharedWithMe": "SHARED WITH ME ({{count}})",
+        "copyLink": "COPY LINK",
+        "not-found": "Digital service AI does not exist.",
+        "expired": "Digital service AI link is expired.",
+        "linkCopied": "LINK COPIED !",
+        "title": "My Digital Services AI - {{OrganizationName}}",
+        "page-title": "My Digital Services AI",
+        "add": "Evaluate New Service AI",
+        "empty-digital-services": "You do not have any digital service.",
+        "impacts": "IMPACTS",
+        "raw": "Raw value",
+        "peopleeq": "People eq.",
+        "Terminal": "Terminals",
+        "Server": "Non-Cloud Servers",
+        "CloudService": "Cloud Services",
+        "Network": "Networks",
+        "visualize": "Visualize",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "AI Parameters",
+        "lifecycle": "Lifecycle",
+        "vm": "Vm",
+        "country": "Country",
+        "type": "Type",
+        "creatorInfo": "Creator",
+        "membersInfo": "Members",
+        "popup": {
+            "delete-question": "Are you sure you want to delete the digital service AI",
+            "delete-text": "All information and associated footprint indicators will be definitely deleted.",
+            "delete-question-shared": "By removing the link to this digital service AI, you will no longer have access to it. Are you sure ?"
+        },
+        "return": "Return to my digital services AI list",
+        "choose-criteria": "Choose criteria for digital service AI {{digitalServiceName}}",
+        "delete-criteria": "Delete digital service AI {{digitalServiceName}}",
+        "unlink-digital-service": "Delete link with digital service AI {{digitalServiceName}}"
     },
     "digital-services-terminals": {
         "new": "New Device",
@@ -321,7 +363,7 @@
         "hello": "Hello",
         "about-g4it": "G4IT is designed to help to implement a <strong>sustainable digital approach</strong> for your <strong>information systems</strong> and <strong>digital services.</strong>",
         "getting-started": "Getting started",
-        "getting-started-text": "When you first log in, a demo workspace is available to you. You can switch between workspaces at any time via the menu in the top right corner of the application (the name of the current workspace is displayed). You also have the option to create a new workspace within your [{{ subscriberName }}] organization to conduct your own assessments and invite other users to join you.",
+        "getting-started-text": "When you first log in, a demo workspace is available to you. You can switch between workspaces at any time via the menu in the top right corner of the application (the name of the current workspace is displayed). You also have the option to create a new workspace within your {{ subscriberName }} organization to conduct your own assessments and invite other users to join you.",
         "modules-access": "Modules access",
         "inventories": {
             "title": "Inventories",
@@ -331,6 +373,12 @@
         },
         "digital-service": {
             "title": "Digital Services",
+            "description": "Calculate the impact of a digital service involves three levels: the end-user terminals, the volume of data passing through the network, and the hosting infrastructures.",
+            "button": "Go to Service",
+            "button-disabled": "Ask for support"
+        },
+        "eco-mind-ai": {
+            "title": "EcoMind AI",
             "description": "Calculate the impact of a digital service involves three levels: the end-user terminals, the volume of data passing through the network, and the hosting infrastructures.",
             "button": "Go to Service",
             "button-disabled": "Ask for support"
