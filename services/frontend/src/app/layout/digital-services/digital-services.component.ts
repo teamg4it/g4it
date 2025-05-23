@@ -127,19 +127,6 @@ export class DigitalServicesComponent {
             .subscribe(() => this.retrieveDigitalServices());
     }
 
-    itemUnlink(uid: string) {
-        this.global.setLoading(true);
-        this.digitalServicesData
-            .unlink(uid)
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                finalize(() => {
-                    this.global.setLoading(false);
-                }),
-            )
-            .subscribe(() => this.retrieveDigitalServices());
-    }
-
     noteSaveValue(event: any) {
         // Get digital services data.
         this.digitalServicesData.get(this.selectedDigitalService.uid).subscribe((res) => {

@@ -155,33 +155,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         });
     }
 
-    confirmUnlink(event: Event) {
-        this.confirmationService.confirm({
-            closeOnEscape: true,
-            target: event.target as EventTarget,
-            acceptLabel: this.translate.instant("common.yes"),
-            rejectLabel: this.translate.instant("common.no"),
-            message: `${this.translate.instant(
-                "digital-services.popup.delete-question-shared",
-            )}`,
-            icon: "pi pi-exclamation-triangle",
-            accept: () => {
-                this.global.setLoading(true);
-                this.digitalServicesData
-                    .unlink(this.digitalService.uid)
-                    .pipe(
-                        takeUntilDestroyed(this.destroyRef),
-                        finalize(() => {
-                            this.global.setLoading(false);
-                        }),
-                    )
-                    .subscribe(() =>
-                        this.router.navigateByUrl(this.changePageToDigitalServices()),
-                    );
-            },
-        });
-    }
-
     async launchCalcul() {
         this.global.setLoading(true);
         await firstValueFrom(
