@@ -83,13 +83,6 @@ export class DigitalServicesComponent {
         apiResult.sort((x, y) => x.name.localeCompare(y.name));
         this.allDigitalServices.push(...apiResult);
         this.updatePaginatedItems();
-        // apiResult.forEach((digitalService) => {
-        //     if (digitalService.creator?.id === userId) {
-        //         this.myDigitalServices.push(digitalService);
-        //     } else {
-        //         this.sharedDigitalServices.push(digitalService);
-        //     }
-        // });
     }
 
     async createNewDigitalService() {

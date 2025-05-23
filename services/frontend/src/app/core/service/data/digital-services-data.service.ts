@@ -7,9 +7,8 @@
  */
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Observable, ReplaySubject, tap } from "rxjs";
+import { Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
-import { environment } from "src/environments/environment";
 import {
     DigitalService,
     DSCriteriaRest,
@@ -100,20 +99,6 @@ export class DigitalServicesDataService {
 
     launchEvaluating(uid: DigitalService["uid"]): Observable<string> {
         return this.http.post<string>(`${endpoint}/${uid}/evaluating`, {});
-    }
-
-    copyUrl(uid: DigitalService["uid"]): Observable<string> {
-        return this.http
-            .post<string>(
-                `${endpoint}/${uid}/share`,
-                {},
-                { responseType: "text" as "json" },
-            )
-            .pipe(map((response) => environment.frontEndUrl + response));
-    }
-
-    sharedDS(uid: string, generatedId: string): Observable<string> {
-        return this.http.post<string>(`${endpoint}/${uid}/shared/${generatedId}`, {});
     }
 
     downloadFile(uid: DigitalService["uid"]): Observable<any> {
