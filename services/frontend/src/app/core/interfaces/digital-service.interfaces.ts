@@ -21,8 +21,6 @@ export interface DigitalService {
     note?: Note;
     userId?: number;
     criteria?: string[];
-    creator?: DigitalServiceUserInfo;
-    members: DigitalServiceUserInfo[];
 }
 
 export interface DigitalServiceUserInfo {

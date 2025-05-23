@@ -63,7 +63,7 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      */
     @Override
     public ResponseEntity<List<DigitalServiceRest>> getDigitalServices(final String subscriber, final Long organization) {
-        final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(organization, authService.getUser().getId());
+        final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(organization);
         return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceBOs));
     }
 
@@ -99,32 +99,6 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
                 digitalServiceRestMapper.toBusinessObject(digitalService),
                 authService.getUser()
         )));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<String> shareDigitalService(String subscriber, Long organization, String digitalServiceUid) {
-        return ResponseEntity.ok(digitalServiceService.shareDigitalService(subscriber, organization, digitalServiceUid));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<Void> linkDigitalServiceToUser(String subscriber, Long organization, String digitalServiceUid, String sharedUid) {
-        digitalServiceService.linkDigitalServiceToUser(subscriber, organization, digitalServiceUid, sharedUid, authService.getUser().getId());
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<Void> unlinkSharedDigitalService(String subscriber, Long organization, String digitalServiceUid) {
-        digitalServiceService.unlinkSharedDigitalService(digitalServiceUid, authService.getUser().getId());
-        return ResponseEntity.noContent().build();
     }
 
 }

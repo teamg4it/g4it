@@ -80,7 +80,8 @@
             "attachedNote": "Click to consult the note",
             "download": "Click to download your result",
             "note": "Note",
-            "sharedUsers": "Number of people having access to a digital service"
+            "accordion-open": "Click to show sub domains",
+            "accordion-close": "Click to hide sub domains"
         },
         "note": {
             "add": "Add a note",
@@ -155,7 +156,6 @@
     "digital-services": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",
         "headerForSharedWithMe": "SHARED WITH ME ({{count}})",
-        "copyLink": "COPY LINK",
         "not-found": "Digital service does not exist.",
         "expired": "Digital service link is expired.",
         "linkCopied": "LINK COPIED !",
