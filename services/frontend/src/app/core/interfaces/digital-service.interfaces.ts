@@ -67,6 +67,21 @@ export interface DigitalServiceCloudServiceConfig {
     idFront?: number;
 }
 
+export interface DigitalServicesAiInfrastructureComponentfig {
+    id: number;
+    digitalServiceUid: string;
+    creationDate?: number;
+    name: string;
+    cloudProvider: string;
+    instanceType: string;
+    quantity: number;
+    location: DropdownValue;
+    locationValue: string;
+    annualUsage: number;
+    averageWorkload: number;
+    idFront?: number;
+}
+
 export interface DigitalServiceNetworkConfig {
     id?: number;
     uid?: string;

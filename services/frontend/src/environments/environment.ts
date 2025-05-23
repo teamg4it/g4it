@@ -11,7 +11,7 @@
 
 export const environment = {
     production: false,
-    securedEndpoints: ["inventories", "digital-services", "template-files"],
+    securedEndpoints: ["inventories", "digital-services", "eco-mind-ai", "template-files"],
     apiBaseUrl: "http://localhost:8080",
     keycloak: {
         issuer: "http://localhost:8180/auth",

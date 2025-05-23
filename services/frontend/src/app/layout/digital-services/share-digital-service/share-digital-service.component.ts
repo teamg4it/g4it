@@ -8,6 +8,8 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
     template: "",
 })
 export class ShareDigitalServiceComponent {
+    isEcoMindAi = false;
+
     constructor(
         private route: ActivatedRoute,
         private digitalServicesDataService: DigitalServicesDataService,
@@ -28,6 +30,8 @@ export class ShareDigitalServiceComponent {
                 this.router.navigateByUrl(this.goToTerminals(id));
             }
         });
+
+        this.isEcoMindAi = this.router.url.includes('eco-mind-ai');
     }
 
     goToTerminals(id: string) {

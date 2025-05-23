@@ -24,6 +24,7 @@ export class DigitalServicesItemComponent {
     isLinkCopied = false;
     sidebarVisible = false;
     isShared = false;
+    firstFootprintTab = 'terminals';
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -33,13 +34,16 @@ export class DigitalServicesItemComponent {
         private route: ActivatedRoute,
         public userService: UserService,
         private clipboardService: ClipboardService,
-    ) {}
+    ) {
+        this.firstFootprintTab = window.location.href.includes('eco-mind-ai') ? 'infrastructure' : 'terminals';
+    }
 
     async ngOnInit(): Promise<void> {
         const userId = (await firstValueFrom(this.userService.user$)).id;
         if (this.digitalService.creator?.id !== userId) {
             this.isShared = true;
         }
+        this.firstFootprintTab = window.location.href.includes('eco-mind-ai') ? 'infrastructure' : 'terminals';
     }
 
     async copyUrl() {
@@ -55,7 +59,7 @@ export class DigitalServicesItemComponent {
     }
 
     goToDigitalServiceFootprint(uid: string) {
-        this.router.navigate([`${uid}/footprint/terminals`], {
+        this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
             relativeTo: this.route,
         });
     }

@@ -34,7 +34,7 @@ export class DigitalServicesComponent {
     sharedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
     isAllowedDigitalService: boolean = false;
-
+    isEcoMindAi = false;
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -60,7 +60,14 @@ export class DigitalServicesComponent {
         this.global.setLoading(true);
         await this.retrieveDigitalServices();
         this.global.setLoading(false);
-
+        this.router.events.subscribe((event) => {
+            if (event instanceof NavigationEnd) {
+                this.retrieveDigitalServices();
+            }
+        });
+        this.route.data.subscribe((data) => {
+            this.isEcoMindAi = data["isIa"] === true;
+        });
         this.router.events
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((event) => {

@@ -29,10 +29,9 @@
             [text]="true"
             [ariaLabel]="'digital-services.return' | translate"
             icon="pi pi-arrow-left"
-            [label]="
-                'digital-services.title'
-                    | translate: { OrganizationName: organization.organizationName }
-            "
+            [label]="isEcoMindAi 
+                ? ('eco-mind-ai.title' | translate : { OrganizationName: organization.organizationName }) 
+                : ('digital-services.title' | translate : { OrganizationName: organization.organizationName })"
             id="return-button"
         />
 
@@ -73,6 +72,7 @@
             styleClass="text-gray-900 header-button ml-1"
             [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
+                !isEcoMindAi &&
                 !digitalService.note &&
                 (userService.isAllowedDigitalServiceWrite$ | async)
             "
@@ -87,7 +87,7 @@
             (click)="sidebarVisible = true"
             styleClass="text-gray-900 header-button"
             [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            *ngIf="digitalService.note"
+            *ngIf="!isEcoMindAi && digitalService.note"
             [text]="true"
             [plain]="true"
             icon="pi pi-clipboard"
@@ -109,7 +109,7 @@
         }
 
         <p-button
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
+            *ngIf="!isEcoMindAi && (userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
             styleClass="bg-black text-white header-button"
             (click)="copyUrl()"
             [ariaLabel]="'digital-services.copyLink' | translate"
@@ -118,7 +118,7 @@
         />
 
         <p-button
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && isLinkCopied"
+            *ngIf="!isEcoMindAi && (userService.isAllowedDigitalServiceWrite$ | async) && isLinkCopied"
             styleClass="bg-black text-white header-button"
             [disabled]="true"
             class="disabled-text-black"
@@ -130,7 +130,7 @@
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
             (click)="exportData()"
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            *ngIf="!isEcoMindAi && (userService.isAllowedDigitalServiceWrite$ | async)"
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"
         />

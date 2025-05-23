@@ -58,6 +58,14 @@ export class UserService {
         map((roles) => roles.includes(Role.DigitalServiceWrite)),
     );
 
+    isAllowedEcoMindAiRead$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.EcoMindAiRead)),
+    );
+
+    isAllowedEcoMindAiWrite$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.EcoMindAiWrite)),
+    );
+
     constructor(
         private readonly router: Router,
         private readonly userDataService: UserDataService,
@@ -104,7 +112,7 @@ export class UserService {
             return;
         }
 
-        if (page !== undefined && ["inventories", "digital-services"].includes(page)) {
+        if (page !== undefined && ["inventories", "digital-services", "eco-mind-ai"].includes(page)) {
             return this.handlePageRouting(
                 currentUser,
                 subscriberName,
@@ -272,6 +280,10 @@ export class UserService {
             roles.push(Role.DigitalServiceRead);
         }
 
+        if (organization.roles.includes(Role.EcoMindAiWrite)) {
+            roles.push(Role.EcoMindAiRead);
+        }
+
         return roles;
     }
 
@@ -291,6 +303,10 @@ export class UserService {
         }
 
         if (uri === "digital-services" && roles.includes(Role.DigitalServiceRead)) {
+            return true;
+        }
+
+        if (uri === "eco-mind-ai" && roles.includes(Role.EcoMindAiRead)) {
             return true;
         }
 
