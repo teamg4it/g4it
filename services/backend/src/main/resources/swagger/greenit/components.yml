@@ -940,7 +940,11 @@ components:
     AiParameterRest:
       description: Estimations and recommendations made for of an AI Parameter
       type: object
+      required: [modelName, nbParameters, framework, quantization]
       properties:
+        id:
+          type: integer
+          format: int64
         modelName:
           type: string
         nbParameters:

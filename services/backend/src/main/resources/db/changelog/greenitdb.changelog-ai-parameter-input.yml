@@ -44,6 +44,14 @@ databaseChangeLog:
                   - name: isFinetuning
                   - type: boolean
 
+  - changeSet:
+    id: remove-properties
+    author: G4IT Dev Team
+    changes:
+      - dropColumn:
+          columnName: properties
+          tableName: ai_parameters
+
 
 
 

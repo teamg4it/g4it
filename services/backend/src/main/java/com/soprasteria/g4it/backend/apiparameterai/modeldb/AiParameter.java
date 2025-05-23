@@ -26,14 +26,14 @@ public class AiParameter {
      * Primary Key: id.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private BigInteger id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
-     * Model detail.
+     * Linked Digital Service. Temporary field
      */
-    @NotNull
-    private String properties;
+    private String digitalServiceUid;
+
 
     /**
      * Parameters.
@@ -51,7 +51,7 @@ public class AiParameter {
      * Quantization.
      */
     @NotNull
-    private BigInteger quantization;
+    private String quantization;
 
     /**
      * Total number of generated tokens.
