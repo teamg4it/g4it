@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentReposi
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
@@ -35,8 +36,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -264,6 +264,53 @@ class DigitalServiceServiceTest {
 
         verify(digitalServiceRepository, times(1)).findById(DIGITAL_SERVICE_UID);
         verifyNoInteractions(digitalServiceMapper);
+    }
+    @Test
+    void digitalServiceExists_WhenSubscriberMatchesAndServiceExists_ReturnsTrue() {
+
+        final Organization organization = Organization.builder().name("test")
+                .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build();
+        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
+
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(organization);
+        when(digitalServiceRepository.findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID))
+                .thenReturn(Optional.of(digitalService));
+
+        boolean result = digitalServiceService.digitalServiceExists(
+                SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
+
+        assertTrue(result);
+        verify(digitalServiceRepository).findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID);
+    }
+
+    @Test
+    void digitalServiceExists_WhenSubscriberMismatch_ReturnsFalse() {
+
+        final Organization organization = Organization.builder().name("test")
+                .subscriber(Subscriber.builder().name("Subscriber2").build()).build();
+
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(organization);
+
+        boolean result = digitalServiceService.digitalServiceExists(
+                SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
+
+        assertFalse(result);
+        verify(digitalServiceRepository, never()).findByOrganizationAndUid(any(), any());
+    }
+    @Test
+    void digitalServiceExists_WhenSubscriberMatchesAndServiceNotExist_ReturnsFalse() {
+
+        final Organization organization = Organization.builder().name("test")
+                .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build();
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(organization);
+        when(digitalServiceRepository.findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID))
+                .thenReturn(Optional.empty());
+
+        boolean result = digitalServiceService.digitalServiceExists(
+                SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
+
+        assertFalse(result);
+        verify(digitalServiceRepository).findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID);
     }
 
 }
