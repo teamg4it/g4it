@@ -1026,7 +1026,7 @@ components:
       properties:
         infrastructureType:
           type: string
-          enum: [ SERVER_DC, PHYSICAL_EQUIPMENT, VIRTUAL_EQUIPMENT ]
+          enum: [SERVER_DC, LAPTOP, DESKTOP]
         nbCpuCores:
           type: integer
           format: int64
@@ -1039,14 +1039,15 @@ components:
         ramSize:
           type: integer
           format: int64
-        digitalServiceUid:
-          type: string
-          maxLength: 255
         location:
           type: string
           maxLength: 50
           pattern: "^[A-Za-z ]*$"
         pue:
+          type: number
+          format: double
+          minimum: 0
+        complementaryPue:
           type: number
           format: double
           minimum: 0

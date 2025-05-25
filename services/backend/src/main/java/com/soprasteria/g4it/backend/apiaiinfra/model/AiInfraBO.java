@@ -25,9 +25,10 @@ public class AiInfraBO {
 
     private @Nullable Long ramSize;
 
-    private @Nullable String digitalServiceUid;
-
     private String location;
 
     private @Nullable Double pue;
+
+    private @Nullable Double complementaryPue;
+
 }
