@@ -969,6 +969,12 @@ components:
           type: boolean
         isFinetuning:
           type: boolean
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
 
     CriteriaRest:
       description: Criteria to evaluate the impact

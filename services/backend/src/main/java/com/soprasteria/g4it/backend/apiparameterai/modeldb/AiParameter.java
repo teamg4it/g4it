@@ -9,6 +9,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 /**
  * Ai parameter Entity
@@ -90,4 +91,9 @@ public class AiParameter {
     private Boolean isFinetuning;
 
 
+    @EqualsAndHashCode.Exclude
+    private LocalDateTime creationDate;
+
+    @EqualsAndHashCode.Exclude
+    private LocalDateTime lastUpdateDate;
 }

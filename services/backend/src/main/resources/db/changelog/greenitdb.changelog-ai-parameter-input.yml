@@ -14,44 +14,44 @@ databaseChangeLog:
                     primaryKey: true
                     primaryKeyName: ai_parameters_id_pk
               - column:
-                  name: properties
+                  name: nb_parameters
                   type: varchar(255)
               - column:
-                - name: nbParameters
-                - type: varchar(255)
+                  name: framework
+                  type: varchar(255)
               - column:
-                - name: framework
-                - type: varchar(255)
+                  name: quantization
+                  type: varchar(255)
               - column:
-                  - name: quantization
-                  - type: varchar(255)
+                  name: total_generated_tokens
+                  type: bigint
               - column:
-                  - name: totalGeneratedTokens
-                  - type: bigint
+                  name: number_user_year
+                  type: bigint
               - column:
-                  - name: numberUserYear
-                  - type: bigint
+                  name: average_number_request
+                  type: bigint
               - column:
-                  - name: averageNumberRequest
-                  - type: bigint
+                  name: average_number_token
+                  type: bigint
               - column:
-                  - name: averageNumberToken
-                  - type: bigint
+                  name: is_inference
+                  type: boolean
               - column:
-                  - name: isInference
-                  - type: boolean
+                  name: is_finetuning
+                  type: boolean
               - column:
-                  - name: isFinetuning
-                  - type: boolean
-
-  - changeSet:
-    id: remove-properties
-    author: G4IT Dev Team
-    changes:
-      - dropColumn:
-          columnName: properties
-          tableName: ai_parameters
-
-
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: ai_parameter_digital_service_fk
+                    references: digital_service(uid)
 
 

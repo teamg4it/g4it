@@ -18,7 +18,7 @@ paths:
       tags:
         - ai-parameter
       summary: Create API POST for ai parameters
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+#      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
       operationId: createAiParameter
 
       requestBody:

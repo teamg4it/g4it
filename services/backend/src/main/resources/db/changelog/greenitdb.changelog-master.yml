@@ -1,7 +1,5 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/greenitdb.changelog-ai-parameter-input.yml
-  - include:
       file: db/changelog/greenitdb.changelog-security-user.yml
   - include:
       file: db/changelog/greenitdb.changelog-inventory-initialization.yml
@@ -33,6 +31,8 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-clean-old-digital-service.yml
   - include:
       file: db/changelog/greenitdb.changelog-clean-old-inventory.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-ai-parameter-input.yml
   - includeAll:
       path: db/changelog/in-out/
       endsWithFilter: .yml

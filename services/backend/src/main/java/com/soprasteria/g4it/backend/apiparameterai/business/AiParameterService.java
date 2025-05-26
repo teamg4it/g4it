@@ -34,8 +34,8 @@ public class AiParameterService {
         final AiParameter entityToSave = aiParameterMapper.toEntity(aiParameterRest);
         final LocalDateTime now = LocalDateTime.now();
         entityToSave.setDigitalServiceUid(digitalServiceUid);
-        //inDatacenterToCreate.setCreationDate(now);
-        //inDatacenterToCreate.setLastUpdateDate(now);
+        entityToSave.setCreationDate(now);
+        entityToSave.setLastUpdateDate(now);
         return aiParameterMapper.toBusinessObject(aiParameterRepository.save(entityToSave));
     }
 
