@@ -27,6 +27,7 @@ import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
 import { SidePanelDsSharedUsersComponent } from "../common/side-panel-ds-shared-users/side-panel-ds-shared-users.component";
 import { DigitalServicesAiInfrastructureComponent } from "./digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
+import { DigitalServicesAiParametersComponent } from "./digital-services-ai-parameters/digital-services-ai-parameters.component";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
@@ -39,7 +40,6 @@ import { DigitalServicesFootprintComponent } from "./digital-services-footprint.
 import { digitalServicesFootprintRouter } from "./digital-services-footprint.router";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
-import { DigitalServiceParameter } from "./digital-services-parameter/digital-services-parameter.component";
 import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
 import PanelDatacenterComponent from "./digital-services-servers/side-panel/add-datacenter/datacenter.component";
 import { PanelAddVmComponent } from "./digital-services-servers/side-panel/add-vm/add-vm.component";
@@ -71,7 +71,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         PanelServerParametersComponent,
         PanelAddVmComponent,
         PanelListVmComponent,
-        DigitalServiceParameter,
+        DigitalServicesAiParametersComponent,
         DigitalServicesAiInfrastructureComponent,
     ],
     imports: [

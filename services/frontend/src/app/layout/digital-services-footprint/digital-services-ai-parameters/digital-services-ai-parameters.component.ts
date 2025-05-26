@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
+import { AIFormsStore, AIParametersForm } from 'src/app/core/store/ai-forms.store';
 import { DigitalServiceParameterIa } from '../../../core/interfaces/digital-service/parameter.interfaces';
 import { ParameterService } from '../../../core/service/business/parameter.service';
+
 @Component({
-  selector: 'app-digital-services-parameter',
-  templateUrl: './digital-services-parameter.component.html',
+  selector: 'app-digital-services-ai-parameters',
+  templateUrl: './digital-services-ai-parameters.component.html',
 })
-export class DigitalServiceParameter implements OnInit {
+export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
   terminalsForm!: FormGroup;
+  private formSubscription: Subscription | undefined;
 
   modelOptions: any[] = ["option1","option2","option3"];
   parameterOptions: any[] = ["option1","option2","option3"];
@@ -18,11 +22,11 @@ export class DigitalServiceParameter implements OnInit {
   constructor(
     private fb: FormBuilder,
     private inferenceService: ParameterService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private aiFormsStore: AIFormsStore
   ) {}
 
   ngOnInit(): void {
-    // Initialisation du formulaire
     this.terminalsForm = this.fb.group({
       model: [null, Validators.required],
       parameter: [null, Validators.required],
@@ -34,6 +38,17 @@ export class DigitalServiceParameter implements OnInit {
       averageRequest: [null, Validators.required],
       averageToken: [null, Validators.required],
       totalTokenGenerate: [{ value: 0, disabled: true }]
+    });
+
+    // Restaurer les données sauvegardées si elles existent
+    const savedData = this.aiFormsStore.getParametersFormData();
+    if (savedData) {
+      this.terminalsForm.patchValue(savedData);
+    }
+
+    // Sauvegarder les données à chaque changement
+    this.formSubscription = this.terminalsForm.valueChanges.subscribe(value => {
+      this.aiFormsStore.setParametersFormData(value as AIParametersForm);
     });
 
     // Chargement des options depuis les services
@@ -52,6 +67,12 @@ export class DigitalServiceParameter implements OnInit {
 
     // Mise à jour automatique des tokens générés
     this.terminalsForm.valueChanges.subscribe(() => this.updateTotalTokens());
+  }
+
+  ngOnDestroy(): void {
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
   }
 
   updateTotalTokens(): void {
@@ -81,8 +102,7 @@ export class DigitalServiceParameter implements OnInit {
       totalTokenGenerate: this.terminalsForm.getRawValue().totalTokenGenerate
     };
   
-    // 👉 Affiche le JSON envoyé
-    console.log('📦 Données envoyées au backend :', JSON.stringify(formValue, null, 2));
+    console.log('📦 Paramètres AI - Données envoyées au backend :', JSON.stringify(formValue, null, 2));
   
     this.inferenceService.submitForm(formValue).subscribe({
       next: () => {
@@ -92,7 +112,6 @@ export class DigitalServiceParameter implements OnInit {
           detail: 'Paramètres sauvegardés avec succès.'
         });
   
-        // 👉 Réinitialise le formulaire avec les valeurs par défaut
         this.terminalsForm.reset();
         this.terminalsForm.patchValue({
           inference: true,
@@ -108,5 +127,5 @@ export class DigitalServiceParameter implements OnInit {
         });
       }
     });
-}
+  }
 }

@@ -14,6 +14,7 @@ import {
     Input,
     OnInit,
     Output,
+    ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
@@ -33,9 +34,12 @@ import { DigitalServiceBusinessService } from "src/app/core/service/business/dig
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
+import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { delay } from "src/app/core/utils/time";
+import { DigitalServicesAiInfrastructureComponent } from '../digital-services-ai-infrastructure/digital-services-ai-infrastructure.component';
+import { DigitalServicesAiParametersComponent } from '../digital-services-ai-parameters/digital-services-ai-parameters.component';
 
 @Component({
     selector: "app-digital-services-footprint-header",
@@ -60,6 +64,9 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
     isEcoMindAi = false;
+
+    @ViewChild(DigitalServicesAiParametersComponent) aiParametersComponent: DigitalServicesAiParametersComponent | undefined;
+    @ViewChild(DigitalServicesAiInfrastructureComponent) aiInfrastructureComponent: DigitalServicesAiInfrastructureComponent | undefined;
 
     enableCalcul = computed(() => {
         const digitalService = this.digitalServiceStore.digitalService();
@@ -93,6 +100,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         private clipboardService: ClipboardService,
         private digitalServiceBusinessService: DigitalServiceBusinessService,
         private inVirtualEquipmentsService: InVirtualEquipmentsService,
+        private aiFormsStore: AIFormsStore
     ) {}
 
     ngOnInit() {
@@ -333,5 +341,33 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.displayPopup = false;
                 this.digitalServiceStore.setEnableCalcul(true);
             });
+    }
+
+    handleSave(): void {
+        const parametersData = this.aiFormsStore.getParametersFormData();
+        const infrastructureData = this.aiFormsStore.getInfrastructureFormData();
+
+        if (parametersData) {
+            console.log('Paramètres AI - Données envoyées au backend :', JSON.stringify(parametersData, null, 2));
+        }
+
+        if (infrastructureData) {
+            console.log('Infrastructure AI - Données envoyées au backend :', JSON.stringify(infrastructureData, null, 2));
+        }
+
+        if (!parametersData && !infrastructureData) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Attention',
+                detail: 'Aucune donnée à sauvegarder.'
+            });
+            return;
+        }
+
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Données sauvegardées avec succès.'
+        });
     }
 }

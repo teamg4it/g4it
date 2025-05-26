@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
@@ -32,15 +32,23 @@ export class DigitalServicesDataService {
     private readonly digitalServiceSubject = new ReplaySubject<DigitalService>(1);
     digitalService$ = this.digitalServiceSubject.asObservable();
 
-    list(): Observable<DigitalService[]> {
-        return this.http.get<DigitalService[]>(`${endpoint}`);
+    list(isAI?: boolean): Observable<DigitalService[]> {
+        let params = new HttpParams();
+        if (isAI !== undefined) {
+            params = params.set('isAI', isAI);
+        }
+        return this.http.get<DigitalService[]>(`${endpoint}`, { params });
     }
 
-    create(): Observable<DigitalService> {
+    create(isAI?: boolean): Observable<DigitalService> {
+        let params = new HttpParams();
+        if (isAI !== undefined) {
+            params = params.set('isAI', isAI);
+        }
         return this.http.post<DigitalService>(
             `${endpoint}`,
             {},
-            { headers: this.HEADERS },
+            { headers: this.HEADERS, params: params },
         );
     }
 

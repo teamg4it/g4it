@@ -79,4 +79,9 @@ public class DigitalServiceBO {
      */
     private NoteBO note;
 
+    /**
+     * isAI
+     */
+    private boolean isAi;
+
 }

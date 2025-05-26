@@ -113,4 +113,7 @@ public class DigitalService {
             fetch = FetchType.LAZY)
     private List<DigitalServiceShared> digitalServiceShared;
 
+    public boolean getIsAI() {
+        return isAi;
+    }
 }

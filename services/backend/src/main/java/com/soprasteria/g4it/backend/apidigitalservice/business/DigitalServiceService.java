@@ -87,6 +87,7 @@ public class DigitalServiceService {
     private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
     @Autowired
     private ExportService exportService;
+    private Boolean isAi; // Doit être présent dans DigitalServiceBO
 
     /**
      * Create a new digital service.
@@ -151,6 +152,7 @@ public class DigitalServiceService {
                 .toList();
 
         final List<DigitalService> combinedDigitalServices = Stream.concat(digitalServices.stream(), sharedDigitalServices.stream())
+                .filter(ds -> ds.getIsAI() == isAI)  // Filtrer les services en fonction de isAI
                 .toList();
         List<DigitalServiceBO> allDigitalServicesBO = digitalServiceMapper.toBusinessObject(combinedDigitalServices);
 

@@ -43,6 +43,11 @@ export class DigitalServicesFootprintComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         this.global.setLoading(true);
+        
+        //TODO : this.router.url.includes("eco-mind-ai") à remplacer par this.digitalService.isAi
+        this.isEcoMindAi = this.router.url.includes("eco-mind-ai");
+        //this.isEcoMindAi = this.digitalService.isAI ?? false;
+
         const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
         const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
         // If the digital service is not found, 404 is catched by the interceptor.
@@ -101,15 +106,18 @@ export class DigitalServicesFootprintComponent implements OnInit {
         ]);
 
         this.global.setLoading(false);
-
-        //TODO : this.router.url.includes("eco-mind-ai") à remplacer par this.digitalService.isAi
-        this.isEcoMindAi = this.router.url.includes("eco-mind-ai");
+        console.log("this.digitalService", this.digitalService.isAI);
+        
+        
         
         this.updateTabItems();
         this.digitalBusinessService.initCountryMap();
+
+        
     }
 
     updateTabItems() {
+        console.log("this.isEcoMindAi", this.isEcoMindAi);
         if (this.isEcoMindAi) {
             this.tabItems = [
                 {
@@ -120,7 +128,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
                 {
                     label: this.translate.instant("digital-services.AiParameters"),
                     routerLink: "AiParameters",
-                    id: "AiParameterss",
+                    id: "AiParameters",
                 },
             ];
         } else {

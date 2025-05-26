@@ -8,6 +8,7 @@
 import { RouterModule, Routes } from "@angular/router";
 import { TitleResolver } from "../common/title-resolver.service";
 import { DigitalServicesAiInfrastructureComponent } from "./digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
+import { DigitalServicesAiParametersComponent } from "./digital-services-ai-parameters/digital-services-ai-parameters.component";
 import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
@@ -80,13 +81,13 @@ const routes: Routes = [
             },
             {
                 path: "infrastructure",
-                component: DigitalServicesCloudServicesComponent,
+                component: DigitalServicesAiInfrastructureComponent,
                 ...titleResolveObject,
             },
 
             {
                 path: "AiParameters",
-                component: DigitalServicesAiInfrastructureComponent,
+                component: DigitalServicesAiParametersComponent,
                 ...titleResolveObject,
             },
 

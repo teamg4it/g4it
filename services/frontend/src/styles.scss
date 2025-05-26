@@ -1661,7 +1661,11 @@
             }
         }
         
-        .form-container .button-bottom-right {
+        .label-input-div-form .p-dropdown {
+            width: 100%;
+        }
+        
+        .p-scrollPanel .button-bottom-rights {
             position: relative;
             margin-top: 40px;
             display: flex;
