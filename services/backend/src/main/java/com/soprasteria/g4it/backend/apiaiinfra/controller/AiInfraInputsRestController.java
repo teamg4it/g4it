@@ -6,6 +6,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.AiInfraRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,6 @@ public class AiInfraInputsRestController implements AiInfraInputsApiDelegate {
 
     @Override
     public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsAiInfraRest(String subscriber, Long organization, String digitalServiceUid, AiInfraRest aiInfraRest) {
-        return ResponseEntity.ok(aiInfraInputsApiService.postDigitalServiceInputsAiInfra(digitalServiceUid,aiInfraRest));
+        return new ResponseEntity<>(aiInfraInputsApiService.postDigitalServiceInputsAiInfra(digitalServiceUid,aiInfraRest), HttpStatus.CREATED);
     }
 }
