@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.3.0
+
+- 1149 | Visualize ecodesign & accessibility declaration
+
+### Major Changes
+
+### Minor Changes
+
 ## 3.2.0
 
 ### Major Changes
