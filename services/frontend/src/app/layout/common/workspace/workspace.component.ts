@@ -12,9 +12,12 @@ import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
+import { User } from "src/app/core/interfaces/user.interfaces";
+import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
+import { Constants } from "src/constants";
 
 interface SpaceDetails {
     menu: {
@@ -77,7 +80,9 @@ export class WorkspaceComponent implements OnInit {
             {
                 name: "spaceName",
                 label: this.translate.instant("common.workspace.set-workspace-name"),
-                hintText: this.translate.instant("common.workspace.hint-text"),
+                hintText: this.translate.instant(
+                    "common.workspace.hint-text-workspace-name",
+                ),
                 type: "text",
                 placeholder: this.translate.instant("common.workspace.type-space-name"),
             },
@@ -89,7 +94,6 @@ export class WorkspaceComponent implements OnInit {
     selectedMenuIndex: number | null = null;
     subscribersDetails: any;
     organizationlist: DomainSubscribers[] = [];
-    subscribersList: any;
     existingOrganization: any = [];
 
     constructor(
@@ -98,6 +102,7 @@ export class WorkspaceComponent implements OnInit {
         private messageService: MessageService,
         private translate: TranslateService,
         private router: Router,
+        private administrationService: AdministrationService,
     ) {}
 
     spaceForm = new FormGroup({
@@ -105,6 +110,8 @@ export class WorkspaceComponent implements OnInit {
         spaceName: new FormControl<string | undefined>(undefined, [
             Validators.required,
             this.spaceDuplicateValidator.bind(this),
+            Validators.maxLength(20),
+            Validators.pattern(/^[^@\/;?]*$/),
         ]),
     });
 
@@ -114,21 +121,27 @@ export class WorkspaceComponent implements OnInit {
 
         this.spaceForm.get("organization")?.valueChanges.subscribe((value) => {
             if (value) {
-                this.existingOrganization = this.subscribersList.find(
-                    (subscriber: any) => subscriber.id === value,
-                )?.organizations;
+                this.existingOrganization =
+                    this.organizationlist?.find(
+                        (subscriber: any) => subscriber.id === value,
+                    )?.organizations ?? [];
                 this.spaceForm.get("spaceName")?.updateValueAndValidity();
             }
         });
     }
 
+    organizationValidator() {
+        return this.organizationlist.length === 0 ? { noOrganization: true } : null;
+    }
+
     spaceDuplicateValidator(control: AbstractControl) {
-        if (control && control?.value?.trim().includes(" ")) {
+        if (control && control?.value?.includes(" ")) {
             return { spaceNotAllowed: true };
-        } else {
-            const getSpaceName = this.existingOrganization.find(
-                (data: any) => data.name == control.value,
-            );
+        } else if (control?.value) {
+            const getSpaceName =
+                this.existingOrganization?.find(
+                    (data: any) => data.name.toLowerCase() == control.value.toLowerCase(),
+                ) ?? undefined;
             if (getSpaceName) {
                 return { duplicate: true };
             }
@@ -164,7 +177,6 @@ export class WorkspaceComponent implements OnInit {
 
     async getDomainSubscribersList() {
         const userEmail = (await firstValueFrom(this.userService.user$)).email;
-        this.subscribersList = (await firstValueFrom(this.userService.user$)).subscribers;
 
         if (userEmail) {
             const body = {
@@ -172,6 +184,10 @@ export class WorkspaceComponent implements OnInit {
             };
             this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
                 this.organizationlist = res;
+                this.spaceForm
+                    .get("organization")
+                    ?.addValidators([this.organizationValidator.bind(this)]);
+                this.spaceForm.get("organization")?.updateValueAndValidity();
 
                 if (
                     Array.isArray(this.organizationlist) &&
@@ -221,12 +237,12 @@ export class WorkspaceComponent implements OnInit {
         if (this.spaceForm.valid) {
             const body = {
                 subscriberId: this.spaceForm.value["organization"] ?? undefined,
-                name: this.spaceForm.value["spaceName"] ?? undefined,
+                name: this.spaceForm.value["spaceName"]?.trim() ?? undefined,
                 status: "ACTIVE",
             };
             this.workspaceService.postUserWorkspace(body).subscribe((res) => {
                 const subscriber =
-                    this.organizationlist.find(
+                    this.organizationlist?.find(
                         (subscriber: any) =>
                             subscriber.id === this.spaceForm.value["organization"],
                     ) ?? undefined;
@@ -235,10 +251,39 @@ export class WorkspaceComponent implements OnInit {
                     this.userDataService
                         .fetchUserInfo()
                         .pipe(take(1))
-                        .subscribe(() => {
-                            this.router.navigateByUrl(
-                                `subscribers/${subscriber.name}/organizations/${res.id}/inventories`,
-                            );
+                        .subscribe((user: User) => {
+                            const routeSplit = this.router.url.split("/");
+                            const page = routeSplit.pop();
+                            if (
+                                page === Constants.ENDPOINTS.digitalServices ||
+                                page === Constants.ENDPOINTS.inventories
+                            ) {
+                                this.router.navigateByUrl(
+                                    `subscribers/${subscriber.name}/organizations/${res.id}/${page}`,
+                                );
+                            } else {
+                                const newSubscriber = user.subscribers.find(
+                                    (sub) => sub.name === subscriber.name,
+                                );
+                                let newOrganization;
+                                if (newSubscriber && newSubscriber?.organizations) {
+                                    newOrganization = newSubscriber?.organizations.find(
+                                        (org) => org.id === res.id,
+                                    );
+                                }
+                                if (newSubscriber && newOrganization) {
+                                    // To set the new subscriber and organization in the user service. So that Top component is updated with new workspace which created
+                                    this.userService.setSubscriberAndOrganization(
+                                        newSubscriber,
+                                        newOrganization,
+                                    );
+                                }
+                                if (routeSplit.includes("administration")) {
+                                    // To refresh workspace list in Admin page.
+                                    this.administrationService.refreshGetUsers();
+                                }
+                                this.router.navigate([this.router.url]);
+                            }
                         });
                 }
                 this.messageService.add({
@@ -252,6 +297,7 @@ export class WorkspaceComponent implements OnInit {
     closeSidebar() {
         this.selectTab(0);
         this.spaceForm.reset();
+        this.workspaceService.setOpen(false);
         this.sidebarVisibleChange.emit(false);
     }
 }

@@ -67,7 +67,10 @@
             <span class="pi pi-chevron-down ml-3"></span>
         </button>
     </div>
-    <div class="flex align-items-center" [ngClass]="isZoomedIn() ? 'ml-2' : 'ml-7'">
+    <div
+        class="org-menu-new-btn flex align-items-center"
+        [ngClass]="isZoomedIn() ? 'ml-2' : 'ml-7'"
+    >
         <button
             (focus)="isAboutMenuOpen = false; isAccountMenuVisible = false"
             type="button"
@@ -77,6 +80,8 @@
         >
             <span class="ml-2">
                 {{
+                    selectedOrganization &&
+                    selectedOrganization.name &&
                     selectedOrganization.name.length > maxLength
                         ? selectedOrganization.name.slice(0, maxLength) + "..."
                         : selectedOrganization.name
@@ -143,7 +148,7 @@
             </div>
         </div>
         <p-button
-            (click)="spaceSidebarVisible = !spaceSidebarVisible; isOrgMenuVisible = false"
+            (click)="openWorkspaceSidebar(); isOrgMenuVisible = false"
             icon="pi pi-plus-circle"
             styleClass="uppercase bg-light-green text-white"
             iconPos="right"
@@ -152,7 +157,7 @@
         ></p-button>
     </div>
 
-    <div class="flex align-items-center gap-2 ml-4">
+    <div class="account-menu-btn flex align-items-center gap-2 ml-4">
         <p-button
             [ariaLabel]="'common.settings' | translate"
             [label]="initials"
@@ -257,9 +262,3 @@
         </p-button>
     </div>
 </div>
-
-<div
-    *ngIf="isAccountMenuVisible || isOrgMenuVisible"
-    (click)="isOrgMenuVisible = false; isAccountMenuVisible = false"
-    class="full-screen"
-></div>

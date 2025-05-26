@@ -124,22 +124,28 @@
         "inventories": "Inventaires",
         "digital-services": "Services numériques",
         "skip-to-main-content": "Accéder au contenu principal",
+        "overgreen-logo": "Overgreen Logo",
+        "soprasteria-logo": "Sopra Steria Logo",
         "workspace": {
             "create": "Créer un nouvel espace de travail",
             "mandatory": "Obligatoire",
             "choose-organisation": "Choisissez une organisation",
             "no-organization-chosen": "Aucune organisation choisie",
-            "set-workspace-name": "Définir un nom d'espace de travail",
+            "set-workspace-name": "Définir un nom",
             "no-space-name": "Aucun nom d'espace indiqué",
             "hint-text": "Avant de créer votre espace, veuillez vérifier dans quelle organisation il sera situé.",
+            "hint-text-workspace-name": "Choisissez un nom pour votre espace de travail. Il ne doit pas dépasser 20 caractères et ne peut contenir ni espaces ni caractères spéciaux.",
             "select-organisation": "Sélectionnez une organisation",
             "type-space-name": "Tapez le nom de l'espace",
             "workspace-created": "Espace de travail créé",
             "completed": "Complété",
-            "form-description": "Cet espace de travail vous permet d'exécuter des simulations et de récupérer des données. Vous pouvez inviter et gérer des contributeurs, ainsi que modifier et supprimer votre espace de travail.",
+            "form-description": "Cet espace de travail vous permet d’évaluer l’impact environnemental de vos services numériques et de vos inventaires. Vous pouvez également inviter et gérer des contributeurs pour collaborer à vos évaluations.",
             "cancel": "Annuler la création",
             "create-workspace": "Créer un espace de travail",
-            "duplicate-error": "Le nom de l'espace de travail existe déjà"
+            "duplicate-error": "Le nom de l'espace de travail existe déjà",
+            "no-organization": "Aucune organisation correspondant à votre nom de domaine n’a été trouvée. Veuillez contacter votre administrateur pour demander l’accès ou vérifier la configuration de votre organisation.",
+            "space-name-maxlength": "Le nom de l'espace de travail ne doit pas dépasser 20 caractères.",
+            "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés."
         }
     },
     "errors": {
@@ -293,6 +299,27 @@
         "error.service-already-exists": "Le service cloud existe déjà",
         "tooltip_average_workload": "Charge de travail moyenne",
         "tooltip_annual_usage": "Utilisation annuelle"
+    },
+    "welcome-page": {
+        "title": "Page de bienvenue",
+        "name": "Accueil",
+        "hello": "Bonjour",
+        "about-g4it": "G4IT est conçu pour vous aider à mettre en œuvre une <strong>approche numérique durable</strong> pour vos <strong>systèmes d’information</strong> et vos <strong>services numériques.</strong>",
+        "getting-started": "Prêt à démarrer",
+        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d’un espace de travail à un autre via le menu situé en haut à droite de l’application (le nom de l’espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation {{ subscriberName }}, afin de réaliser vos propres évaluations et inviter d’autres utilisateurs à vous y rejoindre.",
+        "modules-access": "Accès aux modules",
+        "inventories": {
+            "title": "Inventaires",
+            "description": "Évaluez l’impact d’un ensemble d’équipements représentant tout ou partie du système d’information d’une organisation, d’un parc applicatif, d’un projet ou d’une équipe…",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
+        },
+        "digital-service": {
+            "title": "Services numériques",
+            "description": "Évaluez l’impact d’un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
+        }
     },
     "Jan": "janv",
     "Feb": "févr",
@@ -697,7 +724,7 @@
         "delete": "Supprimer",
         "cancel-deletion": "Annuler la suppression",
         "cancel-deletion-accessibility": "Annuler la suppresion de l'organisation {{organizationName}}",
-        "cancel-deletion-message": "Les données de l'organisation seront supprimées le {{date}}",
+        "cancel-deletion-message": "Les données de votre espace de travail seront supprimées le {{date}}",
         "delete-confirmation": "Confirmation de la suppresion",
         "delete-message": "Après 7 jours, toutes les données de votre espace de travail seront supprimées. Voulez-vous vraiment supprimer cet espace de travail ?",
         "user": {

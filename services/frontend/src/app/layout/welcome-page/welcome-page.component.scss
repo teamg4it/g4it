@@ -1,0 +1,83 @@
+.welcome-page-container {
+    .welcome-page-title {
+        .username {
+            color: var(--light-green-color);
+        }
+    }
+
+    .getting-started {
+        margin-top: 3.5rem;
+    }
+
+    .selection-card-container {
+        .pi {
+            font-size: 8.5rem;
+            padding: 1rem;
+        }
+
+        .selection-card-content {
+            line-height: 1.75rem;
+        }
+
+        .custom-icon {
+            width: 154px;
+            height: 154px;
+            background-color: var(--blue-color);
+        }
+
+        &.disabled {
+            .p-card-title {
+                color: var(--tints-black-80);
+            }
+        }
+
+        &:not(.disabled):hover {
+            .p-card-title {
+                color: var(--blue-color);
+            }
+        }
+    }
+
+    .selection-card-container.disabled {
+        .custom-icon {
+            background-color: #888a88;
+        }
+    }
+
+    footer {
+        a {
+            color: var(--tints-black-80);
+            text-decoration: none;
+        }
+    }
+
+    .useful-info .hover-text:not(.p-disabled):hover {
+        background: rgba(0, 0, 0, 0.04);
+        font-weight: 700;
+    }
+
+    .useful-info a:focus,
+    .help-center a:not(.p-disabled):focus:before {
+        outline: 2px solid #28a745;
+    }
+
+    .help-center a:not(.p-disabled):hover {
+        font-weight: 700;
+    }
+
+    .help-center a:not(.p-disabled) {
+        outline-width: 0;
+
+        &:before {
+            content: "";
+            height: 100%;
+            position: absolute;
+            right: 0;
+            width: 100%;
+        }
+
+        &:hover:before {
+            background: rgba(0, 0, 0, 0.04);
+        }
+    }
+}

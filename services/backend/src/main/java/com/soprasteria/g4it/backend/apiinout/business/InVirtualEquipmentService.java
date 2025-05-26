@@ -86,6 +86,7 @@ public class InVirtualEquipmentService {
         }
 
         final InVirtualEquipment inVirtualEquipmentToCreate = inVirtualEquipmentMapper.toEntity(inVirtualEquipmentRest);
+        inVirtualEquipmentToCreate.setId(null);
         final LocalDateTime now = LocalDateTime.now();
         inVirtualEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
         inVirtualEquipmentToCreate.setCreationDate(now);
@@ -283,7 +284,6 @@ public class InVirtualEquipmentService {
                 .orElseThrow(() -> new G4itRestException("404", String.format("Virtual equipment %d not found in inventory %d", id, inventoryId)));
         inVirtualEquipmentRepository.deleteById(id);
     }
-
 
 }
 

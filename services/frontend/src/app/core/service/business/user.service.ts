@@ -140,11 +140,9 @@ export class UserService {
             this.router.navigateByUrl("/");
             return;
         }
-
-        if (this.checkIfAllowed(subscriber, organization, page)) {
-            this.setSubscriberAndOrganization(subscriber, organization);
-        } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
+        this.setSubscriberAndOrganization(subscriber, organization);
+        if (!this.checkIfAllowed(subscriber, organization, page)) {
+            this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 
@@ -157,7 +155,10 @@ export class UserService {
             organization = this.getOrganization(subscriber);
         }
 
-        if (subscribers === Constants.USEFUL_INFORMATION) {
+        if (
+            subscribers === Constants.USEFUL_INFORMATION ||
+            subscribers === Constants.WELCOME_PAGE
+        ) {
             this.setSubscriberAndOrganization(subscriber, organization!);
             return;
         }
@@ -165,7 +166,10 @@ export class UserService {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
                 return;
-            } else this.router.navigateByUrl(`something-went-wrong/403`);
+            } else {
+                this.setSubscriberAndOrganization(subscriber, organization!);
+                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            }
         }
 
         if (subscriber && organization) {
@@ -278,7 +282,7 @@ export class UserService {
     ): boolean {
         let roles: Role[] = this.getRoles(subscriber, organization);
 
-        if (uri === Constants.USEFUL_INFORMATION) {
+        if (uri === Constants.USEFUL_INFORMATION || uri === Constants.WELCOME_PAGE) {
             return true;
         }
 
@@ -317,17 +321,25 @@ export class UserService {
         organization: Organization,
         page: string,
     ): void {
+        this.setSubscriberAndOrganization(subscriber, organization);
         if (this.checkIfAllowed(subscriber, organization, page)) {
-            this.setSubscriberAndOrganization(subscriber, organization);
-            if (page === Constants.USEFUL_INFORMATION) {
-                this.router.navigateByUrl(`useful-information`);
-                return;
+            if (page === "inventories" || page === "digital-services") {
+                this.router.navigateByUrl(
+                    `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
+                );
             }
-            this.router.navigateByUrl(
-                `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
-            );
         } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
+            this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
+    }
+
+    getSelectedPage(): string {
+        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
+
+        return subscribers === "administration" ||
+            subscribers === Constants.USEFUL_INFORMATION ||
+            subscribers === Constants.WELCOME_PAGE
+            ? subscribers
+            : page;
     }
 }

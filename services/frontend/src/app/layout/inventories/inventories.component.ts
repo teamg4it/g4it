@@ -17,6 +17,7 @@ import {
     InventoryCriteriaRest,
 } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
+import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -53,6 +54,7 @@ export class InventoriesComponent implements OnInit {
     searchFieldTouched = true;
     selectedInventory: Inventory = {} as Inventory;
     selectedOrganization!: string;
+    isAllowedInventory: boolean = false;
 
     constructor(
         private inventoryService: InventoryService,
@@ -68,6 +70,11 @@ export class InventoriesComponent implements OnInit {
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
             });
+
+        this.userService.roles$.subscribe((roles: Role[]) => {
+            this.isAllowedInventory =
+                roles.includes(Role.InventoryRead) || roles.includes(Role.InventoryWrite);
+        });
         this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
             ? new Set(
                   localStorage
@@ -95,20 +102,24 @@ export class InventoriesComponent implements OnInit {
             this.loopLoadInventories();
         }
 
-        this.router.events.subscribe((event: Event) => {
-            if (event instanceof NavigationEnd) {
-                clearInterval(this.inventoryInterval);
-                if (event.url.includes("/footprint")) {
-                    return;
-                }
-
-                this.reloadInventories().then(() => {
-                    if (this.doLoop) {
-                        this.loopLoadInventories();
+        this.router.events
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((event: Event) => {
+                if (event instanceof NavigationEnd) {
+                    clearInterval(this.inventoryInterval);
+                    if (event.url.includes("/footprint")) {
+                        return;
                     }
-                });
-            }
-        });
+
+                    if (this.isAllowedInventory) {
+                        this.reloadInventories().then(() => {
+                            if (this.doLoop) {
+                                this.loopLoadInventories();
+                            }
+                        });
+                    }
+                }
+            });
     }
 
     loopLoadInventories() {

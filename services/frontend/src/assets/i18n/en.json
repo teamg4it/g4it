@@ -125,6 +125,8 @@
         "inventories": "Inventories",
         "digital-services": "Digital services",
         "skip-to-main-content": "Skip to Main Content",
+        "overgreen-logo": "Overgreen Logo",
+        "soprasteria-logo": "Sopra Steria logo",
         "workspace": {
             "create": "Create new workspace",
             "mandatory": "Mandatory",
@@ -133,14 +135,18 @@
             "set-workspace-name": "Set a workspace name",
             "no-space-name": "No space name indicated",
             "hint-text": "Before creating your space, please check in which organization it will be located.",
+            "hint-text-workspace-name": "Choose a name for your workspace. It must be no longer than 20 characters and cannot include spaces or special characters.",
             "select-organisation": "Select an organization",
             "type-space-name": "Type the space name",
             "workspace-created": "Workspace created",
             "completed": "Completed",
-            "form-description": "This workspace lets you run simulations and retrieve data. You can invite and manage contributors, edit and delete your workspace.",
+            "form-description": "This workspace enables you to evaluate the environmental impact of your digital services and inventories. You can also invite and manage contributors to collaborate on your assessments.",
             "cancel": "Cancel Creation",
             "create-workspace": "Create Workspace",
-            "duplicate-error": "Workspace name already exists"
+            "duplicate-error": "Workspace name already exists",
+            "no-organization": "No eligible organization was found based on your domain name. Please contact your administrator to request access or verify your organization's configuration.",
+            "space-name-maxlength": "The workspace name must be no longer than 20 characters.",
+            "space-name-pattern": "Special characters @ / ; ? are not allowed."
         }
     },
     "errors": {
@@ -294,6 +300,27 @@
         "error.service-already-exists": "Cloud service already exists",
         "tooltip_average_workload": "Average workload",
         "tooltip_annual_usage": "Annual usage"
+    },
+    "welcome-page": {
+        "title": "Welcome Page",
+        "name": "Home",
+        "hello": "Hello",
+        "about-g4it": "G4IT is designed to help to implement a <strong>sustainable digital approach</strong> for your <strong>information systems</strong> and <strong>digital services.</strong>",
+        "getting-started": "Getting started",
+        "getting-started-text": "When you first log in, a demo workspace is available to you. You can switch between workspaces at any time via the menu in the top right corner of the application (the name of the current workspace is displayed). You also have the option to create a new workspace within your {{ subscriberName }} organization to conduct your own assessments and invite other users to join you.",
+        "modules-access": "Modules access",
+        "inventories": {
+            "title": "Inventories",
+            "description": "Calculate the impact of a set of equipments that make up all or part of an organization's information system, an application pool, a project, a team...",
+            "button": "Go to Service",
+            "button-disabled": "Ask for support"
+        },
+        "digital-service": {
+            "title": "Digital Services",
+            "description": "Calculate the impact of a digital service involves three levels: the end-user terminals, the volume of data passing through the network, and the hosting infrastructures.",
+            "button": "Go to Service",
+            "button-disabled": "Ask for support"
+        }
     },
     "Jan": "Jan",
     "Feb": "Feb",
@@ -699,7 +726,7 @@
         "delete": "DELETE",
         "cancel-deletion": "Cancel delete",
         "cancel-deletion-accessibility": "Cancel deletion of {{organizationName}} organization",
-        "cancel-deletion-message": "Your organization's data will be deleted on {{date}}",
+        "cancel-deletion-message": "Your workspace's data will be deleted on {{date}}",
         "delete-confirmation": "Deletion confirmation",
         "delete-message": "After 7 days, all your workspace's data will be deleted. Are you sure you want to delete this workspace ?",
         "user": {
