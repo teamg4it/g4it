@@ -23,7 +23,7 @@ export interface DigitalService {
     criteria?: string[];
     creator?: DigitalServiceUserInfo;
     members: DigitalServiceUserInfo[];
-    isAI?: boolean;
+    isAi?: boolean;
 }
 
 export interface DigitalServiceUserInfo {

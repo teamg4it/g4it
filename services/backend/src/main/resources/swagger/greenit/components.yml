@@ -82,9 +82,9 @@ components:
         format: int64
       required: false
       description: The organization id.
-    isAIPathParam:
+    isAiPathParam:
       in: query
-      name: isAI
+      name: isAi
       schema:
         type: boolean
         default: false
@@ -620,8 +620,9 @@ components:
         note:
           type: object
           $ref: "#/components/schemas/NoteRest"
-        isAI:
+        isAi:
           type: boolean
+          description: Indique si le service digital est un service d’IA
 
     DigitalServicesIndicatorsRest:
       type: object

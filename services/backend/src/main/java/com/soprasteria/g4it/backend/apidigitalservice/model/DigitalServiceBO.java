@@ -80,7 +80,7 @@ public class DigitalServiceBO {
     private NoteBO note;
 
     /**
-     * isAI
+     * isAi
      */
     private boolean isAi;
 

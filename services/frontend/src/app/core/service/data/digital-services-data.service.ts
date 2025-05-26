@@ -32,18 +32,18 @@ export class DigitalServicesDataService {
     private readonly digitalServiceSubject = new ReplaySubject<DigitalService>(1);
     digitalService$ = this.digitalServiceSubject.asObservable();
 
-    list(isAI?: boolean): Observable<DigitalService[]> {
+    list(isAi?: boolean): Observable<DigitalService[]> {
         let params = new HttpParams();
-        if (isAI !== undefined) {
-            params = params.set('isAI', isAI);
+        if (isAi !== undefined) {
+            params = params.set('isAi', isAi);
         }
         return this.http.get<DigitalService[]>(`${endpoint}`, { params });
     }
 
-    create(isAI?: boolean): Observable<DigitalService> {
+    create(isAi?: boolean): Observable<DigitalService> {
         let params = new HttpParams();
-        if (isAI !== undefined) {
-            params = params.set('isAI', isAI);
+        if (isAi !== undefined) {
+            params = params.set('isAi', isAi);
         }
         return this.http.post<DigitalService>(
             `${endpoint}`,

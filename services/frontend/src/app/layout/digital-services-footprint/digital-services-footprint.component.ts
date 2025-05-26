@@ -46,7 +46,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
         
         //TODO : this.router.url.includes("eco-mind-ai") à remplacer par this.digitalService.isAi
         this.isEcoMindAi = this.router.url.includes("eco-mind-ai");
-        //this.isEcoMindAi = this.digitalService.isAI ?? false;
+        //this.isEcoMindAi = this.digitalService.isAi ?? false;
 
         const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
         const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
@@ -106,7 +106,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
         ]);
 
         this.global.setLoading(false);
-        console.log("this.digitalService", this.digitalService.isAI);
+        console.log("this.digitalService", this.digitalService.isAi);
         
         
         
