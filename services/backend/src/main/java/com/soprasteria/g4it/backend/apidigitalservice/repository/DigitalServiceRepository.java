@@ -10,7 +10,6 @@ package com.soprasteria.g4it.backend.apidigitalservice.repository;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,15 +32,6 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
      * @return DigitalService list.
      */
     List<DigitalService> findByOrganization(final Organization organization);
-
-    /**
-     * Find by organization name and userId.
-     *
-     * @param organization the linked organization.
-     * @param userId       the userId to find.
-     * @return DigitalService list.
-     */
-    List<DigitalService> findByOrganizationAndUserId(final Organization organization, final long userId);
 
     /**
      * Find by organization and the digitalServiceUid and return the matching digitalService
