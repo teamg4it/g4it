@@ -1,16 +1,17 @@
 ---
-title: "How to visualize the impact of my Inventory ?"
-description: "This section is a user guide to understand how to visualize the data in G4IT"
+title: "How to Visualize the Impact of My Inventory"
+description: "A user guide to understanding and navigating data visualization in G4IT."
 weight: 30
 ---
+
 <!-- TOC -->
   * [Visualize the Impact of Your Inventory](#visualize-the-impact-of-your-inventory)
-    * [**Step 1:** Evaluate the impact of an inventory](#step-1-evaluate-the-impact-of-an-inventory)
-    * [**Step 2:** Select Evaluation Criteria](#step-2-select-evaluation-criteria)
-    * [**Step 3:** Visualize the Impact](#step-3-visualize-the-impact)
-      * [**Step 3.1:** Common Components](#step-31-common-components)
-      * [**Step 3.2:** Equipment View Specificities](#step-32-equipment-view-specificities)
-      * [**Step 3.3:** Application Specificities](#step-33-application-specificities)
+    * [Step 1: Evaluate the Impact of an Inventory](#step-1-evaluate-the-impact-of-an-inventory)
+    * [Step 2: Select Evaluation Criteria](#step-2-select-evaluation-criteria)
+    * [Step 3: Visualize the Impact](#step-3-visualize-the-impact)
+      * [Step 3.1: Common Components](#step-31-common-components)
+      * [Step 3.2: Equipment View Specificities](#step-32-equipment-view-specificities)
+      * [Step 3.3: Application Specificities](#step-33-application-specificities)
         * [Navigating in Application View](#navigating-in-application-view)
   * [Functional Documentation](#functional-documentation)
 <!-- TOC -->
@@ -19,70 +20,118 @@ weight: 30
 
 ## Visualize the Impact of Your Inventory
 
-### **Step 1:** Evaluate the impact of an inventory
+### Step 1: Evaluate the Impact of an Inventory
 
-- **Action:**
-    - [optional] Use the "Settings" button to choose the criteria on which you want to evaluate the impact (11 criteria are available).
-      - See Step 2 for details
-    - Click the "LAUNCH ESTIMATE" or "UPDATE ESTIMATE" button to start the evaluation.
+**Actions:**
 
-![Screenshot showing the "UPDATE ESTIMATE" and "Settings" buttons for starting the evaluation process.](../images/Evaluate_the_impact.png)
+- *(Optional)* Click the **Settings** button to select evaluation criteria (11 available).
+    - See [Step 2](#step-2-select-evaluation-criteria) for details.
+- Click **LAUNCH ESTIMATE** or **UPDATE ESTIMATE** to begin evaluation.
 
-### **Step 2:** Select Evaluation Criteria
+![Interface showing 'UPDATE ESTIMATE' and 'Settings' buttons used to start the evaluation process.](../images/Evaluate_the_impact.png)
 
-- **Action:**
-    - From the list of criteria, select the one you want to evaluate for the impact of your inventory.
-    - If you reset to default, it will select the criteria chosen by your organization's administrator.
+---
 
-![Screenshot showing the criteria selection interface with a list of evaluation criteria.](../images/Choose_criteria.png)
+### Step 2: Select Evaluation Criteria
 
-### **Step 3:** Visualize the Impact
+**Actions:**
 
-After calculating the impact, 2 buttons appear giving you access to 2 separate pages:
-1. Equipment View appears if at least one item has been calculated in the inventory. The page will show the impact of all equipment in your inventory. It considers all physical equipment and cloud services owned by your organization. Virtual equipment whose physical servers are owned by the organization are not represented in this view so that their impact is not counted twice.
-2. Application appears if at least one application has been calculated. The page (in a Beta Version) will focus only on application infrastructure, i.e., all virtual equipment that allows an application to work (dedicated server, virtual server, cloud services, a piece of hypervisor, a router, etc.). 
+- Select the criteria you wish to apply to your impact evaluation.
+- Use the **Reset to Default** option to revert to your organization’s predefined settings.
 
-![Screenshot showing the 2 buttons Equipment and Application](../images/Equipment_and_Application_button.png)
+![Interface for selecting evaluation criteria, including checkboxes and reset option.](../images/Choose_criteria.png)
 
-#### **Step 3.1:** Common Components
-These 2 views use common components:
-1. **Notes button:** allows you to find the calculation assumptions or any other comments useful for interpreting the graphs.
-2. **Export button:** raw data can be downloaded at any time using this button.
-3. **The filters:** are contextualized according to the view. They can be used to restrict the view to a defined perimeter.
-4. **The List of Evaluated Criteria:** Navigate the tab to visualize the impact of your inventory on each criterion.
+---
 
-![Screenshot showing Common component on information system view](../images/Common_components.png)
+### Step 3: Visualize the Impact
 
-#### **Step 3.2:** Equipment View Specificities
-This page is divided into three parts, with two buttons:
-1. On the left, **Main Graph:** Displays the impact distribution selected in the top right of the graph. When you reach the page, you can see the impact of your inventory, broken down according to the stages in the life cycle of the equipment it contains.
-2. On the top right, **Guidance:** gives some explanation of the scale used on the graph on the left.
-3. On the bottom right, **Key Indicators:** displays the main characteristics of your inventory that influence the impact observed in the left graph.
-4. **Action:** change the distribution view in order to make a first analysis of your inventory impact.
-5. **Action:** In some cases, G4IT may not have been able to evaluate the impact on all criteria. This button allows you to see inconsistencies in the graph. You can learn more about this in the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md) documentation.
+After completing an evaluation, two visualization options may become available:
 
-![Screenshot showing Equipment View Specificities](../images/Equipment_View_Specificities.png)
+1. **Equipment View**
+    - Displays impacts of physical and cloud-based equipment.
+    - Excludes virtual equipment hosted on owned physical servers (to avoid duplication).
 
-#### **Step 3.3:** Application Specificities
-This page is divided into three parts with two functions:
-1. **Histogram:** displays the impact by criterion in descending order from left to right.
-2. **Guidance:** gives some explanation of the scale used on the left-hand histogram.
-3. On the bottom right, **Key Indicators:** displays the main characteristics of your inventory that influence the impact observed in the left graph.
-4. **Action:** click on the graph to discover where the impact comes from (domain, subdomain, application, and at the end for each virtual equipment).
-5. **Action:** In some cases, G4IT may not have been able to evaluate the impact on all criteria. This button allows you to see inconsistencies in the graph. You can learn more about this in the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md) documentation.
+2. **Application View (Beta)**
+    - Shows infrastructure that supports applications (e.g., virtual servers, hypervisors, routers).
 
-![Screenshot showing Application View Specificities](../images/Application_View_Specificities.png)
+![Interface displaying buttons for Equipment and Application views.](../images/Equipment_and_Application_button.png)
+
+---
+
+#### Step 3.1: Common Components
+
+Both views share the following components:
+
+- **Notes button**: Access calculation assumptions and contextual notes.
+- **Export button**: Download raw data.
+- **Filters**: Context-specific tools to refine results.
+- **List of Evaluated Criteria**: Tabbed navigation by impact criterion.
+
+![Common interface elements shared across both views.](../images/Common_components.png)
+
+---
+
+#### Step 3.2: Equipment View Specificities
+
+This view is divided into three primary areas:
+
+1. **Main Graph (Left)**
+    - Shows impact distribution across lifecycle stages (manufacturing, use, etc.).
+
+2. **Guidance Panel (Top-Right)**
+    - Explains scale and visual indicators.
+
+3. **Key Indicators (Bottom-Right)**
+    - Highlights key attributes of your inventory.
+
+**Additional Actions:**
+
+- Switch distribution view for alternative analysis.
+- Check **Data Consistency** to identify missing or incomplete calculations.  
+  Refer to [Data Consistency Documentation](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md).
+
+![Screenshot of the Equipment View including graphs and indicators.](../images/Equipment_View_Specificities.png)
+
+---
+
+#### Step 3.3: Application Specificities
+
+This view focuses on virtual infrastructure and their impacts.
+
+1. **Histogram (Left)**
+    - Displays criterion-based impact from highest to lowest.
+
+2. **Guidance Panel (Top-Right)**
+    - Details graph interpretation.
+
+3. **Key Indicators (Bottom-Right)**
+    - Displays key application infrastructure stats.
+
+**Additional Actions:**
+
+- Click the histogram to drill down by domain, subdomain, application, and equipment.
+- Check **Data Consistency** as needed.  
+  See [Data Consistency Documentation](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md).
+
+![Application View with criterion-based impact histogram.](../images/Application_View_Specificities.png)
+
+---
 
 ##### Navigating in Application View
-2 new graphs appear along your navigation:
-1. **Lifecycle graph**: displays the impact of the physical equipment that enables applications to provide their services, according to the phase in their lifecycle (manufacture, distribution, use, or end of life).
-2. **Environment graph**: displays the impact calculated according to the application deployment environment (as declared in the input data).
 
-![Screenshot showing specificities link to the navigation in Application View](../images/Navigating_in_Application_View.png)
+During drill-down exploration, two additional graphs are displayed:
+
+1. **Lifecycle Graph**
+    - Shows lifecycle stage impacts of underlying physical infrastructure.
+
+2. **Environment Graph**
+    - Displays impact based on the declared application deployment environment.
+
+![Lifecycle and environment graphs in Application View.](../images/Navigating_in_Application_View.png)
 
 ---
 
 ## Functional Documentation
 
-For detailed information about this module, refer to the
-[Functional Documentation for inventory](../../../../2-functional-documentation/use_cases/uc_digital_services/_index.md).
+For deeper insights and technical details, consult the  
+[Functional Documentation for Inventory Module](../../../../2-functional-documentation/use_cases/uc_digital_services/_index.md).
