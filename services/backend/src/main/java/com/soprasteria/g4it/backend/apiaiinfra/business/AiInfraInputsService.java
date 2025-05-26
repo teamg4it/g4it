@@ -78,11 +78,11 @@ public class AiInfraInputsService {
         inPhysicalEquipmentToCreate.setModel("Model1");
         inPhysicalEquipmentToCreate.setManufacturer("Manufacturer1");
         inPhysicalEquipmentToCreate.setDatacenterName(inDatacenterToCreate.getName());
-        inPhysicalEquipmentToCreate.setCpuCoreNumber(aiInfraBO.getNbCpuCores().doubleValue());
+        inPhysicalEquipmentToCreate.setCpuCoreNumber(Optional.ofNullable(aiInfraBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
         inPhysicalEquipmentToCreate.setLocation(inDatacenterToCreate.getLocation());
         inPhysicalEquipmentToCreate.setCpuType("CpuType1");
         inPhysicalEquipmentToCreate.setDatePurchase(now.toLocalDate());
-        inPhysicalEquipmentToCreate.setSizeMemoryGb(aiInfraBO.getRamSize().doubleValue());
+        inPhysicalEquipmentToCreate.setSizeMemoryGb(Optional.ofNullable(aiInfraBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
         inPhysicalEquipmentToCreate.setCreationDate(now);
         inPhysicalEquipmentToCreate.setQuantity(1.0);
         inPhysicalEquipmentToCreate.setLastUpdateDate(now);
@@ -95,8 +95,8 @@ public class AiInfraInputsService {
         inVirtualEquipmentToCreate.setPhysicalEquipmentName(inPhysicalEquipmentToCreate.getName());
         inVirtualEquipmentToCreate.setInfrastructureType(AiInfraRest.InfrastructureTypeEnum.SERVER_DC.getValue());
         inVirtualEquipmentToCreate.setLocation(inPhysicalEquipmentToCreate.getLocation());
-        inVirtualEquipmentToCreate.setSizeMemoryGb(aiInfraBO.getRamSize().doubleValue());
-        inVirtualEquipmentToCreate.setVcpuCoreNumber(aiInfraBO.getNbCpuCores().doubleValue());
+        inVirtualEquipmentToCreate.setSizeMemoryGb(Optional.ofNullable(aiInfraBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
+        inVirtualEquipmentToCreate.setVcpuCoreNumber(Optional.ofNullable(aiInfraBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentToCreate.setCreationDate(now);
         inVirtualEquipmentToCreate.setQuantity(1.0);
         inVirtualEquipmentToCreate.setLastUpdateDate(now);
