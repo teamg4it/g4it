@@ -83,13 +83,6 @@ export class DigitalServicesComponent {
         apiResult.sort((x, y) => x.name.localeCompare(y.name));
         this.allDigitalServices.push(...apiResult);
         this.updatePaginatedItems();
-        // apiResult.forEach((digitalService) => {
-        //     if (digitalService.creator?.id === userId) {
-        //         this.myDigitalServices.push(digitalService);
-        //     } else {
-        //         this.sharedDigitalServices.push(digitalService);
-        //     }
-        // });
     }
 
     async createNewDigitalService() {
@@ -125,19 +118,6 @@ export class DigitalServicesComponent {
         this.global.setLoading(true);
         this.digitalServicesData
             .delete(uid)
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                finalize(() => {
-                    this.global.setLoading(false);
-                }),
-            )
-            .subscribe(() => this.retrieveDigitalServices());
-    }
-
-    itemUnlink(uid: string) {
-        this.global.setLoading(true);
-        this.digitalServicesData
-            .unlink(uid)
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
                 finalize(() => {

@@ -15,14 +15,6 @@
                 [ariaLevel]="3"
             />
         </span>
-        <!-- <p-button
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
-            styleClass="black-button-small font-bold mx-1"
-            icon="pi pi-link"
-            (click)="copyUrl()"
-            [label]="'digital-services.copyLink' | translate"
-            [ariaLabel]="'digital-services.copyLink' | translate"
-        /> -->
 
         <p-button
             *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && isLinkCopied"

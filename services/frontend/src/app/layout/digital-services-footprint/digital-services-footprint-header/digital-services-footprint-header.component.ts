@@ -19,7 +19,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
-import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
@@ -35,7 +34,6 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { delay } from "src/app/core/utils/time";
 
 @Component({
     selector: "app-digital-services-footprint-header",
@@ -49,8 +47,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     sidebarVisible: boolean = false;
-    sidebarDsVisible = false;
-    isLinkCopied = false;
     selectedSubscriberName = "";
     selectedOrganizationId!: number;
     selectedOrganizationName = "";
@@ -88,7 +84,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         private translate: TranslateService,
         public userService: UserService,
         private messageService: MessageService,
-        private clipboardService: ClipboardService,
         private digitalServiceBusinessService: DigitalServiceBusinessService,
         private inVirtualEquipmentsService: InVirtualEquipmentsService,
     ) {}
@@ -147,33 +142,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
                 this.digitalServicesData
                     .delete(this.digitalService.uid)
-                    .pipe(
-                        takeUntilDestroyed(this.destroyRef),
-                        finalize(() => {
-                            this.global.setLoading(false);
-                        }),
-                    )
-                    .subscribe(() =>
-                        this.router.navigateByUrl(this.changePageToDigitalServices()),
-                    );
-            },
-        });
-    }
-
-    confirmUnlink(event: Event) {
-        this.confirmationService.confirm({
-            closeOnEscape: true,
-            target: event.target as EventTarget,
-            acceptLabel: this.translate.instant("common.yes"),
-            rejectLabel: this.translate.instant("common.no"),
-            message: `${this.translate.instant(
-                "digital-services.popup.delete-question-shared",
-            )}`,
-            icon: "pi pi-exclamation-triangle",
-            accept: () => {
-                this.global.setLoading(true);
-                this.digitalServicesData
-                    .unlink(this.digitalService.uid)
                     .pipe(
                         takeUntilDestroyed(this.destroyRef),
                         finalize(() => {
@@ -263,17 +231,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 sticky: false,
             });
         });
-    }
-
-    async copyUrl() {
-        this.isLinkCopied = true;
-        const url = await firstValueFrom(
-            this.digitalServicesData.copyUrl(this.digitalService.uid),
-        );
-        this.clipboardService.copy(url);
-
-        await delay(10000);
-        this.isLinkCopied = false;
     }
 
     async exportData() {
