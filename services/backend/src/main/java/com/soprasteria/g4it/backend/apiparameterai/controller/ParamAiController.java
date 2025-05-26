@@ -35,8 +35,7 @@ public class ParamAiController implements AiParameterApiDelegate {
     public ResponseEntity<AiParameterRest> createAiParameter(String subscriber, Long organization, String digitalServiceUid, AiParameterRest aiParameterRest) {
 
         AiParameterRest created = aiParameterService.createAiParameter(digitalServiceUid,aiParameterRest);
-
-        return ResponseEntity.ok(aiParameterMapper.toDto(created));
+        return new ResponseEntity<>(aiParameterMapper.toDto(created), HttpStatus.CREATED);
     }
 }
 
