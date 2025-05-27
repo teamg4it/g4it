@@ -47,6 +47,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
         // Récupération du paramètre isAi depuis l'URL
         this.route.queryParams.subscribe(params => {
             this.isEcoMindAi = params['isAi'] === 'true';
+            this.updateTabItems();
         });
 
         const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
@@ -109,7 +110,6 @@ export class DigitalServicesFootprintComponent implements OnInit {
         
         
         
-        this.updateTabItems();
         this.digitalBusinessService.initCountryMap();
 
         
