@@ -355,7 +355,7 @@
         "numberOfUsers": "Number of user per year",
         "averageRequest": "Average number of requests per year",
         "averageToken": "Average number of tokens genereted per request",
-        "totalTokenGenerate":"Total number of genereted tokens"
+        "totalTokenGenerate": "Total number of genereted tokens"
     },
     "welcome-page": {
         "title": "Welcome Page",

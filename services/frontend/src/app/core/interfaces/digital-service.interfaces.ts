@@ -32,6 +32,19 @@ export interface DigitalServiceUserInfo {
     lastName: string;
 }
 
+export interface DigitalServiceParameterIa {
+    modelDetails: string;
+    parameters: string;
+    framework: string;
+    quantization: string;
+    inference: boolean;
+    finetuning: boolean;
+    numberOfUsersPerYear: number;
+    averageRequestsPerUser: number;
+    averageTokensPerRequest: number;
+    totalTokenGenerate: number;
+}
+
 export interface DigitalServiceServerConfig {
     id?: number;
     sumOfVmQuantity?: number;
@@ -68,7 +81,7 @@ export interface DigitalServiceCloudServiceConfig {
     idFront?: number;
 }
 
-export interface DigitalServicesAiInfrastructureComponentfig {
+export interface DigitalServicesAiInfrastructure {
     id: number;
     digitalServiceUid: string;
     creationDate?: number;

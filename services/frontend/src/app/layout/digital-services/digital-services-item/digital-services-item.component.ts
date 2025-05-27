@@ -25,7 +25,7 @@ export class DigitalServicesItemComponent {
     isLinkCopied = false;
     sidebarVisible = false;
     isShared = false;
-    firstFootprintTab = 'terminals';
+    firstFootprintTab = "terminals";
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -36,7 +36,7 @@ export class DigitalServicesItemComponent {
         public userService: UserService,
         private clipboardService: ClipboardService,
     ) {
-        this.firstFootprintTab = this.isAi ? 'infrastructure' : 'terminals';
+        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
     }
 
     async ngOnInit(): Promise<void> {
@@ -44,7 +44,7 @@ export class DigitalServicesItemComponent {
         if (this.digitalService.creator?.id !== userId) {
             this.isShared = true;
         }
-        this.firstFootprintTab = this.isAi ? 'infrastructure' : 'terminals';
+        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
     }
 
     async copyUrl() {
@@ -62,7 +62,6 @@ export class DigitalServicesItemComponent {
     goToDigitalServiceFootprint(uid: string) {
         this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
             relativeTo: this.route,
-            queryParams: { isAi: this.isAi }
         });
     }
 

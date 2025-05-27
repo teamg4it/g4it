@@ -38,8 +38,8 @@ import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { delay } from "src/app/core/utils/time";
-import { DigitalServicesAiInfrastructureComponent } from '../digital-services-ai-infrastructure/digital-services-ai-infrastructure.component';
-import { DigitalServicesAiParametersComponent } from '../digital-services-ai-parameters/digital-services-ai-parameters.component';
+import { DigitalServicesAiInfrastructureComponent } from "../digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
+import { DigitalServicesAiParametersComponent } from "../digital-services-ai-parameters/digital-services-ai-parameters.component";
 
 @Component({
     selector: "app-digital-services-footprint-header",
@@ -63,10 +63,17 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
+    @Input() set isAi(value: boolean) {
+        this.isEcoMindAi = value;
+    }
     isEcoMindAi = false;
 
-    @ViewChild(DigitalServicesAiParametersComponent) aiParametersComponent: DigitalServicesAiParametersComponent | undefined;
-    @ViewChild(DigitalServicesAiInfrastructureComponent) aiInfrastructureComponent: DigitalServicesAiInfrastructureComponent | undefined;
+    @ViewChild(DigitalServicesAiParametersComponent) aiParametersComponent:
+        | DigitalServicesAiParametersComponent
+        | undefined;
+    @ViewChild(DigitalServicesAiInfrastructureComponent) aiInfrastructureComponent:
+        | DigitalServicesAiInfrastructureComponent
+        | undefined;
 
     enableCalcul = computed(() => {
         const digitalService = this.digitalServiceStore.digitalService();
@@ -100,7 +107,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         private clipboardService: ClipboardService,
         private digitalServiceBusinessService: DigitalServiceBusinessService,
         private inVirtualEquipmentsService: InVirtualEquipmentsService,
-        private aiFormsStore: AIFormsStore
+        private aiFormsStore: AIFormsStore,
     ) {}
 
     ngOnInit() {
@@ -134,8 +141,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.organization.criteriaDs = organization.criteriaDs!;
             this.organization.criteriaIs = organization.criteriaIs!;
         });
-
-        this.isEcoMindAi = this.router.url.includes('eco-mind-ai');
     }
 
     onNameUpdate(digitalServiceName: string) {
@@ -249,12 +254,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let [_, _1, subscriber, _2, organization, serviceType] = this.router.url.split("/");
+        let [_, _1, subscriber, _2, organization, serviceType] =
+            this.router.url.split("/");
         // serviceType sera 'digital-services' ou 'eco-mind-ai'
-        if (serviceType === 'eco-mind-ai') {
+        if (serviceType === "eco-mind-ai") {
             return `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai`;
         } else {
-        return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
+            return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
         }
     }
 
@@ -348,26 +354,32 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         const infrastructureData = this.aiFormsStore.getInfrastructureFormData();
 
         if (parametersData) {
-            console.log('Paramètres AI - Données envoyées au backend :', JSON.stringify(parametersData, null, 2));
+            console.log(
+                "Paramètres AI - Données envoyées au backend :",
+                JSON.stringify(parametersData, null, 2),
+            );
         }
 
         if (infrastructureData) {
-            console.log('Infrastructure AI - Données envoyées au backend :', JSON.stringify(infrastructureData, null, 2));
+            console.log(
+                "Infrastructure AI - Données envoyées au backend :",
+                JSON.stringify(infrastructureData, null, 2),
+            );
         }
 
         if (!parametersData && !infrastructureData) {
             this.messageService.add({
-                severity: 'warn',
-                summary: 'Attention',
-                detail: 'Aucune donnée à sauvegarder.'
+                severity: "warn",
+                summary: "Attention",
+                detail: "Aucune donnée à sauvegarder.",
             });
             return;
         }
 
         this.messageService.add({
-            severity: 'success',
-            summary: 'Succès',
-            detail: 'Données sauvegardées avec succès.'
+            severity: "success",
+            summary: "Succès",
+            detail: "Données sauvegardées avec succès.",
         });
     }
 }

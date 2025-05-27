@@ -245,6 +245,7 @@ public class DigitalServiceService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .build());
+        digitalServiceBO.setIsAi(digitalServiceEntity.isAi());
 
         List<DigitalServiceShared> sharedDigitalServices = digitalServiceSharedRepository.findByDigitalServiceUid(digitalServiceUid);
 

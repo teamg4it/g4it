@@ -1,31 +1,31 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { DigitalServiceParameterIa } from '../../interfaces/digital-service/parameter.interfaces';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { DigitalServiceParameterIa } from "../../interfaces/digital-service.interfaces";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class ParameterService {
-  private baseUrl = '/api/parameter';
+    private baseUrl = "/api/parameter";
 
-  constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {}
 
-  getModels(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/models`);
-  }
+    getModels(): Observable<string[]> {
+        return this.http.get<string[]>(`${this.baseUrl}/models`);
+    }
 
-  getParameters(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/parameters`);
-  }
+    getParameters(): Observable<string[]> {
+        return this.http.get<string[]>(`${this.baseUrl}/parameters`);
+    }
 
-  getFrameworks(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/frameworks`);
-  }
+    getFrameworks(): Observable<string[]> {
+        return this.http.get<string[]>(`${this.baseUrl}/frameworks`);
+    }
 
-  getQuantizations(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/quantizations`);
-  }
+    getQuantizations(): Observable<string[]> {
+        return this.http.get<string[]>(`${this.baseUrl}/quantizations`);
+    }
 
-  submitForm(data: DigitalServiceParameterIa): Observable<any> {
-    return this.http.post(`${this.baseUrl}/submit`, data);
-  }
+    submitForm(data: DigitalServiceParameterIa): Observable<any> {
+        return this.http.post(`${this.baseUrl}/submit`, data);
+    }
 }

@@ -68,7 +68,7 @@ export class DigitalServicesComponent {
                 this.retrieveDigitalServices();
             }
         });
-        
+
         this.router.events
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((event) => {
@@ -86,9 +86,11 @@ export class DigitalServicesComponent {
         this.myDigitalServices = [];
         this.sharedDigitalServices = [];
 
-        const apiResult = await lastValueFrom(this.digitalServicesData.list(this.isEcoMindAi));
+        const apiResult = await lastValueFrom(
+            this.digitalServicesData.list(this.isEcoMindAi),
+        );
         apiResult.sort((x, y) => x.name.localeCompare(y.name));
-        
+
         apiResult.forEach((digitalService) => {
             if (digitalService.creator?.id === userId) {
                 this.myDigitalServices.push(digitalService);
@@ -99,7 +101,9 @@ export class DigitalServicesComponent {
     }
 
     async createNewDigitalService() {
-        const { uid } = await lastValueFrom(this.digitalServicesData.create(this.isEcoMindAi));
+        const { uid } = await lastValueFrom(
+            this.digitalServicesData.create(this.isEcoMindAi),
+        );
         this.goToDigitalServiceFootprint(uid);
     }
 
@@ -107,13 +111,10 @@ export class DigitalServicesComponent {
         if (this.isEcoMindAi) {
             this.router.navigate([`${uid}/footprint/infrastructure`], {
                 relativeTo: this.route,
-                queryParams: { isAi: this.isEcoMindAi }
-             
             });
         } else {
             this.router.navigate([`${uid}/footprint/terminals`], {
                 relativeTo: this.route,
-               
             });
         }
     }

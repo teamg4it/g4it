@@ -9,6 +9,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[html]": {
-        "editor.defaultFormatter": "lonefy.vscode-JS-CSS-HTML-formatter"
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }

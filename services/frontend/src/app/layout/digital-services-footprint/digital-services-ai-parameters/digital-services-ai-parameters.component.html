@@ -2,100 +2,190 @@
     <form [formGroup]="terminalsForm" (ngSubmit)="submitFormData()">
         <div class="form-section">
             <label class="section-label">
-      <h3>{{ "digital-services-ai-parameter.devices" | translate }}</h3>
-    </label>
+                <h3>{{ "digital-services-ai-parameter.devices" | translate }}</h3>
+            </label>
             <div class="form-row">
-
                 <!-- Model -->
                 <div class="label-input-div-form">
-                    <label for="modelInput">{{ "digital-services-ai-parameter.model" | translate }}</label>
-                    <p-dropdown [options]="modelOptions" formControlName="model" placeholder="Select model"></p-dropdown>
-                    <p class="error-text" *ngIf="terminalsForm.get('model')?.hasError('required')">
-                        {{ "digital-services-ai-parameter.model" | translate }} {{ "common.mandatory" | translate }}
+                    <label for="modelInput">{{
+                        "digital-services-ai-parameter.model" | translate
+                    }}</label>
+                    <p-dropdown
+                        [options]="modelOptions"
+                        formControlName="model"
+                        placeholder="Select model"
+                    ></p-dropdown>
+                    <p
+                        class="error-text"
+                        *ngIf="terminalsForm.get('model')?.hasError('required')"
+                    >
+                        {{ "digital-services-ai-parameter.model" | translate }}
+                        {{ "common.mandatory" | translate }}
                     </p>
                 </div>
 
                 <!-- Parameter -->
                 <div class="label-input-div-form">
-                    <label for="parameterInput">{{ "digital-services-ai-parameter.parameter" | translate }}</label>
-                    <p-dropdown [options]="parameterOptions" formControlName="parameter" placeholder="Select parameter"></p-dropdown>
-                    <p class="error-text" *ngIf="terminalsForm.get('parameter')?.hasError('required')">
-                        {{ "digital-services-ai-parameter.parameter" | translate }} {{ "common.mandatory" | translate }}
+                    <label for="parameterInput">{{
+                        "digital-services-ai-parameter.parameter" | translate
+                    }}</label>
+                    <p-dropdown
+                        [options]="parameterOptions"
+                        formControlName="parameter"
+                        placeholder="Select parameter"
+                    ></p-dropdown>
+                    <p
+                        class="error-text"
+                        *ngIf="terminalsForm.get('parameter')?.hasError('required')"
+                    >
+                        {{ "digital-services-ai-parameter.parameter" | translate }}
+                        {{ "common.mandatory" | translate }}
                     </p>
                 </div>
 
                 <!-- Framework -->
                 <div class="label-input-div-form">
-                    <label for="frameworkInput">{{ "digital-services-ai-parameter.framework" | translate }}</label>
-                    <p-dropdown [options]="frameworkOptions" formControlName="framework" placeholder="Select framework"></p-dropdown>
-                    <p class="error-text" *ngIf="terminalsForm.get('framework')?.hasError('required')">
-                        {{ "digital-services-ai-parameter.framework" | translate }} {{ "common.mandatory" | translate }}
+                    <label for="frameworkInput">{{
+                        "digital-services-ai-parameter.framework" | translate
+                    }}</label>
+                    <p-dropdown
+                        [options]="frameworkOptions"
+                        formControlName="framework"
+                        placeholder="Select framework"
+                    ></p-dropdown>
+                    <p
+                        class="error-text"
+                        *ngIf="terminalsForm.get('framework')?.hasError('required')"
+                    >
+                        {{ "digital-services-ai-parameter.framework" | translate }}
+                        {{ "common.mandatory" | translate }}
                     </p>
                 </div>
 
                 <!-- Quantization -->
                 <div class="label-input-div-form">
-                    <label for="quantizationInput">{{ "digital-services-ai-parameter.quantization" | translate }}</label>
-                    <p-dropdown [options]="quantizationOptions" formControlName="quantization" placeholder="Select quantization"></p-dropdown>
-                    <p class="error-text" *ngIf="terminalsForm.get('quantization')?.hasError('required')">
-                        {{ "digital-services-ai-parameter.quantization" | translate }} {{ "common.mandatory" | translate }}
+                    <label for="quantizationInput">{{
+                        "digital-services-ai-parameter.quantization" | translate
+                    }}</label>
+                    <p-dropdown
+                        [options]="quantizationOptions"
+                        formControlName="quantization"
+                        placeholder="Select quantization"
+                    ></p-dropdown>
+                    <p
+                        class="error-text"
+                        *ngIf="terminalsForm.get('quantization')?.hasError('required')"
+                    >
+                        {{ "digital-services-ai-parameter.quantization" | translate }}
+                        {{ "common.mandatory" | translate }}
                     </p>
                 </div>
-
             </div>
         </div>
 
         <div class="form-section">
-            <label class="section-label"><h3>{{ "digital-services-ai-parameter.stages" | translate }}</h3></label>
+            <label class="section-label"
+                ><h3>{{ "digital-services-ai-parameter.stages" | translate }}</h3></label
+            >
             <div class="form-row">
                 <!-- Inference -->
                 <div class="checkbox-item">
-                    <p-checkbox inputId="inference" binary="true" formControlName="inference" [label]="'digital-services-ai-parameter.inference' | translate">
+                    <p-checkbox
+                        inputId="inference"
+                        binary="true"
+                        formControlName="inference"
+                        [label]="'digital-services-ai-parameter.inference' | translate"
+                    >
                     </p-checkbox>
                 </div>
 
                 <!-- Finetuning -->
                 <div class="checkbox-item">
-                    <p-checkbox inputId="finetuning" binary="true" formControlName="finetuning" [label]="'digital-services-ai-parameter.fintuning' | translate">
+                    <p-checkbox
+                        inputId="finetuning"
+                        binary="true"
+                        formControlName="finetuning"
+                        [label]="'digital-services-ai-parameter.fintuning' | translate"
+                    >
                     </p-checkbox>
                 </div>
             </div>
         </div>
 
         <div class="form-section">
-            <label class="section-label"><h3>{{ "digital-services-ai-parameter.inference" | translate }}</h3></label>
+            <label class="section-label"
+                ><h3>
+                    {{ "digital-services-ai-parameter.inference" | translate }}
+                </h3></label
+            >
             <div class="form-row">
                 <!-- number of users -->
                 <div class="label-input-div-form">
-                    <label for="numberOfUsers">{{ "digital-services-ai-parameter.numberOfUsers" | translate }}</label>
-                    <p-inputNumber formControlName="numberOfUsers" [min]="0" mode="decimal"></p-inputNumber>
-                    <p class="error-text" *ngIf="terminalsForm.get('numberOfUsers')?.hasError('required')">
-                        {{ "digital-services-ai-parameter.numberOfUsers" | translate }} {{ "common.mandatory" | translate }}
+                    <label for="numberOfUsers">{{
+                        "digital-services-ai-parameter.numberOfUsers" | translate
+                    }}</label>
+                    <p-inputNumber
+                        formControlName="numberOfUsers"
+                        [min]="0"
+                        mode="decimal"
+                    ></p-inputNumber>
+                    <p
+                        class="error-text"
+                        *ngIf="terminalsForm.get('numberOfUsers')?.hasError('required')"
+                    >
+                        {{ "digital-services-ai-parameter.numberOfUsers" | translate }}
+                        {{ "common.mandatory" | translate }}
                     </p>
                 </div>
 
                 <!-- average request -->
                 <div class="label-input-div-form">
-                    <label for="averageRequest">{{ "digital-services-ai-parameter.averageRequest" | translate }}</label>
-                    <p-inputNumber formControlName="averageRequest" [min]="0" mode="decimal"></p-inputNumber>
-                    <p class="error-text" *ngIf="terminalsForm.get('averageRequest')?.hasError('required')">
-                        {{ "digital-services-ai-parameter.averageRequest" | translate }} {{ "common.mandatory" | translate }}
+                    <label for="averageRequest">{{
+                        "digital-services-ai-parameter.averageRequest" | translate
+                    }}</label>
+                    <p-inputNumber
+                        formControlName="averageRequest"
+                        [min]="0"
+                        mode="decimal"
+                    ></p-inputNumber>
+                    <p
+                        class="error-text"
+                        *ngIf="terminalsForm.get('averageRequest')?.hasError('required')"
+                    >
+                        {{ "digital-services-ai-parameter.averageRequest" | translate }}
+                        {{ "common.mandatory" | translate }}
                     </p>
                 </div>
 
                 <!-- average token -->
                 <div class="label-input-div-form">
-                    <label for="averageToken">{{ "digital-services-ai-parameter.averageToken" | translate }}</label>
-                    <p-inputNumber formControlName="averageToken" [min]="0" mode="decimal"></p-inputNumber>
-                    <p class="error-text" *ngIf="terminalsForm.get('averageToken')?.hasError('required')">
-                        {{ "digital-services-ai-parameter.averageToken" | translate }} {{ "common.mandatory" | translate }}
+                    <label for="averageToken">{{
+                        "digital-services-ai-parameter.averageToken" | translate
+                    }}</label>
+                    <p-inputNumber
+                        formControlName="averageToken"
+                        [min]="0"
+                        mode="decimal"
+                    ></p-inputNumber>
+                    <p
+                        class="error-text"
+                        *ngIf="terminalsForm.get('averageToken')?.hasError('required')"
+                    >
+                        {{ "digital-services-ai-parameter.averageToken" | translate }}
+                        {{ "common.mandatory" | translate }}
                     </p>
                 </div>
 
                 <!-- total token generated -->
                 <div class="label-input-div-form">
-                    <label for="totalTokenGenerate">{{ "digital-services-ai-parameter.totalTokenGenerate" | translate }}</label>
-                    <p-inputNumber formControlName="totalTokenGenerate" [disabled]="true" mode="decimal"></p-inputNumber>
+                    <label for="totalTokenGenerate">{{
+                        "digital-services-ai-parameter.totalTokenGenerate" | translate
+                    }}</label>
+                    <p-inputNumber
+                        formControlName="totalTokenGenerate"
+                        [disabled]="true"
+                        mode="decimal"
+                    ></p-inputNumber>
                 </div>
             </div>
         </div>
