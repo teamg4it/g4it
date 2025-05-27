@@ -31,7 +31,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
 
     digitalService: DigitalService = {} as DigitalService;
     inPhysicalEquipments: InPhysicalEquipmentRest[] = [];
-    isEcoMindAi : Boolean = false;
+    isEcoMindAi: boolean = false;
     tabItems: MenuItem[] | undefined;
 
     constructor(
@@ -43,12 +43,6 @@ export class DigitalServicesFootprintComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         this.global.setLoading(true);
-        
-        // Récupération du paramètre isAi depuis l'URL
-        this.route.queryParams.subscribe(params => {
-            this.isEcoMindAi = params['isAi'] === 'true';
-            this.updateTabItems();
-        });
 
         const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
         const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
@@ -56,6 +50,10 @@ export class DigitalServicesFootprintComponent implements OnInit {
         // Therefore we can continue without those verifications.
         this.digitalService = digitalService;
 
+        // Récupération du paramètre isAi depuis l'URL
+
+        this.isEcoMindAi = this.digitalService.isAi ?? false;
+        this.updateTabItems();
 
         this.digitalServiceStore.setDigitalService(this.digitalService);
         await this.digitalServiceStore.initInPhysicalEquipments(uid);
@@ -107,12 +105,8 @@ export class DigitalServicesFootprintComponent implements OnInit {
         ]);
 
         this.global.setLoading(false);
-        
-        
-        
-        this.digitalBusinessService.initCountryMap();
 
-        
+        this.digitalBusinessService.initCountryMap();
     }
 
     updateTabItems() {
