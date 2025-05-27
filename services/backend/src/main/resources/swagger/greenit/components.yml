@@ -1116,3 +1116,36 @@ components:
           type: string
         quantization:
           type: string
+
+    AiInfraRest:
+      description: Version
+      type: object
+      required: [ infrastructureType, location ]
+      properties:
+        infrastructureType:
+          type: string
+          enum: [ SERVER_DC, LAPTOP, DESKTOP ]
+        nbCpuCores:
+          type: integer
+          format: int64
+        nbGpu:
+          type: integer
+          format: int64
+        gpuMemory:
+          type: integer
+          format: int64
+        ramSize:
+          type: integer
+          format: int64
+        location:
+          type: string
+          maxLength: 50
+          pattern: "^[A-Za-z ]*$"
+        pue:
+          type: number
+          format: double
+          minimum: 0
+        complementaryPue:
+          type: number
+          format: double
+          minimum: 0
