@@ -1,5 +1,5 @@
 ---
-title: "Explore my inventories data with PowerBI"
+title: "How to Explore my inventories data with PowerBI"
 description: "This section is a user guide to start Inventories data exploration with PowerBI"
 weight: 50
 ---
