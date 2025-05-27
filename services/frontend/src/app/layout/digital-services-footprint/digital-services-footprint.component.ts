@@ -158,6 +158,12 @@ export class DigitalServicesFootprintComponent implements OnInit {
                     id: "cloudServices",
                 },
                 {
+                    label: "Filler",
+                    separator: true,
+                    style: { flex: 1 },
+                    id: "separator",
+                },
+                {
                     label: this.translate.instant("digital-services.visualize"),
                     routerLink: "dashboard",
                     visible: this.digitalService.lastCalculationDate !== undefined,
