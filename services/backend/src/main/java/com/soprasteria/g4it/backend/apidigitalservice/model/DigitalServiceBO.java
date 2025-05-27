@@ -82,6 +82,6 @@ public class DigitalServiceBO {
     /**
      * isAi
      */
-    private boolean isAi;
+    private Boolean isAi;
 
 }
