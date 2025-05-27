@@ -2,26 +2,45 @@
     <form [formGroup]="infrastructureForm" (ngSubmit)="submitFormData()">
         <div class="label-input-div-full-server">
             <label for="typeInput">Type</label>
-            <p-dropdown appendTo="body" inputId="typeInput" formControlName="type" [options]="[{label: 'Server', value: 'server'}]" optionLabel="label"></p-dropdown>
+            <p-dropdown
+                appendTo="body"
+                inputId="typeInput"
+                formControlName="type"
+                [options]="[{ label: 'Server', value: 'server' }]"
+                optionLabel="label"
+            ></p-dropdown>
         </div>
 
         <div class="form-section">
             <div class="form-row">
                 <div class="label-input-div-form">
                     <label for="cpu-cores">CPU cores</label>
-                    <p-inputNumber inputId="cpu-cores" formControlName="cpuCores"></p-inputNumber>
+                    <p-inputNumber
+                        inputId="cpu-cores"
+                        formControlName="cpuCores"
+                    ></p-inputNumber>
                 </div>
                 <div class="label-input-div-form">
                     <label for="gpu-count">GPU count</label>
-                    <p-inputNumber class="input-number" inputId="gpu-count" formControlName="gpuCount"></p-inputNumber>
+                    <p-inputNumber
+                        class="input-number"
+                        inputId="gpu-count"
+                        formControlName="gpuCount"
+                    ></p-inputNumber>
                 </div>
                 <div class="label-input-div-form">
                     <label for="gpu-memory">GPU memory (GB)</label>
-                    <p-inputNumber inputId="gpu-memory" formControlName="gpuMemory"></p-inputNumber>
+                    <p-inputNumber
+                        inputId="gpu-memory"
+                        formControlName="gpuMemory"
+                    ></p-inputNumber>
                 </div>
                 <div class="label-input-div-form">
                     <label for="ram-size">RAM size (GB)</label>
-                    <p-inputNumber inputId="ram-size" formControlName="ramSize"></p-inputNumber>
+                    <p-inputNumber
+                        inputId="ram-size"
+                        formControlName="ramSize"
+                    ></p-inputNumber>
                 </div>
             </div>
         </div>
@@ -31,11 +50,17 @@
             <div class="form-row">
                 <div class="label-input-div-form">
                     <label for="datacenter-pue">Datacenter PUE</label>
-                    <p-inputNumber inputId="datacenter-pue" formControlName="datacenterPue"></p-inputNumber>
+                    <p-inputNumber
+                        inputId="datacenter-pue"
+                        formControlName="datacenterPue"
+                    ></p-inputNumber>
                 </div>
                 <div class="label-input-div-form">
                     <label for="complementary-pue">Complementary PUE</label>
-                    <p-inputNumber inputId="complementary-pue" formControlName="complementaryPue"></p-inputNumber>
+                    <p-inputNumber
+                        inputId="complementary-pue"
+                        formControlName="complementaryPue"
+                    ></p-inputNumber>
                 </div>
             </div>
         </div>
@@ -44,7 +69,13 @@
             <h3>Energy efficiency</h3>
             <div class="label-input-div-full-server">
                 <label for="location">Location</label>
-                <p-dropdown appendTo="body" inputId="location" formControlName="location" [options]="locationOptions" optionLabel="label"></p-dropdown>
+                <p-dropdown
+                    appendTo="body"
+                    inputId="location"
+                    formControlName="location"
+                    [options]="locationOptions"
+                    optionLabel="label"
+                ></p-dropdown>
             </div>
         </div>
     </form>

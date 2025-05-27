@@ -344,7 +344,7 @@
         "devices": "Algorithme",
         "device": "Algorithme",
         "id": "#",
-        "country":"Pays",
+        "country": "Pays",
         "model": "Modèle details",
         "parameter": "Paramètre",
         "framework": "Framework",
@@ -355,7 +355,7 @@
         "numberOfUsers": "Nombre d'utilisateur par an",
         "averageRequest": "Moyenne de requête annuel",
         "averageToken": "Moyenne de token generé par an",
-        "totalTokenGenerate":"Nombre totale de token annuel"
+        "totalTokenGenerate": "Nombre totale de token annuel"
     },
     "welcome-page": {
         "title": "Page de bienvenue",

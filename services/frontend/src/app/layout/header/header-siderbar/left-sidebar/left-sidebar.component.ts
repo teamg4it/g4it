@@ -43,9 +43,7 @@ export class LeftSidebarComponent implements OnInit {
     digitalServicesTitle = computed(() =>
         this.getTitle("digital-services.title", "digital-services"),
     );
-    ecoMindAiTitle = computed(() =>
-        this.getTitle("eco-mind-ai.title", "eco-mind-ai"),
-    );
+    ecoMindAiTitle = computed(() => this.getTitle("eco-mind-ai.title", "eco-mind-ai"));
     inventoriesTitle = computed(() => this.getTitle("inventories.title", "inventories"));
     administrationTitle = computed(() =>
         this.getTitle("common.administration", "administration"),

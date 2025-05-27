@@ -122,6 +122,18 @@ export class DigitalServicesFootprintComponent implements OnInit {
                     routerLink: "AiParameters",
                     id: "AiParameters",
                 },
+                {
+                    label: "Filler",
+                    separator: true,
+                    style: { flex: 1 },
+                    id: "separator",
+                },
+                {
+                    label: this.translate.instant("digital-services.visualize"),
+                    routerLink: "dashboard",
+                    visible: this.digitalService.lastCalculationDate !== undefined,
+                    id: "visualize",
+                },
             ];
         } else {
             this.tabItems = [
@@ -148,7 +160,8 @@ export class DigitalServicesFootprintComponent implements OnInit {
                 {
                     label: this.translate.instant("digital-services.visualize"),
                     routerLink: "dashboard",
-                    id: "dashboard",
+                    visible: this.digitalService.lastCalculationDate !== undefined,
+                    id: "visualize",
                 },
             ];
         }
