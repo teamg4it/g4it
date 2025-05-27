@@ -779,7 +779,7 @@
             "digital-service-module": "Module de services numériques"
         },
         "super-admin": {
-            "migrate-data-title": "Evaluate all digital services"
+            "launch-release-script": "Start the release's script"
         }
     },
     "error-graph": {

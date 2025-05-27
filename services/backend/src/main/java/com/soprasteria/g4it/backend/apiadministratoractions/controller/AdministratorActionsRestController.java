@@ -1,6 +1,7 @@
 package com.soprasteria.g4it.backend.apiadministratoractions.controller;
 
 import com.soprasteria.g4it.backend.apiadministratoractions.business.AdministratorActionsService;
+import com.soprasteria.g4it.backend.apiadministratoractions.business.DsMigrationService;
 import com.soprasteria.g4it.backend.server.gen.api.AdministratorActionsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AllEvaluationStatusRest;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +14,15 @@ import org.springframework.stereotype.Service;
 public class AdministratorActionsRestController implements AdministratorActionsApiDelegate {
     @Autowired
     AdministratorActionsService administratorActionsService;
+    @Autowired
+    DsMigrationService dsMigrationService;
 
     @Override
-    public ResponseEntity<AllEvaluationStatusRest> evaluateDigitalService() {
+    public ResponseEntity<AllEvaluationStatusRest> doAdminActions() {
+
+        // Migration of digital services from DEMO workspace to new workspaces
+        dsMigrationService.migrateDemoDs();
+
         return ResponseEntity.ok(administratorActionsService.evaluateAllDigitalServices());
     }
 }

@@ -23,6 +23,7 @@ export class SuperAdminComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly destroyRef = inject(DestroyRef);
     isMigrateDataButtonDisabled = false;
+    isMigrateDemoDsButtonDisabled = false;
 
     constructor(public superAdminDataService: SuperAdminDataService) {}
 
@@ -36,8 +37,8 @@ export class SuperAdminComponent implements OnInit {
             });
     }
 
-    async migrateDataToNewFormat() {
+    async launchReleaseScript() {
         this.isMigrateDataButtonDisabled = true;
-        await firstValueFrom(this.superAdminDataService.migrateDataToNewFormat());
+        await firstValueFrom(this.superAdminDataService.launchReleaseScript());
     }
 }
