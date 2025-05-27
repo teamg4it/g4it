@@ -16,6 +16,7 @@ import { delay } from "src/app/core/utils/time";
 })
 export class DigitalServicesItemComponent {
     @Input() digitalService: DigitalService = {} as DigitalService;
+    @Input() isAi: boolean = false;
 
     @Output() noteOpened: EventEmitter<DigitalService> = new EventEmitter();
     @Output() deleteUid: EventEmitter<string> = new EventEmitter();
@@ -35,7 +36,7 @@ export class DigitalServicesItemComponent {
         public userService: UserService,
         private clipboardService: ClipboardService,
     ) {
-        this.firstFootprintTab = window.location.href.includes('eco-mind-ai') ? 'infrastructure' : 'terminals';
+        this.firstFootprintTab = this.isAi ? 'infrastructure' : 'terminals';
     }
 
     async ngOnInit(): Promise<void> {
@@ -43,7 +44,7 @@ export class DigitalServicesItemComponent {
         if (this.digitalService.creator?.id !== userId) {
             this.isShared = true;
         }
-        this.firstFootprintTab = window.location.href.includes('eco-mind-ai') ? 'infrastructure' : 'terminals';
+        this.firstFootprintTab = this.isAi ? 'infrastructure' : 'terminals';
     }
 
     async copyUrl() {
@@ -61,6 +62,7 @@ export class DigitalServicesItemComponent {
     goToDigitalServiceFootprint(uid: string) {
         this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
             relativeTo: this.route,
+            queryParams: { isAi: this.isAi }
         });
     }
 

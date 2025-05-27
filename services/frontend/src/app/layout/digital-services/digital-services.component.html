@@ -19,7 +19,7 @@
             " headerStyleClass="font-bold bg-transparent" tabStyleClass="shadow-none" [selected]="true">
             <ul>
                 <li *ngFor="let digitalService of myDigitalServices">
-                    <app-digital-services-item [digitalService]="digitalService" (noteOpened)="itemNoteOpened($event)" (deleteUid)="itemDelete($event)">
+                    <app-digital-services-item [isAi]="isEcoMindAi" [digitalService]="digitalService" (noteOpened)="itemNoteOpened($event)" (deleteUid)="itemDelete($event)">
                     </app-digital-services-item>
                 </li>
             </ul>
@@ -36,7 +36,7 @@
             " headerStyleClass="font-bold bg-transparent" tabStyleClass="shadow-none" [selected]="true">
             <ul>
                 <li *ngFor="let digitalService of sharedDigitalServices">
-                    <app-digital-services-item [digitalService]="digitalService" (noteOpened)="itemNoteOpened($event)" (unlinkUid)="itemUnlink($event)">
+                    <app-digital-services-item [isAi]="isEcoMindAi" [digitalService]="digitalService" (noteOpened)="itemNoteOpened($event)" (unlinkUid)="itemUnlink($event)">
                     </app-digital-services-item>
                 </li>
             </ul>

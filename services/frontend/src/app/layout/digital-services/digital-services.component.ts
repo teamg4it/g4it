@@ -88,7 +88,7 @@ export class DigitalServicesComponent {
 
         const apiResult = await lastValueFrom(this.digitalServicesData.list(this.isEcoMindAi));
         apiResult.sort((x, y) => x.name.localeCompare(y.name));
-
+        
         apiResult.forEach((digitalService) => {
             if (digitalService.creator?.id === userId) {
                 this.myDigitalServices.push(digitalService);
@@ -107,10 +107,13 @@ export class DigitalServicesComponent {
         if (this.isEcoMindAi) {
             this.router.navigate([`${uid}/footprint/infrastructure`], {
                 relativeTo: this.route,
+                queryParams: { isAi: this.isEcoMindAi }
+             
             });
         } else {
             this.router.navigate([`${uid}/footprint/terminals`], {
                 relativeTo: this.route,
+               
             });
         }
     }

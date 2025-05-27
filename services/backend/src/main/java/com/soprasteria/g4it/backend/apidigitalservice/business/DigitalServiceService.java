@@ -163,7 +163,7 @@ public class DigitalServiceService {
             digitalServiceBO.setCreator(UserInfoBO.builder().id(user.getId())
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName()).build());
-            digitalServiceBO.setAi(isAi);
+            digitalServiceBO.setIsAi(isAi);
 
             List<DigitalServiceShared> shared = digitalServiceSharedRepository.findByDigitalServiceUid(digitalServiceBO.getUid());
             List<UserInfoBO> members = null;
