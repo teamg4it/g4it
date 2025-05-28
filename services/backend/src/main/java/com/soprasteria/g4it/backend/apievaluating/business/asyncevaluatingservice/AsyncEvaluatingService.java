@@ -34,6 +34,9 @@ public class AsyncEvaluatingService implements ITaskExecute {
     EvaluateService evaluateService;
 
     @Autowired
+    EvaluateAiService evaluateAiService;
+
+    @Autowired
     private ExportService exportService;
 
     /**
@@ -58,7 +61,11 @@ public class AsyncEvaluatingService implements ITaskExecute {
 
         try {
             Path exportDirectory = exportService.createExportDirectory(taskId);
-            evaluateService.doEvaluate(context, task, exportDirectory);
+            if(context.isAi()) {
+                evaluateAiService.doEvaluateAi(context, task, exportDirectory);
+            } else {
+                evaluateService.doEvaluate(context, task, exportDirectory);
+            }
             exportService.uploadExportZip(taskId, context.getSubscriber(), context.getOrganizationId().toString());
             exportService.clean(taskId);
 
