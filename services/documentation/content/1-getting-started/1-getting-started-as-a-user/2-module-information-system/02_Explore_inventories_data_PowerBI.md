@@ -25,6 +25,8 @@ Open the G4IT_PowerBi.pbix in Power Bi Desktop
 - Unzip and save the files in the folder C:\data-powerbi **instead of the example files** and **keep the "tonotdelete" folder**  
 ![4-PowerBiExportInventoryonG4IT.png](../images/4-PowerBiExportInventoryonG4IT.png)
 
+![5-PowerBiExportInventoryonG4IT_folder.png](../images/5-PowerBiExportInventoryonG4IT_folder.png)
+
 ## Step 3 - Update Power bi
 - On Power Bi, click on the Refresh button
 - Your inventory is now displayed on the Inventory slicer
