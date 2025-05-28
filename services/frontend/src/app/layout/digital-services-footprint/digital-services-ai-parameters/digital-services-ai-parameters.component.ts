@@ -16,6 +16,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     terminalsForm!: FormGroup;
     private formSubscription: Subscription | undefined;
 
+    //TODO : to be removed after the link to the back
     modelOptions: any[] = ["option1", "option2", "option3"];
     parameterOptions: any[] = ["option1", "option2", "option3"];
     frameworkOptions: any[] = ["option1", "option2", "option3"];
