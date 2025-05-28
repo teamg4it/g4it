@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.3.0
+
+### Major Changes
+
+- 1001 | Modify the first connection workflow
+
+### Minor Changes
+
 ## 3.2.0
 
 ### Major Changes
