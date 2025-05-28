@@ -86,6 +86,7 @@ public class InVirtualEquipmentService {
         }
 
         final InVirtualEquipment inVirtualEquipmentToCreate = inVirtualEquipmentMapper.toEntity(inVirtualEquipmentRest);
+        inVirtualEquipmentToCreate.setId(null);
         final LocalDateTime now = LocalDateTime.now();
         inVirtualEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
         inVirtualEquipmentToCreate.setCreationDate(now);

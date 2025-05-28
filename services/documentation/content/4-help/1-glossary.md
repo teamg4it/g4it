@@ -6,7 +6,7 @@ pre: 📝
 ---
 
 ## Table of contents
-|[A](#a)|[D](#d)|[G](#g)|[I](#i)|[O](#o)|[S](#s)|
+|[A](#a)|[D](#d)|[G](#g)|[I](#i)|[O](#o)|[S](#s)|[W](#w)|
 
 ## A
 **Administrator (ADM_ORG and ADM_SUB)**
@@ -29,7 +29,7 @@ The set of physical digital resources needed to deliver value to an organization
 All of an organization's Data Centers, Physical Equipment, Virtual Equipment and Applications on which an environmental footprint calculation relates
 
 ## O
-**Organization**
+**Organization (workspace)**
 Structuring element defined by the Subscriber, making it possible to create a compartmentalized space within the subscription
 
 ## S
@@ -38,3 +38,7 @@ Customer of the platform, the one who has a contract
 
 **Super Admin / Platform Admin (ADM_SSG)**
 User with the right to administer the platform. In charge of supervising it, setting up and managing administrators
+
+## W
+**Workspace (organization)**
+Structuring element defined by the Subscriber, making it possible to create a compartmentalized space within the subscription
