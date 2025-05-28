@@ -34,7 +34,7 @@ export class DigitalServicesComponent {
     sharedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
     isAllowedDigitalService: boolean = false;
-
+    isEcoMindAi = false;
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -47,6 +47,9 @@ export class DigitalServicesComponent {
     ) {}
 
     async ngOnInit(): Promise<void> {
+        this.route.data.subscribe((data) => {
+            this.isEcoMindAi = data["isIa"] === true;
+        });
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((organization: Organization) => {
@@ -60,6 +63,11 @@ export class DigitalServicesComponent {
         this.global.setLoading(true);
         await this.retrieveDigitalServices();
         this.global.setLoading(false);
+        this.router.events.subscribe((event) => {
+            if (event instanceof NavigationEnd) {
+                this.retrieveDigitalServices();
+            }
+        });
 
         this.router.events
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -78,7 +86,9 @@ export class DigitalServicesComponent {
         this.myDigitalServices = [];
         this.sharedDigitalServices = [];
 
-        const apiResult = await lastValueFrom(this.digitalServicesData.list());
+        const apiResult = await lastValueFrom(
+            this.digitalServicesData.list(this.isEcoMindAi),
+        );
         apiResult.sort((x, y) => x.name.localeCompare(y.name));
 
         apiResult.forEach((digitalService) => {
@@ -91,14 +101,22 @@ export class DigitalServicesComponent {
     }
 
     async createNewDigitalService() {
-        const { uid } = await lastValueFrom(this.digitalServicesData.create());
+        const { uid } = await lastValueFrom(
+            this.digitalServicesData.create(this.isEcoMindAi),
+        );
         this.goToDigitalServiceFootprint(uid);
     }
 
     goToDigitalServiceFootprint(uid: string) {
-        this.router.navigate([`${uid}/footprint/terminals`], {
-            relativeTo: this.route,
-        });
+        if (this.isEcoMindAi) {
+            this.router.navigate([`${uid}/footprint/infrastructure`], {
+                relativeTo: this.route,
+            });
+        } else {
+            this.router.navigate([`${uid}/footprint/terminals`], {
+                relativeTo: this.route,
+            });
+        }
     }
 
     itemNoteOpened(digitalService: DigitalService) {

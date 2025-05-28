@@ -16,6 +16,7 @@ import { delay } from "src/app/core/utils/time";
 })
 export class DigitalServicesItemComponent {
     @Input() digitalService: DigitalService = {} as DigitalService;
+    @Input() isAi: boolean = false;
 
     @Output() noteOpened: EventEmitter<DigitalService> = new EventEmitter();
     @Output() deleteUid: EventEmitter<string> = new EventEmitter();
@@ -24,6 +25,7 @@ export class DigitalServicesItemComponent {
     isLinkCopied = false;
     sidebarVisible = false;
     isShared = false;
+    firstFootprintTab = "terminals";
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -33,13 +35,16 @@ export class DigitalServicesItemComponent {
         private route: ActivatedRoute,
         public userService: UserService,
         private clipboardService: ClipboardService,
-    ) {}
+    ) {
+        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
+    }
 
     async ngOnInit(): Promise<void> {
         const userId = (await firstValueFrom(this.userService.user$)).id;
         if (this.digitalService.creator?.id !== userId) {
             this.isShared = true;
         }
+        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
     }
 
     async copyUrl() {
@@ -55,7 +60,7 @@ export class DigitalServicesItemComponent {
     }
 
     goToDigitalServiceFootprint(uid: string) {
-        this.router.navigate([`${uid}/footprint/terminals`], {
+        this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
             relativeTo: this.route,
         });
     }

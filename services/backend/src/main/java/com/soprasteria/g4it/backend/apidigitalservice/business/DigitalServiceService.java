@@ -87,16 +87,17 @@ public class DigitalServiceService {
     private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
     @Autowired
     private ExportService exportService;
+    private Boolean isAi; // Doit être présent dans DigitalServiceBO
 
     /**
      * Create a new digital service.
      *
      * @param organizationId the linked organization's id.
      * @param userId         the userId.
-     * @param isAI AI service if true
+     * @param isAi AI service if true
      * @return the business object corresponding on the digital service created.
      */
-    public DigitalServiceBO createDigitalService(final Long organizationId, final long userId, final Boolean isAI) {
+    public DigitalServiceBO createDigitalService(final Long organizationId, final long userId, final Boolean isAi) {
         // Get the linked organization.
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
@@ -120,7 +121,7 @@ public class DigitalServiceService {
                 .name(DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1))
                 .user(user)
                 .organization(linkedOrganization)
-                .isAi(isAI)
+                .isAi(isAi)
                 .creationDate(now)
                 .lastUpdateDate(now)
                 .build();
@@ -135,10 +136,10 @@ public class DigitalServiceService {
      *
      * @param organizationId the organization's id.
      * @param userId         the userId.
-     * @param isAI  AI service if true
+     * @param isAi  AI service if true
      * @return the digital service list.
      */
-    public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId, final Boolean isAI) {
+    public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId, final Boolean isAi) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
         // Retrieve digital services created by the user
@@ -151,6 +152,7 @@ public class DigitalServiceService {
                 .toList();
 
         final List<DigitalService> combinedDigitalServices = Stream.concat(digitalServices.stream(), sharedDigitalServices.stream())
+                .filter(ds -> ds.isAi() == isAi)  // Filtrer les services en fonction de isAi
                 .toList();
         List<DigitalServiceBO> allDigitalServicesBO = digitalServiceMapper.toBusinessObject(combinedDigitalServices);
 
@@ -161,6 +163,7 @@ public class DigitalServiceService {
             digitalServiceBO.setCreator(UserInfoBO.builder().id(user.getId())
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName()).build());
+            digitalServiceBO.setIsAi(isAi);
 
             List<DigitalServiceShared> shared = digitalServiceSharedRepository.findByDigitalServiceUid(digitalServiceBO.getUid());
             List<UserInfoBO> members = null;
@@ -242,6 +245,7 @@ public class DigitalServiceService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .build());
+        digitalServiceBO.setIsAi(digitalServiceEntity.isAi());
 
         List<DigitalServiceShared> sharedDigitalServices = digitalServiceSharedRepository.findByDigitalServiceUid(digitalServiceUid);
 

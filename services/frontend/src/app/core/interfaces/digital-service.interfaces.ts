@@ -23,12 +23,26 @@ export interface DigitalService {
     criteria?: string[];
     creator?: DigitalServiceUserInfo;
     members: DigitalServiceUserInfo[];
+    isAi?: boolean;
 }
 
 export interface DigitalServiceUserInfo {
     id: number;
     firstName: string;
     lastName: string;
+}
+
+export interface DigitalServiceParameterIa {
+    modelDetails: string;
+    parameters: string;
+    framework: string;
+    quantization: string;
+    inference: boolean;
+    finetuning: boolean;
+    numberOfUsersPerYear: number;
+    averageRequestsPerUser: number;
+    averageTokensPerRequest: number;
+    totalTokenGenerate: number;
 }
 
 export interface DigitalServiceServerConfig {
@@ -53,6 +67,21 @@ export interface DigitalServiceServerConfig {
 }
 
 export interface DigitalServiceCloudServiceConfig {
+    id: number;
+    digitalServiceUid: string;
+    creationDate?: number;
+    name: string;
+    cloudProvider: string;
+    instanceType: string;
+    quantity: number;
+    location: DropdownValue;
+    locationValue: string;
+    annualUsage: number;
+    averageWorkload: number;
+    idFront?: number;
+}
+
+export interface DigitalServicesAiInfrastructure {
     id: number;
     digitalServiceUid: string;
     creationDate?: number;

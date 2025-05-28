@@ -26,6 +26,8 @@ import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
 import { SidePanelDsSharedUsersComponent } from "../common/side-panel-ds-shared-users/side-panel-ds-shared-users.component";
+import { DigitalServicesAiInfrastructureComponent } from "./digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
+import { DigitalServicesAiParametersComponent } from "./digital-services-ai-parameters/digital-services-ai-parameters.component";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
@@ -69,6 +71,8 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         PanelServerParametersComponent,
         PanelAddVmComponent,
         PanelListVmComponent,
+        DigitalServicesAiParametersComponent,
+        DigitalServicesAiInfrastructureComponent,
     ],
     imports: [
         CommonModule,
@@ -94,6 +98,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DividerModule,
         digitalServicesFootprintRouter,
         SidePanelDsSharedUsersComponent,
+        TableModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],
