@@ -12,12 +12,12 @@
                     }}</label>
                     <p-dropdown
                         [options]="modelOptions"
-                        formControlName="model"
+                        formControlName="modelName"
                         placeholder="Select model"
                     ></p-dropdown>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('model')?.hasError('required')"
+                        *ngIf="terminalsForm.get('modelName')?.hasError('required')"
                     >
                         {{ "digital-services-ai-parameter.model" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -31,12 +31,12 @@
                     }}</label>
                     <p-dropdown
                         [options]="parameterOptions"
-                        formControlName="parameter"
+                        formControlName="nbParameters"
                         placeholder="Select parameter"
                     ></p-dropdown>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('parameter')?.hasError('required')"
+                        *ngIf="terminalsForm.get('nbParameters')?.hasError('required')"
                     >
                         {{ "digital-services-ai-parameter.parameter" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -93,7 +93,7 @@
                     <p-checkbox
                         inputId="inference"
                         binary="true"
-                        formControlName="inference"
+                        formControlName="isInference"
                         [label]="'digital-services-ai-parameter.inference' | translate"
                     >
                     </p-checkbox>
@@ -104,7 +104,7 @@
                     <p-checkbox
                         inputId="finetuning"
                         binary="true"
-                        formControlName="finetuning"
+                        formControlName="isFinetuning"
                         [label]="'digital-services-ai-parameter.fintuning' | translate"
                     >
                     </p-checkbox>
@@ -125,13 +125,13 @@
                         "digital-services-ai-parameter.numberOfUsers" | translate
                     }}</label>
                     <p-inputNumber
-                        formControlName="numberOfUsers"
+                        formControlName="numberUserYear"
                         [min]="0"
                         mode="decimal"
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('numberOfUsers')?.hasError('required')"
+                        *ngIf="terminalsForm.get('numberUserYear')?.hasError('required')"
                     >
                         {{ "digital-services-ai-parameter.numberOfUsers" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -144,13 +144,17 @@
                         "digital-services-ai-parameter.averageRequest" | translate
                     }}</label>
                     <p-inputNumber
-                        formControlName="averageRequest"
+                        formControlName="averageNumberRequest"
                         [min]="0"
                         mode="decimal"
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('averageRequest')?.hasError('required')"
+                        *ngIf="
+                            terminalsForm
+                                .get('averageNumberRequest')
+                                ?.hasError('required')
+                        "
                     >
                         {{ "digital-services-ai-parameter.averageRequest" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -163,13 +167,15 @@
                         "digital-services-ai-parameter.averageToken" | translate
                     }}</label>
                     <p-inputNumber
-                        formControlName="averageToken"
+                        formControlName="averageNumberToken"
                         [min]="0"
                         mode="decimal"
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('averageToken')?.hasError('required')"
+                        *ngIf="
+                            terminalsForm.get('averageNumberToken')?.hasError('required')
+                        "
                     >
                         {{ "digital-services-ai-parameter.averageToken" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -182,7 +188,7 @@
                         "digital-services-ai-parameter.totalTokenGenerate" | translate
                     }}</label>
                     <p-inputNumber
-                        formControlName="totalTokenGenerate"
+                        formControlName="totalGeneratedTokens"
                         [disabled]="true"
                         mode="decimal"
                     ></p-inputNumber>

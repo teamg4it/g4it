@@ -35,7 +35,7 @@ export class DigitalServicesDataService {
     list(isAi?: boolean): Observable<DigitalService[]> {
         let params = new HttpParams();
         if (isAi !== undefined) {
-            params = params.set('isAi', isAi);
+            params = params.set("isAi", isAi);
         }
         return this.http.get<DigitalService[]>(`${endpoint}`, { params });
     }
@@ -43,7 +43,7 @@ export class DigitalServicesDataService {
     create(isAi?: boolean): Observable<DigitalService> {
         let params = new HttpParams();
         if (isAi !== undefined) {
-            params = params.set('isAi', isAi);
+            params = params.set("isAi", isAi);
         }
         return this.http.post<DigitalService>(
             `${endpoint}`,
