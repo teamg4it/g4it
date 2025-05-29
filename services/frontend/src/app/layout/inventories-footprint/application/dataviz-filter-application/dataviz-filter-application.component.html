@@ -106,8 +106,10 @@
                                                             : 'pi pi-chevron-down'
                                                     "
                                                     [ariaLabel]="
-                                                        'common.accessibility.sharedUsers'
-                                                            | translate
+                                                        (filter.collapsed
+                                                            ? 'common.accessibility.accordion-open'
+                                                            : 'common.accessibility.accordion-close'
+                                                        ) | translate
                                                     "
                                                 />
                                             }

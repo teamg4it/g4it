@@ -24,6 +24,7 @@ import { EditorModule } from "primeng/editor";
 import { FocusTrapModule } from "primeng/focustrap";
 import { InputTextModule } from "primeng/inputtext";
 import { OverlayModule } from "primeng/overlay";
+import { PaginatorModule } from "primeng/paginator";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SidebarModule } from "primeng/sidebar";
@@ -85,6 +86,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DropdownModule,
         ConfirmDialogModule,
         TabMenuModule,
+        PaginatorModule,
         AccordionModule,
         InputTextModule,
         ClipboardModule,
@@ -111,6 +113,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         ConfirmPopupModule,
         ButtonModule,
         DatavizFilterComponent,
+        PaginatorModule,
         CheckboxModule,
         TabViewModule,
         OverlayModule,

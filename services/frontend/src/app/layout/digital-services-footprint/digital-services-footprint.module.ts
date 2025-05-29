@@ -25,7 +25,6 @@ import { DividerModule } from "primeng/divider";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
-import { SidePanelDsSharedUsersComponent } from "../common/side-panel-ds-shared-users/side-panel-ds-shared-users.component";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
@@ -93,7 +92,6 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         RadioButtonModule,
         DividerModule,
         digitalServicesFootprintRouter,
-        SidePanelDsSharedUsersComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],
