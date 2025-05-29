@@ -42,7 +42,6 @@ describe("DigitalServicesDataService", () => {
                 networks: [],
                 servers: [],
                 terminals: [],
-                members: [],
             },
         ];
 
@@ -69,7 +68,6 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
         };
 
         service.create().subscribe((res) => {
@@ -94,7 +92,6 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
         };
 
         service.update(updatedDigitalService).subscribe((res) => {
@@ -119,7 +116,6 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
         };
 
         service.get(digitalService.uid).subscribe((res) => {
@@ -144,7 +140,6 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
         };
 
         service.delete(digitalService.uid).subscribe();

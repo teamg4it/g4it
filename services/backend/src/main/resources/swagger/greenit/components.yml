@@ -45,13 +45,6 @@ components:
         type: string
       required: true
       description: The digital service uid.
-    sharedUidPathParam:
-      in: path
-      name: sharedUid
-      schema:
-        type: string
-      required: true
-      description: The shared digital service uid.
     noteUidPathParam:
       in: path
       name: noteId
