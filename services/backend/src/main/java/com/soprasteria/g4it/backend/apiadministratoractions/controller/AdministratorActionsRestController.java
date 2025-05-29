@@ -21,8 +21,7 @@ public class AdministratorActionsRestController implements AdministratorActionsA
     public ResponseEntity<AllEvaluationStatusRest> doAdminActions() {
 
         // Migration of digital services from DEMO workspace to new workspaces
-        dsMigrationService.migrateDemoDs();
 
-        return ResponseEntity.ok(administratorActionsService.evaluateAllDigitalServices());
+        return ResponseEntity.ok(dsMigrationService.migrateDemoDs());
     }
 }
