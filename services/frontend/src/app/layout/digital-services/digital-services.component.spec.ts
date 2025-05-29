@@ -82,16 +82,16 @@ describe("DigitalServicesComponent", () => {
 
     it("should update paginated items on page change", () => {
         component["allDigitalServices"] = Array.from(
-            { length: 10 },
+            { length: 20 },
             (_, i) =>
                 ({
                     uid: `${i}`,
                     name: `Service ${i}`,
                 }) as DigitalService,
         );
-        component.onPageChange({ first: 5, rows: 5, page: 1 } as any);
-        expect(component.paginatedDigitalServices.length).toBe(5);
-        expect(component.paginatedDigitalServices[0].name).toBe("Service 5");
+        component.onPageChange({ first: 0, rows: 10, page: 1 } as any);
+        expect(component.paginatedDigitalServices.length).toBe(10);
+        expect(component.paginatedDigitalServices[0].name).toBe("Service 10");
     });
 
     it("should navigate to digital service footprint", () => {

@@ -37,7 +37,7 @@ export class DigitalServicesComponent {
     isAllowedDigitalService: boolean = false;
     first: number = 0;
 
-    rowsPerPage: number = 5;
+    rowsPerPage: number = 10;
     currentPage = 0;
     private destroyRef = inject(DestroyRef);
 
