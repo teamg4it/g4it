@@ -254,9 +254,10 @@
             <li>
                 {{ "declarations.feedback-contact.send-message" | translate }}
                 <a
-                    href="mailto:support.g4it&#64;soprasteria.com"
+                    (click)="composeEmail()"
                     [ariaLabel]="'declarations.accessibility.email-link' | translate"
-                    >support.g4it&#64;soprasteria.com</a
+                    class="cursor-pointer"
+                    ><u>support.g4it&#64;soprasteria.com</u></a
                 >
             </li>
             <li>
