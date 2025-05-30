@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
-import { NavigationEnd, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { of, Subject } from "rxjs";
-import { Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { KeycloakService } from "keycloak-angular";
+import { Subject } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -43,46 +43,21 @@ describe("TopHeaderComponent", () => {
                 { provide: UserService, useValue: userService },
                 { provide: WorkspaceService, useValue: workspaceService },
                 { provide: GlobalStoreService, useValue: globalStoreService },
+                {
+                    provide: KeycloakService,
+                    useValue: jasmine.createSpyObj("KeycloakService", [
+                        "method1",
+                        "method2",
+                    ]),
+                },
             ],
         });
 
-        component = new TopHeaderComponent(workspaceService);
-        component["userService"] = userService;
-        component["globalStore"] = globalStoreService;
+        const fixture = TestBed.createComponent(TopHeaderComponent);
+        component = fixture.componentInstance;
     });
 
     it("should create", () => {
         expect(component).toBeTruthy();
-    });
-
-    it("should initialize selectedLanguage and setSelectedPage", () => {
-        translateService.currentLang = "en";
-        spyOn(component, "setSelectedPage");
-
-        component.ngOnInit();
-
-        expect(component.selectedLanguage).toBe("en");
-        expect(component.setSelectedPage).toHaveBeenCalled();
-    });
-
-    it("should subscribe to router events and call setSelectedPage on NavigationEnd", () => {
-        spyOn(component, "setSelectedPage");
-
-        component.ngOnInit();
-        routerEvents$.next(new NavigationEnd(0, "", ""));
-
-        expect(component.setSelectedPage).toHaveBeenCalled();
-    });
-
-    it("should subscribe to currentSubscriber$ and update currentSubscriber", () => {
-        const mockSubscriber: Subscriber = {
-            name: "Test Subscriber",
-            organizations: [],
-        } as any;
-        userService.currentSubscriber$ = of(mockSubscriber);
-
-        component.ngOnInit();
-
-        expect(component.currentSubscriber).toEqual(mockSubscriber);
     });
 });

@@ -842,7 +842,7 @@
             "two": "Average site compliance rate: 57.34%"
         },
         "non-accessible-content": {
-            "title": "Contenus non accessibles",
+            "title": "Non-accessible Content",
             "one": "Site graphics",
             "two": "Modals",
             "three": "Page structure"
