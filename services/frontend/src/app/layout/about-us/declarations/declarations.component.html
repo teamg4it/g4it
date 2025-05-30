@@ -17,7 +17,11 @@
         <p>
             {{ "declarations.framework-paragraph" | translate }}
             <a
-                href="https://www.arcep.fr/uploads/tx_gspublication/general_policy_framework_for_the_ecodesign_of_digital_services_version_2024.pdf"
+                [href]="
+                    currentLang === 'en'
+                        ? 'https://www.arcep.fr/uploads/tx_gspublication/general_policy_framework_for_the_ecodesign_of_digital_services_version_2024.pdf'
+                        : 'https://www.arcep.fr/uploads/tx_gspublication/referentiel_general_ecoconception_des_services_numeriques_version_2024.pdf'
+                "
                 target="_blank"
                 [ariaLabel]="
                     'declarations.accessibility.external-link'
