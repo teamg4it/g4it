@@ -54,7 +54,8 @@
                                 <span
                                     class="text-black"
                                     [ngClass]="isZoomedIn() ? 'text-sm' : ''"
-                                    >{{ item.ecoHeading | translate }} : 77%</span
+                                    >{{ item.ecoHeading | translate }} :
+                                    {{ ecoDesignPercent }}%</span
                                 >
                             </div>
                         }

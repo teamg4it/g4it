@@ -49,7 +49,12 @@
         </ul>
 
         <h2>{{ "declarations.key-results.title" | translate }}</h2>
-        <p>{{ "declarations.key-results.key-results-paragraph" | translate }}</p>
+        <p>
+            {{
+                "declarations.key-results.key-results-paragraph"
+                    | translate: { ecoDesignPercent }
+            }}
+        </p>
         <ul>
             <li>
                 {{ "declarations.key-results.strategy" | translate: { percentage: 88 } }}

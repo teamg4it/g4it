@@ -807,7 +807,7 @@
         "functional-areas-third": "L’administration des organisations et des utilisateurs de la plateforme.",
         "key-results": {
             "title": "Résultats principaux",
-            "key-results-paragraph": "L'audit de conformité a permis d'évaluer à 77% la conformité RGESN (version 2024) du site web en date du 28/04/2025.",
+            "key-results-paragraph": "L'audit de conformité a permis d'évaluer à {{ecoDesignPercent}}% la conformité RGESN (version 2024) du site web en date du 28/04/2025.",
             "strategy": "Stratégie : {{percentage}}%",
             "specifications": "Spécifications : {{percentage}}%",
             "architecture": "Architecture : {{percentage}}%",

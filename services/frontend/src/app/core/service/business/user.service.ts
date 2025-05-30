@@ -20,6 +20,7 @@ import { BasicRoles, Role } from "../../interfaces/roles.interfaces";
     providedIn: "root",
 })
 export class UserService {
+    ecoDesignPercent = 77;
     public organizationSubject = new ReplaySubject<Organization>(1);
 
     public subscriberSubject = new ReplaySubject<Subscriber>(1);

@@ -22,6 +22,7 @@ export class DeclarationsComponent {
     currentLang: string = this.translate.currentLang;
     currentSubscriber: Subscriber = {} as Subscriber;
     selectedOrganization: Organization = {} as Organization;
+    ecoDesignPercent = this.userService.ecoDesignPercent;
     pdfSize = 0;
     ngOnInit() {
         this.translate.get("declarations.title").subscribe((translatedTitle: string) => {

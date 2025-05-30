@@ -809,7 +809,7 @@
         "functional-areas-third": "Administration of organizations and platform users.",
         "key-results": {
             "title": "Key Results",
-            "key-results-paragraph": "The compliance audit assessed the RGESN (2024 version) compliance of the website at 77% as of 28/04/2025.",
+            "key-results-paragraph": "The compliance audit assessed the RGESN (2024 version) compliance of the website at {{ecoDesignPercent}}% as of 28/04/2025.",
             "strategy": "Strategy: {{percentage}}%",
             "specifications": "Specifications: {{percentage}}%",
             "architecture": "Architecture: {{percentage}}%",

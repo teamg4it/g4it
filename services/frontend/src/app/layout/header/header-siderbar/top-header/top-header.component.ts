@@ -64,6 +64,7 @@ export class TopHeaderComponent implements OnInit {
     private userService = inject(UserService);
     private destroyRef = inject(DestroyRef);
     private globalStore = inject(GlobalStoreService);
+    ecoDesignPercent = this.userService.ecoDesignPercent;
     maxLength = 30;
     ingredient: string = "english";
     selectedLanguage: string = "en";
