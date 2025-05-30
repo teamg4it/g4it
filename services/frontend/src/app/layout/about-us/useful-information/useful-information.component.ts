@@ -10,7 +10,6 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
 import { VersionDataService } from "src/app/core/service/data/version-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
-import { Constants } from "src/constants";
 @Component({
     selector: "app-useful-information",
     standalone: true,
@@ -71,8 +70,9 @@ export class UsefulInformationComponent {
     }
 
     composeEmail() {
-        let subject = `[${this.currentSubscriber.name}/${this.selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
-        let email = `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
-        window.location.href = email;
+        window.location.href = this.userService.composeEmail(
+            this.currentSubscriber,
+            this.selectedOrganization,
+        );
     }
 }

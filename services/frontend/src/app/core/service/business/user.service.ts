@@ -337,4 +337,12 @@ export class UserService {
         const validPages = ["administration", ...Constants.VALID_PAGES];
         return validPages.includes(subscribers) ? subscribers : page;
     }
+
+    composeEmail(
+        currentSubscriber: Subscriber,
+        selectedOrganization: Organization,
+    ): string {
+        let subject = `[${currentSubscriber.name}/${selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
+        return `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
+    }
 }

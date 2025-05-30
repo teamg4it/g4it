@@ -5,7 +5,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
-import { Constants } from "src/constants";
 
 @Component({
     selector: "app-declarations",
@@ -43,8 +42,9 @@ export class DeclarationsComponent {
     }
 
     composeEmail() {
-        let subject = `[${this.currentSubscriber.name}/${this.selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
-        let email = `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
-        window.location.href = email;
+        window.location.href = this.userService.composeEmail(
+            this.currentSubscriber,
+            this.selectedOrganization,
+        );
     }
 }
