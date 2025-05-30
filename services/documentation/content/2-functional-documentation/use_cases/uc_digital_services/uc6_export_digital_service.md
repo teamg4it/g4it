@@ -58,7 +58,7 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant Azure storage
 
-    RND ->> front: Click on Export" button on the digital service view
+    RND ->> front: Click on 'Export' button on the digital service view
     front ->> back: POST /api/GET /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/export
     Azure storage -->> back: Retrieve the zipped files
     back ->> front: zip file downloaded in user's local
