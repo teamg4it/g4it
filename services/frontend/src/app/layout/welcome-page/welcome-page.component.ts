@@ -41,6 +41,7 @@ export class WelcomePageComponent {
 
     private readonly destroyRef = inject(DestroyRef);
     public userService = inject(UserService);
+    ecoDesignPercent = this.userService.ecoDesignPercent;
 
     constructor(
         private workspaceService: WorkspaceService,
