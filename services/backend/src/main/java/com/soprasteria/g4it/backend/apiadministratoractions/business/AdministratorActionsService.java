@@ -44,6 +44,8 @@ public class AdministratorActionsService {
 
     @Autowired
     TaskRepository taskRepository;
+    @Autowired
+    RoleManagementService roleManagementService;
 
     public AllEvaluationStatusRest evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();
@@ -93,4 +95,10 @@ public class AdministratorActionsService {
         return AllEvaluationStatusRest.builder().response("success").build();
     }
 
+
+    public AllEvaluationStatusRest executeWriteRoleCleanupOnDemoOrg() {
+        //call procedure to remove
+        return roleManagementService.executeRoleCleanup();
+        // TODO call Digital Service migration service
+    }
 }

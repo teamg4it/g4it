@@ -1,6 +1,7 @@
 package com.soprasteria.g4it.backend.apiadministratoractions.controller;
 
 import com.soprasteria.g4it.backend.apiadministratoractions.business.AdministratorActionsService;
+import com.soprasteria.g4it.backend.apiadministratoractions.business.RoleManagementService;
 import com.soprasteria.g4it.backend.server.gen.api.AdministratorActionsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AllEvaluationStatusRest;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +15,9 @@ public class AdministratorActionsRestController implements AdministratorActionsA
     @Autowired
     AdministratorActionsService administratorActionsService;
 
+
     @Override
-    public ResponseEntity<AllEvaluationStatusRest> evaluateDigitalService() {
-        return ResponseEntity.ok(administratorActionsService.evaluateAllDigitalServices());
+    public ResponseEntity<AllEvaluationStatusRest> doAdminActions() {
+        return ResponseEntity.ok(administratorActionsService.executeWriteRoleCleanupOnDemoOrg());
     }
 }
