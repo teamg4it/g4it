@@ -1,5 +1,24 @@
 # G4IT
 
+## 3.3.0
+
+### Major Changes
+
+- 1003 | Remove the link between a user and a digital service
+
+### Minor Changes
+
+- 1218 | Issue on the DS export feature
+- 797 | Lag on the filter when there is a lot of data
+- 797 |  Lag on the filter when there is a lot of data
+- 1246|  Inventory : Export available from Demo Workspace 
+
+## 3.2.1
+
+### Minor Changes
+
+- 1215 | Back-end is crashing then restarting automatically
+
 ## 3.2.0
 
 ### Major Changes
