@@ -50,7 +50,7 @@
             (click)="download($event)"
             [disabled]="downloadInProgress"
             *ngIf="
-                isSelectedOrganizationDefault ||
+                selectedOrganization?.toLowerCase() === 'demo' ||
                 (userService.isAllowedInventoryWrite$ | async)
             "
             id="export-inventory-button"

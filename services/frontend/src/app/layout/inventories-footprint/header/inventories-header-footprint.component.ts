@@ -39,7 +39,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
 
     selectedOrganization = "";
-    isSelectedOrganizationDefault = false;
     selectedSubscriber = "";
 
     constructor(
@@ -62,7 +61,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
-                this.isSelectedOrganizationDefault = organization.defaultFlag;
             });
     }
 
