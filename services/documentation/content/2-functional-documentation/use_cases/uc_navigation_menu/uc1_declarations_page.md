@@ -50,7 +50,7 @@ Section 2: Accessibility Declaration
 |-----------|-------------|-----------|--------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 1         |             | Compliance Status|              | Heading  | This gives details of the compliance status  |
 | 2         |             | Test Results |              | List  | This section will give the details test results of accessibility |
-| 3         |             | Non-accessible Content |          List    | Heading | This is the list of non accessible content   |
+| 3         |             | Non-accessible Content |              | List | This is the list of non accessible content   |
 | 4         |             | Technologies Used |              | List | List of technlogy used   |
 | 5         |             | Test Environment |              | list | List of test environments   |
 | 6         |             | Accessibility Evaluation Tools |              | List | list of Accessibility Evaluation Tools   |
