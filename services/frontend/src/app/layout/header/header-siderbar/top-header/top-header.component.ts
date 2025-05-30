@@ -157,7 +157,24 @@ export class TopHeaderComponent implements OnInit {
                     },
                 ],
             },
-
+            {
+                label: undefined,
+                link: "",
+                command: () => {
+                    this.router.navigate(["/declarations"]);
+                },
+                items: [
+                    {
+                        label: "declarations.title",
+                        route: Constants.USEFUL_INFORMATION,
+                        subHeading: "declarations.accessibility-text",
+                        ecoHeading: "declarations.ecodesign",
+                        command: () => {
+                            this.router.navigate(["/declarations"]);
+                        },
+                    },
+                ],
+            },
             {
                 label: "common.help-center",
                 items: [

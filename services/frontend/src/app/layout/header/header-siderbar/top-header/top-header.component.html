@@ -23,7 +23,8 @@
             <ng-template pTemplate="submenuheader" let-item>
                 @if (item.label) {
                     <span
-                        class="help-center-color pl-2 mt-3 flex align-items-center text-2xl"
+                        class="help-center-color pl-2 flex align-items-center"
+                        [ngClass]="isZoomedIn() ? 'text-xl p-0 mt-1' : 'text-2xl mt-3'"
                     >
                         {{ item.label | translate }}</span
                     >
@@ -31,21 +32,40 @@
             </ng-template>
             <ng-template pTemplate="item" let-item>
                 @if (!item.outsideLink) {
-                    <div class="p-2">
-                        <a class="pl-0 flex align-items-center p-menuitem-link text-2xl">
+                    <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
+                        <a
+                            class="pl-0 flex align-items-center p-menuitem-link"
+                            [ngClass]="isZoomedIn() ? 'text-lg py-1' : 'text-2xl'"
+                        >
                             <span
                                 ><u>{{ item.label | translate }}</u></span
                             >
                             <span class="pi pi-arrow-right ml-auto"></span>
                         </a>
-                        <span class="text-black">{{ item.subHeading | translate }}</span>
+                        <div>
+                            <span
+                                class="text-black"
+                                [ngClass]="isZoomedIn() ? 'text-sm' : ''"
+                                >{{ item.subHeading | translate }}</span
+                            >
+                        </div>
+                        @if (item?.ecoHeading) {
+                            <div>
+                                <span
+                                    class="text-black"
+                                    [ngClass]="isZoomedIn() ? 'text-sm' : ''"
+                                    >{{ item.ecoHeading | translate }} : 77%</span
+                                >
+                            </div>
+                        }
                     </div>
                 } @else {
-                    <div class="p-2">
+                    <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
                         <div class="border border-left-1" [ngClass]="item.borderClass">
                             <a
                                 target="_blank"
-                                class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base"
+                                class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link"
+                                [ngClass]="isZoomedIn() ? 'text-sm' : 'text-base'"
                                 ><span
                                     ><u>{{ item.label | translate }}</u></span
                                 >

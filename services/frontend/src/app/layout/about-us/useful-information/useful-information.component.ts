@@ -16,7 +16,6 @@ import { Constants } from "src/constants";
     standalone: true,
     imports: [SharedModule],
     templateUrl: "./useful-information.component.html",
-    styleUrl: "./useful-information.component.scss",
 })
 export class UsefulInformationComponent {
     private readonly translate = inject(TranslateService);
