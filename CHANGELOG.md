@@ -9,7 +9,10 @@
 
 ### Minor Changes
 
+- 1218 | Issue on the DS export feature
+- 797 | Lag on the filter when there is a lot of data
 - 797 |  Lag on the filter when there is a lot of data
+- 1246|  Inventory : Export available from Demo Workspace 
 
 ## 3.2.1
 
