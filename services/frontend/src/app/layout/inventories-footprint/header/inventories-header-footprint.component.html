@@ -49,7 +49,10 @@
             styleClass="bg-black text-white header-button"
             (click)="download($event)"
             [disabled]="downloadInProgress"
-            *ngIf="userService.isAllowedInventoryWrite$ | async"
+            *ngIf="
+                selectedOrganization?.toLowerCase() === 'demo' ||
+                (userService.isAllowedInventoryWrite$ | async)
+            "
             id="export-inventory-button"
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"

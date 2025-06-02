@@ -16,6 +16,9 @@ import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -54,6 +57,10 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     private IndicatorRestMapper indicatorRestMapper;
     @Autowired
     private FileSystemService fileSystemService;
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private UserOrganizationRepository userOrganizationRepository;
 
     /**
      * {@inheritDoc}
@@ -140,6 +147,17 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
 
         Task task = taskRepository.findByInventoryAndLastCreationDate(Inventory.builder().id(inventoryId).build())
                 .orElseThrow(() -> new G4itRestException("404", String.format("task of inventoryId '%d' is not found", inventoryId)));
+
+        Long userId = authService.getUser().getId();
+        UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organization, userId).orElseThrow();
+
+        boolean isDefaultOrganization = userOrganization.getOrganization().getName().equalsIgnoreCase("DEMO");
+        boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));
+
+        if (!(isDefaultOrganization || hasWriteAccess)) {
+            throw new G4itRestException("403", "Not authorized");
+        }
+
         String filename = task.getId() + Constants.ZIP;
 
         final String filePath = String.join("/", subscriber, organization.toString(), FileFolder.EXPORT.getFolderName(), filename);

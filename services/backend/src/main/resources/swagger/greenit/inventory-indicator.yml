@@ -204,7 +204,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getIndicatorsExportResult
-      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: return zip file contains all the indicators results
