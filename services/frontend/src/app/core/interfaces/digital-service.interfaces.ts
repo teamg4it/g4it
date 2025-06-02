@@ -33,16 +33,26 @@ export interface DigitalServiceUserInfo {
 }
 
 export interface DigitalServiceParameterIa {
-    modelDetails: string;
+    id: number;
+    modelName: string;
+    nbParameters: string;
+    framework: string;
+    quantization: string;
+    totalGeneratedTokens: number;
+    numberUserYear: number;
+    averageNumberRequest: number;
+    averageNumberToken: number;
+    isInference: boolean;
+    isFinetuning: boolean;
+    creationDate: string;
+    lastUpdateDate: string;
+}
+
+export interface AiModelConfig {
+    modelName: string;
     parameters: string;
     framework: string;
     quantization: string;
-    inference: boolean;
-    finetuning: boolean;
-    numberOfUsersPerYear: number;
-    averageRequestsPerUser: number;
-    averageTokensPerRequest: number;
-    totalTokenGenerate: number;
 }
 
 export interface DigitalServiceServerConfig {
@@ -82,18 +92,14 @@ export interface DigitalServiceCloudServiceConfig {
 }
 
 export interface DigitalServicesAiInfrastructure {
-    id: number;
-    digitalServiceUid: string;
-    creationDate?: number;
-    name: string;
-    cloudProvider: string;
-    instanceType: string;
-    quantity: number;
-    location: DropdownValue;
-    locationValue: string;
-    annualUsage: number;
-    averageWorkload: number;
-    idFront?: number;
+    infrastructureType: "SERVER_DC" | "LAPTOP" | "DESKTOP";
+    nbCpuCores: number;
+    nbGpu: number;
+    gpuMemory: number;
+    ramSize: number;
+    location: string;
+    pue: number;
+    complementaryPue: number;
 }
 
 export interface DigitalServiceNetworkConfig {

@@ -357,6 +357,20 @@
         "averageToken": "Moyenne de token generé par an",
         "totalTokenGenerate": "Nombre totale de token annuel"
     },
+
+    "digital-services-ai-infrastructure": {
+        "type": "Type",
+        "cpu-cores": "Coeurs de processeur",
+        "gpu-count": "Nombre de GPU",
+        "gpu-memory": "Mémoire GPU (GB)",
+        "ram-size": "Taille de la RAM (GB)",
+        "power-effectiveness": "Efficacité électrique",
+        "datacenter-pue": "PUE du datacenter",
+        "complementary-pue": "PUE complémentaire",
+        "energy-efficiency": "Efficacité énergétique",
+        "location": "Localisation"
+    },
+
     "welcome-page": {
         "title": "Page de bienvenue",
         "name": "Accueil",

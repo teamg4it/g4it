@@ -357,6 +357,20 @@
         "averageToken": "Average number of tokens genereted per request",
         "totalTokenGenerate": "Total number of genereted tokens"
     },
+
+    "digital-services-ai-infrastructure": {
+        "type": "Type",
+        "cpu-cores": "CPU cores",
+        "gpu-count": "GPU count",
+        "gpu-memory": "GPU memory (GB)",
+        "ram-size": "RAM size (GB)",
+        "power-effectiveness": "Power effectiveness",
+        "datacenter-pue": "Datacenter PUE",
+        "complementary-pue": "Complementary PUE",
+        "energy-efficiency": "Energy efficiency",
+        "location": "Location"
+    },
+
     "welcome-page": {
         "title": "Welcome Page",
         "name": "Home",
