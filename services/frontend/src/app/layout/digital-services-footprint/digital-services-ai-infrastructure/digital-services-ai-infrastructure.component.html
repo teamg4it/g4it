@@ -18,14 +18,20 @@
             ></p-dropdown>
             <p
                 class="error-text"
-                *ngIf="infrastructureForm.get('infrastructureType')?.hasError('required')"
+                *ngIf="
+                    infrastructureForm.get('infrastructureType')?.invalid &&
+                    infrastructureForm.get('infrastructureType')?.touched
+                "
             >
                 {{ "digital-services-ai-infrastructure.type" | translate }}
                 {{ "common.mandatory" | translate }}
             </p>
             <p
                 class="error-text"
-                *ngIf="infrastructureForm.get('infrastructureType')?.hasError('pattern')"
+                *ngIf="
+                    infrastructureForm.get('infrastructureType')?.hasError('pattern') &&
+                    infrastructureForm.get('infrastructureType')?.touched
+                "
             >
                 {{ "digital-services-ai-infrastructure.type" | translate }}
                 {{ "common.invalid" | translate }}
@@ -45,7 +51,10 @@
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="infrastructureForm.get('nbCpuCores')?.hasError('required')"
+                        *ngIf="
+                            infrastructureForm.get('nbCpuCores')?.invalid &&
+                            infrastructureForm.get('nbCpuCores')?.touched
+                        "
                     >
                         {{ "digital-services-ai-infrastructure.cpu-cores" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -63,7 +72,10 @@
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="infrastructureForm.get('nbGpu')?.hasError('required')"
+                        *ngIf="
+                            infrastructureForm.get('nbGpu')?.invalid &&
+                            infrastructureForm.get('nbGpu')?.touched
+                        "
                     >
                         {{ "digital-services-ai-infrastructure.gpu-count" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -80,7 +92,10 @@
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="infrastructureForm.get('gpuMemory')?.hasError('required')"
+                        *ngIf="
+                            infrastructureForm.get('gpuMemory')?.invalid &&
+                            infrastructureForm.get('gpuMemory')?.touched
+                        "
                     >
                         {{ "digital-services-ai-infrastructure.gpu-memory" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -97,7 +112,10 @@
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="infrastructureForm.get('ramSize')?.hasError('required')"
+                        *ngIf="
+                            infrastructureForm.get('ramSize')?.invalid &&
+                            infrastructureForm.get('ramSize')?.touched
+                        "
                     >
                         {{ "digital-services-ai-infrastructure.ram-size" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -123,7 +141,10 @@
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="infrastructureForm.get('pue')?.hasError('required')"
+                        *ngIf="
+                            infrastructureForm.get('pue')?.invalid &&
+                            infrastructureForm.get('pue')?.touched
+                        "
                     >
                         {{
                             "digital-services-ai-infrastructure.datacenter-pue"
@@ -133,7 +154,10 @@
                     </p>
                     <p
                         class="error-text"
-                        *ngIf="infrastructureForm.get('pue')?.hasError('min')"
+                        *ngIf="
+                            infrastructureForm.get('pue')?.hasError('min') &&
+                            infrastructureForm.get('pue')?.touched
+                        "
                     >
                         {{
                             "digital-services-ai-infrastructure.datacenter-pue"
@@ -200,7 +224,10 @@
                 ></p-dropdown>
                 <p
                     class="error-text"
-                    *ngIf="infrastructureForm.get('location')?.hasError('required')"
+                    *ngIf="
+                        infrastructureForm.get('location')?.invalid &&
+                        infrastructureForm.get('location')?.touched
+                    "
                 >
                     {{ "digital-services-ai-infrastructure.location" | translate }}
                     {{ "common.mandatory" | translate }}

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -25,6 +26,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         private digitalServicesDataService: DigitalServicesDataService,
         private messageService: MessageService,
         private aiFormsStore: AIFormsStore,
+        private translate: TranslateService,
     ) {}
 
     ngOnInit(): void {
@@ -32,7 +34,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             modelName: ["", Validators.required],
             averageNumberToken: [0, [Validators.required, Validators.min(0)]],
             totalGeneratedTokens: [0],
-
             nbParameters: ["", Validators.required],
             framework: ["", Validators.required],
             quantization: ["", Validators.required],
@@ -49,15 +50,40 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     new Set(this.models.map((m) => m.modelName)),
                 ).map((name) => ({ label: name, value: name }));
 
-                // Initialiser les options pour le modèle sélectionné
-                const initialModel = this.terminalsForm.get("modelName")?.value;
-                if (initialModel) {
-                    const filtered = this.models.filter(
-                        (m) => m.modelName === initialModel,
-                    );
-                    this.parameterOptions = Array.from(
-                        new Set(filtered.map((m) => m.parameters)),
-                    ).map((p) => ({ label: p, value: p }));
+                // Restaurer les données sauvegardées si elles existent
+                const savedData = this.aiFormsStore.getParametersFormData();
+                if (savedData) {
+                    this.terminalsForm.patchValue(savedData);
+
+                    // Réinitialiser les options en fonction des valeurs sauvegardées
+                    if (savedData.modelName) {
+                        const filtered = this.models.filter(
+                            (m) => m.modelName === savedData.modelName,
+                        );
+                        this.parameterOptions = Array.from(
+                            new Set(filtered.map((m) => m.parameters)),
+                        ).map((p) => ({ label: p, value: p }));
+
+                        if (savedData.nbParameters) {
+                            const filteredByParam = filtered.filter(
+                                (m) => m.parameters === savedData.nbParameters,
+                            );
+                            this.frameworkOptions = Array.from(
+                                new Set(filteredByParam.map((m) => m.framework)),
+                            ).map((f) => ({ label: f, value: f }));
+
+                            if (savedData.framework) {
+                                const filteredByFramework = filteredByParam.filter(
+                                    (m) => m.framework === savedData.framework,
+                                );
+                                this.quantizationOptions = Array.from(
+                                    new Set(
+                                        filteredByFramework.map((m) => m.quantization),
+                                    ),
+                                ).map((q) => ({ label: q, value: q }));
+                            }
+                        }
+                    }
                 }
 
                 this.terminalsForm
@@ -76,13 +102,27 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         this.parameterOptions = Array.from(
                             new Set(filtered.map((m) => m.parameters)),
                         ).map((p) => ({ label: p, value: p }));
-                        this.frameworkOptions = [];
-                        this.quantizationOptions = [];
-                        this.terminalsForm.patchValue({
-                            nbParameters: null,
-                            framework: null,
-                            quantization: null,
-                        });
+
+                        // Ne pas réinitialiser les autres champs si on a déjà des valeurs valides
+                        const currentParams =
+                            this.terminalsForm.get("nbParameters")?.value;
+                        const currentFramework =
+                            this.terminalsForm.get("framework")?.value;
+                        const currentQuantization =
+                            this.terminalsForm.get("quantization")?.value;
+
+                        if (
+                            !currentParams ||
+                            !filtered.some((m) => m.parameters === currentParams)
+                        ) {
+                            this.frameworkOptions = [];
+                            this.quantizationOptions = [];
+                            this.terminalsForm.patchValue({
+                                nbParameters: null,
+                                framework: null,
+                                quantization: null,
+                            });
+                        }
                     });
 
                 this.terminalsForm
@@ -104,11 +144,23 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         this.frameworkOptions = Array.from(
                             new Set(filtered.map((m) => m.framework)),
                         ).map((f) => ({ label: f, value: f }));
-                        this.quantizationOptions = [];
-                        this.terminalsForm.patchValue({
-                            framework: null,
-                            quantization: null,
-                        });
+
+                        // Ne pas réinitialiser la quantification si on a déjà une valeur valide
+                        const currentFramework =
+                            this.terminalsForm.get("framework")?.value;
+                        const currentQuantization =
+                            this.terminalsForm.get("quantization")?.value;
+
+                        if (
+                            !currentFramework ||
+                            !filtered.some((m) => m.framework === currentFramework)
+                        ) {
+                            this.quantizationOptions = [];
+                            this.terminalsForm.patchValue({
+                                framework: null,
+                                quantization: null,
+                            });
+                        }
                     });
 
                 this.terminalsForm
@@ -133,22 +185,24 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         this.quantizationOptions = Array.from(
                             new Set(filtered.map((m) => m.quantization)),
                         ).map((q) => ({ label: q, value: q }));
-                        this.terminalsForm.patchValue({
-                            quantization: null,
-                        });
+
+                        // Ne pas réinitialiser la quantification si on a déjà une valeur valide
+                        const currentQuantization =
+                            this.terminalsForm.get("quantization")?.value;
+                        if (
+                            !currentQuantization ||
+                            !filtered.some((m) => m.quantization === currentQuantization)
+                        ) {
+                            this.terminalsForm.patchValue({
+                                quantization: null,
+                            });
+                        }
                     });
             },
             error: (err: any) => {
-                console.error("Erreur lors de la récupération des modèles IA:", err);
+                //console.error("Erreur lors de la récupération des modèles IA:", err);
             },
         });
-
-        // Restaurer les données sauvegardées si elles existent
-        const savedData = this.aiFormsStore.getParametersFormData();
-        if (savedData) {
-            this.terminalsForm.patchValue(savedData);
-            //this.updateTotalTokens();
-        }
 
         // Sauvegarder les données à chaque changement
         this.formSubscription = this.terminalsForm.valueChanges.subscribe((value) => {
@@ -180,8 +234,8 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
 
         this.messageService.add({
             severity: "success",
-            summary: "Succès",
-            detail: "Paramètres sauvegardés avec succès.",
+            summary: this.translate.instant("common.success"),
+            detail: this.translate.instant("eco-mind-ai.ai-parameters.save-success"),
         });
     }
 }
