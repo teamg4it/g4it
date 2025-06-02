@@ -7,7 +7,30 @@ weight: 6
 
 ## Process for revoking the digital service write privilege from all non-admin users in the DEMO organization for each subscriber.
 
-1. Execute the procedure script :
+1. Execute the script to identify the non-admin users with write access on digital service module.
+
+```sql
+SELECT
+    u.email,
+    o.name AS organization_name,
+    s.name AS subscriber_name,
+    uo.id AS user_organization_id
+FROM public.g4it_user_role_organization uro
+JOIN public.g4it_user_organization uo ON uro.user_organization_id = uo.id
+JOIN public.g4it_user u ON uo.user_id = u.id
+JOIN public.g4it_organization o ON uo.organization_id = o.id
+JOIN public.g4it_subscriber s ON o.subscriber_id = s.id
+WHERE uro.role_id = (SELECT id FROM public.g4it_role WHERE name = 'ROLE_DIGITAL_SERVICE_WRITE')
+    AND o.name = 'DEMO'
+    AND NOT EXISTS (
+        SELECT 1
+        FROM public.g4it_user_role_organization admin_uro
+        WHERE admin_uro.user_organization_id = uro.user_organization_id
+        AND admin_uro.role_id = (SELECT id FROM public.g4it_role WHERE name = 'ROLE_ORGANIZATION_ADMINISTRATOR')
+    );
+```
+
+2. Execute the procedure script :
 
 ```sql
  CREATE OR REPLACE PROCEDURE remove_write_role_for_demo_users()
@@ -77,19 +100,21 @@ weight: 6
               $$;
 ```
 
-2. Run the procedure :
+3. Run the procedure :
 
 ```sql
 call remove_write_role_for_demo_users;
 ```
 
-3. Drop the procedure:
+4. Validate if all the users identified in _STEP 1_ with the 'Processed user' from _STEP 2_.
+
+5. Drop the procedure:
 
 ```sql
 drop procedure remove_write_role_for_demo_users;
 ```
 
-3. Rollback script to restore the write access:
+6. Rollback script to restore the write access:
 
 ```sql
 DO $$
@@ -97,7 +122,7 @@ DECLARE
     write_role_id BIGINT;
     read_role_id BIGINT;
     user_record RECORD;
-    target_emails VARCHAR[] := ARRAY['abc@xyz.com', 'xyz@abc.com']; -- Input array
+    target_emails VARCHAR[] := ARRAY['abc@xyz.com', 'xyz@abc.com']; -- Input array listed from the *STEP 1*
 BEGIN
     -- Get role IDs with validation
     SELECT id INTO write_role_id FROM public.g4it_role WHERE name = 'ROLE_DIGITAL_SERVICE_WRITE';
