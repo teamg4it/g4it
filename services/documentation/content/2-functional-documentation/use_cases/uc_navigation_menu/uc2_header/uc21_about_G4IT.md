@@ -36,7 +36,7 @@ accessibility for all users.
 The **About G4IT** menu provides access to helpful resources such as support, documentation, and business information.  
 It helps users find key information about the platform.
 
-![Screenshot of the About G4IT menu showing Useful Information and Help Center links](../images/about_g4it.PNG)
+![Screenshot of the About G4IT menu showing Useful Information and Help Center links](../images/about_g4it.png)
 
 ---
 
