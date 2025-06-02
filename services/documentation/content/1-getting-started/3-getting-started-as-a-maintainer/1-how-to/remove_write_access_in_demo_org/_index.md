@@ -1,5 +1,5 @@
 ---
-title: "Script to remove the privilege 'ROLE_DIGITAL_SERVICE_WRITE' on DEMO"
+title: "Script to remove the 'write' privilege on DEMO organization"
 description: "How to remove the privilege 'ROLE_DIGITAL_SERVICE_WRITE' on DEMO organization"
 date: 2025-05-29T14:28:06+01:00
 weight: 6
