@@ -48,6 +48,13 @@ export interface DigitalServiceParameterIa {
     lastUpdateDate: string;
 }
 
+export interface AiModelConfig {
+    modelName: string;
+    parameters: string;
+    framework: string;
+    quantization: string;
+}
+
 export interface DigitalServiceServerConfig {
     id?: number;
     sumOfVmQuantity?: number;

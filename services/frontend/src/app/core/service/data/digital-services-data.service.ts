@@ -11,6 +11,7 @@ import { map, Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import {
+    AiModelConfig,
     DigitalService,
     DSCriteriaRest,
     Host,
@@ -20,6 +21,7 @@ import {
 import { MapString } from "../../interfaces/generic.interfaces";
 
 const endpoint = Constants.ENDPOINTS.digitalServices;
+const ecomindaiModelConfig = Constants.ENDPOINTS.ecomindaiModelConfig;
 
 @Injectable({
     providedIn: "root",
@@ -104,6 +106,10 @@ export class DigitalServicesDataService {
         return this.http.get<string[]>(
             `referential/boaviztapi/cloud/providers/instances?provider=${providerName}`,
         );
+    }
+
+    getModels(model: string): Observable<AiModelConfig[]> {
+        return this.http.get<AiModelConfig[]>(`${ecomindaiModelConfig}/${model}`);
     }
 
     launchEvaluating(uid: DigitalService["uid"]): Observable<string> {
