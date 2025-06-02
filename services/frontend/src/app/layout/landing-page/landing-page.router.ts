@@ -16,6 +16,14 @@ export const appRoutes: Routes = [
         canActivate,
     },
     {
+        path: Constants.DECLARATIONS,
+        loadComponent: () =>
+            import("../about-us/declarations/declarations.component").then(
+                (m) => m.DeclarationsComponent,
+            ),
+        canActivate,
+    },
+    {
         path: "administration",
         loadChildren: () =>
             import("../administration/administration.module").then(
