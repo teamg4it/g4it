@@ -178,12 +178,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const formValue = this.terminalsForm.value;
-        console.log(
-            "Paramètres AI - Données envoyées au backend :",
-            JSON.stringify(formValue, null, 2),
-        );
-
         this.messageService.add({
             severity: "success",
             summary: "Succès",

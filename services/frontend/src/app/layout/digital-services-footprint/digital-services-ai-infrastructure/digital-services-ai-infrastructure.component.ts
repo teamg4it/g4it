@@ -98,12 +98,6 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
             return;
         }
 
-        const formValue = this.infrastructureForm.value;
-        console.log(
-            "🏗️ Infrastructure AI - Données envoyées au backend :",
-            JSON.stringify(formValue, null, 2),
-        );
-
         this.messageService.add({
             severity: "success",
             summary: "Succès",
