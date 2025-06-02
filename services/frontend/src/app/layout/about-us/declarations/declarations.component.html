@@ -141,6 +141,7 @@
                 </span>
 
                 <button
+                    tabindex="-1"
                     class="bg-transparent border-none cursor-pointer vertical-align-middle"
                 >
                     <img
@@ -293,6 +294,7 @@
                     {{ "declarations.feedback-contact.send-message" | translate }}
                     <a
                         (click)="composeEmail()"
+                        tabindex="0"
                         [ariaLabel]="'declarations.accessibility.email-link' | translate"
                         class="cursor-pointer"
                         ><u>support.g4it&#64;soprasteria.com</u></a
