@@ -90,9 +90,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     .get("modelName")
                     ?.valueChanges.subscribe((selectedModelName) => {
                         if (!selectedModelName) {
-                            this.parameterOptions = [];
-                            this.frameworkOptions = [];
-                            this.quantizationOptions = [];
+                            this.resetDependentFields();
                             return;
                         }
 
@@ -103,25 +101,13 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                             new Set(filtered.map((m) => m.parameters)),
                         ).map((p) => ({ label: p, value: p }));
 
-                        // Ne pas réinitialiser les autres champs si on a déjà des valeurs valides
                         const currentParams =
                             this.terminalsForm.get("nbParameters")?.value;
-                        const currentFramework =
-                            this.terminalsForm.get("framework")?.value;
-                        const currentQuantization =
-                            this.terminalsForm.get("quantization")?.value;
-
                         if (
                             !currentParams ||
                             !filtered.some((m) => m.parameters === currentParams)
                         ) {
-                            this.frameworkOptions = [];
-                            this.quantizationOptions = [];
-                            this.terminalsForm.patchValue({
-                                nbParameters: null,
-                                framework: null,
-                                quantization: null,
-                            });
+                            this.resetDependentFields("parameters");
                         }
                     });
 
@@ -129,8 +115,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     .get("nbParameters")
                     ?.valueChanges.subscribe((selectedParameter) => {
                         if (!selectedParameter) {
-                            this.frameworkOptions = [];
-                            this.quantizationOptions = [];
+                            this.resetDependentFields("framework");
                             return;
                         }
 
@@ -145,21 +130,13 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                             new Set(filtered.map((m) => m.framework)),
                         ).map((f) => ({ label: f, value: f }));
 
-                        // Ne pas réinitialiser la quantification si on a déjà une valeur valide
                         const currentFramework =
                             this.terminalsForm.get("framework")?.value;
-                        const currentQuantization =
-                            this.terminalsForm.get("quantization")?.value;
-
                         if (
                             !currentFramework ||
                             !filtered.some((m) => m.framework === currentFramework)
                         ) {
-                            this.quantizationOptions = [];
-                            this.terminalsForm.patchValue({
-                                framework: null,
-                                quantization: null,
-                            });
+                            this.resetDependentFields("quantization");
                         }
                     });
 
@@ -167,7 +144,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     .get("framework")
                     ?.valueChanges.subscribe((selectedFramework) => {
                         if (!selectedFramework) {
-                            this.quantizationOptions = [];
+                            this.resetDependentFields("quantization");
                             return;
                         }
 
@@ -186,7 +163,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                             new Set(filtered.map((m) => m.quantization)),
                         ).map((q) => ({ label: q, value: q }));
 
-                        // Ne pas réinitialiser la quantification si on a déjà une valeur valide
                         const currentQuantization =
                             this.terminalsForm.get("quantization")?.value;
                         if (
@@ -237,5 +213,27 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             summary: this.translate.instant("common.success"),
             detail: this.translate.instant("eco-mind-ai.ai-parameters.save-success"),
         });
+    }
+
+    private resetDependentFields(
+        startFrom: "parameters" | "framework" | "quantization" = "parameters",
+    ): void {
+        const resetValues: any = {};
+
+        if (startFrom === "parameters") {
+            resetValues.nbParameters = null;
+            resetValues.framework = null;
+            resetValues.quantization = null;
+            this.frameworkOptions = [];
+            this.quantizationOptions = [];
+        } else if (startFrom === "framework") {
+            resetValues.framework = null;
+            resetValues.quantization = null;
+            this.quantizationOptions = [];
+        } else if (startFrom === "quantization") {
+            resetValues.quantization = null;
+        }
+
+        this.terminalsForm.patchValue(resetValues);
     }
 }
