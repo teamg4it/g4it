@@ -136,8 +136,7 @@ public class UserService {
         } else {
             List<Role> accessRoles = List.of(
                     roleRepository.findByName(Constants.ROLE_INVENTORY_READ),
-                    roleRepository.findByName(Constants.ROLE_DIGITAL_SERVICE_READ),
-                    roleRepository.findByName(Constants.ROLE_DIGITAL_SERVICE_WRITE)
+                    roleRepository.findByName(Constants.ROLE_DIGITAL_SERVICE_READ)
             );
 
             User newUser = createNewUserWithDomain(accessRoles, userInfo);

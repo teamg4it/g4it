@@ -779,7 +779,7 @@
             "digital-service-module": "Module de services numériques"
         },
         "super-admin": {
-            "migrate-data-title": "Evaluate all digital services"
+            "migrate-data-title": "Start the release's script"
         }
     },
     "error-graph": {
@@ -788,5 +788,109 @@
     },
     "header": {
         "menu": "main menu"
+    },
+    "declarations": {
+        "title": "G4IT Declarations",
+        "accessibility-text": "Accessibility : Not compliant",
+        "ecodesign": "Eco-Design",
+        "ecodesign-declaration": "Eco-design Declaration",
+        "objectives": "Objectives",
+        "commited-paragraph": "G4IT is committed to an eco-design approach aimed at reducing the environmental footprint of its digital services. This declaration was drafted on 28/04/2025 as part of the implementation of the General Policy Framework for the Ecodesign of Digital Services (2024 version).",
+        "framework-paragraph": "This framework, developed jointly by Arcep and Arcom in collaboration with ADEME, DINUM, CNIL, and Inria, outlines the key directions for integrating digital sobriety into the design and operation of digital services. The official document is available on the Arcep website: ",
+        "framework-link": "General Policy Framework for the Ecodesign of Digital Services – 2024 version",
+        "objectives-paragraph": "Its implementation is based on four main objectives:",
+        "functional-areas-paragraph": "This declaration aims to be exhaustive regarding the use cases covered by the application, represented by three main functional areas:",
+        "first-objectives": "Design more sustainable digital services to extend the lifespan of user devices;",
+        "second-objectives": "Promote a mindset of digital sobriety in response to attention-grabbing strategies, consistent with international environmental commitments;",
+        "third-objectives": "Reduce IT resources used throughout the digital services’ lifecycle, particularly through data traffic and infrastructure optimization;",
+        "fourth-objectives": "Enhance transparency regarding the environmental footprint of digital services.",
+        "functional-areas-first": "Impact assessment of an inventory, which may correspond to an information system, an application portfolio, or a set of physical and virtual equipment;",
+        "functional-areas-second": "Impact assessment of a digital service;",
+        "functional-areas-third": "Administration of organizations and platform users.",
+        "key-results": {
+            "title": "Key Results",
+            "key-results-paragraph": "The compliance audit assessed the RGESN (2024 version) compliance of the website at {{ecoDesignPercent}}% as of 28/04/2025.",
+            "strategy": "Strategy: {{percentage}}%",
+            "specifications": "Specifications: {{percentage}}%",
+            "architecture": "Architecture: {{percentage}}%",
+            "user-experience": "User Experience and Interface: {{percentage}}%",
+            "content": "Content: {{percentage}}%",
+            "frontEnd": "FrontEnd: {{percentage}}%",
+            "backEnd": "BackEnd: {{percentage}}%",
+            "hosting": "Hosting: {{percentage}}%",
+            "algorithms": "Algorithms: {{percentage}}%"
+        },
+        "commitment": "Commitments and Roadmap",
+        "action-item": {
+            "title": "Additionally, the following action items will be implemented in 2025:",
+            "item": {
+                "one": "Improve display with 200% zoom to enable use on different types of screens;",
+                "two": "Conduct a POC on native compilation with Springboot 3.3 to reduce RAM and CPU consumption;",
+                "three": "Migrate the integration environment to a data center in France and move hosting to a more committed, sovereign, and transparent cloud provider."
+            }
+        },
+        "future-development": "To achieve this, reviews and audits will be conducted annually, and eco-design considerations are integrated into daily feature development.",
+        "download-declaration": "Download the full declaration (PDF, {{pdfSize}}KB)",
+        "accessibility-declaration": "Accessibility Declaration",
+        "accessibility-declaration-para": "G4IT is committed to making its websites, intranets, extranets, and software accessible, in accordance with Article 47 of Law No. 2005-102 of February 11, 2005.",
+        "declaration-applies": "This accessibility declaration applies to the website",
+        "compliance-status": "Compliance Status",
+        "compliance-status-para": "The website is not compliant with the General Accessibility Improvement Framework (RGAA), version 4. Non-compliance is due to the points and exemptions listed below.",
+        "test-result": {
+            "title": "Test Results",
+            "one": "45.31% of RGAA version 4 criteria are met",
+            "two": "Average site compliance rate: 57.34%"
+        },
+        "non-accessible-content": {
+            "title": "Non-accessible Content",
+            "one": "Site graphics",
+            "two": "Modals",
+            "three": "Page structure"
+        },
+        "technology-used": {
+            "title": "Technologies Used",
+            "one": "Angular - 18.2.13",
+            "two": "HTML5",
+            "three": "CSS"
+        },
+        "test-env": {
+            "title": "Test Environment",
+            "one": "Chrome, Firefox, and NVDA",
+            "two": "Safari and VoiceOver"
+        },
+        "accessibility-evaluation-tools": {
+            "title": "Accessibility Evaluation Tools",
+            "one": "Web Developer",
+            "two": "Stylus",
+            "three": "HeadingsMap",
+            "four": "WCAG Contrast Checker"
+        },
+        "pages-audited": {
+            "title": "Pages Audited for Accessibility",
+            "equipment-page": "Equipment Page",
+            "service-details": "Service Detail",
+            "visualization": "Visualization"
+        },
+        "feedback-contact": {
+            "title": "Feedback and Contact",
+            "para": "If you are unable to access content or a service, you can contact the G4IT representative to obtain an accessible alternative or content in another form.",
+            "send-message": "Send a message: ",
+            "contact-entity": "Contact the responsible entity for the online service"
+        },
+        "appeal-procedures": {
+            "title": "Appeal Procedures",
+            "para": "If you notice an accessibility issue and do not receive a satisfactory response, you can:",
+            "one": "Write to the Defender of Rights:",
+            "two": "Contact the regional delegate of the Defender of Rights:",
+            "three": "Send a postage-free letter to: Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07, France",
+            "list-delegates": "list of delegates",
+            "form": "form"
+        },
+        "accessibility": {
+            "declaration-pdf": "Download the full eco-design statement as a pdf ({{pdfSize}}KB)",
+            "internal-link": "Go to internal page {{title}}",
+            "external-link": "Open the page {{title}} in a new tab",
+            "email-link": "Send an email to support.g4it@soprasteria.com"
+        }
     }
 }
