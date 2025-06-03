@@ -78,6 +78,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
             useClass: ApiInterceptor,
             multi: true,
         },
+        {provide: APP_BASE_HREF, useValue: '/'+ environment.subpath},
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,

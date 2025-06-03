@@ -17,6 +17,7 @@ export const environment = {
         enabled: "${KEYCLOAK_ENABLED}",
     },
     frontEndUrl: "${FRONTEND_URL}",
+    subpath: "${SUBPATH}",
     showBetaFeatures: "${SHOW_BETA_FEATURES}",
     matomo: {
         matomoTagManager: {
