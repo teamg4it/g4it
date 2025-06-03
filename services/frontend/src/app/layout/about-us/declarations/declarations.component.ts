@@ -41,6 +41,13 @@ export class DeclarationsComponent {
             });
     }
 
+    scrollTo(id: string) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+        }
+    }
+
     composeEmail() {
         window.location.href = this.userService.composeEmail(
             this.currentSubscriber,

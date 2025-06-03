@@ -795,7 +795,7 @@
         "ecodesign": "Eco-Design",
         "ecodesign-declaration": "Eco-design Declaration",
         "objectives": "Objectives",
-        "commited-paragraph": "G4IT is committed to an eco-design approach aimed at reducing the environmental footprint of its digital services. This declaration was drafted on 28/04/2025 as part of the implementation of the General Policy Framework for the Ecodesign of Digital Services (2024 version).",
+        "commited-paragraph": "G4IT Team is committed to an eco-design approach aimed at reducing the environmental footprint of its digital services. This declaration was drafted on 28/04/2025 as part of the implementation of the General Policy Framework for the Ecodesign of Digital Services (2024 version).",
         "framework-paragraph": "This framework, developed jointly by Arcep and Arcom in collaboration with ADEME, DINUM, CNIL, and Inria, outlines the key directions for integrating digital sobriety into the design and operation of digital services. The official document is available on the Arcep website: ",
         "framework-link": "General Policy Framework for the Ecodesign of Digital Services – 2024 version",
         "objectives-paragraph": "Its implementation is based on four main objectives:",
@@ -891,6 +891,59 @@
             "internal-link": "Go to internal page {{title}}",
             "external-link": "Open the page {{title}} in a new tab",
             "email-link": "Send an email to support.g4it@soprasteria.com"
+        },
+        "multi-year-accessibility-plan": {
+            "title": "Multi-year Accessibility Plan",
+            "para": "In alignment with the RGAA and our continuous improvement approach, we are committed to enhancing the accessibility of our digital services. Our action plan is structured around the following timelines:",
+            "short-term": {
+                "title": "Short-term (within 1 month):",
+                "training": {
+                    "title": "Training Plan:",
+                    "para": "All members of the G4IT team (excluding occasional contributors) must have completed an e-learning awareness module on accessible website development during the first month of their assignment."
+                },
+                "checklist": {
+                    "title": "Accessibility Checklist:",
+                    "para": "Implementation of a checklist in the Definition of Done (DoD) for all US front-end developments to verify key accessibility best practices."
+                },
+                "monitoring": {
+                    "title": "Accessibility Monitoring:",
+                    "para": "Monitoring of each CYPRESS scenario release and correction of critical and serious anomalies before the production release (MEP)."
+                }
+            },
+            "medium-term": {
+                "title": "Medium-term (within 3 to 6 months):",
+                "zoom": {
+                    "title": "Zoom 200%:",
+                    "para": "Allow users to zoom in at 200% without loss of content or functionality on the two main user journeys:"
+                },
+                "is-module": {
+                    "title": "Inventory Module:",
+                    "para": "Visualisation of the impact of physical equipment."
+                },
+                "ds-module": {
+                    "title": "Digital Service Module:",
+                    "para": "Visualisation of the impact of a digital service."
+                },
+                "training-plan": {
+                    "title": "Training Plan:",
+                    "para": "Product Owners of the G4IT team must have completed training on accessible website design within the first 3 months of their assignment."
+                }
+            },
+            "long-term": {
+                "title": "Long-term (within 6 to 12 months):",
+                "graph": {
+                    "title": "Graph Accessibility:",
+                    "para": "Implementation of textual descriptions summarising the main information presented in the multi-criteria radar charts."
+                },
+                "audit": {
+                    "title": "Accessibility Audit:",
+                    "para": "Carrying out a new accessibility audit in 2026."
+                },
+                "training-plan": {
+                    "title": "Training Plan:",
+                    "para": "All G4IT team members must have completed accessibility training tailored to their roles (Product Owner, front-end developer, tester, etc.) within the first 3 months of their assignment."
+                }
+            }
         }
     }
 }
