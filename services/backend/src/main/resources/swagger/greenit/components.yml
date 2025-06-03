@@ -951,6 +951,8 @@ components:
           type: string
         framework:
           type: string
+        stage:
+          type: string
         quantization:
           type: string
         totalGeneratedTokens:

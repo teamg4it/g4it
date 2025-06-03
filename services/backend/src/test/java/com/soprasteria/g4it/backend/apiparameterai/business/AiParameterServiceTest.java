@@ -51,6 +51,8 @@ public class AiParameterServiceTest {
 
         // Setup AiParameterRest
         aiParameterRest = AiParameterRest.builder().build();
+        aiParameterRest.setModelName("llama3");
+        aiParameterRest.setStage("LLM");
         aiParameterRest.setNbParameters("1000000");
         aiParameterRest.setFramework("PyTorch");
         aiParameterRest.setQuantization("INT8");
@@ -63,6 +65,8 @@ public class AiParameterServiceTest {
 
         // Setup AiParameter entity
         aiParameterEntity =  AiParameter.builder().build();
+        aiParameterEntity.setModelName("llama3");
+        aiParameterEntity.setStage("LLM");
         aiParameterEntity.setNbParameters("1000000");
         aiParameterEntity.setFramework("PyTorch");
         aiParameterEntity.setQuantization("INT8");
@@ -76,6 +80,8 @@ public class AiParameterServiceTest {
         // Setup saved entity (with ID and dates)
         savedAiParameterEntity =  AiParameter.builder().build();
         savedAiParameterEntity.setId(1L);
+        savedAiParameterEntity.setModelName("llama3");
+        savedAiParameterEntity.setStage("LLM");
         savedAiParameterEntity.setNbParameters("1000000");
         savedAiParameterEntity.setFramework("PyTorch");
         savedAiParameterEntity.setQuantization("INT8");
@@ -96,6 +102,8 @@ public class AiParameterServiceTest {
         // Setup expected result
         expectedResult = new AiParameterRest();
         expectedResult.setId(1L);
+        expectedResult.setModelName("llama3");
+        expectedResult.setStage("LLM");
         expectedResult.setNbParameters("1000000");
         expectedResult.setFramework("PyTorch");
         expectedResult.setQuantization("INT8");
@@ -270,6 +278,8 @@ public class AiParameterServiceTest {
     void createAiParameter_WithValidBoundaryValues_Success() {
         // Given - Test with boundary values
         AiParameterRest boundaryParameterRest = AiParameterRest.builder().build();
+        boundaryParameterRest.setModelName("llama3");
+        boundaryParameterRest.setStage("LLM");
         boundaryParameterRest.setNbParameters("999999999");
         boundaryParameterRest.setFramework("Custom Framework");
         boundaryParameterRest.setQuantization("INT4");
@@ -281,6 +291,8 @@ public class AiParameterServiceTest {
         boundaryParameterRest.setIsFinetuning(true);
 
         AiParameter boundaryParameterEntity = AiParameter.builder().build();
+        boundaryParameterEntity.setModelName("llama3");
+        boundaryParameterEntity.setStage("LLM");
         boundaryParameterEntity.setNbParameters("999999999");
         boundaryParameterEntity.setFramework("Custom Framework");
         boundaryParameterEntity.setQuantization("INT4");

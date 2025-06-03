@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.springframework.lang.Nullable;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -35,6 +36,15 @@ public class AiParameter {
      */
     private String digitalServiceUid;
 
+    /**
+     * Model Name
+     */
+    private String modelName;
+
+    /**
+     * Stage : LLM, CLASSIFICATION,REGRESSION.
+     */
+    private String stage;
 
     /**
      * Parameters.

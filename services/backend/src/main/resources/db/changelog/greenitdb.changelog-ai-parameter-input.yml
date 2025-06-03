@@ -55,3 +55,17 @@ databaseChangeLog:
                     references: digital_service(uid)
 
 
+
+  - changeSet:
+      id: add-modelName-and-stage-ai_parameters-table
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: ai_parameters
+            columns:
+              - column:
+                  name: model_name
+                  type: varchar(255)
+              - column:
+                  name: stage
+                  type: varchar(255)
