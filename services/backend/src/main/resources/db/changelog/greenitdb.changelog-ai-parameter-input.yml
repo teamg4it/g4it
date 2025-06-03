@@ -57,7 +57,7 @@ databaseChangeLog:
 
 
   - changeSet:
-      id: add-modelName-and-stage-ai_parameters-table
+      id: add-modelName-and-type-ai_parameters-table
       author: G4IT Dev Team
       changes:
         - addColumn:

@@ -334,7 +334,7 @@ public class AiParameterServiceTest {
         invalidParameterRest.setAverageNumberRequest(Long.valueOf("50000"));
         invalidParameterRest.setAverageNumberToken(Long.valueOf("10000"));
         invalidParameterRest.setIsInference(true);
-        invalidParameterRest.setIsFinetuning(true);
+        invalidParameterRest.setIsFinetuning(false);
 
 
         when(digitalServiceRepository.findById(digitalServiceUid))
@@ -397,6 +397,27 @@ public class AiParameterServiceTest {
             reset(digitalServiceRepository, aiParameterMapper, aiParameterRepository);
         }
     }
+
+    @Test
+    void validateAiParameterBusinessRules_Success() {
+        // Given
+        AiParameterRest invalidCombination = AiParameterRest.builder().build();
+        invalidCombination.setType("LLM");
+        invalidCombination.setFramework("TensorFlow");
+        invalidCombination.setQuantization("FP32");
+        invalidCombination.setNbParameters("999999999");
+        invalidCombination.setTotalGeneratedTokens(Long.valueOf("999999999999999999"));
+        invalidCombination.setNumberUserYear(Long.valueOf("1000000000"));
+        invalidCombination.setAverageNumberRequest(Long.valueOf("50000"));
+        invalidCombination.setAverageNumberToken(Long.valueOf("10000"));
+        invalidCombination.setIsInference(true);
+        invalidCombination.setIsFinetuning(false);
+
+        lenient().when(digitalServiceRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalService));
+
+    }
+
     @Test
     void createAiParameter_ValidatesDateTimeSettings() {
         // Given
