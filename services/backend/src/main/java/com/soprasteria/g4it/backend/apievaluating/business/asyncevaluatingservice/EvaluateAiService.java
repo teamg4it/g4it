@@ -17,12 +17,14 @@ import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -68,6 +70,9 @@ public class EvaluateAiService {
         //TODO : call Ecomind with the data
 
         //TODO : save the result of the call in db
+        List<AIServiceEstimationBO> estimationBOList =  List.of(AIServiceEstimationBO.builder().build());
+        AIServiceEstimationBO estimationBO = estimationBOList.get(0);
+
 
         //TODO : Call numecoeval
 

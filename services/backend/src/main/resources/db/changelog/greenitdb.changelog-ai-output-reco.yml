@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-out-ai-reco
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: out_ai_reco
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: out_ai_reco_id_pk
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: out_ai_reco_task_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: electricity_consumption
+                  type: double
+              - column:
+                  name: runtime
+                  type: bigint
+              - column:
+                  name: recommendations
+                  type: jsonb
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
