@@ -968,7 +968,7 @@ components:
           type: string
         framework:
           type: string
-        stage:
+        type:
           type: string
         quantization:
           type: string

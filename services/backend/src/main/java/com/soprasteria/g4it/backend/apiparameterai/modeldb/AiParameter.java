@@ -42,9 +42,9 @@ public class AiParameter {
     private String modelName;
 
     /**
-     * Stage : LLM, CLASSIFICATION,REGRESSION.
+     * Type : LLM, CLASSIFICATION,REGRESSION.
      */
-    private String stage;
+    private String type;
 
     /**
      * Parameters.

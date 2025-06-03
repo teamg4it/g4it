@@ -67,5 +67,5 @@ databaseChangeLog:
                   name: model_name
                   type: varchar(255)
               - column:
-                  name: stage
+                  name: type
                   type: varchar(255)

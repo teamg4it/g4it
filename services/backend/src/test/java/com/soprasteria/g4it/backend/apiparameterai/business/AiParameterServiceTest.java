@@ -52,7 +52,7 @@ public class AiParameterServiceTest {
         // Setup AiParameterRest
         aiParameterRest = AiParameterRest.builder().build();
         aiParameterRest.setModelName("llama3");
-        aiParameterRest.setStage("LLM");
+        aiParameterRest.setType("LLM");
         aiParameterRest.setNbParameters("1000000");
         aiParameterRest.setFramework("PyTorch");
         aiParameterRest.setQuantization("INT8");
@@ -66,7 +66,7 @@ public class AiParameterServiceTest {
         // Setup AiParameter entity
         aiParameterEntity =  AiParameter.builder().build();
         aiParameterEntity.setModelName("llama3");
-        aiParameterEntity.setStage("LLM");
+        aiParameterEntity.setType("LLM");
         aiParameterEntity.setNbParameters("1000000");
         aiParameterEntity.setFramework("PyTorch");
         aiParameterEntity.setQuantization("INT8");
@@ -81,7 +81,7 @@ public class AiParameterServiceTest {
         savedAiParameterEntity =  AiParameter.builder().build();
         savedAiParameterEntity.setId(1L);
         savedAiParameterEntity.setModelName("llama3");
-        savedAiParameterEntity.setStage("LLM");
+        savedAiParameterEntity.setType("LLM");
         savedAiParameterEntity.setNbParameters("1000000");
         savedAiParameterEntity.setFramework("PyTorch");
         savedAiParameterEntity.setQuantization("INT8");
@@ -103,7 +103,7 @@ public class AiParameterServiceTest {
         expectedResult = new AiParameterRest();
         expectedResult.setId(1L);
         expectedResult.setModelName("llama3");
-        expectedResult.setStage("LLM");
+        expectedResult.setType("LLM");
         expectedResult.setNbParameters("1000000");
         expectedResult.setFramework("PyTorch");
         expectedResult.setQuantization("INT8");
@@ -279,7 +279,7 @@ public class AiParameterServiceTest {
         // Given - Test with boundary values
         AiParameterRest boundaryParameterRest = AiParameterRest.builder().build();
         boundaryParameterRest.setModelName("llama3");
-        boundaryParameterRest.setStage("LLM");
+        boundaryParameterRest.setType("LLM");
         boundaryParameterRest.setNbParameters("999999999");
         boundaryParameterRest.setFramework("Custom Framework");
         boundaryParameterRest.setQuantization("INT4");
@@ -292,7 +292,7 @@ public class AiParameterServiceTest {
 
         AiParameter boundaryParameterEntity = AiParameter.builder().build();
         boundaryParameterEntity.setModelName("llama3");
-        boundaryParameterEntity.setStage("LLM");
+        boundaryParameterEntity.setType("LLM");
         boundaryParameterEntity.setNbParameters("999999999");
         boundaryParameterEntity.setFramework("Custom Framework");
         boundaryParameterEntity.setQuantization("INT4");
@@ -320,6 +320,83 @@ public class AiParameterServiceTest {
         assertEquals(expectedResult, result);
     }
 
+    @Test
+    void createAiParameter_WithEmptyModelName_ThrowsException() {
+        // Given
+        AiParameterRest invalidParameterRest = AiParameterRest.builder().build();
+        invalidParameterRest.setModelName(""); // Empty model name
+        invalidParameterRest.setType("LLM");
+        invalidParameterRest.setNbParameters("999999999");
+        invalidParameterRest.setFramework("Custom Framework");
+        invalidParameterRest.setQuantization("INT4");
+        invalidParameterRest.setTotalGeneratedTokens(Long.valueOf("999999999999999999"));
+        invalidParameterRest.setNumberUserYear(Long.valueOf("1000000000"));
+        invalidParameterRest.setAverageNumberRequest(Long.valueOf("50000"));
+        invalidParameterRest.setAverageNumberToken(Long.valueOf("10000"));
+        invalidParameterRest.setIsInference(true);
+        invalidParameterRest.setIsFinetuning(true);
+
+
+        when(digitalServiceRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalService));
+
+        // When & Then
+        assertThrows(NullPointerException.class,
+                () -> aiParameterService.createAiParameter(digitalServiceUid, invalidParameterRest));
+    }
+    @Test
+    void createAiParameter_WithAllValidTypes_Success() {
+        // Test all valid stage values if they exist
+        String[] validTypes= {"LLM", "CLASSIFICATION", "REGRESSION"}; // Adjust based on your enum/constants
+
+        for (String type : validTypes) {
+            // Given
+            AiParameterRest boundaryParameterRest = AiParameterRest.builder().build();
+            boundaryParameterRest.setModelName("llama3");
+            boundaryParameterRest.setType(type);
+            boundaryParameterRest.setNbParameters("999999999");
+            boundaryParameterRest.setFramework("Custom Framework");
+            boundaryParameterRest.setQuantization("INT4");
+            boundaryParameterRest.setTotalGeneratedTokens(Long.valueOf("999999999999999999"));
+            boundaryParameterRest.setNumberUserYear(Long.valueOf("1000000000"));
+            boundaryParameterRest.setAverageNumberRequest(Long.valueOf("50000"));
+            boundaryParameterRest.setAverageNumberToken(Long.valueOf("10000"));
+            boundaryParameterRest.setIsInference(true);
+            boundaryParameterRest.setIsFinetuning(true);
+
+            AiParameter boundaryParameterEntity = AiParameter.builder().build();
+            boundaryParameterEntity.setModelName("llama3");
+            boundaryParameterEntity.setType(type);
+            boundaryParameterEntity.setNbParameters("999999999");
+            boundaryParameterEntity.setFramework("Custom Framework");
+            boundaryParameterEntity.setQuantization("INT4");
+            boundaryParameterEntity.setTotalGeneratedTokens(BigInteger.valueOf(Long.parseLong("999999999999999999")));
+            boundaryParameterEntity.setNumberUserYear(BigInteger.valueOf(Long.parseLong(("1000000000"))));
+            boundaryParameterEntity.setAverageNumberRequest(BigInteger.valueOf(Long.parseLong(("50000"))));
+            boundaryParameterEntity.setAverageNumberToken(BigInteger.valueOf(Long.parseLong(("10000"))));
+            boundaryParameterEntity.setIsInference(true);
+            boundaryParameterEntity.setIsFinetuning(true);
+
+
+            when(digitalServiceRepository.findById(digitalServiceUid))
+                    .thenReturn(Optional.of(digitalService));
+            when(aiParameterMapper.toEntity(boundaryParameterRest))
+                    .thenReturn(boundaryParameterEntity);
+            when(aiParameterRepository.save(any(AiParameter.class)))
+                    .thenReturn(savedAiParameterEntity);
+            when(aiParameterMapper.toBusinessObject(savedAiParameterEntity))
+                    .thenReturn(expectedResult);
+
+            // When
+            AiParameterRest result = aiParameterService.createAiParameter(digitalServiceUid, boundaryParameterRest);
+
+            // Then
+            assertNotNull(result);
+
+            // Reset mocks for next iteration
+            reset(digitalServiceRepository, aiParameterMapper, aiParameterRepository);
+        }
+    }
     @Test
     void createAiParameter_ValidatesDateTimeSettings() {
         // Given
