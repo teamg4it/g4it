@@ -110,7 +110,6 @@ public class EvaluateAiService {
     }
 
     private List<AIServiceEstimationBO> evaluateEcomind(AiParameter aiParameter) throws IOException {
-
             AIConfigurationBO aiConfigurationBO = AIConfigurationBO.builder().build();
             aiConfigurationBO.setFramework(aiParameter.getFramework());
             aiConfigurationBO.setModelName(aiParameter.getModelName());
@@ -118,8 +117,8 @@ public class EvaluateAiService {
             aiConfigurationBO.setNbParameters(aiParameter.getNbParameters());
             aiConfigurationBO.setTotalGeneratedTokens(aiParameter.getTotalGeneratedTokens().longValue());
             List<AIConfigurationRest> aiConfigurationRest = aiConfigurationMapper.toAIModelConfigRest(List.of(aiConfigurationBO));
-            String type = aiParameter.getIsInference() ? "INFERENCE" : "TRAINING";
-            String stage = aiParameter.getStage();
+            String stage = aiParameter.getIsInference() ? "INFERENCE" : "TRAINING";
+            String type = aiParameter.getType();
             return aiService.runEstimation(type, stage,aiConfigurationRest);
     }
 }
