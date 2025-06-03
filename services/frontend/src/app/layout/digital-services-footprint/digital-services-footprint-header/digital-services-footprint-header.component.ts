@@ -22,7 +22,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
+import { finalize, firstValueFrom, lastValueFrom, Observable, switchMap } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     DigitalService,
@@ -32,6 +32,7 @@ import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
@@ -108,6 +109,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         private digitalServiceBusinessService: DigitalServiceBusinessService,
         private inVirtualEquipmentsService: InVirtualEquipmentsService,
         private aiFormsStore: AIFormsStore,
+        private digitalServicesAiData: DigitalServicesAiDataService,
     ) {}
 
     ngOnInit() {
@@ -353,20 +355,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         const parametersData = this.aiFormsStore.getParametersFormData();
         const infrastructureData = this.aiFormsStore.getInfrastructureFormData();
 
-        if (parametersData) {
-            console.log(
-                "Paramètres AI - Données envoyées au backend :",
-                JSON.stringify(parametersData, null, 2),
-            );
-        }
-
-        if (infrastructureData) {
-            console.log(
-                "Infrastructure AI - Données envoyées au backend :",
-                JSON.stringify(infrastructureData, null, 2),
-            );
-        }
-
         if (!parametersData && !infrastructureData) {
             this.messageService.add({
                 severity: "warn",
@@ -376,10 +364,58 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             return;
         }
 
-        this.messageService.add({
-            severity: "success",
-            summary: "Succès",
-            detail: "Données sauvegardées avec succès.",
-        });
+        const digitalServiceUid = this.digitalService?.uid;
+
+        if (!digitalServiceUid) {
+            this.messageService.add({
+                severity: "error",
+                summary: "Erreur",
+                detail: "ID du service numérique non trouvé.",
+            });
+            return;
+        }
+
+        const savePromises: Observable<any>[] = [];
+
+        if (infrastructureData) {
+            savePromises.push(
+                this.digitalServicesAiData.saveAiInfrastructure(
+                    digitalServiceUid,
+                    infrastructureData,
+                ),
+            );
+        }
+
+        if (parametersData) {
+            savePromises.push(
+                this.digitalServicesAiData.saveAiParameters(
+                    digitalServiceUid,
+                    parametersData,
+                ),
+            );
+        }
+
+        if (savePromises.length > 0) {
+            this.global.setLoading(true);
+            Promise.all(savePromises.map((p) => p.toPromise()))
+                .then(() => {
+                    this.messageService.add({
+                        severity: "success",
+                        summary: "Succès",
+                        detail: "Données sauvegardées avec succès.",
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erreur lors de la sauvegarde:", error);
+                    this.messageService.add({
+                        severity: "error",
+                        summary: "Erreur",
+                        detail: "Une erreur est survenue lors de la sauvegarde.",
+                    });
+                })
+                .finally(() => {
+                    this.global.setLoading(false);
+                });
+        }
     }
 }

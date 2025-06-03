@@ -1,54 +1,54 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal } from "@angular/core";
 
 export interface AIInfrastructureForm {
-  type: string;
-  cpuCores: number;
-  gpuCount: number;
-  gpuMemory: number;
-  ramSize: number;
-  datacenterPue: number;
-  complementaryPue: number;
-  location: string;
+    infrastructureType: string;
+    nbCpuCores: number;
+    nbGpu: number;
+    gpuMemory: number;
+    ramSize: number;
+    location: string;
+    pue: number;
+    complementaryPue: number;
 }
 
 export interface AIParametersForm {
-  model: string;
-  parameter: string;
-  framework: string;
-  quantization: string;
-  inference: boolean;
-  finetuning: boolean;
-  numberOfUsers: number;
-  averageRequest: number;
-  averageToken: number;
-  totalTokenGenerate: number;
+    modelName: string;
+    nbParameters: string;
+    framework: string;
+    quantization: string;
+    isInference: boolean;
+    isFinetuning: boolean;
+    numberUserYear: number;
+    averageNumberRequest: number;
+    averageNumberToken: number;
+    totalGeneratedTokens: number;
 }
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: "root",
 })
 export class AIFormsStore {
-  private infrastructureFormData = signal<AIInfrastructureForm | null>(null);
-  private parametersFormData = signal<AIParametersForm | null>(null);
+    private infrastructureFormData = signal<AIInfrastructureForm | null>(null);
+    private parametersFormData = signal<AIParametersForm | null>(null);
 
-  setInfrastructureFormData(data: AIInfrastructureForm) {
-    this.infrastructureFormData.set(data);
-  }
+    setInfrastructureFormData(data: AIInfrastructureForm) {
+        this.infrastructureFormData.set(data);
+    }
 
-  getInfrastructureFormData() {
-    return this.infrastructureFormData();
-  }
+    getInfrastructureFormData() {
+        return this.infrastructureFormData();
+    }
 
-  setParametersFormData(data: AIParametersForm) {
-    this.parametersFormData.set(data);
-  }
+    setParametersFormData(data: AIParametersForm) {
+        this.parametersFormData.set(data);
+    }
 
-  getParametersFormData() {
-    return this.parametersFormData();
-  }
+    getParametersFormData() {
+        return this.parametersFormData();
+    }
 
-  clearForms() {
-    this.infrastructureFormData.set(null);
-    this.parametersFormData.set(null);
-  }
-} 
+    clearForms() {
+        this.infrastructureFormData.set(null);
+        this.parametersFormData.set(null);
+    }
+}
