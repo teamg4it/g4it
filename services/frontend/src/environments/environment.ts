@@ -20,7 +20,7 @@ export const environment = {
         enabled: "true",
     },
     frontEndUrl: "http://localhost:4200",
-    subpath: "",
+    subpath: "toto",
     showBetaFeatures: "true",
     matomo: {
         matomoTagManager: {
