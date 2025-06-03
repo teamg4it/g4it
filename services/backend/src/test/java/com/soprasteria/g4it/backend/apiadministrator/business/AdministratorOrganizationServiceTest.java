@@ -198,12 +198,12 @@ class AdministratorOrganizationServiceTest {
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
         OrganizationBO updatedOrganization = OrganizationBO.builder().id(orgId).name("UpdatedName").build();
 
-        doNothing().when(administratorRoleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
+        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
         when(organizationService.updateOrganization(orgId, organizationUpsertRest, userBO.getId())).thenReturn(updatedOrganization);
 
         OrganizationBO result = administratorOrganizationService.updateOrganization(orgId, organizationUpsertRest, userBO);
 
-        verify(administratorRoleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
+        verify(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
         verify(organizationService).updateOrganization(orgId, organizationUpsertRest, userBO.getId());
         verify(userService).clearUserAllCache();
 
@@ -215,16 +215,17 @@ class AdministratorOrganizationServiceTest {
     void updateOrganizationNoAdminRights() {
         UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
         Long subscriberId = 1L;
+        Long orgId = 33L;
         String organizationName = "ORGANIZATION";
         String updatedStatus = OrganizationStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
         OrganizationUpsertRest organizationUpsertRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
 
-        doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "User with id '1' do not have admin role on subscriber with id : '1'")).when(administratorRoleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
+        doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "User with id '1' do not have admin role on subscriber '1' or organization '1'")).when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
 
         assertThrows(AuthorizationException.class, () -> {
-            administratorOrganizationService.updateOrganization(organizationId, organizationUpsertRest, userBO);
+            administratorOrganizationService.updateOrganization(orgId, organizationUpsertRest, userBO);
         });
 
         verify(organizationService, never()).updateOrganization(any(), any(), any());
