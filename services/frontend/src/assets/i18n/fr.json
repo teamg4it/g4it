@@ -793,7 +793,7 @@
         "ecodesign": "Éco-conception",
         "ecodesign-declaration": "Déclaration d’écoconception",
         "objectives": "Objectifs",
-        "commited-paragraph": "G4IT s’engage dans une démarche d’écoconception visant à réduire l’empreinte environnementale de ses services numériques. La présente déclaration a été rédigée le 28/04/2025 dans le cadre de la mise en œuvre du Référentiel général d’écoconception de services numériques (version 2024).",
+        "commited-paragraph": "L'équipe G4IT s’engage dans une démarche d’écoconception visant à réduire l’empreinte environnementale de ses services numériques. La présente déclaration a été rédigée le 28/04/2025 dans le cadre de la mise en œuvre du Référentiel général d’écoconception de services numériques (version 2024).",
         "framework-paragraph": "Ce référentiel, élaboré conjointement par l’Arcep et l’Arcom, en collaboration avec l’ADEME, la DINUM, la CNIL et l’Inria, définit les grandes orientations pour intégrer les enjeux de sobriété numérique dans la conception et l’exploitation des services numériques. Le document officiel est accessible sur le site de l’Arcep : ",
         "framework-link": "Référentiel général d’écoconception des services numériques – version 2024",
         "objectives-paragraph": "Sa mise en œuvre repose sur quatre objectifs principaux :",
@@ -889,6 +889,59 @@
             "internal-link": "Redirection vers la page du site {{title}}",
             "external-link": "Overture de la page {{title}} dans un nouvel onglet",
             "email-link": "Envoyez un e-mail à support.g4it@soprasteria.com"
+        },
+        "multi-year-accessibility-plan": {
+            "title": "Schéma pluriannuel de mise en accessibilité",
+            "para": "Conformément au RGAA et dans une démarche d'amélioration continue, nous nous engageons à renforcer l’accessibilité de nos services numériques. Notre plan d’action s’organise selon les échéances suivantes :",
+            "short-term": {
+                "title": "Court terme (dans un délai d’un mois) :",
+                "training": {
+                    "title": "Plan de formation :",
+                    "para": "Tous les membres de l’équipe G4IT (à l’exception des contributeurs occasionnels) devront avoir suivi, dans le premier mois de leur mission, un module de sensibilisation en e-learning sur le développement web accessible."
+                },
+                "checklist": {
+                    "title": "Checklist accessibilité :",
+                    "para": "Mise en place d’une checklist accessibilité dans la Definition of Done (DoD) pour tous les développements front-end US, afin de vérifier les principales bonnes pratiques d’accessibilité."
+                },
+                "monitoring": {
+                    "title": "Suivi de l’accessibilité :",
+                    "para": "Suivi de chaque scénario CYPRESS et correction des anomalies critiques et majeures avant toute mise en production."
+                }
+            },
+            "medium-term": {
+                "title": "Moyen terme (dans un délai de 3 à 6 mois) :",
+                "zoom": {
+                    "title": "Zoom 200 % :",
+                    "para": "Permettre à l’utilisateur de zoomer à 200 % sans perte de contenu ni de fonctionnalité sur les deux parcours principaux :"
+                },
+                "is-module": {
+                    "title": "Inventory Module :",
+                    "para": "Visualisation de l’impact des équipements physiques."
+                },
+                "ds-module": {
+                    "title": "Digital Service Module :",
+                    "para": "Visualisation de l’impact d’un service numérique."
+                },
+                "training-plan": {
+                    "title": "Plan de formation :",
+                    "para": "Les Product Owners de l’équipe G4IT devront avoir suivi une formation sur la conception de sites accessibles dans les 3 premiers mois de leur mission."
+                }
+            },
+            "long-term": {
+                "title": "Long terme (dans un délai de 6 à 12 mois) ",
+                "graph": {
+                    "title": "Graphiques :",
+                    "para": "Implémentation d’une description textuelle des principales informations présentées dans les radars multicritères."
+                },
+                "audit": {
+                    "title": "Audit d’accessibilité :",
+                    "para": "Réalisation d’un nouvel audit d’accessibilité en 2026."
+                },
+                "training-plan": {
+                    "title": "Plan de formation :",
+                    "para": "Tous les membres de l’équipe G4IT doivent avoir suivi une formation adaptée à leur profil (Product Owner, développeur front-end, testeur, etc.) sur la conception de sites accessibles dans les 3 premiers mois de leur mission.m"
+                }
+            }
         }
     }
 }

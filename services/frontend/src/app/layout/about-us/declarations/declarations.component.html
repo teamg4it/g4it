@@ -10,8 +10,32 @@
             </div>
         </section>
 
+        <nav class="declarations-nav">
+            <ul>
+                <li>
+                    <a
+                        class="cursor-pointer"
+                        (click)="scrollTo('eco-design')"
+                        href="javascript: void(0)"
+                    >
+                        {{ "declarations.ecodesign-declaration" | translate }}
+                    </a>
+                </li>
+                <li>
+                    <a
+                        class="cursor-pointer"
+                        (click)="scrollTo('accessibility')"
+                        href="javascript: void(0)"
+                        >{{ "declarations.accessibility-declaration" | translate }}</a
+                    >
+                </li>
+            </ul>
+        </nav>
+
         <section class="eco-design">
-            <h1>{{ "declarations.ecodesign-declaration" | translate }}</h1>
+            <h1 id="eco-design">
+                {{ "declarations.ecodesign-declaration" | translate }}
+            </h1>
 
             <h2>{{ "declarations.objectives" | translate }}</h2>
             <p>{{ "declarations.commited-paragraph" | translate }}</p>
@@ -158,7 +182,9 @@
         </section>
 
         <section class="accessibility mt-5">
-            <h1>{{ "declarations.accessibility-declaration" | translate }}</h1>
+            <h1 id="accessibility">
+                {{ "declarations.accessibility-declaration" | translate }}
+            </h1>
             <p>
                 {{ "declarations.accessibility-declaration-para" | translate }}
             </p>
@@ -215,75 +241,165 @@
             <h2>{{ "declarations.pages-audited.title" | translate }}</h2>
             <ul>
                 <li>
-                    <a
-                        href="https://saas-g4it.com/subscribers/SOPRA-STERIA-GROUP/organizations/1/inventories"
-                        [ariaLabel]="
-                            'declarations.accessibility.external-link'
-                                | translate
-                                    : { title: ('inventories.page-title' | translate) }
-                        "
-                        >{{ "inventories.page-title" | translate }}</a
-                    >
+                    {{ "inventories.page-title" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/inventories)"
+                    }}
                 </li>
                 <li>
-                    <a
-                        href="https://saas-g4it.com/subscribers/SOPRA-STERIA-GROUP/organizations/1/inventories/177/footprint/multi-criteria"
-                        [ariaLabel]="
-                            'declarations.accessibility.external-link'
-                                | translate
-                                    : {
-                                          title:
-                                              ('declarations.pages-audited.equipment-page'
-                                              | translate),
-                                      }
-                        "
-                    >
-                        {{ "declarations.pages-audited.equipment-page" | translate }}</a
-                    >
+                    {{ "declarations.pages-audited.equipment-page" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/inventories/{inventoryId}/footprint/multi-criteria)"
+                    }}
                 </li>
                 <li>
-                    <a
-                        href="https://saas-g4it.com/subscribers/SOPRA-STERIA-GROUP/organizations/1/digital-services"
-                        [ariaLabel]="
-                            'declarations.accessibility.external-link'
-                                | translate
-                                    : {
-                                          title:
-                                              ('digital-services.page-title' | translate),
-                                      }
-                        "
-                        >{{ "digital-services.page-title" | translate }}</a
-                    >
+                    {{ "digital-services.page-title" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/digital-services)"
+                    }}
                 </li>
                 <li>
-                    <a
-                        href="https://saas-g4it.com/subscribers/SOPRA-STERIA-GROUP/organizations/1/digital-services/b4810a7e-a494-4641-ae66-4bc4c2396a07/footprint/terminals"
-                        [ariaLabel]="
-                            'declarations.accessibility.external-link'
-                                | translate
-                                    : {
-                                          title:
-                                              ('declarations.pages-audited.service-details'
-                                              | translate),
-                                      }
-                        "
-                        >{{ "declarations.pages-audited.service-details" | translate }}</a
-                    >
+                    {{ "declarations.pages-audited.service-details" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/digital-services/{digitalServiceId}/footprint/terminals)"
+                    }}
                 </li>
                 <li>
-                    <a
-                        href="https://saas-g4it.com/subscribers/SOPRA-STERIA-GROUP/organizations/1/digital-services/b4810a7e-a494-4641-ae66-4bc4c2396a07/footprint/dashboard"
-                        [ariaLabel]="
-                            'declarations.accessibility.external-link'
-                                | translate
-                                    : {
-                                          title:
-                                              ('declarations.pages-audited.visualization'
-                                              | translate),
-                                      }
-                        "
-                        >{{ "declarations.pages-audited.visualization" | translate }}</a
-                    >
+                    {{ "declarations.pages-audited.visualization" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/digital-services/{digitalServiceId}/footprint/dashboard)"
+                    }}
+                </li>
+            </ul>
+
+            <h2>{{ "declarations.multi-year-accessibility-plan.title" | translate }}</h2>
+            <p>
+                {{ "declarations.multi-year-accessibility-plan.para" | translate }}
+            </p>
+            <h3>
+                {{
+                    "declarations.multi-year-accessibility-plan.short-term.title"
+                        | translate
+                }}
+            </h3>
+            <ul>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.short-term.training.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.short-term.training.para"
+                            | translate
+                    }}
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.short-term.checklist.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.short-term.checklist.title"
+                            | translate
+                    }}
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.short-term.monitoring.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.short-term.monitoring.title"
+                            | translate
+                    }}
+                </li>
+            </ul>
+            <h3>
+                {{
+                    "declarations.multi-year-accessibility-plan.medium-term.title"
+                        | translate
+                }}
+            </h3>
+            <ul>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.medium-term.zoom.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.medium-term.zoom.para"
+                            | translate
+                    }}
+                    <ul>
+                        <li>
+                            <strong>{{
+                                "declarations.multi-year-accessibility-plan.medium-term.is-module.title"
+                                    | translate
+                            }}</strong>
+                            {{
+                                "declarations.multi-year-accessibility-plan.medium-term.is-module.para"
+                                    | translate
+                            }}
+                        </li>
+                        <li>
+                            <strong>{{
+                                "declarations.multi-year-accessibility-plan.medium-term.ds-module.title"
+                                    | translate
+                            }}</strong>
+                            {{
+                                "declarations.multi-year-accessibility-plan.medium-term.ds-module.para"
+                                    | translate
+                            }}
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.medium-term.training-plan.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.medium-term.training-plan.para"
+                            | translate
+                    }}
+                </li>
+            </ul>
+            <h3>
+                {{
+                    "declarations.multi-year-accessibility-plan.long-term.title"
+                        | translate
+                }}
+            </h3>
+            <ul>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.long-term.graph.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.long-term.graph.para"
+                            | translate
+                    }}
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.long-term.audit.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.long-term.audit.para"
+                            | translate
+                    }}
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.long-term.training-plan.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.long-term.training-plan.para"
+                            | translate
+                    }}
                 </li>
             </ul>
             <h2>{{ "declarations.feedback-contact.title" | translate }}</h2>
