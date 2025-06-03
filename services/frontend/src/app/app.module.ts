@@ -6,6 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { DatePipe } from "@angular/common";
+import { APP_BASE_HREF } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
@@ -22,6 +23,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { ApiInterceptor } from "./core/interceptors/api-request.interceptor";
 import { HttpErrorInterceptor } from "./core/interceptors/http-error.interceptor";
+
 
 // Function to load translation files using HttpClient
 export function HttpLoaderFactory(http: HttpClient) {
