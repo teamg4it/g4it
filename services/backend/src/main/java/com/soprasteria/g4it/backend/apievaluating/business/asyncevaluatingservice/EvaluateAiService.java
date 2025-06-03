@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiaiinfra.model.AiInfraBO;
 import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.boaviztapi.EvaluateBoaviztapiService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
@@ -25,6 +26,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiparameterai.modeldb.AiParameter;
+import com.soprasteria.g4it.backend.apiparameterai.repository.AiParameterRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -46,6 +48,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -81,6 +84,12 @@ public class EvaluateAiService {
     @Autowired
     AiConfigurationMapper aiConfigurationMapper;
 
+    @Autowired
+    DigitalServiceRepository digitalServiceRepository;
+
+    @Autowired
+    AiParameterRepository inAIParameterRepository;
+
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
@@ -91,17 +100,33 @@ public class EvaluateAiService {
      * @param task            the task
      * @param exportDirectory the export directory
      */
-    public void doEvaluateAi(final Context context, final Task task, Path exportDirectory) {
+    public void doEvaluateAi(final Context context, final Task task, Path exportDirectory) throws IOException {
         //TODO : get the data in database
 
+        // Récupération du service digitalAdd commentMore actions
+        Optional<DigitalService> digitalService = digitalServiceRepository.findById(context.getDigitalServiceUid());
+
+        // Récupération des AI parameters
+        List<AiParameter> aiParameters = inAIParameterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+
+        // Récupération de data center
+        List<InDatacenter> datacenters = inDatacenterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+
+        // Récupération de physical equipment
+        List<InPhysicalEquipment> physicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+
+        // Récupération de virtual equipment
+        List<InVirtualEquipment> virtualEquipments = inVirtualEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+
+        log.info("Retrieved digital service and AI parameters");
+        log.info("Retrieved {} datacenters, {} physical equipments, {} virtual equipments",
+                datacenters.size(), physicalEquipments.size(), virtualEquipments.size());
+
         //TODO : call Ecomind with the data
+        List<AIServiceEstimationBO> estimationBOList =  evaluateEcomind(aiParameters.getFirst());
+        AIServiceEstimationBO estimationBO = estimationBOList.getFirst();
 
         //TODO : save the result of the call in db
-
-
-          /* List<AIServiceEstimationBO> estimationBOList =  evaluateEcomind();
-        AIServiceEstimationBO estimationBO = estimationBOList.get(0);
-*/
 
         //TODO : Call numecoeval
 
