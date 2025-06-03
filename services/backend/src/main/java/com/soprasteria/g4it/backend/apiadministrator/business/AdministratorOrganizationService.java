@@ -99,8 +99,8 @@ public class AdministratorOrganizationService {
      * @return OrganizationBO
      */
     public OrganizationBO updateOrganization(final Long organizationId, final OrganizationUpsertRest organizationUpsertRest, UserBO user) {
-        // Check Admin Role on this subscriber.
-        administratorRoleService.hasAdminRightsOnSubscriber(user, organizationUpsertRest.getSubscriberId());
+        // Check Admin Role on this subscriber or organization.
+        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organizationUpsertRest.getSubscriberId(), organizationId);
         OrganizationBO organizationBO = organizationService.updateOrganization(organizationId, organizationUpsertRest, user.getId());
         userService.clearUserAllCache();
         return organizationBO;
