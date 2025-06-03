@@ -29,8 +29,6 @@ import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
-import com.soprasteria.g4it.backend.common.utils.Constants;
-import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIConfigurationBO;
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
@@ -48,10 +46,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
 
 @Service
 @Slf4j
@@ -103,6 +97,11 @@ public class EvaluateAiService {
         //TODO : call Ecomind with the data
 
         //TODO : save the result of the call in db
+
+
+          /* List<AIServiceEstimationBO> estimationBOList =  evaluateEcomind();
+        AIServiceEstimationBO estimationBO = estimationBOList.get(0);
+*/
 
         //TODO : Call numecoeval
 
