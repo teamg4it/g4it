@@ -97,7 +97,9 @@ public class EvaluateAiService {
         //TODO : call Ecomind with the data
 
         //TODO : save the result of the call in db
-       /* List<AIServiceEstimationBO> estimationBOList =  evaluateEcomind();
+
+
+          /* List<AIServiceEstimationBO> estimationBOList =  evaluateEcomind();
         AIServiceEstimationBO estimationBO = estimationBOList.get(0);
 */
 
