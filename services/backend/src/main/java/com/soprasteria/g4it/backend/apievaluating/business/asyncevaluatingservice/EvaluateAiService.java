@@ -100,7 +100,7 @@ public class EvaluateAiService {
      * @param task            the task
      * @param exportDirectory the export directory
      */
-    public void doEvaluateAi(final Context context, final Task task, Path exportDirectory) {
+    public void doEvaluateAi(final Context context, final Task task, Path exportDirectory) throws IOException {
         //TODO : get the data in database
 
         // Récupération du service digitalAdd commentMore actions
@@ -123,13 +123,10 @@ public class EvaluateAiService {
                 datacenters.size(), physicalEquipments.size(), virtualEquipments.size());
 
         //TODO : call Ecomind with the data
+        List<AIServiceEstimationBO> estimationBOList =  evaluateEcomind(aiParameters.getFirst());
+        AIServiceEstimationBO estimationBO = estimationBOList.getFirst();
 
         //TODO : save the result of the call in db
-
-
-          /* List<AIServiceEstimationBO> estimationBOList =  evaluateEcomind();
-        AIServiceEstimationBO estimationBO = estimationBOList.get(0);
-*/
 
         //TODO : Call numecoeval
 
