@@ -21,7 +21,7 @@ JOIN public.g4it_user u ON uo.user_id = u.id
 JOIN public.g4it_organization o ON uo.organization_id = o.id
 JOIN public.g4it_subscriber s ON o.subscriber_id = s.id
 WHERE uro.role_id = (SELECT id FROM public.g4it_role WHERE name = 'ROLE_DIGITAL_SERVICE_WRITE')
-    AND o.name = 'DEMO'
+    AND o.name COLLATE "C" = 'DEMO'
     AND NOT EXISTS (
         SELECT 1
         FROM public.g4it_user_role_organization admin_uro
@@ -62,7 +62,7 @@ WHERE uro.role_id = (SELECT id FROM public.g4it_role WHERE name = 'ROLE_DIGITAL_
                       JOIN public.g4it_organization o ON uo.organization_id = o.id
                       JOIN public.g4it_subscriber s ON o.subscriber_id = s.id
                       WHERE uro.role_id = write_role_id
-                        AND o.name = 'DEMO'
+                        AND o.name COLLATE "C" = 'DEMO'
                         AND NOT EXISTS (
                               SELECT 1
                               FROM public.g4it_user_role_organization admin_uro
@@ -145,7 +145,7 @@ BEGIN
         JOIN public.g4it_organization o ON uo.organization_id = o.id
         JOIN public.g4it_subscriber s ON o.subscriber_id = s.id
         WHERE uro.role_id = read_role_id
-          AND o.name = 'DEMO'
+          AND o.name COLLATE "C" = 'DEMO'
           AND u.email = ANY(target_emails)
     LOOP
         -- Grant WRITE access
