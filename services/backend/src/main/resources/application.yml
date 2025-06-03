@@ -71,7 +71,7 @@ local.working.folder: ".\\storagetmp"
 
 spring:
   profiles:
-    active: dev, local
+    active: dev, local, nosecurity
   main:
     allow-bean-definition-overriding: true
   datasource:
@@ -132,3 +132,4 @@ logging:
     org.hibernate: warn
     liquibase: warn
     com.zaxxer: warn
+
