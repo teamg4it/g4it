@@ -1,4 +1,5 @@
 package com.soprasteria.g4it.backend.apirecomandation.modeldb;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
