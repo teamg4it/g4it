@@ -890,7 +890,8 @@
             "declaration-pdf": "Download the full eco-design statement as a pdf ({{pdfSize}}KB)",
             "internal-link": "Go to internal page {{title}}",
             "external-link": "Open the page {{title}} in a new tab",
-            "email-link": "Send an email to support.g4it@soprasteria.com"
+            "email-link": "Send an email to support.g4it@soprasteria.com",
+            "heading-link": "Scroll to the section {{title}}"
         },
         "multi-year-accessibility-plan": {
             "title": "Multi-year Accessibility Plan",

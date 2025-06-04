@@ -17,6 +17,15 @@
                         class="cursor-pointer"
                         (click)="scrollTo('eco-design')"
                         href="javascript: void(0)"
+                        [ariaLabel]="
+                            'declarations.accessibility.heading-link'
+                                | translate
+                                    : {
+                                          title:
+                                              'declarations.ecodesign-declaration'
+                                              | translate,
+                                      }
+                        "
                     >
                         {{ "declarations.ecodesign-declaration" | translate }}
                     </a>
@@ -26,6 +35,15 @@
                         class="cursor-pointer"
                         (click)="scrollTo('accessibility')"
                         href="javascript: void(0)"
+                        [ariaLabel]="
+                            'declarations.accessibility.heading-link'
+                                | translate
+                                    : {
+                                          title:
+                                              'declarations.accessibility-declaration'
+                                              | translate,
+                                      }
+                        "
                         >{{ "declarations.accessibility-declaration" | translate }}</a
                     >
                 </li>
@@ -418,7 +436,13 @@
                     >
                 </li>
                 <li>
-                    <a routerLink="/useful-information">
+                    <a
+                        routerLink="/useful-information"
+                        [ariaLabel]="
+                            'declarations.accessibility.internal-link'
+                                | translate: { title: 'common.useful-info' | translate }
+                        "
+                    >
                         {{ "declarations.feedback-contact.contact-entity" | translate }}
                     </a>
                 </li>

@@ -888,7 +888,8 @@
             "declaration-pdf": "Téléchargez la déclaration complète d'éco-conception au format PDF ({{pdfSize}}Ko)",
             "internal-link": "Redirection vers la page du site {{title}}",
             "external-link": "Overture de la page {{title}} dans un nouvel onglet",
-            "email-link": "Envoyez un e-mail à support.g4it@soprasteria.com"
+            "email-link": "Envoyez un e-mail à support.g4it@soprasteria.com",
+            "heading-link": "Faites défiler jusqu'à la section {{title}}"
         },
         "multi-year-accessibility-plan": {
             "title": "Schéma pluriannuel de mise en accessibilité",
