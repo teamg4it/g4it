@@ -468,6 +468,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                         "eco-mind-ai.ai-parameters.save-success",
                     ),
                 });
+                this.digitalServiceStore.setEnableCalcul(true);
             })
             .catch((error) => {
                 this.messageService.add({
