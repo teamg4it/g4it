@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
@@ -20,6 +21,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
         private messageService: MessageService,
         private aiFormsStore: AIFormsStore,
         private digitalServicesAiData: DigitalServicesAiDataService,
+        private translate: TranslateService,
     ) {}
 
     ngOnInit(): void {
@@ -72,14 +74,13 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
             (countries: MapString) => {
                 this.locationOptions = Object.entries(countries).map(([name, code]) => ({
                     label: name,
-                    value: code,
+                    value: name,
                 }));
             },
             (error) => {
-                console.error("Erreur lors du chargement des pays:", error);
                 this.messageService.add({
                     severity: "error",
-                    summary: "Erreur",
+                    summary: this.translate.instant("common.error"),
                     detail: "Impossible de charger la liste des pays",
                 });
             },
@@ -100,8 +101,8 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
 
         this.messageService.add({
             severity: "success",
-            summary: "Succès",
-            detail: "Infrastructure sauvegardée avec succès.",
+            summary: this.translate.instant("common.success"),
+            detail: this.translate.instant("eco-mind-ai.ai-parameters.save-success"),
         });
     }
 }
