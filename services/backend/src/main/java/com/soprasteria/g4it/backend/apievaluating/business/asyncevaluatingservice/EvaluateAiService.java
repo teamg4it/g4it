@@ -28,6 +28,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiparameterai.modeldb.AiParameter;
 import com.soprasteria.g4it.backend.apiparameterai.repository.AiParameterRepository;
+import com.soprasteria.g4it.backend.apirecomandation.mapper.RecommendationJsonMapper;
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
