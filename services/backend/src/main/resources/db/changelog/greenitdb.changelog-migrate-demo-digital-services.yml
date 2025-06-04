@@ -54,6 +54,8 @@ databaseChangeLog:
                   );
     
                   truncate table tmp_last_name_count;
+                  truncate table ds_migration_rollback;
+                  truncate table dss_migration_rollback;
     
                   select id into role_org_admin_id from g4it_role where name = ''ROLE_ORGANIZATION_ADMINISTRATOR'';
                   select id into role_ds_write_id from g4it_role where name = ''ROLE_DIGITAL_SERVICE_WRITE'';
@@ -75,7 +77,7 @@ databaseChangeLog:
                   end if;
                   
                   for rec in
-                    select distinct ds.user_id as creator_id, gio.subscriber_id, u.last_name, u.email
+                    select distinct ds.user_id as creator_id, organization_id, gio.subscriber_id, u.last_name, u.email
                     from digital_service ds
                     inner join g4it_organization gio on ds.organization_id = gio.id and gio."name" like ''DEMO''
                     inner join g4it_user u on ds.user_id = u.id
@@ -119,8 +121,7 @@ databaseChangeLog:
                       select uid, organization_id
                       from digital_service
                       where user_id = rec.creator_id
-                      and organization_id in
-                      (select id from g4it_organization where name = ''DEMO'')
+                      and organization_id = rec.organization_id
                     loop
                       insert into ds_migration_rollback(digital_service_id, old_organization_id)
                       values(ds_backup_rec.uid, ds_backup_rec.organization_id);
@@ -131,8 +132,7 @@ databaseChangeLog:
                       update digital_service
                       set organization_id = new_organization_id
                       where user_id = rec.creator_id
-                      and organization_id in
-                      (select id from g4it_organization where name = ''DEMO'')
+                      and organization_id = rec.organization_id
                     returning uid, name
                     loop
                       raise notice ''Digital service % % now associated with organization %'', ds_rec.uid, ds_rec.name, new_organization_id;
