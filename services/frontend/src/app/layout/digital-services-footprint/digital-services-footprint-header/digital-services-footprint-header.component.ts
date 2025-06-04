@@ -22,7 +22,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { finalize, firstValueFrom, lastValueFrom, Observable, switchMap } from "rxjs";
+import { finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     DigitalService,
@@ -355,11 +355,83 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         const parametersData = this.aiFormsStore.getParametersFormData();
         const infrastructureData = this.aiFormsStore.getInfrastructureFormData();
 
-        if (!parametersData && !infrastructureData) {
+        // Vérifier si les deux formulaires sont complets
+        if (!parametersData || !infrastructureData) {
             this.messageService.add({
                 severity: "warn",
-                summary: "Attention",
-                detail: "Aucune donnée à sauvegarder.",
+                summary: this.translate.instant("common.attention"),
+                detail: this.translate.instant(
+                    "eco-mind-ai.ai-parameters.fill-all-fields",
+                ),
+            });
+            return;
+        }
+
+        // Vérifier que tous les champs requis sont remplis
+        const requiredParametersFields = [
+            "modelName",
+            "nbParameters",
+            "framework",
+            "quantization",
+            "numberUserYear",
+            "averageNumberRequest",
+            "averageNumberToken",
+        ] as const;
+
+        const requiredInfrastructureFields = [
+            "infrastructureType",
+            "nbCpuCores",
+            "nbGpu",
+            "gpuMemory",
+            "ramSize",
+            "pue",
+            "complementaryPue",
+            "location",
+        ] as const;
+
+        const missingParametersFields = requiredParametersFields.filter(
+            (field) =>
+                parametersData[field] === undefined ||
+                parametersData[field] === null ||
+                parametersData[field] === "",
+        );
+        const missingInfrastructureFields = requiredInfrastructureFields.filter(
+            (field) =>
+                infrastructureData[field] === undefined ||
+                infrastructureData[field] === null ||
+                infrastructureData[field] === "",
+        );
+
+        if (
+            missingParametersFields.length > 0 ||
+            missingInfrastructureFields.length > 0
+        ) {
+            let missingFieldsMessage =
+                this.translate.instant("eco-mind-ai.ai-parameters.missing-fields") +
+                " :\n";
+
+            if (missingParametersFields.length > 0) {
+                missingFieldsMessage +=
+                    "\n" +
+                    this.translate.instant("eco-mind-ai.ai-parameters.parameters-form") +
+                    " :\n" +
+                    missingParametersFields.join(", ");
+            }
+
+            if (missingInfrastructureFields.length > 0) {
+                missingFieldsMessage +=
+                    "\n" +
+                    this.translate.instant(
+                        "eco-mind-ai.ai-parameters.infrastructure-form",
+                    ) +
+                    " :\n" +
+                    missingInfrastructureFields.join(", ");
+            }
+
+            this.messageService.add({
+                severity: "warn",
+                summary: this.translate.instant("common.attention"),
+                detail: missingFieldsMessage,
             });
             return;
         }
@@ -369,53 +441,45 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         if (!digitalServiceUid) {
             this.messageService.add({
                 severity: "error",
-                summary: "Erreur",
-                detail: "ID du service numérique non trouvé.",
+                summary: this.translate.instant("common.error"),
+                detail: this.translate.instant(
+                    "eco-mind-ai.ai-parameters.service-id-missing",
+                ),
             });
             return;
         }
 
-        const savePromises: Observable<any>[] = [];
+        this.global.setLoading(true);
 
-        if (infrastructureData) {
-            savePromises.push(
-                this.digitalServicesAiData.saveAiInfrastructure(
-                    digitalServiceUid,
-                    infrastructureData,
-                ),
-            );
-        }
-
-        if (parametersData) {
-            savePromises.push(
-                this.digitalServicesAiData.saveAiParameters(
-                    digitalServiceUid,
-                    parametersData,
-                ),
-            );
-        }
-
-        if (savePromises.length > 0) {
-            this.global.setLoading(true);
-            Promise.all(savePromises.map((p) => p.toPromise()))
-                .then(() => {
-                    this.messageService.add({
-                        severity: "success",
-                        summary: "Succès",
-                        detail: "Données sauvegardées avec succès.",
-                    });
-                })
-                .catch((error) => {
-                    console.error("Erreur lors de la sauvegarde:", error);
-                    this.messageService.add({
-                        severity: "error",
-                        summary: "Erreur",
-                        detail: "Une erreur est survenue lors de la sauvegarde.",
-                    });
-                })
-                .finally(() => {
-                    this.global.setLoading(false);
+        // Sauvegarder les deux formulaires
+        Promise.all([
+            this.digitalServicesAiData
+                .saveAiInfrastructure(digitalServiceUid, infrastructureData)
+                .toPromise(),
+            this.digitalServicesAiData
+                .saveAiParameters(digitalServiceUid, parametersData)
+                .toPromise(),
+        ])
+            .then(() => {
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.success"),
+                    detail: this.translate.instant(
+                        "eco-mind-ai.ai-parameters.save-success",
+                    ),
                 });
-        }
+            })
+            .catch((error) => {
+                this.messageService.add({
+                    severity: "error",
+                    summary: this.translate.instant("common.error"),
+                    detail: this.translate.instant(
+                        "eco-mind-ai.ai-parameters.save-error",
+                    ),
+                });
+            })
+            .finally(() => {
+                this.global.setLoading(false);
+            });
     }
 }

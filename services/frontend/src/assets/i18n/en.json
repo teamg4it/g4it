@@ -28,6 +28,9 @@
         "calculate": "CALCULATE",
         "duplicate": "DUPLICATE",
         "add": "Add",
+        "attention": "Attention",
+        "error": "Error",
+        "success": "Success",
         "heading": "Heading",
         "subheading": "Subheading",
         "normal": "Normal",
@@ -225,7 +228,19 @@
         "return": "Return to my digital services AI list",
         "choose-criteria": "Choose criteria for digital service AI {{digitalServiceName}}",
         "delete-criteria": "Delete digital service AI {{digitalServiceName}}",
-        "unlink-digital-service": "Delete link with digital service AI {{digitalServiceName}}"
+        "unlink-digital-service": "Delete link with digital service AI {{digitalServiceName}}",
+
+        "ai-parameters": {
+            "success": "Parameters saved successfully",
+            "error": "Error while retrieving AI models",
+            "missing-fields": "Missing fields:",
+            "parameters-form": "Parameters Form:",
+            "infrastructure-form": "Infrastructure Form:",
+            "save-success": "Data saved successfully",
+            "save-error": "An error occurred while saving",
+            "service-id-missing": "Digital service ID not found",
+            "fill-all-fields": "Please fill in all fields before saving"
+        }
     },
     "digital-services-terminals": {
         "new": "New Device",

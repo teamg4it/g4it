@@ -28,6 +28,9 @@
         "calculate": "CALCULER",
         "duplicate": "DUPLIQUER",
         "add": "Ajouter",
+        "attention": "Attention",
+        "error": "Erreur",
+        "success": "Succès",
         "heading": "Titre",
         "subheading": "Sous-titre",
         "normal": "Normal",
@@ -222,7 +225,19 @@
         "return": "Retourner à la liste de mes services numériques IA",
         "choose-criteria": "Choisir les critères pour le service numérique IA {{digitalServiceName}}",
         "delete-criteria": "Supprimer le service numérique IA {{digitalServiceName}}",
-        "unlink-digital-service": "Supprimer le lien avec le service IA {{digitalServiceName}}"
+        "unlink-digital-service": "Supprimer le lien avec le service IA {{digitalServiceName}}",
+
+        "ai-parameters": {
+            "success": "Paramètres sauvegardés avec succès",
+            "error": "Erreur lors de la récupération des modèles IA",
+            "missing-fields": "Champs manquants :",
+            "parameters-form": "Formulaire Paramètres :",
+            "infrastructure-form": "Formulaire Infrastructure :",
+            "save-success": "Données sauvegardées avec succès",
+            "save-error": "Une erreur est survenue lors de la sauvegarde",
+            "service-id-missing": "ID du service numérique non trouvé",
+            "fill-all-fields": "Veuillez remplir tous les champs avant de sauvegarder"
+        }
     },
     "digital-services-terminals": {
         "new": "Nouveau terminal",

@@ -17,7 +17,10 @@
                     ></p-dropdown>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('modelName')?.hasError('required')"
+                        *ngIf="
+                            terminalsForm.get('modelName')?.invalid &&
+                            terminalsForm.get('modelName')?.touched
+                        "
                     >
                         {{ "digital-services-ai-parameter.model" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -36,7 +39,10 @@
                     ></p-dropdown>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('nbParameters')?.hasError('required')"
+                        *ngIf="
+                            terminalsForm.get('nbParameters')?.invalid &&
+                            terminalsForm.get('nbParameters')?.touched
+                        "
                     >
                         {{ "digital-services-ai-parameter.parameter" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -55,7 +61,10 @@
                     ></p-dropdown>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('framework')?.hasError('required')"
+                        *ngIf="
+                            terminalsForm.get('framework')?.invalid &&
+                            terminalsForm.get('framework')?.touched
+                        "
                     >
                         {{ "digital-services-ai-parameter.framework" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -74,7 +83,10 @@
                     ></p-dropdown>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('quantization')?.hasError('required')"
+                        *ngIf="
+                            terminalsForm.get('quantization')?.invalid &&
+                            terminalsForm.get('quantization')?.touched
+                        "
                     >
                         {{ "digital-services-ai-parameter.quantization" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -131,7 +143,10 @@
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="terminalsForm.get('numberUserYear')?.hasError('required')"
+                        *ngIf="
+                            terminalsForm.get('numberUserYear')?.invalid &&
+                            terminalsForm.get('numberUserYear')?.touched
+                        "
                     >
                         {{ "digital-services-ai-parameter.numberOfUsers" | translate }}
                         {{ "common.mandatory" | translate }}
@@ -151,9 +166,8 @@
                     <p
                         class="error-text"
                         *ngIf="
-                            terminalsForm
-                                .get('averageNumberRequest')
-                                ?.hasError('required')
+                            terminalsForm.get('averageNumberRequest')?.invalid &&
+                            terminalsForm.get('averageNumberRequest')?.touched
                         "
                     >
                         {{ "digital-services-ai-parameter.averageRequest" | translate }}
@@ -174,7 +188,8 @@
                     <p
                         class="error-text"
                         *ngIf="
-                            terminalsForm.get('averageNumberToken')?.hasError('required')
+                            terminalsForm.get('averageNumberToken')?.invalid &&
+                            terminalsForm.get('averageNumberToken')?.touched
                         "
                     >
                         {{ "digital-services-ai-parameter.averageToken" | translate }}
