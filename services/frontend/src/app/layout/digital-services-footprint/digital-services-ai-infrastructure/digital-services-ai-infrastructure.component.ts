@@ -74,11 +74,10 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
             (countries: MapString) => {
                 this.locationOptions = Object.entries(countries).map(([name, code]) => ({
                     label: name,
-                    value: code,
+                    value: name,
                 }));
             },
             (error) => {
-                //console.error("Erreur lors du chargement des pays:", error);
                 this.messageService.add({
                     severity: "error",
                     summary: this.translate.instant("common.error"),

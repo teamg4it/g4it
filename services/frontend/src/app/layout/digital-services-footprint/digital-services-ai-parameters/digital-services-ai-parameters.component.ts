@@ -176,7 +176,11 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     });
             },
             error: (err: any) => {
-                //console.error("Erreur lors de la récupération des modèles IA:", err);
+                this.messageService.add({
+                    severity: "error",
+                    summary: this.translate.instant("common.error"),
+                    detail: this.translate.instant("eco-mind-ai.ai-parameters.error"),
+                });
             },
         });
 

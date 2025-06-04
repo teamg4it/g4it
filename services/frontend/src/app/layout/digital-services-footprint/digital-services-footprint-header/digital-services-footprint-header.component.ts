@@ -470,10 +470,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 });
             })
             .catch((error) => {
-                console.error(
-                    this.translate.instant("eco-mind-ai.ai-parameters.save-error"),
-                    error,
-                );
                 this.messageService.add({
                     severity: "error",
                     summary: this.translate.instant("common.error"),
