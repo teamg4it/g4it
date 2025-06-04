@@ -95,7 +95,7 @@ public interface AggregationToOutput {
     }
 
     default List<String> keyVirtualEquipment(InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment,
-                                             ImpactEquipementVirtuel impact, RefShortcutBO refShortcutBO, EvaluateReportBO evaluateReportBO) {
+                                             ImpactEquipementVirtuel impact, RefShortcutBO refShortcutBO, x evaluateReportBO) {
 
         String equipmentName = physicalEquipment == null ? "" : physicalEquipment.getName();
         String equipmentType = physicalEquipment == null ? "" : physicalEquipment.getType();
