@@ -112,7 +112,7 @@
             [label]="'common.calculate' | translate"
             id="calculate"
         />
-        @if (userService.isAllowedDigitalServiceRead$ | async) {
+        @if (userService.isAllowedDigitalServiceWrite$ | async) {
             <p-button
                 styleClass="white-button"
                 styleClass="ml-2"
