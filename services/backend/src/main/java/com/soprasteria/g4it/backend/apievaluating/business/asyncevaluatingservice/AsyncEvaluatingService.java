@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,8 @@ public class AsyncEvaluatingService implements ITaskExecute {
             log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
             task.setStatus(TaskStatus.FAILED.toString());
             details.add(LogUtils.error(e.getMessage()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
             task.setDetails(details);
         }
