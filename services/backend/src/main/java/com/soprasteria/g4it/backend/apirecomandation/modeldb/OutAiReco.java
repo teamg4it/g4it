@@ -8,6 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -38,7 +41,10 @@ public class OutAiReco {
     private Long runtime;
 
     @Column(name = "recommendations", columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private String recommendations;
+
+    private String digitalServiceUid;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;

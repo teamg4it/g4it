@@ -36,3 +36,18 @@ databaseChangeLog:
               - column:
                   name: last_update_date
                   type: timestamp
+
+  - changeSet:
+      id: add-digital-service-uid-out_ai_reco-table
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: out_ai_reco
+            columns:
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: ai_recommendations_digital_service_fk
+                    references: digital_service(uid)

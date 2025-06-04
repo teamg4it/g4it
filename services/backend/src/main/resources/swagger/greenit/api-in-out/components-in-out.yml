@@ -506,6 +506,8 @@ components:
           format: int64
         recommendations:
           type: string
+        digitalServiceUid:
+          type: string
         creationDate:
           type: string
           format: date-time

@@ -8,17 +8,14 @@
 
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
-import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.boaviztapi.EvaluateBoaviztapiService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
-import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
@@ -26,19 +23,19 @@ import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndivi
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
-import com.soprasteria.g4it.backend.apiinout.repository.*;
+import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiparameterai.modeldb.AiParameter;
 import com.soprasteria.g4it.backend.apiparameterai.repository.AiParameterRepository;
-import com.soprasteria.g4it.backend.apirecomandation.mapper.OutAiRecoMapper;
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
-import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
-import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIConfigurationBO;
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
@@ -95,7 +92,7 @@ public class EvaluateAiService {
 
     @Autowired
     AiParameterRepository inAIParameterRepository;
-    
+
     @Autowired
     AggregationToOutput aggregationToOutput;
 
@@ -110,26 +107,39 @@ public class EvaluateAiService {
      * @param exportDirectory the export directory
      */
     public void doEvaluateAi(final Context context, final Task task, Path exportDirectory) throws IOException {
+
         final String subscriber = context.getSubscriber();
         final long start = System.currentTimeMillis();
         final Long taskId = task.getId();
-        
+
         // get the data in database
         // Récupération du service digitalAdd commentMore actions
         Optional<DigitalService> digitalService = digitalServiceRepository.findById(context.getDigitalServiceUid());
-
+        if (digitalService.isEmpty()) {
+            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", context.getDigitalServiceUid()));
+        }
         // Récupération des AI parameters
         List<AiParameter> aiParameters = inAIParameterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
 
+        if (aiParameters.isEmpty()) {
+            throw new G4itRestException("404", String.format("the ai parameter doesn't exist for digital service : %s", context.getDigitalServiceUid()));
+        }
         // Récupération de data center
         List<InDatacenter> datacenters = inDatacenterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
 
+        if (datacenters.isEmpty()) {
+            throw new G4itRestException("404", String.format("the data center doesn't exist for digital service : %s", context.getDigitalServiceUid()));
+        }
         // Récupération de physical equipment
         List<InPhysicalEquipment> physicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
-
+        if (physicalEquipments.isEmpty()) {
+            throw new G4itRestException("404", String.format("the physical equipements doesn't exist for digital service : %s", context.getDigitalServiceUid()));
+        }
         // Récupération de virtual equipment
         List<InVirtualEquipment> virtualEquipments = inVirtualEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
-
+        if (virtualEquipments.isEmpty()) {
+            throw new G4itRestException("404", String.format("the virtual equipements doesn't exist for digital service : %s", context.getDigitalServiceUid()));
+        }
         log.info("Retrieved digital service and AI parameters");
         log.info("Retrieved {} datacenters, {} physical equipments, {} virtual equipments",
                 datacenters.size(), physicalEquipments.size(), virtualEquipments.size());
@@ -151,9 +161,10 @@ public class EvaluateAiService {
         OutAiReco outAiReco = OutAiReco.builder().build();
         outAiReco.setElectricityConsumption(estimationBO.getElectricityConsumption().doubleValue());
         outAiReco.setRuntime(estimationBO.getRuntime().longValue());
-        ObjectMapper objectMapper = new ObjectMapper();
-        String recommendationsJson = objectMapper.writeValueAsString(estimationBO.getRecommendations());
+
+        String recommendationsJson = RecommendationJsonMapper.toJson(estimationBO.getRecommendations());
         outAiReco.setRecommendations(recommendationsJson);
+        outAiReco.setDigitalServiceUid(context.getDigitalServiceUid());
         outAiReco.setCreationDate(now);
         outAiReco.setLastUpdateDate(now);
         outAiReco.setTaskId(taskId);
@@ -203,6 +214,7 @@ public class EvaluateAiService {
         Map<List<String>, AggValuesBO> aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPICITY);
         Map<List<String>, AggValuesBO> aggregationVirtualEquipments = new HashMap<>(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPICITY : 0);
 
+        log.info("manage physical equipments");
 
 
         // manage physical equipments
@@ -211,7 +223,7 @@ public class EvaluateAiService {
                 subscriber, activeCriteria, lifecycleSteps, hypothesisRestList);
 
 
-        ImpactEquipementPhysique impact  = impactEquipementPhysiqueList.getFirst();
+        ImpactEquipementPhysique impact = impactEquipementPhysiqueList.getFirst();
 
         AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                 impact.getQuantite(), impact.getConsoElecMoyenne(),
@@ -224,17 +236,14 @@ public class EvaluateAiService {
                         k -> new AggValuesBO())
                 .add(values);
 
+        log.info("manage virtual equipments");
 
         // manage virtual equipments
-        evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipments.getFirst(), virtualEquipments,aggregationVirtualEquipments,impactEquipementPhysiqueList,
+        evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipments.getFirst(), virtualEquipments, aggregationVirtualEquipments, impactEquipementPhysiqueList,
                 refSip, refShortcutBO, criteriaCodes, lifecycleSteps);
 
 
-        final long currentTotal = (long) Constants.BATCH_SIZE * 1 + physicalEquipments.size();
-
-        // set progress percentage, 0% to 90% is for this process, 90% to 100% is for compressing exports
-        double processFactor = evaluateReportBO.isExport() ? 0.8 : 0.9;
-        task.setProgressPercentage((int) Math.ceil(currentTotal * 100L * processFactor / totalEquipments) + "%");
+        task.setProgressPercentage("100%");
         task.setLastUpdateDate(LocalDateTime.now());
         taskRepository.save(task);
 
@@ -243,12 +252,13 @@ public class EvaluateAiService {
         // Save the result in db
         log.info("Saving aggregated indicators");
         // Store aggregated indicators
-        int outPhysicalEquipmentSize = saveService.saveOutPhysicalEquipments(aggregationPhysicalEquipments, taskId, null);
-        int outVirtualEquipmentSize = saveService.saveOutVirtualEquipments(aggregationVirtualEquipments, taskId, null);
+        int outPhysicalEquipmentSize = saveService.saveOutPhysicalEquipments(aggregationPhysicalEquipments, taskId, refShortcutBO);
+        int outVirtualEquipmentSize = saveService.saveOutVirtualEquipments(aggregationVirtualEquipments, taskId, refShortcutBO);
 
         log.info("End evaluating impacts for {}/{} in {}s and sizes: {}/{}", context.log(), taskId,
                 (System.currentTimeMillis() - start) / 1000,
                 outPhysicalEquipmentSize, outVirtualEquipmentSize);
+
     }
 
     private List<AIServiceEstimationBO> evaluateEcomind(AiParameter aiParameter) throws IOException {
@@ -264,43 +274,6 @@ public class EvaluateAiService {
         return aiService.runEstimation(type, stage, aiConfigurationRest);
     }
 
-
-    private void evaluatePhysicalEquipments(Context context,
-                                            EvaluateReportBO evaluateReportBO,
-                                            InPhysicalEquipment physicalEquipment,
-                                            List<InVirtualEquipment> virtualEquipments,
-                                            Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
-                                            List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
-                                            Map<String, Double> refSip, RefShortcutBO refShortcutBO,
-                                            final List<String> criteria, final List<String> lifecycleSteps
-
-    ) throws IOException {
-
-        if (!context.isHasVirtualEquipments()) return;
-
-        Double totalVcpuCoreNumber = evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
-        Integer totalVpcuCore = totalVcpuCoreNumber == null ? null : totalVcpuCoreNumber.intValue();
-        Double totalStorage = evaluateNumEcoEvalService.getTotalDiskSize(virtualEquipments);
-
-        InVirtualEquipment virtualEquipment = virtualEquipments.getFirst();
-        List<ImpactEquipementVirtuel> impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
-                virtualEquipment, impactEquipementPhysiqueList,
-                virtualEquipments.size(), totalVpcuCore, totalStorage
-        );
-
-        String location = virtualEquipment.getLocation();
-
-        ImpactEquipementVirtuel impact  = impactEquipementVirtuelList.getFirst();
-        // Aggregate virtual equipment indicators in memory
-        AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                virtualEquipment.getQuantity(), impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
-                refSip.get(impact.getCritere()),
-                null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload());
-
-        aggregationVirtualEquipments
-                .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())
-                .add(values);
-    }
 
     private void evaluateVirtualsEquipments(Context context,
                                             EvaluateReportBO evaluateReportBO,
@@ -327,7 +300,7 @@ public class EvaluateAiService {
 
         String location = virtualEquipment.getLocation();
 
-        ImpactEquipementVirtuel impact  = impactEquipementVirtuelList.getFirst();
+        ImpactEquipementVirtuel impact = impactEquipementVirtuelList.getFirst();
         // Aggregate virtual equipment indicators in memory
         AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                 virtualEquipment.getQuantity(), impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),

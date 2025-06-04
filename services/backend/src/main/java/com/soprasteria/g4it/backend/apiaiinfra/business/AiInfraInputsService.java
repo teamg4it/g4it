@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -75,7 +76,9 @@ public class AiInfraInputsService {
         final InPhysicalEquipment inPhysicalEquipmentToCreate = inPhysicalEquipmentMapper.toEntity(InPhysicalEquipmentRest.builder().build());
         inPhysicalEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
         inPhysicalEquipmentToCreate.setName("Server1");
-        inPhysicalEquipmentToCreate.setModel("Model1");
+        inPhysicalEquipmentToCreate.setModel("laptop-3");
+        inPhysicalEquipmentToCreate.setType("Terminal");
+        inPhysicalEquipmentToCreate.setDateWithdrawal(LocalDate.parse("2027-10-01"));
         inPhysicalEquipmentToCreate.setManufacturer("Manufacturer1");
         inPhysicalEquipmentToCreate.setDatacenterName(inDatacenterToCreate.getName());
         inPhysicalEquipmentToCreate.setCpuCoreNumber(Optional.ofNullable(aiInfraBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));

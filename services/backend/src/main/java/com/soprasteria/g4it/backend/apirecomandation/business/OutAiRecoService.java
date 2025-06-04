@@ -19,8 +19,8 @@ public class OutAiRecoService {
     /**
      * Retrieve all AI recommendations
      */
-    public List<OutAiRecommendationRest> getAllRecommendations() {
-        List<OutAiReco> entities = outAiRecoRepository.findAll();
+    public List<OutAiRecommendationRest> getAllRecommendations(String digitalServiceUid) {
+        List<OutAiReco> entities = outAiRecoRepository.findByDigitalServiceUid(digitalServiceUid);
         return outAiRecoMapper.toDtoList(entities);
     }
 }
