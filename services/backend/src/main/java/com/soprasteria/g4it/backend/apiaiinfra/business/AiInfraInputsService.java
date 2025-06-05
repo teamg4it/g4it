@@ -78,7 +78,7 @@ public class AiInfraInputsService {
         inPhysicalEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
         inPhysicalEquipmentToCreate.setName("Server1");
         inPhysicalEquipmentToCreate.setModel("laptop-3");
-        inPhysicalEquipmentToCreate.setType("Terminal");
+        inPhysicalEquipmentToCreate.setType("Server");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         inPhysicalEquipmentToCreate.setDateWithdrawal(LocalDate.parse("2030-05-01", formatter));
         inPhysicalEquipmentToCreate.setManufacturer("Manufacturer1");
