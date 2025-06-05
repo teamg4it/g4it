@@ -216,33 +216,32 @@ public class EvaluateAiService {
         Map<List<String>, AggValuesBO> aggregationVirtualEquipments = new HashMap<>(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPICITY : 0);
 
         log.info("manage physical equipments");
-
-
         // manage physical equipments
         List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                 physicalEquipments.getFirst(), datacenters.getFirst(),
                 subscriber, activeCriteria, lifecycleSteps, hypothesisRestList);
 
 
-        ImpactEquipementPhysique impact = impactEquipementPhysiqueList.getFirst();
+        // Aggregate physical equipment indicators in memory
+        for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
 
-        AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                impact.getQuantite(), impact.getConsoElecMoyenne(),
-                impact.getImpactUnitaire(),
-                refSip.get(impact.getCritere()),
-                impact.getDureeDeVie(), null, null);
+            AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
+                    impact.getQuantite(), impact.getConsoElecMoyenne(),
+                    impact.getImpactUnitaire(),
+                    refSip.get(impact.getCritere()),
+                    impact.getDureeDeVie(), null, null);
 
-        aggregationPhysicalEquipments
-                .computeIfAbsent(aggregationToOutput.keyPhysicalEquipment(physicalEquipments.getFirst(), datacenters.getFirst(), impact, refShortcutBO, evaluateReportBO.isDigitalService()),
-                        k -> new AggValuesBO())
-                .add(values);
+            aggregationPhysicalEquipments
+                    .computeIfAbsent(aggregationToOutput.keyPhysicalEquipment(physicalEquipments.getFirst(), datacenters.getFirst(), impact, refShortcutBO, evaluateReportBO.isDigitalService()),
+                            k -> new AggValuesBO())
+                    .add(values);
 
-        log.info("manage virtual equipments");
+            log.info("manage virtual equipments");
+            // manage virtual equipments
+            evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipments.getFirst(), virtualEquipments, aggregationVirtualEquipments, impactEquipementPhysiqueList,
+                    refSip, refShortcutBO, criteriaCodes, lifecycleSteps);
 
-        // manage virtual equipments
-        evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipments.getFirst(), virtualEquipments, aggregationVirtualEquipments, impactEquipementPhysiqueList,
-                refSip, refShortcutBO, criteriaCodes, lifecycleSteps);
-
+        }
 
         task.setProgressPercentage("100%");
         task.setLastUpdateDate(LocalDateTime.now());
@@ -301,16 +300,18 @@ public class EvaluateAiService {
 
         String location = virtualEquipment.getLocation();
 
-        ImpactEquipementVirtuel impact = impactEquipementVirtuelList.getFirst();
         // Aggregate virtual equipment indicators in memory
-        AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                virtualEquipment.getQuantity(), impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
-                refSip.get(impact.getCritere()),
-                null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload());
+        for (ImpactEquipementVirtuel impact : impactEquipementVirtuelList) {
+            AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
+                    virtualEquipment.getQuantity(), impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
+                    refSip.get(impact.getCritere()),
+                    null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload());
 
-        aggregationVirtualEquipments
-                .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())
-                .add(values);
+            aggregationVirtualEquipments
+                    .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())
+                    .add(values);
+        }
+
     }
 
 
