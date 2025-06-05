@@ -488,3 +488,27 @@ components:
           type: array
           items:
             type: string
+    OutAiRecommendationRest:
+      description: AI recommendation output from out_ai_reco table
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        taskId:
+          type: integer
+          format: int64
+        electricityConsumption:
+          type: number
+          format: double
+        runtime:
+          type: integer
+          format: int64
+        recommendations:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time

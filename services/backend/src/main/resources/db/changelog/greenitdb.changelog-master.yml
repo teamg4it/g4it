@@ -33,6 +33,8 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-clean-old-inventory.yml
   - include:
       file: db/changelog/greenitdb.changelog-ai-parameter-input.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-ai-output-reco.yml
   - includeAll:
       path: db/changelog/in-out/
       endsWithFilter: .yml
