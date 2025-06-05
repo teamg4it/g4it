@@ -15,10 +15,12 @@ import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +61,10 @@ public class AsyncEvaluatingService implements ITaskExecute {
         task.setStatus(TaskStatus.IN_PROGRESS.toString());
         taskRepository.save(task);
 
+
         try {
             Path exportDirectory = exportService.createExportDirectory(taskId);
+
             if(context.isAi()) {
                 evaluateAiService.doEvaluateAi(context, task, exportDirectory);
             } else {
@@ -80,6 +84,8 @@ public class AsyncEvaluatingService implements ITaskExecute {
             log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
             task.setStatus(TaskStatus.FAILED.toString());
             details.add(LogUtils.error(e.getMessage()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
             task.setDetails(details);
         }

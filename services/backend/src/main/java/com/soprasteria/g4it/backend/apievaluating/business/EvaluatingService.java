@@ -171,6 +171,7 @@ public class EvaluatingService {
                 .filter(criteria -> !criteria.isEmpty())
                 .orElseGet(() -> Constants.CRITERIA_LIST.subList(0, 5));
 
+        List<Task> task_test = taskRepository.findAll();
         // create task with type EVALUATING_DIGITAL_SERVICE
         Task task = taskRepository.findByDigitalServiceUid(digitalService.getUid())
                 .orElseGet(() -> Task.builder()

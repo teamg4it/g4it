@@ -22,7 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -75,7 +77,10 @@ public class AiInfraInputsService {
         final InPhysicalEquipment inPhysicalEquipmentToCreate = inPhysicalEquipmentMapper.toEntity(InPhysicalEquipmentRest.builder().build());
         inPhysicalEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
         inPhysicalEquipmentToCreate.setName("Server1");
-        inPhysicalEquipmentToCreate.setModel("Model1");
+        inPhysicalEquipmentToCreate.setModel("blade-server--28");
+        inPhysicalEquipmentToCreate.setType("Dedicated Server");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        inPhysicalEquipmentToCreate.setDateWithdrawal(LocalDate.parse("2030-05-01", formatter));
         inPhysicalEquipmentToCreate.setManufacturer("Manufacturer1");
         inPhysicalEquipmentToCreate.setDatacenterName(inDatacenterToCreate.getName());
         inPhysicalEquipmentToCreate.setCpuCoreNumber(Optional.ofNullable(aiInfraBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
@@ -98,6 +103,8 @@ public class AiInfraInputsService {
         inVirtualEquipmentToCreate.setSizeMemoryGb(Optional.ofNullable(aiInfraBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentToCreate.setVcpuCoreNumber(Optional.ofNullable(aiInfraBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentToCreate.setCreationDate(now);
+        inVirtualEquipmentToCreate.setWorkload(0.5);
+        inVirtualEquipmentToCreate.setDurationHour(8000.0);
         inVirtualEquipmentToCreate.setQuantity(1.0);
         inVirtualEquipmentToCreate.setLastUpdateDate(now);
         inVirtualEquipmentRepository.save(inVirtualEquipmentToCreate);
