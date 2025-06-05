@@ -55,7 +55,7 @@
         "parameters": "Paramètres",
         "administration": "Administration",
         "homepage": "Page d'accueil",
-        "home": "Maison",
+        "home": "Accueil",
         "workspace-name": "Espace de travail",
         "access-filters": "Accéder aux filtres de mes indicateurs",
         "refresh": "Actualiser",
@@ -777,7 +777,7 @@
             "digital-service-module": "Digital service module"
         },
         "super-admin": {
-            "migrate-data-title": "Évaluer tous les services numériques"
+            "migrate-data-title": "Lancer les scripts de la version"
         }
     },
     "error-graph": {
@@ -786,5 +786,163 @@
     },
     "header": {
         "menu": "menu principal"
+    },
+    "declarations": {
+        "title": "G4IT Déclarations",
+        "accessibility-text": "Accessibilité : Non conforme",
+        "ecodesign": "Éco-conception",
+        "ecodesign-declaration": "Déclaration d’écoconception",
+        "objectives": "Objectifs",
+        "commited-paragraph": "L'équipe G4IT s’engage dans une démarche d’écoconception visant à réduire l’empreinte environnementale de ses services numériques. La présente déclaration a été rédigée le 28/04/2025 dans le cadre de la mise en œuvre du Référentiel général d’écoconception de services numériques (version 2024).",
+        "framework-paragraph": "Ce référentiel, élaboré conjointement par l’Arcep et l’Arcom, en collaboration avec l’ADEME, la DINUM, la CNIL et l’Inria, définit les grandes orientations pour intégrer les enjeux de sobriété numérique dans la conception et l’exploitation des services numériques. Le document officiel est accessible sur le site de l’Arcep : ",
+        "framework-link": "Référentiel général d’écoconception des services numériques – version 2024",
+        "objectives-paragraph": "Sa mise en œuvre repose sur quatre objectifs principaux :",
+        "functional-areas-paragraph": "Dans cette déclaration, nous nous efforçons d’être exhaustifs quant aux cas d’usage couverts par l’application, représentés par quatre grands volets fonctionnels :",
+        "first-objectives": "Concevoir des services numériques plus durables, afin de prolonger la durée de vie des équipements des utilisateurs ;",
+        "second-objectives": "Favoriser une logique de sobriété numérique, en réponse aux stratégies de captation de l’attention, et en cohérence avec les engagements environnementaux internationaux ;",
+        "third-objectives": "Réduire les ressources informatiques mobilisées sur l’ensemble du cycle de vie des services numériques, notamment via l’optimisation du trafic de données et de l’infrastructure numérique ;",
+        "fourth-objectives": "Renforcer la transparence sur l’empreinte environnementale des services numériques.",
+        "functional-areas-first": "L’évaluation de l’impact d’un inventaire, pouvant correspondre à un système d’information, un parc applicatif, ou un ensemble d’équipements physiques et virtuels ;",
+        "functional-areas-second": "L’évaluation de l’impact d’un service numérique ;",
+        "functional-areas-third": "L’administration des organisations et des utilisateurs de la plateforme.",
+        "key-results": {
+            "title": "Résultats principaux",
+            "key-results-paragraph": "L'audit de conformité a permis d'évaluer à {{ecoDesignPercent}}% la conformité RGESN (version 2024) du site web en date du 28/04/2025.",
+            "strategy": "Stratégie : {{percentage}}%",
+            "specifications": "Spécifications : {{percentage}}%",
+            "architecture": "Architecture : {{percentage}}%",
+            "user-experience": "Expériences et interface utilisateur : {{percentage}}%",
+            "content": "Contenus : {{percentage}}%",
+            "frontEnd": "FrontEnd : {{percentage}}%",
+            "backEnd": "BackEnd : {{percentage}}%",
+            "hosting": "Hébergement : {{percentage}}%",
+            "algorithms": "Algorithmie : {{percentage}}%"
+        },
+        "commitment": "Engagements et plan d’avancement",
+        "action-item": {
+            "title": "D’autre part, les pistes d’actions suivantes seront mises en place en 2025 :",
+            "item": {
+                "one": "Amélioration de l'affichage avec un zoom de 200% pour permettre l'utilisation sur différents types d'écran ;",
+                "two": "Faire un POC sur la compilation native de Springboot 3.3 afin de limiter la consommation RAM et CPU ;",
+                "three": "Migrer l'environnement d'intégration vers un DC France et migration des hébergements vers un cloud provider plus engagé, souverain et transparent."
+            }
+        },
+        "future-development": "Pour ce faire, des revues et audits seront réalisés tous les ans et l'attention à l'écoconception des nouvelles fonctionnalités est réalisée au quotidien.",
+        "download-declaration": "Télécharger la déclaration complète (PDF, {{pdfSize}}Ko)",
+        "accessibility-declaration": "Déclaration d'accessibilité",
+        "accessibility-declaration-para": "L'équipe G4IT s’engage à rendre ses sites internet, intranet, extranet et ses logiciels accessibles, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.",
+        "declaration-applies": "Cette déclaration d’accessibilité s’applique au site",
+        "compliance-status": "État de conformité",
+        "compliance-status-para": "Le site n’est pas conforme au Référentiel général d’amélioration de l’accessibilité (RGAA), version 4. La non-conformité résulte des points et dérogations listés ci-dessous.",
+        "test-result": {
+            "title": "Résultats des tests",
+            "one": "45,31 % des critères RGAA version 4 sont respectés",
+            "two": "Taux de conformité moyen du site : 57,34 %"
+        },
+        "non-accessible-content": {
+            "title": "Contenus non accessibles",
+            "one": "Graphiques du site",
+            "two": "Modales",
+            "three": "Structure des pages"
+        },
+        "technology-used": {
+            "title": "Technologies utilisées",
+            "one": "Angular - 18.2.13",
+            "two": "HTML5",
+            "three": "CSS"
+        },
+        "test-env": {
+            "title": "Environnement de test",
+            "one": "Chrome, Firefox et NVDA",
+            "two": "Safari et VoiceOver"
+        },
+        "accessibility-evaluation-tools": {
+            "title": "Outils d’évaluation de l’accessibilité",
+            "one": "Web Developer",
+            "two": "Stylus",
+            "three": "HeadingsMap",
+            "four": "WCAG Contrast Checker"
+        },
+        "pages-audited": {
+            "title": "Pages du site ayant fait l’objet de la vérification de conformité",
+            "equipment-page": "Page Équipement",
+            "service-details": "Détail du service",
+            "visualization": "Visualisation"
+        },
+        "feedback-contact": {
+            "title": "Retour d’information et contact",
+            "para": "Si vous ne parvenez pas à accéder à un contenu ou à un service, vous pouvez contacter la personne responsable de G4IT pour obtenir une alternative accessible ou le contenu sous une autre forme.",
+            "send-message": "Envoyer un message : ",
+            "contact-entity": "Contacter l’entité responsable du service en ligne"
+        },
+        "appeal-procedures": {
+            "title": "Voies de recours",
+            "para": "Si vous constatez un défaut d’accessibilité et que vous n’obtenez pas de réponse satisfaisante, vous pouvez :",
+            "one": "Écrire au Défenseur des droits :",
+            "two": "Contacter le délégué du Défenseur des droits dans votre région :",
+            "three": "Envoyer un courrier sans affranchissement à : Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07",
+            "list-delegates": "liste des délégués",
+            "form": "formulaire"
+        },
+        "accessibility": {
+            "declaration-pdf": "Téléchargez la déclaration complète d'éco-conception au format PDF ({{pdfSize}}Ko)",
+            "internal-link": "Redirection vers la page du site {{title}}",
+            "external-link": "Overture de la page {{title}} dans un nouvel onglet",
+            "email-link": "Envoyez un e-mail à support.g4it@soprasteria.com",
+            "heading-link": "Faites défiler jusqu'à la section {{title}}"
+        },
+        "multi-year-accessibility-plan": {
+            "title": "Schéma pluriannuel de mise en accessibilité",
+            "para": "Conformément au RGAA et dans une démarche d'amélioration continue, nous nous engageons à renforcer l’accessibilité de nos services numériques. Notre plan d’action s’organise selon les échéances suivantes :",
+            "short-term": {
+                "title": "Court terme (dans un délai d’un mois) :",
+                "training": {
+                    "title": "Plan de formation :",
+                    "para": "Tous les membres de l’équipe G4IT (à l’exception des contributeurs occasionnels) devront avoir suivi, dans le premier mois de leur mission, un module de sensibilisation en e-learning sur le développement web accessible."
+                },
+                "checklist": {
+                    "title": "Checklist accessibilité :",
+                    "para": "Mise en place d’une checklist accessibilité dans la Definition of Done (DoD) pour tous les développements front-end US, afin de vérifier les principales bonnes pratiques d’accessibilité."
+                },
+                "monitoring": {
+                    "title": "Suivi de l’accessibilité :",
+                    "para": "Suivi de chaque scénario CYPRESS et correction des anomalies critiques et majeures avant toute mise en production."
+                }
+            },
+            "medium-term": {
+                "title": "Moyen terme (dans un délai de 3 à 6 mois) :",
+                "zoom": {
+                    "title": "Zoom 200 % :",
+                    "para": "Permettre à l’utilisateur de zoomer à 200 % sans perte de contenu ni de fonctionnalité sur les deux parcours principaux :"
+                },
+                "is-module": {
+                    "title": "Inventory Module :",
+                    "para": "Visualisation de l’impact des équipements physiques."
+                },
+                "ds-module": {
+                    "title": "Digital Service Module :",
+                    "para": "Visualisation de l’impact d’un service numérique."
+                },
+                "training-plan": {
+                    "title": "Plan de formation :",
+                    "para": "Les Product Owners de l’équipe G4IT devront avoir suivi une formation sur la conception de sites accessibles dans les 3 premiers mois de leur mission."
+                }
+            },
+            "long-term": {
+                "title": "Long terme (dans un délai de 6 à 12 mois) ",
+                "graph": {
+                    "title": "Graphiques :",
+                    "para": "Implémentation d’une description textuelle des principales informations présentées dans les radars multicritères."
+                },
+                "audit": {
+                    "title": "Audit d’accessibilité :",
+                    "para": "Réalisation d’un nouvel audit d’accessibilité en 2026."
+                },
+                "training-plan": {
+                    "title": "Plan de formation :",
+                    "para": "Tous les membres de l’équipe G4IT doivent avoir suivi une formation adaptée à leur profil (Product Owner, développeur front-end, testeur, etc.) sur la conception de sites accessibles dans les 3 premiers mois de leur mission.m"
+                }
+            }
+        }
     }
 }

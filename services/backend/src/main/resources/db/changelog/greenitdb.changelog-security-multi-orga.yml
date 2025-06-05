@@ -878,3 +878,12 @@ databaseChangeLog:
       changes:
         - sql: INSERT INTO g4it_subscriber (name,creation_date, last_update_date, authorized_domains,criteria) VALUES
             ('SUBSCRIBER-DEMO',NOW(), NOW(), 'g4it.com','{climate-change,ionising-radiation,acidification,particulate-matter,resource-use}');
+
+  - changeSet:
+      id: unique-constraint-on-g4it_user_role_organization
+      author: G4IT Dev Team
+      changes:
+        - addUniqueConstraint:
+            columnNames: user_organization_id, role_id
+            constraintName: unique_user_org_role
+            tableName: g4it_user_role_organization
