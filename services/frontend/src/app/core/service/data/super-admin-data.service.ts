@@ -17,7 +17,11 @@ const endpoint = Constants.ENDPOINTS.actions;
 export class SuperAdminDataService {
     constructor(private http: HttpClient) {}
 
-    migrateDataToNewFormat(): Observable<void> {
+    launchReleaseScript(): Observable<void> {
         return this.http.post<void>(`${endpoint}/do-admin-actions`, {});
+    }
+
+    removeWriteAccess(): Observable<void> {
+        return this.http.post<void>(`${endpoint}/remove-write-access`, {});
     }
 }

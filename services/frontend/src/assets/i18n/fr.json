@@ -777,7 +777,7 @@
             "digital-service-module": "Digital service module"
         },
         "super-admin": {
-            "migrate-data-title": "Lancer les scripts de la version"
+            "launch-release-script": "Lancer les scripts de la version"
         }
     },
     "error-graph": {

@@ -4,6 +4,7 @@
 
 ### Major Changes
 
+- 1079 | [BE]: Migrate digital services from "Demo" workspace to new workspace
 - 1001 | Modify the first connection workflow
 - 1149 | Visualize ecodesign & accessibility declaration
 - 1003 | Remove the link between a user and a digital service
@@ -14,9 +15,7 @@
 - 1205 | [BE] Error in administation page when changing criteria
 - 797 | Lag on the filter when there is a lot of data
 - 1218 | Issue on the DS export feature
-- 797  | Lag on the filter when there is a lot of data
-- 797  | Lag on the filter when there is a lot of data
-- 1246 | Inventory : Export available from Demo Workspace 
+- 1246 | Inventory : Export available from Demo Workspace
 
 ## 3.2.1
 
@@ -33,7 +32,7 @@
 ### Minor Changes
 
 - 1108 | Workspace navigation from Admin module if i am not admin of the workspace
-- 795  | Update the docker image of BoaviztAPI
+- 795 | Update the docker image of BoaviztAPI
 - 1102 | Regression on total electricity consumption compute
 - 1144 | G4IT KO with "not specified" location
 
@@ -41,7 +40,7 @@
 
 ### Major Changes
 
-- 885  | New Header with Menu added, Left sidebar, Useful information page
+- 885 | New Header with Menu added, Left sidebar, Useful information page
 - 1038 | Allow to estimate a inventory if only virtual equipments = CLOUD_SERVICES
 - 1002 | Add a button to create its own personnal organization
 
