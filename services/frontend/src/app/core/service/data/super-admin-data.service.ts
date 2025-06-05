@@ -20,4 +20,8 @@ export class SuperAdminDataService {
     launchReleaseScript(): Observable<void> {
         return this.http.post<void>(`${endpoint}/do-admin-actions`, {});
     }
+
+    removeWriteAccess(): Observable<void> {
+        return this.http.post<void>(`${endpoint}/remove-write-access`, {});
+    }
 }

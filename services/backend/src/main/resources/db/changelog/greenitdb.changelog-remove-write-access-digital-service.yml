@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-procedure-remove_write_role_for_demo_users
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql: |
+              CREATE OR REPLACE PROCEDURE remove_write_role_for_demo_users()
+              LANGUAGE plpgsql
+              AS $$
+              DECLARE
+                  write_role_id BIGINT;
+                  read_role_id BIGINT;
+                  org_admin_role_id BIGINT;
+                  removed_count INT := 0;
+                  added_count INT := 0;
+                  user_row RECORD;
+              BEGIN
+                  -- Get role IDs 
+                  SELECT id INTO write_role_id FROM public.g4it_role WHERE name = 'ROLE_DIGITAL_SERVICE_WRITE';
+                  SELECT id INTO read_role_id FROM public.g4it_role WHERE name = 'ROLE_DIGITAL_SERVICE_READ';
+                  SELECT id INTO org_admin_role_id FROM public.g4it_role WHERE name = 'ROLE_ORGANIZATION_ADMINISTRATOR';
+
+                  -- Loop over all non-admin demo users who have the write role
+                  FOR user_row IN
+                      SELECT
+                          uro.user_organization_id,
+                          u.email,
+                          o.name AS organization_name,
+                          s.name AS subscriber_name  -- Added subscriber name
+                      FROM public.g4it_user_role_organization uro
+                      JOIN public.g4it_user_organization uo ON uro.user_organization_id = uo.id
+                      JOIN public.g4it_user u ON uo.user_id = u.id
+                      JOIN public.g4it_organization o ON uo.organization_id = o.id
+                      JOIN public.g4it_subscriber s ON o.subscriber_id = s.id
+                      WHERE uro.role_id = write_role_id
+                        AND o.name COLLATE "C" = 'DEMO'
+                        AND NOT EXISTS (
+                              SELECT 1
+                              FROM public.g4it_user_role_organization admin_uro
+                              WHERE admin_uro.user_organization_id = uro.user_organization_id
+                                AND admin_uro.role_id = org_admin_role_id
+                        )
+                  LOOP
+                      -- Add read access if not already present
+                      INSERT INTO public.g4it_user_role_organization (user_organization_id, role_id)
+                      VALUES (user_row.user_organization_id, read_role_id)
+                      ON CONFLICT (user_organization_id, role_id) DO NOTHING;
+
+                      IF FOUND THEN
+                          added_count := added_count + 1;
+                      END IF;
+
+                      -- Remove write access
+                      DELETE FROM public.g4it_user_role_organization
+                      WHERE user_organization_id = user_row.user_organization_id
+                        AND role_id = write_role_id;
+
+                      IF FOUND THEN
+                          removed_count := removed_count + 1;
+                      END IF;
+
+                      RAISE NOTICE 'Processed user % (Organization: %, Subscriber: %) - Removed WRITE, Added READ', 
+                          user_row.email, 
+                          user_row.organization_name,
+                          user_row.subscriber_name;
+                  END LOOP;
+
+                  RAISE NOTICE 'Total write roles removed: %', removed_count;
+                  RAISE NOTICE 'Total read roles added: %', added_count;
+              END;
+              $$;
+
+            splitStatements: false
+            stripComments: false
+      rollback:
+        sql:
+          sql: DROP PROCEDURE IF EXISTS remove_write_role_for_demo_users()

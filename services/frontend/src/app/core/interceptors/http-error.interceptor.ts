@@ -63,6 +63,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             if (
                 error.status === +key &&
                 error.url.includes("/digital-services") &&
+                !error.url.includes("/export") &&
                 isDigitalServiceRead
             ) {
                 let [_, _1, subscriber, _2, organization] = this.router.url.split("/");

@@ -17,11 +17,23 @@ public class AdministratorActionsRestController implements AdministratorActionsA
     @Autowired
     DsMigrationService dsMigrationService;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseEntity<AllEvaluationStatusRest> doAdminActions() {
 
         // Migration of digital services from DEMO workspace to new workspaces
-
         return ResponseEntity.ok(dsMigrationService.migrateDemoDs());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<AllEvaluationStatusRest> removeWriteAccess() {
+
+      //  Remove write access for digital services on demo organizations
+        return ResponseEntity.ok(administratorActionsService.executeWriteRoleCleanupOnDemoOrg());
     }
 }
