@@ -6,6 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { DatePipe } from "@angular/common";
+import { APP_BASE_HREF } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
@@ -23,10 +24,17 @@ import { AppComponent } from "./app.component";
 import { ApiInterceptor } from "./core/interceptors/api-request.interceptor";
 import { HttpErrorInterceptor } from "./core/interceptors/http-error.interceptor";
 
+
 // Function to load translation files using HttpClient
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, "assets/i18n/", ".json");
 }
+
+function baseHRefFactory() {
+    // If the subpath is set in the environment, use it as the base href
+    return environment.subpath ? "/" + environment.subpath : "/";
+}
+
 
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>
@@ -78,6 +86,10 @@ function initializeKeycloak(keycloak: KeycloakService) {
             useClass: ApiInterceptor,
             multi: true,
         },
+
+
+
+        {provide: APP_BASE_HREF, useFactory: baseHRefFactory},
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,
