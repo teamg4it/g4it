@@ -1,8 +1,9 @@
 ---
-title: "Script to remove the 'write' privilege on DEMO organization"
-description: "How to remove the privilege 'ROLE_DIGITAL_SERVICE_WRITE' on DEMO organization"
-date: 2025-05-29T14:28:06+01:00
-weight: 6
+title: "Remove the 'write' privilege on DEMO organization"
+description: "How to remove Digital Service Write privileges from all Non-Admin users in the DEMO organization for each Subscriber"
+date: 2025-06-06T08:26:00+01:00
+
+weight: 4
 ---
 
 ## Process for revoking the digital service write privilege from all non-admin users in the DEMO organization for each subscriber.
