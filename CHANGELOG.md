@@ -4,6 +4,7 @@
 
 ### Major Changes
 
+- 1079 | [BE]: Migrate digital services from "Demo" workspace to new workspace
 - 1001 | Modify the first connection workflow
 - 1149 | Visualize ecodesign & accessibility declaration
 - 1003 | Remove the link between a user and a digital service

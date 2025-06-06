@@ -39,3 +39,5 @@ databaseChangeLog:
   - includeAll:
       path: db/changelog/comments/
       endsWithFilter: .yml
+  - include:
+      file: db/changelog/greenitdb.changelog-migrate-demo-digital-services.yml
