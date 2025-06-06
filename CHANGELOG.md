@@ -11,6 +11,7 @@
 
 ### Minor Changes
 
+- 1166 | [BE]: Allow G4IT to accept a copy/paste of model with special character from DataModel
 - 1189 | CalculImpactDSI Inventories have been deleted in Prod
 - 1205 | [BE] Error in administation page when changing criteria
 - 797 | Lag on the filter when there is a lot of data
