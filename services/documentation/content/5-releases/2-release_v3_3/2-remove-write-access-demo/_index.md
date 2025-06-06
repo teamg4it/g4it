@@ -1,13 +1,12 @@
 ---
 title: "Remove the 'write' privilege on DEMO organization"
-description: "How to remove the 'write' privilege on DEMO organization"
-date: 2025-06-06T14:28:06+01:00
+description: "How to remove Digital Service Write privileges from all Non-Admin users in the DEMO organization for each Subscriber"
+date: 2025-06-06T08:26:00+01:00
+
 weight: 4
 ---
 
-## Process for revoking the digital service write privilege from all non-admin users in the DEMO organization for each subscriber
-
-### Migration script
+## Process for revoking the digital service write privilege from all non-admin users in the DEMO organization for each subscriber.
 
 1. Execute the script to identify the non-admin users with write access on digital service module.
 
@@ -116,7 +115,7 @@ call remove_write_role_for_demo_users;
 drop procedure remove_write_role_for_demo_users;
 ```
 
-6. Rollback script to restore the write access:
+6. **Rollback** script to restore the write access:
 
 ```sql
 DO $$
