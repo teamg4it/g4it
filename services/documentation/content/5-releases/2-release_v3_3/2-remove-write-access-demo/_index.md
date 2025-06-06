@@ -115,7 +115,7 @@ call remove_write_role_for_demo_users;
 drop procedure remove_write_role_for_demo_users;
 ```
 
-6. **Rollback** script to restore the write access:
+### Rollback script to restore the write access:
 
 ```sql
 DO $$
