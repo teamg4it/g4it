@@ -227,11 +227,23 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             const digitalServiceId = this.digitalService?.uid;
 
             if (digitalServiceId) {
-                this.router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-                    this.router.navigate([
-                        `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
-                    ]);
-                });
+                if (this.isEcoMindAi) {
+                    this.router
+                        .navigateByUrl("/", { skipLocationChange: true })
+                        .then(() => {
+                            this.router.navigate([
+                                `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai/${digitalServiceId}/footprint/dashboard`,
+                            ]);
+                        });
+                } else {
+                    this.router
+                        .navigateByUrl("/", { skipLocationChange: true })
+                        .then(() => {
+                            this.router.navigate([
+                                `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
+                            ]);
+                        });
+                }
             }
         }
     }
