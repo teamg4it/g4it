@@ -150,13 +150,7 @@ public class FileSystemService {
         final List<String> result = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
-            try {
                 result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i)));
-            } catch (IOException e) {
-                // Handle the exception appropriately for your use case
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                        "Error uploading file: " + files.get(i).getOriginalFilename(), e);
-            }
         }
 
         return result;
@@ -207,7 +201,7 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) throws IOException {
+    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) {
         final Path tempPath = Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString());
         File outputFile = tempPath.toFile();
 
