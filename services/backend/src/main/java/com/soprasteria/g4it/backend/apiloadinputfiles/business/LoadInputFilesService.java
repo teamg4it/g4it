@@ -12,8 +12,11 @@ import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
@@ -48,6 +51,8 @@ public class LoadInputFilesService {
     @Autowired
     InventoryRepository inventoryRepository;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     @Qualifier("taskExecutorSingleThreaded")
     TaskExecutor taskExecutor;
     /**
@@ -57,6 +62,8 @@ public class LoadInputFilesService {
     AsyncLoadFilesService asyncLoadFilesService;
     @Autowired
     private FileSystemService fileSystemService;
+    @Autowired
+    AuthService authService;
 
     /**
      * Load input files for an inventory
@@ -116,6 +123,8 @@ public class LoadInputFilesService {
                 .flatMap(Collection::stream)
                 .toList();
 
+        User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
+
         // create task with type LOADING
         Task task = Task.builder()
                 .creationDate(context.getDatetime())
@@ -126,7 +135,7 @@ public class LoadInputFilesService {
                 .type(TaskType.LOADING.toString())
                 .inventory(Inventory.builder().id(inventoryId).build())
                 .filenames(filenames)
-                .createdBy(inventory.getCreatedBy())
+                .createdBy(user)
                 .build();
 
         taskRepository.save(task);
