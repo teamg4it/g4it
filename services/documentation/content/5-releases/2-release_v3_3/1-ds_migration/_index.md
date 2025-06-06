@@ -79,6 +79,12 @@ begin
 	loop
 		perform 1;
 
+        -- Skip the user if his last name is null
+        if rec.last_name is null or trim(rec.last_name) = '' then
+          raise notice 'User % skipped due to null last name', rec.email;
+          continue;
+        end if;
+
 		-- Increment new demo organization name if needed
 		select counter into last_name_suffix
 		from tmp_last_name_count
