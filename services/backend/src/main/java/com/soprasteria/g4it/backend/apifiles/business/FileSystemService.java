@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
 import jakarta.annotation.PostConstruct;
@@ -149,7 +150,13 @@ public class FileSystemService {
         final List<String> result = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
-            result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i)));
+            try {
+                result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i)));
+            } catch (IOException e) {
+                // Handle the exception appropriately for your use case
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Error uploading file: " + files.get(i).getOriginalFilename(), e);
+            }
         }
 
         return result;
@@ -200,11 +207,40 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) {
+    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) throws IOException {
         final Path tempPath = Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString());
+        File outputFile = tempPath.toFile();
+
+        // Detect file type by extension
+        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+        boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
+
         try {
-            Files.copy(file.getInputStream(), tempPath);
-            InputStream tmpInputStream = new FileInputStream(tempPath.toFile());
+            if (isBinary) {
+                // Direct binary copy for Excel/ODS files
+                try (InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(outputFile)) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                }
+            } else {
+                // if the encoding was not utf8 for plain text,
+                // we open the file again with an encoding adapted to ANSI
+
+                BufferedReader br = getBufferedReader(file);
+                try (Writer out = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        out.append(line).append("\n");
+                    }
+                }
+            }
+
+            InputStream tmpInputStream = new FileInputStream(outputFile);
             var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
             var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
             tmpInputStream.close();
