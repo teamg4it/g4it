@@ -1,6 +1,6 @@
 ---
-title: "Rollback digital services migration to new workspace"
-description: "How to rollback the migration of digital services from DEMO workspace to new workspace"
+title: "Rollback automatic digital services migration from DEMO workspace to new workspace"
+description: "How to rollback the automatic migration of digital services from DEMO workspace to new workspace"
 date: 2025-05-20T14:28:06+01:00
 weight: 3
 ---
@@ -18,17 +18,14 @@ begin
 
 	--delete new user_role_organization rows
 	delete from g4it_user_role_organization giuro
-	using g4it_user_organization giuo, g4it_organization gio
+	using g4it_user_organization giuo
 	where giuo.id = giuro.user_organization_id 
-	and gio.id = giuo.organization_id
-	and gio."name" like 'DEMO-%';
+	and giuo.organization_id in (select new_organization_id from ds_migration_new_organization_created_rollback);
 	raise notice 'New users role for organization deleted';
 	
 	--delete new g4it_user_organization rows
 	delete from g4it_user_organization giuo 
-	using g4it_organization gio
-	where gio.id = giuo.organization_id
-	and gio."name" like 'DEMO-%';
+	where giuo.organization_id in (select new_organization_id from ds_migration_new_organization_created_rollback);
 	raise notice 'New users link with organization deleted';
 	
 	--update digital_service to bring back the old link with DEMO organization
@@ -49,7 +46,7 @@ begin
 	
 	--delete the new organizations
 	delete from g4it_organization gio
-	where gio."name" like 'DEMO-%';
+	where gio.id in (select new_organization_id from ds_migration_new_organization_created_rollback);
 	raise notice 'New organizations created with the migration deleted';
 
 	raise notice 'Rollback ended with success';

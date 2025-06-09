@@ -26,6 +26,16 @@ databaseChangeLog:
                   name: old_organization_id
                   type: bigint
   - changeSet:
+      id: create-ds-migration-new-organization-created-rollback
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ds_migration_new_organization_created_rollback
+            columns:
+              - column:
+                  name: new_organization_id
+                  type: bigint
+  - changeSet:
       id: migrate-demo-digital-services
       author: G4IT Dev Team
       changes:
@@ -56,7 +66,8 @@ databaseChangeLog:
                   truncate table tmp_last_name_count;
                   truncate table ds_migration_rollback;
                   truncate table dss_migration_rollback;
-    
+                  truncate table ds_migration_new_organization_created_rollback;                
+                
                   select id into role_org_admin_id from g4it_role where name = ''ROLE_ORGANIZATION_ADMINISTRATOR'';
                   select id into role_ds_write_id from g4it_role where name = ''ROLE_DIGITAL_SERVICE_WRITE'';
     
@@ -216,6 +227,9 @@ databaseChangeLog:
                     insert into g4it_organization ("name", subscriber_id, status)
                     values (new_organization_name, subscriber_id_organization, ''ACTIVE'')
                     returning id into new_organization_id;
+                
+                    insert into ds_migration_new_organization_created_rollback(new_organization_id)
+                    values (new_organization_id);
           
                     raise notice ''Organization with id % name % created'', new_organization_id, new_organization_name;
                   end if;
