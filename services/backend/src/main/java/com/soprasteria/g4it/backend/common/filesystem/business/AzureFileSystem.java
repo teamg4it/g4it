@@ -15,6 +15,7 @@ import com.azure.storage.blob.models.ListBlobContainersOptions;
 import com.soprasteria.g4it.backend.common.filesystem.exception.FileStorageAccessExcepton;
 import com.soprasteria.g4it.backend.common.filesystem.external.VaultAccessClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Component;
  * FileSystem implementation for Azure.
  */
 @Component
-@RequiredArgsConstructor
 @Profile("azure")
 public class AzureFileSystem implements FileSystem {
 
@@ -36,11 +36,27 @@ public class AzureFileSystem implements FileSystem {
      */
     private final VaultAccessClient vaultAccessClient;
 
+    private final String subEnv;
+
+    public AzureFileSystem(VaultAccessClient vaultAccessClient, @Value("${sub-env:}") String subEnv) {
+        this.vaultAccessClient = vaultAccessClient;
+        this.subEnv = subEnv;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public FileStorage mount(final String subscriber, final String organization) {
+
+        String organizationPrefix = organization;
+
+        if(subEnv != null && !subEnv.isEmpty()) {
+            // If subEnv is not empty, we add it to the organization name
+            organizationPrefix = String.join("/", subEnv, organization);
+        }
+
+
         // Retrieve subscriber's connectionString.
         final String subscriberConnectionString = vaultAccessClient.getConnectionStringForSubscriber(subscriber);
 
@@ -61,6 +77,6 @@ public class AzureFileSystem implements FileSystem {
         return new AzureFileStorage(
                 blobServiceClient,
                 blobServiceClient.getBlobContainerClient(storageName),
-                organization, String.join("/", "azure-blob:/", storageName));
+                organizationPrefix, String.join("/", "azure-blob:/", storageName));
     }
 }

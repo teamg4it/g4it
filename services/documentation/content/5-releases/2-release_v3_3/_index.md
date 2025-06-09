@@ -31,3 +31,5 @@ To automatically launch the migration script, here is the step-by-step procedure
 **Manual launch**
 
 In case you need to manually launch the script check this : [here](1-ds_migration)
+
+You can also find the rollback script to roll back the migration of digital services from DEMO workspace to new workspaces [here](2-ds-migration-rollback)
