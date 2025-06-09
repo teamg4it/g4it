@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.CallableStatement;
 import java.sql.SQLWarning;
@@ -26,7 +25,6 @@ public class DsMigrationService {
     public DsMigrationService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    @Transactional
     public AllEvaluationStatusRest migrateDemoDs() {
         try {
             log.info("Migrate digital services from DEMO workspace to new workspaces");
