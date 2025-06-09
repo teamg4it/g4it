@@ -144,11 +144,11 @@ export class InventoryUtilService {
         );
     }
 
-    computeCloudStats(
+    async computeCloudStats(
         inVirtualEquipments: InVirtualEquipmentRest[],
         filters: Filter<string>,
         filterFields: string[],
-    ): Stat[] {
+    ): Promise<Stat[]> {
         const filtersSet: InventoryFilterSet = this.createFiltersSet(
             filters,
             filterFields,
@@ -244,11 +244,11 @@ export class InventoryUtilService {
         ];
     }
 
-    computeDataCenterStats(
+    async computeDataCenterStats(
         filters: Filter<string>,
         filterFields: string[],
         datacenters: Datacenter[] = [],
-    ): Stat[] {
+    ): Promise<Stat[]> {
         const filtersSet: InventoryFilterSet = this.createFiltersSet(
             filters,
             filterFields,
