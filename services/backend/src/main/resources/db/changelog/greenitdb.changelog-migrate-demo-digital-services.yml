@@ -83,6 +83,12 @@ databaseChangeLog:
                     inner join g4it_user u on ds.user_id = u.id
                   loop
                     perform 1;
+                
+                    -- Skip the user if his last name is null
+                    if rec.last_name is null or trim(rec.last_name) = '''' then
+                      raise notice ''User % skipped due to null last name'', rec.email;
+                      continue;
+                    end if;
                   
                     -- Increment new demo organization name if needed
                     select counter into last_name_suffix
@@ -174,7 +180,6 @@ databaseChangeLog:
                   
                       end loop;
                     end loop;
-                    commit;
                     raise notice ''Migration around user % - % commited'', rec.creator_id, rec.email;
                   end loop;
                   
