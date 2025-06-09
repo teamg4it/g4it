@@ -180,6 +180,7 @@ databaseChangeLog:
                   
                       end loop;
                     end loop;
+                    commit;
                     raise notice ''Migration around user % - % commited'', rec.creator_id, rec.email;
                   end loop;
                   
