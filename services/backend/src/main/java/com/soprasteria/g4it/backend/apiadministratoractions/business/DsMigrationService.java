@@ -25,6 +25,7 @@ public class DsMigrationService {
     public DsMigrationService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+    
     public AllEvaluationStatusRest migrateDemoDs() {
         try {
             log.info("Migrate digital services from DEMO workspace to new workspaces");
@@ -36,7 +37,7 @@ public class DsMigrationService {
 
                     // Log raise notice messages from SQL procedure
                     SQLWarning sqlWarning = cs.getWarnings();
-                    
+
                     while (sqlWarning != null) {
                         log.info("PostgreSQL NOTICE : {}", sqlWarning.getMessage());
                         sqlWarning = sqlWarning.getNextWarning();
