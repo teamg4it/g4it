@@ -408,10 +408,15 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 parametersData[field] === "",
         );
         const missingInfrastructureFields = requiredInfrastructureFields.filter(
-            (field) =>
-                infrastructureData[field] === undefined ||
-                infrastructureData[field] === null ||
-                infrastructureData[field] === "",
+            (field) => {
+                const value = infrastructureData[field];
+                // Pour les champs numériques, on accepte 0 comme valeur valide
+                if (typeof value === "number") {
+                    return value === undefined || value === null;
+                }
+                // Pour les autres champs (string), on vérifie comme avant
+                return value === undefined || value === null || value === "";
+            },
         );
 
         if (

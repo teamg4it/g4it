@@ -34,6 +34,7 @@
         "heading": "Heading",
         "subheading": "Subheading",
         "normal": "Normal",
+        "min": "must be greater than or equal to 1",
         "peopleeq": "People eq.",
         "peopleeq-min": "people. eq.",
         "no-data": "No results available",
