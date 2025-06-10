@@ -30,13 +30,13 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
                 "SERVER_DC",
                 [Validators.required, Validators.pattern(/^(SERVER_DC|LAPTOP|DESKTOP)$/)],
             ],
-            nbCpuCores: [0, [Validators.required, Validators.min(0)]],
+            nbCpuCores: [0, [Validators.min(0)]],
             nbGpu: [0, [Validators.required, Validators.min(0)]],
             gpuMemory: [0, [Validators.required, Validators.min(0)]],
             ramSize: [0, [Validators.required, Validators.min(0)]],
-            pue: [0.1, [Validators.required, Validators.min(0.1)]],
-            complementaryPue: [0.1, [Validators.required, Validators.min(0.1)]],
-            location: ["", Validators.required],
+            pue: [1, [Validators.required, Validators.min(1)]],
+            complementaryPue: [1, [Validators.required, Validators.min(1)]],
+            location: ["France", Validators.required],
         });
 
         // Charger les pays depuis l'API
@@ -46,6 +46,19 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
         const savedData = this.aiFormsStore.getInfrastructureFormData();
         if (savedData) {
             this.infrastructureForm.patchValue(savedData);
+        } else {
+            // Sauvegarder les valeurs par défaut dans le store
+            const defaultData = {
+                infrastructureType: "SERVER_DC",
+                nbCpuCores: 0,
+                nbGpu: 0,
+                gpuMemory: 0,
+                ramSize: 0,
+                pue: 1,
+                complementaryPue: 1,
+                location: "France",
+            };
+            this.aiFormsStore.setInfrastructureFormData(defaultData);
         }
 
         // Sauvegarder les données à chaque changement
