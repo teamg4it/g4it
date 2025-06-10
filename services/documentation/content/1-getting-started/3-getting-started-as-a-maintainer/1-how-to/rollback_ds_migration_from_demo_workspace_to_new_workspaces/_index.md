@@ -48,6 +48,10 @@ begin
 	delete from g4it_organization gio
 	where gio.id in (select new_organization_id from ds_migration_new_organization_created_rollback);
 	raise notice 'New organizations created with the migration deleted';
+	
+    truncate table ds_migration_rollback;
+    truncate table dss_migration_rollback;
+    truncate table ds_migration_new_organization_created_rollback; 
 
 	raise notice 'Rollback ended with success';
 	end;

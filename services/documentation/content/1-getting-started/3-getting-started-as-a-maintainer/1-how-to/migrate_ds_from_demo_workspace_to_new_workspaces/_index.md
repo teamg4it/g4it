@@ -164,9 +164,6 @@ begin
 	);
 
 	truncate table tmp_last_name_count;
-	truncate table ds_migration_rollback;
-	truncate table dss_migration_rollback;
-	truncate table ds_migration_new_organization_created_rollback;
 
 	select id into role_org_admin_id from g4it_role where "name" = 'ROLE_ORGANIZATION_ADMINISTRATOR';
 	select id into role_ds_write_id from g4it_role where "name" = 'ROLE_DIGITAL_SERVICE_WRITE';
@@ -235,13 +232,14 @@ begin
 
 		-- Inserting data for a future rollback
 		for ds_backup_rec in
-			select uid, organization_id
+			select uid, name, organization_id
 			from digital_service
 			where user_id = rec.creator_id
 			and organization_id = rec.organization_id
 		loop
 			insert into ds_migration_rollback(digital_service_id, old_organization_id)
 			values(ds_backup_rec.uid, ds_backup_rec.organization_id);
+			raise notice 'Digital service % % with old organization % saved for probable rollback', ds_backup_rec.uid, ds_backup_rec.name, ds_backup_rec.organization_id;
 		end loop;
 
 		-- Associating the digital service to the new organization
@@ -264,6 +262,7 @@ begin
 				-- Inserting current data for a future rollback
 				insert into dss_migration_rollback(digital_service_shared_id, old_organization_id)
 				values(dss_backup_rec.id, dss_backup_rec.organization_id);
+				raise notice 'Digital service shared % with old organization % saved for probable rollback', dss_backup_rec.id, dss_backup_rec.organization_id;
 			end loop;
 
 			for shared_user_rec in
