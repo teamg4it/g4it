@@ -5,26 +5,135 @@ date: 2025-05-20T14:28:06+01:00
 weight: 3
 ---
 
+### Deletion of empty digital services
+
+If you want to manually migrate digital services from DEMO workspace to new workspace, you first have to delete empty digital services which are useless.
+To do this you need to execute the following script :
+
+```sql
+-- Step 0 : Check the number of digital services to be deleted
+SELECT count(*)
+FROM digital_service ds
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM in_physical_equipment ipe
+    WHERE ipe.digital_service_uid = ds.uid
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM in_virtual_equipment ive
+    WHERE ive.digital_service_uid = ds.uid
+);
+
+-- Step 1 : Delete the link associated to digital services with no equipment created
+DELETE FROM digital_service_link
+WHERE digital_service_uid IN (
+    SELECT ds.uid
+    FROM digital_service ds
+    WHERE NOT EXISTS (
+        SELECT 1 FROM in_physical_equipment ipe WHERE ipe.digital_service_uid = ds.uid
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM in_virtual_equipment ive WHERE ive.digital_service_uid = ds.uid
+    )
+);
+
+-- Step 2 : Delete the shared link associated to digital services with no equipment created
+DELETE FROM digital_service_shared
+WHERE digital_service_uid IN (
+    SELECT ds.uid
+    FROM digital_service ds
+    WHERE NOT EXISTS (
+        SELECT 1 FROM in_physical_equipment ipe WHERE ipe.digital_service_uid = ds.uid
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM in_virtual_equipment ive WHERE ive.digital_service_uid = ds.uid
+    )
+);
+
+-- Step 3 : Delete the task associated to digital services with no equipment created
+DELETE FROM task
+WHERE digital_service_uid IN (
+    SELECT ds.uid
+    FROM digital_service ds
+    WHERE NOT EXISTS (
+        SELECT 1 FROM in_physical_equipment ipe WHERE ipe.digital_service_uid = ds.uid
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM in_virtual_equipment ive WHERE ive.digital_service_uid = ds.uid
+    )
+);
+
+-- Step 4 : Delete datacenter associated to the digital services with no equipment created
+
+DELETE FROM in_datacenter 
+WHERE digital_service_uid IN (
+    SELECT ds.uid
+    FROM digital_service ds
+    WHERE NOT EXISTS (
+        SELECT 1 FROM in_physical_equipment ipe WHERE ipe.digital_service_uid = ds.uid
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM in_virtual_equipment ive WHERE ive.digital_service_uid = ds.uid
+    )
+);
+
+-- Step 5 : Delete the digital services with no equipment created
+DELETE FROM digital_service
+WHERE NOT EXISTS (
+    SELECT 1 FROM in_physical_equipment ipe WHERE ipe.digital_service_uid = digital_service.uid
+)
+AND NOT EXISTS (
+    SELECT 1 FROM in_virtual_equipment ive WHERE ive.digital_service_uid = digital_service.uid
+);
+
+-- Step 6 : Delete the note associated to digital services with no equipment created
+
+DELETE FROM note
+WHERE NOT EXISTS (
+    SELECT 1 FROM digital_service ds
+    WHERE ds.note_id = note.id
+)
+AND NOT EXISTS (
+    SELECT 1 FROM inventory inv
+    WHERE inv.note_id = note.id
+);
+
+-- Step 7 : The result should be 0
+SELECT count(*)
+FROM digital_service ds
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM in_physical_equipment ipe
+    WHERE ipe.digital_service_uid = ds.uid
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM in_virtual_equipment ive
+    WHERE ive.digital_service_uid = ds.uid
+);
+```
+
 ### Migration script
 
 1. Execute these three table creation scripts : 
 
 ```sql
-create table ds_migration_rollback(
+create table if not exists ds_migration_rollback(
 	digital_service_id varchar,
 	old_organization_id int
 );
 ```
 
 ```sql
-create table dss_migration_rollback(
+create table if not exists dss_migration_rollback(
 	digital_service_shared_id int,
 	old_organization_id int
 );
 ```
 
 ```sql
-create table ds_migration_new_organization_created_rollback(
+create table if not exists ds_migration_new_organization_created_rollback(
 	new_organization_id int
 );
 ```

@@ -5,6 +5,7 @@ databaseChangeLog:
       changes:
         - createTable:
             tableName: ds_migration_rollback
+            ifNotExists: true
             columns:
               - column:
                   name: digital_service_id
@@ -18,6 +19,7 @@ databaseChangeLog:
       changes:
         - createTable:
             tableName: dss_migration_rollback
+            ifNotExists: true
             columns:
               - column:
                   name: digital_service_shared_id
@@ -31,6 +33,7 @@ databaseChangeLog:
       changes:
         - createTable:
             tableName: ds_migration_new_organization_created_rollback
+            ifNotExists: true
             columns:
               - column:
                   name: new_organization_id
