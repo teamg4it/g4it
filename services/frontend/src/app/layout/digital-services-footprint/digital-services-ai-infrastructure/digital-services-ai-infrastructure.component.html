@@ -52,12 +52,12 @@
                     <p
                         class="error-text"
                         *ngIf="
-                            infrastructureForm.get('nbCpuCores')?.invalid &&
+                            infrastructureForm.get('nbCpuCores')?.hasError('min') &&
                             infrastructureForm.get('nbCpuCores')?.touched
                         "
                     >
                         {{ "digital-services-ai-infrastructure.cpu-cores" | translate }}
-                        {{ "common.mandatory" | translate }}
+                        {{ "common.min" | translate }} 0
                     </p>
                 </div>
                 <div class="label-input-div-form">
@@ -136,15 +136,12 @@
                     <p-inputNumber
                         inputId="datacenter-pue"
                         formControlName="pue"
-                        [min]="0.1"
+                        [min]="1"
                         [step]="0.1"
                     ></p-inputNumber>
                     <p
                         class="error-text"
-                        *ngIf="
-                            infrastructureForm.get('pue')?.invalid &&
-                            infrastructureForm.get('pue')?.touched
-                        "
+                        *ngIf="infrastructureForm.get('pue')?.hasError('required')"
                     >
                         {{
                             "digital-services-ai-infrastructure.datacenter-pue"
@@ -154,16 +151,13 @@
                     </p>
                     <p
                         class="error-text"
-                        *ngIf="
-                            infrastructureForm.get('pue')?.hasError('min') &&
-                            infrastructureForm.get('pue')?.touched
-                        "
+                        *ngIf="infrastructureForm.get('pue')?.hasError('min')"
                     >
                         {{
                             "digital-services-ai-infrastructure.datacenter-pue"
                                 | translate
                         }}
-                        {{ "common.min" | translate }} 0.1
+                        {{ "common.min" | translate }}
                     </p>
                 </div>
                 <div class="label-input-div-form">
@@ -173,7 +167,7 @@
                     <p-inputNumber
                         inputId="complementary-pue"
                         formControlName="complementaryPue"
-                        [min]="0.1"
+                        [min]="1"
                         [step]="0.1"
                     ></p-inputNumber>
                     <p
@@ -200,7 +194,7 @@
                             "digital-services-ai-infrastructure.complementary-pue"
                                 | translate
                         }}
-                        {{ "common.min" | translate }} 0.1
+                        {{ "common.min" | translate }}
                     </p>
                 </div>
             </div>

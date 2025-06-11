@@ -316,3 +316,14 @@ export interface StatusCount {
     error: number;
     total: number;
 }
+
+export interface AiRecommendation {
+    id: number;
+    taskId: number;
+    electricityConsumption: number;
+    runtime: number;
+    recommendations: string; // JSON string
+    digitalServiceUid: string;
+    creationDate: string;
+    lastUpdateDate: string;
+}
