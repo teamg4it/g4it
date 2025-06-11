@@ -24,10 +24,6 @@ public class OutAiRecoController implements AiRecommendationsApiDelegate {
     @Autowired
     private OutAiRecoMapper outAiRecoMapper;
 
-    /**
-     * GET /sub/orga/digitalservice/outputs/ai-recomandation
-     */
-
     @Override
     public ResponseEntity<List<OutAiRecommendationRest>> getAiRecommendations(String subscriber, Long organization, String digitalServiceUid) {
         List<OutAiRecommendationRest> result = outAiRecoService.getAllRecommendations(digitalServiceUid);
