@@ -13,8 +13,25 @@ paths:
     post:
       tags:
         - administrator-actions
-      summary: perform admin actions
+      summary: migrate the digital services
       operationId: doAdminActions
+      x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
+      responses:
+        '200':
+          description: response status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllEvaluationStatusRest"
+          '500':
+            $ref: "#/components/responses/InternalServerError"
+
+  /administrator-actions/remove-write-access:
+    post:
+      tags:
+        - administrator-actions
+      summary: remove write privilege on demo
+      operationId: removeWriteAccess
       x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
       responses:
         '200':

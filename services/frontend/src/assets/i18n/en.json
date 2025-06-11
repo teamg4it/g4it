@@ -779,7 +779,7 @@
             "digital-service-module": "Module de services numériques"
         },
         "super-admin": {
-            "migrate-data-title": "Start the release's script"
+            "launch-release-script": "Start the release's script"
         }
     },
     "error-graph": {
@@ -832,7 +832,7 @@
         "future-development": "To achieve this, reviews and audits will be conducted annually, and eco-design considerations are integrated into daily feature development.",
         "download-declaration": "Download the full declaration (PDF, {{pdfSize}}KB)",
         "accessibility-declaration": "Accessibility Declaration",
-        "accessibility-declaration-para": "G4IT is committed to making its websites, intranets, extranets, and software accessible, in accordance with Article 47 of Law No. 2005-102 of February 11, 2005.",
+        "accessibility-declaration-para": "G4IT Team is committed to making its websites, intranets, extranets, and software accessible, in accordance with Article 47 of Law No. 2005-102 of February 11, 2005.",
         "declaration-applies": "This accessibility declaration applies to the website",
         "compliance-status": "Compliance Status",
         "compliance-status-para": "The website is not compliant with the General Accessibility Improvement Framework (RGAA), version 4. Non-compliance is due to the points and exemptions listed below.",

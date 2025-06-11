@@ -112,22 +112,25 @@
             [label]="'common.calculate' | translate"
             id="calculate"
         />
-        <p-button
-            styleClass="white-button"
-            styleClass="ml-2"
-            [rounded]="true"
-            [text]="true"
-            [raised]="true"
-            [plain]="true"
-            (click)="displayPopupFct()"
-            icon="pi pi-cog"
-            [ariaLabel]="
-                'digital-services.choose-criteria'
-                    | translate: { digitalServiceName: digitalService.name }
-            "
-            id="criteria-button"
-        >
-        </p-button>
+        @if (userService.isAllowedDigitalServiceWrite$ | async) {
+            <p-button
+                styleClass="white-button"
+                styleClass="ml-2"
+                [rounded]="true"
+                [text]="true"
+                [raised]="true"
+                [plain]="true"
+                (click)="displayPopupFct()"
+                icon="pi pi-cog"
+                [ariaLabel]="
+                    'digital-services.choose-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
+                id="criteria-button"
+            >
+            </p-button>
+        }
+
         <app-criteria-popup
             [displayPopup]="displayPopup"
             [type]="'ds'"

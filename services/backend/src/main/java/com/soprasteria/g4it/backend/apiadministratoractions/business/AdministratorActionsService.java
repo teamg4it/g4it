@@ -97,8 +97,7 @@ public class AdministratorActionsService {
 
 
     public AllEvaluationStatusRest executeWriteRoleCleanupOnDemoOrg() {
-        //call procedure to remove
+        //call procedure to remove write access
         return roleManagementService.executeRoleCleanup();
-        // TODO call Digital Service migration service
     }
 }

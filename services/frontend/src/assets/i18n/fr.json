@@ -777,7 +777,7 @@
             "digital-service-module": "Digital service module"
         },
         "super-admin": {
-            "migrate-data-title": "Lancer les scripts de la version"
+            "launch-release-script": "Lancer les scripts de la version"
         }
     },
     "error-graph": {
@@ -830,7 +830,7 @@
         "future-development": "Pour ce faire, des revues et audits seront réalisés tous les ans et l'attention à l'écoconception des nouvelles fonctionnalités est réalisée au quotidien.",
         "download-declaration": "Télécharger la déclaration complète (PDF, {{pdfSize}}Ko)",
         "accessibility-declaration": "Déclaration d'accessibilité",
-        "accessibility-declaration-para": "G4IT s’engage à rendre ses sites internet, intranet, extranet et ses logiciels accessibles, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.",
+        "accessibility-declaration-para": "L'équipe G4IT s’engage à rendre ses sites internet, intranet, extranet et ses logiciels accessibles, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.",
         "declaration-applies": "Cette déclaration d’accessibilité s’applique au site",
         "compliance-status": "État de conformité",
         "compliance-status-para": "Le site n’est pas conforme au Référentiel général d’amélioration de l’accessibilité (RGAA), version 4. La non-conformité résulte des points et dérogations listés ci-dessous.",
