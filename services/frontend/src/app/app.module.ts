@@ -25,7 +25,12 @@ import { HttpErrorInterceptor } from "./core/interceptors/http-error.interceptor
 
 // Function to load translation files using HttpClient
 export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, "assets/i18n/", ".json");
+    return new TranslateHttpLoader(http, "/assets/i18n/", ".json");
+}
+
+function baseHRefFactory() {
+    // If the subpath is set in the environment, use it as the base href
+    return environment.subpath ? "/" + environment.subpath : "/";
 }
 
 function initializeKeycloak(keycloak: KeycloakService) {
@@ -78,6 +83,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
             useClass: ApiInterceptor,
             multi: true,
         },
+        {provide: APP_BASE_HREF, useFactory: baseHRefFactory},
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,

@@ -35,11 +35,11 @@ export class ImpactButtonComponent implements OnInit {
 
     ngOnInit(): void {
         if (this.impact === "...") {
-            this.impactImage = "assets/images/icons/icon-hourglass.svg";
+            this.impactImage = "/assets/images/icons/icon-hourglass.svg";
             this.impactUnite = "N/A";
         }
         this.selectedLang = this.translate.currentLang;
-        this.impactImage = `assets/images/icons/icon-${this.translate.translations[this.selectedLang]["criteria"][this.impact].icon}.svg`;
+        this.impactImage = `/assets/images/icons/icon-${this.translate.translations[this.selectedLang]["criteria"][this.impact].icon}.svg`;
     }
 
     changeCritere(critere: string) {
