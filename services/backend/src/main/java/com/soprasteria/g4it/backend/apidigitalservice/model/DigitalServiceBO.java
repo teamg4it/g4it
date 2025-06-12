@@ -42,16 +42,6 @@ public class DigitalServiceBO {
     private String userName;
 
     /**
-     * Creator's info of the digital service.
-     */
-    private UserInfoBO creator;
-
-    /**
-     * Users' info having access to the digital service.
-     */
-    private List<UserInfoBO> members;
-
-    /**
      * The Criterias key.
      */
     private List<String> criteria;

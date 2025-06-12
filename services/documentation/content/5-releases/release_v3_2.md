@@ -16,7 +16,7 @@ We are now using the latest version of BoaviztAPI, which allows us to assess the
   ![Scaleway and GCP cloud service in Digital Service](../images/release_v3_2_G4IT_DS_Scaleway_GCP.png)
 - In Inventory Module
   ![Scaleway and GCP cloud service in Inventory](../images/release_v3_2_G4IT_IS_Scaleway_GCP.png)
-Find all elements availables in the Data Model
+Find all elements available in the Data Model
   ![Data Model with Scaleway and GCP](../images/release_v3_2_G4IT_DataModel_Scaleway_GCP.png)
 
 ## Content

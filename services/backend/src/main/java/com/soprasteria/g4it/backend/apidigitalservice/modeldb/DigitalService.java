@@ -97,20 +97,4 @@ public class DigitalService {
     @JoinColumn(name = "note_id", referencedColumnName = "id")
     private Note note;
 
-    /**
-     * Digital service links
-     */
-    @ToString.Exclude
-    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<DigitalServiceLink> digitalServiceLinks;
-
-    /**
-     * Mapped digital services with users
-     */
-    @ToString.Exclude
-    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<DigitalServiceShared> digitalServiceShared;
-
 }
