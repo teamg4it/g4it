@@ -49,7 +49,7 @@ public class DigitalService {
     private String name;
 
     /**
-     *Indique si c'est un service IA
+     * Specifies whether it's an IA service
      */
     private boolean isAi;
 
