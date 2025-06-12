@@ -9,7 +9,7 @@ import { WorkspaceDataService } from "../data/workspace.data.service";
 export class WorkspaceService {
     private readonly workspaceDataService = inject(WorkspaceDataService);
 
-    private isOpen$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+    private readonly isOpen$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
     getDomainSubscribers(body: { email?: string }): Observable<DomainSubscribers[]> {
         return this.workspaceDataService.getDomainSubscribers(body);

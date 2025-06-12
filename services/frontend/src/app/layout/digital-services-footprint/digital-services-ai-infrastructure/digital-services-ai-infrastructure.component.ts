@@ -94,7 +94,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
                 this.messageService.add({
                     severity: "error",
                     summary: this.translate.instant("common.error"),
-                    detail: "Impossible de charger la liste des pays",
+                    detail: "Unable to load country list",
                 });
             },
         );

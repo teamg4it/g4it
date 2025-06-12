@@ -1,0 +1,497 @@
+<p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+    <div class="declarations">
+        <section class="useful-page">
+            <div class="breadcrumb mb-4">
+                <span>{{ "common.home" | translate }}</span>
+                <i class="pi pi-angle-right separator"></i>
+                <span>{{ "common.about" | translate }}</span>
+                <i class="pi pi-angle-right separator"></i>
+                <span class="active">{{ "declarations.title" | translate }} </span>
+            </div>
+        </section>
+
+        <nav class="declarations-nav">
+            <ul>
+                <li>
+                    <a
+                        class="cursor-pointer"
+                        (click)="scrollTo('eco-design')"
+                        href="javascript: void(0)"
+                        [ariaLabel]="
+                            'declarations.accessibility.heading-link'
+                                | translate
+                                    : {
+                                          title:
+                                              'declarations.ecodesign-declaration'
+                                              | translate,
+                                      }
+                        "
+                    >
+                        {{ "declarations.ecodesign-declaration" | translate }}
+                    </a>
+                </li>
+                <li>
+                    <a
+                        class="cursor-pointer"
+                        (click)="scrollTo('accessibility')"
+                        href="javascript: void(0)"
+                        [ariaLabel]="
+                            'declarations.accessibility.heading-link'
+                                | translate
+                                    : {
+                                          title:
+                                              'declarations.accessibility-declaration'
+                                              | translate,
+                                      }
+                        "
+                        >{{ "declarations.accessibility-declaration" | translate }}</a
+                    >
+                </li>
+            </ul>
+        </nav>
+
+        <section class="eco-design">
+            <h1 id="eco-design">
+                {{ "declarations.ecodesign-declaration" | translate }}
+            </h1>
+
+            <h2>{{ "declarations.objectives" | translate }}</h2>
+            <p>{{ "declarations.commited-paragraph" | translate }}</p>
+            <p>
+                {{ "declarations.framework-paragraph" | translate }}
+                <a
+                    [href]="
+                        currentLang === 'en'
+                            ? 'https://www.arcep.fr/uploads/tx_gspublication/general_policy_framework_for_the_ecodesign_of_digital_services_version_2024.pdf'
+                            : 'https://www.arcep.fr/uploads/tx_gspublication/referentiel_general_ecoconception_des_services_numeriques_version_2024.pdf'
+                    "
+                    target="_blank"
+                    [ariaLabel]="
+                        'declarations.accessibility.external-link'
+                            | translate
+                                : { title: ('declarations.framework-link' | translate) }
+                    "
+                >
+                    {{ "declarations.framework-link" | translate }}
+                </a>
+            </p>
+
+            <p>{{ "declarations.objectives-paragraph" | translate }}</p>
+            <ol>
+                <li>{{ "declarations.first-objectives" | translate }}</li>
+                <li>{{ "declarations.second-objectives" | translate }}</li>
+                <li>{{ "declarations.third-objectives" | translate }}</li>
+                <li>{{ "declarations.fourth-objectives" | translate }}</li>
+            </ol>
+
+            <p>{{ "declarations.functional-areas-paragraph" | translate }}</p>
+            <ul>
+                <li>{{ "declarations.functional-areas-first" | translate }}</li>
+                <li>{{ "declarations.functional-areas-second" | translate }}</li>
+                <li>{{ "declarations.functional-areas-third" | translate }}</li>
+            </ul>
+
+            <h2>{{ "declarations.key-results.title" | translate }}</h2>
+            <p>
+                {{
+                    "declarations.key-results.key-results-paragraph"
+                        | translate: { ecoDesignPercent }
+                }}
+            </p>
+            <ul>
+                <li>
+                    {{
+                        "declarations.key-results.strategy"
+                            | translate: { percentage: 88 }
+                    }}
+                </li>
+                <li>
+                    {{
+                        "declarations.key-results.specifications"
+                            | translate: { percentage: 88 }
+                    }}
+                </li>
+                <li>
+                    {{
+                        "declarations.key-results.architecture"
+                            | translate: { percentage: 79 }
+                    }}
+                </li>
+                <li>
+                    {{
+                        "declarations.key-results.user-experience"
+                            | translate: { percentage: 100 }
+                    }}
+                </li>
+                <li>
+                    {{
+                        "declarations.key-results.content" | translate: { percentage: 76 }
+                    }}
+                </li>
+                <li>
+                    {{
+                        "declarations.key-results.frontEnd"
+                            | translate: { percentage: 100 }
+                    }}
+                </li>
+                <li>
+                    {{
+                        "declarations.key-results.backEnd"
+                            | translate: { percentage: 100 }
+                    }}
+                </li>
+                <li>
+                    {{
+                        "declarations.key-results.hosting"
+                            | translate: { percentage: 100 }
+                    }}
+                </li>
+                <li>
+                    {{
+                        "declarations.key-results.algorithms"
+                            | translate: { percentage: 100 }
+                    }}
+                </li>
+            </ul>
+
+            <h2>{{ "declarations.commitment" | translate }}</h2>
+            <p>{{ "declarations.action-item.title" | translate }}</p>
+            <ul>
+                <li>{{ "declarations.action-item.item.one" | translate }}</li>
+                <li>{{ "declarations.action-item.item.two" | translate }}</li>
+                <li>{{ "declarations.action-item.item.three" | translate }}</li>
+            </ul>
+            <p>
+                {{ "declarations.future-development" | translate }}
+            </p>
+            <a
+                [href]="
+                    currentLang === 'en'
+                        ? '/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V0_EN.pdf'
+                        : '/assets/pdf/declarations/rgesn_2024_outil_declaration_ecoconception_V0.pdf'
+                "
+                target="_blank"
+                [ariaLabel]="
+                    'declarations.accessibility.declaration-pdf'
+                        | translate: { pdfSize: pdfSize }
+                "
+            >
+                <span class="vertical-align-middle my-1 font-semibold download-span">
+                    {{
+                        "declarations.download-declaration"
+                            | translate: { pdfSize: pdfSize }
+                    }}
+                </span>
+
+                <button
+                    tabindex="-1"
+                    class="bg-transparent border-none cursor-pointer vertical-align-middle"
+                >
+                    <img
+                        src="assets/images/icons/icon-download.svg"
+                        height="24px"
+                        [alt]="'inventories.download-alt' | translate"
+                        ariaLabel="{{
+                            'inventories-footprint.header.download' | translate
+                        }} "
+                    />
+                </button>
+            </a>
+        </section>
+
+        <section class="accessibility mt-5">
+            <h1 id="accessibility">
+                {{ "declarations.accessibility-declaration" | translate }}
+            </h1>
+            <p>
+                {{ "declarations.accessibility-declaration-para" | translate }}
+            </p>
+            <p>
+                {{ "declarations.declaration-applies" | translate }}
+                <a
+                    href="https://saas-g4it.com/"
+                    [ariaLabel]="
+                        'declarations.accessibility.internal-link'
+                            | translate: { title: 'G4IT' }
+                    "
+                    >https://saas-g4it.com/</a
+                >.
+            </p>
+            <h2>{{ "declarations.compliance-status" | translate }}</h2>
+            <p>{{ "declarations.compliance-status-para" | translate }}</p>
+            <h2>{{ "declarations.test-result.title" | translate }}</h2>
+            <ul>
+                <li>{{ "declarations.test-result.one" | translate }}</li>
+                <li>{{ "declarations.test-result.two" | translate }}</li>
+            </ul>
+            <h2>{{ "declarations.non-accessible-content.title" | translate }}</h2>
+            <ul>
+                <li>{{ "declarations.non-accessible-content.one" | translate }}</li>
+                <li>{{ "declarations.non-accessible-content.two" | translate }}</li>
+                <li>{{ "declarations.non-accessible-content.three" | translate }}</li>
+            </ul>
+            <h2>{{ "declarations.technology-used.title" | translate }}</h2>
+            <ul>
+                <li>{{ "declarations.technology-used.one" | translate }}</li>
+                <li>{{ "declarations.technology-used.two" | translate }}</li>
+                <li>{{ "declarations.technology-used.three" | translate }}</li>
+            </ul>
+            <h2>{{ "declarations.test-env.title" | translate }}</h2>
+            <ul>
+                <li>{{ "declarations.test-env.one" | translate }}</li>
+                <li>{{ "declarations.test-env.two" | translate }}</li>
+            </ul>
+            <h2>{{ "declarations.accessibility-evaluation-tools.title" | translate }}</h2>
+            <ul>
+                <li>
+                    {{ "declarations.accessibility-evaluation-tools.one" | translate }}
+                </li>
+                <li>
+                    {{ "declarations.accessibility-evaluation-tools.two" | translate }}
+                </li>
+                <li>
+                    {{ "declarations.accessibility-evaluation-tools.three" | translate }}
+                </li>
+                <li>
+                    {{ "declarations.accessibility-evaluation-tools.four" | translate }}
+                </li>
+            </ul>
+            <h2>{{ "declarations.pages-audited.title" | translate }}</h2>
+            <ul>
+                <li>
+                    {{ "inventories.page-title" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/inventories)"
+                    }}
+                </li>
+                <li>
+                    {{ "declarations.pages-audited.equipment-page" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/inventories/{inventoryId}/footprint/multi-criteria)"
+                    }}
+                </li>
+                <li>
+                    {{ "digital-services.page-title" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/digital-services)"
+                    }}
+                </li>
+                <li>
+                    {{ "declarations.pages-audited.service-details" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/digital-services/{digitalServiceId}/footprint/terminals)"
+                    }}
+                </li>
+                <li>
+                    {{ "declarations.pages-audited.visualization" | translate }}
+                    {{
+                        "(/subscribers/{subscriberName}/organizations/{organizationId}/digital-services/{digitalServiceId}/footprint/dashboard)"
+                    }}
+                </li>
+            </ul>
+
+            <h2>{{ "declarations.multi-year-accessibility-plan.title" | translate }}</h2>
+            <p>
+                {{ "declarations.multi-year-accessibility-plan.para" | translate }}
+            </p>
+            <h3>
+                {{
+                    "declarations.multi-year-accessibility-plan.short-term.title"
+                        | translate
+                }}
+            </h3>
+            <ul>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.short-term.training.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.short-term.training.para"
+                            | translate
+                    }}
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.short-term.checklist.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.short-term.checklist.title"
+                            | translate
+                    }}
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.short-term.monitoring.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.short-term.monitoring.title"
+                            | translate
+                    }}
+                </li>
+            </ul>
+            <h3>
+                {{
+                    "declarations.multi-year-accessibility-plan.medium-term.title"
+                        | translate
+                }}
+            </h3>
+            <ul>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.medium-term.zoom.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.medium-term.zoom.para"
+                            | translate
+                    }}
+                    <ul>
+                        <li>
+                            <strong>{{
+                                "declarations.multi-year-accessibility-plan.medium-term.is-module.title"
+                                    | translate
+                            }}</strong>
+                            {{
+                                "declarations.multi-year-accessibility-plan.medium-term.is-module.para"
+                                    | translate
+                            }}
+                        </li>
+                        <li>
+                            <strong>{{
+                                "declarations.multi-year-accessibility-plan.medium-term.ds-module.title"
+                                    | translate
+                            }}</strong>
+                            {{
+                                "declarations.multi-year-accessibility-plan.medium-term.ds-module.para"
+                                    | translate
+                            }}
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.medium-term.training-plan.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.medium-term.training-plan.para"
+                            | translate
+                    }}
+                </li>
+            </ul>
+            <h3>
+                {{
+                    "declarations.multi-year-accessibility-plan.long-term.title"
+                        | translate
+                }}
+            </h3>
+            <ul>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.long-term.graph.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.long-term.graph.para"
+                            | translate
+                    }}
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.long-term.audit.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.long-term.audit.para"
+                            | translate
+                    }}
+                </li>
+                <li>
+                    <strong>{{
+                        "declarations.multi-year-accessibility-plan.long-term.training-plan.title"
+                            | translate
+                    }}</strong>
+                    {{
+                        "declarations.multi-year-accessibility-plan.long-term.training-plan.para"
+                            | translate
+                    }}
+                </li>
+            </ul>
+            <h2>{{ "declarations.feedback-contact.title" | translate }}</h2>
+            <p>
+                {{ "declarations.feedback-contact.para" | translate }}
+            </p>
+            <ul>
+                <li>
+                    {{ "declarations.feedback-contact.send-message" | translate }}
+                    <a
+                        (click)="composeEmail()"
+                        tabindex="0"
+                        [ariaLabel]="'declarations.accessibility.email-link' | translate"
+                        class="cursor-pointer"
+                        ><u>support.g4it&#64;soprasteria.com</u></a
+                    >
+                </li>
+                <li>
+                    <a
+                        routerLink="/useful-information"
+                        [ariaLabel]="
+                            'declarations.accessibility.internal-link'
+                                | translate: { title: 'common.useful-info' | translate }
+                        "
+                    >
+                        {{ "declarations.feedback-contact.contact-entity" | translate }}
+                    </a>
+                </li>
+            </ul>
+            <h2>{{ "declarations.appeal-procedures.title" | translate }}</h2>
+            <p>
+                {{ "declarations.appeal-procedures.para" | translate }}
+            </p>
+            <ul>
+                <li>
+                    {{ "declarations.appeal-procedures.one" | translate }}
+                    <a
+                        href="https://formulaire.defenseurdesdroits.fr/"
+                        target="_blank"
+                        [ariaLabel]="
+                            'declarations.accessibility.external-link'
+                                | translate
+                                    : {
+                                          title:
+                                              ('declarations.appeal-procedures.form'
+                                              | translate),
+                                      }
+                        "
+                        >{{ "declarations.appeal-procedures.form" | translate }}</a
+                    >
+                </li>
+                <li>
+                    {{ "declarations.appeal-procedures.two" | translate }}
+                    <a
+                        href="https://www.defenseurdesdroits.fr/carte-des-delegues"
+                        [ariaLabel]="
+                            'declarations.accessibility.external-link'
+                                | translate
+                                    : {
+                                          title:
+                                              ('declarations.appeal-procedures.list-delegates'
+                                              | translate),
+                                      }
+                        "
+                        target="_blank"
+                        >{{
+                            "declarations.appeal-procedures.list-delegates" | translate
+                        }}</a
+                    >
+                </li>
+                <li>
+                    {{ "declarations.appeal-procedures.three" | translate }}
+                </li>
+            </ul>
+        </section>
+    </div>
+</p-scrollPanel>

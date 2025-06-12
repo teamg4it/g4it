@@ -8,8 +8,6 @@
 import { RouterModule, Routes } from "@angular/router";
 import { TitleResolver } from "../common/title-resolver.service";
 import { DigitalServicesComponent } from "./digital-services.component";
-import { ShareDigitalServiceComponent } from "./share-digital-service/share-digital-service.component";
-
 const routes: Routes = [
     {
         path: "",
@@ -20,10 +18,6 @@ const routes: Routes = [
         data: {
             titleKey: "digital-services.page-title",
         },
-    },
-    {
-        path: ":id/share/:generatedId",
-        component: ShareDigitalServiceComponent,
     },
 ];
 

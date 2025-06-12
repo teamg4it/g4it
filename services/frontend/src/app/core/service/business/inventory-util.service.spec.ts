@@ -360,7 +360,7 @@ describe("InventoryUtilService", () => {
     });
 
     describe("computeDataCenterStats", () => {
-        it("should return an array with datacenter count and average PUE", () => {
+        it("should return an array with datacenter count and average PUE", async () => {
             const filters: Filter<string> = {
                 country: ["France"],
                 entity: ["Entity"],
@@ -391,7 +391,7 @@ describe("InventoryUtilService", () => {
                 },
             ] as Datacenter[];
 
-            const result = service.computeDataCenterStats(
+            const result = await service.computeDataCenterStats(
                 filters,
                 filterFields,
                 datacenters,

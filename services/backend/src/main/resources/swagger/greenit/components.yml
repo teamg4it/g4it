@@ -45,13 +45,6 @@ components:
         type: string
       required: true
       description: The digital service uid.
-    sharedUidPathParam:
-      in: path
-      name: sharedUid
-      schema:
-        type: string
-      required: true
-      description: The shared digital service uid.
     noteUidPathParam:
       in: path
       name: noteId
@@ -640,40 +633,6 @@ components:
           type: boolean
           description: Indique si le service digital est un service d’IA
 
-    DigitalServicesIndicatorsRest:
-      type: object
-      additionalProperties:
-        $ref: "#/components/schemas/DigitalServiceIndicatorRest"
-    DigitalServiceIndicatorRest:
-      description: Digital service indicator object
-      type: object
-      properties:
-        tier:
-          type: string
-        impacts:
-          type: array
-          items:
-            $ref: "#/components/schemas/DigitalServiceImpactRest"
-    DigitalServiceImpactRest:
-      description: Digital service impact object
-      type: object
-      properties:
-        criteria:
-          type: string
-        sipValue:
-          type: number
-          format: float
-        unitValue:
-          type: number
-          format: float
-        unit:
-          type: string
-        status:
-          type: string
-        countValue:
-          type: number
-
-
     DigitalServiceServerImpactRest:
       type: object
       properties:
@@ -1003,51 +962,6 @@ components:
           type: array
           items:
             type: string
-
-    DigitalServiceCloudIndicatorRest:
-      description: Digital service terminals indicators object
-      type: object
-      properties:
-        criteria:
-          type: string
-        impacts:
-          type: array
-          items:
-            $ref: "#/components/schemas/DigitalServiceCloudImpact"
-    DigitalServiceCloudImpact:
-      description: Digital service cloud impact
-      type: object
-      properties:
-        country:
-          type: string
-        description:
-          type: string
-        instanceType:
-          type: string
-        cloudProvider:
-          type: string
-        acvStep:
-          type: string
-        rawValue:
-          type: number
-          format: float
-        sipValue:
-          type: number
-          format: float
-        unit:
-          type: string
-        status:
-          type: string
-        countValue:
-          type: number
-        averageWorkLoad:
-          type: number
-          format: float
-        averageUsage:
-          type: number
-          format: float
-        quantity:
-          type: number
 
     AllEvaluationStatusRest:
       description: evaluation status

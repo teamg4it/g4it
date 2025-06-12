@@ -42,7 +42,6 @@ describe("DigitalServicesDataService", () => {
                 networks: [],
                 servers: [],
                 terminals: [],
-                members: [],
                 isAi: false,
             },
         ];
@@ -70,7 +69,6 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
             isAi: false,
         };
 
@@ -96,7 +94,6 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
             isAi: false,
         };
 
@@ -122,7 +119,6 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
             isAi: false,
         };
 
@@ -148,7 +144,6 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
             isAi: false,
         };
 

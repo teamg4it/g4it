@@ -1,5 +1,5 @@
 ---
-title: "2- Creating, Editing, or Deleting Workspaces (Organizations)"
+title: "How to Create, Edite, or Delete Workspaces (Organizations)"
 description: "This guide explains how to create, edit, or delete a workspace (also referred to as an organization) in G4IT."
 weight: 20
 ---
@@ -18,9 +18,7 @@ This guide explains how to create, edit, or delete a workspace (also referred to
 
 ## Concept Overview
 
-G4IT is used by Sopra Steria collaborators and licensed external customers (e.g., ADEO, ArcelorMittal). Each customer holds a yearly license.
-
-To manage licenses and data separation:
+To manage data separation:
 
 - Each license corresponds to a **subscriber**, managed by its own administrators.
 - Within a subscriber, administrators can create and manage **organizations**, which will soon be referred to as **workspaces** to improve clarity.

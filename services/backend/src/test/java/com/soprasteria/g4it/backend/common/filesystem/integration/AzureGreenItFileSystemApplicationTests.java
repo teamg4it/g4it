@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -65,7 +65,7 @@ class AzureGreenItFileSystemApplicationTests {
     ResourceLoader resourceLoader;
     @Autowired
     private FileSystem fileSystem;
-    @MockBean
+    @MockitoBean
     private CacheManager cacheManager;
 
     private static boolean hasAzureEnvVars() {

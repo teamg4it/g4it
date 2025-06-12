@@ -114,29 +114,29 @@ public class EvaluateAiService {
         final Long taskId = task.getId();
 
         // get the data in database
-        // Récupération du service digitalAdd commentMore actions
+        // Get the service digital
         Optional<DigitalService> digitalService = digitalServiceRepository.findById(context.getDigitalServiceUid());
         if (digitalService.isEmpty()) {
             throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", context.getDigitalServiceUid()));
         }
-        // Récupération des AI parameters
+        // Get the AI parameters
         List<AiParameter> aiParameters = inAIParameterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
 
         if (aiParameters.isEmpty()) {
             throw new G4itRestException("404", String.format("the ai parameter doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
-        // Récupération de data center
+        // Get the data center
         List<InDatacenter> datacenters = inDatacenterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
 
         if (datacenters.isEmpty()) {
             throw new G4itRestException("404", String.format("the data center doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
-        // Récupération de physical equipment
+        // Get the physical equipment
         List<InPhysicalEquipment> physicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
         if (physicalEquipments.isEmpty()) {
             throw new G4itRestException("404", String.format("the physical equipements doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
-        // Récupération de virtual equipment
+        // Get the virtual equipment
         List<InVirtualEquipment> virtualEquipments = inVirtualEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
         if (virtualEquipments.isEmpty()) {
             throw new G4itRestException("404", String.format("the virtual equipements doesn't exist for digital service : %s", context.getDigitalServiceUid()));

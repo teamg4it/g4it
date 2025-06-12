@@ -62,7 +62,7 @@ export class DatavizFilterComponent {
         this.footprintStore.setCustomFilters(updatedFilter, tab);
     }
 
-    private checkboxChange$ = new Subject<any>();
+    private readonly checkboxChange$ = new Subject<any>();
 
     constructor() {
         this.checkboxChange$.pipe(debounceTime(200)).subscribe((change) => {

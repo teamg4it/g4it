@@ -1,0 +1,44 @@
+.declarations {
+    a {
+        color: var(--tertiary-color);
+        font-weight: bold;
+    }
+
+    a:hover {
+        color: var(--tertiary-color);
+        font-weight: bold;
+    }
+
+    h2 {
+        font-size: 32px;
+        margin-top: 24px;
+    }
+
+    .eco-design,
+    .accessibility,
+    .declarations-nav {
+        ul,
+        li {
+            list-style-type: inherit;
+            padding: revert;
+        }
+    }
+
+    h1 {
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    p {
+        font-size: 20px;
+        line-height: 1.5;
+        margin-top: 24px;
+    }
+
+    ul,
+    ol,
+    .download-span {
+        line-height: 1.5;
+        font-size: 18px;
+    }
+}

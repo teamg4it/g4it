@@ -7,9 +7,8 @@
  */
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Observable, ReplaySubject, tap } from "rxjs";
+import { Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
-import { environment } from "src/environments/environment";
 import {
     AiModelConfig,
     DigitalService,
@@ -76,10 +75,6 @@ export class DigitalServicesDataService {
         return this.http.delete<string>(`${endpoint}/${uid}`);
     }
 
-    unlink(uid: DigitalService["uid"]): Observable<string> {
-        return this.http.delete<string>(`${endpoint}/${uid}/share`);
-    }
-
     getDeviceReferential(): Observable<TerminalsType[]> {
         return this.http.get<TerminalsType[]>(`${endpoint}/device-type`);
     }
@@ -114,20 +109,6 @@ export class DigitalServicesDataService {
 
     launchEvaluating(uid: DigitalService["uid"]): Observable<string> {
         return this.http.post<string>(`${endpoint}/${uid}/evaluating`, {});
-    }
-
-    copyUrl(uid: DigitalService["uid"]): Observable<string> {
-        return this.http
-            .post<string>(
-                `${endpoint}/${uid}/share`,
-                {},
-                { responseType: "text" as "json" },
-            )
-            .pipe(map((response) => environment.frontEndUrl + response));
-    }
-
-    sharedDS(uid: string, generatedId: string): Observable<string> {
-        return this.http.post<string>(`${endpoint}/${uid}/shared/${generatedId}`, {});
     }
 
     downloadFile(uid: DigitalService["uid"]): Observable<any> {

@@ -36,7 +36,7 @@ accessibility for all users.
 The **About G4IT** menu provides access to helpful resources such as support, documentation, and business information.  
 It helps users find key information about the platform.
 
-![Screenshot of the About G4IT menu showing Useful Information and Help Center links](../images/about_g4it.PNG)
+![Screenshot of the About G4IT menu showing Useful Information and Help Center links](../images/about_g4it.png)
 
 ---
 
@@ -48,7 +48,8 @@ It helps users find key information about the platform.
 |-----|------------|--------------------|-------------|----------------|----------------------------------------------------------------------------------------------------------------------------|
 | 1   | About G4IT |                    |             | Menu           | The "About G4IT" menu groups links to documentation, support, and business-related details.                                |
 | 2   |            | Useful Information |             | Link           | Links to a page containing platform versions, business hours, and contact details for support.                             |
-| 3   |            | Help Center        |             | External Links | Opens two external resources in a new tab: the G4IT GitHub repository and official documentation site for additional help. |
+| 3   |            | G4IT declarations  |             | Link           | Links to a page containing Eco-design Declaration and Accessibility Declaration |
+| 4   |            | Help Center        |             | External Links | Opens two external resources in a new tab: the G4IT GitHub repository and official documentation site for additional help. |
 
 {{% /expand %}}
 

@@ -1,5 +1,5 @@
 ---
-title: '2. Digital Service'
+title: "2. Digital Service"
 description: "All use cases related to assess an digital service footprint"
 weight: 20
 ---
@@ -23,10 +23,8 @@ G4IT --> 3(Administration panel)
 A --> AC(Add Equipments <br><i> 2.3. Add Equipments)
 A --> AD(Estimate the impact <br><i> 2.4. Launch an estimation)
 A --> AE(Visualize footprint <br><i> 2.5. Visualize footprint)
-A --> AF(Delete a digital service<br><i> 2.7. Delete a digital service)
-A --> AG(Share a digital service<br><i> 2.8. Share a digital service)
-A --> AH(Export a digital service<br><i> 2.6. Export a digital service)
-
+A --> AF(Export a digital service<br><i> 2.6. Export a digital service)
+A --> AG(Delete a digital service<br><i> 2.7. Delete a digital service)
 
 classDef Type1 fill:gray, font-style: italic;
 class 2,3 Type1;

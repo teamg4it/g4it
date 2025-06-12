@@ -35,7 +35,6 @@ describe("DigitalServicesTerminalsComponent", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
         } as DigitalService),
     };
 
