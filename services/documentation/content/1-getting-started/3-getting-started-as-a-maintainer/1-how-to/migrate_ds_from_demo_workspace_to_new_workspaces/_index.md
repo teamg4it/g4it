@@ -151,10 +151,13 @@ declare
 	shared_user_rec record;
 	dss_backup_rec record;
 	new_organization_id int;
+	new_user_subscriber_id int;
 	new_organization_name varchar;
 	new_user_organization_id int;
 	role_org_admin_id int;
 	role_ds_write_id int;
+	role_subscriber_admin_id int;
+    role_inventory_write_id int;
 	last_name_suffix int;
 begin
 	-- creation of a tmp table to increment number if there are multiple users with same lastname
@@ -167,6 +170,8 @@ begin
 
 	select id into role_org_admin_id from g4it_role where "name" = 'ROLE_ORGANIZATION_ADMINISTRATOR';
 	select id into role_ds_write_id from g4it_role where "name" = 'ROLE_DIGITAL_SERVICE_WRITE';
+	select id into role_subscriber_admin_id from g4it_role where "name" = 'ROLE_SUBSCRIBER_ADMINISTRATOR';
+    select id into role_inventory_write_id from g4it_role where "name" = 'ROLE_INVENTORY_WRITE';
 
 	raise notice 'Launch of digital services migration script from DEMO workspace to new workspace';
 
@@ -225,10 +230,12 @@ begin
 		-- Insertion of creators in g4it_user_organization
 
 		new_user_organization_id = link_user_to_organization(rec.creator_id, rec.email, new_organization_id, true);
+        new_user_subscriber_id = link_user_to_subscriber(rec.creator_id, rec.email, rec.subscriber_id, true);
 		
 		-- Adding admin role to users
 
 		perform assign_role_to_user_organization(new_user_organization_id, role_org_admin_id, rec.creator_id, rec.email);
+        perform assign_role_to_user_subscriber(new_user_subscriber_id, role_subscriber_admin_id, rec.creator_id, rec.email);                
 
 		-- Inserting data for a future rollback
 		for ds_backup_rec in
@@ -280,6 +287,7 @@ begin
 				-- Adding write role to shared users
 
 				perform assign_role_to_user_organization(new_user_organization_id, role_ds_write_id, shared_user_rec.shared_user_id, shared_user_rec.email);
+				perform assign_role_to_user_organization(new_user_organization_id, role_inventory_write_id, shared_user_rec.shared_user_id, shared_user_rec.email);    
 
 				-- Associating the digital service shared to the new organization
 				update digital_service_shared
@@ -372,7 +380,43 @@ end;
 $$
 ```
 
-5. Execute assign role to user organization function (which is used in procedure script)
+5. Execute link user to subscriber function (which is used in procedure script)
+
+```sql
+create or replace function link_user_to_subscriber(
+	creator_id int8,
+	user_email varchar,
+	new_subscriber_id int8,
+	default_flag boolean) returns int
+language plpgsql
+as $$
+declare
+	new_user_subscriber_id int;
+begin
+	if exists (
+		select 1 from g4it_user_subscriber
+		where user_id = creator_id
+		and subscriber_id = new_subscriber_id
+	) then 
+		raise notice 'Link between user % - % and subscriber % already exists', creator_id, user_email, new_subscriber_id;
+			
+		select id into new_user_subscriber_id
+		from g4it_user_subscriber
+		where user_id = creator_id
+		and subscriber_id = new_subscriber_id;
+	else
+		insert into g4it_user_subscriber(user_id, subscriber_id, default_flag)
+		values (creator_id, new_subscriber_id, default_flag) -- true or false ?
+		returning id into new_user_subscriber_id;
+
+		raise notice 'User % - % linked to subscriber %', creator_id, user_email, new_subscriber_id;
+	end if;
+	return new_user_subscriber_id;
+end;
+$$
+```
+
+6. Execute assign role to user organization function (which is used in procedure script)
 
 ```sql
 create or replace function assign_role_to_user_organization(
@@ -403,7 +447,38 @@ end;
 $$
 ```
 
-6. Run the procedure
+7. Execute assign role to user subscriber function (which is used in procedure script)
+
+```sql
+create or replace function assign_role_to_user_subscriber(
+	new_user_subscriber_id int,
+	role_to_assign_id int,
+	creator_id int8,
+	user_email varchar) returns void
+language plpgsql
+as $$
+declare
+	role_name varchar;
+begin
+	if exists (
+		select 1 from g4it_user_role_subscriber
+		where user_subscriber_id = new_user_subscriber_id
+		and role_id = role_to_assign_id
+	) then
+		raise notice 'Role % is already assigned to user_subscriber %', role_to_assign_id, new_user_subscriber_id;
+	else
+
+		select name into role_name from g4it_role where id = role_to_assign_id;
+		insert into g4it_user_role_subscriber(user_subscriber_id, role_id)
+		values (new_user_subscriber_id, role_to_assign_id);
+	
+		raise notice 'Role % - % assigned to user % - %', role_to_assign_id, role_name, creator_id, user_email;
+	end if;
+end;
+$$
+```
+
+8. Run the procedure
 
 ```sql
 call migrate_ds_to_new_workspace();

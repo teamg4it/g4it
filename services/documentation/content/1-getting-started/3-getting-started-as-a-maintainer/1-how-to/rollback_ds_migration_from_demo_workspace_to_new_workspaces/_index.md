@@ -28,6 +28,14 @@ begin
 	where giuo.organization_id in (select new_organization_id from ds_migration_new_organization_created_rollback);
 	raise notice 'New users link with organization deleted';
 	
+	--update inventories created in new organization
+	update inventory
+	set organization_id = dsrollback.old_organization_id
+	from ds_migration_rollback dsrollback
+	inner join digital_service ds on ds.uid = dsrollback.digital_service_id
+	where inventory.organization_id = ds.organization_id
+	and inventory.organization_id in (select new_organization_id from ds_migration_new_organization_created_rollback);
+	
 	--update digital_service to bring back the old link with DEMO organization
 	update digital_service ds
 	set organization_id = dsrollback.old_organization_id
