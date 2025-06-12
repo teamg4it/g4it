@@ -98,4 +98,9 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
+    public boolean hasAdminRightOnSubscriberOrOrganization(UserBO user, Long subscriberId, Long organizationId) {
+        if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
+        return this.hasAdminRightsOnSubscriber(user, subscriberId) || this.hasAdminRightsOnOrganization(user, organizationId);
+    }
+
 }

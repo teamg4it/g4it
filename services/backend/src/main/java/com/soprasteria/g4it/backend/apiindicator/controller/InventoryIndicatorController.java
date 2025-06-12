@@ -17,7 +17,9 @@ import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
+import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -61,6 +63,12 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     private AuthService authService;
     @Autowired
     private UserOrganizationRepository userOrganizationRepository;
+
+    @Autowired
+    private SubscriberRepository subscriberRepository;
+
+    @Autowired
+    private RoleService roleService;
 
     /**
      * {@inheritDoc}
@@ -152,9 +160,9 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organization, userId).orElseThrow();
 
         boolean isDefaultOrganization = userOrganization.getOrganization().getName().equalsIgnoreCase("DEMO");
-        boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));
+        boolean hasAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()) || roleService.hasAdminRightOnSubscriberOrOrganization(authService.getUser(), subscriberRepository.findByName(subscriber).get().getId(), organization));
 
-        if (!(isDefaultOrganization || hasWriteAccess)) {
+        if (!(isDefaultOrganization || hasAccess)) {
             throw new G4itRestException("403", "Not authorized");
         }
 
