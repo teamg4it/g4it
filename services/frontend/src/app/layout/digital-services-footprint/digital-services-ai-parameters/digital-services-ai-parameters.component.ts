@@ -50,7 +50,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     new Set(this.models.map((m) => m.modelName)),
                 ).map((name) => ({ label: name, value: name }));
 
-                // Restaurer les données sauvegardées si elles existent
+                // Restore backed-up data if available
                 const savedData = this.aiFormsStore.getParametersFormData();
                 if (savedData) {
                     this.terminalsForm.patchValue(savedData);
@@ -60,13 +60,13 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         savedData.framework,
                     );
                 } else {
-                    // Si pas de données sauvegardées, définir les valeurs par défaut
+                    // If no data saved, set default values
                     if (this.modelOptions.length > 0) {
                         const defaultModel = this.modelOptions[0].value;
                         this.terminalsForm.patchValue({ modelName: defaultModel });
                         this.updateDependentFields(defaultModel);
 
-                        // Sauvegarder les valeurs par défaut dans le store
+                        // Save default values in the store
                         const defaultData = {
                             modelName: defaultModel,
                             nbParameters: this.parameterOptions[0]?.value || "",
@@ -130,9 +130,9 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             },
         });
 
-        // Sauvegarder les données à chaque changement
+        // Save data whenever changes are made
         this.formSubscription = this.terminalsForm.valueChanges.subscribe((value) => {
-            // Calculer totalGeneratedTokens
+            // Calculate totalGeneratedTokens
             const totalTokens =
                 value.numberUserYear *
                 value.averageNumberRequest *
@@ -172,7 +172,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     ): void {
         if (!modelName) return;
 
-        // Mettre à jour les paramètres
+        // Update parameters
         const filtered = this.models.filter((m) => m.modelName === modelName);
         this.parameterOptions = Array.from(
             new Set(filtered.map((m) => m.parameters)),
@@ -186,7 +186,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         }
 
         if (selectedParameter) {
-            // Mettre à jour les frameworks
+            // Update frameworks
             const filteredByParam = filtered.filter(
                 (m) => m.parameters === selectedParameter,
             );
@@ -202,7 +202,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             }
 
             if (selectedFramework) {
-                // Mettre à jour les quantizations
+                // Update quantizations
                 const filteredByFramework = filteredByParam.filter(
                     (m) => m.framework === selectedFramework,
                 );

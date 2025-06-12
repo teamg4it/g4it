@@ -276,9 +276,9 @@ export class DigitalServicesFootprintDashboardComponent
                         recommendationsArr.length === 0
                     )
                         return "";
-                    // Titres dynamiques
+                    // Dynamic titles
                     const headers = Object.keys(recommendationsArr[0]);
-                    // Génération du tableau HTML
+                    // HTML table generation for recommendation
                     let table = `
                     <div style='overflow-x:auto;'>
                     <h4 style='font-weight:bold; margin-top:0px; font-size:1rem;'>Recommendations</h4>

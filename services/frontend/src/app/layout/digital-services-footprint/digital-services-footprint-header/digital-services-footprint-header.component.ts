@@ -235,7 +235,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     changePageToDigitalServices() {
         let [_, _1, subscriber, _2, organization, serviceType] =
             this.router.url.split("/");
-        // serviceType sera 'digital-services' ou 'eco-mind-ai'
+        // serviceType can be 'digital-services' or 'eco-mind-ai'
         if (serviceType === "eco-mind-ai") {
             return `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai`;
         } else {
@@ -312,7 +312,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         const parametersData = this.aiFormsStore.getParametersFormData();
         const infrastructureData = this.aiFormsStore.getInfrastructureFormData();
 
-        // Vérifier si les deux formulaires sont complets
+        // Check that both forms are complete
         if (!parametersData || !infrastructureData) {
             this.messageService.add({
                 severity: "warn",
@@ -324,7 +324,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             return;
         }
 
-        // Vérifier que tous les champs requis sont remplis
+        // Check that all required fields have been completed
         const requiredParametersFields = [
             "modelName",
             "nbParameters",
@@ -355,11 +355,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         const missingInfrastructureFields = requiredInfrastructureFields.filter(
             (field) => {
                 const value = infrastructureData[field];
-                // Pour les champs numériques, on accepte 0 comme valeur valide
+                // For numeric fields, 0 is accepted as the valid value.
                 if (typeof value === "number") {
                     return value === undefined || value === null;
                 }
-                // Pour les autres champs (string), on vérifie comme avant
+                // For other string fields, check as before
                 return value === undefined || value === null || value === "";
             },
         );
@@ -413,7 +413,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
         this.global.setLoading(true);
 
-        // Sauvegarder les deux formulaires
+        // Save both forms
         Promise.all([
             this.digitalServicesAiData
                 .saveAiInfrastructure(digitalServiceUid, infrastructureData)
