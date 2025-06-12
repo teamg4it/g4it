@@ -227,11 +227,23 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             const digitalServiceId = this.digitalService?.uid;
 
             if (digitalServiceId) {
-                this.router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-                    this.router.navigate([
-                        `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
-                    ]);
-                });
+                if (this.isEcoMindAi) {
+                    this.router
+                        .navigateByUrl("/", { skipLocationChange: true })
+                        .then(() => {
+                            this.router.navigate([
+                                `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai/${digitalServiceId}/footprint/dashboard`,
+                            ]);
+                        });
+                } else {
+                    this.router
+                        .navigateByUrl("/", { skipLocationChange: true })
+                        .then(() => {
+                            this.router.navigate([
+                                `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
+                            ]);
+                        });
+                }
             }
         }
     }
@@ -396,10 +408,15 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 parametersData[field] === "",
         );
         const missingInfrastructureFields = requiredInfrastructureFields.filter(
-            (field) =>
-                infrastructureData[field] === undefined ||
-                infrastructureData[field] === null ||
-                infrastructureData[field] === "",
+            (field) => {
+                const value = infrastructureData[field];
+                // Pour les champs numériques, on accepte 0 comme valeur valide
+                if (typeof value === "number") {
+                    return value === undefined || value === null;
+                }
+                // Pour les autres champs (string), on vérifie comme avant
+                return value === undefined || value === null || value === "";
+            },
         );
 
         if (

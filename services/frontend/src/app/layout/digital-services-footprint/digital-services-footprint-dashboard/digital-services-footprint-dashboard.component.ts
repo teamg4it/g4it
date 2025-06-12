@@ -18,6 +18,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { firstValueFrom } from "rxjs";
 import {
+    AiRecommendation,
     DigitalService,
     DigitalServiceFootprint,
     DigitalServiceNetworksImpact,
@@ -31,6 +32,7 @@ import {
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { OutPhysicalEquipmentsService } from "src/app/core/service/data/in-out/out-physical-equipments.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
@@ -57,6 +59,7 @@ export class DigitalServicesFootprintDashboardComponent
     private digitalServiceStore = inject(DigitalServiceStoreService);
     private outPhysicalEquipmentsService = inject(OutPhysicalEquipmentsService);
     private outVirtualEquipmentsService = inject(OutVirtualEquipmentsService);
+    private digitalServicesAiData = inject(DigitalServicesAiDataService);
 
     chartType = signal("radial");
     showInconsitencyBtn = false;
@@ -115,6 +118,8 @@ export class DigitalServicesFootprintDashboardComponent
 
     calculatedCriteriaList: string[] = [];
 
+    aiRecommendations: AiRecommendation[] = [];
+
     constructor(
         private digitalServicesDataService: DigitalServicesDataService,
         private digitalServicesService: DigitalServiceBusinessService,
@@ -130,6 +135,18 @@ export class DigitalServicesFootprintDashboardComponent
         this.digitalService = await firstValueFrom(
             this.digitalServicesDataService.digitalService$,
         );
+
+        if (this.digitalService.isAi) {
+            try {
+                this.aiRecommendations = await firstValueFrom(
+                    this.digitalServicesAiData.getAiRecommendations(
+                        this.digitalService.uid,
+                    ),
+                );
+            } catch (error) {
+                console.error("Error fetching AI recommendations:", error);
+            }
+        }
 
         const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
             firstValueFrom(
@@ -241,6 +258,52 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     getTitleOrContent(textType: string) {
+        if (this.digitalService.isAi) {
+            if (textType === "digital-services-card-title") {
+                return `<div style="font-weight:bold; margin-top:0px; font-size:1.5rem;">${this.translate.instant(
+                    "digital-services-cards.global-vision-ai.title",
+                )}</div>`;
+            } else if (
+                textType === "digital-services-card-content" &&
+                this.aiRecommendations.length > 0
+            ) {
+                try {
+                    const recommendationsArr = JSON.parse(
+                        this.aiRecommendations[0].recommendations,
+                    );
+                    if (
+                        !Array.isArray(recommendationsArr) ||
+                        recommendationsArr.length === 0
+                    )
+                        return "";
+                    // Titres dynamiques
+                    const headers = Object.keys(recommendationsArr[0]);
+                    // Génération du tableau HTML
+                    let table = `
+                    <div style='overflow-x:auto;'>
+                    <h4 style='font-weight:bold; margin-top:0px; font-size:1rem;'>Recommendations</h4>
+                    <table style='width:100%;border-collapse:collapse;min-width:600px;'>
+                    <thead><tr>`;
+                    headers.forEach((h) => {
+                        table += `<th style='padding:14px 18px;text-align:center;font-size:1rem;'>${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
+                    });
+                    table += `</tr></thead><tbody>`;
+                    recommendationsArr.forEach((rec: any) => {
+                        table += `<tr>`;
+                        headers.forEach((h) => {
+                            table += `<td style='padding:14px 18px;font-size:0.98rem;text-align:center;'>${rec[h]}</td>`;
+                        });
+                        table += `</tr>`;
+                    });
+                    table += `</tbody></table></div>`;
+                    return table;
+                } catch (error) {
+                    console.error("Error parsing AI recommendations:", error);
+                    return "";
+                }
+            }
+        }
+
         this.selectedLang = this.translate.currentLang;
         const isBarChart = this.chartType() === "bar";
         const isServer = this.selectedParam === "Server";

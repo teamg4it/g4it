@@ -206,7 +206,7 @@ public class AiInfraServiceTest {
 
         assertEquals(digitalServiceUid, savedPhysicalEquipment.getDigitalServiceUid());
         assertEquals("Server1", savedPhysicalEquipment.getName());
-        assertEquals("Model1", savedPhysicalEquipment.getModel());
+        assertEquals("blade-server--28", savedPhysicalEquipment.getModel());
         assertEquals("Manufacturer1", savedPhysicalEquipment.getManufacturer());
         assertEquals("DataCenter1", savedPhysicalEquipment.getDatacenterName());
         assertEquals(8.0, savedPhysicalEquipment.getCpuCoreNumber());
