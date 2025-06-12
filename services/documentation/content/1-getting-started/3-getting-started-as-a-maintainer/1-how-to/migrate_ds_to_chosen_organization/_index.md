@@ -99,7 +99,74 @@ end;
 $$
 ```
 
-2. Run the procedure, ex : 
+2. Execute link user to organization function (which is used in procedure script)
+
+```sql
+create or replace function link_user_to_organization(
+	creator_id int8,
+	user_email varchar,
+	new_organization_id int,
+	default_flag boolean) returns int
+language plpgsql
+as $$
+declare
+	new_user_organization_id int;
+begin
+	if exists (
+		select 1 from g4it_user_organization
+		where user_id = creator_id
+		and organization_id = new_organization_id
+	) then 
+		raise notice 'Link between user % - % and organization % already exists', creator_id, user_email, new_organization_id;
+
+		select id into new_user_organization_id
+		from g4it_user_organization
+		where user_id = creator_id
+		and organization_id = new_organization_id;
+	else
+		insert into g4it_user_organization(user_id, organization_id, default_flag)
+		values (creator_id, new_organization_id, default_flag) -- true or false ?
+		returning id into new_user_organization_id;
+
+		raise notice 'User % - % linked to organization %', creator_id, user_email, new_organization_id;
+	end if;
+	return new_user_organization_id;
+end;
+$$
+```
+
+3. Execute assign role to user organization function (which is used in procedure script)
+
+```sql
+create or replace function assign_role_to_user_organization(
+	new_user_organization_id int,
+	role_to_assign_id int,
+	creator_id int8,
+	user_email varchar) returns void
+language plpgsql
+as $$
+declare
+	role_name varchar;
+begin
+	if exists (
+		select 1 from g4it_user_role_organization
+		where user_organization_id = new_user_organization_id
+		and role_id = role_to_assign_id
+	) then
+		raise notice 'Role % is already assigned to user_organization %', role_to_assign_id, new_user_organization_id;
+	else
+
+		select name into role_name from g4it_role where id = role_to_assign_id;
+		insert into g4it_user_role_organization(user_organization_id, role_id)
+		values (new_user_organization_id, role_to_assign_id);
+
+		raise notice 'Role % - % assigned to user % - %', role_to_assign_id, role_name, creator_id, user_email;
+	end if;
+end;
+$$
+```
+
+4. Run the procedure, ex :
 
 ```sql
 call migrate_ds_to_chosen_workspace('6eb6e72f-2348-4057-8a99-78622daf53ec', 2);
