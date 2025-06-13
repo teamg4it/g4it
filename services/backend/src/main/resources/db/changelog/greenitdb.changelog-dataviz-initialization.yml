@@ -32,7 +32,7 @@ databaseChangeLog:
               - column:
                   header: individual_sustainable_package
                   type: numeric
-            file: db/changelog/data/ref_sustainable_individual_package.csv
+            file: db/changelog/starting-referential-data/ref_sustainable_individual_package.csv
             primaryKey: id
             tableName: ref_sustainable_individual_package
             separator: ;
@@ -65,7 +65,7 @@ databaseChangeLog:
               - column:
                   header: individual_sustainable_package
                   type: numeric
-            file: db/changelog/data/ref_sustainable_individual_package_new_crit.csv
+            file: db/changelog/starting-referential-data/ref_sustainable_individual_package_new_crit.csv
             primaryKey: id
             tableName: ref_sustainable_individual_package
             separator: ;

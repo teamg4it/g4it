@@ -1,0 +1,8 @@
+description;reference;external_referential_description;type;nb_of_vcpu;total_disk;lifespan
+Server Compute S;rack-server--8;Rack server / 1 processor low-end / 1 SSD: 2048 GB each / 0 HDD / 8 RAM, 16 GB each / 0 GPU;Compute;32;;5
+Server Compute M;rack-server--30;Rack server / 2 processor high-end / 1 SSD: 1024 GB each / 0 HDD / 48 RAM, 16 GB each / 0 GPU;Compute;96;;5
+Server Compute L;rack-server--49;Rack server / 2 processor high-end / 4 SSD: 2048 GB each / 0 HDD / 16 RAM, 16 GB each / 1 GPU ;Compute;256;;5
+Server Storage S;storage-bay--1;Storage bay / 24 disks - SLC, 256 GB ;Storage;;6144;5
+Server Storage M;storage-bay--3;Storage bay / 24 disks - SLC, 2048 GB;Storage;;49152;5
+Server Storage L;storage-bay--16;Storage bay / 48 disks - SLC, 2048 GB;Storage;;98304;5
+Blade server / 2 processor high-end / 1 SSD: 1024 GB each / 0 HDD / 16 RAM, 16 GB each / 0 GPU;blade-server--28;Blade server / 2 processor high-end / 1 SSD: 1024 GB each / 0 HDD / 16 RAM, 16 GB each / 0 GPU;Compute;;;
