@@ -1,5 +1,12 @@
 # G4IT
 
+## 3.4.0
+
+### Major Changes
+
+### Minor Changes
+-1251 | Character "%" breaks the note feature
+
 ## 3.3.0
 
 ### Major Changes
