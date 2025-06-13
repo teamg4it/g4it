@@ -1,0 +1,7 @@
+type;category;comment;default_lifespan;is_server;source;ref_default_item;subscriber;version
+Terminal;EquipementPhysique;Used for digital service footprint evaluation;NULL;false;;;NULL;NULL
+Network;EquipementPhysique;Used for digital service footprint evaluation;NULL;false;;;NULL;NULL
+Dedicated Server;EquipementPhysique;Used for digital service footprint evaluation;NULL;true;;;NULL;NULL
+Shared Server;EquipementPhysique;Used for digital service footprint evaluation;NULL;true;;;NULL;NULL
+Smartphone;EquipementPhysique;Lifetime par defaut;2.0;false;;smartphone-2;NULL;NULL
+Server;EquipementPhysique;Lifetime par defaut;7.0;true;;blade-server--28;NULL;NULL

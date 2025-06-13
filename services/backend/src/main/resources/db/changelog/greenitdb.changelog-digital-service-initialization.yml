@@ -86,7 +86,7 @@ databaseChangeLog:
               - column:
                   header: source
                   type: text
-            file: db/changelog/data/ref_terminal_device_type.csv
+            file: db/changelog/starting-referential-data/ref_device_type.csv
             primaryKey: id
             tableName: ref_device_type
             separator: ;
@@ -200,7 +200,7 @@ databaseChangeLog:
               - column:
                   header: source
                   type: text
-            file: db/changelog/data/ref_network_type.csv
+            file: db/changelog/starting-referential-data/ref_network_type.csv
             primaryKey: id
             tableName: ref_network_type
             separator: ;
@@ -301,7 +301,7 @@ databaseChangeLog:
               - column:
                   header: lifespan
                   type: double
-            file: db/changelog/data/ref_server_host.csv
+            file: db/changelog/starting-referential-data/ref_server_host.csv
             primaryKey: id
             tableName: ref_server_host
             separator: ;

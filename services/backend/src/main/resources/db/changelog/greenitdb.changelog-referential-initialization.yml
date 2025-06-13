@@ -15,6 +15,19 @@ databaseChangeLog:
               - column:
                   name: label
                   type: varchar(255)
+        - loadData:
+            columns:
+              - column:
+                  name: code
+                  type: varchar(255)
+              - column:
+                  name: label
+                  type: varchar(255)
+            file: db/changelog/starting-referential-data/ref_lifecycle_step.csv
+            tableName: ref_lifecycle_step
+            separator: ;
+            encoding: UTF-8
+
   - changeSet:
       id: create-ref_criterion
       author: G4IT Dev Team
@@ -37,6 +50,22 @@ databaseChangeLog:
               - column:
                   name: unit
                   type: varchar(255)
+        - loadData:
+            columns:
+              - column:
+                  name: label
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: unit
+                  type: varchar(255)
+            primaryKey: code
+            file: db/changelog/starting-referential-data/ref_criterion.csv
+            tableName: ref_criterion
+            separator: ;
+            encoding: UTF-8
 
   - changeSet:
       id: create-ref_hypothesis
@@ -70,6 +99,31 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
+        - loadData:
+            columns:
+              - column:
+                  name: code
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: value
+                  type: double
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+            file: db/changelog/starting-referential-data/ref_hypothesis.csv
+            primaryKey: id
+            tableName: ref_hypothesis
+            separator: ;
+            encoding: UTF-8
         - addUniqueConstraint:
             columnNames: code, subscriber
             constraintName: ref_hypothesis_unique
@@ -118,6 +172,40 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
+        - loadData:
+            columns:
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: category
+                  type: varchar(255)
+              - column:
+                  name: comment
+                  type: varchar(255)
+              - column:
+                  name: default_lifespan
+                  type: double
+              - column:
+                  name: is_server
+                  type: boolean
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: ref_default_item
+                  type: varchar(255)
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+            file: db/changelog/starting-referential-data/ref_item_type.csv
+            primaryKey: id
+            tableName: ref_item_type
+            separator: ;
+            encoding: UTF-8
         - addUniqueConstraint:
             columnNames: type, subscriber
             constraintName: ref_item_type_unique
@@ -180,6 +268,55 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
+        - loadData:
+            columns:
+              - column:
+                  name: criterion
+                  type: varchar(255)
+              - column:
+                  name: lifecycle_step
+                  type: varchar(255)
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: category
+                  type: varchar(255)
+              - column:
+                  name: avg_electricity_consumption
+                  type: double
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: level
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: tier
+                  type: varchar(255)
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: value
+                  type: double
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+            file: db/changelog/starting-referential-data/ref_item_impact.csv
+            primaryKey: id
+            tableName: ref_item_impact
+            separator: ;
+            encoding: UTF-8
         - addUniqueConstraint:
             columnNames: name, lifecycle_step, criterion, subscriber
             constraintName: ref_item_impact_unique
@@ -208,6 +345,22 @@ databaseChangeLog:
               - column:
                   name: subscriber
                   type: varchar(255)
+        - loadData:
+            columns:
+              - column:
+                  name: item_source
+                  type: varchar(255)
+              - column:
+                  name: ref_item_target
+                  type: varchar(255)
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+            file: db/changelog/starting-referential-data/ref_matching_item.csv
+            primaryKey: id
+            tableName: ref_matching_item
+            separator: ;
+            encoding: UTF-8
         - addUniqueConstraint:
             columnNames: item_source, subscriber
             constraintName: ref_matching_item_unique
