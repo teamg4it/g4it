@@ -1,6 +1,6 @@
 <div class="footprint-dashboard-container">
     <div class="chart-container">
-        <div>
+        <div class="flex flex-wrap align-items-center">
             <span class="text-xl" role="heading" [ariaLevel]="3">
                 {{ "inventories-footprint.global.global-vision" | translate }} <br />
                 ({{ "common.peopleeq" | translate }})
@@ -12,7 +12,6 @@
                     [label]="'inventories-footprint.data-consistency' | translate"
                     [outlined]="!showInconsitencyGraph"
                     severity="danger"
-                    class="ml-auto mt-3 mb-2 pr-3"
                     [ariaLabel]="'inventories-footprint.data-consistency' | translate"
                 />
             }

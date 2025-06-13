@@ -618,9 +618,9 @@ main {
 }
 
 .round-button-container {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 8px;
 }
 
@@ -710,13 +710,10 @@ main {
 
 .footprint-digital-dashboard-container {
     margin-top: 5px;
-    display: flex;
-    justify-content: center;
     width: -webkit-fill-available;
 }
 
 .digital-service-chart-container {
-    width: 150%;
     padding: 20px;
     border-radius: 4px 0 0 4px;
 }
@@ -734,13 +731,6 @@ main {
 .digital-service-chart-container div h3 {
     margin: 10px;
     font-size: 26px;
-}
-
-.information-car-digital-service {
-    padding-top: 76px;
-    padding-right: 30px;
-    width: -webkit-fill-available;
-    border-radius: 0 4px 4px 0;
 }
 
 /* Critere buttons */

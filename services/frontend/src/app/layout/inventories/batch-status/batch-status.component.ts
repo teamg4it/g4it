@@ -60,7 +60,7 @@ export class BatchStatusComponent implements OnInit {
             });
 
         const defaultClasses =
-            "text-white text-lg border-circle p-1-5 w-2rem text-center";
+            "text-white text-lg border-circle p-1-5 w-2rem h-2rem text-center";
 
         if (Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(this.batchStatusCode)) {
             this.cssClass = "pi pi-spin pi-spinner icon-running";
