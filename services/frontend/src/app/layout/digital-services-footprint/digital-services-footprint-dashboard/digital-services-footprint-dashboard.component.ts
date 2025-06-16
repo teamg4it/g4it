@@ -258,11 +258,17 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     getTitleOrContent(textType: string) {
+        this.selectedLang = this.translate.currentLang;
+        const isBarChart = this.chartType() === "bar";
+        const isServer = this.selectedParam === "Server";
+        const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
+        const isBarChartChild = this.barChartChild === true;
+
+        let translationKey: string;
+
         if (this.digitalService.isAi) {
             if (textType === "digital-services-card-title") {
-                return `<div style="font-weight:bold; margin-top:0px; font-size:1.5rem;">${this.translate.instant(
-                    "digital-services-cards.global-vision-ai.title",
-                )}</div>`;
+                translationKey = "digital-services-cards.global-vision-ai";
             } else if (
                 textType === "digital-services-card-content" &&
                 this.aiRecommendations.length > 0
@@ -303,14 +309,6 @@ export class DigitalServicesFootprintDashboardComponent
                 }
             }
         }
-
-        this.selectedLang = this.translate.currentLang;
-        const isBarChart = this.chartType() === "bar";
-        const isServer = this.selectedParam === "Server";
-        const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
-        const isBarChartChild = this.barChartChild === true;
-
-        let translationKey: string;
 
         if (isBarChart) {
             if (isBarChartChild && isServer) {

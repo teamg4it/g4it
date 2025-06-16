@@ -13,7 +13,8 @@ import { AIFormsStore, AIParametersForm } from "src/app/core/store/ai-forms.stor
 export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     terminalsForm!: FormGroup;
     private formSubscription: Subscription | undefined;
-
+    isFinetuning = false;
+    isInference = true;
     model: string = "LLM";
     models: any[] = [];
     modelOptions: any[] = [];
@@ -149,6 +150,14 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         if (this.formSubscription) {
             this.formSubscription.unsubscribe();
+        }
+    }
+
+    onCheckboxChange(selected: "isFinetuning" | "isInference") {
+        if (selected === "isFinetuning") {
+            this.isFinetuning = !this.isFinetuning;
+        } else if (selected === "isInference") {
+            this.isInference = !this.isInference;
         }
     }
 
