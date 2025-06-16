@@ -52,7 +52,7 @@ export class DigitalServicesComponent {
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.route.data.subscribe((data) => {
+        this.route.parent?.data.subscribe((data) => {
             this.isEcoMindAi = data["isIa"] === true;
         });
         this.userService.currentOrganization$
