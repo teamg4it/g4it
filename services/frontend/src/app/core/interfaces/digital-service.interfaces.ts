@@ -22,7 +22,6 @@ export interface DigitalService {
     userId?: number;
     criteria?: string[];
     creator?: DigitalServiceUserInfo;
-    members: DigitalServiceUserInfo[];
     isAi?: boolean;
 }
 
