@@ -77,9 +77,9 @@ main {
     height: calc(100vh - 70px);
     width: calc(100vw - 80px);
     margin-top: 70px;
-    background-image: url("assets/images/background/blue-elipse.svg"),
-        url("assets/images/background/yellow-elipse.svg"),
-        url("assets/images/background/fingerprint-background.svg");
+    background-image: url("/assets/images/background/blue-elipse.svg"),
+        url("/assets/images/background/yellow-elipse.svg"),
+        url("/assets/images/background/fingerprint-background.svg");
     background-repeat: no-repeat;
     background-position:
         bottom -475px left 38%,
@@ -215,8 +215,8 @@ main {
     flex-shrink: 0;
     background-color: var(--header-color);
     width: 100%;
-    background-image: url("assets/images/background/fingerprint.svg"),
-        url("assets/images/background/fingerprint.svg");
+    background-image: url("/assets/images/background/fingerprint.svg"),
+        url("/assets/images/background/fingerprint.svg");
     background-repeat: no-repeat;
     background-position:
         top -139px left -10px,
@@ -558,14 +558,14 @@ main {
 }
 
 .no-data-half {
-    background-image: url("assets/images/graphs/empty-half-graph.svg");
+    background-image: url("/assets/images/graphs/empty-half-graph.svg");
     background-repeat: no-repeat;
     background-position: center 20%;
     background-size: 55%;
 }
 
 .no-data-round {
-    background-image: url("assets/images/graphs/empty-round-graph.svg");
+    background-image: url("/assets/images/graphs/empty-round-graph.svg");
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 50%;
@@ -1121,14 +1121,14 @@ app-top-header {
         }
 
         .custom-globe-icon {
-            mask: url("assets/images/icons/icon-globe.svg") no-repeat center / contain;
-            -webkit-mask: url("assets/images/icons/icon-globe.svg") no-repeat center /
+            mask: url("/assets/images/icons/icon-globe.svg") no-repeat center / contain;
+            -webkit-mask: url("/assets/images/icons/icon-globe.svg") no-repeat center /
                 contain;
         }
 
         .custom-at-symbol-icon {
-            mask: url("assets/images/icons/icon-at-symbol.svg") no-repeat center / contain;
-            -webkit-mask: url("assets/images/icons/icon-at-symbol.svg") no-repeat center /
+            mask: url("/assets/images/icons/icon-at-symbol.svg") no-repeat center / contain;
+            -webkit-mask: url("/assets/images/icons/icon-at-symbol.svg") no-repeat center /
                 contain;
         }
 

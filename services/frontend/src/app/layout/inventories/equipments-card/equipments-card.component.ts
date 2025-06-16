@@ -20,19 +20,19 @@ export class EquipmentsCardComponent implements OnInit {
     ngOnInit(): void {
         switch (this.type) {
             case "datacenter":
-                this.imgSrc = "assets/images/icons/icon-datacenter.svg";
+                this.imgSrc = "/assets/images/icons/icon-datacenter.svg";
                 this.translateText = "inventories.dc";
                 break;
             case "physical":
-                this.imgSrc = "assets/images/icons/icon-computer-desktop.svg";
+                this.imgSrc = "/assets/images/icons/icon-computer-desktop.svg";
                 this.translateText = "inventories.eq-phys";
                 break;
             case "virtual":
-                this.imgSrc = "assets/images/icons/icon-computer-desktop.svg";
+                this.imgSrc = "/assets/images/icons/icon-computer-desktop.svg";
                 this.translateText = "inventories.eq-virt";
                 break;
             case "app":
-                this.imgSrc = "assets/images/icons/icon-application.svg";
+                this.imgSrc = "/assets/images/icons/icon-application.svg";
                 this.translateText = "inventories.app";
                 break;
             default:
