@@ -17,7 +17,9 @@ import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
+import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -61,6 +63,10 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     private AuthService authService;
     @Autowired
     private UserOrganizationRepository userOrganizationRepository;
+    @Autowired
+    private SubscriberRepository subscriberRepository;
+    @Autowired
+    private RoleService roleService;
 
     /**
      * {@inheritDoc}
@@ -149,13 +155,16 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                 .orElseThrow(() -> new G4itRestException("404", String.format("task of inventoryId '%d' is not found", inventoryId)));
 
         Long userId = authService.getUser().getId();
-        UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organization, userId).orElseThrow();
+        boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization(authService.getUser(), subscriberRepository.findByName(subscriber).get().getId(), organization);
+        if (!isAdmin) {
+            UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organization, userId).orElseThrow();
 
-        boolean isDefaultOrganization = userOrganization.getOrganization().getName().equalsIgnoreCase("DEMO");
-        boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));
+            boolean isDefaultOrganization = userOrganization.getOrganization().getName().equalsIgnoreCase("DEMO");
+            boolean hasAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));
 
-        if (!(isDefaultOrganization || hasWriteAccess)) {
-            throw new G4itRestException("403", "Not authorized");
+            if (!(isDefaultOrganization || hasAccess)) {
+                throw new G4itRestException("403", "Not authorized");
+            }
         }
 
         String filename = task.getId() + Constants.ZIP;
