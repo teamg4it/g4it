@@ -50,7 +50,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
         // Therefore we can continue without those verifications.
         this.digitalService = digitalService;
 
-        // Récupération du paramètre isAi depuis l'URL
+        // Retrieving the isAi parameter from the URL
 
         this.isEcoMindAi = this.digitalService.isAi ?? false;
         this.updateTabItems();

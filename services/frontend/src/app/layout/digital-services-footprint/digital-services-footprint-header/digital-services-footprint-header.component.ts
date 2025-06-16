@@ -20,7 +20,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
-import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
@@ -38,7 +37,6 @@ import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { delay } from "src/app/core/utils/time";
 import { DigitalServicesAiInfrastructureComponent } from "../digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
 import { DigitalServicesAiParametersComponent } from "../digital-services-ai-parameters/digital-services-ai-parameters.component";
 
@@ -54,12 +52,9 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     sidebarVisible: boolean = false;
-    sidebarDsVisible = false;
-    isLinkCopied = false;
     selectedSubscriberName = "";
     selectedOrganizationId!: number;
     selectedOrganizationName = "";
-    isShared = false;
     displayPopup = false;
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
@@ -105,7 +100,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         private translate: TranslateService,
         public userService: UserService,
         private messageService: MessageService,
-        private clipboardService: ClipboardService,
         private digitalServiceBusinessService: DigitalServiceBusinessService,
         private inVirtualEquipmentsService: InVirtualEquipmentsService,
         private aiFormsStore: AIFormsStore,
@@ -124,9 +118,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                     );
                 }),
             )
-            .subscribe(() => {
-                this.digitalServiceIsShared();
-            });
+            .subscribe();
 
         this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
             this.selectedSubscriberName = subscriber.name;
@@ -168,33 +160,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
                 this.digitalServicesData
                     .delete(this.digitalService.uid)
-                    .pipe(
-                        takeUntilDestroyed(this.destroyRef),
-                        finalize(() => {
-                            this.global.setLoading(false);
-                        }),
-                    )
-                    .subscribe(() =>
-                        this.router.navigateByUrl(this.changePageToDigitalServices()),
-                    );
-            },
-        });
-    }
-
-    confirmUnlink(event: Event) {
-        this.confirmationService.confirm({
-            closeOnEscape: true,
-            target: event.target as EventTarget,
-            acceptLabel: this.translate.instant("common.yes"),
-            rejectLabel: this.translate.instant("common.no"),
-            message: `${this.translate.instant(
-                "digital-services.popup.delete-question-shared",
-            )}`,
-            icon: "pi pi-exclamation-triangle",
-            accept: () => {
-                this.global.setLoading(true);
-                this.digitalServicesData
-                    .unlink(this.digitalService.uid)
                     .pipe(
                         takeUntilDestroyed(this.destroyRef),
                         finalize(() => {
@@ -270,7 +235,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     changePageToDigitalServices() {
         let [_, _1, subscriber, _2, organization, serviceType] =
             this.router.url.split("/");
-        // serviceType sera 'digital-services' ou 'eco-mind-ai'
+        // serviceType can be 'digital-services' or 'eco-mind-ai'
         if (serviceType === "eco-mind-ai") {
             return `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai`;
         } else {
@@ -304,17 +269,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         });
     }
 
-    async copyUrl() {
-        this.isLinkCopied = true;
-        const url = await firstValueFrom(
-            this.digitalServicesData.copyUrl(this.digitalService.uid),
-        );
-        this.clipboardService.copy(url);
-
-        await delay(10000);
-        this.isLinkCopied = false;
-    }
-
     async exportData() {
         try {
             const filename = `g4it_${this.selectedSubscriberName}_${this.selectedOrganizationName}_${this.digitalService.uid}_export-result-files`;
@@ -327,15 +281,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 severity: "error",
                 summary: this.translate.instant("common.fileNoLongerAvailable"),
             });
-        }
-    }
-
-    async digitalServiceIsShared() {
-        const userId = (await firstValueFrom(this.userService.user$)).id;
-        if (this.digitalService.creator?.id !== userId) {
-            this.isShared = true;
-        } else {
-            this.isShared = false;
         }
     }
 
@@ -367,7 +312,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         const parametersData = this.aiFormsStore.getParametersFormData();
         const infrastructureData = this.aiFormsStore.getInfrastructureFormData();
 
-        // Vérifier si les deux formulaires sont complets
+        // Check that both forms are complete
         if (!parametersData || !infrastructureData) {
             this.messageService.add({
                 severity: "warn",
@@ -379,7 +324,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             return;
         }
 
-        // Vérifier que tous les champs requis sont remplis
+        // Check that all required fields have been completed
         const requiredParametersFields = [
             "modelName",
             "nbParameters",
@@ -410,11 +355,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         const missingInfrastructureFields = requiredInfrastructureFields.filter(
             (field) => {
                 const value = infrastructureData[field];
-                // Pour les champs numériques, on accepte 0 comme valeur valide
+                // For numeric fields, 0 is accepted as the valid value.
                 if (typeof value === "number") {
                     return value === undefined || value === null;
                 }
-                // Pour les autres champs (string), on vérifie comme avant
+                // For other string fields, check as before
                 return value === undefined || value === null || value === "";
             },
         );
@@ -468,7 +413,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
         this.global.setLoading(true);
 
-        // Sauvegarder les deux formulaires
+        // Save both forms
         Promise.all([
             this.digitalServicesAiData
                 .saveAiInfrastructure(digitalServiceUid, infrastructureData)

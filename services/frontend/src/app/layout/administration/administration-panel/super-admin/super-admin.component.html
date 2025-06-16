@@ -4,8 +4,10 @@
             [disabled]="isMigrateDataButtonDisabled"
             styleClass="black-button"
             class="pr-3 pl-3"
-            (click)="migrateDataToNewFormat()"
-            >{{ "administration.super-admin.migrate-data-title" | translate }}</p-button
+            (click)="launchReleaseScript()"
+            >{{
+                "administration.super-admin.launch-release-script" | translate
+            }}</p-button
         >
     </div>
 </div>

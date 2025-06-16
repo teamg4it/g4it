@@ -3,6 +3,7 @@
 @import "primeng/resources/primeng.css";
 @import "primeflex/primeflex.scss";
 @import "primeicons/primeicons.css";
+
 /* General */
 
 :host,
@@ -94,52 +95,40 @@ main {
 .color-tertiary {
     color: var(--tertiary-color);
 }
-
 .text-grey {
     color: var(--grey-text-color);
 }
-
 .bg-primary {
     background-color: var(--primary-color);
 }
-
 .bg-secondary {
     background-color: var(--secondary-color);
 }
-
 .bg-tertiary {
     background-color: var(--tertiary-color);
 }
-
 .bg-light-green {
     background-color: var(--light-green-color);
 }
-
 .force-bg-white {
     background-color: white;
     color: var(--black-color);
 }
-
 .bg-black {
     background: var(--black-color);
 }
-
 .bg-grey {
     background: var(--grey-text-color);
 }
-
 .bg-dark-red {
     background: var(--dark-red-color);
 }
-
 .bg-warning {
     background: var(--warning-color);
 }
-
 .border-primary {
     border-color: var(--primary-color);
 }
-
 .border-tertiary {
     border-color: var(--tertiary-color);
 }
@@ -186,9 +175,9 @@ main {
     font-size: 15px;
     margin: 5px;
 }
+
 /* Header */
 /* header height px match with main margin top*/
-
 .header {
     background-color: var(--black-color);
     color: white;
@@ -206,6 +195,7 @@ main {
     flex-shrink: 0;
     background-color: var(--black-color);
 }
+
 /* Header Panel */
 
 .org-menu {
@@ -216,6 +206,7 @@ main {
     z-index: 99;
     max-height: 80vh;
 }
+
 /* Error page */
 
 .error-header {
@@ -235,6 +226,7 @@ main {
         771px 1096px;
     overflow: hidden;
 }
+
 /* Buttons */
 
 .black-button,
@@ -352,6 +344,7 @@ main {
         color: white !important;
     }
 }
+
 /* Radio Buttons */
 
 .radio-button-right {
@@ -377,7 +370,6 @@ main {
 .white-radio-buttons .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
     background-color: white;
 }
-
 .white-radio-buttons .p-radiobutton .p-radiobutton-box {
     border: 2px solid white !important;
 }
@@ -385,10 +377,12 @@ main {
 .p-radiobutton-box.p-focus {
     border: none !important;
     background-color: var(--tertiary-color) !important;
+
     .p-radiobutton-icon {
         background-color: white !important;
     }
 }
+
 /* Icons */
 
 .icon-running {
@@ -406,6 +400,7 @@ main {
 .footprint-data-application span {
     @include styleclass("text-2xl");
 }
+
 /* Inventories page */
 
 .input-loading-files {
@@ -419,6 +414,7 @@ main {
     justify-content: space-between;
     margin-bottom: 8px;
 }
+
 /* Detail Inventaire */
 
 .inventory-list {
@@ -445,13 +441,13 @@ main {
     margin-right: 10px;
     margin-bottom: 10px;
 }
-/* Information System */
 
+/* Information System */
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
     outline: 2px solid black !important;
 }
-/* sidebar */
 
+/* sidebar */
 .p-dropdown-panel
     .p-dropdown-items
     .p-dropdown-item:not(.p-highlight):not(.p-disabled).p-focus {
@@ -499,12 +495,14 @@ main {
     right: 50px;
     display: flex;
 }
+
 /* SELECT FILE */
 
 .type-dropdown {
     width: 300px;
     margin-right: 10px;
 }
+
 /* Footprint page */
 
 .footprint-dashboard-container {
@@ -549,13 +547,11 @@ main {
     height: 50vh !important;
     margin-top: 25px !important;
 }
-
 .no-data-bar {
     height: 40vh !important;
     border-bottom: 1px solid black;
     margin: 50px !important;
 }
-
 .no-data-digital-service {
     height: 45vh !important;
     flex-wrap: wrap;
@@ -627,6 +623,7 @@ main {
     grid-gap: 10px;
     padding: 8px;
 }
+
 /* Filter component */
 
 .filter-component {
@@ -667,6 +664,7 @@ main {
 .filter-component .p-multiselect {
     width: -webkit-fill-available;
 }
+
 /**
 * DIGITAL SERVICE
 **/
@@ -707,6 +705,7 @@ main {
     padding-top: 5px;
     padding-bottom: 5px;
 }
+
 /* Visualize Digital Services */
 
 .footprint-digital-dashboard-container {
@@ -743,13 +742,14 @@ main {
     width: -webkit-fill-available;
     border-radius: 0 4px 4px 0;
 }
-/* Critere buttons */
 
+/* Critere buttons */
 .check-icon-corner {
     position: absolute;
     right: 9px;
     top: 8px;
 }
+
 /* Terminals page */
 
 .table-container {
@@ -779,6 +779,7 @@ main {
     white-space: nowrap !important;
     border: 0 !important;
 }
+
 /*Side panel Terminals page */
 
 .lg-file-panel-margin {
@@ -824,6 +825,7 @@ main {
 .label-input-div-medium label {
     font-size: 12px;
 }
+
 /* Previous Next paginator css */
 
 .p-paginator .p-paginator-prev::after {
@@ -848,6 +850,7 @@ main {
 }
 
 // Servers
+
 .underlined-div {
     margin-bottom: 3px;
     border-bottom: 3px solid var(--primary-color);
@@ -993,6 +996,7 @@ div.label-input-div-medium {
     position: fixed;
     z-index: 90;
 }
+
 /*Administration panel*/
 
 .footprint-tabmenu {
@@ -1000,14 +1004,17 @@ div.label-input-div-medium {
     .p-tabmenu-nav-next {
         background-color: #e8e8e8;
     }
+
     .p-tabmenu-nav-container {
         width: calc(100vw - 178px);
         overflow: hidden;
         position: relative;
     }
+
     .p-tabmenu-nav-content {
         width: calc(100vw - 230px);
     }
+
     .p-tabmenu-nav-content ul {
         border: none;
     }
@@ -1028,7 +1035,6 @@ div.label-input-div-medium {
 .header-share-count .p-button span.pi-users {
     font-size: 2rem;
 }
-
 app-top-header {
     .aboutMenuBtn {
         background-color: transparent !important;
@@ -1045,16 +1051,18 @@ app-top-header {
         padding-top: 22px;
         padding-bottom: 22px;
     }
+
     .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus {
         outline: 1px solid green;
     }
+
     .p-menu.p-menu-overlay {
         width: 375px;
         padding: 15px;
     }
+
     li.p-submenu-header:empty {
-        display: none;
-        /* or any other style */
+        display: none; /* or any other style */
     }
     .p-menu .p-submenu-header {
         padding: 0;
@@ -1573,9 +1581,11 @@ app-top-header {
     .p-menu .p-submenu-header {
         padding: 0;
     }
+
     .p-menu .p-menuitem-link {
         color: var(--tints-black-80);
     }
+
     .p-menu .p-menuitem-link:hover {
         font-weight: 700;
         transition: 0.2s;
@@ -1602,11 +1612,13 @@ app-top-header {
         background-color: #f4f4f4;
         color: var(--black-color);
     }
+
     .p-button {
         height: 43px;
         padding: 13px 24px;
         align-items: stretch;
     }
+
     .space-form {
         .p-inputtext,
         .p-dropdown {
@@ -1615,38 +1627,65 @@ app-top-header {
         }
     }
 }
-
 .welcome-page-container {
     .selection-card-container {
         .p-card-body {
             padding: 1.5rem 2rem;
         }
+
         .custom-globe-icon {
             mask: url("assets/images/icons/icon-globe.svg") no-repeat center / contain;
             -webkit-mask: url("assets/images/icons/icon-globe.svg") no-repeat center /
                 contain;
         }
+
         .custom-at-symbol-icon {
             mask: url("assets/images/icons/icon-at-symbol.svg") no-repeat center / contain;
             -webkit-mask: url("assets/images/icons/icon-at-symbol.svg") no-repeat center /
                 contain;
         }
+
         .navigation-button.disabled {
             color: var(--tints-black-80);
             border: 2px solid var(--gray-300);
             background: var(--gray-300);
         }
+
         .navigation-button:not(.disabled) {
             color: var(--blue-color);
             border: 2px solid var(--blue-color);
             background: var(--surface-0);
         }
+
         &:not(.disabled) {
             .navigation-button:not(.disabled):hover {
                 color: var(--surface-0);
                 background: var(--blue-color);
             }
         }
+    }
+}
+
+app-declarations,
+app-useful-information {
+    .breadcrumb {
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .breadcrumb a {
+        text-decoration: none;
+    }
+
+    .breadcrumb .active {
+        color: var(--tertiary-color);
+        font-weight: bold;
+    }
+
+    .breadcrumb .separator {
+        margin: 0 10px;
+        font-size: 16px;
     }
 }
 

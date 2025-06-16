@@ -9,9 +9,9 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/cor
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { PaginatorModule } from "primeng/paginator";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
-import { SidePanelDsSharedUsersComponent } from "../common/side-panel-ds-shared-users/side-panel-ds-shared-users.component";
 import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
 import { DigitalServicesComponent } from "./digital-services.component";
 import { digitalServicesRouter } from "./digital-services.router";
@@ -21,11 +21,11 @@ import { digitalServicesRouter } from "./digital-services.router";
     imports: [
         ButtonModule,
         ScrollPanelModule,
+        PaginatorModule,
         CardModule,
         SharedModule,
         ConfirmPopupModule,
         digitalServicesRouter,
-        SidePanelDsSharedUsersComponent,
     ],
     exports: [DigitalServicesComponent, DigitalServicesItemComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

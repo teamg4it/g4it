@@ -197,6 +197,33 @@
                         </div>
                     </a>
                 </div>
+                <div class="col useful-info">
+                    <div class="pt-3"></div>
+                    <a
+                        class="p-2 w-auto inline-block"
+                        routerLink="/declarations"
+                        tabindex="0"
+                        role="link"
+                    >
+                        <div class="text-2xl align-items-center flex py-3 hover-text">
+                            <span
+                                ><u>{{ "declarations.title" | translate }}</u></span
+                            >
+                            <span class="pi pi-arrow-right ml-8"></span>
+                        </div>
+                        <div>
+                            <span class="text-black"
+                                >{{ "declarations.ecodesign" | translate }} :
+                                {{ ecoDesignPercent }}%</span
+                            >
+                        </div>
+                        <div>
+                            <span class="text-black">{{
+                                "declarations.accessibility-text" | translate
+                            }}</span>
+                        </div>
+                    </a>
+                </div>
                 <div class="col help-center">
                     <div class="p-3 border-round-sm w-auto inline-block">
                         <span
@@ -238,7 +265,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col"></div>
             </div>
         </footer>
     </div>
