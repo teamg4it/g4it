@@ -20,6 +20,7 @@ export const environment = {
         clientId: "g4it",
         enabled: "false",
     },
+    subpathfront: "/",
     showBetaFeatures: "true",
     matomo: {
         matomoTagManager: {
