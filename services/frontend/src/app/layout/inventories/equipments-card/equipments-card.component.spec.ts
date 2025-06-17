@@ -37,25 +37,25 @@ describe("EquipmentsCardComponent", () => {
     it("should choose the good translate texte and image source if type is 'datacenter'", () => {
         component.type = "datacenter";
         component.ngOnInit();
-        expect(component.imgSrc).toBe("assets/images/icons/icon-datacenter.svg");
+        expect(component.imgSrc).toBe("/assets/images/icons/icon-datacenter.svg");
         expect(component.translateText).toBe("inventories.dc");
     });
     it("should choose the good translate texte and image source if type is 'physical'", () => {
         component.type = "physical";
         component.ngOnInit();
-        expect(component.imgSrc).toBe("assets/images/icons/icon-computer-desktop.svg");
+        expect(component.imgSrc).toBe("/assets/images/icons/icon-computer-desktop.svg");
         expect(component.translateText).toBe("inventories.eq-phys");
     });
     it("should choose the good translate texte and image source if type is 'virtual'", () => {
         component.type = "virtual";
         component.ngOnInit();
-        expect(component.imgSrc).toBe("assets/images/icons/icon-computer-desktop.svg");
+        expect(component.imgSrc).toBe("/assets/images/icons/icon-computer-desktop.svg");
         expect(component.translateText).toBe("inventories.eq-virt");
     });
     it("should choose the good translate texte and image source if type is 'app'", () => {
         component.type = "app";
         component.ngOnInit();
-        expect(component.imgSrc).toBe("assets/images/icons/icon-application.svg");
+        expect(component.imgSrc).toBe("/assets/images/icons/icon-application.svg");
         expect(component.translateText).toBe("inventories.app");
     });
     it("should choose the good translate texte and image source if type is Unknown", () => {
