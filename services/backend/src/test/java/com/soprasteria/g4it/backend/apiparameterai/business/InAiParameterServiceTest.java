@@ -2,9 +2,9 @@ package com.soprasteria.g4it.backend.apiparameterai.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
-import com.soprasteria.g4it.backend.apiparameterai.mapper.AiParameterMapper;
-import com.soprasteria.g4it.backend.apiparameterai.modeldb.AiParameter;
-import com.soprasteria.g4it.backend.apiparameterai.repository.AiParameterRepository;
+import com.soprasteria.g4it.backend.apiparameterai.mapper.InAiParameterMapper;
+import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
+import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AiParameterRest;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,24 +24,24 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AiParameterServiceTest {
+public class InAiParameterServiceTest {
 
     @Mock
-    private AiParameterRepository aiParameterRepository;
+    private InAiParameterRepository inAiParameterRepository;
 
     @Mock
-    private AiParameterMapper aiParameterMapper;
+    private InAiParameterMapper inAiParameterMapper;
 
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
 
     @InjectMocks
-    private AiParameterService aiParameterService;
+    private InAiParameterService inAiParameterService;
 
     private String digitalServiceUid;
     private AiParameterRest aiParameterRest;
-    private AiParameter aiParameterEntity;
-    private AiParameter savedAiParameterEntity;
+    private InAiParameter inAiParameterEntity;
+    private InAiParameter savedInAiParameterEntity;
     private DigitalService digitalService;
     private AiParameterRest expectedResult;
 
@@ -64,36 +64,36 @@ public class AiParameterServiceTest {
         aiParameterRest.setIsFinetuning(false);
 
         // Setup AiParameter entity
-        aiParameterEntity =  AiParameter.builder().build();
-        aiParameterEntity.setModelName("llama3");
-        aiParameterEntity.setType("LLM");
-        aiParameterEntity.setNbParameters("1000000");
-        aiParameterEntity.setFramework("PyTorch");
-        aiParameterEntity.setQuantization("INT8");
-        aiParameterEntity.setTotalGeneratedTokens(BigInteger.valueOf(5000000));
-        aiParameterEntity.setNumberUserYear(BigInteger.valueOf(10000));
-        aiParameterEntity.setAverageNumberRequest(BigInteger.valueOf(500));
-        aiParameterEntity.setAverageNumberToken(BigInteger.valueOf(100));
-        aiParameterEntity.setIsInference(true);
-        aiParameterEntity.setIsFinetuning(false);
+        inAiParameterEntity =  InAiParameter.builder().build();
+        inAiParameterEntity.setModelName("llama3");
+        inAiParameterEntity.setType("LLM");
+        inAiParameterEntity.setNbParameters("1000000");
+        inAiParameterEntity.setFramework("PyTorch");
+        inAiParameterEntity.setQuantization("INT8");
+        inAiParameterEntity.setTotalGeneratedTokens(BigInteger.valueOf(5000000));
+        inAiParameterEntity.setNumberUserYear(BigInteger.valueOf(10000));
+        inAiParameterEntity.setAverageNumberRequest(BigInteger.valueOf(500));
+        inAiParameterEntity.setAverageNumberToken(BigInteger.valueOf(100));
+        inAiParameterEntity.setIsInference(true);
+        inAiParameterEntity.setIsFinetuning(false);
 
         // Setup saved entity (with ID and dates)
-        savedAiParameterEntity =  AiParameter.builder().build();
-        savedAiParameterEntity.setId(1L);
-        savedAiParameterEntity.setModelName("llama3");
-        savedAiParameterEntity.setType("LLM");
-        savedAiParameterEntity.setNbParameters("1000000");
-        savedAiParameterEntity.setFramework("PyTorch");
-        savedAiParameterEntity.setQuantization("INT8");
-        savedAiParameterEntity.setTotalGeneratedTokens(BigInteger.valueOf(5000000));
-        savedAiParameterEntity.setNumberUserYear(BigInteger.valueOf(10000));
-        savedAiParameterEntity.setAverageNumberRequest(BigInteger.valueOf(500));
-        savedAiParameterEntity.setAverageNumberToken(BigInteger.valueOf(100));
-        savedAiParameterEntity.setIsInference(true);
-        savedAiParameterEntity.setIsFinetuning(false);
-        savedAiParameterEntity.setDigitalServiceUid(digitalServiceUid);
-        savedAiParameterEntity.setCreationDate(LocalDateTime.now());
-        savedAiParameterEntity.setLastUpdateDate(LocalDateTime.now());
+        savedInAiParameterEntity =  InAiParameter.builder().build();
+        savedInAiParameterEntity.setId(1L);
+        savedInAiParameterEntity.setModelName("llama3");
+        savedInAiParameterEntity.setType("LLM");
+        savedInAiParameterEntity.setNbParameters("1000000");
+        savedInAiParameterEntity.setFramework("PyTorch");
+        savedInAiParameterEntity.setQuantization("INT8");
+        savedInAiParameterEntity.setTotalGeneratedTokens(BigInteger.valueOf(5000000));
+        savedInAiParameterEntity.setNumberUserYear(BigInteger.valueOf(10000));
+        savedInAiParameterEntity.setAverageNumberRequest(BigInteger.valueOf(500));
+        savedInAiParameterEntity.setAverageNumberToken(BigInteger.valueOf(100));
+        savedInAiParameterEntity.setIsInference(true);
+        savedInAiParameterEntity.setIsFinetuning(false);
+        savedInAiParameterEntity.setDigitalServiceUid(digitalServiceUid);
+        savedInAiParameterEntity.setCreationDate(LocalDateTime.now());
+        savedInAiParameterEntity.setLastUpdateDate(LocalDateTime.now());
 
         // Setup DigitalService
         digitalService = new DigitalService();
@@ -120,15 +120,15 @@ public class AiParameterServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(aiParameterRest))
-                .thenReturn(aiParameterEntity);
-        when(aiParameterRepository.save(any(AiParameter.class)))
-                .thenReturn(savedAiParameterEntity);
-        when(aiParameterMapper.toBusinessObject(savedAiParameterEntity))
+        when(inAiParameterMapper.toEntity(aiParameterRest))
+                .thenReturn(inAiParameterEntity);
+        when(inAiParameterRepository.save(any(InAiParameter.class)))
+                .thenReturn(savedInAiParameterEntity);
+        when(inAiParameterMapper.toBusinessObject(savedInAiParameterEntity))
                 .thenReturn(expectedResult);
 
         // When
-        AiParameterRest result = aiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
+        AiParameterRest result = inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
 
         // Then
         assertNotNull(result);
@@ -136,11 +136,11 @@ public class AiParameterServiceTest {
 
         // Verify repository interactions
         verify(digitalServiceRepository).findById(digitalServiceUid);
-        verify(aiParameterRepository).save(any(AiParameter.class));
+        verify(inAiParameterRepository).save(any(InAiParameter.class));
 
         // Verify mapper interactions
-        verify(aiParameterMapper).toEntity(aiParameterRest);
-        verify(aiParameterMapper).toBusinessObject(savedAiParameterEntity);
+        verify(inAiParameterMapper).toEntity(aiParameterRest);
+        verify(inAiParameterMapper).toBusinessObject(savedInAiParameterEntity);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class AiParameterServiceTest {
 
         // When & Then
         G4itRestException exception = assertThrows(G4itRestException.class,
-                () -> aiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
+                () -> inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
 
         assertEquals("404", exception.getCode());
         assertEquals(String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid),
@@ -159,7 +159,7 @@ public class AiParameterServiceTest {
 
         // Verify only digitalServiceRepository was called
         verify(digitalServiceRepository).findById(digitalServiceUid);
-        verifyNoInteractions(aiParameterMapper, aiParameterRepository);
+        verifyNoInteractions(inAiParameterMapper, inAiParameterRepository);
     }
 
     @Test
@@ -167,21 +167,21 @@ public class AiParameterServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(aiParameterRest))
-                .thenReturn(aiParameterEntity);
-        when(aiParameterRepository.save(any(AiParameter.class)))
-                .thenReturn(savedAiParameterEntity);
-        when(aiParameterMapper.toBusinessObject(savedAiParameterEntity))
+        when(inAiParameterMapper.toEntity(aiParameterRest))
+                .thenReturn(inAiParameterEntity);
+        when(inAiParameterRepository.save(any(InAiParameter.class)))
+                .thenReturn(savedInAiParameterEntity);
+        when(inAiParameterMapper.toBusinessObject(savedInAiParameterEntity))
                 .thenReturn(expectedResult);
 
-        ArgumentCaptor<AiParameter> entityCaptor = ArgumentCaptor.forClass(AiParameter.class);
+        ArgumentCaptor<InAiParameter> entityCaptor = ArgumentCaptor.forClass(InAiParameter.class);
 
         // When
-        aiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
+        inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
 
         // Then
-        verify(aiParameterRepository).save(entityCaptor.capture());
-        AiParameter capturedEntity = entityCaptor.getValue();
+        verify(inAiParameterRepository).save(entityCaptor.capture());
+        InAiParameter capturedEntity = entityCaptor.getValue();
 
         assertEquals(digitalServiceUid, capturedEntity.getDigitalServiceUid());
         assertNotNull(capturedEntity.getCreationDate());
@@ -194,26 +194,26 @@ public class AiParameterServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(null))
+        when(inAiParameterMapper.toEntity(null))
                 .thenThrow(new IllegalArgumentException("Parameter cannot be null"));
 
         // When & Then
         assertThrows(IllegalArgumentException.class,
-                () -> aiParameterService.createAiParameter(digitalServiceUid, null));
+                () -> inAiParameterService.createAiParameter(digitalServiceUid, null));
 
         verify(digitalServiceRepository).findById(digitalServiceUid);
-        verify(aiParameterMapper).toEntity(null);
-        verifyNoInteractions(aiParameterRepository);
+        verify(inAiParameterMapper).toEntity(null);
+        verifyNoInteractions(inAiParameterRepository);
     }
 
     @Test
     void createAiParameter_WithNullDigitalServiceUid_ThrowsException() {
         // When & Then
         assertThrows(Exception.class,
-                () -> aiParameterService.createAiParameter(null, aiParameterRest));
+                () -> inAiParameterService.createAiParameter(null, aiParameterRest));
 
         verify(digitalServiceRepository).findById(null);
-        verifyNoInteractions(aiParameterMapper, aiParameterRepository);
+        verifyNoInteractions(inAiParameterMapper, inAiParameterRepository);
     }
 
     @Test
@@ -221,16 +221,16 @@ public class AiParameterServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(aiParameterRest))
+        when(inAiParameterMapper.toEntity(aiParameterRest))
                 .thenThrow(new RuntimeException("Mapping error"));
 
         // When & Then
         assertThrows(RuntimeException.class,
-                () -> aiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
+                () -> inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
 
         verify(digitalServiceRepository).findById(digitalServiceUid);
-        verify(aiParameterMapper).toEntity(aiParameterRest);
-        verifyNoInteractions(aiParameterRepository);
+        verify(inAiParameterMapper).toEntity(aiParameterRest);
+        verifyNoInteractions(inAiParameterRepository);
     }
 
     @Test
@@ -238,18 +238,18 @@ public class AiParameterServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(aiParameterRest))
-                .thenReturn(aiParameterEntity);
-        when(aiParameterRepository.save(any(AiParameter.class)))
+        when(inAiParameterMapper.toEntity(aiParameterRest))
+                .thenReturn(inAiParameterEntity);
+        when(inAiParameterRepository.save(any(InAiParameter.class)))
                 .thenThrow(new RuntimeException("Database error"));
 
         // When & Then
         assertThrows(RuntimeException.class,
-                () -> aiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
+                () -> inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
 
         verify(digitalServiceRepository).findById(digitalServiceUid);
-        verify(aiParameterMapper).toEntity(aiParameterRest);
-        verify(aiParameterRepository).save(any(AiParameter.class));
+        verify(inAiParameterMapper).toEntity(aiParameterRest);
+        verify(inAiParameterRepository).save(any(InAiParameter.class));
     }
 
     @Test
@@ -257,21 +257,21 @@ public class AiParameterServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(aiParameterRest))
-                .thenReturn(aiParameterEntity);
-        when(aiParameterRepository.save(any(AiParameter.class)))
-                .thenReturn(savedAiParameterEntity);
-        when(aiParameterMapper.toBusinessObject(savedAiParameterEntity))
+        when(inAiParameterMapper.toEntity(aiParameterRest))
+                .thenReturn(inAiParameterEntity);
+        when(inAiParameterRepository.save(any(InAiParameter.class)))
+                .thenReturn(savedInAiParameterEntity);
+        when(inAiParameterMapper.toBusinessObject(savedInAiParameterEntity))
                 .thenThrow(new RuntimeException("Mapping error"));
 
         // When & Then
         assertThrows(RuntimeException.class,
-                () -> aiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
+                () -> inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
 
         verify(digitalServiceRepository).findById(digitalServiceUid);
-        verify(aiParameterMapper).toEntity(aiParameterRest);
-        verify(aiParameterRepository).save(any(AiParameter.class));
-        verify(aiParameterMapper).toBusinessObject(savedAiParameterEntity);
+        verify(inAiParameterMapper).toEntity(aiParameterRest);
+        verify(inAiParameterRepository).save(any(InAiParameter.class));
+        verify(inAiParameterMapper).toBusinessObject(savedInAiParameterEntity);
     }
 
     @Test
@@ -290,7 +290,7 @@ public class AiParameterServiceTest {
         boundaryParameterRest.setIsInference(true);
         boundaryParameterRest.setIsFinetuning(true);
 
-        AiParameter boundaryParameterEntity = AiParameter.builder().build();
+        InAiParameter boundaryParameterEntity = InAiParameter.builder().build();
         boundaryParameterEntity.setModelName("llama3");
         boundaryParameterEntity.setType("LLM");
         boundaryParameterEntity.setNbParameters("999999999");
@@ -305,15 +305,15 @@ public class AiParameterServiceTest {
 
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(boundaryParameterRest))
+        when(inAiParameterMapper.toEntity(boundaryParameterRest))
                 .thenReturn(boundaryParameterEntity);
-        when(aiParameterRepository.save(any(AiParameter.class)))
-                .thenReturn(savedAiParameterEntity);
-        when(aiParameterMapper.toBusinessObject(savedAiParameterEntity))
+        when(inAiParameterRepository.save(any(InAiParameter.class)))
+                .thenReturn(savedInAiParameterEntity);
+        when(inAiParameterMapper.toBusinessObject(savedInAiParameterEntity))
                 .thenReturn(expectedResult);
 
         // When
-        AiParameterRest result = aiParameterService.createAiParameter(digitalServiceUid, boundaryParameterRest);
+        AiParameterRest result = inAiParameterService.createAiParameter(digitalServiceUid, boundaryParameterRest);
 
         // Then
         assertNotNull(result);
@@ -342,7 +342,7 @@ public class AiParameterServiceTest {
 
         // When & Then
         assertThrows(NullPointerException.class,
-                () -> aiParameterService.createAiParameter(digitalServiceUid, invalidParameterRest));
+                () -> inAiParameterService.createAiParameter(digitalServiceUid, invalidParameterRest));
     }
     @Test
     void createAiParameter_WithAllValidTypes_Success() {
@@ -364,7 +364,7 @@ public class AiParameterServiceTest {
             boundaryParameterRest.setIsInference(true);
             boundaryParameterRest.setIsFinetuning(true);
 
-            AiParameter boundaryParameterEntity = AiParameter.builder().build();
+            InAiParameter boundaryParameterEntity = InAiParameter.builder().build();
             boundaryParameterEntity.setModelName("llama3");
             boundaryParameterEntity.setType(type);
             boundaryParameterEntity.setNbParameters("999999999");
@@ -380,21 +380,21 @@ public class AiParameterServiceTest {
 
             when(digitalServiceRepository.findById(digitalServiceUid))
                     .thenReturn(Optional.of(digitalService));
-            when(aiParameterMapper.toEntity(boundaryParameterRest))
+            when(inAiParameterMapper.toEntity(boundaryParameterRest))
                     .thenReturn(boundaryParameterEntity);
-            when(aiParameterRepository.save(any(AiParameter.class)))
-                    .thenReturn(savedAiParameterEntity);
-            when(aiParameterMapper.toBusinessObject(savedAiParameterEntity))
+            when(inAiParameterRepository.save(any(InAiParameter.class)))
+                    .thenReturn(savedInAiParameterEntity);
+            when(inAiParameterMapper.toBusinessObject(savedInAiParameterEntity))
                     .thenReturn(expectedResult);
 
             // When
-            AiParameterRest result = aiParameterService.createAiParameter(digitalServiceUid, boundaryParameterRest);
+            AiParameterRest result = inAiParameterService.createAiParameter(digitalServiceUid, boundaryParameterRest);
 
             // Then
             assertNotNull(result);
 
             // Reset mocks for next iteration
-            reset(digitalServiceRepository, aiParameterMapper, aiParameterRepository);
+            reset(digitalServiceRepository, inAiParameterMapper, inAiParameterRepository);
         }
     }
 
@@ -425,21 +425,21 @@ public class AiParameterServiceTest {
 
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(aiParameterRest))
-                .thenReturn(aiParameterEntity);
-        when(aiParameterRepository.save(any(AiParameter.class)))
-                .thenReturn(savedAiParameterEntity);
-        when(aiParameterMapper.toBusinessObject(savedAiParameterEntity))
+        when(inAiParameterMapper.toEntity(aiParameterRest))
+                .thenReturn(inAiParameterEntity);
+        when(inAiParameterRepository.save(any(InAiParameter.class)))
+                .thenReturn(savedInAiParameterEntity);
+        when(inAiParameterMapper.toBusinessObject(savedInAiParameterEntity))
                 .thenReturn(expectedResult);
 
-        ArgumentCaptor<AiParameter> entityCaptor = ArgumentCaptor.forClass(AiParameter.class);
+        ArgumentCaptor<InAiParameter> entityCaptor = ArgumentCaptor.forClass(InAiParameter.class);
 
         // When
-        aiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
+        inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
 
         // Then
-        verify(aiParameterRepository).save(entityCaptor.capture());
-        AiParameter capturedEntity = entityCaptor.getValue();
+        verify(inAiParameterRepository).save(entityCaptor.capture());
+        InAiParameter capturedEntity = entityCaptor.getValue();
 
         LocalDateTime afterCall = LocalDateTime.now().plusSeconds(1);
 
@@ -454,21 +454,21 @@ public class AiParameterServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiParameterMapper.toEntity(aiParameterRest))
-                .thenReturn(aiParameterEntity);
-        when(aiParameterRepository.save(any(AiParameter.class)))
-                .thenReturn(savedAiParameterEntity);
-        when(aiParameterMapper.toBusinessObject(savedAiParameterEntity))
+        when(inAiParameterMapper.toEntity(aiParameterRest))
+                .thenReturn(inAiParameterEntity);
+        when(inAiParameterRepository.save(any(InAiParameter.class)))
+                .thenReturn(savedInAiParameterEntity);
+        when(inAiParameterMapper.toBusinessObject(savedInAiParameterEntity))
                 .thenReturn(expectedResult);
 
         // When
-        aiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
+        inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
 
         // Then - Verify call order using InOrder
-        var inOrder = inOrder(digitalServiceRepository, aiParameterMapper, aiParameterRepository);
+        var inOrder = inOrder(digitalServiceRepository, inAiParameterMapper, inAiParameterRepository);
         inOrder.verify(digitalServiceRepository).findById(digitalServiceUid);
-        inOrder.verify(aiParameterMapper).toEntity(aiParameterRest);
-        inOrder.verify(aiParameterRepository).save(any(AiParameter.class));
-        inOrder.verify(aiParameterMapper).toBusinessObject(savedAiParameterEntity);
+        inOrder.verify(inAiParameterMapper).toEntity(aiParameterRest);
+        inOrder.verify(inAiParameterRepository).save(any(InAiParameter.class));
+        inOrder.verify(inAiParameterMapper).toBusinessObject(savedInAiParameterEntity);
     }
 }

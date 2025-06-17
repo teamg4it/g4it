@@ -69,3 +69,10 @@ databaseChangeLog:
               - column:
                   name: type
                   type: varchar(255)
+  - changeSet:
+      id: rename-ai_parameters-table
+      author: in_ai_parameters
+      changes:
+        - renameTable:
+            oldTableName: ai_parameters
+            newTableName: in_ai_parameters

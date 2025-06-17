@@ -26,8 +26,8 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
-import com.soprasteria.g4it.backend.apiparameterai.modeldb.AiParameter;
-import com.soprasteria.g4it.backend.apiparameterai.repository.AiParameterRepository;
+import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
+import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apirecomandation.mapper.RecommendationJsonMapper;
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
@@ -92,7 +92,7 @@ public class EvaluateAiService {
     OutAiRecoRepository outAiRecoRepository;
 
     @Autowired
-    AiParameterRepository inAIParameterRepository;
+    InAiParameterRepository inAIParameterRepository;
 
     @Autowired
     AggregationToOutput aggregationToOutput;
@@ -120,9 +120,9 @@ public class EvaluateAiService {
             throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", context.getDigitalServiceUid()));
         }
         // Get the AI parameters
-        List<AiParameter> aiParameters = inAIParameterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+        InAiParameter inAiParameters = inAIParameterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
 
-        if (aiParameters.isEmpty()) {
+        if (inAiParameters == null) {
             throw new G4itRestException("404", String.format("the ai parameter doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
         // Get the data center
@@ -146,7 +146,7 @@ public class EvaluateAiService {
                 datacenters.size(), physicalEquipments.size(), virtualEquipments.size());
 
         // call Ecomind with the data
-        List<AIServiceEstimationBO> estimationBOList = evaluateEcomind(aiParameters.getFirst());
+        List<AIServiceEstimationBO> estimationBOList = evaluateEcomind(inAiParameters);
         AIServiceEstimationBO estimationBO = estimationBOList.getFirst();
 
         // save the result of the call in db
@@ -261,16 +261,16 @@ public class EvaluateAiService {
 
     }
 
-    private List<AIServiceEstimationBO> evaluateEcomind(AiParameter aiParameter) throws IOException {
+    private List<AIServiceEstimationBO> evaluateEcomind(InAiParameter inAiParameter) throws IOException {
         AIConfigurationBO aiConfigurationBO = AIConfigurationBO.builder().build();
-        aiConfigurationBO.setFramework(aiParameter.getFramework());
-        aiConfigurationBO.setModelName(aiParameter.getModelName());
-        aiConfigurationBO.setQuantization(aiParameter.getQuantization());
-        aiConfigurationBO.setNbParameters(aiParameter.getNbParameters());
-        aiConfigurationBO.setTotalGeneratedTokens(aiParameter.getTotalGeneratedTokens().longValue());
+        aiConfigurationBO.setFramework(inAiParameter.getFramework());
+        aiConfigurationBO.setModelName(inAiParameter.getModelName());
+        aiConfigurationBO.setQuantization(inAiParameter.getQuantization());
+        aiConfigurationBO.setNbParameters(inAiParameter.getNbParameters());
+        aiConfigurationBO.setTotalGeneratedTokens(inAiParameter.getTotalGeneratedTokens().longValue());
         List<AIConfigurationRest> aiConfigurationRest = aiConfigurationMapper.toAIModelConfigRest(List.of(aiConfigurationBO));
-        String stage = aiParameter.getIsInference() ? "INFERENCE" : "TRAINING";
-        String type = aiParameter.getType();
+        String stage = inAiParameter.getIsInference() ? "INFERENCE" : "TRAINING";
+        String type = inAiParameter.getType();
         return aiService.runEstimation(type, stage, aiConfigurationRest);
     }
 
