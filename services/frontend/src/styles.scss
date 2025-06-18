@@ -1110,40 +1110,6 @@ app-top-header {
     }
 }
 
-.form-container {
-    padding: 20px;
-    background-color: rgb(255, 255, 255);
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    h2 {
-        margin-bottom: 20px;
-        color: #333;
-    }
-    .form-section {
-        margin-bottom: 20px;
-        h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        .form-row {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            width: 100%;
-            > .label-input-div-form {
-                margin-top: 10px;
-                display: flex;
-                flex: 1;
-                flex-direction: column;
-                & p-inputNumber,
-                & p-inputNumber * {
-                    width: 100%;
-                }
-            }
-        }
-    }
-}
-
 .form-container .button-bottom-right {
     position: relative;
     margin-top: 40px;
@@ -1640,9 +1606,10 @@ app-top-header {
         }
 
         .custom-at-symbol-icon {
-            mask: url("/assets/images/icons/icon-at-symbol.svg") no-repeat center / contain;
-            -webkit-mask: url("/assets/images/icons/icon-at-symbol.svg") no-repeat center /
+            mask: url("/assets/images/icons/icon-at-symbol.svg") no-repeat center /
                 contain;
+            -webkit-mask: url("/assets/images/icons/icon-at-symbol.svg") no-repeat
+                center / contain;
         }
 
         .navigation-button.disabled {
@@ -1714,10 +1681,6 @@ app-useful-information {
                 display: flex;
                 flex: 1;
                 flex-direction: column;
-                & p-inputNumber,
-                & p-inputNumber * {
-                    width: 100%;
-                }
             }
         }
     }
