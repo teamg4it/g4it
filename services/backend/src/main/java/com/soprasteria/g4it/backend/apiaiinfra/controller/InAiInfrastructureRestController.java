@@ -2,7 +2,6 @@ package com.soprasteria.g4it.backend.apiaiinfra.controller;
 
 import com.soprasteria.g4it.backend.apiaiinfra.business.InAiInfrastructureService;
 import com.soprasteria.g4it.backend.apiaiinfra.mapper.InAiInfrastructureMapper;
-import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.AiInfraInputsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;

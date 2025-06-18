@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class InAiParameterServiceTest {
+class InAiParameterServiceTest {
 
     @Mock
     private InAiParameterRepository inAiParameterRepository;
@@ -56,10 +56,10 @@ public class InAiParameterServiceTest {
         aiParameterRest.setNbParameters("1000000");
         aiParameterRest.setFramework("PyTorch");
         aiParameterRest.setQuantization("INT8");
-        aiParameterRest.setTotalGeneratedTokens(Long.valueOf(5000000));
-        aiParameterRest.setNumberUserYear(Long.valueOf(10000));
-        aiParameterRest.setAverageNumberRequest(Long.valueOf(500));
-        aiParameterRest.setAverageNumberToken(Long.valueOf(100));
+        aiParameterRest.setTotalGeneratedTokens(5000000L);
+        aiParameterRest.setNumberUserYear(10000L);
+        aiParameterRest.setAverageNumberRequest(500L);
+        aiParameterRest.setAverageNumberToken(100L);
         aiParameterRest.setIsInference(true);
         aiParameterRest.setIsFinetuning(false);
 
@@ -107,12 +107,96 @@ public class InAiParameterServiceTest {
         expectedResult.setNbParameters("1000000");
         expectedResult.setFramework("PyTorch");
         expectedResult.setQuantization("INT8");
-        expectedResult.setTotalGeneratedTokens(Long.valueOf(5000000));
-        expectedResult.setNumberUserYear(Long.valueOf(10000));
-        expectedResult.setAverageNumberRequest(Long.valueOf(500));
-        expectedResult.setAverageNumberToken(Long.valueOf(100));
+        expectedResult.setTotalGeneratedTokens(5000000L);
+        expectedResult.setNumberUserYear(10000L);
+        expectedResult.setAverageNumberRequest(500L);
+        expectedResult.setAverageNumberToken(100L);
         expectedResult.setIsInference(true);
         expectedResult.setIsFinetuning(false);
+    }
+
+    @Test
+    void getAiParameter_shouldThrowIfDigitalServiceNotFound() {
+        String uid = "non-existent-uid";
+
+        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.empty());
+
+        G4itRestException ex = assertThrows(G4itRestException.class,
+                () -> inAiParameterService.getAiParameter(uid));
+
+        assertEquals("404", ex.getCode());
+        assertTrue(ex.getMessage().contains(uid));
+
+        verify(digitalServiceRepository).findById(uid);
+        verifyNoInteractions(inAiParameterRepository, inAiParameterMapper);
+    }
+
+    @Test
+    void getAiParameter_shouldReturnAiParameterRestIfFound() {
+        String uid = "existing-uid";
+
+        DigitalService ds = new DigitalService();
+        InAiParameter inAiParameter= new InAiParameter();
+        AiParameterRest aiParameter = AiParameterRest.builder()
+                .type("LLM")
+                .build();
+
+        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.of(ds));
+        when(inAiParameterRepository.findByDigitalServiceUid(uid)).thenReturn(inAiParameter);
+        when(inAiParameterMapper.toBusinessObject(inAiParameter)).thenReturn(aiParameter);
+
+        AiParameterRest result = inAiParameterService.getAiParameter(uid);
+
+        assertNotNull(result);
+        assertEquals("LLM", result.getType());
+
+        verify(digitalServiceRepository).findById(uid);
+        verify(inAiParameterRepository).findByDigitalServiceUid(uid);
+        verify(inAiParameterMapper).toBusinessObject(inAiParameter);
+    }
+
+    @Test
+    void updateAiParameter_shouldThrowIfDigitalServiceNotFound() {
+        String uid = "non-existent-uid";
+        AiParameterRest inputDto = AiParameterRest.builder().type("LLM").build();
+
+        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.empty());
+
+        G4itRestException ex = assertThrows(G4itRestException.class,
+                () -> inAiParameterService.updateAiParameter(uid, inputDto));
+
+        assertEquals("404", ex.getCode());
+        assertTrue(ex.getMessage().contains(uid));
+
+        verify(digitalServiceRepository).findById(uid);
+        verifyNoMoreInteractions(inAiParameterRepository, inAiParameterMapper);
+    }
+
+    @Test
+    void updateAiParameter_shouldUpdateAndReturnUpdatedEntity() {
+        String uid = "existing-uid";
+
+        DigitalService ds = new DigitalService();
+        AiParameterRest inputDto = AiParameterRest.builder().type("LLM").build();
+        InAiParameter entity = new InAiParameter();
+
+        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.of(ds));
+        when(inAiParameterRepository.findByDigitalServiceUid(uid)).thenReturn(entity);
+
+        doNothing().when(inAiParameterMapper).updateEntityFromDto(inputDto, entity);
+        when(inAiParameterRepository.save(entity)).thenReturn(entity);
+        when(inAiParameterMapper.toBusinessObject(entity)).thenReturn(inputDto);
+
+        AiParameterRest result = inAiParameterService.updateAiParameter(uid, inputDto);
+
+        assertNotNull(result);
+        assertEquals("LLM", result.getType());
+
+        verify(digitalServiceRepository).findById(uid);
+        verify(inAiParameterRepository).findByDigitalServiceUid(uid);
+        verify(inAiParameterMapper).updateEntityFromDto(inputDto, entity);
+        verify(inAiParameterRepository).save(entity);
+        verify(inAiParameterMapper).toBusinessObject(entity);
     }
 
     @Test
@@ -212,7 +296,7 @@ public class InAiParameterServiceTest {
         assertThrows(Exception.class,
                 () -> inAiParameterService.createAiParameter(null, aiParameterRest));
 
-        verify(digitalServiceRepository).findById(null);
+        verify(digitalServiceRepository).findById(any());
         verifyNoInteractions(inAiParameterMapper, inAiParameterRepository);
     }
 
@@ -396,26 +480,6 @@ public class InAiParameterServiceTest {
             // Reset mocks for next iteration
             reset(digitalServiceRepository, inAiParameterMapper, inAiParameterRepository);
         }
-    }
-
-    @Test
-    void validateAiParameterBusinessRules_Success() {
-        // Given
-        AiParameterRest invalidCombination = AiParameterRest.builder().build();
-        invalidCombination.setType("LLM");
-        invalidCombination.setFramework("TensorFlow");
-        invalidCombination.setQuantization("FP32");
-        invalidCombination.setNbParameters("999999999");
-        invalidCombination.setTotalGeneratedTokens(Long.valueOf("999999999999999999"));
-        invalidCombination.setNumberUserYear(Long.valueOf("1000000000"));
-        invalidCombination.setAverageNumberRequest(Long.valueOf("50000"));
-        invalidCombination.setAverageNumberToken(Long.valueOf("10000"));
-        invalidCombination.setIsInference(true);
-        invalidCombination.setIsFinetuning(false);
-
-        lenient().when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
-
     }
 
     @Test

@@ -32,7 +32,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
         private route: ActivatedRoute,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit() {
         this.infrastructureForm = this.fb.group({
             infrastructureType: [
                 "SERVER_DC",
@@ -61,8 +61,8 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
             nbGpu: 0,
             gpuMemory: 0,
             ramSize: 0,
-            pue: 1,
-            complementaryPue: 1,
+            pue: 1.5,
+            complementaryPue: 1.3,
             location: "France",
         };
         //to get it only one time
@@ -72,6 +72,9 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
                     if (data) {
                         this.infrastructureForm.patchValue(data);
                     } else {
+                        //set the value
+                        this.infrastructureForm.patchValue(defaultData);
+                        //save the value
                         this.aiFormsStore.setInfrastructureFormData(defaultData);
                     }
                 },

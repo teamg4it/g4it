@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apiaiinfra.repository;
 
 import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 public interface InAiInfrastructureRepository extends JpaRepository<InAiInfrastructure, Long> {
 
@@ -19,4 +21,8 @@ public interface InAiInfrastructureRepository extends JpaRepository<InAiInfrastr
      * @return DigitalService list.
      */
     InAiInfrastructure findByDigitalServiceUid(final String digitalServiceUid);
+
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceUid(String digitalServiceUid);
 }

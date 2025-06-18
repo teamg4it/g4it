@@ -39,7 +39,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         this.terminalsForm = this.fb.group({
             modelName: ["", Validators.required],
             averageNumberToken: [0, [Validators.required, Validators.min(0)]],
-            totalGeneratedTokens: [0],
+            totalGeneratedTokens: [{ value: 0, disabled: true }],
             nbParameters: ["", Validators.required],
             framework: ["", Validators.required],
             quantization: ["", Validators.required],
@@ -55,11 +55,15 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 this.modelOptions = Array.from(
                     new Set(this.models.map((m) => m.modelName)),
                 ).map((name) => ({ label: name, value: name }));
-
                 // Restore backed-up data if available
                 // If no data saved, set default values
-                if (this.modelOptions.length > 0 && !this.dataParameter) {
+                if (
+                    this.modelOptions.length > 0 &&
+                    !this.dataParameter &&
+                    !this.aiFormsStore.getParameterChange()
+                ) {
                     const defaultModel = this.modelOptions[0].value;
+
                     this.terminalsForm.patchValue({ modelName: defaultModel });
                     this.updateDependentFields(defaultModel);
 
@@ -77,6 +81,13 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         totalGeneratedTokens: 0,
                     };
                     this.aiFormsStore.setParametersFormData(defaultData);
+                } else {
+                    const savedData = this.aiFormsStore.getParametersFormData();
+                    this.updateDependentFields(
+                        savedData?.modelName,
+                        savedData?.nbParameters,
+                        savedData?.framework,
+                    );
                 }
 
                 this.terminalsForm
@@ -126,7 +137,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             },
         });
 
-        //get the digital service uid with the activatedRoute
+        // get the digital service uid with the activatedRoute
         const uid = this.route.pathFromRoot
             .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
             .find((v) => v !== null);
@@ -135,14 +146,14 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 next: (data) => {
                     if (data) {
                         this.terminalsForm.patchValue(data);
-
+                        this.isInference = data.isInference;
+                        this.isFinetuning = data.isFinetuning;
                         this.updateDependentFields(
                             data.modelName,
                             data.nbParameters,
                             data.framework,
                         );
                         this.dataParameter = data;
-                        console.log(data);
                     }
                 },
                 error: (err: any) => {
@@ -154,8 +165,10 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 },
             });
         } else {
-            const data = this.aiFormsStore.getInfrastructureFormData();
+            const data = this.aiFormsStore.getParametersFormData();
             if (data) {
+                this.isInference = data.isInference;
+                this.isFinetuning = data.isFinetuning;
                 this.terminalsForm.patchValue(data);
             }
         }
@@ -216,7 +229,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         this.parameterOptions = Array.from(
             new Set(filtered.map((m) => m.parameters)),
         ).map((p) => ({ label: p, value: p }));
-
         if (this.parameterOptions.length > 0 && !selectedParameter) {
             this.terminalsForm.patchValue({
                 nbParameters: this.parameterOptions[0].value,

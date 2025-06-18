@@ -33,7 +33,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +41,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class AiInfraServiceTest {
+class AiInfraServiceTest {
     @Mock
     private InAiInfrastructureMapper inAiInfrastructureMapper;
 
@@ -218,7 +217,6 @@ public class AiInfraServiceTest {
     void testUpdateDigitalServiceInputsAiInfraRest_shouldUpdateAllAndReturnInPhysicalEquipmentRest() {
         // Arrange
         String uid = "ds-001";
-        LocalDateTime now = LocalDateTime.now();
 
         // Input REST object
         InAiInfrastructureRest inRest = InAiInfrastructureRest.builder()
@@ -277,6 +275,27 @@ public class AiInfraServiceTest {
         verify(inDatacenterService).updateInDatacenter(eq(uid), eq(1L), any());
         verify(inPhysicalEquipmentService).updateInPhysicalEquipment(eq(uid), eq(2L), any());
         verify(inVirtualEquipmentService).updateInVirtualEquipment(eq(uid), eq(3L), any());
+    }
+
+    @Test
+    void testUpdateDigitalServiceInputsAiInfraRest_shouldThrowIfDigitalServiceNotFound() {
+        String uid = "ds-404";
+        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.empty());
+
+        // Input REST object
+        InAiInfrastructureRest inRest = InAiInfrastructureRest.builder()
+                .location("Paris")
+                .pue(1.3)
+                .nbCpuCores(16L)
+                .ramSize(64L)
+                .build();
+
+        G4itRestException ex = assertThrows(G4itRestException.class, () ->
+                inAiInfrastructureService.updateDigitalServiceInputsAiInfraRest(uid, inRest)
+        );
+
+        assertEquals("404", ex.getCode());
+        assertTrue(ex.getMessage().contains("doesn't exist"));
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.soprasteria.g4it.backend.apirecomandation.modeldb;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -10,7 +9,6 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -43,8 +41,6 @@ public class OutAiReco {
     @Column(name = "recommendations", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private String recommendations;
-
-    private String digitalServiceUid;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
