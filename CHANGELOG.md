@@ -1,5 +1,11 @@
 # G4IT
 
+## 3.4.0
+
+### Minor Changes
+
+-1174 | When there is one criteria evaluated, multicriteria view should be disabled in digital service module and criteria should be selected in inventory module
+
 ## 3.3.0
 
 ### Major Changes
