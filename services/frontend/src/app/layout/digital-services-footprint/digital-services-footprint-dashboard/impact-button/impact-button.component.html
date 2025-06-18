@@ -2,8 +2,8 @@
     <p-button
         [styleClass]="
             selectedCriteria === impact
-                ? 'force-bg-white w-full letter-spacing-2 h-5rem border-left-3 border-tertiary'
-                : 'force-bg-white w-full letter-spacing-2 h-5rem'
+                ? 'force-bg-white w-26rem letter-spacing-2 h-5rem m-1 border-left-3 border-tertiary'
+                : 'force-bg-white w-26rem letter-spacing-2 h-5rem m-1'
         "
         (click)="changeCritere(impact)"
         [disabled]="value === null || value === 0"
@@ -14,13 +14,13 @@
         @if (selectedCriteria === impact) {
             <img
                 class="check-icon-corner"
-                src="assets/images/icons/icon-check.svg"
+                src="/assets/images/icons/icon-check.svg"
                 alt="{{ 'common.selected' | translate }}"
             />
         } @else {
             <img
                 class="check-icon-corner"
-                src="assets/images/icons/icon-not-check.svg"
+                src="/assets/images/icons/icon-not-check.svg"
                 alt="{{ 'common.not-selected' | translate }}"
             />
         }
@@ -32,14 +32,37 @@
                     [innerHTML]="renderHTML(selectedUnit === 'Raw' ? impactUnite : '')"
                 ></span>
             } @else {
-                <div class="text-xs">
-                    {{ selectedUnit === "Raw" ? (value | decimals) : (value | integer) }}
-                </div>
-                <div
-                    class="text-xs"
-                    [innerHTML]="renderHTML(selectedUnit === 'Raw' ? impactUnite : '')"
-                ></div>
+                <img
+                    class="check-icon-corner"
+                    src="assets/images/icons/icon-not-check.svg"
+                    alt="{{ 'common.not-selected' | translate }}"
+                />
             }
+            <div class="flex flex-column align-items-start ml-2 pr-4">
+                <p class="text-xs uppercase text-left">{{ impactText }}</p>
+                @if ((value ?? 0) === 0) {
+                    {{ value ? value : "--" }}
+                    <span
+                        [innerHTML]="
+                            renderHTML(selectedUnit === 'Raw' ? impactUnite : '')
+                        "
+                    ></span>
+                } @else {
+                    <div class="text-xs">
+                        {{
+                            selectedUnit === "Raw"
+                                ? (value | decimals)
+                                : (value | integer)
+                        }}
+                    </div>
+                    <div
+                        class="text-xs"
+                        [innerHTML]="
+                            renderHTML(selectedUnit === 'Raw' ? impactUnite : '')
+                        "
+                    ></div>
+                }
+            </div>
         </div>
     </p-button>
 </div>
