@@ -18,6 +18,7 @@ export const environment = {
     },
     frontEndUrl: "${FRONTEND_URL}",
     subpath: "${SUBPATH}",
+    subpathfront: "${SUB_PATH_FRONT}",
     showBetaFeatures: "${SHOW_BETA_FEATURES}",
     matomo: {
         matomoTagManager: {

@@ -15,11 +15,12 @@ export const environment = {
     apiBaseUrl: "http://localhost:8080",
     keycloak: {
         issuer: "http://localhost:8180/auth",
-        subpath: "",
         realm: "g4it",
         clientId: "g4it",
         enabled: "true",
     },
+    subpath: "",
+    subpathfront: "/",
     frontEndUrl: "http://localhost:4200",
     showBetaFeatures: "true",
     matomo: {
