@@ -147,16 +147,17 @@ public class InAiInfrastructureService {
         InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceUid(digitalServiceUid);
 
         InAiInfrastructureBO inAiInfrastructureBO = inAiInfrastructureMapper.entityToBO(inAiInfrastructure);
-
-        List<InDatacenterRest> InDatacenter = inDatacenterService.getByDigitalService(digitalServiceUid);
-        for(InDatacenterRest inDatacenterRest: InDatacenter) {
-            inAiInfrastructureBO.setPue(inDatacenterRest.getPue());
-            inAiInfrastructureBO.setLocation(inDatacenterRest.getLocation());
-        }
-        List<InPhysicalEquipmentRest> inPhysicalEquipments = inPhysicalEquipmentService.getByDigitalService(digitalServiceUid);
-        for(InPhysicalEquipmentRest inPhysicalEquipmentRest: inPhysicalEquipments) {
-            inAiInfrastructureBO.setNbCpuCores(Optional.ofNullable(inPhysicalEquipmentRest.getCpuCoreNumber()).map(Double::longValue).orElse(0L));
-            inAiInfrastructureBO.setRamSize(Optional.ofNullable(inPhysicalEquipmentRest.getSizeMemoryGb()).map(Double::longValue).orElse(0L));
+        if(inAiInfrastructureBO != null) {
+            List<InDatacenterRest> InDatacenter = inDatacenterService.getByDigitalService(digitalServiceUid);
+            for (InDatacenterRest inDatacenterRest : InDatacenter) {
+                inAiInfrastructureBO.setPue(inDatacenterRest.getPue());
+                inAiInfrastructureBO.setLocation(inDatacenterRest.getLocation());
+            }
+            List<InPhysicalEquipmentRest> inPhysicalEquipments = inPhysicalEquipmentService.getByDigitalService(digitalServiceUid);
+            for (InPhysicalEquipmentRest inPhysicalEquipmentRest : inPhysicalEquipments) {
+                inAiInfrastructureBO.setNbCpuCores(Optional.ofNullable(inPhysicalEquipmentRest.getCpuCoreNumber()).map(Double::longValue).orElse(0L));
+                inAiInfrastructureBO.setRamSize(Optional.ofNullable(inPhysicalEquipmentRest.getSizeMemoryGb()).map(Double::longValue).orElse(0L));
+            }
         }
 
         return inAiInfrastructureBO;

@@ -55,8 +55,8 @@ public class InAiParameterService {
         if (digitalService.isEmpty()) {
             throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
         }
-
-        InAiParameter inAiParameter = inAiParameterMapper.toEntity(aiParameterRest);
+        InAiParameter inAiParameter = inAiParameterRepository.findByDigitalServiceUid(digitalServiceUid);
+        inAiParameterMapper.updateEntityFromDto(aiParameterRest, inAiParameter);
         inAiParameterRepository.save(inAiParameter);
         return inAiParameterMapper.toBusinessObject(inAiParameter);
     }

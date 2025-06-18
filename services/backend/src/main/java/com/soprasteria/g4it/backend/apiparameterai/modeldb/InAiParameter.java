@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "ai_parameters")
+@Table(name = "in_ai_parameters")
 
 public class InAiParameter {
     /**

@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: create-ai-infrastructure-table
-      author: votre_nom
+      author: G4IT Dev Team
       changes:
         - createTable:
             tableName: in_ai_infrastructure

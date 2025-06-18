@@ -30,6 +30,8 @@ export interface AIParametersForm {
 export class AIFormsStore {
     private infrastructureFormData = signal<AIInfrastructureForm | null>(null);
     private parametersFormData = signal<AIParametersForm | null>(null);
+    private infrastructureChange = false;
+    private parameterChange = false;
 
     setInfrastructureFormData(data: AIInfrastructureForm) {
         this.infrastructureFormData.set(data);
@@ -45,6 +47,22 @@ export class AIFormsStore {
 
     getParametersFormData() {
         return this.parametersFormData();
+    }
+
+    setInfrastructureChange(value: boolean) {
+        this.infrastructureChange = value;
+    }
+
+    getInfrastructureChange() {
+        return this.infrastructureChange;
+    }
+
+    setParameterChange(value: boolean) {
+        this.parameterChange = value;
+    }
+
+    getParameterChange() {
+        return this.parameterChange;
     }
 
     clearForms() {

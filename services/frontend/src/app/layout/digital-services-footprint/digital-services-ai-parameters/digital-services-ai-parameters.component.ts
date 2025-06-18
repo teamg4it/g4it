@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
+import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIParametersForm } from "src/app/core/store/ai-forms.store";
 
@@ -21,6 +23,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     parameterOptions: any[] = [];
     frameworkOptions: any[] = [];
     quantizationOptions: any[] = [];
+    dataParameter: any;
 
     constructor(
         private fb: FormBuilder,
@@ -28,6 +31,8 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         private messageService: MessageService,
         private aiFormsStore: AIFormsStore,
         private translate: TranslateService,
+        private route: ActivatedRoute,
+        private digitalServicesAiData: DigitalServicesAiDataService,
     ) {}
 
     ngOnInit(): void {
@@ -52,36 +57,26 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 ).map((name) => ({ label: name, value: name }));
 
                 // Restore backed-up data if available
-                const savedData = this.aiFormsStore.getParametersFormData();
-                if (savedData) {
-                    this.terminalsForm.patchValue(savedData);
-                    this.updateDependentFields(
-                        savedData.modelName,
-                        savedData.nbParameters,
-                        savedData.framework,
-                    );
-                } else {
-                    // If no data saved, set default values
-                    if (this.modelOptions.length > 0) {
-                        const defaultModel = this.modelOptions[0].value;
-                        this.terminalsForm.patchValue({ modelName: defaultModel });
-                        this.updateDependentFields(defaultModel);
+                // If no data saved, set default values
+                if (this.modelOptions.length > 0 && !this.dataParameter) {
+                    const defaultModel = this.modelOptions[0].value;
+                    this.terminalsForm.patchValue({ modelName: defaultModel });
+                    this.updateDependentFields(defaultModel);
 
-                        // Save default values in the store
-                        const defaultData = {
-                            modelName: defaultModel,
-                            nbParameters: this.parameterOptions[0]?.value || "",
-                            framework: this.frameworkOptions[0]?.value || "",
-                            quantization: this.quantizationOptions[0]?.value || "",
-                            isInference: true,
-                            isFinetuning: false,
-                            numberUserYear: 0,
-                            averageNumberRequest: 0,
-                            averageNumberToken: 0,
-                            totalGeneratedTokens: 0,
-                        };
-                        this.aiFormsStore.setParametersFormData(defaultData);
-                    }
+                    // Save default values in the store
+                    const defaultData = {
+                        modelName: defaultModel,
+                        nbParameters: this.parameterOptions[0]?.value || "",
+                        framework: this.frameworkOptions[0]?.value || "",
+                        quantization: this.quantizationOptions[0]?.value || "",
+                        isInference: true,
+                        isFinetuning: false,
+                        numberUserYear: 0,
+                        averageNumberRequest: 0,
+                        averageNumberToken: 0,
+                        totalGeneratedTokens: 0,
+                    };
+                    this.aiFormsStore.setParametersFormData(defaultData);
                 }
 
                 this.terminalsForm
@@ -131,8 +126,43 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             },
         });
 
+        //get the digital service uid with the activatedRoute
+        const uid = this.route.pathFromRoot
+            .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
+            .find((v) => v !== null);
+        if (!this.aiFormsStore.getParameterChange() && uid) {
+            this.digitalServicesAiData.getAiParameter(uid).subscribe({
+                next: (data) => {
+                    if (data) {
+                        this.terminalsForm.patchValue(data);
+
+                        this.updateDependentFields(
+                            data.modelName,
+                            data.nbParameters,
+                            data.framework,
+                        );
+                        this.dataParameter = data;
+                        console.log(data);
+                    }
+                },
+                error: (err: any) => {
+                    this.messageService.add({
+                        severity: "error",
+                        summary: this.translate.instant("common.error"),
+                        detail: this.translate.instant("eco-mind-ai.ai-parameters.error"),
+                    });
+                },
+            });
+        } else {
+            const data = this.aiFormsStore.getInfrastructureFormData();
+            if (data) {
+                this.terminalsForm.patchValue(data);
+            }
+        }
+
         // Save data whenever changes are made
         this.formSubscription = this.terminalsForm.valueChanges.subscribe((value) => {
+            this.aiFormsStore.setParameterChange(true);
             // Calculate totalGeneratedTokens
             const totalTokens =
                 value.numberUserYear *

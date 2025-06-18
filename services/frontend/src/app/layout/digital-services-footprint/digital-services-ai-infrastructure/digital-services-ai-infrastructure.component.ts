@@ -1,20 +1,26 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
+import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
+import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIInfrastructureForm } from "src/app/core/store/ai-forms.store";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 
 @Component({
     selector: "app-digital-services-ai-infrastructure",
     templateUrl: "./digital-services-ai-infrastructure.component.html",
 })
 export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestroy {
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
     infrastructureForm!: FormGroup;
     private formSubscription: Subscription | undefined;
     locationOptions: { label: string; value: string }[] = [];
+    digitalService: DigitalService = {} as DigitalService;
 
     constructor(
         private fb: FormBuilder,
@@ -22,9 +28,11 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
         private aiFormsStore: AIFormsStore,
         private digitalServicesAiData: DigitalServicesAiDataService,
         private translate: TranslateService,
+        private digitalServicesDataService: DigitalServicesDataService,
+        private route: ActivatedRoute,
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit() {
         this.infrastructureForm = this.fb.group({
             infrastructureType: [
                 "SERVER_DC",
@@ -38,33 +46,53 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
             complementaryPue: [1, [Validators.required, Validators.min(1)]],
             location: ["France", Validators.required],
         });
+        //get the digital service uid with the activatedRoute
+        const uid = this.route.pathFromRoot
+            .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
+            .find((v) => v !== null);
 
-        // Charger les pays depuis l'API
+        // Load countries from API
         this.loadCountries();
 
-        // Restaurer les données sauvegardées si elles existent
-        const savedData = this.aiFormsStore.getInfrastructureFormData();
-        if (savedData) {
-            this.infrastructureForm.patchValue(savedData);
+        // default value for the form
+        const defaultData = {
+            infrastructureType: "SERVER_DC",
+            nbCpuCores: 0,
+            nbGpu: 0,
+            gpuMemory: 0,
+            ramSize: 0,
+            pue: 1,
+            complementaryPue: 1,
+            location: "France",
+        };
+        //to get it only one time
+        if (!this.aiFormsStore.getInfrastructureChange() && uid) {
+            this.digitalServicesAiData.getAiInfrastructure(uid).subscribe({
+                next: (data) => {
+                    if (data) {
+                        this.infrastructureForm.patchValue(data);
+                    } else {
+                        this.aiFormsStore.setInfrastructureFormData(defaultData);
+                    }
+                },
+                error: (err: any) => {
+                    this.messageService.add({
+                        severity: "error",
+                        summary: this.translate.instant("common.error"),
+                        detail: this.translate.instant("eco-mind-ai.ai-parameters.error"),
+                    });
+                },
+            });
         } else {
-            // Sauvegarder les valeurs par défaut dans le store
-            const defaultData = {
-                infrastructureType: "SERVER_DC",
-                nbCpuCores: 0,
-                nbGpu: 0,
-                gpuMemory: 0,
-                ramSize: 0,
-                pue: 1,
-                complementaryPue: 1,
-                location: "France",
-            };
-            this.aiFormsStore.setInfrastructureFormData(defaultData);
+            const data = this.aiFormsStore.getInfrastructureFormData();
+            this.infrastructureForm.patchValue(data ? data : defaultData);
         }
 
-        // Sauvegarder les données à chaque changement
+        // Save data whenever changes are made
         this.formSubscription = this.infrastructureForm.valueChanges.subscribe(
             (value) => {
-                // Extraire les valeurs simples du formulaire
+                this.aiFormsStore.setInfrastructureChange(true);
+                // Extract simple values from the form
                 const formData = {
                     infrastructureType: value.infrastructureType,
                     nbCpuCores: value.nbCpuCores,
