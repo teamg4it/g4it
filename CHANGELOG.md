@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.4.0
+
+### Major Changes
+
+- 1263| Naming network entries in the Digital Service module – Network input
+
+### Minor Changes
+
 ## 3.3.0
 
 ### Major Changes
