@@ -94,6 +94,7 @@ services:
       KEYCLOAK_URL: http://keycloak:8180/auth
       KEYCLOAK_ENABLED: "true"
       MATOMO_TAG_MANAGER_URL : ""
+      SUB_PATH_FRONT : "/"
     networks:
       - numecoeval
     depends_on:
