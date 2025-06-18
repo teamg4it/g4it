@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: rename_randomly_generated_terminal_name
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql: |
+              CREATE OR REPLACE PROCEDURE rename_randomly_generated_terminal_name()
+              LANGUAGE plpgsql
+              AS '
+              DECLARE
+                rec RECORD;
+                new_terminal_name VARCHAR;
+              BEGIN
+                FOR rec IN
+                    SELECT id, name, type,
+                    row_number() OVER (PARTITION BY digital_service_uid ORDER BY digital_service_uid) AS counter,
+                    digital_service_uid
+                    FROM in_physical_equipment ipe
+                    WHERE name ~ ''........-....-....-....-............''
+                    AND type = ''Terminal''
+                    AND digital_service_uid IS NOT NULL
+                LOOP
+                    new_terminal_name := format(''Terminal %s'', rec.counter);
+                    UPDATE in_physical_equipment
+                    SET name = new_terminal_name
+                    WHERE id = rec.id;
+  
+                    UPDATE out_physical_equipment
+                    SET name = new_terminal_name
+                    WHERE name = rec.name;
+  
+                    RAISE NOTICE ''Terminal name % from digital service % renamed to %'', rec.name, rec.digital_service_uid, new_terminal_name;
+                END LOOP;
+              END;
+              ';

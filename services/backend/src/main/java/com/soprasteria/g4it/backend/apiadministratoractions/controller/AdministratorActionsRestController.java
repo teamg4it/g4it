@@ -23,17 +23,8 @@ public class AdministratorActionsRestController implements AdministratorActionsA
     @Override
     public ResponseEntity<AllEvaluationStatusRest> doAdminActions() {
 
-        // Migration of digital services from DEMO workspace to new workspaces
-        return ResponseEntity.ok(dsMigrationService.migrateDemoDs());
+        //  Rename the randomly generated terminals
+          return ResponseEntity.ok(administratorActionsService.renameTerminals());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<AllEvaluationStatusRest> removeWriteAccess() {
-
-      //  Remove write access for digital services on demo organizations
-        return ResponseEntity.ok(administratorActionsService.executeWriteRoleCleanupOnDemoOrg());
-    }
 }
