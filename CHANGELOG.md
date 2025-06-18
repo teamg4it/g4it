@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.4.0
+
+### Major Changes
+
+- 1261 | Naming user groups in the Digital Service module – Terminales input
+
+### Minor Changes
+
 ## 3.3.0
 
 ### Major Changes

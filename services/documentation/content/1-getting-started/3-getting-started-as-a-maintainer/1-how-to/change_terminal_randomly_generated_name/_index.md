@@ -8,23 +8,23 @@ weight: 3
 1. Execute the procedure
 
 ```sql
-create or replace procedure change_terminal_randomly_generated_name()
+create or replace procedure rename_randomly_generated_terminal_name()
 language plpgsql
 as $$
 declare
 	rec record;
 	new_terminal_name varchar;
 begin
-	for rec in 
+	for rec in
 		select id, name, type,
 		row_number() over (partition by digital_service_uid order by digital_service_uid) as counter,
 		digital_service_uid from in_physical_equipment ipe
 		where name ~ '........-....-....-....-............'
 		and type = 'Terminal'
 		and digital_service_uid notnull
-	loop 
+	loop
 		new_terminal_name := format('Terminal %s',rec.counter);
-		update in_physical_equipment 
+		update in_physical_equipment
 		set "name" = new_terminal_name
 		where id = rec.id;
 
@@ -32,7 +32,7 @@ begin
 		set "name" = new_terminal_name
 		where "name" = rec.name;
 
-		raise notice 'Terminal % from digital service % renamed to %', rec.id, rec.digital_service_uid, new_terminal_name;
+		raise notice 'Terminal name % from digital service % renamed to %', rec.name, rec.digital_service_uid, new_terminal_name;
 	end loop;
 end;
 $$
@@ -41,5 +41,5 @@ $$
 2. Run the procedure
 
 ```sql
-call change_terminal_randomly_generated_name();
+call rename_randomly_generated_terminal_name();
 ```
