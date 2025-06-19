@@ -1073,7 +1073,7 @@ components:
         quantization:
           type: string
 
-    AiInfraRest:
+    InAiInfrastructureRest:
       description: Version
       type: object
       required: [ infrastructureType, location ]

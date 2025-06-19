@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ai-infrastructure-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: in_ai_infrastructure
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: complementary_pue
+                  type: DOUBLE
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: infrastructure_type_enum
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: nb_gpu
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: gpu_memory
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: ai_parameter_digital_service_fk
+                    references: digital_service(uid)

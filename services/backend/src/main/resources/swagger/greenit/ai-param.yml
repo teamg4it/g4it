@@ -39,5 +39,52 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+          
+    get:
+      tags:
+        - ai-parameter
+      summary: Get existing ai parameters
+      operationId: getAiParameter
+      responses:
+        '200':
+          description: AI parameter fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiParameterRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: AI parameter not found
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - ai-parameter
+      summary: Update existing ai parameters
+      operationId: updateAiParameter
+      requestBody:
+        description: ai parameter details to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiParameterRest"
+      responses:
+        '200':
+          description: AI parameter updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiParameterRest"
+        '400':
+          description: Invalid input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: AI parameter not found
+        '500':
+          $ref: "#/components/responses/InternalServerError"
 
 

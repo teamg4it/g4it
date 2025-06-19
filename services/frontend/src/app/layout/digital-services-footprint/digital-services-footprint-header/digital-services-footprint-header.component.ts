@@ -135,6 +135,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.organization.criteriaDs = organization.criteriaDs!;
             this.organization.criteriaIs = organization.criteriaIs!;
         });
+        //to reset the form when a new digitalService is set
+        if (this.digitalService.isAi) {
+            this.aiFormsStore.setParameterChange(false);
+            this.aiFormsStore.setInfrastructureChange(false);
+        }
     }
 
     onNameUpdate(digitalServiceName: string) {

@@ -96,7 +96,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         RadioButtonModule,
         DividerModule,
         digitalServicesFootprintRouter,
-        TableModule
+        TableModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],
