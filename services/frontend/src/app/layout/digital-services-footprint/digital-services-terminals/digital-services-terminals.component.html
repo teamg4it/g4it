@@ -23,6 +23,7 @@
         <app-digital-services-terminals-side-panel
             #childSidePanel
             [terminal]="terminal"
+            [terminalData]="terminalData()"
             [sidebarVisible]="sidebarVisible"
             (sidebarVisibleChange)="sidebarVisible = $event"
             (updateTerminals)="updateTerminals($event)"

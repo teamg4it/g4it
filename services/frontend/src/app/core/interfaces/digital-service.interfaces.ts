@@ -86,6 +86,7 @@ export interface DigitalServiceTerminalConfig {
     numberOfUsers: number;
     yearlyUsageTimePerUser: number;
     idFront?: number;
+    name: string;
 }
 
 export interface DigitalServiceFootprint {
