@@ -2,8 +2,8 @@
     <p-button
         [styleClass]="
             selectedCriteria === impact
-                ? 'force-bg-white w-26rem letter-spacing-2 h-5rem m-1 border-left-3 border-tertiary'
-                : 'force-bg-white w-26rem letter-spacing-2 h-5rem m-1'
+                ? 'w-full force-bg-white  letter-spacing-2 h-5rem border-left-3 border-tertiary'
+                : 'w-full force-bg-white letter-spacing-2 h-5rem '
         "
         (click)="changeCritere(impact)"
         [disabled]="value === null || value === 0 || disabled"
