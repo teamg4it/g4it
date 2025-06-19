@@ -17,8 +17,11 @@ import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepo
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
@@ -56,7 +59,8 @@ public class EvaluatingService {
 
     @Autowired
     DigitalServiceRepository digitalServiceRepository;
-
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     @Qualifier("taskExecutorSingleThreaded")
     TaskExecutor taskExecutor;
@@ -66,6 +70,8 @@ public class EvaluatingService {
 
     @Autowired
     ExportService exportService;
+    @Autowired
+    AuthService authService;
 
     /**
      * Async Service where is executed the evaluation
@@ -114,6 +120,8 @@ public class EvaluatingService {
                 .filter(criteria -> !criteria.isEmpty())
                 .orElseGet(() -> Constants.CRITERIA_LIST.subList(0, 5));
 
+        User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
+
         // create task with type LOADING
         Task task = Task.builder()
                 .creationDate(context.getDatetime())
@@ -124,7 +132,7 @@ public class EvaluatingService {
                 .type(TaskType.EVALUATING.toString())
                 .inventory(inventory)
                 .criteria(criteriaToSet)
-                .createdBy(inventory.getCreatedBy())
+                .createdBy(user)
                 .build();
 
         taskRepository.save(task);
@@ -171,13 +179,14 @@ public class EvaluatingService {
                 .filter(criteria -> !criteria.isEmpty())
                 .orElseGet(() -> Constants.CRITERIA_LIST.subList(0, 5));
 
-        List<Task> task_test = taskRepository.findAll();
+        User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
+
         // create task with type EVALUATING_DIGITAL_SERVICE
         Task task = taskRepository.findByDigitalServiceUid(digitalService.getUid())
                 .orElseGet(() -> Task.builder()
                         .digitalServiceUid(digitalService.getUid())
                         .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
-                        .createdBy(digitalService.getUser())
+                        .createdBy(user)
                         .build());
 
         if (task.getCreationDate() != null) {

@@ -1,5 +1,14 @@
 # G4IT
 
+## 3.4.0
+
+### Major Changes
+
+### Minor Changes
+
+- 1251 | Character "%" breaks the note feature
+- 1258 | Table "task", the column "created_by" is not alway valuated
+
 ## 3.3.0
 
 ### Major Changes
