@@ -32,37 +32,14 @@
                     [innerHTML]="renderHTML(selectedUnit === 'Raw' ? impactUnite : '')"
                 ></span>
             } @else {
-                <img
-                    class="check-icon-corner"
-                    src="assets/images/icons/icon-not-check.svg"
-                    alt="{{ 'common.not-selected' | translate }}"
-                />
+                <div class="text-xs">
+                    {{ selectedUnit === "Raw" ? (value | decimals) : (value | integer) }}
+                </div>
+                <div
+                    class="text-xs"
+                    [innerHTML]="renderHTML(selectedUnit === 'Raw' ? impactUnite : '')"
+                ></div>
             }
-            <div class="flex flex-column align-items-start ml-2 pr-4">
-                <p class="text-xs uppercase text-left">{{ impactText }}</p>
-                @if ((value ?? 0) === 0) {
-                    {{ value ? value : "--" }}
-                    <span
-                        [innerHTML]="
-                            renderHTML(selectedUnit === 'Raw' ? impactUnite : '')
-                        "
-                    ></span>
-                } @else {
-                    <div class="text-xs">
-                        {{
-                            selectedUnit === "Raw"
-                                ? (value | decimals)
-                                : (value | integer)
-                        }}
-                    </div>
-                    <div
-                        class="text-xs"
-                        [innerHTML]="
-                            renderHTML(selectedUnit === 'Raw' ? impactUnite : '')
-                        "
-                    ></div>
-                }
-            </div>
         </div>
     </p-button>
 </div>
