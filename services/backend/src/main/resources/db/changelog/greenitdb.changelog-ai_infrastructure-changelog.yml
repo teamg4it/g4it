@@ -42,5 +42,5 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: true
-                    foreignKeyName: ai_parameter_digital_service_fk
+                    foreignKeyName: ai_infrastructure_digital_service_fk
                     references: digital_service(uid)
