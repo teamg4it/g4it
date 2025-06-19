@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Slf4j
 @Service
@@ -25,8 +23,8 @@ public class OutAiRecoController implements AiRecommendationsApiDelegate {
     private OutAiRecoMapper outAiRecoMapper;
 
     @Override
-    public ResponseEntity<List<OutAiRecommendationRest>> getAiRecommendations(String subscriber, Long organization, String digitalServiceUid) {
-        List<OutAiRecommendationRest> result = outAiRecoService.getAllRecommendations(digitalServiceUid);
+    public ResponseEntity<OutAiRecommendationRest> getAiRecommendations(String subscriber, Long organization, String digitalServiceUid) {
+        OutAiRecommendationRest result = outAiRecoService.getRecommendations(digitalServiceUid);
         return ResponseEntity.ok(result);
     }
 

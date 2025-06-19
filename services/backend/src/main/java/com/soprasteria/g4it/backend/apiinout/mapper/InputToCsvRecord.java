@@ -8,10 +8,12 @@
 
 package com.soprasteria.g4it.backend.apiinout.mapper;
 
+import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiparameterai.modeldb.AiParameter;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -29,6 +31,32 @@ public interface InputToCsvRecord {
                 datacenter.getLocation(),
                 "", // entityName
                 "" // source
+        );
+    }
+
+    default List<String> toCsv(AiParameter aiParameter) {
+        return List.of(
+                aiParameter.getDigitalServiceUid(),
+                aiParameter.getModelName(),
+                aiParameter.getNbParameters(),
+                aiParameter.getFramework(),
+                aiParameter.getQuantization(),
+                aiParameter.getTotalGeneratedTokens().toString(),
+                aiParameter.getNumberUserYear().toString(),
+                aiParameter.getAverageNumberRequest().toString(),
+                aiParameter.getAverageNumberToken().toString(),
+                aiParameter.getIsInference().toString(),
+                aiParameter.getIsFinetuning().toString()
+        );
+    }
+
+    default List<String> toCsv(InAiInfrastructure inAiInfrastructure) {
+        return List.of(
+                inAiInfrastructure.getDigitalServiceUid(),
+                inAiInfrastructure.getComplementaryPue().toString(),
+                inAiInfrastructure.getInfrastructureTypeEnum().toString(),
+                inAiInfrastructure.getNbGpu().toString(),
+                inAiInfrastructure.getGpuMemory().toString()
         );
     }
 

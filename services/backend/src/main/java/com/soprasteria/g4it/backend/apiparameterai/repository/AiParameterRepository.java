@@ -3,8 +3,8 @@ package com.soprasteria.g4it.backend.apiparameterai.repository;
 import com.soprasteria.g4it.backend.apiparameterai.modeldb.AiParameter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.math.BigInteger;
-import java.util.List;
 
 @Repository
 public interface AiParameterRepository extends JpaRepository<AiParameter, BigInteger> {
@@ -14,7 +14,7 @@ public interface AiParameterRepository extends JpaRepository<AiParameter, BigInt
      *
      * @return DigitalService list.
      */
-    List<AiParameter> findByDigitalServiceUid(final String digitalServiceUid);
+    AiParameter findByDigitalServiceUid(final String digitalServiceUid);
 
 }
 

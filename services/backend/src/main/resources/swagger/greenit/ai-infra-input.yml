@@ -20,14 +20,14 @@ paths:
         - ai-infra-inputs
       summary: Post ai infra from one digital service
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: postDigitalServiceInputsAiInfraRest
+      operationId: postDigitalServiceInputsInAiInfrastructureRest
       requestBody:
         description: ai-infra
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AiInfraRest"
+              $ref: "#/components/schemas/InAiInfrastructureRest"
       responses:
         '200':
           description: return ai-infra created

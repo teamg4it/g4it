@@ -37,6 +37,8 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-ai-parameter-input.yml
   - include:
       file: db/changelog/greenitdb.changelog-ai-output-reco.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-ai_infrastructure-changelog.yml
   - includeAll:
       path: db/changelog/in-out/
       endsWithFilter: .yml

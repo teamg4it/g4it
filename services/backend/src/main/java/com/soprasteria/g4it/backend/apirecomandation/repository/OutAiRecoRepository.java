@@ -1,16 +1,19 @@
 package com.soprasteria.g4it.backend.apirecomandation.repository;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
-import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OutAiRecoRepository extends JpaRepository<OutAiReco, Long> {
 
-    List<OutAiReco> findByDigitalServiceUid(String digitalServiceUid);
+    OutAiReco findByDigitalServiceUid(String digitalServiceUid);
 
+    @Transactional
+    @Modifying
+    void deleteByTaskId(Long taskId);
 }
 
 

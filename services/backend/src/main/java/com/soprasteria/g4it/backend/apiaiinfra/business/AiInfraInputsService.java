@@ -2,6 +2,8 @@ package com.soprasteria.g4it.backend.apiaiinfra.business;
 
 import com.soprasteria.g4it.backend.apiaiinfra.mapper.AiInfraMapper;
 import com.soprasteria.g4it.backend.apiaiinfra.model.AiInfraBO;
+import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
+import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InDatacenterMapper;
@@ -14,7 +16,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AiInfraRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
@@ -55,7 +57,10 @@ public class AiInfraInputsService {
     @Autowired
     InVirtualEquipmentRepository inVirtualEquipmentRepository;
 
-    public InPhysicalEquipmentRest postDigitalServiceInputsAiInfra(String digitalServiceUid, AiInfraRest aiInfraRest) {
+    @Autowired
+    InAiInfrastructureRepository inAiInfrastructureRepository;
+
+    public InPhysicalEquipmentRest postDigitalServiceInputsAiInfra(String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
         Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
 
         if (digitalService.isEmpty()) {
@@ -98,7 +103,7 @@ public class AiInfraInputsService {
         inVirtualEquipmentToCreate.setLocation(aiInfraBO.getLocation());
         inVirtualEquipmentToCreate.setName("VirtualEquipement1");
         inVirtualEquipmentToCreate.setPhysicalEquipmentName(inPhysicalEquipmentToCreate.getName());
-        inVirtualEquipmentToCreate.setInfrastructureType(AiInfraRest.InfrastructureTypeEnum.SERVER_DC.getValue());
+        inVirtualEquipmentToCreate.setInfrastructureType(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC.getValue());
         inVirtualEquipmentToCreate.setLocation(inPhysicalEquipmentToCreate.getLocation());
         inVirtualEquipmentToCreate.setSizeMemoryGb(Optional.ofNullable(aiInfraBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentToCreate.setVcpuCoreNumber(Optional.ofNullable(aiInfraBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
@@ -108,6 +113,14 @@ public class AiInfraInputsService {
         inVirtualEquipmentToCreate.setQuantity(1.0);
         inVirtualEquipmentToCreate.setLastUpdateDate(now);
         inVirtualEquipmentRepository.save(inVirtualEquipmentToCreate);
+
+        final InAiInfrastructure entityToSave = aiInfraMapper.toEntity(aiInfraRest);
+        entityToSave.setInfrastructureTypeEnum(aiInfraRest.getInfrastructureType());
+        entityToSave.setDigitalServiceUid(digitalServiceUid);
+        entityToSave.setNbGpu(aiInfraRest.getNbGpu());
+        entityToSave.setGpuMemory(aiInfraRest.getGpuMemory());
+        entityToSave.setComplementaryPue(aiInfraRest.getComplementaryPue());
+        inAiInfrastructureRepository.save(entityToSave);
 
         return inPhysicalEquipmentMapper.toRest(inPhysicalEquipmentToCreate);
     }

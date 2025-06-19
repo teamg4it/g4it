@@ -1,8 +1,6 @@
 package com.soprasteria.g4it.backend.apiaiinfra.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AiInfraRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,7 @@ import org.springframework.lang.Nullable;
 @SuperBuilder
 public class AiInfraBO {
 
-    private AiInfraRest.InfrastructureTypeEnum infrastructureType;
+    private InAiInfrastructureRest.InfrastructureTypeEnum infrastructureType;
 
     private @Nullable Long nbCpuCores;
 

@@ -2,6 +2,8 @@ package com.soprasteria.g4it.backend.apiaiinfra.business;
 
 import com.soprasteria.g4it.backend.apiaiinfra.mapper.AiInfraMapper;
 import com.soprasteria.g4it.backend.apiaiinfra.model.AiInfraBO;
+import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
+import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InDatacenterMapper;
@@ -14,7 +16,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AiInfraRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
@@ -26,12 +28,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Optional;
-import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -61,27 +59,33 @@ public class AiInfraServiceTest {
 
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
-
+    @Mock
+    private InAiInfrastructureRepository inAiInfrastructureRepository;
     @InjectMocks
     private AiInfraInputsService aiInfraInputsService;
     private String digitalServiceUid;
-    private AiInfraRest aiInfraRest;
+    private InAiInfrastructureRest aiInfraRest;
     private AiInfraBO aiInfraBO;
     private DigitalService digitalService;
     private InDatacenter inDatacenter;
     private InPhysicalEquipment inPhysicalEquipment;
     private InVirtualEquipment inVirtualEquipment;
     private InPhysicalEquipmentRest expectedResult;
+    private InAiInfrastructure inAiInfrastructure;
 
     @BeforeEach
     void setUp() {
         digitalServiceUid = "3f1db90c-c3cf-471c-bb48-ffde4bab99dc";
-        // Setup AiInfraRest
-        aiInfraRest = AiInfraRest.builder().build();
+        // Setup InAiInfrastructureRest
+        aiInfraRest = InAiInfrastructureRest.builder().build();
         aiInfraRest.setLocation("Paris");
         aiInfraRest.setPue(1.5);
         aiInfraRest.setNbCpuCores(8L);
         aiInfraRest.setRamSize(16L);
+        aiInfraRest.setNbGpu(4L);
+        aiInfraRest.setGpuMemory(8L);
+        aiInfraRest.setComplementaryPue(2.0);
+        aiInfraRest.setInfrastructureType(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC);
 
         // Setup AiInfraBO
         aiInfraBO = AiInfraBO.builder().build();
@@ -89,6 +93,12 @@ public class AiInfraServiceTest {
         aiInfraBO.setPue(1.5);
         aiInfraBO.setNbCpuCores(8L);
         aiInfraBO.setRamSize(16L);
+        aiInfraBO.setNbGpu(4L);
+        aiInfraBO.setGpuMemory(8L);
+        aiInfraBO.setComplementaryPue(2.0);
+        aiInfraBO.setInfrastructureType(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC);
+
+        inAiInfrastructure = new InAiInfrastructure();
 
         // Setup entities
         digitalService = new DigitalService();
@@ -114,6 +124,8 @@ public class AiInfraServiceTest {
         when(inPhysicalEquipmentRepository.save(any(InPhysicalEquipment.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentRepository.save(any(InVirtualEquipment.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(inPhysicalEquipment)).thenReturn(expectedResult);
+        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
+        when(inAiInfrastructureRepository.save(any(InAiInfrastructure.class))).thenReturn(inAiInfrastructure);
 
         // When
         InPhysicalEquipmentRest result = aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
@@ -127,6 +139,7 @@ public class AiInfraServiceTest {
         verify(inDatacenterRepository).save(any(InDatacenter.class));
         verify(inPhysicalEquipmentRepository).save(any(InPhysicalEquipment.class));
         verify(inVirtualEquipmentRepository).save(any(InVirtualEquipment.class));
+        verify(inAiInfrastructureRepository).save(any(InAiInfrastructure.class));
 
         // Verify mapper interactions
         verify(aiInfraMapper).toBO(aiInfraRest);
@@ -134,6 +147,7 @@ public class AiInfraServiceTest {
         verify(inPhysicalEquipmentMapper).toEntity(any(InPhysicalEquipmentRest.class));
         verify(inVirtualEquipmentMapper).toEntity(any(InVirtualEquipmentRest.class));
         verify(inPhysicalEquipmentMapper).toRest(inPhysicalEquipment);
+        verify(aiInfraMapper).toEntity(aiInfraRest);
     }
 
     @Test
@@ -166,6 +180,7 @@ public class AiInfraServiceTest {
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
+        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
 
         ArgumentCaptor<InDatacenter> datacenterCaptor = ArgumentCaptor.forClass(InDatacenter.class);
 
@@ -194,6 +209,7 @@ public class AiInfraServiceTest {
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
+        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
 
         ArgumentCaptor<InPhysicalEquipment> physicalEquipmentCaptor = ArgumentCaptor.forClass(InPhysicalEquipment.class);
 
@@ -229,6 +245,7 @@ public class AiInfraServiceTest {
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
+        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
 
         ArgumentCaptor<InVirtualEquipment> virtualEquipmentCaptor = ArgumentCaptor.forClass(InVirtualEquipment.class);
 
@@ -243,13 +260,41 @@ public class AiInfraServiceTest {
         assertEquals("Paris", savedVirtualEquipment.getLocation());
         assertEquals("VirtualEquipement1", savedVirtualEquipment.getName());
         assertEquals("Server1", savedVirtualEquipment.getPhysicalEquipmentName());
-        assertEquals(AiInfraRest.InfrastructureTypeEnum.SERVER_DC.getValue(),
+        assertEquals(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC.getValue(),
                 savedVirtualEquipment.getInfrastructureType());
         assertEquals(16.0, savedVirtualEquipment.getSizeMemoryGb());
         assertEquals(8.0, savedVirtualEquipment.getVcpuCoreNumber());
         assertEquals(1.0, savedVirtualEquipment.getQuantity());
         assertNotNull(savedVirtualEquipment.getCreationDate());
         assertNotNull(savedVirtualEquipment.getLastUpdateDate());
+    }
+
+    @Test
+    void postDigitalServiceInputsAiInfra_VerifyInAiInfrastructureCreation() {
+        // Given
+        when(digitalServiceRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalService));
+        when(aiInfraMapper.toBO(aiInfraRest)).thenReturn(aiInfraBO);
+        when(inDatacenterMapper.toEntity(any(InDatacenterRest.class))).thenReturn(inDatacenter);
+        when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
+        when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
+        when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
+        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
+
+        ArgumentCaptor<InAiInfrastructure> inAiInfrastructureArgumentCaptor = ArgumentCaptor.forClass(InAiInfrastructure.class);
+
+        // When
+        aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
+
+        // Then
+        verify(inAiInfrastructureRepository).save(inAiInfrastructureArgumentCaptor.capture());
+        InAiInfrastructure savedInAiInfrastructure = inAiInfrastructureArgumentCaptor.getValue();
+
+        assertEquals(digitalServiceUid, savedInAiInfrastructure.getDigitalServiceUid());
+        assertEquals(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC, savedInAiInfrastructure.getInfrastructureTypeEnum());
+        assertEquals(4L, savedInAiInfrastructure.getNbGpu());
+        assertEquals(8L, savedInAiInfrastructure.getGpuMemory());
+        assertEquals(2.0, savedInAiInfrastructure.getComplementaryPue());
     }
 
     @Test
@@ -272,6 +317,7 @@ public class AiInfraServiceTest {
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
+        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
 
         // When & Then - Should not throw exception
         assertDoesNotThrow(() ->

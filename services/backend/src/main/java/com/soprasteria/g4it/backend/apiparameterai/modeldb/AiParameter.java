@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.springframework.lang.Nullable;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "ai_parameters")
+@Table(name = "in_ai_parameters")
 
 public class AiParameter {
     /**
