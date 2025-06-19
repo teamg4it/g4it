@@ -6,7 +6,7 @@
                 : 'force-bg-white w-26rem letter-spacing-2 h-5rem m-1'
         "
         (click)="changeCritere(impact)"
-        [disabled]="value === null || value === 0"
+        [disabled]="value === null || value === 0 || disabled"
     >
         <div class="bg-gray-100 border-circle p-3 h-4rem">
             <img src="{{ impactImage }}" alt="" width="30" />
