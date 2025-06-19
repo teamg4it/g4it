@@ -6,6 +6,7 @@
 
 ### Minor Changes
 
+- 1174 | When there is one criteria evaluated, multicriteria view should be disabled in digital service module and criteria should be selected in inventory module
 - 1251 | Character "%" breaks the note feature
 - 1258 | Table "task", the column "created_by" is not alway valuated
 
