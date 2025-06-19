@@ -48,6 +48,7 @@ export interface TaskRest {
     type: string;
     resultFileUrl: string;
     details: string[];
+    criteria?: string[];
 }
 
 export interface EvaluationBody {

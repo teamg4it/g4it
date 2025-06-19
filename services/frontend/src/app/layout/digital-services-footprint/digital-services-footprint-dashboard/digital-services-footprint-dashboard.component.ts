@@ -85,6 +85,7 @@ export class DigitalServicesFootprintDashboardComponent
 
     outPhysicalEquipments: OutPhysicalEquipmentRest[] = [];
     outVirtualEquipments: OutVirtualEquipmentRest[] = [];
+    onlyOneCriteria = false;
 
     cloudData = computed(() => {
         if (this.outVirtualEquipments === undefined) return [];
@@ -163,6 +164,7 @@ export class DigitalServicesFootprintDashboardComponent
 
         this.retrieveFootprintData();
         if (this.impacts?.length === 1) {
+            this.onlyOneCriteria = true;
             this.selectedCriteria = this.impacts[0]?.name;
             this.chartType.set("pie");
         }
