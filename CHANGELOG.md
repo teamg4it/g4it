@@ -1,5 +1,14 @@
 # G4IT
 
+## 3.4.0
+
+### Major Changes
+
+### Minor Changes
+
+- 1251 | Character "%" breaks the note feature
+- 1258 | Table "task", the column "created_by" is not alway valuated
+
 ## 3.3.0
 
 ### Major Changes
@@ -17,7 +26,6 @@
 - 797 | Lag on the filter when there is a lot of data
 - 1218 | Issue on the DS export feature
 - 1246 | Inventory : Export available from Demo Workspace
-- 1258 | Table "task", the column "created_by" is not alway valuated
 
 ## 3.2.1
 
