@@ -48,7 +48,9 @@
                 class="error-text"
                 *ngIf="terminalsForm.get('name')?.hasError('uniqueName')"
             >
-                {{ "digital-services-servers.error.terminal-already-exists" | translate }}
+                {{
+                    "digital-services-terminals.error.terminal-already-exists" | translate
+                }}
             </p>
         </div>
 
