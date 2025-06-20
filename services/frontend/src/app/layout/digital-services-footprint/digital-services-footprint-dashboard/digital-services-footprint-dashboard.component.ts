@@ -75,6 +75,7 @@ export class DigitalServicesFootprintDashboardComponent
     barChartChild: boolean = false;
     options: EChartsOption = {};
     digitalService: DigitalService = {} as DigitalService;
+    aiRecommendation: AiRecommendation = {} as AiRecommendation;
 
     title = "";
     content = "";
@@ -119,8 +120,6 @@ export class DigitalServicesFootprintDashboardComponent
 
     calculatedCriteriaList: string[] = [];
 
-    aiRecommendations: AiRecommendation[] = [];
-
     constructor(
         private digitalServicesDataService: DigitalServicesDataService,
         private digitalServicesService: DigitalServiceBusinessService,
@@ -139,7 +138,7 @@ export class DigitalServicesFootprintDashboardComponent
 
         if (this.digitalService.isAi) {
             try {
-                this.aiRecommendations = await firstValueFrom(
+                this.aiRecommendation = await firstValueFrom(
                     this.digitalServicesAiData.getAiRecommendations(
                         this.digitalService.uid,
                     ),
@@ -273,11 +272,11 @@ export class DigitalServicesFootprintDashboardComponent
                 translationKey = "digital-services-cards.global-vision-ai";
             } else if (
                 textType === "digital-services-card-content" &&
-                this.aiRecommendations.length > 0
+                this.aiRecommendation != null
             ) {
                 try {
                     const recommendationsArr = JSON.parse(
-                        this.aiRecommendations[0].recommendations,
+                        this.aiRecommendation.recommendations,
                     );
                     if (
                         !Array.isArray(recommendationsArr) ||

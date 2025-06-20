@@ -102,7 +102,7 @@
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
             (click)="exportData()"
-            *ngIf="!isEcoMindAi && (userService.isAllowedDigitalServiceWrite$ | async)"
+            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             [disabled]="digitalService.lastCalculationDate === undefined"
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"

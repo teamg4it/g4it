@@ -17,6 +17,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepo
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -84,6 +85,9 @@ public class EvaluatingService {
 
     @Autowired
     OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+
+    @Autowired
+    OutAiRecoRepository outAiRecoRepository;
 
     /**
      * Evaluating an inventory
@@ -193,6 +197,9 @@ public class EvaluatingService {
             outPhysicalEquipmentRepository.deleteByTaskId(task.getId());
             outVirtualEquipmentRepository.deleteByTaskId(task.getId());
             exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
+            if (context.isAi()) {
+                outAiRecoRepository.deleteByTaskId(task.getId());
+            }
         }
 
         task.setProgressPercentage("0%");
