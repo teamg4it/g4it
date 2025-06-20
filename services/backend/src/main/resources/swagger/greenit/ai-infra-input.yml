@@ -20,7 +20,7 @@ paths:
         - ai-infra-inputs
       summary: Post ai infra from one digital service
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: postDigitalServiceInputsInAiInfrastructureRest
+      operationId: postDigitalServiceInputsAiInfraRest
       requestBody:
         description: ai-infra
         required: true

@@ -186,7 +186,6 @@ public class EvaluateAiService {
 
         String recommendationsJson = RecommendationJsonMapper.toJson(estimationBO.getRecommendations());
         outAiReco.setRecommendations(recommendationsJson);
-        outAiReco.setDigitalServiceUid(context.getDigitalServiceUid());
         outAiReco.setCreationDate(now);
         outAiReco.setLastUpdateDate(now);
         outAiReco.setTaskId(taskId);

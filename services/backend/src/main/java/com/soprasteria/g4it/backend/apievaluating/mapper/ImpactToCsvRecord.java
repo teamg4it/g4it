@@ -173,7 +173,6 @@ public interface ImpactToCsvRecord {
 
     default List<String> toCsv(OutAiReco outAiReco) {
         return List.of(
-                outAiReco.getDigitalServiceUid(),
                 outAiReco.getElectricityConsumption().toString(),
                 outAiReco.getRecommendations()
         );

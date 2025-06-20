@@ -13,7 +13,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
-import com.soprasteria.g4it.backend.apiparameterai.modeldb.AiParameter;
+import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -34,19 +34,19 @@ public interface InputToCsvRecord {
         );
     }
 
-    default List<String> toCsv(AiParameter aiParameter) {
+    default List<String> toCsv(InAiParameter inAiParameter) {
         return List.of(
-                aiParameter.getDigitalServiceUid(),
-                aiParameter.getModelName(),
-                aiParameter.getNbParameters(),
-                aiParameter.getFramework(),
-                aiParameter.getQuantization(),
-                aiParameter.getTotalGeneratedTokens().toString(),
-                aiParameter.getNumberUserYear().toString(),
-                aiParameter.getAverageNumberRequest().toString(),
-                aiParameter.getAverageNumberToken().toString(),
-                aiParameter.getIsInference().toString(),
-                aiParameter.getIsFinetuning().toString()
+                inAiParameter.getDigitalServiceUid(),
+                inAiParameter.getModelName(),
+                inAiParameter.getNbParameters(),
+                inAiParameter.getFramework(),
+                inAiParameter.getQuantization(),
+                inAiParameter.getTotalGeneratedTokens().toString(),
+                inAiParameter.getNumberUserYear().toString(),
+                inAiParameter.getAverageNumberRequest().toString(),
+                inAiParameter.getAverageNumberToken().toString(),
+                inAiParameter.getIsInference().toString(),
+                inAiParameter.getIsFinetuning().toString()
         );
     }
 
@@ -54,7 +54,6 @@ public interface InputToCsvRecord {
         return List.of(
                 inAiInfrastructure.getDigitalServiceUid(),
                 inAiInfrastructure.getComplementaryPue().toString(),
-                inAiInfrastructure.getInfrastructureTypeEnum().toString(),
                 inAiInfrastructure.getNbGpu().toString(),
                 inAiInfrastructure.getGpuMemory().toString()
         );

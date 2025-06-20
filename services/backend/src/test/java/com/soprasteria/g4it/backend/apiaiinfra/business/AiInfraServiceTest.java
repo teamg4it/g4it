@@ -4,6 +4,7 @@ import com.soprasteria.g4it.backend.apiaiinfra.mapper.InAiInfrastructureMapper;
 import com.soprasteria.g4it.backend.apiaiinfra.model.InAiInfrastructureBO;
 import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
@@ -24,7 +25,6 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
-import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -408,7 +408,7 @@ class AiInfraServiceTest {
         assertEquals("Paris", savedVirtualEquipment.getLocation());
         assertEquals("VirtualEquipement1", savedVirtualEquipment.getName());
         assertEquals("Server1", savedVirtualEquipment.getPhysicalEquipmentName());
-        assertEquals(AiInfraRest.InfrastructureTypeEnum.SERVER_DC.getValue(),
+        assertEquals(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC.getValue(),
                 savedVirtualEquipment.getInfrastructureType());
         assertEquals(16.0, savedVirtualEquipment.getSizeMemoryGb());
         assertEquals(8.0, savedVirtualEquipment.getVcpuCoreNumber());

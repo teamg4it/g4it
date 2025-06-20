@@ -432,8 +432,6 @@ filesystem.config.headers:
     - name: "sipImpact"
       optional: false
   outAiReco:
-    - name: "digitalServiceUid"
-      optional: false
     - name: "electricityConsumption"
       optional: false
     - name: "recommendations"
@@ -465,8 +463,6 @@ filesystem.config.headers:
     - name: "digitalServiceUid"
       optional: false
     - name: "complementaryPue"
-      optional: false
-    - name: "infrastructureTypeEnum"
       optional: false
     - name: "nbGpu"
       optional: false
