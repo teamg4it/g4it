@@ -1,0 +1,5 @@
+code;source;value;description;subscriber;version
+PUEParDefaut;SSG;1.75;;NULL;NULL
+dureeVieParDefaut;SSG;2.0;;NULL;NULL
+taux_utilisation_COPE;SSG;0.8;;NULL;NULL
+taux_utilisation_BYOD;SSG;0.57;;NULL;NULL
