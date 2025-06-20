@@ -14,7 +14,7 @@ export const environment = {
         issuer: "${KEYCLOAK_URL}",
         realm: "g4it",
         clientId: "g4it",
-        enabled: "${KEYCLOAK_ENABLED}",
+        enabled: "false",
     },
     frontEndUrl: "${FRONTEND_URL}",
     subpath: "${SUBPATH}",
