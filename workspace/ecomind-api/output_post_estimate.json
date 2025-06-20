@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "electricityConsumption": 14.85,
+      "runtime": 1322,
+      "recommendations": [
+        {
+          "type": "Quantified",
+          "topic": "⚡ Use the right framework !",
+          "example": "Using the framework vllm instead of llamacpp for some model can lead to a reduction of impact by",
+          "expectedReduction": "18%"
+        },
+        {
+          "type": "Quantified",
+          "topic": "⚡ Use the lightest possible model that meets your needs !",
+          "example": "Using the model llama3-8b instead of 13b can lead to a reduction of impact by",
+          "expectedReduction": "30%"
+        }
+      ]
+    }
+  ]
+
+}

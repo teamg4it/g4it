@@ -32,6 +32,7 @@ public class Context {
     private boolean hasApplications;
     private List<FileToLoad> filesToLoad = new ArrayList<>();
     private Long taskId;
+    private boolean isAi;
 
     public String log() {
         return this.log("/");

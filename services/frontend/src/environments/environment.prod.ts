@@ -9,7 +9,7 @@
 export const environment = {
     production: true,
     apiBaseUrl: "$URL_INVENTORY",
-    securedEndpoints: ["inventories", "digital-services", "template-files"],
+    securedEndpoints: ["inventories", "digital-services", "eco-mind-ai", "template-files"],
     keycloak: {
         issuer: "${KEYCLOAK_URL}",
         realm: "g4it",

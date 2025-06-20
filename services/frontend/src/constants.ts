@@ -71,6 +71,7 @@ export abstract class Constants {
         users: "users",
         subscribers: "administrator/subscribers",
         organizations: "administrator/organizations",
+        ecomindaiModelConfig: "ecomindai/aiModelConfig/type",
         actions: "administrator-actions",
         version: "version",
         businessHours: "business-hours",
