@@ -185,6 +185,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 { totalGeneratedTokens: totalTokens },
                 { emitEvent: false },
             );
+            value.totalGeneratedTokens = totalTokens;
 
             this.aiFormsStore.setParametersFormData(value as AIParametersForm);
         });
