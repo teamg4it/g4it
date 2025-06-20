@@ -1,11 +1,15 @@
 package com.soprasteria.g4it.backend.apiaiinfra.business;
 
-import com.soprasteria.g4it.backend.apiaiinfra.mapper.AiInfraMapper;
-import com.soprasteria.g4it.backend.apiaiinfra.model.AiInfraBO;
+import com.soprasteria.g4it.backend.apiaiinfra.mapper.InAiInfrastructureMapper;
+import com.soprasteria.g4it.backend.apiaiinfra.model.InAiInfrastructureBO;
 import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
+import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
+import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.mapper.InDatacenterMapper;
 import com.soprasteria.g4it.backend.apiinout.mapper.InPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.mapper.InVirtualEquipmentMapper;
@@ -20,6 +24,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +33,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,9 +41,9 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class AiInfraServiceTest {
+class AiInfraServiceTest {
     @Mock
-    private AiInfraMapper aiInfraMapper;
+    private InAiInfrastructureMapper inAiInfrastructureMapper;
 
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
@@ -59,46 +65,57 @@ public class AiInfraServiceTest {
 
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+
+    @Mock
+    private DigitalServiceService digitalServiceService;
+
     @Mock
     private InAiInfrastructureRepository inAiInfrastructureRepository;
+
+    @Mock
+    private InDatacenterService inDatacenterService;
+
+    @Mock
+    private InPhysicalEquipmentService inPhysicalEquipmentService;
+
+    @Mock
+    private InVirtualEquipmentService inVirtualEquipmentService;
+
     @InjectMocks
-    private AiInfraInputsService aiInfraInputsService;
+    private InAiInfrastructureService inAiInfrastructureService;
     private String digitalServiceUid;
     private InAiInfrastructureRest aiInfraRest;
-    private AiInfraBO aiInfraBO;
+    private InAiInfrastructureBO inAiInfrastructureBO;
+    private InAiInfrastructure inAiInfrastructure;
     private DigitalService digitalService;
     private InDatacenter inDatacenter;
     private InPhysicalEquipment inPhysicalEquipment;
     private InVirtualEquipment inVirtualEquipment;
     private InPhysicalEquipmentRest expectedResult;
-    private InAiInfrastructure inAiInfrastructure;
 
     @BeforeEach
     void setUp() {
         digitalServiceUid = "3f1db90c-c3cf-471c-bb48-ffde4bab99dc";
-        // Setup InAiInfrastructureRest
+        // Setup AiInfraRest
         aiInfraRest = InAiInfrastructureRest.builder().build();
         aiInfraRest.setLocation("Paris");
         aiInfraRest.setPue(1.5);
         aiInfraRest.setNbCpuCores(8L);
         aiInfraRest.setRamSize(16L);
-        aiInfraRest.setNbGpu(4L);
-        aiInfraRest.setGpuMemory(8L);
-        aiInfraRest.setComplementaryPue(2.0);
-        aiInfraRest.setInfrastructureType(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC);
 
         // Setup AiInfraBO
-        aiInfraBO = AiInfraBO.builder().build();
-        aiInfraBO.setLocation("Paris");
-        aiInfraBO.setPue(1.5);
-        aiInfraBO.setNbCpuCores(8L);
-        aiInfraBO.setRamSize(16L);
-        aiInfraBO.setNbGpu(4L);
-        aiInfraBO.setGpuMemory(8L);
-        aiInfraBO.setComplementaryPue(2.0);
-        aiInfraBO.setInfrastructureType(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC);
+        inAiInfrastructureBO = InAiInfrastructureBO.builder().build();
+        inAiInfrastructureBO.setLocation("Paris");
+        inAiInfrastructureBO.setPue(1.5);
+        inAiInfrastructureBO.setNbCpuCores(8L);
+        inAiInfrastructureBO.setRamSize(16L);
 
+        // Setup AiInfra
         inAiInfrastructure = new InAiInfrastructure();
+        inAiInfrastructure.setComplementaryPue(1.5);
+        inAiInfrastructure.setNbGpu(8L);
+        inAiInfrastructure.setGpuMemory(16L);
+        inAiInfrastructure.setInfrastructureTypeEnum(InAiInfrastructureRest.InfrastructureTypeEnum.LAPTOP);
 
         // Setup entities
         digitalService = new DigitalService();
@@ -116,7 +133,8 @@ public class AiInfraServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiInfraMapper.toBO(aiInfraRest)).thenReturn(aiInfraBO);
+        when(inAiInfrastructureMapper.toBO(aiInfraRest)).thenReturn(inAiInfrastructureBO);
+        when(inAiInfrastructureMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
         when(inDatacenterMapper.toEntity(any(InDatacenterRest.class))).thenReturn(inDatacenter);
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
@@ -124,11 +142,9 @@ public class AiInfraServiceTest {
         when(inPhysicalEquipmentRepository.save(any(InPhysicalEquipment.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentRepository.save(any(InVirtualEquipment.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(inPhysicalEquipment)).thenReturn(expectedResult);
-        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
-        when(inAiInfrastructureRepository.save(any(InAiInfrastructure.class))).thenReturn(inAiInfrastructure);
 
         // When
-        InPhysicalEquipmentRest result = aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
+        InPhysicalEquipmentRest result = inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
 
         // Then
         assertNotNull(result);
@@ -139,15 +155,147 @@ public class AiInfraServiceTest {
         verify(inDatacenterRepository).save(any(InDatacenter.class));
         verify(inPhysicalEquipmentRepository).save(any(InPhysicalEquipment.class));
         verify(inVirtualEquipmentRepository).save(any(InVirtualEquipment.class));
-        verify(inAiInfrastructureRepository).save(any(InAiInfrastructure.class));
 
         // Verify mapper interactions
-        verify(aiInfraMapper).toBO(aiInfraRest);
+        verify(inAiInfrastructureMapper).toBO(aiInfraRest);
         verify(inDatacenterMapper).toEntity(any(InDatacenterRest.class));
         verify(inPhysicalEquipmentMapper).toEntity(any(InPhysicalEquipmentRest.class));
         verify(inVirtualEquipmentMapper).toEntity(any(InVirtualEquipmentRest.class));
         verify(inPhysicalEquipmentMapper).toRest(inPhysicalEquipment);
-        verify(aiInfraMapper).toEntity(aiInfraRest);
+    }
+
+    @Test
+    void testGetDigitalServiceInputsAiInfraRest_shouldReturnCorrectData() {
+        String uid = "ds-123";
+
+        DigitalServiceBO mockDigitalService = DigitalServiceBO.builder()
+                .uid("ds-123")
+                .name("Test Service")
+                .userName("tester")
+                .isAi(true)
+                .build();
+
+        InAiInfrastructure entity = new InAiInfrastructure();
+        InAiInfrastructureBO bo = new InAiInfrastructureBO();
+
+        InDatacenterRest dc = new InDatacenterRest();
+        dc.setPue(1.4);
+        dc.setLocation("Paris");
+
+        InPhysicalEquipmentRest pe = new InPhysicalEquipmentRest();
+        pe.setCpuCoreNumber(16.0);
+        pe.setSizeMemoryGb(64.0);
+
+        when(digitalServiceService.getDigitalService(uid)).thenReturn(mockDigitalService);
+        when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(entity);
+        when(inAiInfrastructureMapper.entityToBO(entity)).thenReturn(bo);
+        when(inDatacenterService.getByDigitalService(uid)).thenReturn(List.of(dc));
+        when(inPhysicalEquipmentService.getByDigitalService(uid)).thenReturn(List.of(pe));
+
+        InAiInfrastructureBO result = inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(uid);
+
+        assertEquals("Paris", result.getLocation());
+        assertEquals(1.4, result.getPue());
+        assertEquals(16L, result.getNbCpuCores());
+        assertEquals(64L, result.getRamSize());
+    }
+
+    @Test
+    void testGetDigitalServiceInputsAiInfraRest_shouldThrowIfDigitalServiceNotFound() {
+        String uid = "ds-404";
+        when(digitalServiceService.getDigitalService(uid)).thenReturn(null);
+
+        G4itRestException ex = assertThrows(G4itRestException.class, () ->
+                inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(uid)
+        );
+
+        assertEquals("404", ex.getCode());
+        assertTrue(ex.getMessage().contains("doesn't exist"));
+    }
+
+    @Test
+    void testUpdateDigitalServiceInputsAiInfraRest_shouldUpdateAllAndReturnInPhysicalEquipmentRest() {
+        // Arrange
+        String uid = "ds-001";
+
+        // Input REST object
+        InAiInfrastructureRest inRest = InAiInfrastructureRest.builder()
+                .location("Paris")
+                .pue(1.3)
+                .nbCpuCores(16L)
+                .ramSize(64L)
+                .build();
+
+        // Mock DigitalService exists
+        when(digitalServiceRepository.findById(uid))
+                .thenReturn(Optional.of(new DigitalService()));
+
+        // Mock mapping BO
+        InAiInfrastructureBO bo = InAiInfrastructureBO.builder()
+                .location("Paris")
+                .pue(1.3)
+                .nbCpuCores(16L)
+                .ramSize(64L)
+                .build();
+        when(inAiInfrastructureMapper.toBO(inRest)).thenReturn(bo);
+
+        // Mock existing AI infra entity
+        InAiInfrastructure entity = new InAiInfrastructure();
+        entity.setId(42L);
+        when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(entity);
+        when(inAiInfrastructureMapper.toEntity(inRest)).thenReturn(entity);
+
+        // Mock datacenter
+        InDatacenterRest datacenterRest = new InDatacenterRest();
+        datacenterRest.setId(1L);
+        when(inDatacenterService.getByDigitalService(uid)).thenReturn(List.of(datacenterRest));
+
+        // Mock physical equipment
+        InPhysicalEquipmentRest physicalRest = new InPhysicalEquipmentRest();
+        physicalRest.setId(2L);
+        physicalRest.setName("PhysicalNode-1");
+        when(inPhysicalEquipmentService.getByDigitalService(uid)).thenReturn(List.of(physicalRest));
+
+        // Mock virtual equipment
+        InVirtualEquipmentRest virtualRest = new InVirtualEquipmentRest();
+        virtualRest.setId(3L);
+        when(inVirtualEquipmentService.getByDigitalService(uid)).thenReturn(List.of(virtualRest));
+
+        // Act
+        InPhysicalEquipmentRest result = inAiInfrastructureService.updateDigitalServiceInputsAiInfraRest(uid, inRest);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2L, result.getId());
+        assertEquals("Paris", result.getLocation());
+        assertEquals(16.0, result.getCpuCoreNumber());
+        assertEquals(64.0, result.getSizeMemoryGb());
+
+        // Verify updates called
+        verify(inDatacenterService).updateInDatacenter(eq(uid), eq(1L), any());
+        verify(inPhysicalEquipmentService).updateInPhysicalEquipment(eq(uid), eq(2L), any());
+        verify(inVirtualEquipmentService).updateInVirtualEquipment(eq(uid), eq(3L), any());
+    }
+
+    @Test
+    void testUpdateDigitalServiceInputsAiInfraRest_shouldThrowIfDigitalServiceNotFound() {
+        String uid = "ds-404";
+        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.empty());
+
+        // Input REST object
+        InAiInfrastructureRest inRest = InAiInfrastructureRest.builder()
+                .location("Paris")
+                .pue(1.3)
+                .nbCpuCores(16L)
+                .ramSize(64L)
+                .build();
+
+        G4itRestException ex = assertThrows(G4itRestException.class, () ->
+                inAiInfrastructureService.updateDigitalServiceInputsAiInfraRest(uid, inRest)
+        );
+
+        assertEquals("404", ex.getCode());
+        assertTrue(ex.getMessage().contains("doesn't exist"));
     }
 
     @Test
@@ -158,7 +306,7 @@ public class AiInfraServiceTest {
 
         // When & Then
         G4itRestException exception = assertThrows(G4itRestException.class,
-                () -> aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest));
+                () -> inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest));
 
         assertEquals("404", exception.getCode());
         assertEquals(String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid),
@@ -175,17 +323,17 @@ public class AiInfraServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiInfraMapper.toBO(aiInfraRest)).thenReturn(aiInfraBO);
+        when(inAiInfrastructureMapper.toBO(aiInfraRest)).thenReturn(inAiInfrastructureBO);
+        when(inAiInfrastructureMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
         when(inDatacenterMapper.toEntity(any(InDatacenterRest.class))).thenReturn(inDatacenter);
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
-        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
 
         ArgumentCaptor<InDatacenter> datacenterCaptor = ArgumentCaptor.forClass(InDatacenter.class);
 
         // When
-        aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
+        inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
 
         // Then
         verify(inDatacenterRepository).save(datacenterCaptor.capture());
@@ -204,17 +352,17 @@ public class AiInfraServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiInfraMapper.toBO(aiInfraRest)).thenReturn(aiInfraBO);
+        when(inAiInfrastructureMapper.toBO(aiInfraRest)).thenReturn(inAiInfrastructureBO);
+        when(inAiInfrastructureMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
         when(inDatacenterMapper.toEntity(any(InDatacenterRest.class))).thenReturn(inDatacenter);
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
-        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
 
         ArgumentCaptor<InPhysicalEquipment> physicalEquipmentCaptor = ArgumentCaptor.forClass(InPhysicalEquipment.class);
 
         // When
-        aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
+        inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
 
         // Then
         verify(inPhysicalEquipmentRepository).save(physicalEquipmentCaptor.capture());
@@ -240,17 +388,17 @@ public class AiInfraServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiInfraMapper.toBO(aiInfraRest)).thenReturn(aiInfraBO);
+        when(inAiInfrastructureMapper.toBO(aiInfraRest)).thenReturn(inAiInfrastructureBO);
+        when(inAiInfrastructureMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
         when(inDatacenterMapper.toEntity(any(InDatacenterRest.class))).thenReturn(inDatacenter);
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
-        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
 
         ArgumentCaptor<InVirtualEquipment> virtualEquipmentCaptor = ArgumentCaptor.forClass(InVirtualEquipment.class);
 
         // When
-        aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
+        inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
 
         // Then
         verify(inVirtualEquipmentRepository).save(virtualEquipmentCaptor.capture());
@@ -260,41 +408,13 @@ public class AiInfraServiceTest {
         assertEquals("Paris", savedVirtualEquipment.getLocation());
         assertEquals("VirtualEquipement1", savedVirtualEquipment.getName());
         assertEquals("Server1", savedVirtualEquipment.getPhysicalEquipmentName());
-        assertEquals(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC.getValue(),
+        assertEquals(AiInfraRest.InfrastructureTypeEnum.SERVER_DC.getValue(),
                 savedVirtualEquipment.getInfrastructureType());
         assertEquals(16.0, savedVirtualEquipment.getSizeMemoryGb());
         assertEquals(8.0, savedVirtualEquipment.getVcpuCoreNumber());
         assertEquals(1.0, savedVirtualEquipment.getQuantity());
         assertNotNull(savedVirtualEquipment.getCreationDate());
         assertNotNull(savedVirtualEquipment.getLastUpdateDate());
-    }
-
-    @Test
-    void postDigitalServiceInputsAiInfra_VerifyInAiInfrastructureCreation() {
-        // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
-        when(aiInfraMapper.toBO(aiInfraRest)).thenReturn(aiInfraBO);
-        when(inDatacenterMapper.toEntity(any(InDatacenterRest.class))).thenReturn(inDatacenter);
-        when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
-        when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
-        when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
-        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
-
-        ArgumentCaptor<InAiInfrastructure> inAiInfrastructureArgumentCaptor = ArgumentCaptor.forClass(InAiInfrastructure.class);
-
-        // When
-        aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest);
-
-        // Then
-        verify(inAiInfrastructureRepository).save(inAiInfrastructureArgumentCaptor.capture());
-        InAiInfrastructure savedInAiInfrastructure = inAiInfrastructureArgumentCaptor.getValue();
-
-        assertEquals(digitalServiceUid, savedInAiInfrastructure.getDigitalServiceUid());
-        assertEquals(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC, savedInAiInfrastructure.getInfrastructureTypeEnum());
-        assertEquals(4L, savedInAiInfrastructure.getNbGpu());
-        assertEquals(8L, savedInAiInfrastructure.getGpuMemory());
-        assertEquals(2.0, savedInAiInfrastructure.getComplementaryPue());
     }
 
     @Test
@@ -305,23 +425,23 @@ public class AiInfraServiceTest {
         aiInfraRest.setNbCpuCores(null);
         aiInfraRest.setRamSize(null);
 
-        aiInfraBO.setLocation(null);
-        aiInfraBO.setPue(null);
-        aiInfraBO.setNbCpuCores(null);
-        aiInfraBO.setRamSize(null);
+        inAiInfrastructureBO.setLocation(null);
+        inAiInfrastructureBO.setPue(null);
+        inAiInfrastructureBO.setNbCpuCores(null);
+        inAiInfrastructureBO.setRamSize(null);
 
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiInfraMapper.toBO(aiInfraRest)).thenReturn(aiInfraBO);
+        when(inAiInfrastructureMapper.toBO(aiInfraRest)).thenReturn(inAiInfrastructureBO);
+        when(inAiInfrastructureMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
         when(inDatacenterMapper.toEntity(any(InDatacenterRest.class))).thenReturn(inDatacenter);
         when(inPhysicalEquipmentMapper.toEntity(any(InPhysicalEquipmentRest.class))).thenReturn(inPhysicalEquipment);
         when(inVirtualEquipmentMapper.toEntity(any(InVirtualEquipmentRest.class))).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(any(InPhysicalEquipment.class))).thenReturn(expectedResult);
-        when(aiInfraMapper.toEntity(aiInfraRest)).thenReturn(inAiInfrastructure);
 
         // When & Then - Should not throw exception
         assertDoesNotThrow(() ->
-                aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest));
+                inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest));
     }
 
     @Test
@@ -329,14 +449,14 @@ public class AiInfraServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiInfraMapper.toBO(aiInfraRest)).thenReturn(aiInfraBO);
+        when(inAiInfrastructureMapper.toBO(aiInfraRest)).thenReturn(inAiInfrastructureBO);
         when(inDatacenterMapper.toEntity(any(InDatacenterRest.class))).thenReturn(inDatacenter);
         when(inDatacenterRepository.save(any(InDatacenter.class)))
                 .thenThrow(new RuntimeException("Database error"));
 
         // When & Then
         assertThrows(RuntimeException.class,
-                () -> aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest));
+                () -> inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest));
     }
 
     @Test
@@ -344,11 +464,11 @@ public class AiInfraServiceTest {
         // Given
         when(digitalServiceRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.of(digitalService));
-        when(aiInfraMapper.toBO(aiInfraRest))
+        when(inAiInfrastructureMapper.toBO(aiInfraRest))
                 .thenThrow(new RuntimeException("Mapping error"));
 
         // When & Then
         assertThrows(RuntimeException.class,
-                () -> aiInfraInputsService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest));
+                () -> inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest));
     }
 }

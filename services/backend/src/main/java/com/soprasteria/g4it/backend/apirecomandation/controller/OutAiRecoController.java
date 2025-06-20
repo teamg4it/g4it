@@ -24,7 +24,7 @@ public class OutAiRecoController implements AiRecommendationsApiDelegate {
 
     @Override
     public ResponseEntity<OutAiRecommendationRest> getAiRecommendations(String subscriber, Long organization, String digitalServiceUid) {
-        OutAiRecommendationRest result = outAiRecoService.getRecommendations(digitalServiceUid);
+        OutAiRecommendationRest result = outAiRecoService.getByDigitalServiceUid(digitalServiceUid);
         return ResponseEntity.ok(result);
     }
 

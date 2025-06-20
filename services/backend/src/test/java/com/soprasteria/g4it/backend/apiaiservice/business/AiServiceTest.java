@@ -1,6 +1,5 @@
 package com.soprasteria.g4it.backend.apiaiservice.business;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.external.ecomindai.client.AiModelapiClient;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIConfigurationBO;
@@ -30,15 +29,13 @@ class AiServiceTest {
     @InjectMocks
     private AiService aiService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testGetAIModelConfigurations() throws Exception {
+    void testGetAIModelConfigurations() {
         // Given
         String json = """
                 [{"modelName":"llama3","parameters":"13b","framework":"llamacpp","quantization":"q2k"},{"modelName":"llama3","parameters":"8b","framework":"vllm","quantization":"none"},{"modelName":"llama3","parameters":"13b","framework":"vllm","quantization":"none"},{"modelName":"llama2","parameters":"13b","framework":"vllm","quantization":"none"}]
@@ -51,12 +48,12 @@ class AiServiceTest {
 
         // Then
         assertEquals(4, result.size());
-        assertEquals("llama3", result.get(0).getModelName());
+        assertEquals("llama3", result.getFirst().getModelName());
         verify(aiModelapiClient, times(1)).getAiModelConfig(type);
     }
 
     @Test
-    void testRunEstimation() throws Exception {
+    void testRunEstimation() {
         // Given
         AIConfigurationRest rest = AIConfigurationRest.builder().build();
         rest.setModelName("llama3");
@@ -102,8 +99,8 @@ class AiServiceTest {
 
         // Then
         assertEquals(1, result.size());
-        assertEquals(14.85, (float)(result.get(0).getElectricityConsumption()), 0.001);
-        assertEquals(1, result.get(0).getRecommendations().size());
+        assertEquals(14.85, result.getFirst().getElectricityConsumption(), 0.001);
+        assertEquals(1, result.getFirst().getRecommendations().size());
 
         verify(aiConfigurationMapper).toAIConfigurationBO(restList);
         verify(aiModelapiClient).runEstimation("LLM", "INFERENCE", boList);

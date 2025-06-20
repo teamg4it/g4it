@@ -7,6 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
+import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
+import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
@@ -17,6 +19,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -68,6 +71,10 @@ public class DigitalServiceService {
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
     @Autowired
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Autowired
+    private InAiParameterRepository inAiParameterRepository;
+    @Autowired
+    private InAiInfrastructureRepository inAiInfrastructureRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
     @Autowired
@@ -144,6 +151,8 @@ public class DigitalServiceService {
         inVirtualEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inPhysicalEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inDatacenterRepository.deleteByDigitalServiceUid(digitalServiceUid);
+        inAiParameterRepository.deleteByDigitalServiceUid(digitalServiceUid);
+        inAiInfrastructureRepository.deleteByDigitalServiceUid(digitalServiceUid);
         digitalServiceRepository.deleteById(digitalServiceUid);
     }
 

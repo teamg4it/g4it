@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @Table(name = "in_ai_parameters")
 
-public class AiParameter {
+public class InAiParameter {
     /**
      * Primary Key: id.
      */

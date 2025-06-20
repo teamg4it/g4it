@@ -41,3 +41,52 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+
+    get:
+      tags:
+        - ai-infra-inputs
+      summary: Get ai infra for a digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      operationId: getDigitalServiceInputsAiInfraRest
+      responses:
+        '200':
+          description: AI infra fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InAiInfrastructureRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: AI infra not found
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - ai-infra-inputs
+      summary: Update ai infra for a digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: updateDigitalServiceInputsAiInfraRest
+      requestBody:
+        description: ai-infra to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InAiInfrastructureRest"
+      responses:
+        '200':
+          description: AI infra updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InPhysicalEquipmentRest"
+        '400':
+          description: Invalid input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: AI infra not found
+        '500':
+          $ref: "#/components/responses/InternalServerError"

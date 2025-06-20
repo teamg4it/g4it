@@ -11,7 +11,7 @@ import org.springframework.lang.Nullable;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class AiInfraBO {
+public class InAiInfrastructureBO {
 
     private InAiInfrastructureRest.InfrastructureTypeEnum infrastructureType;
 
