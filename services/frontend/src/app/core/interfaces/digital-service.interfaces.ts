@@ -139,6 +139,12 @@ export interface TerminalsImpact {
     impact: ImpactTerminalsACVStep[];
 }
 
+export interface TerminalImpactGroup {
+    [location: string]: {
+        [terminalName: string]: ImpactTerminalsACVStep[];
+    };
+}
+
 export interface TerminalsImpactTypeLocation {
     name: string;
     terminals: TerminalsImpact[];
