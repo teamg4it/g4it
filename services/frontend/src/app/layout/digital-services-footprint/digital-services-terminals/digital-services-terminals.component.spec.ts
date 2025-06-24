@@ -74,9 +74,10 @@ describe("DigitalServicesTerminalsComponent", () => {
 
     it("should set the terminal when setTerminal is called", () => {
         //Mock a terminal
-        var testTerminal = {
+        const testTerminal = {
             uid: "randomUID",
             creationDate: 1700746167.59006,
+            name: "name",
             type: {
                 code: "mobile-fix",
                 value: "Mobile",

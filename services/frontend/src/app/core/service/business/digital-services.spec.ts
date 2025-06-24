@@ -63,6 +63,7 @@ describe("DigitalServiceBusinessService", () => {
         const nextAvailableName = digitalServiceService.getNextAvailableName(
             existingNames,
             baseName,
+            false,
         );
         expect(nextAvailableName).toBe(expectedName);
     });
@@ -75,6 +76,7 @@ describe("DigitalServiceBusinessService", () => {
         const nextAvailableName = digitalServiceService.getNextAvailableName(
             existingNames,
             baseName,
+            false,
         );
         expect(nextAvailableName).toBe(expectedName);
     });
@@ -87,6 +89,7 @@ describe("DigitalServiceBusinessService", () => {
         const nextAvailableName = digitalServiceService.getNextAvailableName(
             existingNames,
             baseName,
+            false,
         );
         expect(nextAvailableName).toBe(expectedName);
     });

@@ -104,6 +104,7 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
         ];
         component.terminal = {
             uid: "randomUID",
+            name: "name",
             type: {
                 code: "mobile-fix",
                 value: "Mobile",
@@ -122,6 +123,7 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
                 value: "LaptopTest",
                 lifespan: 6,
             },
+            name: "Terminal 1",
             lifespan: 6,
             country: "France",
             numberOfUsers: 0,
