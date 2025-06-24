@@ -23,7 +23,7 @@ The user will receive a response with a task id.
 {{< mermaid align="center">}}
 
 flowchart LR
-A[API Call for Evaluation] --> B(Retain the two latest 'EVALUATING' tasks; remove the rest.)
+A[API Call for Evaluation] --> B(Retain the two latest 'EVALUATING_DIGITAL_SERVICE' tasks; remove the rest.)
 B --> C(Get the active criteria to evaluate impacts on)
 C --> D(Create the evaluating task with status TO_START)
 D --> E(Launch evaluating process)
