@@ -6,6 +6,7 @@
 
 ### Minor Changes
 
+- 1271 | Open Source - Be able to launch a calculation just after first installation
 - 1200 | [BE] New Bug on electricity consumption : total display different than sum compute manually with export file
 - 1174 | When there is one criteria evaluated, multicriteria view should be disabled in digital service module and criteria should be selected in inventory module
 - 1251 | Character "%" breaks the note feature
