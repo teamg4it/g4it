@@ -37,8 +37,34 @@ describe("Digital Service Mapper", () => {
 
     describe("transformOutPhysicalEquipmentsToTerminalData", () => {
         it("should transform physical equipment to terminal data", () => {
-            const physicalEquipments: OutPhysicalEquipmentRest[] = [];
-            const deviceTypes: TerminalsType[] = [];
+            const physicalEquipments: any[] = [
+                {
+                    name: "Terminal 2",
+                    criterion: "ACIDIFICATION",
+                    lifecycleStep: "TRANSPORTATION",
+                    statusIndicator: "OK",
+                    location: "Egypt",
+                    equipmentType: "Terminal",
+                    unit: "mol H+ eq",
+                    reference: "smartphone-2",
+                    countValue: 1,
+                    unitImpact: 0.000022824964931506846,
+                    peopleEqImpact: 1.8259971945205475e-7,
+                    electricityConsumption: 0,
+                    quantity: 0.001141552511415525,
+                    numberOfUsers: 2,
+                    lifespan: 0.00684931506849315,
+                    commonFilters: [""],
+                    filters: [""],
+                },
+            ];
+            const deviceTypes: TerminalsType[] = [
+                {
+                    code: "smartphone-2",
+                    value: "Mobile Phone",
+                    lifespan: 2.5,
+                },
+            ];
             const result: DigitalServiceTerminalsImpact[] =
                 transformOutPhysicalEquipmentsToTerminalData(
                     physicalEquipments,

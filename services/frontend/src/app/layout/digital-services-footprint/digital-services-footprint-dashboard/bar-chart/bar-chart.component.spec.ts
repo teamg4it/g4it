@@ -14,8 +14,11 @@ import { ButtonModule } from "primeng/button";
 import {
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
+    DigitalServiceTerminalsImpact,
+    TerminalsType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { transformOutPhysicalEquipmentsToTerminalData } from "src/app/core/service/mapper/digital-service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { BarChartComponent } from "./bar-chart.component";
 declare var require: any;
@@ -154,5 +157,59 @@ describe("BarChartComponent", () => {
                 ],
             },
         ]);
+    });
+
+    it("should generate valid EChartsOption for Terminals", () => {
+        const physicalEquipments: any[] = [
+            {
+                name: "Terminal 2",
+                criterion: "ACIDIFICATION",
+                lifecycleStep: "TRANSPORTATION",
+                statusIndicator: "OK",
+                location: "Egypt",
+                equipmentType: "Terminal",
+                unit: "mol H+ eq",
+                reference: "smartphone-2",
+                countValue: 1,
+                unitImpact: 0.000022824964931506846,
+                peopleEqImpact: 1.8259971945205475e-7,
+                electricityConsumption: 0,
+                quantity: 0.001141552511415525,
+                numberOfUsers: 2,
+                lifespan: 0.00684931506849315,
+                commonFilters: [""],
+                filters: [""],
+            },
+        ];
+        const deviceTypes: TerminalsType[] = [
+            {
+                code: "smartphone-2",
+                value: "Mobile Phone",
+                lifespan: 2.5,
+            },
+        ];
+        const barChartData: DigitalServiceTerminalsImpact[] =
+            transformOutPhysicalEquipmentsToTerminalData(physicalEquipments, deviceTypes);
+
+        component.selectedCriteria = "acidification";
+        component.terminalsRadioButtonSelected = "type";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionTerminal(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should handle empty data for Terminals", () => {
+        const barChartData: any[] = [];
+        component.selectedCriteria = "acidification";
+        component.terminalsRadioButtonSelected = "type";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionTerminal(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
     });
 });
