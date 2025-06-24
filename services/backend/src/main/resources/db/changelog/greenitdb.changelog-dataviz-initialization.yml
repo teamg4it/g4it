@@ -2,6 +2,12 @@ databaseChangeLog:
   - changeSet:
       id: create-sip_ref-table
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_sustainable_individual_package
       changes:
         - createTable:
             tableName: ref_sustainable_individual_package
@@ -32,7 +38,7 @@ databaseChangeLog:
               - column:
                   header: individual_sustainable_package
                   type: numeric
-            file: db/changelog/starting-referential-data/ref_sustainable_individual_package.csv
+            file: db/changelog/referential-data/ref_sustainable_individual_package.csv
             primaryKey: id
             tableName: ref_sustainable_individual_package
             separator: ;
@@ -47,26 +53,3 @@ databaseChangeLog:
             tableName: ind_indicateur_impact_equipement_physique
       changes:
         - sql: CREATE INDEX IF NOT EXISTS idx_ind_eq_p__nom_lot_etapeacv ON ind_indicateur_impact_equipement_physique (nom_lot, etapeacv);
-  - changeSet:
-      id: add-new-criterias-sip_ref-table
-      author: G4IT Dev Team
-      changes:
-        - loadData:
-            columns:
-              - column:
-                  header: criteria
-                  type: varchar(255)
-              - column:
-                  header: planetary_boundary
-                  type: numeric
-              - column:
-                  header: source
-                  type: text
-              - column:
-                  header: individual_sustainable_package
-                  type: numeric
-            file: db/changelog/starting-referential-data/ref_sustainable_individual_package_new_crit.csv
-            primaryKey: id
-            tableName: ref_sustainable_individual_package
-            separator: ;
-            encoding: UTF-8

@@ -2,6 +2,12 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_lifecycle_step
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_lifecycle_step
       changes:
         - createTable:
             tableName: ref_lifecycle_step
@@ -23,7 +29,7 @@ databaseChangeLog:
               - column:
                   name: label
                   type: varchar(255)
-            file: db/changelog/starting-referential-data/ref_lifecycle_step.csv
+            file: db/changelog/referential-data/ref_lifecycle_step.csv
             tableName: ref_lifecycle_step
             separator: ;
             encoding: UTF-8
@@ -31,6 +37,12 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_criterion
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_criterion
       changes:
         - createTable:
             tableName: ref_criterion
@@ -62,7 +74,7 @@ databaseChangeLog:
                   name: unit
                   type: varchar(255)
             primaryKey: code
-            file: db/changelog/starting-referential-data/ref_criterion.csv
+            file: db/changelog/referential-data/ref_criterion.csv
             tableName: ref_criterion
             separator: ;
             encoding: UTF-8
@@ -70,6 +82,12 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_hypothesis
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_hypothesis
       changes:
         - createTable:
             tableName: ref_hypothesis
@@ -119,7 +137,7 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
-            file: db/changelog/starting-referential-data/ref_hypothesis.csv
+            file: db/changelog/referential-data/ref_hypothesis.csv
             primaryKey: id
             tableName: ref_hypothesis
             separator: ;
@@ -132,6 +150,12 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_item_type
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_item_type
       changes:
         - createTable:
             tableName: ref_item_type
@@ -201,7 +225,7 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
-            file: db/changelog/starting-referential-data/ref_item_type.csv
+            file: db/changelog/referential-data/ref_item_type.csv
             primaryKey: id
             tableName: ref_item_type
             separator: ;
@@ -214,6 +238,12 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_item_impact
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_item_impact
       changes:
         - createTable:
             tableName: ref_item_impact
@@ -312,7 +342,7 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
-            file: db/changelog/starting-referential-data/ref_item_impact.csv
+            file: db/changelog/referential-data/ref_item_impact.csv
             primaryKey: id
             tableName: ref_item_impact
             separator: ;
@@ -325,6 +355,12 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_matching_item
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_matching_item
       changes:
         - createTable:
             tableName: ref_matching_item
@@ -356,7 +392,7 @@ databaseChangeLog:
               - column:
                   name: subscriber
                   type: varchar(255)
-            file: db/changelog/starting-referential-data/ref_matching_item.csv
+            file: db/changelog/referential-data/ref_matching_item.csv
             primaryKey: id
             tableName: ref_matching_item
             separator: ;

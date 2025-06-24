@@ -86,7 +86,7 @@ databaseChangeLog:
               - column:
                   header: source
                   type: text
-            file: db/changelog/starting-referential-data/ref_device_type.csv
+            file: db/changelog/referential-data/ref_device_type.csv
             primaryKey: id
             tableName: ref_device_type
             separator: ;
@@ -145,6 +145,12 @@ databaseChangeLog:
   - changeSet:
       id: create-network-type-ref-table
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_network_type
       changes:
         - createTable:
             tableName: ref_network_type
@@ -200,7 +206,7 @@ databaseChangeLog:
               - column:
                   header: source
                   type: text
-            file: db/changelog/starting-referential-data/ref_network_type.csv
+            file: db/changelog/referential-data/ref_network_type.csv
             primaryKey: id
             tableName: ref_network_type
             separator: ;
@@ -246,6 +252,12 @@ databaseChangeLog:
   - changeSet:
       id: create-server-host-ref-table
       author: G4IT Dev Team
+      runOnChange: true
+      preconditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: ref_server_host
       changes:
         - createTable:
             tableName: ref_server_host
@@ -301,7 +313,7 @@ databaseChangeLog:
               - column:
                   header: lifespan
                   type: double
-            file: db/changelog/starting-referential-data/ref_server_host.csv
+            file: db/changelog/referential-data/ref_server_host.csv
             primaryKey: id
             tableName: ref_server_host
             separator: ;
