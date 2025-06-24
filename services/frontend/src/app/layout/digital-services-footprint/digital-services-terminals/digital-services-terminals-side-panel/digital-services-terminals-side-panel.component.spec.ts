@@ -15,6 +15,7 @@ import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
+import { DigitalServiceTerminalConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals-side-panel.component";
@@ -134,5 +135,49 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
         component.resetTerminal();
         delete component.terminal.idFront;
         expect(component.terminal).toEqual(expectedTerminal);
+    });
+
+    it("should initialize the form with default values and validators", () => {
+        component.terminalData = [
+            { name: "Terminal 1" } as DigitalServiceTerminalConfig,
+            { name: "Terminal 2" } as DigitalServiceTerminalConfig,
+        ];
+        component.isNew = true;
+        component.initForm();
+
+        expect(component.existingNames).toEqual(["Terminal 1", "Terminal 2"]);
+        expect(component.terminalsForm.controls["name"].value).toBe("");
+        expect(component.terminalsForm.controls["name"].validator).toBeTruthy();
+        expect(component.terminalsForm.controls["type"].value).toEqual({
+            code: "",
+            value: "",
+            lifespan: null,
+        });
+        expect(component.terminalsForm.controls["type"].validator).toBeTruthy();
+        expect(component.terminalsForm.controls["country"].value).toBe("");
+        expect(component.terminalsForm.controls["country"].validator).toBeTruthy();
+        expect(component.terminalsForm.controls["numberOfUsers"].value).toBe("0");
+        expect(component.terminalsForm.controls["numberOfUsers"].validator).toBeTruthy();
+        expect(component.terminalsForm.controls["lifespan"].value).toBeNull();
+        expect(component.terminalsForm.controls["lifespan"].validator).toBeTruthy();
+        expect(component.terminalsForm.controls["yearlyUsageTimePerUser"].value).toBe(
+            "0",
+        );
+        expect(
+            component.terminalsForm.controls["yearlyUsageTimePerUser"].validator,
+        ).toBeTruthy();
+        expect(component.terminalsForm.get("name")?.dirty).toBeTrue();
+    });
+
+    it("should exclude the current terminal name from existing names when not new", () => {
+        component.terminalData = [
+            { name: "Terminal 1" } as DigitalServiceTerminalConfig,
+            { name: "Terminal 2" } as DigitalServiceTerminalConfig,
+        ];
+        component.isNew = false;
+        component.terminal = { name: "Terminal 1" } as DigitalServiceTerminalConfig;
+        component.initForm();
+
+        expect(component.existingNames).toEqual(["Terminal 2"]);
     });
 });
