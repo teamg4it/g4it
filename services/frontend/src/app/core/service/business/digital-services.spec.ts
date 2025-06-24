@@ -93,4 +93,17 @@ describe("DigitalServiceBusinessService", () => {
         );
         expect(nextAvailableName).toBe(expectedName);
     });
+
+    it("should handle non-sequential existing names", () => {
+        const existingNames = ["Server 1", "Server 3"];
+        const baseName = "Server";
+        const expectedName = "Server 2";
+
+        const nextAvailableName = digitalServiceService.getNextAvailableName(
+            existingNames,
+            baseName,
+            true,
+        );
+        expect(nextAvailableName).toBe(expectedName);
+    });
 });

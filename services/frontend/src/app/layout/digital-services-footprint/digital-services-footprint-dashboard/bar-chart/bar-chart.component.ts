@@ -645,7 +645,7 @@ export class BarChartComponent extends AbstractDashboard {
 
         this.xAxisInput = xAxisData;
         this.criteriaMap = serverOkmap;
-        const allData = {
+        return {
             tooltip: {
                 show: true,
                 formatter: (params: any) => {
@@ -714,7 +714,6 @@ export class BarChartComponent extends AbstractDashboard {
             },
             series: seriesData,
         };
-        return allData as any;
     }
 
     loadStackBarOptionServerChild(barChartData: any): EChartsOption {
