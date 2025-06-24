@@ -30,10 +30,24 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByStatusAndType(final String status, final String type);
 
     List<Task> findByInventoryAndType(final Inventory inventory, final String type);
+    List<Task> findByDigitalServiceUidAndType(final  String digitalServiceUid, final String type);
 
     List<Task> findByInventoryAndStatusAndType(final Inventory inventory, final String status, final String type);
 
     Optional<Task> findByDigitalServiceUid(final String digitalServiceUid);
+
+    /**
+     * Find by digitalServiceUid
+     *
+     * @param digitalServiceUid the digitalServiceUid
+     * @return task linked to digital service
+     */
+    @Query("""
+            SELECT t FROM Task t
+            WHERE t.digitalServiceUid = :digitalServiceUid AND type = 'EVALUATING_DIGITAL_SERVICE'
+            ORDER BY creationDate DESC LIMIT 1
+            """)
+    Optional<Task> findByDigitalServiceUidAndLastCreationDate(@Param("digitalServiceUid") final String digitalServiceUid);
 
     /**
      * Find by inventory id

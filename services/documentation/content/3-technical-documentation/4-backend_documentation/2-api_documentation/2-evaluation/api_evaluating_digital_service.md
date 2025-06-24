@@ -8,7 +8,7 @@ mermaid: true
 ## API PATH
 
 | API                                                                                                         | Swagger                                                                                                              | Use Cases                                                                                                                      |
-|:------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
+| :---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
 | POST /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-evaluating/launchEvaluatingDigitalService) | [Estimate a digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md" %}}) |
 
 ## Description
@@ -23,15 +23,14 @@ The user will receive a response with a task id.
 {{< mermaid align="center">}}
 
 flowchart LR
-A[API Call for Evaluation] --> B(Get the active criteria to evaluate impacts on)
-B --> C(Create the evaluating task with status TO_START)
-C --> D(Launch asynchroneous evaluating process)
-D --> E(Return the task id)
+A[API Call for Evaluation] --> B(Retain the two latest 'EVALUATING' tasks; remove the rest.)
+B --> C(Get the active criteria to evaluate impacts on)
+C --> D(Create the evaluating task with status TO_START)
+D --> E(Launch evaluating process)
+E --> F(Return the task id)
 {{</ mermaid >}}
 
-Note that, the loading process is done asynchronous.
-Attention, to consume small resource the loading process is done by one thread. So if there are two evaluate
-in the instance, one will wait for the other to finish.
+Note that, The evaluation process for digital services is performed synchronously. The evaluation runs immediately in the calling thread, and multiple evaluations can be processed in parallel if triggered simultaneously.
 
 The API call is handled
 by [EvaluatingController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/controller/EvaluatingController.java)
@@ -40,9 +39,9 @@ by [EvaluatingService](https://github.com/G4ITTeam/g4it/blob/main/services/backe
 The EvaluatingService retrieves active criteria for evaluation or defaults to predefined criteria if none are active and
 then handles the logic for initiating and managing evaluation tasks.
 
-## Asynchronous Execution
+## Evaluation Execution
 
-The asynchronous evaluation process follows these steps:
+The evaluation process follows these steps:
 
 {{< mermaid align="center">}}
 
@@ -121,7 +120,7 @@ are written to CSV files.
 Below you will find the entities used to save the generated indicators in the database.
 
 | Package                                       | Entity               | table                                                                                                                           |
-|-----------------------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutPhysicalEquipment | [out_physical_equipment](../../db_documentation/information_system_and_digital_service_output_data/digital_service_output_data) |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutVirtualEquipment  | [out_virtual_equipment](../../db_documentation/information_system_and_digital_service_output_data/digital_service_output_data)  |
 
@@ -149,7 +148,7 @@ This task has the type EVALUATING_DIGITAL_SERVICE.
 
 stateDiagram-v2
 [] --> TO_START: creation of the evaluation task
-TO_START --> IN_PROGRESS: Launching of the asynchronous evaluation process
+TO_START --> IN_PROGRESS: Launching of the evaluation process
 IN_PROGRESS --> COMPLETED: Evaluation process is completed
 IN_PROGRESS --> FAILED : Blocking error during the evaluation process (details of the error persisted in the task)
 IN_PROGRESS --> TO_START : Retry of the stuck evaluation process

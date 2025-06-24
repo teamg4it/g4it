@@ -8,7 +8,7 @@ mermaid: true
 ## API PATH
 
 | API                                                                                              | Swagger                                                                                                | Use Cases                                                                                                          |
-|:-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------|
+| :----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------- |
 | POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-evaluating/launchEvaluating) | [Estimate an inventory]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md" %}}) |
 
 ## Description
@@ -24,14 +24,15 @@ progress percentage of the task by repeatedly calling the api GET
 {{< mermaid align="center">}}
 
 flowchart LR
-A[API Call for Evaluation] --> B(Get the active criteria to evaluate impacts on)
-B --> C(Create the evaluating task with status TO_START)
-C --> D(Launch asynchroneous evaluating process)
-D --> E(Return the task id)
+A[API Call for Evaluation] --> B(Retain the two latest 'EVALUATING' tasks; remove the rest.)
+B --> C(Get the active criteria to evaluate impacts on)
+C --> D(Create the evaluating task with status TO_START)
+D --> E(Launch asynchroneous evaluating process)
+E --> F(Return the task id)
 {{</ mermaid >}}
 
-Note that, the loading process is done asynchronous.
-Attention, to consume small resource the loading process is done by one thread. So if there are two evaluate
+Note that, the evaluation process is done asynchronous.
+Attention, to consume small resource the evaluation process is done by one thread. So if there are two evaluate
 in the instance, one will wait for the other to finish.
 
 The API call is handled
@@ -133,7 +134,7 @@ from numEcoEval library is used for the traditional virtual equipment.
 Below you will find the entities used to save the generated indicators in the database.
 
 | Package                                       | Entity               | table                                                                                                                              |
-|-----------------------------------------------|----------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutPhysicalEquipment | [out_physical_equipment](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/) |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutVirtualEquipment  | [out_virtual_equipment](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/)  |
 | com/soprasteria/g4it/backend/apiinout/modeldb | OutApplication       | [out_application](../../db_documentation/information_system_and_digital_service_output_data/information_sytem_output_data/)        |
