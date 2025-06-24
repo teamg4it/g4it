@@ -26,7 +26,7 @@ import { HttpErrorInterceptor } from "./core/interceptors/http-error.interceptor
 
 // Function to load translation files using HttpClient
 export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, "/assets/i18n/", ".json");
+    return new TranslateHttpLoader(http, "assets/i18n/", ".json");
 }
 
 function baseHRefFactory() {

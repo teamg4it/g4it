@@ -13,10 +13,13 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.LoadInputFilesService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
@@ -52,6 +55,9 @@ class LoadInputFilesServiceTest {
     private InventoryRepository inventoryRepository;
 
     @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private TaskExecutor taskExecutor;
 
     @Mock
@@ -62,6 +68,9 @@ class LoadInputFilesServiceTest {
 
     @InjectMocks
     private LoadInputFilesService loadInputFilesService;
+
+    @Mock
+    private AuthService authService;
 
     @Test
     void loadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
@@ -85,9 +94,14 @@ class LoadInputFilesServiceTest {
                 .name("Test Organization")
                 .build();
 
+        UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+        User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+
         when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
         when(organizationService.getOrganizationById(organizationId)).thenReturn(organization);
         when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
+        when(authService.getUser()).thenReturn(userBO);
+        when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
 
         Task result = loadInputFilesService.loadFiles(subscriber, organizationId, inventoryId, datacenters, physicalEquipments, virtualEquipments, applications);
 

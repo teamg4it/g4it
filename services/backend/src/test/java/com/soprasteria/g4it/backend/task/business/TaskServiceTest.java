@@ -10,7 +10,10 @@ package com.soprasteria.g4it.backend.task.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
+import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.mapper.TaskMapper;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
@@ -38,6 +41,9 @@ class TaskServiceTest {
     private TaskRepository taskRepository;
 
     @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private TaskMapper taskMapper;
 
     @Mock
@@ -45,6 +51,9 @@ class TaskServiceTest {
 
     @InjectMocks
     private TaskService taskService;
+
+    @Mock
+    private AuthService authService;
 
     @Test
     void getTask_returnsMappedTaskWhenTaskExists() {
@@ -82,6 +91,11 @@ class TaskServiceTest {
         Task newTask = new Task();
         newTask.setDigitalServiceUid("uid123");
 
+        UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+        User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+
+        when(authService.getUser()).thenReturn(userBO);
+        when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
         when(taskRepository.findByDigitalServiceUid("uid123")).thenReturn(Optional.empty());
         when(taskRepository.save(any(Task.class))).thenReturn(newTask);
 
@@ -100,6 +114,12 @@ class TaskServiceTest {
         List<String> criteria = List.of("criterion1", "criterion2");
         Task existingTask = new Task();
         existingTask.setDigitalServiceUid("uid123");
+
+        UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+        User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+
+        when(authService.getUser()).thenReturn(userBO);
+        when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
 
         when(taskRepository.findByDigitalServiceUid("uid123")).thenReturn(Optional.of(existingTask));
         when(taskRepository.save(existingTask)).thenReturn(existingTask);
