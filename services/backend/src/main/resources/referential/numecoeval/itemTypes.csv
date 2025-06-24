@@ -1,7 +1,0 @@
-type;categorie;serveur;commentaire;dureeVieDefaut;refHypothese;source;refItemParDefaut
-Terminal;EquipementPhysique;false;Used for digital service footprint evaluation;;;;
-Network;EquipementPhysique;false;Used for digital service footprint evaluation;;;;
-Dedicated Server;EquipementPhysique;true;Used for digital service footprint evaluation;;;;
-Shared Server;EquipementPhysique;true;Used for digital service footprint evaluation;;;;
-Smartphone;EquipementPhysique;false;Lifetime par defaut;2;;;smartphone-2
-Server;EquipementPhysique;true;Lifetime par defaut;7;;;blade-server--28
