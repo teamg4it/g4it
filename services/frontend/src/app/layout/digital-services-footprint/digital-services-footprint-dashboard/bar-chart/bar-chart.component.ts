@@ -696,7 +696,7 @@ export class BarChartComponent extends AbstractDashboard {
                 data: xAxisData,
                 axisLabel: {
                     rotate: 30, // Rotate labels if they overlap
-                    formatter: (value: any) =>
+                    formatter: (value) =>
                         !serverOkmap[value].status.error
                             ? `{grey| ${this.translate.instant(value) || value}}`
                             : `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`,

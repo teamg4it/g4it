@@ -12,13 +12,17 @@ import { EChartsOption } from "echarts";
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
 import {
+    DigitalServiceCloudImpact,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
     TerminalsType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
-import { transformOutPhysicalEquipmentsToTerminalData } from "src/app/core/service/mapper/digital-service";
+import {
+    transformOutPhysicalEquipmentsToTerminalData,
+    transformOutVirtualEquipmentsToCloudData,
+} from "src/app/core/service/mapper/digital-service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { BarChartComponent } from "./bar-chart.component";
 declare var require: any;
@@ -208,6 +212,57 @@ describe("BarChartComponent", () => {
 
         const echartsOption: EChartsOption =
             component.loadStackBarOptionTerminal(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should generate valid EChartsOption for Cloud Services", () => {
+        const barChartData = transformOutVirtualEquipmentsToCloudData(
+            [
+                {
+                    name: "CloudService A",
+                    criterion: "ACIDIFICATION",
+                    lifecycleStep: "USING",
+                    physicalEquipmentName: "",
+                    infrastructureType: "CLOUD_SERVICES",
+                    instanceType: "a1.medium",
+                    provider: "aws",
+                    equipmentType: "",
+                    location: "EEE",
+                    statusIndicator: "ERROR",
+                    countValue: 1,
+                    quantity: 1,
+                    unitImpact: 0,
+                    peopleEqImpact: 0,
+                    electricityConsumption: 0,
+                    unit: "MJ",
+                    usageDuration: 8760,
+                    workload: 0.5,
+                    commonFilters: [""],
+                    filters: [""],
+                    filtersPhysicalEquipment: [""],
+                },
+            ] as any[],
+            { EEE: "Europe" },
+        );
+        component.selectedCriteria = "acidification";
+        component.cloudRadioButtonSelected = "instance";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionCloud(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should handle empty data for Cloud Services", () => {
+        const barChartData: DigitalServiceCloudImpact[] = [];
+        component.selectedCriteria = "acidification";
+        component.cloudRadioButtonSelected = "instance";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionCloud(barChartData);
 
         expect(echartsOption).toBeTruthy();
         expect(echartsOption.series).toBeTruthy();
