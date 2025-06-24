@@ -119,8 +119,8 @@ export interface NetworkType {
 
 export interface DigitalServiceTerminalsImpact {
     criteria: string;
-    impactCountry: TerminalsImpact[];
-    impactType: TerminalsImpact[];
+    impactCountry: TerminalsImpactTypeLocation[];
+    impactType: TerminalsImpactTypeLocation[];
 }
 
 export interface DigitalServiceCloudImpact {
@@ -137,6 +137,12 @@ export interface TerminalsImpact {
     totalNbUsers: number;
     avgUsageTime: number;
     impact: ImpactTerminalsACVStep[];
+}
+
+export interface TerminalsImpactTypeLocation {
+    name: string;
+    terminals: TerminalsImpact[];
+    status: StatusCount;
 }
 
 export interface CloudsImpact {

@@ -14,6 +14,7 @@ import {
     ServerImpact,
     ServersType,
     TerminalsImpact,
+    TerminalsImpactTypeLocation,
     TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
 import { Impact } from "../../interfaces/footprint.interface";
@@ -273,14 +274,14 @@ const aggregateImpacts = (arr: any[], keyFields: string[]) => {
 const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: string) => {
     const impactCountryTmp = data.reduce((acc: any, obj: any) => {
         const key = obj[projection];
-        if (!acc[key]) {
-            acc[key] = [];
-        }
+        const nameKey = obj.name;
+        acc[key] = acc[key] ?? {};
+        acc[key][nameKey] = acc[key][nameKey] ?? [];
 
         /*   Logic for averageUsageTime
         avgUsageTime = (obj.quantity * (365 * 24) / obj.numberOfUsers ) * obj.numberOfUsers
         */
-        const existingACVStep = acc[key].find(
+        const existingACVStep = acc[key][nameKey].find(
             (impact: Impact) =>
                 impact.acvStep === getLifeCycleMapReverse().get(obj.lifecycleStep),
         );
@@ -310,7 +311,7 @@ const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: str
                     ? Constants.DATA_QUALITY_STATUS.error
                     : Constants.DATA_QUALITY_STATUS.ok;
         } else {
-            acc[key].push({
+            acc[key][nameKey].push({
                 acvStep: getLifeCycleMapReverse().get(obj.lifecycleStep),
                 sipValue: obj.peopleEqImpact,
                 rawValue: obj.unitImpact,
@@ -336,19 +337,53 @@ const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: str
         }
         return acc;
     }, {});
-    const impactCountry: TerminalsImpact[] = [];
+    const impactCountry: TerminalsImpactTypeLocation[] = [];
     for (const location in impactCountryTmp) {
-        const impacts = impactCountryTmp[location];
+        const terminalNamesObj = impactCountryTmp[location];
+        const terminalsData: TerminalsImpact[] = [];
+        for (const terminal in terminalNamesObj) {
+            const impacts = terminalNamesObj[terminal];
+            terminalsData.push({
+                name: terminal,
+                avgUsageTime:
+                    sumByProperty(impacts, "avgUsageTime") /
+                    sumByProperty(impacts, "totalNbUsers"),
+                totalNbUsers: sumByProperty(impacts, "totalNbUsers") / 4,
+                totalSipValue: sumByProperty(impacts, "sipValue"),
+                rawValue: sumByProperty(impacts, "rawValue"),
+                unit: impacts[0].unit,
+                impact: impacts,
+            });
+        }
+        const filteredImpacts = data.filter(
+            (d) => d[projection as keyof OutPhysicalEquipmentRest] === location,
+        );
         impactCountry.push({
             name: location,
-            avgUsageTime:
-                sumByProperty(impacts, "avgUsageTime") /
-                sumByProperty(impacts, "totalNbUsers"),
-            totalNbUsers: sumByProperty(impacts, "totalNbUsers") / 4,
-            totalSipValue: sumByProperty(impacts, "sipValue"),
-            rawValue: sumByProperty(impacts, "rawValue"),
-            unit: impacts[0].unit,
-            impact: impacts,
+            terminals: terminalsData,
+            status: {
+                ok: filteredImpacts.reduce(
+                    (acc: number, i: OutPhysicalEquipmentRest) =>
+                        acc +
+                        (i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok
+                            ? i.countValue
+                            : 0),
+                    0,
+                ),
+                error: filteredImpacts.reduce(
+                    (acc: number, i: OutPhysicalEquipmentRest) =>
+                        acc +
+                        (i.statusIndicator !== Constants.DATA_QUALITY_STATUS.ok
+                            ? i.countValue
+                            : 0),
+                    0,
+                ),
+                total: filteredImpacts.reduce(
+                    (acc: number, i: OutPhysicalEquipmentRest) =>
+                        acc + (i.countValue ?? 0),
+                    0,
+                ),
+            },
         });
     }
     impactCountry.sort((a, b) => a?.name?.localeCompare(b?.name));
