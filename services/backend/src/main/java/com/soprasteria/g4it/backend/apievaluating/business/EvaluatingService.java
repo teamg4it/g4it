@@ -13,8 +13,6 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceR
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.AsyncEvaluatingService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
-import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
@@ -78,12 +76,6 @@ public class EvaluatingService {
      */
     @Autowired
     AsyncEvaluatingService asyncEvaluatingService;
-
-    @Autowired
-    OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
-
-    @Autowired
-    OutVirtualEquipmentRepository outVirtualEquipmentRepository;
 
     /**
      * Evaluating an inventory
