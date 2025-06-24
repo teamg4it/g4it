@@ -21,6 +21,7 @@ export class ImpactButtonComponent implements OnInit {
     @Input() selectedCriteria: string = "";
     @Output() selectedCriteriaChange: EventEmitter<any> = new EventEmitter();
     @Input() selectedUnit: string = "";
+    @Input() disabled = false;
     impactImage: string = "";
     selectedLang: string = "en";
 
