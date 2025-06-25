@@ -13,14 +13,16 @@ Create a subscriber and an organization
 create or replace procedure add_subscriber(
    subscriber varchar,
    subscriber_domains varchar,
-   data_retention_day int4
+   data_retention_day int4,
+   storage_retention_day_export int4,
+   criteria _varchar
 )
 language plpgsql
 as $$
 begin
 	-- Create subscriber if not exist
-	insert into g4it_subscriber (name, creation_date, last_update_date, authorized_domains, data_retention_day)
-		select subscriber, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, subscriber_domains, data_retention_day where not exists (
+	insert into g4it_subscriber (name, creation_date, last_update_date, authorized_domains, data_retention_day,storage_retention_day_export,criteria)
+		select subscriber, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, subscriber_domains, data_retention_day,storage_retention_day_export,criteria where not exists (
 			select s.name from g4it_subscriber s where s.name = subscriber
 		);
 
@@ -31,9 +33,8 @@ end;$$
 2. Run the procedure, ex :
 
 ```sql
-# call add_subscriber(subscriber, subscriber_authorized_domains);
-call add_subscriber('SUBSCRIBER-DEMO', NULL, NULL);
-call add_subscriber('SUBSCRIBER-DEMO', 'g4it.com,gmail.com', 730);
+# call add_subscriber(subscriber, subscriber_authorized_domains, data_retention_day, storage_retention_day_export, criteria);
+call add_subscriber('SUBSCRIBER-DEMO', 'g4it.com,gmail.com',730,20,'{climate-change,ionising-radiation,acidification,particulate-matter,resource-use}');
 ```
 
 3. Drop the procedure
@@ -131,3 +132,31 @@ call remove_user_role_on_subscriber('admin@g4it.com', 'SUBSCRIBER-DEMO');
 ```sql
 drop procedure remove_user_role_on_subscriber;
 ```
+
+## Add azure storage account for subscriber 
+
+Each subscriber’s organization has an isolated and dedicated substructure in the platform’s storage container that is specific to the subscriber, in which the G4IT platform deposits.
+
+1. Update .tfvars file in azure infra to add new account details in accounts_config property.
+```sql
+accounts_config = [
+{
+secret_name  = "--INTERNAL-G4IT--",
+account_name = "internalg4it",
+type         = "ZRS"
+},
+{
+secret_name  = "SOPRA-STERIA-GROUP",
+account_name = "sopragroup",
+type         = "ZRS"
+},
+{
+secret_name  = "SUBSCRIBER-DEMO",
+account_name = "subdm",
+type         = "ZRS"
+}
+]
+```
+
+2. Run infra pipeline to create the storage account in azure. For more details go to https://dep-docs.apps.ocp4.innershift.sodigital.io/docs/platforms/azure/restriction-policies/storage-account-restrictions/
+
