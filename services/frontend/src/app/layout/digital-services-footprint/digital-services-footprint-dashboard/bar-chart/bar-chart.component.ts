@@ -918,13 +918,8 @@ export class BarChartComponent extends AbstractDashboard {
     }
 
     selectedStackBarClick(event: string): void {
-        if (
-            (this.selectedParam == "Terminal" ||
-                this.selectedParam === Constants.CLOUD_SERVICE) &&
-            !this.barChartChild
-        ) {
+        if (this.selectedParam === Constants.CLOUD_SERVICE && !this.barChartChild) {
             this.barChartChildChange.emit(true);
-            this.selectedDetailNameChange.emit("terminals");
             this.selectedDetailParamChange.emit(event);
         }
     }
