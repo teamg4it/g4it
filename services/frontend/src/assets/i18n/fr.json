@@ -187,6 +187,7 @@
     },
     "digital-services-terminals": {
         "new": "Nouveau terminal",
+        "edit": "Édition terminal",
         "devices": "Terminaux",
         "device": "Terminal",
         "add": "+ Ajouter un terminal",
