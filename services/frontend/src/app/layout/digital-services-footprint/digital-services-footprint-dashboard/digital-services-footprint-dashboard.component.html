@@ -167,12 +167,12 @@
                 (selectedDetailNameChange)="selectedDetailName = $event"
             ></app-bar-chart>
         </ng-template>
-    </div>
-    <div class="col-12">
+
         <app-information-card
             [title]="getTitleOrContent('digital-services-card-title')"
             [content]="getTitleOrContent('digital-services-card-content')"
             [isLong]="true"
+            class="mt-5 block"
         ></app-information-card>
     </div>
 </div>
