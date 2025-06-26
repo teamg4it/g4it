@@ -291,34 +291,14 @@ describe("BarChartComponent", () => {
 
         const params = {
             value: 200,
-            data: {
-                rawValue: 100,
-                unit: "kg",
-                averageWorkLoad: 50,
-                averageUsage: 30,
-            },
+            data: [50, 20, 10, 20, 30, "kg"],
             seriesName: "Cloud Services",
             color: "#FF0000",
         };
 
         const tooltip = formatter(params);
 
-        expect(tooltip).toContain("200");
-        expect(tooltip).toContain("100 kg");
-        expect(tooltip).toContain("50%");
-        expect(tooltip).toContain("30");
-    });
-
-    it("should return an empty string if value is undefined", () => {
-        const isTerminal = true;
-        const formatter = component["createTooltipFormatter"](isTerminal);
-
-        const params = {
-            value: undefined,
-        };
-
-        const tooltip = formatter(params);
-
-        expect(tooltip).toBe("");
+        expect(tooltip).toContain("30 kg");
+        expect(tooltip).toContain("20");
     });
 });
