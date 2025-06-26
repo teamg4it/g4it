@@ -189,6 +189,7 @@
     },
     "digital-services-terminals": {
         "new": "New Device",
+        "edit": "Edit Device",
         "devices": "Devices",
         "device": "Device",
         "add": "+ ADD DEVICE",

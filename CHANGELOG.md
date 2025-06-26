@@ -5,10 +5,12 @@
 ### Major Changes
 
 - 1261 | Naming user groups in the Digital Service module – Terminales input
+- 740 | Visualize different cloud instances for the same type
 
 ### Minor Changes
 
-- 1200 | [BE] New Bug on electricity consumption : total display different than sum compute manually with export file
+- 1257 | Very High level of Digital Service calculated - Click in May
+- 1200 | New Bug on electricity consumption : total display different than sum compute manually with export file
 - 1174 | When there is one criteria evaluated, multicriteria view should be disabled in digital service module and criteria should be selected in inventory module
 - 1251 | Character "%" breaks the note feature
 - 1258 | Table "task", the column "created_by" is not alway valuated
