@@ -3,11 +3,9 @@ title: "Add user rights to end user"
 weight: 2
 ---
 
-## Add a subscriber and an organization
+## Add a subscriber
 
-Create a subscriber and an organization
-
-1. Execute the create procedure script
+1. Execute the create subscriber procedure script
 
 ```sql
 create or replace procedure add_subscriber(
@@ -41,6 +39,41 @@ call add_subscriber('SUBSCRIBER-DEMO', 'g4it.com,gmail.com',730,20,'{climate-cha
 
 ```sql
 drop procedure add_subscriber;
+```
+
+## Add an organization
+
+1. Execute the create organization procedure script
+
+```sql
+create or replace procedure add_organization(
+   subscriber varchar,
+   organization varchar
+)
+language plpgsql
+as $$
+declare 
+ sub_id int8;
+begin	
+    select id into sub_id from g4it_subscriber sub where sub.name=subscriber;	
+	insert into g4it_organization (name, creation_date, last_update_date, subscriber_id, status)
+		values(organization,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,sub_id,'ACTIVE');
+
+    commit;
+end;$$
+```
+
+2. Run the procedure, ex :
+
+```sql
+# call add_organization(subscriber, organization);
+call add_organization('SUBSCRIBER-DEMO','DEMO');
+```
+
+3. Drop the procedure
+
+```sql
+drop procedure add_organization;
 ```
 
 ## Add Subscriber's Administrator rights to user.
@@ -133,7 +166,7 @@ call remove_user_role_on_subscriber('admin@g4it.com', 'SUBSCRIBER-DEMO');
 drop procedure remove_user_role_on_subscriber;
 ```
 
-## Add azure storage account for subscriber 
+## Add azure storage account for subscriber
 
 Each subscriber’s organization has an isolated and dedicated substructure in the platform’s storage container that is specific to the subscriber, in which the G4IT platform deposits.
 
