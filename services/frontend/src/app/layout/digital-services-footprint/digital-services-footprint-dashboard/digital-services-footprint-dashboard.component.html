@@ -64,12 +64,10 @@
                         }}"
                     />
                 </span>
-                <h3 *ngIf="selectedParam === 'Server' || selectedParam === 'Terminal'">
+
+                <h3>
                     {{ selectedDetailName }}
                 </h3>
-                @if (selectedParam === constants.CLOUD_SERVICE) {
-                    <h3>{{ selectedDetailParam }}</h3>
-                }
             </div>
 
             <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
