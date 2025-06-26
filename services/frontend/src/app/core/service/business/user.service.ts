@@ -113,7 +113,10 @@ export class UserService {
             return;
         }
 
-        if (page !== undefined && ["inventories", "digital-services", "eco-mind-ai"].includes(page)) {
+        if (
+            page !== undefined &&
+            ["inventories", "digital-services", "eco-mind-ai"].includes(page)
+        ) {
             return this.handlePageRouting(
                 currentUser,
                 subscriberName,
@@ -337,7 +340,11 @@ export class UserService {
     ): void {
         this.setSubscriberAndOrganization(subscriber, organization);
         if (this.checkIfAllowed(subscriber, organization, page)) {
-            if (page === "inventories" || page === "digital-services") {
+            if (
+                page === "inventories" ||
+                page === "digital-services" ||
+                page === "eco-mind-ai"
+            ) {
                 this.router.navigateByUrl(
                     `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
                 );

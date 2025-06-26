@@ -59,6 +59,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
+    isEcoMindEnabledForCurrentSubscriber: boolean = false;
     @Input() set isAi(value: boolean) {
         this.isEcoMindAi = value;
     }
@@ -123,6 +124,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
             this.selectedSubscriberName = subscriber.name;
             this.subscriber = subscriber;
+            this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
         });
         this.userService.currentOrganization$.subscribe((organization: Organization) => {
             this.organization.subscriberName = this.subscriber.name;

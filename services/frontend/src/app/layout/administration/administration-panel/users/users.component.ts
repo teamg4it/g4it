@@ -23,6 +23,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-users",
@@ -60,6 +61,8 @@ export class UsersComponent {
     defaultCriteria: string[] = [];
     subscriber!: Subscriber;
     firstPage: number = 0;
+
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
     constructor(
         private administrationService: AdministrationService,
@@ -156,6 +159,7 @@ export class UsersComponent {
         user.isModule = this.getRole(user.roles, "INVENTORY_");
         user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
         user.role = this.getRole(user.roles, "ADMINISTRATOR");
+        user.ecomindModule = this.getRole(user.roles, "ECO_MIND_AI_");
         return user;
     }
 

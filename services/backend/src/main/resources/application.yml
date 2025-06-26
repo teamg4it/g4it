@@ -127,3 +127,6 @@ logging:
     org.hibernate: warn
     liquibase: warn
     com.zaxxer: warn
+
+ecomindaimodule:
+  enabled: true

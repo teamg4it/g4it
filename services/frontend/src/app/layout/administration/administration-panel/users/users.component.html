@@ -140,6 +140,11 @@
                     <th scope="col" class="text-center">
                         {{ "administration.user.ds-module" | translate }}
                     </th>
+                    @if (isEcoMindModuleEnabled) {
+                        <th scope="col" class="text-center">
+                            {{ "administration.user.ecomind-module" | translate }}
+                        </th>
+                    }
                     <th scope="col" class="text-center">
                         {{ "administration.user.role" | translate }}
                     </th>
@@ -156,6 +161,9 @@
                     <td>{{ user.email }}</td>
                     <td class="text-center">{{ user?.isModule | translate }}</td>
                     <td class="text-center">{{ user?.dsModule | translate }}</td>
+                    @if (isEcoMindModuleEnabled) {
+                        <td class="text-center">{{ user?.ecomindModule | translate }}</td>
+                    }
                     <td class="text-center">{{ user?.role | translate }}</td>
                     <td class="text-center">
                         <div *ngIf="!user.isSubscriberAdmin">

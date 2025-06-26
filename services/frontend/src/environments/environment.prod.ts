@@ -9,7 +9,12 @@
 export const environment = {
     production: true,
     apiBaseUrl: "$URL_INVENTORY",
-    securedEndpoints: ["inventories", "digital-services", "eco-mind-ai", "template-files"],
+    securedEndpoints: [
+        "inventories",
+        "digital-services",
+        "eco-mind-ai",
+        "template-files",
+    ],
     keycloak: {
         issuer: "${KEYCLOAK_URL}",
         realm: "g4it",
@@ -25,4 +30,5 @@ export const environment = {
             containerUrl: "${MATOMO_TAG_MANAGER_URL}",
         },
     },
+    isEcomindEnabled: true,
 };

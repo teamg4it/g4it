@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestM
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
+import com.soprasteria.g4it.backend.common.utils.AuthorizationUtils;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceRest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +49,18 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
     @Autowired
     private DigitalServiceRestMapper digitalServiceRestMapper;
 
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<DigitalServiceRest> createDigitalService(final String subscriber, final Long organization, final Boolean isAi ) {
+    public ResponseEntity<DigitalServiceRest> createDigitalService(final String subscriber, final Long organization, final Boolean isAi) {
+//        if (isAi != null && isAi) {
+//            authorizationUtils.checkEcomindEnabledForSubscriber(subscriber);
+//        }
+
         final DigitalServiceBO digitalServiceBO = digitalServiceService.createDigitalService(organization, authService.getUser().getId(), isAi);
         final DigitalServiceRest digitalServiceDTO = digitalServiceRestMapper.toDto(digitalServiceBO);
         return ResponseEntity.created(URI.create("/".concat(String.join("/", organization.toString(), "digital-services", digitalServiceBO.getUid())))).body(digitalServiceDTO);
@@ -63,6 +71,9 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      */
     @Override
     public ResponseEntity<List<DigitalServiceRest>> getDigitalServices(final String subscriber, final Long organization, final Boolean isAi) {
+//        if (isAi != null && isAi) {
+//            authorizationUtils.checkEcomindEnabledForSubscriber(subscriber);
+//        }
         final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(organization, isAi);
         return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceBOs));
     }

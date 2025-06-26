@@ -829,6 +829,7 @@
             "access": "Access",
             "is-module": "Module Information System",
             "ds-module": "Module Digital service",
+            "ecomind-module": "Module EcoMind",
             "role": "Role",
             "actions": "Actions",
             "add": "ADD TO ORGANIZATION",

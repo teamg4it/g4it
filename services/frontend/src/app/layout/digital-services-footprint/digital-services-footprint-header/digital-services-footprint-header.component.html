@@ -111,6 +111,7 @@
             *ngIf="isEcoMindAi && (userService.isAllowedDigitalServiceWrite$ | async)"
             styleClass="bg-black header-button ml-2"
             type="button"
+            [disabled]="!(userService.isAllowedEcoMindAiWrite$ | async)"
             [label]="'common.save' | translate"
             (onClick)="handleSave()"
         />

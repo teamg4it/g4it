@@ -229,6 +229,9 @@ public class AuthService {
         if (roles.contains(Constants.ROLE_INVENTORY_WRITE)) {
             roles.add(Constants.ROLE_INVENTORY_READ);
         }
+        if (roles.contains(Constants.ROLE_ECO_MIND_AI_WRITE)) {
+            roles.add(Constants.ROLE_ECO_MIND_AI_READ);
+        }
         if (roles.contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)) {
             roles.addAll(Constants.ALL_BASIC_ROLES);
         }
