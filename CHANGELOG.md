@@ -4,6 +4,8 @@
 
 ### Major Changes
 
+- 1261 | Naming user groups in the Digital Service module – Terminales input
+
 ### Minor Changes
 
 - 1257 | Very High level of Digital Service calculated - Click in May

@@ -13,7 +13,9 @@ import {
     NetworkType,
     ServerImpact,
     ServersType,
+    TerminalImpactGroup,
     TerminalsImpact,
+    TerminalsImpactTypeLocation,
     TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
 import { Impact } from "../../interfaces/footprint.interface";
@@ -271,16 +273,16 @@ const aggregateImpacts = (arr: any[], keyFields: string[]) => {
 };
 
 const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: string) => {
-    const impactCountryTmp = data.reduce((acc: any, obj: any) => {
+    const impactCountryTmp: TerminalImpactGroup = data.reduce((acc: any, obj: any) => {
         const key = obj[projection];
-        if (!acc[key]) {
-            acc[key] = [];
-        }
+        const nameKey = obj.name;
+        acc[key] = acc[key] ?? {};
+        acc[key][nameKey] = acc[key][nameKey] ?? [];
 
         /*   Logic for averageUsageTime
         avgUsageTime = (obj.quantity * (365 * 24) / obj.numberOfUsers ) * obj.numberOfUsers
         */
-        const existingACVStep = acc[key].find(
+        const existingACVStep = acc[key][nameKey].find(
             (impact: Impact) =>
                 impact.acvStep === getLifeCycleMapReverse().get(obj.lifecycleStep),
         );
@@ -310,7 +312,7 @@ const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: str
                     ? Constants.DATA_QUALITY_STATUS.error
                     : Constants.DATA_QUALITY_STATUS.ok;
         } else {
-            acc[key].push({
+            acc[key][nameKey].push({
                 acvStep: getLifeCycleMapReverse().get(obj.lifecycleStep),
                 sipValue: obj.peopleEqImpact,
                 rawValue: obj.unitImpact,
@@ -336,21 +338,46 @@ const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: str
         }
         return acc;
     }, {});
-    const impactCountry: TerminalsImpact[] = [];
-    for (const location in impactCountryTmp) {
-        const impacts = impactCountryTmp[location];
-        impactCountry.push({
-            name: location,
-            avgUsageTime:
-                sumByProperty(impacts, "avgUsageTime") /
-                sumByProperty(impacts, "totalNbUsers"),
-            totalNbUsers: sumByProperty(impacts, "totalNbUsers") / 4,
-            totalSipValue: sumByProperty(impacts, "sipValue"),
-            rawValue: sumByProperty(impacts, "rawValue"),
-            unit: impacts[0].unit,
-            impact: impacts,
-        });
-    }
+    const impactCountry = Object.entries(impactCountryTmp).map(
+        ([location, terminalNamesObj]) => {
+            const terminalsData = Object.entries(terminalNamesObj).map(
+                ([terminalName, impacts]) =>
+                    ({
+                        name: terminalName,
+                        avgUsageTime:
+                            sumByProperty(impacts, "avgUsageTime") /
+                            sumByProperty(impacts, "totalNbUsers"),
+                        totalNbUsers: sumByProperty(impacts, "totalNbUsers") / 4,
+                        totalSipValue: sumByProperty(impacts, "sipValue"),
+                        rawValue: sumByProperty(impacts, "rawValue"),
+                        unit: impacts[0].unit,
+                        impact: impacts,
+                    }) as TerminalsImpact,
+            );
+
+            const filteredImpacts = data.filter(
+                (d) => d[projection as keyof OutPhysicalEquipmentRest] === location,
+            );
+
+            const status = filteredImpacts.reduce(
+                (acc, i: OutPhysicalEquipmentRest) => {
+                    const isOk = i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok;
+                    return {
+                        ok: acc.ok + (isOk ? i.countValue : 0),
+                        error: acc.error + (!isOk ? i.countValue : 0),
+                        total: acc.total + (i.countValue ?? 0),
+                    };
+                },
+                { ok: 0, error: 0, total: 0 },
+            );
+
+            return {
+                name: location,
+                terminals: terminalsData,
+                status,
+            } as TerminalsImpactTypeLocation;
+        },
+    );
     impactCountry.sort((a, b) => a?.name?.localeCompare(b?.name));
     return impactCountry;
 };

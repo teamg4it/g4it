@@ -64,13 +64,10 @@
                         }}"
                     />
                 </span>
-                <h3 *ngIf="selectedParam === 'Server'">
+                <h3 *ngIf="selectedParam === 'Server' || selectedParam === 'Terminal'">
                     {{ selectedDetailName }}
                 </h3>
-                @if (
-                    selectedParam === "Terminal" ||
-                    selectedParam === constants.CLOUD_SERVICE
-                ) {
+                @if (selectedParam === constants.CLOUD_SERVICE) {
                     <h3>{{ selectedDetailParam }}</h3>
                 }
             </div>

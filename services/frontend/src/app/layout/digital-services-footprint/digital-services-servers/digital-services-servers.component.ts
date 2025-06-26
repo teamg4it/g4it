@@ -186,6 +186,7 @@ export class DigitalServicesServersComponent {
             name: this.digitalServicesBusiness.getNextAvailableName(
                 this.existingNames,
                 "Server",
+                false,
             ),
             mutualizationType: "Dedicated",
             type: "Compute",
