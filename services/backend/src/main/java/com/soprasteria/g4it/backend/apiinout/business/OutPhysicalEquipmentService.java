@@ -40,12 +40,10 @@ public class OutPhysicalEquipmentService {
      */
     public List<OutPhysicalEquipmentRest> getByDigitalServiceUid(final String digitalServiceUid) {
 
-        Optional<Task> task = taskRepository.findByDigitalServiceUid(digitalServiceUid);
-
+        Optional<Task> task = taskRepository.findByDigitalServiceUidAndLastCreationDate(digitalServiceUid);
         if (task.isEmpty()) {
             return List.of();
         }
-
         return outPhysicalEquipmentMapper.toRest(
                 outPhysicalEquipmentRepository.findByTaskId(task.get().getId())
         );

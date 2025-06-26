@@ -9,7 +9,6 @@ import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { finalize } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { SuperAdminDataService } from "src/app/core/service/data/super-admin-data.service";
 
@@ -24,7 +23,6 @@ export class SuperAdminComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);
     isMigrateDataButtonDisabled = false;
     isMigrateDemoDsButtonDisabled = false;
-    
 
     constructor(public superAdminDataService: SuperAdminDataService) {}
 
@@ -40,11 +38,9 @@ export class SuperAdminComponent implements OnInit {
 
     async launchReleaseScript() {
         this.isMigrateDataButtonDisabled = true;
-        this.superAdminDataService.launchReleaseScript()
-        .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => {
-            this.superAdminDataService.removeWriteAccess().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-        }))
-        .subscribe()
-       
+        this.superAdminDataService
+            .launchReleaseScript()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
     }
 }

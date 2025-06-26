@@ -45,12 +45,12 @@ class OutPhysicalEquipmentServiceTest {
     @Test
     void getByDigitalServiceUid_returnsEmptyList_whenTaskNotFound() {
         String digitalServiceUid = "nonexistent-uid";
-        when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.empty());
+        when(taskRepository.findByDigitalServiceUidAndLastCreationDate(digitalServiceUid)).thenReturn(Optional.empty());
 
         List<OutPhysicalEquipmentRest> result = outPhysicalEquipmentService.getByDigitalServiceUid(digitalServiceUid);
 
         assertTrue(result.isEmpty());
-        verify(taskRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(taskRepository).findByDigitalServiceUidAndLastCreationDate(digitalServiceUid);
         verifyNoInteractions(outPhysicalEquipmentRepository, outPhysicalEquipmentMapper);
     }
 
@@ -59,14 +59,14 @@ class OutPhysicalEquipmentServiceTest {
         String digitalServiceUid = "valid-uid";
         Task task = new Task();
         task.setId(1L);
-        when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.of(task));
+        when(taskRepository.findByDigitalServiceUidAndLastCreationDate(digitalServiceUid)).thenReturn(Optional.of(task));
         when(outPhysicalEquipmentRepository.findByTaskId(task.getId())).thenReturn(List.of());
         when(outPhysicalEquipmentMapper.toRest(anyList())).thenReturn(List.of(OutPhysicalEquipmentRest.builder().build()));
 
         List<OutPhysicalEquipmentRest> result = outPhysicalEquipmentService.getByDigitalServiceUid(digitalServiceUid);
 
         assertFalse(result.isEmpty());
-        verify(taskRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(taskRepository).findByDigitalServiceUidAndLastCreationDate(digitalServiceUid);
         verify(outPhysicalEquipmentRepository).findByTaskId(task.getId());
         verify(outPhysicalEquipmentMapper).toRest(anyList());
     }

@@ -13,11 +13,8 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceR
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.AsyncEvaluatingService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
-import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -80,15 +77,6 @@ public class EvaluatingService {
     @Autowired
     AsyncEvaluatingService asyncEvaluatingService;
 
-    @Autowired
-    OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
-
-    @Autowired
-    OutVirtualEquipmentRepository outVirtualEquipmentRepository;
-
-    @Autowired
-    OutAiRecoRepository outAiRecoRepository;
-
     /**
      * Evaluating an inventory
      *
@@ -103,7 +91,7 @@ public class EvaluatingService {
 
         Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow();
 
-        manageTasks(subscriber, organizationId, inventory);
+        manageInventoryTasks(subscriber, organizationId, inventory);
 
         Context context = Context.builder()
                 .subscriber(subscriber)
@@ -126,7 +114,7 @@ public class EvaluatingService {
 
         User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
 
-        // create task with type LOADING
+        // create task with type EVALUATING
         Task task = Task.builder()
                 .creationDate(context.getDatetime())
                 .details(new ArrayList<>())
@@ -141,7 +129,7 @@ public class EvaluatingService {
 
         taskRepository.save(task);
 
-        // run loading async task
+        // run evaluation async task
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
 
         return task;
@@ -161,6 +149,8 @@ public class EvaluatingService {
 
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
+
+        manageDigitalServiceTasks(subscriber, organizationId, digitalServiceUid);
 
         Context context = Context.builder()
                 .subscriber(subscriber)
@@ -186,32 +176,21 @@ public class EvaluatingService {
         User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
 
         // create task with type EVALUATING_DIGITAL_SERVICE
-        Task task = taskRepository.findByDigitalServiceUid(digitalService.getUid())
-                .orElseGet(() -> Task.builder()
-                        .digitalServiceUid(digitalService.getUid())
-                        .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
-                        .createdBy(user)
-                        .build());
-
-        if (task.getCreationDate() != null) {
-            outPhysicalEquipmentRepository.deleteByTaskId(task.getId());
-            outVirtualEquipmentRepository.deleteByTaskId(task.getId());
-            exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
-            if (context.isAi()) {
-                outAiRecoRepository.deleteByTaskId(task.getId());
-            }
-        }
-
-        task.setProgressPercentage("0%");
-        task.setStatus(TaskStatus.IN_PROGRESS.toString());
-        task.setCreationDate(context.getDatetime());
-        task.setLastUpdateDate(context.getDatetime());
-        task.setCriteria(criteriaToSet);
-        task.setDetails(new ArrayList<>());
+        Task task = Task.builder()
+                .creationDate(context.getDatetime())
+                .details(new ArrayList<>())
+                .lastUpdateDate(context.getDatetime())
+                .progressPercentage("0%")
+                .status(TaskStatus.IN_PROGRESS.toString())
+                .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
+                .digitalServiceUid(digitalService.getUid())
+                .criteria(criteriaToSet)
+                .createdBy(user)
+                .build();
 
         taskRepository.save(task);
 
-        // run loading async task
+        // run evaluation task
         asyncEvaluatingService.execute(context, task);
 
         digitalService.setLastCalculationDate(LocalDateTime.now());
@@ -245,7 +224,7 @@ public class EvaluatingService {
                     final Inventory inventory = task.getInventory();
                     final Organization organization = inventory.getOrganization();
                     final String subscriber = organization.getSubscriber().getName();
-                    manageTasks(subscriber, organization.getId(), inventory);
+                    manageInventoryTasks(subscriber, organization.getId(), inventory);
 
                     final Context context = Context.builder()
                             .subscriber(subscriber)
@@ -273,7 +252,7 @@ public class EvaluatingService {
      * @param organizationId the organization id
      * @param inventory      the inventory
      */
-    private void manageTasks(String subscriber, Long organizationId, Inventory inventory) {
+    private void manageInventoryTasks(String subscriber, Long organizationId, Inventory inventory) {
         // check if any task is already running
         List<Task> tasks = taskRepository.findByInventoryAndStatusAndType(inventory, TaskStatus.IN_PROGRESS.toString(), TaskType.EVALUATING.toString());
         if (!tasks.isEmpty()) {
@@ -290,6 +269,29 @@ public class EvaluatingService {
                     exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
                 });
     }
+
+    /**
+     * Manage tasks:
+     * - clean old tasks, always keep the 2 last tasks
+     *
+     * @param subscriber     the subscriber
+     * @param organizationId the organization id
+     * @param digitalServiceUid      the digitalServiceUid
+     */
+    private void manageDigitalServiceTasks(String subscriber, Long organizationId, String digitalServiceUid) {
+
+        // clean old tasks
+        taskRepository.findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
+                .stream()
+                .sorted(Comparator.comparing(Task::getId).reversed())
+                .skip(2)
+                .forEach(task -> {
+                    taskRepository.deleteTask(task.getId());
+                    exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
+                });
+    }
+
+
 
 
 }

@@ -167,16 +167,22 @@ export class DigitalServiceBusinessService {
         return this.digitalServiceData.updateDsCriteria(digitalServiceUid, DSCriteria);
     }
 
-    getNextAvailableName(existingNames: string[], baseName: string): string {
+    getNextAvailableName(
+        existingNames: string[],
+        baseName: string,
+        isNumeric: boolean,
+    ): string {
         const nameSet = new Set(existingNames?.map((n) => removeBlankSpaces(n)));
         let index = 1;
-        let newName = `${removeBlankSpaces(baseName)}${String.fromCharCode(64 + index)}`; // Start with "ServerA"
+        let newString = isNumeric ? index.toString() : String.fromCharCode(64 + index);
+        let newName = `${removeBlankSpaces(baseName)} ${newString}`; // Start with "Server 1" or "Server A"
 
-        while (nameSet.has(newName)) {
+        while (nameSet.has(removeBlankSpaces(newName))) {
             index++;
-            newName = `${removeBlankSpaces(baseName)}${String.fromCharCode(64 + index)}`; // Increment to "ServerB", "ServerC", etc.
+            newString = isNumeric ? index.toString() : String.fromCharCode(64 + index);
+            newName = `${removeBlankSpaces(baseName)} ${newString}`; // Increment to "Server 2", "Server B", etc.
         }
-        return `${baseName} ${String.fromCharCode(64 + index)}`;
+        return newName;
     }
 
     async initCountryMap() {

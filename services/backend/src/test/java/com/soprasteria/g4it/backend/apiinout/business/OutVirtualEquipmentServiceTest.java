@@ -74,12 +74,12 @@ class OutVirtualEquipmentServiceTest {
     @Test
     void getByDigitalServiceUid_returnsEmptyList_whenNoTaskFound() {
         String digitalServiceUid = "test-uid";
-        when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.empty());
+        when(taskRepository.findByDigitalServiceUidAndLastCreationDate(digitalServiceUid)).thenReturn(Optional.empty());
 
         List<OutVirtualEquipmentRest> result = outVirtualEquipmentService.getByDigitalServiceUid(digitalServiceUid);
 
         assertTrue(result.isEmpty());
-        verify(taskRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(taskRepository).findByDigitalServiceUidAndLastCreationDate(digitalServiceUid);
         verifyNoInteractions(outVirtualEquipmentRepository, outVirtualEquipmentMapper);
     }
 
@@ -88,14 +88,14 @@ class OutVirtualEquipmentServiceTest {
         String digitalServiceUid = "test-uid";
         Task task = new Task();
         task.setId(1L);
-        when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.of(task));
+        when(taskRepository.findByDigitalServiceUidAndLastCreationDate(digitalServiceUid)).thenReturn(Optional.of(task));
         when(outVirtualEquipmentRepository.findByTaskId(task.getId())).thenReturn(List.of());
         when(outVirtualEquipmentMapper.toRest(anyList())).thenReturn(List.of(OutVirtualEquipmentRest.builder().build()));
 
         List<OutVirtualEquipmentRest> result = outVirtualEquipmentService.getByDigitalServiceUid(digitalServiceUid);
 
         assertFalse(result.isEmpty());
-        verify(taskRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(taskRepository).findByDigitalServiceUidAndLastCreationDate(digitalServiceUid);
         verify(outVirtualEquipmentRepository).findByTaskId(task.getId());
         verify(outVirtualEquipmentMapper).toRest(anyList());
     }
