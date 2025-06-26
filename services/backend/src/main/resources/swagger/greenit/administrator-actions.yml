@@ -13,7 +13,7 @@ paths:
     post:
       tags:
         - administrator-actions
-      summary: migrate the digital services
+      summary: do admin actions
       operationId: doAdminActions
       x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
       responses:

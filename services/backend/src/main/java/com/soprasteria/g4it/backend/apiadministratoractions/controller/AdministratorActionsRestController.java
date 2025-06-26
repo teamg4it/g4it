@@ -20,8 +20,12 @@ public class AdministratorActionsRestController implements AdministratorActionsA
     @Override
     public ResponseEntity<AllEvaluationStatusRest> doAdminActions() {
 
+        //  Rename the randomly generated terminals
+        administratorActionsService.renameTerminals();
+
         //  Rename the randomly generated networks
         return ResponseEntity.ok(administratorActionsService.renameNetworks());
+
     }
 
 }

@@ -46,8 +46,8 @@ export class CommonEditorComponent {
         }
 
         if (change?.currentValue) {
-            this.editorTextValue = decodeURIComponent(change?.currentValue);
-            this.editorTextValueUnmodified = decodeURIComponent(change?.currentValue);
+            this.editorTextValue = change?.currentValue;
+            this.editorTextValueUnmodified = change?.currentValue;
         }
     }
 

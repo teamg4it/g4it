@@ -54,7 +54,7 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
     public ResponseEntity<Resource> getDigitalServiceIndicatorsExportResult(String subscriber,
                                                                             Long organization,
                                                                             String digitalServiceUid) {
-        Task task = taskRepository.findByDigitalServiceUid(digitalServiceUid)
+        Task task = taskRepository.findByDigitalServiceUidAndLastCreationDate(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", "Digital service task not found"));
         String filename = task.getId() + Constants.ZIP;
 
