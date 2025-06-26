@@ -8,7 +8,6 @@
 
 package com.soprasteria.g4it.backend.apiaiinfra.modeldb;
 
-import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,17 +28,27 @@ public class InAiInfrastructure {
     private Long id;
 
     /**
-     * Linked Digital Service. Temporary field
+     * Digital Service uid
      */
     private String digitalServiceUid;
 
+    /**
+     * Complementary Pue
+     */
     private Double complementaryPue;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "infrastructure_type_enum")
-    private InAiInfrastructureRest.InfrastructureTypeEnum infrastructureTypeEnum;
+    /**
+     * Infrastructure type
+     */
+    private String infrastructureType;
 
+    /**
+     * nbGpu
+     */
     private Long nbGpu;
 
+    /**
+     * gpuMemory
+     */
     private Long gpuMemory;
 }
