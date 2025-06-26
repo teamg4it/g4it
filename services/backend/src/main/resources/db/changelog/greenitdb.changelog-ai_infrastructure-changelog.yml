@@ -44,3 +44,13 @@ databaseChangeLog:
                     nullable: true
                     foreignKeyName: ai_infrastructure_digital_service_fk
                     references: digital_service(uid)
+
+  - changeSet:
+      id: update-ai-infrastructure-table
+      author: G4IT Dev Team
+      changes:
+        - renameColumn:
+            tableName: in_ai_infrastructure
+            oldColumnName: infrastructure_type_enum
+            newColumnName: infrastructure_type
+            columnDataType: VARCHAR(50)

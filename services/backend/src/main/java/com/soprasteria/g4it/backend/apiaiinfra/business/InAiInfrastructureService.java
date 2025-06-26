@@ -4,9 +4,11 @@ import com.soprasteria.g4it.backend.apiaiinfra.mapper.InAiInfrastructureMapper;
 import com.soprasteria.g4it.backend.apiaiinfra.model.InAiInfrastructureBO;
 import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
@@ -31,7 +33,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,9 @@ public class InAiInfrastructureService {
     DigitalServiceRepository digitalServiceRepository;
     @Autowired
     DigitalServiceService digitalServiceService;
+
+    @Autowired
+    DigitalServiceReferentialService digitalServiceReferentialService;
 
 
     @Autowired
@@ -76,6 +80,12 @@ public class InAiInfrastructureService {
     @Autowired
     InAiInfrastructureRepository inAiInfrastructureRepository;
 
+    /**
+     * Saves inAiInfrastructureRest information in tables InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure.
+     * @param digitalServiceUid - The digital Service uid
+     * @param inAiInfrastructureRest - The Rest object of the inAiInfrastructure
+     * @return The new physical equipment
+     */
     public InPhysicalEquipmentRest postDigitalServiceInputsAiInfra(String digitalServiceUid, InAiInfrastructureRest inAiInfrastructureRest) {
         Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
 
@@ -90,23 +100,27 @@ public class InAiInfrastructureService {
         inDatacenterToCreate.setDigitalServiceUid(digitalServiceUid);
         inDatacenterToCreate.setLocation(inAiInfrastructureBO.getLocation());
         inDatacenterToCreate.setPue(inAiInfrastructureBO.getPue());
-        inDatacenterToCreate.setName("DataCenter1");
+        inDatacenterToCreate.setName("Datacenter");
         inDatacenterToCreate.setCreationDate(now);
         inDatacenterToCreate.setLastUpdateDate(now);
         inDatacenterRepository.save(inDatacenterToCreate);
 
         final InPhysicalEquipment inPhysicalEquipmentToCreate = inPhysicalEquipmentMapper.toEntity(InPhysicalEquipmentRest.builder().build());
         inPhysicalEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
-        inPhysicalEquipmentToCreate.setName("Server1");
-        inPhysicalEquipmentToCreate.setModel("blade-server--28");
+        inPhysicalEquipmentToCreate.setName("Physical equipment");
+        inPhysicalEquipmentToCreate.setModel(inAiInfrastructureBO.getInfrastructureType().getCode());
         inPhysicalEquipmentToCreate.setType("Dedicated Server");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        inPhysicalEquipmentToCreate.setDateWithdrawal(LocalDate.parse("2030-05-01", formatter));
+
+        // dateWithdrawal
+        double lifespan = inAiInfrastructureBO.getInfrastructureType().getLifespan().intValue();
+        int numberYear = inAiInfrastructureBO.getInfrastructureType().getLifespan().intValue();
+        int month = (int) Math.round((numberYear-lifespan) * 12);
+        inPhysicalEquipmentToCreate.setDateWithdrawal(LocalDate.from(now.plusYears(numberYear).plusMonths(month)));
+
         inPhysicalEquipmentToCreate.setManufacturer("Manufacturer1");
         inPhysicalEquipmentToCreate.setDatacenterName(inDatacenterToCreate.getName());
         inPhysicalEquipmentToCreate.setCpuCoreNumber(Optional.ofNullable(inAiInfrastructureBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
         inPhysicalEquipmentToCreate.setLocation(inDatacenterToCreate.getLocation());
-        inPhysicalEquipmentToCreate.setCpuType("CpuType1");
         inPhysicalEquipmentToCreate.setDatePurchase(now.toLocalDate());
         inPhysicalEquipmentToCreate.setSizeMemoryGb(Optional.ofNullable(inAiInfrastructureBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
         inPhysicalEquipmentToCreate.setCreationDate(now);
@@ -116,15 +130,14 @@ public class InAiInfrastructureService {
 
         final InVirtualEquipment inVirtualEquipmentToCreate = inVirtualEquipmentMapper.toEntity(InVirtualEquipmentRest.builder().build());
         inVirtualEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
-        inVirtualEquipmentToCreate.setName("VirtualEquipement1");
+        inVirtualEquipmentToCreate.setName("Virtual equipment");
         inVirtualEquipmentToCreate.setPhysicalEquipmentName(inPhysicalEquipmentToCreate.getName());
-        inVirtualEquipmentToCreate.setInfrastructureType(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC.getValue());
+        inVirtualEquipmentToCreate.setInfrastructureType(inAiInfrastructureBO.getInfrastructureType().getCode());
         inVirtualEquipmentToCreate.setLocation(inPhysicalEquipmentToCreate.getLocation());
         inVirtualEquipmentToCreate.setSizeMemoryGb(Optional.ofNullable(inAiInfrastructureBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentToCreate.setVcpuCoreNumber(Optional.ofNullable(inAiInfrastructureBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentToCreate.setCreationDate(now);
-        inVirtualEquipmentToCreate.setWorkload(0.5);
-        inVirtualEquipmentToCreate.setDurationHour(8000.0);
+        inVirtualEquipmentToCreate.setWorkload(1.0);
         inVirtualEquipmentToCreate.setQuantity(1.0);
         inVirtualEquipmentToCreate.setLastUpdateDate(now);
         inVirtualEquipmentRepository.save(inVirtualEquipmentToCreate);
@@ -136,6 +149,11 @@ public class InAiInfrastructureService {
         return inPhysicalEquipmentMapper.toRest(inPhysicalEquipmentToCreate);
     }
 
+    /**
+     * Get the InAiInfrastructureBO that was in InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure.
+     * @param digitalServiceUid - The digital service uid
+     * @return The InAiInfrastructureBO with all the information
+     */
     public InAiInfrastructureBO getDigitalServiceInputsAiInfraRest(String digitalServiceUid) {
         DigitalServiceBO digitalService = digitalServiceService.getDigitalService(digitalServiceUid);
 
@@ -147,7 +165,11 @@ public class InAiInfrastructureService {
         InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceUid(digitalServiceUid);
 
         InAiInfrastructureBO inAiInfrastructureBO = inAiInfrastructureMapper.entityToBO(inAiInfrastructure);
-        if(inAiInfrastructureBO != null) {
+        if(inAiInfrastructure != null) {
+            //set the deviceType
+            DeviceTypeRef deviceTypeBO = digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode());
+            inAiInfrastructureBO.getInfrastructureType().setValue(deviceTypeBO.getDescription());
+            inAiInfrastructureBO.getInfrastructureType().setLifespan(deviceTypeBO.getLifespan());
             List<InDatacenterRest> InDatacenter = inDatacenterService.getByDigitalService(digitalServiceUid);
             for (InDatacenterRest inDatacenterRest : InDatacenter) {
                 inAiInfrastructureBO.setPue(inDatacenterRest.getPue());
@@ -163,6 +185,12 @@ public class InAiInfrastructureService {
         return inAiInfrastructureBO;
     }
 
+    /**
+     * Update inAiInfrastructureRest information in tables InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure
+     * @param digitalServiceUid - The digital service uid
+     * @param inAiInfrastructureRest - The Rest object of the inAiInfrastructure
+     * @return The new physical equipment
+     */
     public InPhysicalEquipmentRest updateDigitalServiceInputsAiInfraRest(String digitalServiceUid, InAiInfrastructureRest inAiInfrastructureRest) {
         Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
 
@@ -190,8 +218,13 @@ public class InAiInfrastructureService {
         List<InPhysicalEquipmentRest> inPhysicalEquipments = inPhysicalEquipmentService.getByDigitalService(digitalServiceUid);
         // because there is only one InPhysicalEquipmentRest in this case
         InPhysicalEquipmentRest inPhysicalEquipmentRest = inPhysicalEquipments.getFirst();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        inPhysicalEquipmentRest.setDateWithdrawal(LocalDate.parse("2030-05-01", formatter));
+
+        // dateWithdrawal
+        double lifespan = inAiInfrastructureBO.getInfrastructureType().getLifespan().intValue();
+        int numberYear = inAiInfrastructureBO.getInfrastructureType().getLifespan().intValue();
+        int month = (int) Math.round((numberYear-lifespan) * 12);
+        inPhysicalEquipmentRest.setDateWithdrawal(LocalDate.from(now.plusYears(numberYear).plusMonths(month)));
+
         inPhysicalEquipmentRest.setCpuCoreNumber(Optional.ofNullable(inAiInfrastructureBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
         inPhysicalEquipmentRest.setLocation(inDatacenterRest.getLocation());
         inPhysicalEquipmentRest.setSizeMemoryGb(Optional.ofNullable(inAiInfrastructureBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
@@ -203,7 +236,7 @@ public class InAiInfrastructureService {
         InVirtualEquipmentRest inVirtualEquipmentRest = inVirtualEquipments.getFirst();
         inVirtualEquipmentRest.setLocation(inAiInfrastructureBO.getLocation());
         inVirtualEquipmentRest.setPhysicalEquipmentName(inPhysicalEquipmentRest.getName());
-        inVirtualEquipmentRest.setInfrastructureType(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC.getValue());
+        inVirtualEquipmentRest.setInfrastructureType(inAiInfrastructureBO.getInfrastructureType().getValue());
         inVirtualEquipmentRest.setLocation(inPhysicalEquipmentRest.getLocation());
         inVirtualEquipmentRest.setSizeMemoryGb(Optional.ofNullable(inAiInfrastructureBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentRest.setVcpuCoreNumber(Optional.ofNullable(inAiInfrastructureBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));

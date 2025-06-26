@@ -649,3 +649,43 @@ databaseChangeLog:
                   name: is_ai
                   type: boolean
                   defaultValue: false
+
+  - changeSet:
+      id: add-compatible-ecomind-to-reDeviceType
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: compatible_ecomind
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+        - update:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: compatible_ecomind
+                  valueBoolean: true
+            where: description IN ('Laptop', 'Desktop')
+        - insert:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: description
+                  value: Server
+              - column:
+                  name: reference
+                  value: blade-server-28
+              - column:
+                  name: external_referential_description
+                  value: Server
+              - column:
+                  name: lifespan
+                  valueNumeric: 10
+              - column:
+                  name: source
+                  value: "Data for test"
+              - column:
+                  name: compatible_ecomind
+                  valueBoolean: true
