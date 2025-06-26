@@ -97,6 +97,7 @@ export class DigitalServicesCloudServicesSidePanelComponent {
             name: this.digitalServiceBusiness.getNextAvailableName(
                 this.existingNames,
                 "Cloud Service",
+                false,
             ),
             quantity: 1,
             cloudProvider: "",

@@ -5,14 +5,17 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
+import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
+import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
 import {
     DigitalServiceTerminalConfig,
     TerminalsType,
 } from "src/app/core/interfaces/digital-service.interfaces";
+import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 
@@ -22,8 +25,10 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
     providers: [MessageService],
 })
 export class DigitalServicesTerminalsSidePanelComponent {
+    private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);
     @Input() sidebarVisible: boolean = true;
     @Input() terminal: DigitalServiceTerminalConfig = {} as DigitalServiceTerminalConfig;
+    @Input() terminalData: DigitalServiceTerminalConfig[] = [];
 
     @Output() sidebarVisibleChange: EventEmitter<boolean> = new EventEmitter();
     @Output() updateTerminals: EventEmitter<DigitalServiceTerminalConfig> =
@@ -36,6 +41,7 @@ export class DigitalServicesTerminalsSidePanelComponent {
 
     terminalsForm!: FormGroup;
     isNew = false;
+    existingNames: string[] = [];
 
     constructor(
         private digitalDataService: DigitalServicesDataService,
@@ -59,13 +65,26 @@ export class DigitalServicesTerminalsSidePanelComponent {
     }
 
     initForm() {
+        this.existingNames = this.terminalData
+            .filter((c) => (!this.isNew ? this.terminal.name !== c.name : true))
+            .map((cloud) => cloud.name);
         this.terminalsForm = this._formBuilder.group({
+            name: [
+                "",
+                [
+                    Validators.required,
+                    uniqueNameValidator(this.existingNames),
+                    noWhitespaceValidator(),
+                ],
+            ],
             type: [{ code: "", value: "", lifespan: null }, Validators.required],
             country: ["", Validators.required],
             numberOfUsers: ["0", Validators.required],
             lifespan: [null, Validators.required],
             yearlyUsageTimePerUser: ["0", Validators.required],
         });
+
+        this.terminalsForm.get("name")?.markAsDirty();
     }
 
     async getTerminalsReferentials() {
@@ -98,9 +117,14 @@ export class DigitalServicesTerminalsSidePanelComponent {
 
         const country =
             defaultCountry.length > 0 ? defaultCountry[0].value : this.countries[0].value;
-
+        const name = this.digitalServicesBusiness.getNextAvailableName(
+            this.existingNames,
+            "Terminal",
+            true,
+        );
         this.terminal = {
             type,
+            name,
             country,
             numberOfUsers: 0,
             yearlyUsageTimePerUser: 0,

@@ -187,6 +187,7 @@
     },
     "digital-services-terminals": {
         "new": "Nouveau terminal",
+        "edit": "Édition terminal",
         "devices": "Terminaux",
         "device": "Terminal",
         "add": "+ Ajouter un terminal",
@@ -194,13 +195,16 @@
         "type": "Type de terminal",
         "typeCode": "Type de terminal",
         "country": "Pays",
+        "name": "Nom",
         "nb-user": "Nombre d'utilisateurs uniques",
         "numberOfUsers": "Nombre d'utilisateurs uniques",
         "yearly-usage": "Temps moyen passé par utilisateur et par an",
         "hours": "heures",
         "table-yearly-usage": "Temps d'utilisation annuel par utilisateur",
         "yearlyUsageTimePerUser": "Temps d'utilisation annuel par utilisateur",
-        "lifespan": "Durée de vie moyenne de l'équipement (années)"
+        "lifespan": "Durée de vie moyenne de l'équipement (années)",
+        "error.terminal-already-exists": "Le terminal existe déjà",
+        "terminal-name": "Nom du terminal"
     },
     "digital-services-networks": {
         "new": "Nouveau Réseau",
