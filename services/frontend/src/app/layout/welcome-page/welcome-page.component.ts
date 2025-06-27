@@ -17,7 +17,7 @@ import { firstValueFrom } from "rxjs";
 import { Subscriber } from "src/app/core/interfaces/administration.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
-
+import { environment } from "src/environments/environment";
 @Component({
     selector: "app-welcome-page",
     templateUrl: "./welcome-page.component.html",
@@ -39,6 +39,8 @@ export class WelcomePageComponent {
     isAllowedInventory: boolean = false;
     isAllowedDigitalService: boolean = false;
     isAllowedEcoMindAi: boolean = false;
+    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
     private readonly destroyRef = inject(DestroyRef);
     public userService = inject(UserService);
@@ -68,9 +70,10 @@ export class WelcomePageComponent {
             });
         this.userName = userDetails?.firstName + " " + userDetails?.lastName;
 
-        this.userService.currentSubscriber$.subscribe(
-            (subscriber: any) => (this.currentSubscriber = subscriber),
-        );
+        this.userService.currentSubscriber$.subscribe((subscriber: any) => {
+            this.currentSubscriber = subscriber;
+            this.isEcoMindEnabledForCurrentSubscriber = this.currentSubscriber.ecomindai;
+        });
 
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -93,7 +96,9 @@ export class WelcomePageComponent {
 
     digitalServices() {
         if (this.isAllowedDigitalService) {
-            this.router.navigateByUrl(`${this.selectedPath}/digital-services`, { state: { isIa: false }});
+            this.router.navigateByUrl(`${this.selectedPath}/digital-services`, {
+                state: { isIa: false },
+            });
         } else {
             this.router.navigateByUrl("/useful-information");
         }
@@ -101,7 +106,9 @@ export class WelcomePageComponent {
 
     ecoMindAi() {
         if (this.isAllowedEcoMindAi) {
-            this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, { state: { isIa: true } });
+            this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
+                state: { isIa: true },
+            });
         } else {
             this.router.navigateByUrl("/useful-information");
         }

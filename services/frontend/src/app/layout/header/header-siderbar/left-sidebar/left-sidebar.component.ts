@@ -22,6 +22,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { generateColor } from "src/app/core/utils/color";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 
 @Component({
     standalone: true,
@@ -69,6 +70,9 @@ export class LeftSidebarComponent implements OnInit {
     userDetails!: UserInfo;
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
 
+    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
 
@@ -103,9 +107,10 @@ export class LeftSidebarComponent implements OnInit {
                     this.userService.hasAnyAdminRole(user);
             });
 
-        this.userService.currentSubscriber$.subscribe(
-            (subscriber: any) => (this.currentSubscriber = subscriber),
-        );
+        this.userService.currentSubscriber$.subscribe((subscriber: any) => {
+            this.currentSubscriber = subscriber;
+            this.isEcoMindEnabledForCurrentSubscriber = this.currentSubscriber.ecomindai;
+        });
 
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))

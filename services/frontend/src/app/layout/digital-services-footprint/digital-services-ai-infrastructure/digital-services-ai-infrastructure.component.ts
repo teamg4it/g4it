@@ -9,6 +9,7 @@ import {
     TerminalsType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIInfrastructureForm } from "src/app/core/store/ai-forms.store";
@@ -24,6 +25,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     private formSubscription: Subscription | undefined;
     locationOptions: { label: string; value: string }[] = [];
     digitalService: DigitalService = {} as DigitalService;
+    public userService = inject(UserService);
     typesOptions: TerminalsType[] = [];
 
     constructor(
@@ -110,9 +112,14 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
                 this.aiFormsStore.setInfrastructureFormData(
                     formData as AIInfrastructureForm,
                 );
-                console.log(value);
             },
         );
+
+        this.userService.isAllowedEcoMindAiWrite$.subscribe((isAllowed) => {
+            if (!isAllowed) {
+                this.infrastructureForm.disable();
+            }
+        });
     }
 
     async loadCountries() {

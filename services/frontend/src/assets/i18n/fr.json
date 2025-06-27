@@ -237,7 +237,7 @@
             "save-success": "Données sauvegardées avec succès",
             "save-error": "Une erreur est survenue lors de la sauvegarde",
             "service-id-missing": "ID du service numérique non trouvé",
-            "fill-all-fields": "Veuillez remplir tous les champs avant de sauvegarder"
+            "fill-all-fields": "Veuillez remplir tous les champs et ouvrir les deux formulaires avant de sauvegarder"
         }
     },
     "digital-services-terminals": {
@@ -372,10 +372,10 @@
         "stages": "Etape",
         "inference": "Inférence",
         "fintuning": "Fintuning",
-        "numberOfUsers": "Nombre d'utilisateurs par an",
-        "averageRequest": "Nombre moyen de requêtes par an",
-        "averageToken": "Nombre moyen de jetons générés par requête",
-        "totalTokenGenerate": "Nombre total de jetons générés"
+        "numberOfUsers": "Nb d'utilisateurs par an",
+        "averageRequest": "Nb moyen de requêtes par an",
+        "averageToken": "Nb moyen de jetons générés par requête",
+        "totalTokenGenerate": "Nb total de jetons générés"
     },
 
     "digital-services-ai-infrastructure": {
@@ -832,6 +832,7 @@
             "access": "Accéder",
             "is-module": "Module Système d'Information",
             "ds-module": "Module Services Numériques",
+            "ecomind-module": "Module EcoMind",
             "role": "Rôle",
             "actions": "Actions",
             "add": "AJOUTER À L'ORGANISATION",

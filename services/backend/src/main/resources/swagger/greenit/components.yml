@@ -317,6 +317,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrganizationRest"
+        ecomindai:
+          type: boolean
     OrganizationRest:
       description: Organization information
       type: object

@@ -67,7 +67,7 @@ describe("WelcomePageComponent", () => {
     }));
 
     it("should update currentSubscriber when currentSubscriber$ emits", fakeAsync(() => {
-        const subscriberMock = { name: "UpdatedSubscriber" };
+        const subscriberMock = { name: "UpdatedSubscriber", ecomindai: true };
         userServiceMock.currentSubscriber$.next(subscriberMock);
         tick();
         fixture.detectChanges();
@@ -101,9 +101,9 @@ describe("WelcomePageComponent", () => {
         expect(digitalServicesButton.classList.contains("disabled")).toBeTrue();
     });
 
-    it("should render the AI button as disabled", () => {
+    it("should not render the AI button when condition is false", () => {
         const compiled = fixture.nativeElement;
         const ecoMindAiButton = compiled.querySelector(".eco-mind-ai-button");
-        expect(ecoMindAiButton.classList.contains("disabled")).toBeTrue();
+        expect(ecoMindAiButton).toBeNull();
     });
 });

@@ -272,7 +272,8 @@ export class DigitalServicesFootprintDashboardComponent
                 translationKey = "digital-services-cards.global-vision-ai";
             } else if (
                 textType === "digital-services-card-content" &&
-                this.aiRecommendation != null
+                this.aiRecommendation != null &&
+                this.aiRecommendation.recommendations != null
             ) {
                 try {
                     const recommendationsArr = JSON.parse(

@@ -32,6 +32,11 @@
                 class="selection-card-container col md:col-12 lg:col-4"
                 [ngClass]="{
                     disabled: !(userService.isAllowedInventoryRead$ | async),
+                    'lg:col-6': !(
+                        (userService.isAllowedEcoMindAiRead$ | async) &&
+                        isEcoMindEnabledForCurrentSubscriber &&
+                        isEcoMindModuleEnabled
+                    ),
                 }"
                 styleClass="selection-card flex h-full"
             >
@@ -79,6 +84,11 @@
                 class="selection-card-container col md:col-12 lg:col-4"
                 [ngClass]="{
                     disabled: !(userService.isAllowedDigitalServiceRead$ | async),
+                    'lg:col-6': !(
+                        (userService.isAllowedEcoMindAiRead$ | async) &&
+                        isEcoMindEnabledForCurrentSubscriber &&
+                        isEcoMindModuleEnabled
+                    ),
                 }"
                 styleClass="selection-card flex h-full"
             >
@@ -123,52 +133,56 @@
                 </div>
             </p-card>
             <!-- EcoMinAi -->
-            <p-card
-                class="selection-card-container col md:col-12 lg:col-4"
-                [ngClass]="{
-                    disabled: !(userService.isAllowedEcoMindAiRead$ | async),
-                }"
-                styleClass="selection-card flex h-full"
-            >
-                <ng-template pTemplate="header">
-                    <div class="py-4 pl-5">
-                        <div class="custom-icon custom-at-symbol-icon"></div>
+            @if (
+                (userService.isAllowedEcoMindAiRead$ | async) &&
+                isEcoMindEnabledForCurrentSubscriber &&
+                isEcoMindModuleEnabled
+            ) {
+                <p-card
+                    class="selection-card-container col md:col-12 lg:col-4"
+                    styleClass="selection-card flex h-full"
+                >
+                    <ng-template pTemplate="header">
+                        <div class="py-4 pl-5">
+                            <div class="custom-icon custom-at-symbol-icon"></div>
+                        </div>
+                    </ng-template>
+                    <div class="p-card-title font-normal line-height-1">
+                        {{ "welcome-page.eco-mind-ai.title" | translate }}
                     </div>
-                </ng-template>
-                <div class="p-card-title font-normal line-height-1">
-                    {{ "welcome-page.eco-mind-ai.title" | translate }}
-                </div>
-                <p class="selection-card-content text-lg mt-3">
-                    {{ "welcome-page.eco-mind-ai.description" | translate }}
-                </p>
-                <div class="p-card-footer p-0">
-                    <p-button
-                        (click)="ecoMindAi()"
-                        icon="pi pi-arrow-circle-right"
-                        [styleClass]="
-                            'uppercase eco-mind-ai-button navigation-button mt-5 white-space-nowrap' +
-                            ((userService.isAllowedEcoMindAiRead$ | async)
-                                ? ''
-                                : ' disabled')
-                        "
-                        iconPos="right"
-                        [label]="
-                            (userService.isAllowedEcoMindAiRead$ | async)
-                                ? ('welcome-page.eco-mind-ai.button'
-                                  | translate
-                                  | uppercase)
-                                : ('welcome-page.eco-mind-ai.button-disabled'
-                                  | translate
-                                  | uppercase)
-                        "
-                        [ariaLabel]="
-                            (userService.isAllowedEcoMindAiRead$ | async)
-                                ? ('welcome-page.eco-mind-ai.button' | translate)
-                                : ('welcome-page.eco-mind-ai.button-disabled' | translate)
-                        "
-                    ></p-button>
-                </div>
-            </p-card>
+                    <p class="selection-card-content text-lg mt-3">
+                        {{ "welcome-page.eco-mind-ai.description" | translate }}
+                    </p>
+                    <div class="p-card-footer p-0">
+                        <p-button
+                            (click)="ecoMindAi()"
+                            icon="pi pi-arrow-circle-right"
+                            [styleClass]="
+                                'uppercase eco-mind-ai-button navigation-button mt-5 white-space-nowrap' +
+                                ((userService.isAllowedEcoMindAiRead$ | async)
+                                    ? ''
+                                    : ' disabled')
+                            "
+                            iconPos="right"
+                            [label]="
+                                (userService.isAllowedEcoMindAiRead$ | async)
+                                    ? ('welcome-page.eco-mind-ai.button'
+                                      | translate
+                                      | uppercase)
+                                    : ('welcome-page.eco-mind-ai.button-disabled'
+                                      | translate
+                                      | uppercase)
+                            "
+                            [ariaLabel]="
+                                (userService.isAllowedEcoMindAiRead$ | async)
+                                    ? ('welcome-page.eco-mind-ai.button' | translate)
+                                    : ('welcome-page.eco-mind-ai.button-disabled'
+                                      | translate)
+                            "
+                        ></p-button>
+                    </div>
+                </p-card>
+            }
         </div>
         <!-- Footer -->
         <footer>
