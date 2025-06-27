@@ -24,8 +24,10 @@ import com.soprasteria.g4it.backend.common.criteria.CriteriaByType;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
+import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,8 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -127,6 +128,36 @@ class EvaluatingServiceTest {
         when(criteriaByType.active()).thenReturn(CRITERIA);
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
         when(digitalService.getName()).thenReturn("digitalService");
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
+        when(org.getName()).thenReturn(ORGANIZATION);
+        when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any())).thenReturn(criteriaByType);
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(authService.getUser()).thenReturn(userBO);
+        when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        when(digitalService.getCriteria()).thenReturn(null);
+        when(digitalService.getUid()).thenReturn(DIGITAL_SERVICE_UID);
+
+        Task result = evaluatingService.evaluatingDigitalService(SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
+
+        assertNotNull(result);
+        verify(asyncEvaluatingService).execute(any(Context.class), any(Task.class));
+        verify(digitalServiceRepository).save(any(DigitalService.class));
+    }
+
+    @Test
+    void evaluatingDigitalServiceAi_shouldCreateAndReturnTask() {
+
+        Organization org = mock(Organization.class);
+        UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(USER_ID).firstName("fname").build();
+        User user = User.builder().id(USER_ID).build();
+        DigitalService digitalService = mock(DigitalService.class);
+        CriteriaByType criteriaByType = mock(CriteriaByType.class);
+
+        when(criteriaByType.active()).thenReturn(CRITERIA);
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
+        when(digitalService.getName()).thenReturn("digitalService");
+        when(digitalService.isAi()).thenReturn(true);
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
         when(org.getName()).thenReturn(ORGANIZATION);
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any())).thenReturn(criteriaByType);
