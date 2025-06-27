@@ -446,7 +446,7 @@ export class BarChartComponent extends AbstractDashboard {
                         : item.totalSipValue.toFixed(0),
                     ...(isTerminals
                         ? [item.totalNbUsers, item.avgUsageTime]
-                        : [item.totalAvgUsage, item.totalAvgWorkLoad]),
+                        : [item.totalAvgWorkLoad, item.totalAvgUsage]),
                     item.rawValue,
                     item.unit,
                 ];
