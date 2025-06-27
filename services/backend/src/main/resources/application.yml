@@ -129,4 +129,4 @@ logging:
     com.zaxxer: warn
 
 ecomindaimodule:
-  enabled: true
+  enabled: false

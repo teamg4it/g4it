@@ -55,7 +55,7 @@
             [showClear]="true"
             id="module-ds-dropdown"
         ></p-dropdown>
-        @if (isEcoMindModuleEnabled) {
+        @if (isEcoMindModuleEnabled && userDetailEcoMind) {
             <br />
             <br />
             <label>{{ "administration.user.ecomind-module" | translate }}</label>

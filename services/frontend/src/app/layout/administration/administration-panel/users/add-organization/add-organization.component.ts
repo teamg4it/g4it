@@ -33,6 +33,7 @@ import { environment } from "src/environments/environment";
 })
 export class AddOrganizationComponent {
     @Input() userDetail!: UserDetails;
+    @Input() userDetailEcoMind: boolean = false;
     @Input() organization: any;
     @Input() clearForm!: false;
     @Output() close: EventEmitter<any> = new EventEmitter();

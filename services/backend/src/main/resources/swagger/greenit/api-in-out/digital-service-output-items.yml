@@ -18,7 +18,7 @@ paths:
       tags:
         - digital-service-outputs
       summary: Get physical equipments from one digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
       operationId: getDigitalServiceOutputsPhysicalEquipmentsRest
       responses:
         '200':
@@ -43,7 +43,7 @@ paths:
       tags:
         - digital-service-outputs
       summary: Get virtual equipments from one digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
       operationId: getDigitalServiceOutputsVirtualEquipmentsRest
       responses:
         '200':

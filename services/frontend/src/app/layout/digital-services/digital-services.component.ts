@@ -18,6 +18,7 @@ import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-digital-services",
@@ -35,6 +36,10 @@ export class DigitalServicesComponent {
     paginatedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
     isAllowedDigitalService: boolean = false;
+    isAllowedEcoMindAiService: boolean = false;
+    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+
     first: number = 0;
 
     rowsPerPage: number = 10;
@@ -60,10 +65,15 @@ export class DigitalServicesComponent {
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
             });
+        this.userService.currentSubscriber$.subscribe((subscriber: any) => {
+            this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
+        });
         this.userService.roles$.subscribe((roles: Role[]) => {
             this.isAllowedDigitalService =
                 roles.includes(Role.DigitalServiceRead) ||
                 roles.includes(Role.DigitalServiceWrite);
+            this.isAllowedEcoMindAiService =
+                roles.includes(Role.EcoMindAiRead) || roles.includes(Role.EcoMindAiWrite);
         });
         this.global.setLoading(true);
         await this.retrieveDigitalServices();
@@ -87,20 +97,35 @@ export class DigitalServicesComponent {
 
     async retrieveDigitalServices() {
         this.allDigitalServices = [];
-
-        const apiResult = await lastValueFrom(
-            this.digitalServicesData.list(this.isEcoMindAi),
-        );
-        apiResult.sort((x, y) => x.name.localeCompare(y.name));
-        this.allDigitalServices.push(...apiResult);
+        if (
+            this.isEcoMindAi &&
+            this.isAllowedEcoMindAiService &&
+            this.isEcoMindEnabledForCurrentSubscriber
+        ) {
+            const apiResult = await lastValueFrom(this.digitalServicesData.list(true));
+            apiResult.sort((x, y) => x.name.localeCompare(y.name));
+            this.allDigitalServices.push(...apiResult);
+        } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
+            const apiResult = await lastValueFrom(this.digitalServicesData.list(false));
+            apiResult.sort((x, y) => x.name.localeCompare(y.name));
+            this.allDigitalServices.push(...apiResult);
+        }
         this.updatePaginatedItems();
     }
 
     async createNewDigitalService() {
-        const { uid } = await lastValueFrom(
-            this.digitalServicesData.create(this.isEcoMindAi),
-        );
-        this.goToDigitalServiceFootprint(uid);
+        if (
+            this.isEcoMindAi &&
+            this.isAllowedEcoMindAiService &&
+            this.isEcoMindEnabledForCurrentSubscriber &&
+            this.isEcoMindModuleEnabled
+        ) {
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(true));
+            this.goToDigitalServiceFootprint(uid);
+        } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(false));
+            this.goToDigitalServiceFootprint(uid);
+        }
     }
 
     onPageChange(event: PaginatorState) {

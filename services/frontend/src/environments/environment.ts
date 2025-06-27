@@ -33,7 +33,7 @@ export const environment = {
             containerUrl: "",
         },
     },
-    isEcomindEnabled: true,
+    isEcomindEnabled: false,
 };
 
 /*

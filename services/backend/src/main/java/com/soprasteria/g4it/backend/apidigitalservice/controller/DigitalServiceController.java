@@ -57,9 +57,10 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      */
     @Override
     public ResponseEntity<DigitalServiceRest> createDigitalService(final String subscriber, final Long organization, final Boolean isAi) {
-//        if (isAi != null && isAi) {
-//            authorizationUtils.checkEcomindEnabledForSubscriber(subscriber);
-//        }
+        if (isAi != null && isAi) {
+            authorizationUtils.checkEcomindAuthorization();
+            authorizationUtils.checkEcomindEnabledForSubscriber(subscriber);
+        }
 
         final DigitalServiceBO digitalServiceBO = digitalServiceService.createDigitalService(organization, authService.getUser().getId(), isAi);
         final DigitalServiceRest digitalServiceDTO = digitalServiceRestMapper.toDto(digitalServiceBO);
@@ -71,9 +72,10 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      */
     @Override
     public ResponseEntity<List<DigitalServiceRest>> getDigitalServices(final String subscriber, final Long organization, final Boolean isAi) {
-//        if (isAi != null && isAi) {
-//            authorizationUtils.checkEcomindEnabledForSubscriber(subscriber);
-//        }
+        if (isAi != null && isAi) {
+            authorizationUtils.checkEcomindAuthorization();
+            authorizationUtils.checkEcomindEnabledForSubscriber(subscriber);
+        }
         final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(organization, isAi);
         return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceBOs));
     }

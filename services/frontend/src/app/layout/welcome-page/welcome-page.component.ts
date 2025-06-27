@@ -105,13 +105,6 @@ export class WelcomePageComponent {
     }
 
     ecoMindAi() {
-        console.log(
-            this.userService.isAllowedEcoMindAiRead$ +
-                " " +
-                this.isEcoMindEnabledForCurrentSubscriber +
-                " " +
-                this.isEcoMindModuleEnabled,
-        );
         if (this.isAllowedEcoMindAi) {
             this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
                 state: { isIa: true },

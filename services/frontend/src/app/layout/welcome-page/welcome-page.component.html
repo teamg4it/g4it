@@ -33,7 +33,7 @@
                 [ngClass]="{
                     disabled: !(userService.isAllowedInventoryRead$ | async),
                     'lg:col-6': !(
-                        userService.isAllowedEcoMindAiRead$ &&
+                        (userService.isAllowedEcoMindAiRead$ | async) &&
                         isEcoMindEnabledForCurrentSubscriber &&
                         isEcoMindModuleEnabled
                     ),
@@ -85,7 +85,7 @@
                 [ngClass]="{
                     disabled: !(userService.isAllowedDigitalServiceRead$ | async),
                     'lg:col-6': !(
-                        userService.isAllowedEcoMindAiRead$ &&
+                        (userService.isAllowedEcoMindAiRead$ | async) &&
                         isEcoMindEnabledForCurrentSubscriber &&
                         isEcoMindModuleEnabled
                     ),
@@ -134,7 +134,7 @@
             </p-card>
             <!-- EcoMinAi -->
             @if (
-                userService.isAllowedEcoMindAiRead$ &&
+                (userService.isAllowedEcoMindAiRead$ | async) &&
                 isEcoMindEnabledForCurrentSubscriber &&
                 isEcoMindModuleEnabled
             ) {

@@ -19,7 +19,7 @@ paths:
       tags:
         - digital-service
       summary: Create a new digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
       operationId: createDigitalService
       responses:
         '201':

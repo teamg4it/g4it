@@ -34,13 +34,14 @@ export class UsersComponent {
     private destroyRef = inject(DestroyRef);
 
     userDetails!: UserDetails[];
+    userDetailEcoMind: boolean = false;
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     organizationlist: OrganizationWithSubscriber[] = [];
     enableList = false;
     clearForm: any;
     enableSearchButton: boolean = true;
     membersAndSearchVisible = false;
-    subscribersDetails: any;
+    subscribersDetails!: any;
     membersList: any;
     filteredMembers: any[] = [];
     openSearchResult: boolean = false;
@@ -63,6 +64,7 @@ export class UsersComponent {
     firstPage: number = 0;
 
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+    isEcoMindEnabledForCurrentSubscriberSelected: boolean = false;
 
     constructor(
         private administrationService: AdministrationService,
@@ -268,10 +270,14 @@ export class UsersComponent {
         });
     }
 
-    openSidepanelForAddORUpdateOrg(user: UserDetails) {
+    openSidepanelForAddORUpdateOrg(
+        user: UserDetails,
+        isEcoMindEnabledForCurrentSubscriberSelected: boolean,
+    ) {
         this.sidebarVisible = true;
         this.sidebarCreateMode = user.roles.length === 0;
         this.userDetail = user;
+        this.userDetailEcoMind = isEcoMindEnabledForCurrentSubscriberSelected;
     }
 
     displayPopupFct() {
@@ -296,6 +302,13 @@ export class UsersComponent {
                 this.displayPopup = false;
                 this.getUsers(true);
                 this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
+            });
+    }
+    getSelectedSubscriber() {
+        this.administrationService
+            .getSubscriberById(this.organization.subscriberId)
+            .subscribe((res) => {
+                this.isEcoMindEnabledForCurrentSubscriberSelected = res.ecomindai;
             });
     }
 }

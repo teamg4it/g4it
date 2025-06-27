@@ -240,7 +240,7 @@
             "save-success": "Data saved successfully",
             "save-error": "An error occurred while saving",
             "service-id-missing": "Digital service ID not found",
-            "fill-all-fields": "Please fill in all fields before saving"
+            "fill-all-fields": "Please fill in all fields and load both forms before saving"
         }
     },
     "digital-services-terminals": {
@@ -368,10 +368,10 @@
         "stages": "Stages",
         "inference": "Inference",
         "fintuning": "Finetuning",
-        "numberOfUsers": "Number of user per year",
-        "averageRequest": "Average number of requests per year",
-        "averageToken": "Average number of tokens genereted per request",
-        "totalTokenGenerate": "Total number of genereted tokens"
+        "numberOfUsers": "Nb of user per year",
+        "averageRequest": "Average nb of requests per year",
+        "averageToken": "Average nb of tokens genereted per request",
+        "totalTokenGenerate": "Total nb of genereted tokens"
     },
 
     "digital-services-ai-infrastructure": {

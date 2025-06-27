@@ -12,7 +12,10 @@
     <p-button
         styleClass="black-button"
         (onClick)="createNewDigitalService()"
-        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+        *ngIf="
+            (userService.isAllowedDigitalServiceWrite$ | async) ||
+            (userService.isAllowedEcoMindAiWrite$ | async)
+        "
         id="add-digital"
     >
         {{

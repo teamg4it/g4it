@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Service
 @NoArgsConstructor
-public class AiServiceRestController implements AiServiceApiDelegate{
+public class AiServiceRestController implements AiServiceApiDelegate {
 
     @Autowired
     AiService aiService;
@@ -39,6 +39,6 @@ public class AiServiceRestController implements AiServiceApiDelegate{
 
     @Override
     public ResponseEntity<List<AIServiceEstimationRest>> launchAIServiceEstimation(String type, String stage, List<@Valid AIConfigurationRest> aiConfigurationRest) {
-        return ResponseEntity.ok(aiServiceEstimationMapper.toAIServiceEstimationRest(aiService.runEstimation(type,stage,aiConfigurationRest)));
+        return ResponseEntity.ok(aiServiceEstimationMapper.toAIServiceEstimationRest(aiService.runEstimation(type, stage, aiConfigurationRest)));
     }
 }

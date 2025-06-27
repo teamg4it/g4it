@@ -307,7 +307,11 @@ export class UserService {
             return true;
         }
 
-        if (uri === "eco-mind-ai" && roles.includes(Role.EcoMindAiRead)) {
+        if (
+            uri === "eco-mind-ai" &&
+            roles.includes(Role.EcoMindAiRead) &&
+            subscriber.ecomindai
+        ) {
             return true;
         }
 

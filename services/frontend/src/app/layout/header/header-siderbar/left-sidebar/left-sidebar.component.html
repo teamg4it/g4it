@@ -95,7 +95,7 @@
         </a>
     </div>
     @if (
-        userService.isAllowedEcoMindAiRead$ &&
+        (userService.isAllowedEcoMindAiRead$ | async) &&
         isEcoMindEnabledForCurrentSubscriber &&
         isEcoMindModuleEnabled
     ) {

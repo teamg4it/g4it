@@ -286,7 +286,6 @@ export class TopHeaderComponent implements OnInit {
             this.selectedPage(),
         );
         this.isOrgMenuVisible = false;
-        console.log(this.currentSubscriber);
     }
 
     toggleOrgMenu() {
