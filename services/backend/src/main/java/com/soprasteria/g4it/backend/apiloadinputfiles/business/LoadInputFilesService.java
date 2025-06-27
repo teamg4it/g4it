@@ -8,7 +8,10 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
@@ -50,6 +53,10 @@ public class LoadInputFilesService {
 
     @Autowired
     InventoryRepository inventoryRepository;
+    @Autowired
+    DigitalServiceRepository digitalServiceRepository;
+    @Autowired
+    InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -117,7 +124,7 @@ public class LoadInputFilesService {
                 .map(fileType -> {
                     List<MultipartFile> files = allFiles.get(fileType);
                     List<String> typeFileNames = newFilenames(files, fileType);
-                    fileSystemService.manageFilesAndRename(context.getSubscriber(), context.getOrganizationId(), files, typeFileNames);
+                    fileSystemService.manageFilesAndRename(context.getSubscriber(), context.getOrganizationId(), files, typeFileNames, context.getInventoryId()!=null);
                     return typeFileNames;
                 })
                 .flatMap(Collection::stream)
@@ -134,6 +141,81 @@ public class LoadInputFilesService {
                 .status(TaskStatus.TO_START.toString())
                 .type(TaskType.LOADING.toString())
                 .inventory(Inventory.builder().id(inventoryId).build())
+                .filenames(filenames)
+                .createdBy(user)
+                .build();
+
+        taskRepository.save(task);
+
+        // run loading async task
+        taskExecutor.execute(new BackgroundTask(context, task, asyncLoadFilesService));
+
+        return task;
+    }
+
+    /**
+     *
+     * @param subscriber
+     * @param organizationId
+     * @param digitalServiceUid
+     * @param datacenters
+     * @param physicalEquipments
+     * @param virtualEquipments
+     * @return
+     */
+    public Task loadDigitalServiceFiles(final String subscriber,
+                          final Long organizationId,
+                          final String digitalServiceUid,
+                          final List<MultipartFile> datacenters,
+                          final List<MultipartFile> physicalEquipments,
+                          final List<MultipartFile> virtualEquipments) {
+
+        final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
+
+        if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
+        if (physicalEquipments != null) allFiles.put(FileType.EQUIPEMENT_PHYSIQUE, physicalEquipments);
+        if (virtualEquipments != null) allFiles.put(FileType.EQUIPEMENT_VIRTUEL, virtualEquipments);
+
+        if (allFiles.isEmpty()) return new Task();
+
+        List<Task> tasks = taskRepository.findByDigitalServiceUidAndStatusAndType(digitalServiceUid, TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
+        if (!tasks.isEmpty()) {
+            throw new G4itRestException("500", "task.already.running");
+        }
+
+        Context context = Context.builder()
+                .subscriber(subscriber)
+                .organizationId(organizationId)
+                .organizationName(organizationService.getOrganizationById(organizationId).getName())
+                .digitalServiceUid(digitalServiceUid)
+                .datetime(LocalDateTime.now())
+                .hasVirtualEquipments(inVirtualEquipmentRepository.countByDigitalServiceUid(digitalServiceUid) > 0)
+                .hasApplications(false)
+                .build();
+
+
+        // store files into file storage
+        List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL)
+                .map(fileType -> {
+                    List<MultipartFile> files = allFiles.get(fileType);
+                    List<String> typeFileNames = newFilenames(files, fileType);
+                    fileSystemService.manageFilesAndRename(context.getSubscriber(), context.getOrganizationId(), files, typeFileNames, context.getInventoryId()!=null);
+                    return typeFileNames;
+                })
+                .flatMap(Collection::stream)
+                .toList();
+
+        User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
+
+        // create task with type LOADING
+        Task task = Task.builder()
+                .creationDate(context.getDatetime())
+                .details(new ArrayList<>())
+                .lastUpdateDate(context.getDatetime())
+                .progressPercentage("0%")
+                .status(TaskStatus.TO_START.toString())
+                .type(TaskType.LOADING.toString())
+                .digitalServiceUid(digitalServiceUid)
                 .filenames(filenames)
                 .createdBy(user)
                 .build();

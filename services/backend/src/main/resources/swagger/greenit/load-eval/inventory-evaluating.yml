@@ -1,12 +1,12 @@
 openapi: "3.0.3"
 info:
-  title: Swagger GreenIT - Open API 3.0 - Inventory Loading and Evaluating
+  title: Swagger GreenIT - Open API 3.0 - Inventory and Digital Service Evaluating
   description: This is a Inventory Server based on the OpenAPI 3.0 specification.
   version: '1.0.0'
 
 tags:
-  - name: inventory-evaluating
-    description: All endpoint for the organization's inventory evaluating
+  - name: evaluating
+    description: All endpoint for the organization's inventory or digital service evaluating
 
 paths:
   /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/evaluating:
@@ -23,7 +23,7 @@ paths:
       operationId: launchEvaluating
       x-custom-role: "hasRole('INVENTORY_WRITE')"
       tags:
-        - inventory-evaluating
+        - evaluating
       responses:
         '200':
           description: The task id
@@ -56,7 +56,7 @@ paths:
       operationId: launchEvaluatingDigitalService
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
       tags:
-        - inventory-evaluating
+        - evaluating
       responses:
         '200':
           description: The task id

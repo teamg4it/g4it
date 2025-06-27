@@ -207,7 +207,7 @@ public class LoadFileService {
         List<InDatacenterRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId()));
+            objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadDatacenterService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
@@ -240,7 +240,7 @@ public class LoadFileService {
         List<InPhysicalEquipmentRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId()));
+            objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadPhysicalEquipmentService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
@@ -273,7 +273,7 @@ public class LoadFileService {
         List<InVirtualEquipmentRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, context.getInventoryId()));
+            objects.add(csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadVirtualEquipmentService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
