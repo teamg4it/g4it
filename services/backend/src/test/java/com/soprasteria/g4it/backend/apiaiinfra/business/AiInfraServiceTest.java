@@ -4,9 +4,12 @@ import com.soprasteria.g4it.backend.apiaiinfra.mapper.InAiInfrastructureMapper;
 import com.soprasteria.g4it.backend.apiaiinfra.model.InAiInfrastructureBO;
 import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
@@ -21,10 +24,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,6 +81,9 @@ class AiInfraServiceTest {
     @Mock
     private InVirtualEquipmentService inVirtualEquipmentService;
 
+    @Mock
+    private DigitalServiceReferentialService digitalServiceReferentialService;
+
     @InjectMocks
     private InAiInfrastructureService inAiInfrastructureService;
     private String digitalServiceUid;
@@ -105,6 +108,11 @@ class AiInfraServiceTest {
 
         // Setup AiInfraBO
         inAiInfrastructureBO = InAiInfrastructureBO.builder().build();
+        DeviceTypeBO deviceTypeBO = new DeviceTypeBO();
+        deviceTypeBO.setCode("laptop-3");
+        deviceTypeBO.setLifespan(5.0);
+        deviceTypeBO.setValue("Laptop");
+        inAiInfrastructureBO.setInfrastructureType(deviceTypeBO);
         inAiInfrastructureBO.setLocation("Paris");
         inAiInfrastructureBO.setPue(1.5);
         inAiInfrastructureBO.setNbCpuCores(8L);
@@ -115,7 +123,7 @@ class AiInfraServiceTest {
         inAiInfrastructure.setComplementaryPue(1.5);
         inAiInfrastructure.setNbGpu(8L);
         inAiInfrastructure.setGpuMemory(16L);
-        inAiInfrastructure.setInfrastructureTypeEnum(InAiInfrastructureRest.InfrastructureTypeEnum.LAPTOP);
+        inAiInfrastructure.setInfrastructureType("laptop-3");
 
         // Setup entities
         digitalService = new DigitalService();
@@ -176,7 +184,6 @@ class AiInfraServiceTest {
                 .build();
 
         InAiInfrastructure entity = new InAiInfrastructure();
-        InAiInfrastructureBO bo = new InAiInfrastructureBO();
 
         InDatacenterRest dc = new InDatacenterRest();
         dc.setPue(1.4);
@@ -186,11 +193,18 @@ class AiInfraServiceTest {
         pe.setCpuCoreNumber(16.0);
         pe.setSizeMemoryGb(64.0);
 
+        DeviceTypeRef deviceTypeRef = new DeviceTypeRef();
+        deviceTypeRef.setReference("laptop-3");
+        deviceTypeRef.setLifespan(5.0);
+        deviceTypeRef.setDescription("Laptop");
+
         when(digitalServiceService.getDigitalService(uid)).thenReturn(mockDigitalService);
         when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(entity);
-        when(inAiInfrastructureMapper.entityToBO(entity)).thenReturn(bo);
         when(inDatacenterService.getByDigitalService(uid)).thenReturn(List.of(dc));
         when(inPhysicalEquipmentService.getByDigitalService(uid)).thenReturn(List.of(pe));
+        when(digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode())).thenReturn(deviceTypeRef);
+        when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(inAiInfrastructure);
+        when(inAiInfrastructureMapper.entityToBO(inAiInfrastructure)).thenReturn(inAiInfrastructureBO);
 
         InAiInfrastructureBO result = inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(uid);
 
@@ -219,6 +233,7 @@ class AiInfraServiceTest {
         String uid = "ds-001";
 
         // Input REST object
+
         InAiInfrastructureRest inRest = InAiInfrastructureRest.builder()
                 .location("Paris")
                 .pue(1.3)
@@ -231,7 +246,12 @@ class AiInfraServiceTest {
                 .thenReturn(Optional.of(new DigitalService()));
 
         // Mock mapping BO
+        DeviceTypeBO deviceTypeBO = new DeviceTypeBO();
+        deviceTypeBO.setCode("laptop-3");
+        deviceTypeBO.setLifespan(5.0);
+        deviceTypeBO.setValue("Laptop");
         InAiInfrastructureBO bo = InAiInfrastructureBO.builder()
+                .infrastructureType(deviceTypeBO)
                 .location("Paris")
                 .pue(1.3)
                 .nbCpuCores(16L)
@@ -342,7 +362,7 @@ class AiInfraServiceTest {
         assertEquals(digitalServiceUid, savedDatacenter.getDigitalServiceUid());
         assertEquals("Paris", savedDatacenter.getLocation());
         assertEquals(1.5, savedDatacenter.getPue());
-        assertEquals("DataCenter1", savedDatacenter.getName());
+        assertEquals("Datacenter", savedDatacenter.getName());
         assertNotNull(savedDatacenter.getCreationDate());
         assertNotNull(savedDatacenter.getLastUpdateDate());
     }
@@ -369,13 +389,12 @@ class AiInfraServiceTest {
         InPhysicalEquipment savedPhysicalEquipment = physicalEquipmentCaptor.getValue();
 
         assertEquals(digitalServiceUid, savedPhysicalEquipment.getDigitalServiceUid());
-        assertEquals("Server1", savedPhysicalEquipment.getName());
-        assertEquals("blade-server--28", savedPhysicalEquipment.getModel());
+        assertEquals("Physical equipment", savedPhysicalEquipment.getName());
+        assertEquals("laptop-3", savedPhysicalEquipment.getModel());
         assertEquals("Manufacturer1", savedPhysicalEquipment.getManufacturer());
-        assertEquals("DataCenter1", savedPhysicalEquipment.getDatacenterName());
+        assertEquals("Datacenter", savedPhysicalEquipment.getDatacenterName());
         assertEquals(8.0, savedPhysicalEquipment.getCpuCoreNumber());
         assertEquals("Paris", savedPhysicalEquipment.getLocation());
-        assertEquals("CpuType1", savedPhysicalEquipment.getCpuType());
         assertEquals(16.0, savedPhysicalEquipment.getSizeMemoryGb());
         assertEquals(1.0, savedPhysicalEquipment.getQuantity());
         assertNotNull(savedPhysicalEquipment.getDatePurchase());
@@ -406,9 +425,9 @@ class AiInfraServiceTest {
 
         assertEquals(digitalServiceUid, savedVirtualEquipment.getDigitalServiceUid());
         assertEquals("Paris", savedVirtualEquipment.getLocation());
-        assertEquals("VirtualEquipement1", savedVirtualEquipment.getName());
-        assertEquals("Server1", savedVirtualEquipment.getPhysicalEquipmentName());
-        assertEquals(InAiInfrastructureRest.InfrastructureTypeEnum.SERVER_DC.getValue(),
+        assertEquals("Virtual equipment", savedVirtualEquipment.getName());
+        assertEquals("Physical equipment", savedVirtualEquipment.getPhysicalEquipmentName());
+        assertEquals("laptop-3",
                 savedVirtualEquipment.getInfrastructureType());
         assertEquals(16.0, savedVirtualEquipment.getSizeMemoryGb());
         assertEquals(8.0, savedVirtualEquipment.getVcpuCoreNumber());

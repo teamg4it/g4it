@@ -19,7 +19,6 @@ import { InPhysicalEquipmentRest } from "src/app/core/interfaces/input.interface
 import { UserService } from "src/app/core/service/business/user.service";
 import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in-physical-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import * as uuid from "uuid";
 @Component({
     selector: "app-digital-services-terminals",
     templateUrl: "./digital-services-terminals.component.html",
@@ -35,6 +34,7 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     digitalService: DigitalService = {} as DigitalService;
 
     headerFields = [
+        "name",
         "typeCode",
         "country",
         "numberOfUsers",
@@ -53,6 +53,7 @@ export class DigitalServicesTerminalsComponent implements OnInit {
 
                 return {
                     id: item.id,
+                    name: item.name,
                     creationDate: item.creationDate,
                     typeCode: deviceType?.value,
                     lifespan:
@@ -112,7 +113,7 @@ export class DigitalServicesTerminalsComponent implements OnInit {
 
         const elementToSave = {
             digitalServiceUid: this.digitalService.uid,
-            name: terminal.uid || uuid.v4(),
+            name: terminal.name,
             type: "Terminal",
             model: terminal.type.code,
             location: terminal.country,

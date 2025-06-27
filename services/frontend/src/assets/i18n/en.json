@@ -245,6 +245,7 @@
     },
     "digital-services-terminals": {
         "new": "New Device",
+        "edit": "Edit Device",
         "devices": "Devices",
         "device": "Device",
         "add": "+ ADD DEVICE",
@@ -252,13 +253,16 @@
         "type": "Type of device",
         "typeCode": "Type of device",
         "country": "Country",
+        "name": "Name",
         "nb-user": "Number of unique users",
         "numberOfUsers": "Number of unique users",
         "yearly-usage": "Average time spent per user per year",
         "hours": "hours",
         "table-yearly-usage": "Yearly usage time per user",
         "yearlyUsageTimePerUser": "Yearly usage time per user",
-        "lifespan": "Average device lifespan (years)"
+        "lifespan": "Average device lifespan (years)",
+        "error.terminal-already-exists": "Terminal already exists",
+        "terminal-name": "Terminal Name"
     },
     "digital-services-networks": {
         "new": "New Network",

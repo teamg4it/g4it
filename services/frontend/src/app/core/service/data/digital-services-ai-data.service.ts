@@ -5,6 +5,7 @@ import { Constants } from "src/constants";
 import {
     DigitalServiceParameterIa,
     DigitalServicesAiInfrastructure,
+    TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
 import { MapString } from "../../interfaces/generic.interfaces";
 
@@ -98,5 +99,9 @@ export class DigitalServicesAiDataService {
 
     getAiParameter(digitalServiceUid: string): Observable<any> {
         return this.http.get<any>(`${endpoint}/${digitalServiceUid}/ai-parameter-input`);
+    }
+
+    getEcomindReferential(): Observable<TerminalsType[]> {
+        return this.http.get<TerminalsType[]>(`${endpoint}/ecomind-type`);
     }
 }

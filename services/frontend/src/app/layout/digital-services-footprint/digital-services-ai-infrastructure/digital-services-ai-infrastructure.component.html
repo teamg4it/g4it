@@ -1,5 +1,9 @@
 <div class="form-container">
-    <form [formGroup]="infrastructureForm" (ngSubmit)="submitFormData()">
+    <form
+        *ngIf="infrastructureForm"
+        [formGroup]="infrastructureForm"
+        (ngSubmit)="submitFormData()"
+    >
         <div class="label-input-div-full-server">
             <label for="typeInput">{{
                 "digital-services-ai-infrastructure.type" | translate
@@ -8,13 +12,8 @@
                 appendTo="body"
                 inputId="typeInput"
                 formControlName="infrastructureType"
-                [options]="[
-                    { label: 'Server', value: 'SERVER_DC' },
-                    { label: 'Laptop', value: 'LAPTOP' },
-                    { label: 'Desktop', value: 'DESKTOP' },
-                ]"
-                optionLabel="label"
-                optionValue="value"
+                optionLabel="value"
+                [options]="typesOptions"
             ></p-dropdown>
             <p
                 class="error-text"

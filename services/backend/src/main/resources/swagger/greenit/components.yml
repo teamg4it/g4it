@@ -1081,8 +1081,8 @@ components:
       required: [ infrastructureType, location ]
       properties:
         infrastructureType:
-          type: string
-          enum: [ SERVER_DC, LAPTOP, DESKTOP ]
+          type: object
+          $ref: "#/components/schemas/DeviceTypeRefRest"
         nbCpuCores:
           type: integer
           format: int64

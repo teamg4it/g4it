@@ -1,6 +1,6 @@
 package com.soprasteria.g4it.backend.apiaiinfra.model;
 
-import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
+import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.lang.Nullable;
 @SuperBuilder
 public class InAiInfrastructureBO {
 
-    private InAiInfrastructureRest.InfrastructureTypeEnum infrastructureType;
+    private DeviceTypeBO infrastructureType;
 
     private @Nullable Long nbCpuCores;
 

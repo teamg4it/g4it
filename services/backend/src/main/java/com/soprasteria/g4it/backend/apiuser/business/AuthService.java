@@ -46,7 +46,7 @@ public class AuthService {
     private static final String TOKEN_ERROR_MESSAGE = "The token is not a JWT token";
     private static final String SUPPORT_ERROR_MESSAGE = "To access to G4IT, you must be added as a member of a organization, please contact your administrator or the support at support.g4it@soprasteria.com";
     private static final String SUBSCRIBERS = "subscribers";
-    private static final Set<String> NOT_DIGITAL_SERVICE = Set.of("device-type", "country", "network-type", "server-host");
+    private static final Set<String> NOT_DIGITAL_SERVICE = Set.of("device-type", "country", "network-type", "server-host", "ecomind-type");
 
 
     /**

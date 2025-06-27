@@ -1,10 +1,13 @@
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { Subscription } from "rxjs";
-import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { lastValueFrom, Subscription } from "rxjs";
+import {
+    DigitalService,
+    TerminalsType,
+} from "src/app/core/interfaces/digital-service.interfaces";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
@@ -16,13 +19,14 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     selector: "app-digital-services-ai-infrastructure",
     templateUrl: "./digital-services-ai-infrastructure.component.html",
 })
-export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestroy {
+export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
     infrastructureForm!: FormGroup;
     private formSubscription: Subscription | undefined;
     locationOptions: { label: string; value: string }[] = [];
     digitalService: DigitalService = {} as DigitalService;
     public userService = inject(UserService);
+    typesOptions: TerminalsType[] = [];
 
     constructor(
         private fb: FormBuilder,
@@ -34,12 +38,12 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
         private route: ActivatedRoute,
     ) {}
 
-    ngOnInit() {
+    async ngOnInit() {
+        // Load countries from API
+        await this.loadCountries();
+        //set default value
         this.infrastructureForm = this.fb.group({
-            infrastructureType: [
-                "SERVER_DC",
-                [Validators.required, Validators.pattern(/^(SERVER_DC|LAPTOP|DESKTOP)$/)],
-            ],
+            infrastructureType: [this.typesOptions[1], [Validators.required]],
             nbCpuCores: [0, [Validators.min(0)]],
             nbGpu: [0, [Validators.required, Validators.min(0)]],
             gpuMemory: [0, [Validators.required, Validators.min(0)]],
@@ -48,17 +52,14 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
             complementaryPue: [1, [Validators.required, Validators.min(1)]],
             location: ["France", Validators.required],
         });
+
         //get the digital service uid with the activatedRoute
         const uid = this.route.pathFromRoot
             .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
             .find((v) => v !== null);
-
-        // Load countries from API
-        this.loadCountries();
-
         // default value for the form
         const defaultData = {
-            infrastructureType: "SERVER_DC",
+            infrastructureType: this.typesOptions[1],
             nbCpuCores: 0,
             nbGpu: 0,
             gpuMemory: 0,
@@ -121,7 +122,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
         });
     }
 
-    private loadCountries(): void {
+    async loadCountries() {
         this.digitalServicesAiData.getBoaviztapiCountryMap().subscribe(
             (countries: MapString) => {
                 this.locationOptions = Object.entries(countries).map(([name, code]) => ({
@@ -137,6 +138,11 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
                 });
             },
         );
+        const referentials = await lastValueFrom(
+            this.digitalServicesAiData.getEcomindReferential(),
+        );
+
+        this.typesOptions = referentials.sort((a, b) => a.value.localeCompare(b.value));
     }
 
     ngOnDestroy(): void {
