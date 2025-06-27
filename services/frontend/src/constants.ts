@@ -70,6 +70,7 @@ export abstract class Constants {
         referential: "referential",
         users: "users",
         subscribers: "administrator/subscribers",
+        subscriberbyid: "administrator/subscriber",
         organizations: "administrator/organizations",
         ecomindaiModelConfig: "ecomindai/aiModelConfig/type",
         actions: "administrator-actions",

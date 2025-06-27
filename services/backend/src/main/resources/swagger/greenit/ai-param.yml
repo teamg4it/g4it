@@ -18,7 +18,7 @@ paths:
       tags:
         - ai-parameter
       summary: Create API POST for ai parameters
-#      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('ROLE_ECO_MIND_AI_WRITE')"
       operationId: createAiParameter
 
       requestBody:
@@ -44,6 +44,7 @@ paths:
       tags:
         - ai-parameter
       summary: Get existing ai parameters
+      x-custom-role: "hasRole('ROLE_ECO_MIND_AI_READ')"
       operationId: getAiParameter
       responses:
         '200':
@@ -63,6 +64,7 @@ paths:
       tags:
         - ai-parameter
       summary: Update existing ai parameters
+      x-custom-role: "hasRole('ROLE_ECO_MIND_AI_WRITE')"
       operationId: updateAiParameter
       requestBody:
         description: ai parameter details to update.

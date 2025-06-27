@@ -2,6 +2,7 @@ package com.soprasteria.g4it.backend.apiaiinfra.controller;
 
 import com.soprasteria.g4it.backend.apiaiinfra.business.InAiInfrastructureService;
 import com.soprasteria.g4it.backend.apiaiinfra.mapper.InAiInfrastructureMapper;
+import com.soprasteria.g4it.backend.common.utils.AuthorizationUtils;
 import com.soprasteria.g4it.backend.server.gen.api.AiInfraInputsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -21,19 +22,27 @@ public class InAiInfrastructureRestController implements AiInfraInputsApiDelegat
 
     @Autowired
     private InAiInfrastructureMapper inAiInfrastructureMapper;
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
 
     @Override
     public ResponseEntity<InAiInfrastructureRest> getDigitalServiceInputsAiInfraRest(String subscriber, Long organization, String digitalServiceUid) {
+        // Check if EcoMindAi module is enabled or not
+        authorizationUtils.checkEcomindAuthorization();
         return new ResponseEntity<>(inAiInfrastructureMapper.toRest(inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(digitalServiceUid)), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsAiInfraRest(String subscriber, Long organization, String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
-        return new ResponseEntity<>(inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid,aiInfraRest), HttpStatus.CREATED);
+        // Check if EcoMindAi module is enabled or not
+        authorizationUtils.checkEcomindAuthorization();
+        return new ResponseEntity<>(inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<InPhysicalEquipmentRest> updateDigitalServiceInputsAiInfraRest(String subscriber, Long organization, String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
-        return new ResponseEntity<>(inAiInfrastructureService.updateDigitalServiceInputsAiInfraRest(digitalServiceUid,aiInfraRest), HttpStatus.OK);
+        // Check if EcoMindAi module is enabled or not
+        authorizationUtils.checkEcomindAuthorization();
+        return new ResponseEntity<>(inAiInfrastructureService.updateDigitalServiceInputsAiInfraRest(digitalServiceUid, aiInfraRest), HttpStatus.OK);
     }
 }

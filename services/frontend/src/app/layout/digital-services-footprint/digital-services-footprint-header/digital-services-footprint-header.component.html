@@ -102,21 +102,17 @@
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
             (click)="exportData()"
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi"
             [disabled]="digitalService.lastCalculationDate === undefined"
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"
         />
-        <p-button
-            *ngIf="isEcoMindAi && (userService.isAllowedDigitalServiceWrite$ | async)"
-            styleClass="bg-black header-button ml-2"
-            type="button"
-            [label]="'common.save' | translate"
-            (onClick)="handleSave()"
-        />
 
         <p-button
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            *ngIf="
+                (userService.isAllowedDigitalServiceWrite$ | async) ||
+                (userService.isAllowedEcoMindAiWrite$ | async)
+            "
             styleClass="bg-black text-white header-button"
             [disabled]="!enableCalcul()"
             (onClick)="launchCalcul()"

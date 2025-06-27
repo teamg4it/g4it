@@ -67,6 +67,16 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
+    public ResponseEntity<SubscriberRest> getSubscriberById(final Long subscriberId) {
+        return ResponseEntity.ok(
+                subscriberRestMapper.toDto(this.administratorService.getSubscriberById(subscriberId)));
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ResponseEntity<SubscriberRest> updateSubscriber(final Long subscriberId, final CriteriaRest criteriaRest) {
         return ResponseEntity.ok(subscriberRestMapper.toDto(this.administratorService.updateSubscriberCriteria(subscriberId, criteriaRest, authService.getUser()))
         );

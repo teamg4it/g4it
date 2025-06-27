@@ -56,54 +56,59 @@ export class DigitalServicesFootprintComponent implements OnInit {
         this.updateTabItems();
 
         this.digitalServiceStore.setDigitalService(this.digitalService);
-        await this.digitalServiceStore.initInPhysicalEquipments(uid);
-        await this.digitalServiceStore.initInVirtualEquipments(uid);
+        if (!this.isEcoMindAi) {
+            await this.digitalServiceStore.initInPhysicalEquipments(uid);
+            await this.digitalServiceStore.initInVirtualEquipments(uid);
 
-        let inDatacenters = await firstValueFrom(this.inDatacentersService.get(uid));
-        if (inDatacenters.length === 0) {
-            await firstValueFrom(
-                this.inDatacentersService.create({
-                    location: "France",
-                    name: "Default DC",
-                    pue: 1.5,
-                    digitalServiceUid: uid,
-                }),
+            let inDatacenters = await firstValueFrom(this.inDatacentersService.get(uid));
+            if (inDatacenters.length === 0) {
+                await firstValueFrom(
+                    this.inDatacentersService.create({
+                        location: "France",
+                        name: "Default DC",
+                        pue: 1.5,
+                        digitalServiceUid: uid,
+                    }),
+                );
+                inDatacenters = await firstValueFrom(this.inDatacentersService.get(uid));
+            }
+
+            this.digitalServiceStore.setInDatacenters(inDatacenters);
+            const referentials = await firstValueFrom(
+                this.digitalServicesData.getNetworkReferential(),
             );
-            inDatacenters = await firstValueFrom(this.inDatacentersService.get(uid));
+            this.digitalServiceStore.setNetworkTypes(referentials);
+
+            const terminalReferentials = await firstValueFrom(
+                this.digitalServicesData.getDeviceReferential(),
+            );
+            this.digitalServiceStore.setTerminalDeviceTypes(terminalReferentials);
+
+            const serverHostRefCompute = await firstValueFrom(
+                this.digitalServicesData.getHostServerReferential("Compute"),
+            );
+            const serverHostRefStorage = await firstValueFrom(
+                this.digitalServicesData.getHostServerReferential("Storage"),
+            );
+            const shortCuts = [
+                ...serverHostRefCompute.filter((item) =>
+                    item.value.startsWith("Server "),
+                ),
+                ...serverHostRefStorage.filter((item) =>
+                    item.value.startsWith("Server "),
+                ),
+            ].sort(sortByProperty("value", "desc"));
+
+            this.digitalServiceStore.setServerTypes([
+                ...shortCuts,
+                ...serverHostRefCompute
+                    .filter((item) => !item.value.startsWith("Server "))
+                    .sort(sortByProperty("value", "asc")),
+                ...serverHostRefStorage
+                    .filter((item) => !item.value.startsWith("Server "))
+                    .sort(sortByProperty("value", "asc")),
+            ]);
         }
-
-        this.digitalServiceStore.setInDatacenters(inDatacenters);
-        const referentials = await firstValueFrom(
-            this.digitalServicesData.getNetworkReferential(),
-        );
-        this.digitalServiceStore.setNetworkTypes(referentials);
-
-        const terminalReferentials = await firstValueFrom(
-            this.digitalServicesData.getDeviceReferential(),
-        );
-        this.digitalServiceStore.setTerminalDeviceTypes(terminalReferentials);
-
-        const serverHostRefCompute = await firstValueFrom(
-            this.digitalServicesData.getHostServerReferential("Compute"),
-        );
-        const serverHostRefStorage = await firstValueFrom(
-            this.digitalServicesData.getHostServerReferential("Storage"),
-        );
-        const shortCuts = [
-            ...serverHostRefCompute.filter((item) => item.value.startsWith("Server ")),
-            ...serverHostRefStorage.filter((item) => item.value.startsWith("Server ")),
-        ].sort(sortByProperty("value", "desc"));
-
-        this.digitalServiceStore.setServerTypes([
-            ...shortCuts,
-            ...serverHostRefCompute
-                .filter((item) => !item.value.startsWith("Server "))
-                .sort(sortByProperty("value", "asc")),
-            ...serverHostRefStorage
-                .filter((item) => !item.value.startsWith("Server "))
-                .sort(sortByProperty("value", "asc")),
-        ]);
-
         this.global.setLoading(false);
 
         this.digitalBusinessService.initCountryMap();

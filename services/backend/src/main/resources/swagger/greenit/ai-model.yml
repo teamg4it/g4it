@@ -46,7 +46,6 @@ paths:
       tags:
         - ai-service
       summary: Get the available configurations for LLMs in term of name, nb_parameters, framework & quantization
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
       operationId: getAIModelConfigurations
       parameters:
         - $ref: "#/components/parameters/typePathParam"

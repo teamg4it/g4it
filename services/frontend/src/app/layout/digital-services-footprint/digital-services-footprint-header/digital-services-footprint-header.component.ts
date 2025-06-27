@@ -21,7 +21,7 @@ import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
+import { EMPTY, finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     DigitalService,
@@ -59,10 +59,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
+    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindAi: boolean = false;
     @Input() set isAi(value: boolean) {
         this.isEcoMindAi = value;
     }
-    isEcoMindAi = false;
 
     @ViewChild(DigitalServicesAiParametersComponent) aiParametersComponent:
         | DigitalServicesAiParametersComponent
@@ -86,7 +87,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 ? true
                 : digitalService.lastUpdateDate > digitalService.lastCalculationDate;
 
-        if (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) {
+        if (
+            (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) ||
+            this.isEcoMindAi
+        ) {
             return true;
         }
         return false;
@@ -113,9 +117,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 switchMap((res) => {
                     this.digitalService = res;
                     this.digitalServiceStore.setDigitalService(this.digitalService);
-                    return this.inVirtualEquipmentsService.getByDigitalService(
-                        this.digitalService.uid,
-                    );
+                    if (!this.digitalService.isAi) {
+                        return this.inVirtualEquipmentsService.getByDigitalService(
+                            this.digitalService.uid,
+                        );
+                    } else {
+                        return EMPTY;
+                    }
                 }),
             )
             .subscribe();
@@ -123,6 +131,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
             this.selectedSubscriberName = subscriber.name;
             this.subscriber = subscriber;
+            this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
         });
         this.userService.currentOrganization$.subscribe((organization: Organization) => {
             this.organization.subscriberName = this.subscriber.name;
@@ -139,6 +148,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         if (this.digitalService.isAi) {
             this.aiFormsStore.setParameterChange(false);
             this.aiFormsStore.setInfrastructureChange(false);
+            this.aiFormsStore.clearForms();
         }
     }
 
@@ -179,6 +189,15 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     async launchCalcul() {
+        if (this.isEcoMindAi) {
+            await this.handleSave();
+            if (
+                !this.aiFormsStore.getInfrastructureFormData() ||
+                !this.aiFormsStore.getParametersFormData()
+            ) {
+                return;
+            }
+        }
         this.global.setLoading(true);
         await firstValueFrom(
             this.digitalServicesData.launchEvaluating(this.digitalService.uid),
@@ -313,7 +332,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             });
     }
 
-    handleSave(): void {
+    async handleSave() {
         const parametersData = this.aiFormsStore.getParametersFormData();
         const infrastructureData = this.aiFormsStore.getInfrastructureFormData();
 
@@ -419,7 +438,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.global.setLoading(true);
 
         // Save both forms
-        Promise.all([
+        await Promise.all([
             this.digitalServicesAiData
                 .saveAiInfrastructure(digitalServiceUid, infrastructureData)
                 .toPromise(),
