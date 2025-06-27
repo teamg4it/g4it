@@ -212,11 +212,14 @@
         "network": "Réseau",
         "add": "+ AJOUTER UN RÉSEAU",
         "id": "#",
+        "name": "Nom",
         "type": "Type",
         "typeCode": "Type",
         "yearly-go": "Quantité totale de Go échangés par an pour tous les utilisateurs",
         "table-yearly-go": "Quantité annuelle de Go échangés",
-        "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés"
+        "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés",
+        "network-name": "Nom du réseau",
+        "error.network-already-exists": "Le réseau existe déjà"
     },
     "digital-services-servers": {
         "Dedicated": "Dédié",

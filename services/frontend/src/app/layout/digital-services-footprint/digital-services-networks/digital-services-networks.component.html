@@ -23,6 +23,7 @@
         <app-digital-services-networks-side-panel
             #networkSidePanel
             (sidebarVisible)="(sidebarVisible)"
+            [existingNames]="existingNames()"
             [network]="network"
             (update)="actionNetwork('update', $event)"
             (delete)="actionNetwork('delete', $event)"
