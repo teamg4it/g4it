@@ -26,6 +26,31 @@
         (ngSubmit)="submitFormData()"
     >
         <div class="label-input-div">
+            <label for="terminalName">{{
+                "digital-services-servers.name" | translate
+            }}</label>
+            <input
+                pInputText
+                formControlName="name"
+                [required]="true"
+                [(ngModel)]="network.name"
+                name="name"
+                ngDefaultControl
+                locale="fr-FR"
+                id="terminalName"
+            />
+            <p class="error-text" *ngIf="networksForm.get('name')?.hasError('required')">
+                {{ "digital-services-networks.network-name" | translate }}
+                {{ "common.mandatory" | translate }}
+            </p>
+            <p
+                class="error-text"
+                *ngIf="networksForm.get('name')?.hasError('uniqueName')"
+            >
+                {{ "digital-services-networks.error.network-already-exists" | translate }}
+            </p>
+        </div>
+        <div class="label-input-div">
             <label for="type">{{ "digital-services-networks.type" | translate }}</label>
             <p-dropdown
                 appendTo="body"

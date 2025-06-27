@@ -73,6 +73,7 @@ export interface DigitalServiceNetworkConfig {
     typeCode?: string;
     yearlyQuantityOfGbExchanged: number;
     idFront?: number;
+    name: string;
 }
 
 export interface DigitalServiceTerminalConfig {
