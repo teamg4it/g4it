@@ -11,6 +11,7 @@
 
 export const environment = {
     production: false,
+    isEcomindEnabled: true,
     securedEndpoints: [
         "inventories",
         "digital-services",
@@ -33,7 +34,6 @@ export const environment = {
             containerUrl: "",
         },
     },
-    isEcomindEnabled: true,
 };
 
 /*
