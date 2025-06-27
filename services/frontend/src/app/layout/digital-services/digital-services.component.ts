@@ -100,7 +100,8 @@ export class DigitalServicesComponent {
         if (
             this.isEcoMindAi &&
             this.isAllowedEcoMindAiService &&
-            this.isEcoMindEnabledForCurrentSubscriber
+            this.isEcoMindEnabledForCurrentSubscriber &&
+            this.isEcoMindModuleEnabled
         ) {
             const apiResult = await lastValueFrom(this.digitalServicesData.list(true));
             apiResult.sort((x, y) => x.name.localeCompare(y.name));
