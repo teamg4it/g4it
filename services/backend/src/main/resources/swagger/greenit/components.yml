@@ -582,13 +582,6 @@ components:
           type: string
         name:
           type: string
-        creator:
-          type: object
-          $ref: "#/components/schemas/UserInfoRest"
-        members:
-          type: array
-          items:
-            $ref: "#/components/schemas/UserInfoRest"
         creationDate:
           type: string
           format: date-time
@@ -605,6 +598,10 @@ components:
         note:
           type: object
           $ref: "#/components/schemas/NoteRest"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskRest"
 
     DigitalServiceServerImpactRest:
       type: object

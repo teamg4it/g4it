@@ -82,6 +82,7 @@ public class FileSystemService {
     @PostConstruct
     public void initFolder() throws IOException {
         Files.createDirectories(Path.of(localWorkingFolder, "input", "inventory"));
+        Files.createDirectories(Path.of(localWorkingFolder, "input", "digital-service"));
     }
 
     /**
@@ -142,7 +143,7 @@ public class FileSystemService {
      * @return the fileName list uploaded
      */
     public List<String> manageFilesAndRename(final String subscriber, final Long organizationId,
-                                             final List<MultipartFile> files, final List<String> filenames) {
+                                             final List<MultipartFile> files, final List<String> filenames, Boolean isInventory) {
         if (files == null) return List.of();
         checkFiles(files);
         FileStorage fileStorage = fetchStorage(subscriber, organizationId.toString());
@@ -150,7 +151,7 @@ public class FileSystemService {
         final List<String> result = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
-                result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i)));
+                result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i), isInventory));
         }
 
         return result;
@@ -201,8 +202,9 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) {
-        final Path tempPath = Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString());
+    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+        final Path tempPath = Boolean.TRUE.equals(isInventory) ? Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString())
+                : Path.of(localWorkingFolder, "input", "digital-service", UUID.randomUUID().toString());
         File outputFile = tempPath.toFile();
 
         // Detect file type by extension

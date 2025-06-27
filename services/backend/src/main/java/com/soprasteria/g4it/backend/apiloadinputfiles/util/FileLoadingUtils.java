@@ -77,11 +77,13 @@ public class FileLoadingUtils {
     /**
      * Compute the folder path of the rejected file folder
      *
-     * @param inventoryId : the given inventoryId
+     * @param pathId : the given pathId
      * @return : the path of the rejected folder
      */
-    public Path computeRejectedFolderPath(Long inventoryId) {
-        return Path.of(localWorkingFolder).resolve("rejected").resolve(String.valueOf(inventoryId));
+    public Path computeRejectedFolderPath(String pathId) {
+
+         return Path.of(localWorkingFolder).resolve("rejected").resolve(pathId);
+
     }
 
     /**
@@ -90,10 +92,10 @@ public class FileLoadingUtils {
      * @param fileStorage the file storage
      * @param filenames   the filename list
      */
-    private void cleanFromLocalAndFileStorage(FileStorage fileStorage, List<String> filenames) {
+    private void cleanFromLocalAndFileStorage(String inputPath, FileStorage fileStorage,   List<String> filenames) {
         try {
             for (String filename : filenames) {
-                Files.delete(Path.of(localWorkingFolder).resolve("input/inventory").resolve(filename));
+                Files.delete(Path.of(localWorkingFolder).resolve(inputPath).resolve(filename));
             }
 
             for (String filename : filenames) {
@@ -104,25 +106,29 @@ public class FileLoadingUtils {
         }
     }
 
-    public boolean handelRejectedFiles(String subscriber, Long organizationId, Long inventoryId, Long taskId, List<String> filenames) {
+    public boolean handelRejectedFiles(String subscriber, Long organizationId, Long inventoryId, String digitalServiceUid,
+                                       Long taskId, List<String> filenames) {
+
+        String pathId = null!= inventoryId ? String.valueOf(inventoryId) : digitalServiceUid;
+        String inputPath =null!= inventoryId ? "input/inventory" : "input/digital-service";
+
         FileStorage fileStorage = fileSystem.mount(subscriber, organizationId.toString());
-        boolean hasRejectedFile = uploadRejectedZip(inventoryId, taskId, fileStorage);
-        cleanFromLocalAndFileStorage(fileStorage, filenames);
+        boolean hasRejectedFile = uploadRejectedZip(pathId, taskId, fileStorage);
+        cleanFromLocalAndFileStorage(inputPath, fileStorage, filenames);
         return hasRejectedFile;
     }
 
     /**
      * Upload rejected zip file
      *
-     * @param inventoryId the inventoryId
+     * @param pathId the pathId
      * @param taskId      the task id
      * @param fileStorage the file storage
      * @return true if has any zip uploaded
      */
-    private boolean uploadRejectedZip(Long inventoryId, Long taskId, FileStorage fileStorage) {
-
+    private boolean uploadRejectedZip(String pathId, Long taskId, FileStorage fileStorage) {
         try {
-            final Path rejectedFolderPath = computeRejectedFolderPath(inventoryId);
+            final Path rejectedFolderPath = computeRejectedFolderPath(pathId);
             if (Files.exists(rejectedFolderPath) && !localFileService.isEmpty(rejectedFolderPath)) {
                 // create rejected zip file
                 final File rejectedZipFile = localFileService.createZipFile(rejectedFolderPath, rejectedFolderPath.resolve(Constants.REJECTED_FILES_ZIP));
@@ -158,14 +164,14 @@ public class FileLoadingUtils {
         return "";
     }
 
-    public List<FileToLoad> mapFileToLoad(List<String> filenames) {
-
+    public List<FileToLoad> mapFileToLoad(List<String> filenames, boolean isInventory) {
+        String inputPath = isInventory ? "input/inventory" : "input/digital-service";
         return filenames.stream().map(filename -> {
             FileToLoad fileToLoadDto = new FileToLoad();
             fileToLoadDto.setFilename(filename);
             fileToLoadDto.computeFileType();
             fileToLoadDto.setOriginalFileName(getOriginalFilename(fileToLoadDto.getFileType(), filename));
-            fileToLoadDto.setFilePath(Path.of(localWorkingFolder).resolve("input/inventory").resolve(filename));
+            fileToLoadDto.setFilePath(Path.of(localWorkingFolder).resolve(inputPath).resolve(filename));
             return fileToLoadDto;
         }).toList();
 
