@@ -2,12 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_lifecycle_step
       author: G4IT Dev Team
-      runOnChange: true
-      preconditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: ref_lifecycle_step
       changes:
         - createTable:
             tableName: ref_lifecycle_step
@@ -21,6 +15,16 @@ databaseChangeLog:
               - column:
                   name: label
                   type: varchar(255)
+
+  - changeSet:
+      id: referential-init-ref_lifecycle_step-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_lifecycle_step
+      changes:
         - loadData:
             columns:
               - column:
@@ -37,12 +41,6 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_criterion
       author: G4IT Dev Team
-      runOnChange: true
-      preconditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: ref_criterion
       changes:
         - createTable:
             tableName: ref_criterion
@@ -62,6 +60,16 @@ databaseChangeLog:
               - column:
                   name: unit
                   type: varchar(255)
+
+  - changeSet:
+      id: referential-init-ref_criterion-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_criterion
+      changes:
         - loadData:
             columns:
               - column:
@@ -82,12 +90,6 @@ databaseChangeLog:
   - changeSet:
       id: create-ref_hypothesis
       author: G4IT Dev Team
-      runOnChange: true
-      preconditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: ref_hypothesis
       changes:
         - createTable:
             tableName: ref_hypothesis
@@ -117,6 +119,20 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: code, subscriber
+            constraintName: ref_hypothesis_unique
+            tableName: ref_hypothesis
+
+  - changeSet:
+      id: referential-init-ref_hypothesis-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_hypothesis
+      changes:
         - loadData:
             columns:
               - column:
@@ -142,20 +158,10 @@ databaseChangeLog:
             tableName: ref_hypothesis
             separator: ;
             encoding: UTF-8
-        - addUniqueConstraint:
-            columnNames: code, subscriber
-            constraintName: ref_hypothesis_unique
-            tableName: ref_hypothesis
 
   - changeSet:
       id: create-ref_item_type
       author: G4IT Dev Team
-      runOnChange: true
-      preconditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: ref_item_type
       changes:
         - createTable:
             tableName: ref_item_type
@@ -196,6 +202,20 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: type, subscriber
+            constraintName: ref_item_type_unique
+            tableName: ref_item_type
+
+  - changeSet:
+      id: referential-init-ref_item_type-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_item_type
+      changes:
         - loadData:
             columns:
               - column:
@@ -230,20 +250,10 @@ databaseChangeLog:
             tableName: ref_item_type
             separator: ;
             encoding: UTF-8
-        - addUniqueConstraint:
-            columnNames: type, subscriber
-            constraintName: ref_item_type_unique
-            tableName: ref_item_type
 
   - changeSet:
       id: create-ref_item_impact
       author: G4IT Dev Team
-      runOnChange: true
-      preconditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: ref_item_impact
       changes:
         - createTable:
             tableName: ref_item_impact
@@ -298,6 +308,20 @@ databaseChangeLog:
               - column:
                   name: version
                   type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: name, lifecycle_step, criterion, subscriber
+            constraintName: ref_item_impact_unique
+            tableName: ref_item_impact
+
+  - changeSet:
+      id: referential-init-ref_item_impact-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_item_impact
+      changes:
         - loadData:
             columns:
               - column:
@@ -347,20 +371,10 @@ databaseChangeLog:
             tableName: ref_item_impact
             separator: ;
             encoding: UTF-8
-        - addUniqueConstraint:
-            columnNames: name, lifecycle_step, criterion, subscriber
-            constraintName: ref_item_impact_unique
-            tableName: ref_item_impact
 
   - changeSet:
       id: create-ref_matching_item
       author: G4IT Dev Team
-      runOnChange: true
-      preconditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: ref_matching_item
       changes:
         - createTable:
             tableName: ref_matching_item
@@ -381,6 +395,20 @@ databaseChangeLog:
               - column:
                   name: subscriber
                   type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: item_source, subscriber
+            constraintName: ref_matching_item_unique
+            tableName: ref_matching_item
+
+  - changeSet:
+      id: referential-init-ref_matching_item-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_matching_item
+      changes:
         - loadData:
             columns:
               - column:
@@ -397,10 +425,6 @@ databaseChangeLog:
             tableName: ref_matching_item
             separator: ;
             encoding: UTF-8
-        - addUniqueConstraint:
-            columnNames: item_source, subscriber
-            constraintName: ref_matching_item_unique
-            tableName: ref_matching_item
 
   - changeSet:
       id: create-ref_item_impact_indexes

@@ -69,6 +69,16 @@ databaseChangeLog:
               - column:
                   name: source
                   type: text
+
+  - changeSet:
+      id: referential-init-ref_device_type-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_device_type
+      changes:
         - loadData:
             columns:
               - column:
@@ -145,12 +155,6 @@ databaseChangeLog:
   - changeSet:
       id: create-network-type-ref-table
       author: G4IT Dev Team
-      runOnChange: true
-      preconditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: ref_network_type
       changes:
         - createTable:
             tableName: ref_network_type
@@ -183,6 +187,16 @@ databaseChangeLog:
               - column:
                   name: source
                   type: text
+
+  - changeSet:
+      id: referential-init-ref_network_type-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_network_type
+      changes:
         - loadData:
             columns:
               - column:
@@ -211,6 +225,7 @@ databaseChangeLog:
             tableName: ref_network_type
             separator: ;
             encoding: UTF-8
+
   - changeSet:
       id: create-network-table
       author: G4IT Dev Team
@@ -252,12 +267,6 @@ databaseChangeLog:
   - changeSet:
       id: create-server-host-ref-table
       author: G4IT Dev Team
-      runOnChange: true
-      preconditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: ref_server_host
       changes:
         - createTable:
             tableName: ref_server_host
@@ -290,6 +299,16 @@ databaseChangeLog:
               - column:
                   name: lifespan
                   type: double
+
+  - changeSet:
+      id: referential-init-ref_server_host-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_server_host
+      changes:
         - loadData:
             columns:
               - column:
