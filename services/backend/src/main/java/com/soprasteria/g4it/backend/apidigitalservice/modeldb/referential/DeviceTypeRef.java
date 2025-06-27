@@ -61,4 +61,9 @@ public class DeviceTypeRef {
      * Source.
      */
     private String source;
+
+    /**
+     * Compatible Ecomind.
+     */
+    private boolean compatibleEcomind;
 }

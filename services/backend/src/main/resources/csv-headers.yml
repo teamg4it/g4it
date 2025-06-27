@@ -431,3 +431,40 @@ filesystem.config.headers:
       optional: false
     - name: "sipImpact"
       optional: false
+  outAiReco:
+    - name: "electricityConsumption"
+      optional: false
+    - name: "recommendations"
+      optional: false
+  aiParameters:
+    - name: "digitalServiceUid"
+      optional: false
+    - name: "modelName"
+      optional: false
+    - name: "nbParameters"
+      optional: false
+    - name: "framework"
+      optional: false
+    - name: "quantization"
+      optional: false
+    - name: "totalGeneratedTokens"
+      optional: false
+    - name: "numberUserYear"
+      optional: false
+    - name: "averageNumberRequest"
+      optional: false
+    - name: "averageNumberToken"
+      optional: false
+    - name: "isInference"
+      optional: false
+    - name: "isFinetuning"
+      optional: false
+  aiInfrastructure:
+    - name: "digitalServiceUid"
+      optional: false
+    - name: "complementaryPue"
+      optional: false
+    - name: "nbGpu"
+      optional: false
+    - name: "gpuMemory"
+      optional: false

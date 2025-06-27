@@ -1,0 +1,29 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - AI Recommendation Output
+  description: API to retrieve AI recommendations from the out_ai_reco table
+  version: "1.0.0"
+tags:
+  - name: ai-recommendations
+    description: Endpoint for AI Recommendations outputs
+paths:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/ai-recomandation:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/subscriberPathParam'
+        - $ref: '#/components/parameters/organizationPathParam'
+        - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      tags:
+        - ai-recommendations
+      summary: Get AI recommendations
+      description: Retrieve AI recommendations from the database
+      operationId: getAiRecommendations
+      responses:
+        '200':
+          description: Successful retrieval of AI recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutAiRecommendationRest'
+        '500':
+          description: Internal server error

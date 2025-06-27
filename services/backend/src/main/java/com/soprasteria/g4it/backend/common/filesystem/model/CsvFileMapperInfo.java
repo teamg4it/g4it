@@ -37,6 +37,10 @@ public class CsvFileMapperInfo implements FileMapperInfo {
 
     private List<Header> virtualEquipmentIndicatorDigitalService;
 
+    private List<Header> outAiReco;
+    private List<Header> aiParameters;
+    private List<Header> aiInfrastructure;
+
     @Override
     public List<Header> getMapping(final FileType type) {
         return switch (type) {
@@ -54,6 +58,9 @@ public class CsvFileMapperInfo implements FileMapperInfo {
                     new ArrayList<>(List.copyOf(physicalEquipmentIndicatorDigitalService));
             case VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
                     new ArrayList<>(List.copyOf(virtualEquipmentIndicatorDigitalService));
+            case OUT_AI_RECO -> new ArrayList<>(List.copyOf(outAiReco));
+            case IN_AI_PARAMETERS -> new ArrayList<>(List.copyOf(aiParameters));
+            case IN_AI_INFRASTRUCTURE -> new ArrayList<>(List.copyOf(aiInfrastructure));
         };
     }
 

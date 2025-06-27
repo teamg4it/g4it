@@ -79,6 +79,25 @@ public class DigitalServiceReferentialService {
     }
 
     /**
+     * Get Ecomind device type referential data.
+     *
+     * @return the list of device type (business object).
+     */
+    public List<DeviceTypeBO> getEcomindDeviceType() {
+        return digitalServiceReferentialMapper.toDeviceTypeBusinessObject(deviceTypeRefRepository.findByCompatibleEcomind(true));
+    }
+
+    /**
+     * Get Ecomind device type by reference.
+     *
+     * @param reference the searched reference
+     * @return the referential data or else throw runtime exception.
+     */
+    public DeviceTypeRef getEcomindDeviceType(final String reference) {
+        return deviceTypeRefRepository.findByReferenceAndCompatibleEcomind(reference, true).orElseThrow(() -> new InvalidReferentialException("terminal.type.code"));
+    }
+
+    /**
      * Get terminal device type by reference.
      *
      * @param reference the searched reference

@@ -54,7 +54,7 @@ paths:
     post:
       summary: Launch evaluation batch
       operationId: launchEvaluatingDigitalService
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
       tags:
         - inventory-evaluating
       responses:

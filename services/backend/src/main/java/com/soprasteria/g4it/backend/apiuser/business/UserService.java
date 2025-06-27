@@ -247,6 +247,7 @@ public class UserService {
                             .criteria(subscriber.getCriteria())
                             .authorizedDomains(subscriber.getAuthorizedDomains())
                             .id(subscriber.getId())
+                            .ecomindai(subscriber.isEcomindai())
                             .build();
                     return subscriberBO;
                 })
@@ -326,6 +327,7 @@ public class UserService {
                 .criteria(userSubscriber.getSubscriber().getCriteria())
                 .authorizedDomains(userSubscriber.getSubscriber().getAuthorizedDomains())
                 .id(userSubscriber.getSubscriber().getId())
+                .ecomindai(userSubscriber.getSubscriber().isEcomindai())
                 .build();
     }
 
@@ -357,6 +359,7 @@ public class UserService {
                 .id(subscriber.getId())
                 .criteria(subscriber.getCriteria())
                 .authorizedDomains(subscriber.getAuthorizedDomains())
+                .ecomindai(subscriber.isEcomindai())
                 .build();
     }
 

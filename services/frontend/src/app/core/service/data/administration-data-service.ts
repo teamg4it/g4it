@@ -18,6 +18,7 @@ import {
 } from "../../interfaces/administration.interfaces";
 
 const endpoint = Constants.ENDPOINTS.subscribers;
+const endpointById = Constants.ENDPOINTS.subscriberbyid;
 const endpointForOrg = Constants.ENDPOINTS.organizations;
 const endpointForUser = Constants.ENDPOINTS.users;
 
@@ -29,6 +30,10 @@ export class AdministrationDataService {
 
     getOrganizations(): Observable<Subscriber[]> {
         return this.http.get<Subscriber[]>(`${endpoint}`);
+    }
+
+    getSubscriberById(subscriberId: number): Observable<Subscriber> {
+        return this.http.get<Subscriber>(`${endpointById}?subscriberId=${subscriberId}`);
     }
 
     getUsers(): Observable<Subscriber> {

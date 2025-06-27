@@ -162,6 +162,7 @@ public class EvaluatingService {
                 .datetime(LocalDateTime.now())
                 .hasVirtualEquipments(true)
                 .hasApplications(false)
+                .isAi(digitalService.isAi())
                 .build();
 
         List<String> activeCriteria = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalService.getCriteria())

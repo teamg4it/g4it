@@ -16,6 +16,7 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
 import { MessageService } from "primeng/api";
 import { ProgressBarModule } from "primeng/progressbar";
+import { TableModule } from 'primeng/table';
 import { ToastModule } from "primeng/toast";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
@@ -68,6 +69,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
         ToastModule,
         ProgressBarModule,
         KeycloakAngularModule,
+        TableModule
     ],
     providers: [
         environment.keycloak.enabled === "true"

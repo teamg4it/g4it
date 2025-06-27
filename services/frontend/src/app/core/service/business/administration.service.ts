@@ -28,6 +28,10 @@ export class AdministrationService {
         return this.administrationDataService.getOrganizations();
     }
 
+    getSubscriberById(subscriberId: number): Observable<Subscriber> {
+        return this.administrationDataService.getSubscriberById(subscriberId);
+    }
+
     getUsers(): Observable<Subscriber> {
         return this.administrationDataService.getUsers();
     }

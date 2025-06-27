@@ -2,17 +2,27 @@
 <div class="flex justify-content-between align-items-center flex-wrap mr-4 mb-4">
     <h1>
         {{
-            "digital-services.title"
-                | translate: { OrganizationName: selectedOrganization }
+            isEcoMindAi
+                ? ("eco-mind-ai.title"
+                  | translate: { OrganizationName: selectedOrganization })
+                : ("digital-services.title"
+                  | translate: { OrganizationName: selectedOrganization })
         }}
     </h1>
     <p-button
         styleClass="black-button"
         (onClick)="createNewDigitalService()"
-        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+        *ngIf="
+            (userService.isAllowedDigitalServiceWrite$ | async) ||
+            (userService.isAllowedEcoMindAiWrite$ | async)
+        "
         id="add-digital"
     >
-        {{ "digital-services.add" | translate }}
+        {{
+            isEcoMindAi
+                ? ("eco-mind-ai.add" | translate)
+                : ("digital-services.add" | translate)
+        }}
     </p-button>
 </div>
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 246px)' }">
@@ -20,6 +30,7 @@
         @for (digitalService of paginatedDigitalServices; track $index) {
             <li>
                 <app-digital-services-item
+                    [isAi]="isEcoMindAi"
                     [digitalService]="digitalService"
                     (noteOpened)="itemNoteOpened($event)"
                     (deleteUid)="itemDelete($event)"

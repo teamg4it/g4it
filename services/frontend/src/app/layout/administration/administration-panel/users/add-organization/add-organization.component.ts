@@ -24,6 +24,7 @@ import { AdministrationService } from "src/app/core/service/business/administrat
 import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-add-organization",
@@ -32,6 +33,7 @@ import { Constants } from "src/constants";
 })
 export class AddOrganizationComponent {
     @Input() userDetail!: UserDetails;
+    @Input() userDetailEcoMind: boolean = false;
     @Input() organization: any;
     @Input() clearForm!: false;
     @Output() close: EventEmitter<any> = new EventEmitter();
@@ -39,17 +41,23 @@ export class AddOrganizationComponent {
 
     dsRoles = [Role.DigitalServiceRead, Role.DigitalServiceWrite];
     isRoles = [Role.InventoryRead, Role.InventoryWrite];
+    ecomindRoles = [Role.EcoMindAiRead, Role.EcoMindAiWrite];
 
     adminModule: any;
     dsModule: RoleValue = {} as RoleValue;
     isModule: RoleValue = {} as RoleValue;
+    ecomindModule: RoleValue = {} as RoleValue;
 
     adminModuleValues: RoleValue[] = [] as RoleValue[];
     dsModuleValues: RoleValue[] = [] as RoleValue[];
     isModuleValues: RoleValue[] = [] as RoleValue[];
+    ecomindModuleValues: RoleValue[] = [] as RoleValue[];
 
     isAdmin: boolean = false;
     isAdminRoleDisabled: boolean = false;
+
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+
     private destroyRef = inject(DestroyRef);
     constructor(
         public administrationService: AdministrationService,
@@ -62,6 +70,10 @@ export class AddOrganizationComponent {
         this.isModuleValues = this.isRoles.map((role) => this.getRoleValue(role));
 
         this.dsModuleValues = this.dsRoles.map((role) => this.getRoleValue(role));
+
+        this.ecomindModuleValues = this.ecomindRoles.map((role) =>
+            this.getRoleValue(role),
+        );
 
         this.adminModuleValues = [
             {
@@ -107,6 +119,13 @@ export class AddOrganizationComponent {
                 break;
             }
         }
+
+        for (const role of [...this.ecomindRoles].reverse()) {
+            if (roles.includes(role)) {
+                this.ecomindModule = this.getRoleValue(role);
+                break;
+            }
+        }
     }
 
     getRoleValue(role: Role): RoleValue {
@@ -132,6 +151,7 @@ export class AddOrganizationComponent {
         } else {
             if (this.isModule) roles.push(this.isModule.code);
             if (this.dsModule) roles.push(this.dsModule.code);
+            if (this.ecomindModule) roles.push(this.ecomindModule.code);
         }
         return {
             organizationId: this.organization.organizationId,
@@ -175,6 +195,7 @@ export class AddOrganizationComponent {
     forceAdmin() {
         this.dsModule = this.getRoleValue(Role.DigitalServiceWrite);
         this.isModule = this.getRoleValue(Role.InventoryWrite);
+        this.ecomindModule = this.getRoleValue(Role.EcoMindAiWrite);
 
         this.adminModule = {
             code: Role.OrganizationAdmin,
@@ -201,6 +222,7 @@ export class AddOrganizationComponent {
         this.adminModule = {} as RoleValue;
         this.dsModule = {} as RoleValue;
         this.isModule = {} as RoleValue;
+        this.ecomindModule = {} as RoleValue;
         this.isAdminRoleDisabled = false;
     }
 

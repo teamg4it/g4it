@@ -30,8 +30,11 @@
             [ariaLabel]="'digital-services.return' | translate"
             icon="pi pi-arrow-left"
             [label]="
-                'digital-services.title'
-                    | translate: { OrganizationName: organization.organizationName }
+                isEcoMindAi
+                    ? ('eco-mind-ai.title'
+                      | translate: { OrganizationName: organization.organizationName })
+                    : ('digital-services.title'
+                      | translate: { OrganizationName: organization.organizationName })
             "
             id="return-button"
         />
@@ -73,6 +76,7 @@
             styleClass="text-gray-900 header-button ml-1"
             [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
+                !isEcoMindAi &&
                 !digitalService.note &&
                 (userService.isAllowedDigitalServiceWrite$ | async)
             "
@@ -87,7 +91,7 @@
             (click)="sidebarVisible = true"
             styleClass="text-gray-900 header-button"
             [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            *ngIf="digitalService.note"
+            *ngIf="!isEcoMindAi && digitalService.note"
             [text]="true"
             [plain]="true"
             icon="pi pi-clipboard"
@@ -98,14 +102,17 @@
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
             (click)="exportData()"
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi"
             [disabled]="digitalService.lastCalculationDate === undefined"
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"
         />
 
         <p-button
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            *ngIf="
+                (userService.isAllowedDigitalServiceWrite$ | async) ||
+                (userService.isAllowedEcoMindAiWrite$ | async)
+            "
             styleClass="bg-black text-white header-button"
             [disabled]="!enableCalcul()"
             (onClick)="launchCalcul()"

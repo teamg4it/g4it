@@ -50,6 +50,14 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
      * {@inheritDoc}
      */
     @Override
+    public ResponseEntity<List<DeviceTypeRefRest>> getEcomindDeviceTypeRef(final String subscriber, final Long organization) {
+        return ResponseEntity.ok(digitalServiceReferentialRestMapper.toDeviceTypeDto(digitalServiceReferentialService.getEcomindDeviceType()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ResponseEntity<List<String>> getCountryRef(final String subscriber, final Long organization) {
         return ResponseEntity.ok(digitalServiceReferentialService.getCountry());
     }

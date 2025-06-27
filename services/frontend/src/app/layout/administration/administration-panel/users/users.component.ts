@@ -23,6 +23,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-users",
@@ -33,13 +34,14 @@ export class UsersComponent {
     private destroyRef = inject(DestroyRef);
 
     userDetails!: UserDetails[];
+    userDetailEcoMind: boolean = false;
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     organizationlist: OrganizationWithSubscriber[] = [];
     enableList = false;
     clearForm: any;
     enableSearchButton: boolean = true;
     membersAndSearchVisible = false;
-    subscribersDetails: any;
+    subscribersDetails!: any;
     membersList: any;
     filteredMembers: any[] = [];
     openSearchResult: boolean = false;
@@ -60,6 +62,9 @@ export class UsersComponent {
     defaultCriteria: string[] = [];
     subscriber!: Subscriber;
     firstPage: number = 0;
+
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+    isEcoMindEnabledForCurrentSubscriberSelected: boolean = false;
 
     constructor(
         private administrationService: AdministrationService,
@@ -156,6 +161,7 @@ export class UsersComponent {
         user.isModule = this.getRole(user.roles, "INVENTORY_");
         user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
         user.role = this.getRole(user.roles, "ADMINISTRATOR");
+        user.ecomindModule = this.getRole(user.roles, "ECO_MIND_AI_");
         return user;
     }
 
@@ -264,10 +270,14 @@ export class UsersComponent {
         });
     }
 
-    openSidepanelForAddORUpdateOrg(user: UserDetails) {
+    openSidepanelForAddORUpdateOrg(
+        user: UserDetails,
+        isEcoMindEnabledForCurrentSubscriberSelected: boolean,
+    ) {
         this.sidebarVisible = true;
         this.sidebarCreateMode = user.roles.length === 0;
         this.userDetail = user;
+        this.userDetailEcoMind = isEcoMindEnabledForCurrentSubscriberSelected;
     }
 
     displayPopupFct() {
@@ -292,6 +302,13 @@ export class UsersComponent {
                 this.displayPopup = false;
                 this.getUsers(true);
                 this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
+            });
+    }
+    getSelectedSubscriber() {
+        this.administrationService
+            .getSubscriberById(this.organization.subscriberId)
+            .subscribe((res) => {
+                this.isEcoMindEnabledForCurrentSubscriberSelected = res.ecomindai;
             });
     }
 }

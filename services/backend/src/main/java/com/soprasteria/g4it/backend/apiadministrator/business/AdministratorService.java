@@ -171,4 +171,8 @@ public class AdministratorService {
                 .toList();
     }
 
+    public SubscriberBO getSubscriberById(Long id) {
+        return subscriberRestMapper.toBusinessObject(subscriberRepository.findById(id).orElse(null));
+    }
+
 }

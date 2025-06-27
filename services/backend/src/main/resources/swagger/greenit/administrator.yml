@@ -292,5 +292,25 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-
+  /administrator/subscriber:
+    get:
+      tags:
+        - administrator
+      summary: Get subscriber by his id
+      operationId: getSubscriberById
+      parameters:
+        - $ref: '#/components/parameters/reqSubscriberIdQueryParam'
+      responses:
+        '200':
+          description: Return subscriber
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/SubscriberRest"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 

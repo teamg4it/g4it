@@ -53,5 +53,9 @@ public class SubscriberBO {
      * User roles on subscriber.
      */
     private List<String> roles;
+    /**
+     * Is EcomindAi enabled or not for this subscriber
+     */
+    private boolean ecomindai;
 
 }
