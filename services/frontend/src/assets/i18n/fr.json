@@ -283,6 +283,7 @@
     },
     "digital-services-cloud-services": {
         "new": "Nouvelle instance Cloud",
+        "edit": "Édition instance Cloud",
         "cloud-services": "Services Cloud",
         "cloud-service": "Service Cloud",
         "add": "+ AJOUTER UN SERVICE CLOUD",

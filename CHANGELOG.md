@@ -5,6 +5,7 @@
 ### Major Changes
 
 - 1261 | Naming user groups in the Digital Service module – Terminales input
+- 740 | Visualize different cloud instances for the same type
 
 ### Minor Changes
 
