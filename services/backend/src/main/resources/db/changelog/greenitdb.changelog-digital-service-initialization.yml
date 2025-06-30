@@ -69,6 +69,16 @@ databaseChangeLog:
               - column:
                   name: source
                   type: text
+
+  - changeSet:
+      id: referential-init-ref_device_type-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_device_type
+      changes:
         - loadData:
             columns:
               - column:
@@ -86,7 +96,7 @@ databaseChangeLog:
               - column:
                   header: source
                   type: text
-            file: db/changelog/data/ref_terminal_device_type.csv
+            file: db/changelog/referential-data/ref_device_type.csv
             primaryKey: id
             tableName: ref_device_type
             separator: ;
@@ -177,6 +187,16 @@ databaseChangeLog:
               - column:
                   name: source
                   type: text
+
+  - changeSet:
+      id: referential-init-ref_network_type-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_network_type
+      changes:
         - loadData:
             columns:
               - column:
@@ -200,11 +220,12 @@ databaseChangeLog:
               - column:
                   header: source
                   type: text
-            file: db/changelog/data/ref_network_type.csv
+            file: db/changelog/referential-data/ref_network_type.csv
             primaryKey: id
             tableName: ref_network_type
             separator: ;
             encoding: UTF-8
+
   - changeSet:
       id: create-network-table
       author: G4IT Dev Team
@@ -278,6 +299,16 @@ databaseChangeLog:
               - column:
                   name: lifespan
                   type: double
+
+  - changeSet:
+      id: referential-init-ref_server_host-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_server_host
+      changes:
         - loadData:
             columns:
               - column:
@@ -301,7 +332,7 @@ databaseChangeLog:
               - column:
                   header: lifespan
                   type: double
-            file: db/changelog/data/ref_server_host.csv
+            file: db/changelog/referential-data/ref_server_host.csv
             primaryKey: id
             tableName: ref_server_host
             separator: ;

@@ -9,6 +9,8 @@
 
 ### Minor Changes
 
+- 1271 | Open Source - Be able to launch a calculation just after first installation
+- 1200 | [BE] New Bug on electricity consumption : total display different than sum compute manually with export file
 - 1193 | DB cleanup:Remove the link between a user and a digital service
 - 1257 | Very High level of Digital Service calculated - Click in May
 - 1200 | New Bug on electricity consumption : total display different than sum compute manually with export file
