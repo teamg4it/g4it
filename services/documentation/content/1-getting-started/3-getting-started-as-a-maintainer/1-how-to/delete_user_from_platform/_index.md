@@ -111,10 +111,9 @@ begin
 		else
 			-- retrieving all orgs of a user
 			for rec in 
-				select giuo.organization_id, giuo.user_id, giuo.id as user_org_id, gio.subscriber_id, gius.id as user_sub_id from g4it_user_organization giuo 
+				select giuo.organization_id, giuo.user_id, giuo.id as user_org_id, gio.subscriber_id from g4it_user_organization giuo 
 				join g4it_user u on u.id = giuo.user_id
 				join g4it_organization gio on gio.id = giuo.organization_id
-				join g4it_user_subscriber gius on gius.user_id = giuo.user_id
 				where email = user_email
 			loop
 				-- if there is only one user in the organization (it means this user is user_email)
@@ -179,16 +178,12 @@ begin
 						where gir."name" = 'ROLE_ORGANIZATION_ADMINISTRATOR'
 						and giuo.organization_id = rec.organization_id) = rec.user_id
 					then
-						select org.name, sub.name into org_name, subscriber_name from g4it_organization org
-						join g4it_subscriber sub on sub.id = org.subscriber_id
-						where org.id = rec.organization_id;
-	
 						insert into user_deletion_logs(date, user_email, message)
-						values (now(), user_email, 'User ' || user_email || ' is sole administrator of organization ' || rec.organization_id || ' ' || org_name || '(' || subscriber_name || ') which contains other users' );
+						values (now(), user_email, 'User ' || user_email || ' is sole administrator of organization ' || rec.organization_id || ' which contains other users' );
 					-- if there is more than an administrator in the organization or if the user is a member				
 					else
 						insert into user_deletion_logs(date, user_email, message)
-						values (now(), user_email, 'User ' || user_email || ' is not the only administrator of organization ' || rec.organization_id || ' ' || org_name || '(' || subscriber_name || ') or is just a member' );
+						values (now(), user_email, 'User ' || user_email || ' is not the only administrator of organization ' || rec.organization_id || ' or is just a member' );
 					
 						-- deletion of inventories linked to the user
 						delete from inventory inv
@@ -240,14 +235,16 @@ begin
 				values (now(), user_email, user_email || ' is not linked to an organization anymore - link with subscriber can be deleted');
 
 				-- deletion of g4it_user_role_subscriber row
-				delete from g4it_user_role_subscriber
-				where user_subscriber_id = rec.user_sub_id;
+				delete from g4it_user_role_subscriber giurs
+				using g4it_user_subscriber gius
+				where gius.user_id = rec.user_id
+				and giurs.user_subscriber_id = gius.id;
 				insert into user_deletion_logs(date, user_email, message)
 				values (now(), user_email, 'User role in subscriber ' || rec.subscriber_id || ' has been deleted');
 
 				-- deletion of g4it_user_subscriber row
 				delete from g4it_user_subscriber 
-				where id = rec.user_sub_id;
+				where user_id = rec.user_id;
 				insert into user_deletion_logs(date, user_email, message)
 				values (now(), user_email, 'Link between user ' || user_email || ' and subscriber ' || rec.subscriber_id || ' has been deleted');
 
