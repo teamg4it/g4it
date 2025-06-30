@@ -58,8 +58,7 @@ public class OutVirtualEquipmentService {
      */
     public List<OutVirtualEquipmentRest> getByDigitalServiceUid(final String digitalServiceUid) {
 
-        Optional<Task> task = taskRepository.findByDigitalServiceUid(digitalServiceUid);
-
+        Optional<Task> task = taskRepository.findByDigitalServiceUidAndLastCreationDate(digitalServiceUid);
         if (task.isEmpty()) {
             return List.of();
         }

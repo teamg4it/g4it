@@ -94,6 +94,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             terminals: [
                 {
                     uid: "randomUID",
+                    name: "name",
                     type: {
                         code: "mobile-fix",
                         value: "Mobile",
@@ -121,6 +122,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             terminals: [
                 {
                     uid: "randomUID",
+                    name: "name",
                     type: {
                         code: "mobile-fix",
                         value: "Mobile",

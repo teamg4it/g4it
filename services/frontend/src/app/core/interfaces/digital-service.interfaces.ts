@@ -86,6 +86,7 @@ export interface DigitalServiceTerminalConfig {
     numberOfUsers: number;
     yearlyUsageTimePerUser: number;
     idFront?: number;
+    name: string;
 }
 
 export interface DigitalServiceFootprint {
@@ -118,14 +119,14 @@ export interface NetworkType {
 
 export interface DigitalServiceTerminalsImpact {
     criteria: string;
-    impactCountry: TerminalsImpact[];
-    impactType: TerminalsImpact[];
+    impactCountry: TerminalsImpactTypeLocation[];
+    impactType: TerminalsImpactTypeLocation[];
 }
 
 export interface DigitalServiceCloudImpact {
     criteria: string;
-    impactLocation: CloudsImpact[];
-    impactInstance: CloudsImpact[];
+    impactLocation: CloudImpactTypeLocation[];
+    impactInstance: CloudImpactTypeLocation[];
 }
 
 export interface TerminalsImpact {
@@ -138,6 +139,18 @@ export interface TerminalsImpact {
     impact: ImpactTerminalsACVStep[];
 }
 
+export interface TerminalImpactGroup {
+    [location: string]: {
+        [terminalName: string]: ImpactTerminalsACVStep[];
+    };
+}
+
+export interface TerminalsImpactTypeLocation {
+    name: string;
+    terminals: TerminalsImpact[];
+    status: StatusCount;
+}
+
 export interface CloudsImpact {
     rawValue?: any;
     unit?: any;
@@ -147,6 +160,32 @@ export interface CloudsImpact {
     totalAvgUsage: number;
     totalAvgWorkLoad: number;
     impact: ImpactCloudsACVStep[];
+}
+
+export interface CloudImpactGroup {
+    [location: string]: {
+        [cloudName: string]: CloudNameImpact[];
+    };
+}
+
+export interface CloudNameImpact {
+    lifecycleStep: string;
+    peopleEqImpact: number;
+    unitImpact: number;
+    quantity: number;
+    usageDuration: number;
+    workload: number;
+    unit: string;
+    statusIndicator: string;
+    countValue: number;
+    provider: string;
+    statusCount: StatusCount;
+}
+
+export interface CloudImpactTypeLocation {
+    name: string;
+    clouds: CloudsImpact[];
+    status: StatusCount;
 }
 
 export interface DigitalServiceNetworksImpact {
