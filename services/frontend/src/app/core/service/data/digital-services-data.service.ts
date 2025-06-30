@@ -5,11 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
 import {
+    AiModelConfig,
     DigitalService,
     DSCriteriaRest,
     Host,
@@ -19,6 +20,7 @@ import {
 import { MapString } from "../../interfaces/generic.interfaces";
 
 const endpoint = Constants.ENDPOINTS.digitalServices;
+const ecomindaiModelConfig = Constants.ENDPOINTS.ecomindaiModelConfig;
 
 @Injectable({
     providedIn: "root",
@@ -31,15 +33,23 @@ export class DigitalServicesDataService {
     private readonly digitalServiceSubject = new ReplaySubject<DigitalService>(1);
     digitalService$ = this.digitalServiceSubject.asObservable();
 
-    list(): Observable<DigitalService[]> {
-        return this.http.get<DigitalService[]>(`${endpoint}`);
+    list(isAi?: boolean): Observable<DigitalService[]> {
+        let params = new HttpParams();
+        if (isAi !== undefined) {
+            params = params.set("isAi", isAi);
+        }
+        return this.http.get<DigitalService[]>(`${endpoint}`, { params });
     }
 
-    create(): Observable<DigitalService> {
+    create(isAi?: boolean): Observable<DigitalService> {
+        let params = new HttpParams();
+        if (isAi !== undefined) {
+            params = params.set("isAi", isAi);
+        }
         return this.http.post<DigitalService>(
             `${endpoint}`,
             {},
-            { headers: this.HEADERS },
+            { headers: this.HEADERS, params: params },
         );
     }
 
@@ -91,6 +101,10 @@ export class DigitalServicesDataService {
         return this.http.get<string[]>(
             `referential/boaviztapi/cloud/providers/instances?provider=${providerName}`,
         );
+    }
+
+    getModels(model: string): Observable<AiModelConfig[]> {
+        return this.http.get<AiModelConfig[]>(`${ecomindaiModelConfig}/${model}`);
     }
 
     launchEvaluating(uid: DigitalService["uid"]): Observable<string> {

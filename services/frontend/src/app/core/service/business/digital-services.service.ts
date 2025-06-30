@@ -25,6 +25,8 @@ import { InPhysicalEquipmentsService } from "../data/in-out/in-physical-equipmen
 import { InVirtualEquipmentsService } from "../data/in-out/in-virtual-equipments.service";
 import { DigitalServicesDataService } from "./../data/digital-services-data.service";
 
+import { AiModelConfig } from "../../interfaces/digital-service.interfaces";
+
 @Injectable({
     providedIn: "root",
 })
@@ -194,5 +196,9 @@ export class DigitalServiceBusinessService {
             countryMap[boaviztaCountryMap[key]] = key;
         }
         this.digitalServiceStore.setCountryMap(countryMap);
+    }
+
+    getModels(model: string): Observable<AiModelConfig[]> {
+        return this.digitalServiceData.getModels(model);
     }
 }

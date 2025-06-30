@@ -20,7 +20,7 @@ paths:
       tags:
         - digital-service-indicator
       operationId: getDigitalServiceIndicatorsExportResult
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_READ')"
       responses:
         "200":
           description: return zip file contains all the indicators results

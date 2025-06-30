@@ -21,12 +21,37 @@ export interface DigitalService {
     note?: Note;
     userId?: number;
     criteria?: string[];
+    creator?: DigitalServiceUserInfo;
+    isAi?: boolean;
 }
 
 export interface DigitalServiceUserInfo {
     id: number;
     firstName: string;
     lastName: string;
+}
+
+export interface DigitalServiceParameterIa {
+    id: number;
+    modelName: string;
+    nbParameters: string;
+    framework: string;
+    quantization: string;
+    totalGeneratedTokens: number;
+    numberUserYear: number;
+    averageNumberRequest: number;
+    averageNumberToken: number;
+    isInference: boolean;
+    isFinetuning: boolean;
+    creationDate: string;
+    lastUpdateDate: string;
+}
+
+export interface AiModelConfig {
+    modelName: string;
+    parameters: string;
+    framework: string;
+    quantization: string;
 }
 
 export interface DigitalServiceServerConfig {
@@ -63,6 +88,17 @@ export interface DigitalServiceCloudServiceConfig {
     annualUsage: number;
     averageWorkload: number;
     idFront?: number;
+}
+
+export interface DigitalServicesAiInfrastructure {
+    infrastructureType: "SERVER_DC" | "LAPTOP" | "DESKTOP";
+    nbCpuCores: number;
+    nbGpu: number;
+    gpuMemory: number;
+    ramSize: number;
+    location: string;
+    pue: number;
+    complementaryPue: number;
 }
 
 export interface DigitalServiceNetworkConfig {
@@ -317,4 +353,15 @@ export interface StatusCount {
     ok: number;
     error: number;
     total: number;
+}
+
+export interface AiRecommendation {
+    id: number;
+    taskId: number;
+    electricityConsumption: number;
+    runtime: number;
+    recommendations: string; // JSON string
+    digitalServiceUid: string;
+    creationDate: string;
+    lastUpdateDate: string;
 }
