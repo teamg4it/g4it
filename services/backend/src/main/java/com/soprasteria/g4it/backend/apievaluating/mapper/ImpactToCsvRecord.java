@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
@@ -168,5 +169,12 @@ public interface ImpactToCsvRecord {
                 values.getErrors() == null ? "" : String.join(", ", values.getErrors())
         );
 
+    }
+
+    default List<String> toCsv(OutAiReco outAiReco) {
+        return List.of(
+                outAiReco.getElectricityConsumption().toString(),
+                outAiReco.getRecommendations()
+        );
     }
 }

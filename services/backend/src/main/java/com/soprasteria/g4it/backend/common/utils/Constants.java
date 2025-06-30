@@ -77,12 +77,16 @@ public final class Constants {
     public static final String ROLE_SUBSCRIBER_ADMINISTRATOR = "ROLE_SUBSCRIBER_ADMINISTRATOR";
     public static final String ROLE_ORGANIZATION_ADMINISTRATOR = "ROLE_ORGANIZATION_ADMINISTRATOR";
     public static final String ROLE_SUPER_ADMINISTRATOR = "ROLE_SUPER_ADMINISTRATOR";
+    public static final String ROLE_ECO_MIND_AI_READ = "ROLE_ECO_MIND_AI_READ";
+    public static final String ROLE_ECO_MIND_AI_WRITE = "ROLE_ECO_MIND_AI_WRITE";
     public static final String SUPER_ADMIN_EMAIL = "admin@g4it.com";
     public static final List<String> ALL_BASIC_ROLES = List.of(
             ROLE_DIGITAL_SERVICE_WRITE,
             ROLE_DIGITAL_SERVICE_READ,
             ROLE_INVENTORY_WRITE,
-            ROLE_INVENTORY_READ
+            ROLE_INVENTORY_READ,
+            ROLE_ECO_MIND_AI_READ,
+            ROLE_ECO_MIND_AI_WRITE
     );
     public static final List<String> SUBSCRIBER_ROLES = Stream.concat(
                     Stream.of(ROLE_SUBSCRIBER_ADMINISTRATOR, ROLE_ORGANIZATION_ADMINISTRATOR),
@@ -112,6 +116,7 @@ public final class Constants {
     public static final String USING = "USING";
     public static final String REFERENTIAL_VERSION_CLOUD = "BaseImpact 2011";
     public static final String CLOUD_TYPE = "compute";
+
     private Constants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

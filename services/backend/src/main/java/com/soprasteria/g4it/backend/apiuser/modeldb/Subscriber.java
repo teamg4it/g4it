@@ -74,4 +74,9 @@ public class Subscriber extends AbstractBaseEntity implements Serializable {
      * The Criteria key
      */
     private List<String> criteria;
+
+    /**
+     * Is EcomindAi enabled or not for this subscriber
+     */
+    private boolean ecomindai;
 }
