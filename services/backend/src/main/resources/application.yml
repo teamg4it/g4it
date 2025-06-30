@@ -1,5 +1,4 @@
 version: "1.0.0"
-
 server:
   port: 8080
   shutdown: graceful
@@ -28,14 +27,14 @@ g4it:
     retention:
       cron: "0 0 0 * * *"
       oninit: "false"
-      day: "14"
+      day: "730"
   storage:
     retention:
       cron: "0 0 0 * * *"
       oninit: "false"
       day:
-        export: "7"
-        output: "7"
+        export: "20"
+        output: "20"
   cache:
     database:
       ttl: PT20M
@@ -46,10 +45,6 @@ g4it:
       oninit: "false"
       cron: "0 0 0 * * *"
       day: "7"
-  digitalServiceLink:
-    deletion:
-      oninit: "false"
-      cron: "0 0 */12 * * *"
   local:
     retention:
       ttl: PT10M

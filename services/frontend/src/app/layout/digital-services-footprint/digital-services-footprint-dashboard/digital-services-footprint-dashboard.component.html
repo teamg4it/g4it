@@ -40,6 +40,7 @@
                         "
                         [selectedCriteria]="selectedCriteria"
                         [selectedUnit]="selectedUnit"
+                        [disabled]="onlyOneCriteria"
                         (selectedCriteriaChange)="handleChartChange($event)"
                         class="w-22rem"
                     ></app-impact-button>
@@ -63,15 +64,10 @@
                         }}"
                     />
                 </span>
-                <h3 *ngIf="selectedParam === 'Server'">
+
+                <h3>
                     {{ selectedDetailName }}
                 </h3>
-                @if (
-                    selectedParam === "Terminal" ||
-                    selectedParam === constants.CLOUD_SERVICE
-                ) {
-                    <h3>{{ selectedDetailParam }}</h3>
-                }
             </div>
 
             <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
@@ -96,20 +92,25 @@
         </div>
         <div *ngIf="chartType() == 'pie'" class="flex">
             <div class="inline">
-                <span
-                    (click)="
-                        this.chartType.set('radial');
-                        this.selectedCriteria = 'Global Vision'
-                    "
-                >
-                    <p-button
-                        styleClass="color-tertiary font-semibold p-2"
-                        [text]="true"
-                        icon="pi pi-arrow-left"
-                        [aria-label]="'criteria-title.global-vision.title' | translate"
-                        [label]="'criteria-title.global-vision.title' | translate"
-                    />
-                </span>
+                @if (!onlyOneCriteria) {
+                    <span
+                        (click)="
+                            this.chartType.set('radial');
+                            this.selectedCriteria = 'Global Vision'
+                        "
+                    >
+                        <p-button
+                            styleClass="color-tertiary font-semibold p-2"
+                            [text]="true"
+                            icon="pi pi-arrow-left"
+                            [aria-label]="
+                                'criteria-title.global-vision.title' | translate
+                            "
+                            [label]="'criteria-title.global-vision.title' | translate"
+                        />
+                    </span>
+                }
+
                 <h3>
                     {{ getCriteriaTranslation(selectedCriteria) }}
                 </h3>

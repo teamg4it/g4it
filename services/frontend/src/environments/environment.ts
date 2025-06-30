@@ -19,6 +19,8 @@ export const environment = {
         clientId: "g4it",
         enabled: "true",
     },
+    subpath: "",
+    subpathfront: "/",
     frontEndUrl: "http://localhost:4200",
     showBetaFeatures: "true",
     matomo: {

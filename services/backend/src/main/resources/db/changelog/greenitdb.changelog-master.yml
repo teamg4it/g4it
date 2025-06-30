@@ -31,9 +31,15 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-clean-old-digital-service.yml
   - include:
       file: db/changelog/greenitdb.changelog-clean-old-inventory.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-remove-write-access-digital-service.yml
   - includeAll:
       path: db/changelog/in-out/
       endsWithFilter: .yml
   - includeAll:
       path: db/changelog/comments/
       endsWithFilter: .yml
+  - include:
+      file: db/changelog/greenitdb.changelog-migrate-demo-digital-services.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-admin-actions.yml

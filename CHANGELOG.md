@@ -1,5 +1,44 @@
 # G4IT
 
+## 3.4.0
+
+### Major Changes
+
+- 1261 | Naming user groups in the Digital Service module – Terminales input
+- 740 | Visualize different cloud instances for the same type
+
+### Minor Changes
+
+- 1257 | Very High level of Digital Service calculated - Click in May
+- 1200 | New Bug on electricity consumption : total display different than sum compute manually with export file
+- 1174 | When there is one criteria evaluated, multicriteria view should be disabled in digital service module and criteria should be selected in inventory module
+- 1251 | Character "%" breaks the note feature
+- 1258 | Table "task", the column "created_by" is not alway valuated
+
+## 3.3.0
+
+### Major Changes
+
+- 1079 | [BE]: Migrate digital services from "Demo" workspace to new workspace
+- 1001 | Modify the first connection workflow
+- 1149 | Visualize ecodesign & accessibility declaration
+- 1003 | Remove the link between a user and a digital service
+
+### Minor Changes
+
+- 1166 | [BE]: Allow G4IT to accept a copy/paste of model with special character from DataModel
+- 1189 | CalculImpactDSI Inventories have been deleted in Prod
+- 1205 | [BE] Error in administation page when changing criteria
+- 797 | Lag on the filter when there is a lot of data
+- 1218 | Issue on the DS export feature
+- 1246 | Inventory : Export available from Demo Workspace
+
+## 3.2.1
+
+### Minor Changes
+
+- 1215 | Back-end is crashing then restarting automatically
+
 ## 3.2.0
 
 ### Major Changes

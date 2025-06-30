@@ -12,10 +12,17 @@ import { EChartsOption } from "echarts";
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
 import {
+    DigitalServiceCloudImpact,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
+    DigitalServiceTerminalsImpact,
+    TerminalsType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import {
+    transformOutPhysicalEquipmentsToTerminalData,
+    transformOutVirtualEquipmentsToCloudData,
+} from "src/app/core/service/mapper/digital-service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { BarChartComponent } from "./bar-chart.component";
 declare var require: any;
@@ -154,5 +161,144 @@ describe("BarChartComponent", () => {
                 ],
             },
         ]);
+    });
+
+    it("should generate valid EChartsOption for Terminals", () => {
+        const physicalEquipments: any[] = [
+            {
+                name: "Terminal 2",
+                criterion: "ACIDIFICATION",
+                lifecycleStep: "TRANSPORTATION",
+                statusIndicator: "OK",
+                location: "Egypt",
+                equipmentType: "Terminal",
+                unit: "mol H+ eq",
+                reference: "smartphone-2",
+                countValue: 1,
+                unitImpact: 0.000022824964931506846,
+                peopleEqImpact: 1.8259971945205475e-7,
+                electricityConsumption: 0,
+                quantity: 0.001141552511415525,
+                numberOfUsers: 2,
+                lifespan: 0.00684931506849315,
+                commonFilters: [""],
+                filters: [""],
+            },
+        ];
+        const deviceTypes: TerminalsType[] = [
+            {
+                code: "smartphone-2",
+                value: "Mobile Phone",
+                lifespan: 2.5,
+            },
+        ];
+        const barChartData: DigitalServiceTerminalsImpact[] =
+            transformOutPhysicalEquipmentsToTerminalData(physicalEquipments, deviceTypes);
+
+        component.selectedCriteria = "acidification";
+        component.terminalsRadioButtonSelected = "type";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionTerminal(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should handle empty data for Terminals", () => {
+        const barChartData: any[] = [];
+        component.selectedCriteria = "acidification";
+        component.terminalsRadioButtonSelected = "type";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionTerminal(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should generate valid EChartsOption for Cloud Services", () => {
+        const barChartData = transformOutVirtualEquipmentsToCloudData(
+            [
+                {
+                    name: "CloudService A",
+                    criterion: "ACIDIFICATION",
+                    lifecycleStep: "USING",
+                    physicalEquipmentName: "",
+                    infrastructureType: "CLOUD_SERVICES",
+                    instanceType: "a1.medium",
+                    provider: "aws",
+                    equipmentType: "",
+                    location: "EEE",
+                    statusIndicator: "ERROR",
+                    countValue: 1,
+                    quantity: 1,
+                    unitImpact: 0,
+                    peopleEqImpact: 0,
+                    electricityConsumption: 0,
+                    unit: "MJ",
+                    usageDuration: 8760,
+                    workload: 0.5,
+                    commonFilters: [""],
+                    filters: [""],
+                    filtersPhysicalEquipment: [""],
+                },
+            ] as any[],
+            { EEE: "Europe" },
+        );
+        component.selectedCriteria = "acidification";
+        component.cloudRadioButtonSelected = "instance";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionCloud(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should handle empty data for Cloud Services", () => {
+        const barChartData: DigitalServiceCloudImpact[] = [];
+        component.selectedCriteria = "acidification";
+        component.cloudRadioButtonSelected = "instance";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionCloud(barChartData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should format tooltip correctly for terminal data", () => {
+        const isTerminal = true;
+        const formatter = component["createTooltipFormatter"](isTerminal);
+
+        const params = {
+            value: 1,
+            data: [50, 20, 10, 20, 30, "kg"],
+            seriesName: "Terminals",
+            color: "#0000FF",
+        };
+
+        const tooltip = formatter(params);
+
+        expect(tooltip).toContain("30 kg");
+        expect(tooltip).toContain("20");
+    });
+
+    it("should format tooltip correctly for non-terminal data", () => {
+        const isTerminal = false;
+        const formatter = component["createTooltipFormatter"](isTerminal);
+
+        const params = {
+            value: 200,
+            data: [50, 20, 10, 20, 30, "kg"],
+            seriesName: "Cloud Services",
+            color: "#FF0000",
+        };
+
+        const tooltip = formatter(params);
+
+        expect(tooltip).toContain("30 kg");
+        expect(tooltip).toContain("20");
     });
 });

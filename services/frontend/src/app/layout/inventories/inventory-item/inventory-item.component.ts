@@ -139,24 +139,27 @@ export class InventoryItemComponent implements OnInit {
     redirectFootprint(redirectTo: string): void {
         if (!this.inventory.lastTaskEvaluating) return;
 
-        const criteriaArrayLength = this.inventory?.criteria?.length;
-        let uri = undefined;
+        const defaultCriteria = Object.keys(this.global?.criteriaList())?.slice(0, 5);
+        const criteria = this.inventory.lastTaskEvaluating?.criteria ?? defaultCriteria;
+        const isSingleCriteria = criteria.length === 1;
+        const criteriaUri = isSingleCriteria ? criteria[0] : Constants.MUTLI_CRITERIA;
 
-        if (
-            redirectTo === "equipment" &&
-            (this.inventory.physicalEquipmentCount > 0 ||
-                this.inventory.virtualEquipmentCount > 0)
-        ) {
-            uri =
-                criteriaArrayLength! === 1
-                    ? this.inventory?.criteria![0]
-                    : Constants.MUTLI_CRITERIA;
-        } else if (redirectTo === "application" && this.inventory.applicationCount > 0) {
-            uri =
-                "application/" +
-                (criteriaArrayLength! === 1
-                    ? this.inventory.criteria![0]
-                    : Constants.MUTLI_CRITERIA);
+        let uri: string | undefined;
+
+        switch (redirectTo) {
+            case "equipment":
+                if (
+                    this.inventory.physicalEquipmentCount > 0 ||
+                    this.inventory.virtualEquipmentCount > 0
+                ) {
+                    uri = criteriaUri;
+                }
+                break;
+            case "application":
+                if (this.inventory.applicationCount > 0) {
+                    uri = `application/${criteriaUri}`;
+                }
+                break;
         }
 
         if (uri === undefined) return;

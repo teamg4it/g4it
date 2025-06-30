@@ -10,7 +10,6 @@ package com.soprasteria.g4it.backend.apidigitalservice.repository;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Digital Service repository.
@@ -34,23 +34,13 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
     List<DigitalService> findByOrganization(final Organization organization);
 
     /**
-     * Find by organization name and userId.
+     * Find by organization and the digitalServiceUid and return the matching digitalService
      *
-     * @param organization the linked organization.
-     * @param userId       the userId to find.
-     * @return DigitalService list.
+     * @param organization the unique organization identifier.
+     * @return matching digitalService
      */
-    List<DigitalService> findByOrganizationAndUserId(final Organization organization, final long userId);
-
-    /**
-     * Verify if the digitalService exists by the uid and userId.
-     *
-     * @param uid    the uid.
-     * @param userId the userId to find.
-     * @return the boolean.
-     */
-    @Cacheable("existsByUidAndUserId")
-    boolean existsByUidAndUserId(final String uid, final long userId);
+    Optional<DigitalService> findByOrganizationAndUid(final Organization organization,
+                                                final String digitalServiceUid);
 
     @Modifying
     @Transactional

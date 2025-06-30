@@ -10,7 +10,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
+import { PaginatorState } from "primeng/paginator";
+import { finalize, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { Organization } from "src/app/core/interfaces/user.interfaces";
@@ -30,11 +31,14 @@ export class DigitalServicesComponent {
     selectedDigitalService: DigitalService = {} as DigitalService;
     sidebarVisible = false;
 
-    myDigitalServices: DigitalService[] = [];
-    sharedDigitalServices: DigitalService[] = [];
+    allDigitalServices: DigitalService[] = [];
+    paginatedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
     isAllowedDigitalService: boolean = false;
+    first: number = 0;
 
+    rowsPerPage: number = 10;
+    currentPage = 0;
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -73,26 +77,30 @@ export class DigitalServicesComponent {
     }
 
     async retrieveDigitalServices() {
-        const userId = (await firstValueFrom(this.userService.user$)).id;
-
-        this.myDigitalServices = [];
-        this.sharedDigitalServices = [];
+        this.allDigitalServices = [];
 
         const apiResult = await lastValueFrom(this.digitalServicesData.list());
         apiResult.sort((x, y) => x.name.localeCompare(y.name));
-
-        apiResult.forEach((digitalService) => {
-            if (digitalService.creator?.id === userId) {
-                this.myDigitalServices.push(digitalService);
-            } else {
-                this.sharedDigitalServices.push(digitalService);
-            }
-        });
+        this.allDigitalServices.push(...apiResult);
+        this.updatePaginatedItems();
     }
 
     async createNewDigitalService() {
         const { uid } = await lastValueFrom(this.digitalServicesData.create());
         this.goToDigitalServiceFootprint(uid);
+    }
+
+    onPageChange(event: PaginatorState) {
+        this.first = event.first!;
+        this.rowsPerPage = event.rows!;
+        this.currentPage = event.page!;
+        this.updatePaginatedItems();
+    }
+
+    updatePaginatedItems() {
+        const start = this.currentPage * this.rowsPerPage;
+        const end = start + this.rowsPerPage;
+        this.paginatedDigitalServices = this.allDigitalServices.slice(start, end);
     }
 
     goToDigitalServiceFootprint(uid: string) {
@@ -110,19 +118,6 @@ export class DigitalServicesComponent {
         this.global.setLoading(true);
         this.digitalServicesData
             .delete(uid)
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                finalize(() => {
-                    this.global.setLoading(false);
-                }),
-            )
-            .subscribe(() => this.retrieveDigitalServices());
-    }
-
-    itemUnlink(uid: string) {
-        this.global.setLoading(true);
-        this.digitalServicesData
-            .unlink(uid)
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
                 finalize(() => {
