@@ -11,6 +11,7 @@ export class StackBarChartComponent extends AbstractDashboard {
     @Output() selectedStackBarClick: EventEmitter<string> = new EventEmitter();
     xAxisInput = input<string[]>([]);
     statusCountMap = input<StatusCountMap>({});
+    cursor = input<string>("pointer");
     optionStackBar = computed(() => {
         return this.renderStackChart();
     });
@@ -58,6 +59,7 @@ export class StackBarChartComponent extends AbstractDashboard {
                       },
                   ]
                 : [],
+            cursor: this.cursor(),
             color: [Constants.GRAPH_BLUE, Constants.GRAPH_RED],
             series: [
                 this.translate.instant("error-graph.impact-calculated"),

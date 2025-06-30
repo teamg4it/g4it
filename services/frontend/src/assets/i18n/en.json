@@ -337,6 +337,7 @@
     },
     "digital-services-cloud-services": {
         "new": "New Cloud Instance",
+        "edit": "Edit Cloud Instance",
         "cloud-services": "Cloud Services",
         "cloud-service": "Cloud Service",
         "add": "+ ADD CLOUD SERVICE",
@@ -351,7 +352,7 @@
         "instance": "Instance",
         "average-workload": "Average workload (% CPU usage)",
         "averageWorkload": "Average workload (% CPU usage)",
-        "annual-usage": "Annual usage duration (hours)",
+        "annual-usage": "Annual usage- duration (hours)",
         "annualUsage": "Annual usage duration (hours)",
         "hours": "hours",
         "quantity": "Quantity",
