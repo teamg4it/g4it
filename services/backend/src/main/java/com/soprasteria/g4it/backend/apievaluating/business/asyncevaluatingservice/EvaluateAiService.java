@@ -144,7 +144,7 @@ public class EvaluateAiService {
         InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
 
         if (inAiInfrastructure == null) {
-            throw new G4itRestException("404", String.format("the ai parameter doesn't exist for digital service : %s", context.getDigitalServiceUid()));
+            throw new G4itRestException("404", String.format("the ai infrastructure doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
 
         // Get the data center
@@ -335,7 +335,7 @@ public class EvaluateAiService {
 
     }
 
-    private List<AIServiceEstimationBO> evaluateEcomind(InAiParameter inAiParameter) throws IOException {
+    public List<AIServiceEstimationBO> evaluateEcomind(InAiParameter inAiParameter) throws IOException {
         AIConfigurationBO aiConfigurationBO = AIConfigurationBO.builder().build();
         aiConfigurationBO.setFramework(inAiParameter.getFramework());
         aiConfigurationBO.setModelName(inAiParameter.getModelName());
@@ -349,15 +349,15 @@ public class EvaluateAiService {
     }
 
 
-    private void evaluateVirtualsEquipments(Context context,
-                                            EvaluateReportBO evaluateReportBO,
-                                            InPhysicalEquipment physicalEquipment,
-                                            List<InVirtualEquipment> virtualEquipments,
-                                            Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
-                                            List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
-                                            Map<String, Double> refSip, RefShortcutBO refShortcutBO,
-                                            CSVPrinter csvInVirtualEquipment,
-                                            CSVPrinter csvOutVirtualEquipment) throws IOException {
+    public void evaluateVirtualsEquipments(Context context,
+                                           EvaluateReportBO evaluateReportBO,
+                                           InPhysicalEquipment physicalEquipment,
+                                           List<InVirtualEquipment> virtualEquipments,
+                                           Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
+                                           List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
+                                           Map<String, Double> refSip, RefShortcutBO refShortcutBO,
+                                           CSVPrinter csvInVirtualEquipment,
+                                           CSVPrinter csvOutVirtualEquipment) throws IOException {
 
         if (!context.isHasVirtualEquipments()) return;
 
@@ -408,15 +408,15 @@ public class EvaluateAiService {
     }
 
 
-    private AggValuesBO createAggValuesBO(String indicatorStatus,
-                                          String trace,
-                                          Double quantity,
-                                          Double elecConsumption,
-                                          Double unitImpact,
-                                          Double sipValue,
-                                          Double lifespan,
-                                          Double usageDuration,
-                                          Double workload) {
+    public AggValuesBO createAggValuesBO(String indicatorStatus,
+                                         String trace,
+                                         Double quantity,
+                                         Double elecConsumption,
+                                         Double unitImpact,
+                                         Double sipValue,
+                                         Double lifespan,
+                                         Double usageDuration,
+                                         Double workload) {
 
         boolean isOk = "OK".equals(indicatorStatus);
 
@@ -440,7 +440,7 @@ public class EvaluateAiService {
                 .build();
     }
 
-    private BiMap<String, String> getShortcutMap(List<String> strings) {
+    public BiMap<String, String> getShortcutMap(List<String> strings) {
         final BiMap<String, String> result = HashBiMap.create();
         for (int i = 0; i < strings.size(); i++) {
             result.put(strings.get(i), String.valueOf(i));
