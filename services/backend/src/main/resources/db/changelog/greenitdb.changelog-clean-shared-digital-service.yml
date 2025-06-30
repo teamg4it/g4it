@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: delete-digital_service_link
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS digital_service_link;
+
+  - changeSet:
+      id: delete-digital_service_shared
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS digital_service_shared;
