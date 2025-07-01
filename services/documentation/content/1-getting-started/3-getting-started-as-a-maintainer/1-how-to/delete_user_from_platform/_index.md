@@ -128,14 +128,7 @@ begin
 					where inv.organization_id = rec.organization_id;
 					insert into user_deletion_logs(date, user_email, message)
 					values (now(), user_email, 'Inventories linked to organization ' || rec.organization_id || ' have been deleted');
-	
-					delete from digital_service_shared dss
-					using digital_service ds
-					where ds.organization_id = rec.organization_id
-					and ds.uid = dss.digital_service_uid;
-					insert into user_deletion_logs(date, user_email, message)
-					values (now(), user_email, 'Digital services shared linked to organization ' || rec.organization_id || ' have been deleted');
-
+						
 					delete from digital_service ds
 					where ds.organization_id = rec.organization_id;
 					insert into user_deletion_logs(date, user_email, message)
@@ -193,21 +186,11 @@ begin
 						and u.email = user_email;
 						insert into user_deletion_logs(date, user_email, message)
 						values (now(), user_email, 'Inventories of user ' || user_email || ' linked to organization ' || rec.organization_id || ' have been deleted');
-
-						-- deletion of digital services shared to this user
-						delete from digital_service_shared dss
-						using g4it_user u
-						where dss.user_id = u.id
-						and u.email = user_email
-						and dss.organization_id = rec.organization_id;
-						insert into user_deletion_logs(date, user_email, message)
-						values (now(), user_email, 'Digital services shared shared to user ' || user_email || ' have been deleted');						
-
+						
 						-- deletion of digital services not shared with other users
 						delete from digital_service as ds 
 						using g4it_user u
-						where ds.uid not in (select digital_service_uid from digital_service_shared)
-						and ds.user_id = u.id
+						where ds.user_id = u.id
 						and u.email = user_email
 						and ds.organization_id = rec.organization_id;
 						insert into user_deletion_logs(date, user_email, message)
