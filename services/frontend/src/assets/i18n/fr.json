@@ -263,6 +263,7 @@
     },
     "digital-services-networks": {
         "new": "Nouveau Réseau",
+        "edit": "Édition Réseau",
         "networks": "Réseaux",
         "network": "Réseau",
         "add": "+ AJOUTER UN RÉSEAU",
