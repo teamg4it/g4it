@@ -34,6 +34,8 @@ import com.soprasteria.g4it.backend.apirecomandation.mapper.RecommendationJsonMa
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InputEstimationLLMInference;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
@@ -96,6 +98,9 @@ public class EvaluateAiService {
     DigitalServiceRepository digitalServiceRepository;
 
     @Autowired
+    InAiInfrastructureRepository inAiInfrastructureRepository;
+
+    @Autowired
     OutAiRecoRepository outAiRecoRepository;
 
     @Autowired
@@ -113,8 +118,6 @@ public class EvaluateAiService {
     @Autowired
     ImpactToCsvRecord impactToCsvRecord;
 
-    @Autowired
-    InAiInfrastructureRepository inAiInfrastructureRepository;
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
@@ -167,24 +170,23 @@ public class EvaluateAiService {
                 datacenters.size(), physicalEquipments.size(), virtualEquipments.size());
 
         // call Ecomind with the data
-        List<AIServiceEstimationBO> estimationBOList = evaluateEcomind(inAiParameters);
-        AIServiceEstimationBO estimationBO = estimationBOList.getFirst();
+        OutputEstimation outputEstimation = evaluateEcomind(inAiParameters, inAiInfrastructure,physicalEquipments.getFirst());
 
         // save the result of the call in db
         InPhysicalEquipment inPhysicalEquipment = physicalEquipments.getFirst();
-        inPhysicalEquipment.setElectricityConsumption(estimationBO.getElectricityConsumption().doubleValue());
+        inPhysicalEquipment.setElectricityConsumption(outputEstimation.getElectricityConsumption().doubleValue());
         inPhysicalEquipmentRepository.save(inPhysicalEquipment);
 
         InVirtualEquipment inVirtualEquipment = virtualEquipments.getFirst();
-        inVirtualEquipment.setElectricityConsumption(estimationBO.getElectricityConsumption().doubleValue());
+        inVirtualEquipment.setElectricityConsumption(outputEstimation.getElectricityConsumption().doubleValue());
         inVirtualEquipmentRepository.save(inVirtualEquipment);
 
         final LocalDateTime now = LocalDateTime.now();
         OutAiReco outAiReco = OutAiReco.builder().build();
-        outAiReco.setElectricityConsumption(estimationBO.getElectricityConsumption().doubleValue());
-        outAiReco.setRuntime(estimationBO.getRuntime().longValue());
+        outAiReco.setElectricityConsumption(outputEstimation.getElectricityConsumption().doubleValue());
+        outAiReco.setRuntime(outputEstimation.getRuntime().longValue());
 
-        String recommendationsJson = RecommendationJsonMapper.toJson(estimationBO.getRecommendations());
+        String recommendationsJson = RecommendationJsonMapper.toJson(outputEstimation.getRecommendations());
         outAiReco.setRecommendations(recommendationsJson);
         outAiReco.setCreationDate(now);
         outAiReco.setLastUpdateDate(now);
@@ -335,17 +337,21 @@ public class EvaluateAiService {
 
     }
 
-    private List<AIServiceEstimationBO> evaluateEcomind(InAiParameter inAiParameter) throws IOException {
-        AIConfigurationBO aiConfigurationBO = AIConfigurationBO.builder().build();
-        aiConfigurationBO.setFramework(inAiParameter.getFramework());
-        aiConfigurationBO.setModelName(inAiParameter.getModelName());
-        aiConfigurationBO.setQuantization(inAiParameter.getQuantization());
-        aiConfigurationBO.setNbParameters(inAiParameter.getNbParameters());
-        aiConfigurationBO.setTotalGeneratedTokens(inAiParameter.getTotalGeneratedTokens().longValue());
-        List<AIConfigurationRest> aiConfigurationRest = aiConfigurationMapper.toAIModelConfigRest(List.of(aiConfigurationBO));
-        String stage = inAiParameter.getIsInference() ? "INFERENCE" : "TRAINING";
-        String type = inAiParameter.getType();
-        return aiService.runEstimation(type, stage, aiConfigurationRest);
+    private OutputEstimation evaluateEcomind(InAiParameter inAiParameter, InAiInfrastructure inAiInfrastructure, InPhysicalEquipment inPhysicalEquipment){
+
+        InputEstimationLLMInference inputEstimationLLMInference = new InputEstimationLLMInference();
+        inputEstimationLLMInference.setFramework(inAiParameter.getFramework());
+        inputEstimationLLMInference.setModelName(inAiParameter.getModelName());
+        inputEstimationLLMInference.setQuantization(inAiParameter.getQuantization());
+        inputEstimationLLMInference.setNbParameters(inAiParameter.getNbParameters());
+        inputEstimationLLMInference.setTotalGeneratedTokens(inAiParameter.getTotalGeneratedTokens().intValue());
+        inputEstimationLLMInference.setInfrastructureType(inAiInfrastructure.getInfrastructureTypeEnum());
+        inputEstimationLLMInference.setGpuMemory(inAiInfrastructure.getGpuMemory().intValue());
+        inputEstimationLLMInference.setNbGpu(inAiInfrastructure.getNbGpu().intValue());
+        inputEstimationLLMInference.setRamSize(inPhysicalEquipment.getSizeMemoryGb().intValue());
+        inputEstimationLLMInference.nbCpuCores(inPhysicalEquipment.getCpuCoreNumber().intValue());
+
+        return aiService.runEstimation(inputEstimationLLMInference);
     }
 
 

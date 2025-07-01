@@ -2,6 +2,9 @@ package com.soprasteria.g4it.backend.apiaiservice.business;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InputEstimationLLMInference;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.LLMModelConfig;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
 import com.soprasteria.g4it.backend.external.ecomindai.client.AiModelapiClient;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIModelConfigBO;
@@ -27,7 +30,9 @@ public class AiService {
     private AiModelapiClient aiModelapiClient;
 
     @Autowired
-    AiConfigurationMapper aiConfigurationMapper;
+    private AiConfigurationMapper aiConfigurationMapper;
+
+
 
     public static final String ECOMINAPI_VERSION = "1.0";
     public static final String ECOMINAPI_ENGINE = "EcomindAPI";
@@ -39,18 +44,16 @@ public class AiService {
      */
     @SneakyThrows
     @Cacheable("GetAIModelConfigurations")
-    public java.util.List<AIModelConfigBO> getAIModelConfigurations(String type) {
-        String configs =  aiModelapiClient.getAiModelConfig(type);
-        ObjectMapper mapper = new ObjectMapper();
-        return (java.util.List<AIModelConfigBO>) mapper.readValue(configs, new TypeReference<List<AIModelConfigBO>>() {});
+    public java.util.List<LLMModelConfig> getAIModelConfigurations(String type) {
+        List<LLMModelConfig> configs =  aiModelapiClient.getAiModelConfig();
+        return configs;
     }
 
     @SneakyThrows
     @Cacheable("runEstimation")
-    public java.util.List<AIServiceEstimationBO> runEstimation(String type, String stage, List<@Valid AIConfigurationRest> aiConfigurationRest) {
-        String configs =  aiModelapiClient.runEstimation(type,stage,aiConfigurationMapper.toAIConfigurationBO(aiConfigurationRest));
-        ObjectMapper mapper = new ObjectMapper();
-        return (java.util.List<AIServiceEstimationBO>) mapper.readValue(configs, new TypeReference<List<AIServiceEstimationBO>>() {});
+    public OutputEstimation runEstimation(InputEstimationLLMInference inputEstimationLLMInference) {
+
+        return aiModelapiClient.runEstimation(inputEstimationLLMInference);
     }
 
 }
