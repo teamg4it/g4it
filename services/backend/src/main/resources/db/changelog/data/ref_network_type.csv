@@ -1,0 +1,5 @@
+description;reference;external_referential_description;type;annual_quantity_of_go;country;source
+Fixed FR;fixed-line-network-1;Fixed-line network/ at consumer/ xDSL, FFTx average mix / FR;Fixed;2640;France;"Rapport ADEME ARCEP 2020, VOLET 2; p.70"
+Mobile FR;mobile-network-1;Mobile network/ at consumer/ 2G, 3G, 4G, 5G average mix / FR;Mobile;;France;
+Fixed EU;fixed-line-network-2;Fixed-line network/ at consumer/ xDSL, FFTx average mix / EU-28;Fixed;2400;Europe;"The state of digital communications 2020 ; figure 2.7: Fixed and mobile data usage per connection, Europe, 2013–2019 ; p.37"
+Mobile EU;mobile-network-2;Mobile network/ at consumer/ 2G, 3G, 4G, 5G average mix / EU-28;Mobile;;Europe;

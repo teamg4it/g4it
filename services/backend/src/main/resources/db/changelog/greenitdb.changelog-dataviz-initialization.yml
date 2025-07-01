@@ -18,6 +18,57 @@ databaseChangeLog:
               - column:
                   name: individual_sustainable_package
                   type: float
+        - loadData:
+            columns:
+              - column:
+                  header: criteria
+                  type: varchar(255)
+              - column:
+                  header: planetary_boundary
+                  type: numeric
+              - column:
+                  header: source
+                  type: text
+              - column:
+                  header: individual_sustainable_package
+                  type: numeric
+            file: db/changelog/data/ref_sustainable_individual_package.csv
+            primaryKey: id
+            tableName: ref_sustainable_individual_package
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
+      id: add-new-criterias-sip_ref-table
+      author: G4IT Dev Team
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: criteria
+                  type: varchar(255)
+              - column:
+                  header: planetary_boundary
+                  type: numeric
+              - column:
+                  header: source
+                  type: text
+              - column:
+                  header: individual_sustainable_package
+                  type: numeric
+            file: db/changelog/data/ref_sustainable_individual_package_new_crit.csv
+            primaryKey: id
+            tableName: ref_sustainable_individual_package
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
+      id: delete-obsolete-ref_sustainable_individual_package-data
+      author: G4IT Dev Team
+      changes:
+        - delete:
+            tableName: ref_sustainable_individual_package
+            where: "1=1"
 
   - changeSet:
       id: referential-init-ref_sustainable_individual_package-table
