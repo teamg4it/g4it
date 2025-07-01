@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.Device
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,4 +27,14 @@ public interface DeviceTypeRefRepository extends JpaRepository<DeviceTypeRef, Lo
      * @return the device type.
      */
     Optional<DeviceTypeRef> findByReference(final String code);
+
+    List<DeviceTypeRef> findByCompatibleEcomind(final boolean compatibleEcomind);
+
+    /**
+     * Find ref by code and compatible_ecomind.
+     *
+     * @param code the device type code.
+     * @return the device type.
+     */
+    Optional<DeviceTypeRef> findByReferenceAndCompatibleEcomind(final String code, final boolean compatibleEcomind);
 }

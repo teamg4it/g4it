@@ -49,6 +49,7 @@ public abstract class DigitalServiceMapper {
      * @return the DigitalServiceBO.
      */
     @Named("fullMapping")
+    @Mapping(target = "isAi", source = "ai")
     public abstract DigitalServiceBO toFullBusinessObject(final DigitalService entity);
 
     /**

@@ -73,6 +73,8 @@ describe("DigitalServicesComponent", () => {
     });
 
     it("should initialize and retrieve digital services", async () => {
+        const fakeSubscriber = { ecomindai: true };
+        mockUserService.currentSubscriber$ = of(fakeSubscriber);
         spyOn(component, "retrieveDigitalServices").and.callThrough();
         await component.ngOnInit();
         expect(component.retrieveDigitalServices).toHaveBeenCalled();
@@ -103,6 +105,10 @@ describe("DigitalServicesComponent", () => {
     });
 
     it("should create a new digital service and navigate to its footprint", async () => {
+        mockDigitalServicesData.create.and.returnValue(of({ uid: 2 }));
+        //for the else if
+        component.isEcoMindAi = false;
+        component.isAllowedDigitalService = true;
         await component.createNewDigitalService();
         expect(mockDigitalServicesData.create).toHaveBeenCalled();
         expect(mockRouter.navigate).toHaveBeenCalledWith(["2/footprint/terminals"], {
