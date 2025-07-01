@@ -4,6 +4,7 @@
 
 ### Major Changes
 
+- 1263 | Naming network entries in the Digital Service module – Network input
 - 1261 | Naming user groups in the Digital Service module – Terminales input
 - 740 | Visualize different cloud instances for the same type
 
