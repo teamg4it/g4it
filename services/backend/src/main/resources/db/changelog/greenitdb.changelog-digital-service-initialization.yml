@@ -69,6 +69,36 @@ databaseChangeLog:
               - column:
                   name: source
                   type: text
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: varchar(255)
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: lifespan
+                  type: double
+              - column:
+                  header: source
+                  type: text
+            file: db/changelog/data/ref_terminal_device_type.csv
+            primaryKey: id
+            tableName: ref_device_type
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
+      id: delete-obsolete-ref_device_type-data
+      author: G4IT Dev Team
+      changes:
+        - delete:
+            tableName: ref_device_type
+            where: "1=1"
 
   - changeSet:
       id: referential-init-ref_device_type-table
@@ -187,6 +217,42 @@ databaseChangeLog:
               - column:
                   name: source
                   type: text
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: varchar(255)
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: type
+                  type: varchar(255)
+              - column:
+                  header: annual_quantity_of_go
+                  type: integer
+              - column:
+                  header: country
+                  type: varchar(255)
+              - column:
+                  header: source
+                  type: text
+            file: db/changelog/data/ref_network_type.csv
+            primaryKey: id
+            tableName: ref_network_type
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
+      id: delete-obsolete-ref_network_type-data
+      author: G4IT Dev Team
+      changes:
+        - delete:
+            tableName: ref_network_type
+            where: "1=1"
 
   - changeSet:
       id: referential-init-ref_network_type-table
@@ -299,6 +365,42 @@ databaseChangeLog:
               - column:
                   name: lifespan
                   type: double
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: text
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: type
+                  type: varchar(255)
+              - column:
+                  header: nb_of_vcpu
+                  type: int
+              - column:
+                  header: total_disk
+                  type: int
+              - column:
+                  header: lifespan
+                  type: double
+            file: db/changelog/data/ref_server_host.csv
+            primaryKey: id
+            tableName: ref_server_host
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
+      id: delete-obsolete-ref_server_host-data
+      author: G4IT Dev Team
+      changes:
+        - delete:
+            tableName: ref_server_host
+            where: "1=1"
 
   - changeSet:
       id: referential-init-ref_server_host-table
