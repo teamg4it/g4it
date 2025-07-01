@@ -191,36 +191,20 @@
                             {{ "common.help-center" | translate }}</span
                         >
 
-                        <div class="p-1 relative">
+                        <div *ngFor="let linkObj of externalLinks" class="p-1 relative">
                             <div class="border border-left-1 border-light-grey-color">
                                 <a
+                                    [href]="linkObj.href"
                                     target="_blank"
                                     role="link"
-                                    href="https://github.com/G4ITTeam/g4it"
                                     class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
                                     tabindex="0"
-                                    ><span
-                                        ><u>{{
-                                            "common.github-link" | translate
-                                        }}</u></span
+                                >
+                                    <span
+                                        ><u>{{ linkObj.label | translate }}</u></span
                                     >
-                                    <span class="pi pi-sign-out ml-auto"></span
-                                ></a>
-                            </div>
-                        </div>
-                        <div class="p-1 relative">
-                            <div class="border border-left-1 border-light-grey-color">
-                                <a
-                                    target="_blank"
-                                    role="link"
-                                    href="https://saas-g4it.com/documentation/"
-                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
-                                    tabindex="0"
-                                    ><span
-                                        ><u>{{ "common.doc-link" | translate }}</u></span
-                                    >
-                                    <span class="pi pi-sign-out ml-3 lg:ml-4"></span
-                                ></a>
+                                    <span [class]="linkObj.iconClass"></span>
+                                </a>
                             </div>
                         </div>
                     </div>

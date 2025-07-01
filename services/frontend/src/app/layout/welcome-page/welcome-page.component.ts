@@ -43,6 +43,24 @@ export class WelcomePageComponent {
     public userService = inject(UserService);
     ecoDesignPercent = this.userService.ecoDesignPercent;
 
+    externalLinks = [
+        {
+            href: "https://github.com/G4ITTeam/g4it",
+            label: "common.github-link",
+            iconClass: "pi pi-sign-out ml-auto",
+        },
+        {
+            href: "https://saas-g4it.com/documentation/",
+            label: "common.doc-link",
+            iconClass: "pi pi-sign-out ml-auto",
+        },
+        {
+            href: "https://github.com/Boavizta/boaviztapi",
+            label: "common.boaviztapi-github-link",
+            iconClass: "pi pi-sign-out ml-3 lg:ml-4",
+        },
+    ];
+
     constructor(
         private workspaceService: WorkspaceService,
         public readonly router: Router,
