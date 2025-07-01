@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, inject, input, Input, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
@@ -24,7 +24,7 @@ export class DigitalServicesNetworksSidePanelComponent {
 
     @Input() network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;
     @Input() networkData: DigitalServiceNetworkConfig[] = [];
-    existingNames = input<string[]>([]);
+    existingNames: string[] = [];
 
     @Output() update: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
     @Output() delete: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
@@ -39,12 +39,16 @@ export class DigitalServicesNetworksSidePanelComponent {
     ) {}
 
     ngOnInit() {
+        const isNew = this.network.idFront === undefined;
+        this.existingNames = this.networkData
+            .filter((c) => (!isNew ? this.network.name !== c.name : true))
+            .map((cloud) => cloud.name);
         this.networksForm = this._formBuilder.group({
             name: [
                 "",
                 [
                     Validators.required,
-                    uniqueNameValidator(this.existingNames()),
+                    uniqueNameValidator(this.existingNames),
                     noWhitespaceValidator(),
                 ],
             ],

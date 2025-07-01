@@ -191,7 +191,13 @@ export interface CloudImpactTypeLocation {
 
 export interface DigitalServiceNetworksImpact {
     criteria: string;
-    impacts: ImpactNetworkSipValue[];
+    impacts: ImpactNetworkNames[];
+}
+
+export interface ImpactNetworkNames {
+    status: StatusCount;
+    networkType: string;
+    items: ImpactNetworkSipValue[];
 }
 
 export interface DigitalServiceServersImpact {
