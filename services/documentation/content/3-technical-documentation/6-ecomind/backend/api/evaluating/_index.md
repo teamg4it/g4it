@@ -61,7 +61,7 @@ the [AsyncEvaluatingService class](https://github.com/G4ITTeam/g4it/blob/main/se
 ## Evaluation Process
 
 The digital service data is evaluated using active criteria in
-the [EvaluateAiService class](https://github.com/G4ITTeam/g4it/blob/develop_ecomind/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateAiService.java).
+the [EvaluateAiService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateAiService.java).
 Note: active criteria here refers to the criteria set for the digital service to calculate the impacts for.
 
 ### Impact Calculation
@@ -71,7 +71,7 @@ Following this evaluation, it aggregates the results using active criteria and l
 
 #### Ecomind:
 The external
-service [AiService class](https://github.com/teamg4it/g4it/blob/develop_ecomind/services/backend/src/main/java/com/soprasteria/g4it/backend/apiaiservice/business/AiService.java)
+service [AiService class](https://github.com/teamg4it/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiaiservice/business/AiService.java)
 is used to call Ecomind and run the calculation.
 The results of ecomind return the recommendation and the electricity consumption.
 
@@ -79,7 +79,7 @@ The results of ecomind return the recommendation and the electricity consumption
 
 Physical equipment entities are retrieved from the database in batches via
 the [InPhysicalEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InPhysicalEquipmentRepository.java).
-For the Ia part there is only one physical equipment per digital service.
+For the ia part there is only one physical equipment per digital service.
 It's build and updated with the information get in the forms of ecomind and the call of ecomind.
 
 The

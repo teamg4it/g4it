@@ -1,6 +1,6 @@
 ---
-title: '1.3 - Digital Service definition'
-description: 'These tables are the datas available in the Digital Service module and their correspondance with the item for which impact datas are configured in G4IT'
+title: '1.3 - Referential'
+description: 'These tables are the referential with modification for Ecomind'
 weight: 10
 ---
 ## Entity relationship diagram

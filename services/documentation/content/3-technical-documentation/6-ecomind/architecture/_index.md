@@ -32,9 +32,9 @@ flowchart LR
     C --> C1
     B1 --> B11
 ```
-{...} : Another part of the url use (/subscribers/{subscriber}/organizations/{organization}).
+{...} : Another part of the url used (/subscribers/{subscriber}/organizations/{organization}).
 
-Ecomind is an external tool deployed and is call with the use of a client [Ai Modelapi Client](https://github.com/teamg4it/g4it/blob/develop_ecomind/services/backend/src/main/java/com/soprasteria/g4it/backend/external/ecomindai/client/AiModelapiClient.java).
+Ecomind is an externally deployed service that is invoked through a client [Ai Modelapi Client](https://github.com/teamg4it/g4it/blob/develop_ecomind/services/backend/src/main/java/com/soprasteria/g4it/backend/external/ecomindai/client/AiModelapiClient.java).
 
 ### Calculation
 
@@ -60,7 +60,7 @@ flowchart LR
     A3 --> B11
 ```
 
-The calculation has multiple step that you can find on [Evaluating digital Service](../backend/api/evaluating/_index.md)
+The calculation involves multiple steps, which you can find on [Evaluating digital Service](../backend/api/evaluating/_index.md)
 
 ### Result
 ```mermaid
@@ -79,6 +79,6 @@ flowchart LR
     A --> A2
     A --> A3
 ```
-{...} : Another part of the url use (/subscribers/{subscriber}/organizations/{organization}).
+{...} : Another part of the url used (/subscribers/{subscriber}/organizations/{organization}).
 
-This is to update the display of the current visualize tab in the digital service to display the recommendation return by Ecomind.
+This change updates the "Visualize" tab in the digital service to present the recommendations provided by Ecomind.

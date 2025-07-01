@@ -189,53 +189,6 @@ erDiagram
 |created_by|g4it_user|id|
 
 {{% /expand %}}
-### out_application
-
-{{% expand title="Show details" expanded="false" center="true"%}}
-
-#### Comments
-
-- That table stores the environmental footprint calculated indicators for Digital Service or Information System at application level.
-
-#### Columns
-
-|Name|Data type|Comments|
-|---|---|---|
-|**id**|int8|<ul><li>Auto incremented unique application identifier</li></ul>|
-|name|varchar|<ul><li>Name of Application</li></ul>|
-|criterion|varchar|<ul><li>Application Criterion</li></ul>|
-|lifecycle_step|varchar|<ul><li>Application Lifecycle step</li></ul>|
-|*task_id*|int8|<ul><li>Foreign key to the task</li></ul>|
-|environment|varchar|<ul><li>Application Environment</li></ul>|
-|equipment_type|varchar|<ul><li>Application Equipment type</li></ul>|
-|location|varchar|<ul><li>Application Location</li></ul>|
-|engine_name|varchar|<ul><li>Application Engine name</li></ul>|
-|engine_version|varchar|<ul><li>Application Engine Version</li></ul>|
-|referential_version|varchar|<ul><li>Referential version</li></ul>|
-|status_indicator|varchar|<ul><li>Status indicator</li></ul>|
-|quantity|float8|<ul><li>Quantity</li></ul>|
-|unit_impact|float8|<ul><li>Unit impact of Application</li></ul>|
-|people_eq_impact|float8|<ul><li>People equivalent impact</li></ul>|
-|electricity_consumption|float8|<ul><li>Electricity consumption</li></ul>|
-|unit|varchar|<ul><li>Unit of Application</li></ul>|
-|common_filters|_varchar|<ul><li>Common filters</li></ul>|
-|filters|_varchar|<ul><li>Filters</li></ul>|
-|filters_physical_equipment|_varchar|<ul><li>Filters of physical equipment</li></ul>|
-|filters_virtual_equipment|_varchar|<ul><li>Filters of virtual equipment</li></ul>|
-|errors|_varchar|<ul><li>Errors</li></ul>|
-|count_value|int8|<ul><li>Count value</li></ul>|
-|virtual_equipment_name|varchar|<ul><li>Name of Virtual Equipment</li></ul>|
-|provider|varchar|<ul><li>Provider</li></ul>|
-
-#### Primary Key
-
-- id
-#### Foreign keys
-|Column name|Referenced table|Referenced primary key|
-|---|---|---|
-|task_id|task|id|
-
-{{% /expand %}}
 ### out_physical_equipment
 
 {{% expand title="Show details" expanded="false" center="true"%}}
