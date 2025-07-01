@@ -297,6 +297,7 @@ export interface ImpactNetworkSipValue {
     rawValue: number;
     status: string;
     countValue: number;
+    name?: string;
 }
 
 export interface ImpactSipValue {
