@@ -26,9 +26,9 @@ You can check [how to enable Ecomind module for a subscriber](../../../1-getting
 
 You can check [new user's Ecomind roles](../backend/db/ecomind_roles_management/_index.md) to have a look at new Ecomind roles.
 
-- If the global Ecomind module is set to true and Ecomind is set to true for a subscriber, if a user has not the role "ROLE_ECO_MIND_AI_READ" or "ROLE_ECO_MIND_AI_WRITE" then he has no access to Ecomind
+- If the global Ecomind module is set to true, if Ecomind is set to true for a subscriber and if a user has not the role "ROLE_ECO_MIND_AI_READ" or "ROLE_ECO_MIND_AI_WRITE" then he has no access to Ecomind
 
-- If the global Ecomind module is set to true and Ecomind is set to true for a subscriber, if a user has the role "ROLE_ECO_MIND_AI_READ" or "ROLE_ECO_MIND_AI_WRITE" then he has access to Ecomind
+- If the global Ecomind module is set to true, if Ecomind is set to true for a subscriber and if a user has the role "ROLE_ECO_MIND_AI_READ" or "ROLE_ECO_MIND_AI_WRITE" then he has access to Ecomind
 
 When these 3 conditions are true, you should see this :   
 
