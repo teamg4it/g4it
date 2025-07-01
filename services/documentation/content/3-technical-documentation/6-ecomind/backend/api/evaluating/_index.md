@@ -66,31 +66,21 @@ Note: active criteria here refers to the criteria set for the digital service to
 
 ### Impact Calculation
 
-The EvaluateAiService evaluates the physical equipment and virtual equipment associated with the digital service.
+The EvaluateAiService call Ecomind to get the electricity consumption and evaluates the physical equipment and virtual equipment associated with the digital service.
 Following this evaluation, it aggregates the results using active criteria and lifecycle steps.
 
 #### Ecomind:
 The external
 service [AiService class](https://github.com/teamg4it/g4it/blob/develop_ecomind/services/backend/src/main/java/com/soprasteria/g4it/backend/apiaiservice/business/AiService.java)
 is used to call Ecomind and run the calculation.
-The results of ecomind return the recommendation.
+The results of ecomind return the recommendation and the electricity consumption.
 
 #### Physical Equipment:
 
 Physical equipment entities are retrieved from the database in batches via
 the [InPhysicalEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InPhysicalEquipmentRepository.java).
-
-For each piece of equipment, its type
-
-```shell
-For each physical equipment : if(item.model = ref_matching_item.item_source) is found
-then triger the calculation with the data of selected ref_item_impact.name = ref_matching_item.item_target
-else
-ref_item_impact.name = ref_item_type.ref_default_item
-
-```
-
-and location are matched against referential data to ensure accuracy.
+For the Ia part there is only one physical equipment per digital service.
+It's build and updated with the information get in the forms of ecomind and the call of ecomind.
 
 The
 external [EvaluateNumEcoEvalService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/engine/numecoeval/EvaluateNumEcoEvalService.java)
@@ -100,7 +90,7 @@ are written to CSV files.
 
 #### Virtual Equipment:
 
-Virtual equipment entities corresponding to each physicalEquipment are retrieved from the database in batches via
+Virtual equipment entity corresponding to the physicalEquipment is retrieved from the database via
 the [InVirtualEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InVirtualEquipmentRepository.java).
 Processes virtual equipment associated with physical equipment.
 

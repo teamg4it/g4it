@@ -1,9 +1,9 @@
 ---
 title: 'Technical architecture'
-date:  2025-02-06T14:28:38+01:00
-weight: 20
+weight: 10
 ---
 ### Overview
+This section illustrates the communication architecture between the frontend and backend components with the use of Ecomind.
 
 ### Display
 
@@ -16,13 +16,13 @@ flowchart LR
     end
 
     subgraph Back
-        A1["/digital-services"]
+        A1["{...}/digital-services"]
         B1["/ecomindai/aiModelConfig/type/{type}"]
-        B2["digital-services/{digitalServiceUid}/ai-parameter-input"]
-        C1["digital-services/{digitalServiceUid}/ai-infra-input"]
+        B2["{...}/digital-services/{digitalServiceUid}/ai-parameter-input"]
+        C1["{...}/digital-services/{digitalServiceUid}/ai-infra-input"]
     end
 
-    subgraph Externe
+    subgraph Extern
         B11["EcomindAi"]
     end
 
@@ -32,6 +32,9 @@ flowchart LR
     C --> C1
     B1 --> B11
 ```
+{...} : Another part of the url use (/subscribers/{subscriber}/organizations/{organization}).
+
+Ecomind is an external tool deployed and is call with the use of a client [Ai Modelapi Client](https://github.com/teamg4it/g4it/blob/develop_ecomind/services/backend/src/main/java/com/soprasteria/g4it/backend/external/ecomindai/client/AiModelapiClient.java).
 
 ### Calculation
 
@@ -57,6 +60,8 @@ flowchart LR
     A3 --> B11
 ```
 
+The calculation has multiple step that you can find on [Evaluating digital Service](../backend/api/evaluating/_index.md)
+
 ### Result
 ```mermaid
 flowchart LR
@@ -65,12 +70,15 @@ flowchart LR
     end
 
     subgraph Back
-        A1["digital-services/{digitalServiceUid}/outputs/physical-equipments"]
-        A2["digital-services/{digitalServiceUid}/outputs/virtual-equipments"]
-        A3["digital-services/{digitalServiceUid}/outputs/ai-recomandation"]
+        A1["{...}/digital-services/{digitalServiceUid}/outputs/physical-equipments"]
+        A2["{...}/digital-services/{digitalServiceUid}/outputs/virtual-equipments"]
+        A3["{...}/digital-services/{digitalServiceUid}/outputs/ai-recomandation"]
     end
 
     A --> A1
     A --> A2
     A --> A3
 ```
+{...} : Another part of the url use (/subscribers/{subscriber}/organizations/{organization}).
+
+This is to update the display of the current visualize tab in the digital service to display the recommendation return by Ecomind.
