@@ -13,7 +13,6 @@ import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
 import {
     DigitalServiceCloudImpact,
-    DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
     TerminalsType,
@@ -65,16 +64,6 @@ describe("BarChartComponent", () => {
 
     it("should create", () => {
         expect(component).toBeTruthy();
-    });
-
-    it("should generate valid EChartsOption for Networks", () => {
-        const barChartData: DigitalServiceNetworksImpact[] = require("test/data/digital-service-data/digital_service_networks_footprint.json");
-        component.selectedCriteria = "acidification";
-        const echartsOption: EChartsOption =
-            component.loadStackBarOptionNetwork(barChartData);
-
-        expect(echartsOption).toBeTruthy();
-        expect(echartsOption.series).toBeTruthy();
     });
 
     it("should generate valid EChartsOption for Servers", () => {
