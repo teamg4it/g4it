@@ -1,7 +1,6 @@
 ---
 title: "Ecomind"
-weight: 10
-toc_hide: true
+weight: 40
 ---
 
 ## Table of contents

@@ -29,19 +29,6 @@ erDiagram
     bool is_new_arch
     bool is_migrated
   }
-  in_application {
-    int8 id PK
-    varchar name
-    int8 inventory_id FK
-    varchar digital_service_uid FK
-    varchar physical_equipment_name
-    varchar virtual_equipment_name
-    varchar environment
-    _varchar common_filters
-    _varchar filters
-    timestamp creation_date
-    timestamp last_update_date
-  }
   in_datacenter {
     int8 id PK
     varchar name
@@ -133,7 +120,6 @@ erDiagram
         varchar digital_service_uid FK
     }
   note ||--o{ digital_service : "foreign key"
-  digital_service ||--o{ in_application : "foreign key"
   digital_service ||--o{ in_datacenter : "foreign key"
   digital_service ||--o{ in_physical_equipment : "foreign key"
   digital_service ||--o{ in_virtual_equipment : "foreign key"
