@@ -17,7 +17,7 @@ import {
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -108,6 +108,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         private inVirtualEquipmentsService: InVirtualEquipmentsService,
         private aiFormsStore: AIFormsStore,
         private digitalServicesAiData: DigitalServicesAiDataService,
+        private route: ActivatedRoute,
     ) {}
 
     ngOnInit() {
@@ -117,7 +118,12 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 switchMap((res) => {
                     this.digitalService = res;
                     this.digitalServiceStore.setDigitalService(this.digitalService);
-                    if (!this.digitalService.isAi) {
+                    const routeDsUid =
+                        this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
+                    if (
+                        !this.digitalService.isAi &&
+                        routeDsUid === this.digitalService.uid
+                    ) {
                         return this.inVirtualEquipmentsService.getByDigitalService(
                             this.digitalService.uid,
                         );
