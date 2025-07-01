@@ -47,6 +47,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     sidebarVisible: boolean = false;
+    importSidebarVisible = false;
     selectedSubscriberName = "";
     selectedOrganizationId!: number;
     selectedOrganizationName = "";
@@ -246,6 +247,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 summary: this.translate.instant("common.fileNoLongerAvailable"),
             });
         }
+    }
+
+    importData(): void {
+        this.importSidebarVisible = true;
     }
 
     displayPopupFct() {

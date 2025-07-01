@@ -20,6 +20,19 @@
     </p-sidebar>
 }
 
+@if (importSidebarVisible) {
+    <p-sidebar
+        [(visible)]="importSidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-7"
+        [showCloseIcon]="true"
+        (onHide)="importSidebarVisible = false"
+        ariaCloseLabel="Close"
+    >
+        Hello
+    </p-sidebar>
+}
+
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
 <div class="flex justify-content-between align-items-center flex-wrap mb-2">
     <div>
@@ -92,6 +105,16 @@
             [plain]="true"
             icon="pi pi-clipboard"
             [label]="'common.note.attached' | translate"
+        />
+
+        <p-button
+            [ariaLabel]="'common.accessibility.import' | translate"
+            styleClass="bg-black text-white header-button"
+            (click)="importData()"
+            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            [disabled]="digitalService.lastCalculationDate === undefined"
+            icon="pi pi-download"
+            [label]="'digital-services.import' | translate"
         />
 
         <p-button
