@@ -104,7 +104,7 @@ export interface DigitalServicesAiInfrastructure {
 export interface DigitalServiceNetworkConfig {
     id?: number;
     uid?: string;
-    creationDate?: number;
+    creationDate?: Date;
     type: NetworkType;
     typeCode?: string;
     yearlyQuantityOfGbExchanged: number;
