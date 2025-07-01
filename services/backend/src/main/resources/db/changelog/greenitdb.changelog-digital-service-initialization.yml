@@ -69,6 +69,16 @@ databaseChangeLog:
               - column:
                   name: source
                   type: text
+
+  - changeSet:
+      id: referential-init-ref_device_type-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_device_type
+      changes:
         - loadData:
             columns:
               - column:
@@ -86,7 +96,7 @@ databaseChangeLog:
               - column:
                   header: source
                   type: text
-            file: db/changelog/data/ref_terminal_device_type.csv
+            file: db/changelog/referential-data/ref_device_type.csv
             primaryKey: id
             tableName: ref_device_type
             separator: ;
@@ -177,6 +187,16 @@ databaseChangeLog:
               - column:
                   name: source
                   type: text
+
+  - changeSet:
+      id: referential-init-ref_network_type-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_network_type
+      changes:
         - loadData:
             columns:
               - column:
@@ -200,11 +220,12 @@ databaseChangeLog:
               - column:
                   header: source
                   type: text
-            file: db/changelog/data/ref_network_type.csv
+            file: db/changelog/referential-data/ref_network_type.csv
             primaryKey: id
             tableName: ref_network_type
             separator: ;
             encoding: UTF-8
+
   - changeSet:
       id: create-network-table
       author: G4IT Dev Team
@@ -278,6 +299,16 @@ databaseChangeLog:
               - column:
                   name: lifespan
                   type: double
+
+  - changeSet:
+      id: referential-init-ref_server_host-table
+      author: G4IT Dev Team
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_server_host
+      changes:
         - loadData:
             columns:
               - column:
@@ -301,7 +332,7 @@ databaseChangeLog:
               - column:
                   header: lifespan
                   type: double
-            file: db/changelog/data/ref_server_host.csv
+            file: db/changelog/referential-data/ref_server_host.csv
             primaryKey: id
             tableName: ref_server_host
             separator: ;
@@ -636,3 +667,56 @@ databaseChangeLog:
       changes:
         - sql: update digital_service set is_new_arch = false where is_new_arch is null;
         - sql: update digital_service set is_migrated = false where is_migrated is null;
+
+
+  - changeSet:
+      id: add-column-is_ai
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: is_ai
+                  type: boolean
+                  defaultValue: false
+
+  - changeSet:
+      id: add-compatible-ecomind-to-reDeviceType
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: compatible_ecomind
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+        - update:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: compatible_ecomind
+                  valueBoolean: true
+            where: description IN ('Laptop', 'Desktop')
+        - insert:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: description
+                  value: Server
+              - column:
+                  name: reference
+                  value: blade-server-28
+              - column:
+                  name: external_referential_description
+                  value: Server
+              - column:
+                  name: lifespan
+                  valueNumeric: 10
+              - column:
+                  name: source
+                  value: "Data for test"
+              - column:
+                  name: compatible_ecomind
+                  valueBoolean: true

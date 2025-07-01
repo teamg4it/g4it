@@ -293,35 +293,37 @@ export class BarChartComponent extends AbstractDashboard {
                     type: "value",
                 },
             ],
-            series:
-                !isTerminal || this.barChartChild
-                    ? [
-                          {
-                              name: isTerminal ? "terminals" : "Cloud Services",
-                              type: "bar",
-                              data: yAxis,
-                          },
-                      ]
-                    : yAxis,
+            series: this.barChartChild
+                ? [
+                      {
+                          name: isTerminal ? "terminals" : "Cloud Services",
+                          type: "bar",
+                          data: yAxis,
+                      },
+                  ]
+                : yAxis,
             color: Constants.BLUE_COLOR,
         } as any;
     }
 
     private createTooltipFormatter(isTerminal: boolean): (params: any) => string {
         return (params: any) => {
-            if (params.value === undefined) {
+            if (
+                this.barChartChild
+                    ? params.value === undefined
+                    : params.data[1] === undefined
+            ) {
                 return "";
             }
-            const seriesName =
-                isTerminal && !this.barChartChild
-                    ? `<div style="display: flex; align-items: center; height: 30px;">
+            const seriesName = !this.barChartChild
+                ? `<div style="display: flex; align-items: center; height: 30px;">
                             <span style="display: inline-block; width: 10px; height: 10px; background-color: ${params.color}; border-radius: 50%; margin-right: 5px;"></span>
                             <span style="font-weight: bold; margin-right: 15px;">${params.seriesName}</span>
                         </div>`
-                    : "";
+                : "";
             const showedHtml = `
                 <div>
-                    ${this.integerPipe.transform(!isTerminal || this.barChartChild ? params.value : params.data[1])}
+                    ${this.integerPipe.transform(this.barChartChild ? params.value : params.data[1])}
                     ${this.translate.instant("common.peopleeq-min")} <br>
                     ${this.decimalsPipe.transform(params.data.rawValue ?? params.data[4])} ${params.data.unit ?? params.data[5]}
                 </div>
@@ -336,14 +338,14 @@ export class BarChartComponent extends AbstractDashboard {
                             isTerminal
                                 ? "digital-services-terminals.nb-user"
                                 : "digital-services-cloud-services.tooltip_average_workload",
-                        )}: ${this.decimalsPipe.transform(params.data[isTerminal ? "2" : "averageWorkLoad"])}${isTerminal ? "" : "%"}
+                        )}: ${this.decimalsPipe.transform(params.data[2])}${isTerminal ? "" : "%"}
                     </div>
                     <div>
                         ${this.translate.instant(
                             isTerminal
                                 ? "digital-services-terminals.yearly-usage"
                                 : "digital-services-cloud-services.tooltip_annual_usage",
-                        )}: ${this.decimalsPipe.transform(params.data[isTerminal ? "3" : "averageUsage"])}
+                        )}: ${this.decimalsPipe.transform(params.data[3])}
                         ${this.translate.instant("digital-services-terminals.hours")}
                     </div>
                 `;
@@ -426,82 +428,42 @@ export class BarChartComponent extends AbstractDashboard {
         isTerminals: boolean,
     ): StatusCountMap {
         seriesData.forEach((impact: any) => {
-            if (!isTerminals) {
-                okMap[impact.name] = {
-                    status: {
-                        ok: impact.impact.reduce(
-                            (acc: number, i: any) => acc + (i.statusCount?.ok ?? 0),
-                            0,
-                        ),
-                        error: impact.impact.reduce(
-                            (acc: number, i: any) => acc + (i.statusCount?.error ?? 0),
-                            0,
-                        ),
-                        total: impact.impact.reduce(
-                            (acc: number, i: any) => acc + (i.statusCount?.total ?? 0),
-                            0,
-                        ),
-                    },
-                };
-            } else {
-                okMap[impact.name] = {
-                    status: {
-                        ok: impact.status.ok ?? 0,
-                        error: impact.status.error ?? 0,
-                        total: impact.status.total ?? 0,
-                    },
-                };
-            }
+            okMap[impact.name] = {
+                status: {
+                    ok: impact.status.ok ?? 0,
+                    error: impact.status.error ?? 0,
+                    total: impact.status.total ?? 0,
+                },
+            };
             xAxis.push(impact.name);
-            if (!isTerminals) {
-                yAxis.push({
-                    value:
-                        impact.totalSipValue < 1
-                            ? impact.totalSipValue
-                            : impact.totalSipValue.toFixed(0),
-                    name: impact.name,
+
+            const items = isTerminals ? impact.terminals : impact.clouds;
+            items.forEach((item: any, index: number) => {
+                const data = [
+                    impact.name,
+                    item.totalSipValue < 1
+                        ? item.totalSipValue
+                        : item.totalSipValue.toFixed(0),
                     ...(isTerminals
-                        ? {
-                              nbUsers: impact.totalNbUsers,
-                              usageTime: impact.avgUsageTime,
-                          }
-                        : {
-                              averageUsage: impact.totalAvgUsage,
-                              averageWorkLoad: impact.totalAvgWorkLoad,
-                          }),
-                    rawValue: impact.rawValue,
-                    unit: impact.unit,
+                        ? [item.totalNbUsers, item.avgUsageTime]
+                        : [item.totalAvgWorkLoad, item.totalAvgUsage]),
+                    item.rawValue,
+                    item.unit,
+                ];
+
+                yAxis.push({
+                    name: item.name,
+                    data: [data],
+                    type: "bar",
+                    stack: "Ad",
+                    emphasis: {
+                        focus: "series",
+                    },
+                    itemStyle: {
+                        color: this.createStackBarGradientColor(index, items.length),
+                    },
                 });
-            } else {
-                impact.terminals.forEach((t: any, index: number) => {
-                    yAxis.push({
-                        name: t.name,
-                        data: [
-                            [
-                                impact.name,
-                                t.totalSipValue < 1
-                                    ? t.totalSipValue
-                                    : t.totalSipValue.toFixed(0),
-                                t.totalNbUsers,
-                                t.avgUsageTime,
-                                t.rawValue,
-                                t.unit,
-                            ],
-                        ],
-                        type: "bar",
-                        stack: "Ad",
-                        emphasis: {
-                            focus: "series",
-                        },
-                        itemStyle: {
-                            color: this.createStackBarGradientColor(
-                                index,
-                                impact.terminals.length,
-                            ),
-                        },
-                    });
-                });
-            }
+            });
         });
         return okMap;
     }
@@ -515,9 +477,9 @@ export class BarChartComponent extends AbstractDashboard {
     ): StatusCountMap {
         let childData;
         if (!isTerminals) {
-            childData = seriesData.find(
-                (item: any) => item.name === this.selectedDetailParam,
-            );
+            childData = seriesData
+                .find((item: any) => item.name === this.selectedDetailParam)
+                .clouds.find((c: any) => c.name === this.selectedDetailName);
         } else {
             childData = seriesData
                 .find((item: any) => item.name === this.selectedDetailParam)
@@ -915,12 +877,5 @@ export class BarChartComponent extends AbstractDashboard {
         const g = Math.round((1 - t) * startG + t * endG);
         const b = Math.round((1 - t) * startB + t * endB);
         return `rgb(${r},${g},${b})`;
-    }
-
-    selectedStackBarClick(event: string): void {
-        if (this.selectedParam === Constants.CLOUD_SERVICE && !this.barChartChild) {
-            this.barChartChildChange.emit(true);
-            this.selectedDetailParamChange.emit(event);
-        }
     }
 }

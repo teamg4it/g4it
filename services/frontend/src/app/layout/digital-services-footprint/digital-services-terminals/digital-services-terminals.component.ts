@@ -152,4 +152,5 @@ export class DigitalServicesTerminalsComponent implements OnInit {
             this.digitalServicesData.get(this.digitalService.uid),
         );
     }
+    
 }
