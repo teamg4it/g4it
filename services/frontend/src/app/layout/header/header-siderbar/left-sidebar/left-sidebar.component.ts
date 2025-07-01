@@ -22,6 +22,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { generateColor } from "src/app/core/utils/color";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 
 @Component({
     standalone: true,
@@ -43,12 +44,14 @@ export class LeftSidebarComponent implements OnInit {
     digitalServicesTitle = computed(() =>
         this.getTitle("digital-services.title", "digital-services"),
     );
+    ecoMindAiTitle = computed(() => this.getTitle("eco-mind-ai.title", "eco-mind-ai"));
     inventoriesTitle = computed(() => this.getTitle("inventories.title", "inventories"));
     administrationTitle = computed(() =>
         this.getTitle("common.administration", "administration"),
     );
     digitalServicesAriaCurrent = computed(() => this.getAriaCurrent("digital-services"));
     inventoriesAriaCurrent = computed(() => this.getAriaCurrent("inventories"));
+    ecoMindAiAriaCurrent = computed(() => this.getAriaCurrent("eco-mind-ai"));
     administrationAriaCurrent = computed(() => this.getAriaCurrent("administration"));
     public globalStore = inject(GlobalStoreService);
     selectedPage = signal("");
@@ -66,6 +69,9 @@ export class LeftSidebarComponent implements OnInit {
     isAdminOnSubscriberOrOrganization = false;
     userDetails!: UserInfo;
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
+
+    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
@@ -101,9 +107,10 @@ export class LeftSidebarComponent implements OnInit {
                     this.userService.hasAnyAdminRole(user);
             });
 
-        this.userService.currentSubscriber$.subscribe(
-            (subscriber: any) => (this.currentSubscriber = subscriber),
-        );
+        this.userService.currentSubscriber$.subscribe((subscriber: any) => {
+            this.currentSubscriber = subscriber;
+            this.isEcoMindEnabledForCurrentSubscriber = this.currentSubscriber.ecomindai;
+        });
 
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))

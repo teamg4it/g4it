@@ -7,6 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
+import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
+import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
@@ -17,6 +19,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -68,6 +71,10 @@ public class DigitalServiceService {
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
     @Autowired
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Autowired
+    private InAiParameterRepository inAiParameterRepository;
+    @Autowired
+    private InAiInfrastructureRepository inAiInfrastructureRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
     @Autowired
@@ -77,15 +84,17 @@ public class DigitalServiceService {
     private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
     @Autowired
     private ExportService exportService;
+    private Boolean isAi;
 
     /**
      * Create a new digital service.
      *
      * @param organizationId the linked organization's id.
      * @param userId         the userId.
+     * @param isAi AI service if true
      * @return the business object corresponding on the digital service created.
      */
-    public DigitalServiceBO createDigitalService(final Long organizationId, final long userId) {
+    public DigitalServiceBO createDigitalService(final Long organizationId, final long userId, final Boolean isAi) {
         // Get the linked organization.
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
@@ -109,6 +118,7 @@ public class DigitalServiceService {
                 .name(DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1))
                 .user(user)
                 .organization(linkedOrganization)
+                .isAi(isAi)
                 .creationDate(now)
                 .lastUpdateDate(now)
                 .build();
@@ -122,11 +132,14 @@ public class DigitalServiceService {
      * Get the digital service list linked to a user.
      *
      * @param organizationId the organization's id.
+     * @param isAi  AI service if true
      * @return the digital service list.
      */
-    public List<DigitalServiceBO> getDigitalServices(final Long organizationId) {
+    public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final Boolean isAi) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        return digitalServiceMapper.toBusinessObject(digitalServiceRepository.findByOrganization(linkedOrganization));
+        List<DigitalService> filterDigitalService = digitalServiceRepository.findByOrganization(linkedOrganization).stream().filter(ds -> ds.isAi() == isAi)
+                .toList();
+        return digitalServiceMapper.toBusinessObject(filterDigitalService);
     }
 
     /**
@@ -138,6 +151,8 @@ public class DigitalServiceService {
         inVirtualEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inPhysicalEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inDatacenterRepository.deleteByDigitalServiceUid(digitalServiceUid);
+        inAiParameterRepository.deleteByDigitalServiceUid(digitalServiceUid);
+        inAiInfrastructureRepository.deleteByDigitalServiceUid(digitalServiceUid);
         digitalServiceRepository.deleteById(digitalServiceUid);
     }
 

@@ -61,6 +61,7 @@ describe("UserDataService", () => {
                     Role.InventoryWrite,
                     Role.DigitalServiceWrite,
                 ],
+                ecomindai: true,
             },
         ],
     };
