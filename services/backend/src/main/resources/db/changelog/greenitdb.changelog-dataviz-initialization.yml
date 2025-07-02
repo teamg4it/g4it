@@ -65,6 +65,7 @@ databaseChangeLog:
   - changeSet:
       id: delete-obsolete-ref_sustainable_individual_package-data
       author: G4IT Dev Team
+      context: local
       changes:
         - delete:
             tableName: ref_sustainable_individual_package
@@ -73,6 +74,7 @@ databaseChangeLog:
   - changeSet:
       id: referential-init-ref_sustainable_individual_package-table
       author: G4IT Dev Team
+      context: local
       preConditions:
         onFail: MARK_RAN
         sqlCheck:
