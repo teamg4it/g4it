@@ -46,7 +46,7 @@ flowchart LR
 
     subgraph Back
         A1["digital-services/{digitalServiceUid}/evaluating"]
-        A2["Async: EvalutaingAiService"]
+        A2["Async: EvaluateAiService"]
         A3["Ecomind Client"]
     end
 

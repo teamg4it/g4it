@@ -28,6 +28,7 @@ erDiagram
     int8 organization_id FK
     bool is_new_arch
     bool is_migrated
+    bool is_ai
   }
   in_datacenter {
     int8 id PK
@@ -168,19 +169,20 @@ erDiagram
 
 #### Columns 
 
-|Name|Data type|Comments|
-|---|---|---|
-|**uid**|varchar||
-|name|varchar|<ul><li>Name of Digital Service</li></ul>|
-|last_calculation_date|timestamp||
-|creation_date|timestamp||
-|last_update_date|timestamp||
-|*note_id*|int8||
-|criteria|_varchar||
-|*user_id*|int8||
-|*organization_id*|int8||
-|is_new_arch|bool||
-|is_migrated|bool||
+| Name                  |Data type|Comments|
+|-----------------------|---|---|
+| **uid**               |varchar||
+| name                  |varchar|<ul><li>Name of Digital Service</li></ul>|
+| last_calculation_date |timestamp||
+| creation_date         |timestamp||
+| last_update_date      |timestamp||
+| *note_id*             |int8||
+| criteria              |_varchar||
+| *user_id*             |int8||
+| *organization_id*     |int8||
+| is_new_arch           |bool||
+| is_migrated           |bool||
+| ia_ai                 |bool||
 
 #### Primary Key 
 
