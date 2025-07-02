@@ -160,4 +160,27 @@ describe("TopHeaderComponent", () => {
 
         expect(component.modelOrganization).toBe(1);
     }));
+
+    it("should open Boaviztapi GitHub link when help menu item is clicked", () => {
+        const windowOpenSpy = spyOn(window, "open");
+
+        // Trigger ngOnInit to populate items
+        component.ngOnInit();
+
+        const helpMenu = component.items?.find(
+            (item) => item.label === "common.help-center",
+        );
+        const boaviztapiItem = helpMenu?.items?.find(
+            (item) => item["link"] === "https://github.com/Boavizta/boaviztapi",
+        );
+
+        // ✅ Call command with a dummy event object
+        boaviztapiItem?.command?.({});
+
+        expect(windowOpenSpy).toHaveBeenCalledWith(
+            "https://github.com/Boavizta/boaviztapi",
+            "_blank",
+            "noopener",
+        );
+    });
 });
