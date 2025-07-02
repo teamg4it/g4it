@@ -20,7 +20,7 @@ import {
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
     ImpactACVStep,
-    ImpactNetworkSipValue,
+    ImpactNetworkNames,
     ImpactSipValue,
     ServerImpact,
     ServersType,
@@ -135,40 +135,41 @@ export class BarChartComponent extends AbstractDashboard {
         );
         let xAxis: any[] = [];
         const yAxis: any[] = [];
-        seriesData.forEach((impact: ImpactNetworkSipValue) => {
+        seriesData.forEach((impact: ImpactNetworkNames) => {
             networkMap[impact.networkType] = {
                 ...impact,
-                rawValue:
-                    (networkMap[impact.networkType]?.rawValue ?? 0) + impact.rawValue,
-                sipValue:
-                    (networkMap[impact.networkType]?.sipValue ?? 0) + impact.sipValue,
                 status: {
-                    ok:
-                        (networkMap[impact.networkType]?.status?.ok ?? 0) +
-                        (impact.status === Constants.DATA_QUALITY_STATUS.ok
-                            ? impact.countValue
-                            : 0),
-                    error:
-                        (networkMap[impact.networkType]?.status?.error ?? 0) +
-                        (impact.status !== Constants.DATA_QUALITY_STATUS.ok
-                            ? impact.countValue
-                            : 0),
-                    total:
-                        (networkMap[impact.networkType]?.status?.total ?? 0) +
-                        impact.countValue,
+                    ok: impact.status.ok,
+                    error: impact.status.error,
+                    total: impact.status.total,
                 },
             };
-        });
-        xAxis = Object.keys(networkMap);
-        xAxis.forEach((key) => {
-            const impact = networkMap[key];
-            yAxis.push({
-                value: impact.sipValue < 1 ? impact.sipValue : impact.sipValue.toFixed(0),
-                rawValue: impact.rawValue,
-                unit: impact.unit,
+            xAxis.push(impact.networkType);
+            impact.items.forEach((item: any, index: number) => {
+                const data = [
+                    impact.networkType,
+                    item.sipValue < 1 ? item.sipValue : item.sipValue.toFixed(0),
+                    item.rawValue,
+                    item.unit,
+                ];
+
+                yAxis.push({
+                    name: item.name,
+                    data: [data],
+                    type: "bar",
+                    stack: "Ad",
+                    emphasis: {
+                        focus: "series",
+                    },
+                    itemStyle: {
+                        color: this.createStackBarGradientColor(
+                            index,
+                            impact.items.length,
+                        ),
+                    },
+                });
             });
         });
-
         this.xAxisInput = xAxis;
         this.criteriaMap = networkMap;
         return {
@@ -176,10 +177,14 @@ export class BarChartComponent extends AbstractDashboard {
                 show: true,
                 formatter: (params: any) => {
                     return `
+                    <div style="display: flex; align-items: center; height: 30px;">
+                            <span style="display: inline-block; width: 10px; height: 10px; background-color: ${params.color}; border-radius: 50%; margin-right: 5px;"></span>
+                            <span style="font-weight: bold; margin-right: 15px;">${params.seriesName}</span>
+                        </div>
                         <div>
-                            ${this.integerPipe.transform(params.value)}
+                            ${this.integerPipe.transform(params.data[1])}
                             ${this.translate.instant("common.peopleeq-min")}<br>
-                            ${this.decimalsPipe.transform(params.data.rawValue)} ${params.data.unit}
+                            ${this.decimalsPipe.transform(params.data[2])} ${params.data[3]}
                         </div>
                     `;
                 },
@@ -215,13 +220,7 @@ export class BarChartComponent extends AbstractDashboard {
                     type: "value",
                 },
             ],
-            series: [
-                {
-                    name: "networks",
-                    type: "bar",
-                    data: yAxis,
-                },
-            ],
+            series: yAxis,
             color: Constants.BLUE_COLOR,
         };
     }
