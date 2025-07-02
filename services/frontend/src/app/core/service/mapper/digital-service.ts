@@ -127,15 +127,36 @@ export const transformOutPhysicalEquipmentsToNetworkData = (
 
     const results: DigitalServiceNetworksImpact[] = [];
     for (const criterion in networkByCriterion) {
+        const impactsReference = aggregateImpacts(networkByCriterion[criterion], [
+            "reference",
+            "unit",
+        ]).map((item) => {
+            return {
+                ...item,
+                networkType: networkTypes.find((n) => n.code === item.reference)?.value!,
+            };
+        });
+        const impactsName = aggregateImpacts(networkByCriterion[criterion], [
+            "reference",
+            "unit",
+            "name",
+        ]).map((item) => {
+            return {
+                ...item,
+                networkType: networkTypes.find((n) => n.code === item.reference)?.value!,
+            };
+        });
+
+        const uniqueNetworkTypes = Array.from(
+            new Set(impactsName.map((item) => item["networkType"])),
+        ).sort((a, b) => a?.networkType?.localeCompare(b?.networkType));
         results.push({
             criteria: criterion,
-            impacts: aggregateImpacts(networkByCriterion[criterion], [
-                "reference",
-                "unit",
-                "statusIndicator",
-            ])
-                .map((item) => {
-                    return {
+            impacts: uniqueNetworkTypes.map((networkType) => {
+                const items = impactsName
+                    .filter((i) => i.networkType === networkType)
+                    .map((item) => ({
+                        name: item.name,
                         countValue: item.countValue,
                         networkType: networkTypes.find((n) => n.code === item.reference)
                             ?.value!,
@@ -146,12 +167,22 @@ export const transformOutPhysicalEquipmentsToNetworkData = (
                                 ? "OK"
                                 : "ERROR",
                         unit: item.unit,
-                    };
-                })
-                .sort((a, b) => a?.networkType?.localeCompare(b?.networkType)),
+                    }));
+                return {
+                    networkType: networkType,
+                    items,
+                    status: {
+                        total: impactsReference.find((i) => i.networkType === networkType)
+                            .statusCount.total,
+                        ok: impactsReference.find((i) => i.networkType === networkType)
+                            .statusCount.ok,
+                        error: impactsReference.find((i) => i.networkType === networkType)
+                            .statusCount.error,
+                    },
+                };
+            }),
         });
     }
-
     return results;
 };
 

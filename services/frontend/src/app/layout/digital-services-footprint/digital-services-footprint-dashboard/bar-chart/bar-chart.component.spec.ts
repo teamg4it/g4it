@@ -67,16 +67,6 @@ describe("BarChartComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should generate valid EChartsOption for Networks", () => {
-        const barChartData: DigitalServiceNetworksImpact[] = require("test/data/digital-service-data/digital_service_networks_footprint.json");
-        component.selectedCriteria = "acidification";
-        const echartsOption: EChartsOption =
-            component.loadStackBarOptionNetwork(barChartData);
-
-        expect(echartsOption).toBeTruthy();
-        expect(echartsOption.series).toBeTruthy();
-    });
-
     it("should generate valid EChartsOption for Servers", () => {
         const barChartData: DigitalServiceServersImpact[] = require("test/data/digital-service-data/digital_service_servers_footprint.json");
         component.selectedCriteria = "acidification";
@@ -300,5 +290,89 @@ describe("BarChartComponent", () => {
 
         expect(tooltip).toContain("30 kg");
         expect(tooltip).toContain("20");
+    });
+
+    it("should generate valid EChartsOption for Network with data", () => {
+        const networkData: DigitalServiceNetworksImpact[] = [
+            {
+                criteria: "climate-change",
+                impacts: [
+                    {
+                        status: {
+                            ok: 80,
+                            error: 20,
+                            total: 100,
+                        },
+                        networkType: "Fixed Network",
+                        items: [
+                            {
+                                unit: "GB",
+                                networkType: "Fixed Network",
+                                sipValue: 50,
+                                rawValue: 500,
+                                status: "OK",
+                                countValue: 10,
+                            },
+                            {
+                                unit: "GB",
+                                networkType: "Fixed Network",
+                                sipValue: 30,
+                                rawValue: 300,
+                                status: "Error",
+                                countValue: 5,
+                            },
+                        ],
+                    },
+                    {
+                        status: {
+                            ok: 60,
+                            error: 40,
+                            total: 100,
+                        },
+                        networkType: "Mobile Network",
+                        items: [
+                            {
+                                name: "Mobile Network A",
+                                unit: "GB",
+                                networkType: "Mobile Network",
+                                sipValue: 70,
+                                rawValue: 700,
+                                status: "OK",
+                                countValue: 15,
+                            },
+                            {
+                                name: "Mobile Network A",
+                                unit: "GB",
+                                networkType: "Mobile Network",
+                                sipValue: 20,
+                                rawValue: 200,
+                                status: "Error",
+                                countValue: 8,
+                            },
+                        ],
+                    },
+                ],
+            },
+        ];
+
+        component.selectedCriteria = "climate-change";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionNetwork(networkData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should handle empty network data gracefully", () => {
+        const networkData: DigitalServiceNetworksImpact[] = [];
+
+        component.selectedCriteria = "acidification";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionNetwork(networkData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
     });
 });

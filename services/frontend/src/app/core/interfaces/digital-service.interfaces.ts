@@ -104,11 +104,12 @@ export interface DigitalServicesAiInfrastructure {
 export interface DigitalServiceNetworkConfig {
     id?: number;
     uid?: string;
-    creationDate?: number;
+    creationDate?: Date;
     type: NetworkType;
     typeCode?: string;
     yearlyQuantityOfGbExchanged: number;
     idFront?: number;
+    name: string;
 }
 
 export interface DigitalServiceTerminalConfig {
@@ -226,7 +227,13 @@ export interface CloudImpactTypeLocation {
 
 export interface DigitalServiceNetworksImpact {
     criteria: string;
-    impacts: ImpactNetworkSipValue[];
+    impacts: ImpactNetworkNames[];
+}
+
+export interface ImpactNetworkNames {
+    status: StatusCount;
+    networkType: string;
+    items: ImpactNetworkSipValue[];
 }
 
 export interface DigitalServiceServersImpact {
@@ -290,6 +297,7 @@ export interface ImpactNetworkSipValue {
     rawValue: number;
     status: string;
     countValue: number;
+    name?: string;
 }
 
 export interface ImpactSipValue {
