@@ -24,10 +24,8 @@ import com.soprasteria.g4it.backend.common.criteria.CriteriaByType;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
-import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
-import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,18 +39,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EvaluatingServiceTest {
-     static final long USER_ID = 1;
-     static final String SUBSCRIBER = "subscriber";
-     static  final  String ORGANIZATION = "organization";
-     static final  Long ORGANIZATION_ID = 1L;
-     static  final  Long INVENTORY_ID = 2L;
-     static  final  String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
-     static  final List<String> CRITERIA =  List.of("criteria1", "criteria2");
+    static final long USER_ID = 1;
+    static final String SUBSCRIBER = "subscriber";
+    static final String ORGANIZATION = "organization";
+    static final Long ORGANIZATION_ID = 1L;
+    static final Long INVENTORY_ID = 2L;
+    static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
+    static final List<String> CRITERIA = List.of("criteria1", "criteria2");
 
     @InjectMocks
     private EvaluatingService evaluatingService;
@@ -178,7 +177,7 @@ class EvaluatingServiceTest {
     @Test
     void evaluating_shouldThrowIfTaskAlreadyRunning() {
 
-         Task task = mock(Task.class);
+        Task task = mock(Task.class);
         final Inventory inventory = mock(Inventory.class);
 
         when(inventoryRepository.findById(INVENTORY_ID)).thenReturn(Optional.of(inventory));
