@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { NavigationEnd, Router } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
@@ -20,6 +20,34 @@ describe("TopHeaderComponent", () => {
     let mockWorkspaceService: any;
     let mockKeycloakService: any;
     let mockGlobalStore: any;
+    const org: OrganizationData = {
+        id: 1,
+        name: "Org1",
+        subscriber: {
+            id: 1,
+            name: "Demo",
+            defaultFlag: true,
+            organizations: [
+                {
+                    id: 1,
+                    name: "Organization 1",
+                    defaultFlag: true,
+                    status: "",
+                    roles: [],
+                },
+            ],
+            roles: [],
+            ecomindai: false,
+        },
+        organization: {
+            id: 1,
+            name: "Organization 1",
+            defaultFlag: true,
+            status: "",
+            roles: [],
+        },
+        color: "#FFFFFF",
+    };
 
     beforeEach(async () => {
         mockRouter = {
@@ -84,29 +112,9 @@ describe("TopHeaderComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    // it("should set selected language and selected page on init", () => {
-    //     expect(component.selectedLanguage).toBe("en");
-    //     expect(component.selectedPage()).toBe("dashboard");
-    // });
-
     it("should generate initials after user data is set", () => {
         expect(component.initials).toBe("JD");
     });
-
-    // it("should change language correctly", () => {
-    //     component.changeLanguage("fr");
-    //     expect(mockTranslateService.use).toHaveBeenCalledWith("fr");
-    //     expect(localStorage.getItem("lang")).toBe("fr");
-    // });
-
-    // it("should toggle organization menu visibility", () => {
-    //     component.modelOrganization = 1;
-    //     spyOn(document, "querySelector").and.returnValue({
-    //         scrollIntoView: () => {},
-    //     } as any);
-    //     component.toggleOrgMenu();
-    //     expect(component.isOrgMenuVisible).toBeTrue();
-    // });
 
     it("should open workspace sidebar", () => {
         component.openWorkspaceSidebar();
@@ -126,35 +134,30 @@ describe("TopHeaderComponent", () => {
     });
 
     it("should call checkAndRedirect on selectCompany", () => {
-        const org: OrganizationData = {
-            id: 1,
-            name: "Org1",
-            subscriber: {
-                id: 1,
-                name: "Demo",
-                defaultFlag: true,
-                organizations: [
-                    {
-                        id: 1,
-                        name: "Organization 1",
-                        defaultFlag: true,
-                        status: "",
-                        roles: [],
-                    },
-                ],
-                roles: [],
-                ecomindai: false,
-            },
-            organization: {
-                id: 1,
-                name: "Organization 1",
-                defaultFlag: true,
-                status: "",
-                roles: [],
-            },
-            color: "#FFFFFF",
-        };
         component.selectCompany(org);
         expect(mockUserService.checkAndRedirect).toHaveBeenCalled();
     });
+
+    it("should navigate to next organization on ArrowDown", fakeAsync(() => {
+        component.organizations = [org];
+        component.modelOrganization = 1;
+
+        const mockScrollIntoView = jasmine.createSpy("scrollIntoView");
+
+        // Mock ViewChildren (radioItems)
+        component.radioItems = {
+            toArray: () => [
+                { nativeElement: { scrollIntoView: mockScrollIntoView } },
+                { nativeElement: { scrollIntoView: mockScrollIntoView } },
+            ],
+        } as any;
+
+        const event = new KeyboardEvent("keydown", { key: "ArrowDown" });
+        spyOn(event, "preventDefault");
+
+        component.handleKeydown(event);
+        tick();
+
+        expect(component.modelOrganization).toBe(1);
+    }));
 });
