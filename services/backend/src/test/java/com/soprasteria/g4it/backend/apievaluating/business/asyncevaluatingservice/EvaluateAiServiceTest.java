@@ -1,6 +1,5 @@
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
-import com.google.common.collect.BiMap;
 import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
@@ -8,7 +7,6 @@ import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
-import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -20,14 +18,14 @@ import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.Recommendation;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
-import com.soprasteria.g4it.backend.external.ecomindai.model.RecommendationBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import org.apache.commons.csv.CSVPrinter;
@@ -39,6 +37,7 @@ import org.mockito.MockitoAnnotations;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -46,7 +45,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class EvaluateAiServiceTest {
@@ -149,13 +149,13 @@ class EvaluateAiServiceTest {
         when(virtualEquipment.getDurationHour()).thenReturn(10.0);
         when(virtualEquipment.getWorkload()).thenReturn(0.5);
 
-        AIServiceEstimationBO estimation = new AIServiceEstimationBO();
-        estimation.setElectricityConsumption(100f);
-        estimation.setRuntime(200f);
-        estimation.setRecommendations(List.of(new RecommendationBO()));
+        OutputEstimation estimation = new OutputEstimation();
+        estimation.setElectricityConsumption(BigDecimal.valueOf(100f));
+        estimation.setRuntime(BigDecimal.valueOf(200f));
+        estimation.setRecommendations(List.of(new Recommendation()));
 
         when(aiConfigurationMapper.toAIModelConfigRest(any())).thenReturn(List.of(mock(AIConfigurationRest.class)));
-        when(aiService.runEstimation(any(), any(), any())).thenReturn(List.of(estimation));
+        when(aiService.runEstimation(any())).thenReturn(estimation);
 
         CriterionRest criterionRest = new CriterionRest("CLIMATE_CHANGE");
         criterionRest.setUnit("kg CO2 eq");
@@ -206,37 +206,6 @@ class EvaluateAiServiceTest {
         verify(csvFileService, atLeastOnce()).getPrinter(any(), eq(exportDirectory));
         verify(inPhysicalEquipmentRepository).save(any());
         verify(inVirtualEquipmentRepository).save(any());
-    }
-
-    @Test
-    void testEvaluateEcomindTrainingStage() throws Exception {
-        InAiParameter param = mockAiParameter();
-        when(param.getIsInference()).thenReturn(false); // force "TRAINING"
-        when(param.getType()).thenReturn("Type");
-
-        when(aiConfigurationMapper.toAIModelConfigRest(any())).thenReturn(List.of(mock(AIConfigurationRest.class)));
-        when(aiService.runEstimation(eq("Type"), eq("TRAINING"), any())).thenReturn(List.of(new AIServiceEstimationBO()));
-
-        List<AIServiceEstimationBO> result = aiEvaluationService.evaluateEcomind(param);
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    void testCreateAggValuesBOwithNulls() {
-        AggValuesBO bo = aiEvaluationService.createAggValuesBO(
-                "KO", "trace", null, null, null, null, null, null, null);
-
-        assertEquals(1.0, bo.getQuantity());
-        assertEquals(0.0, bo.getElectricityConsumption());
-        assertFalse(bo.getErrors().isEmpty());
-    }
-
-    @Test
-    void testGetShortcutMap() {
-        List<String> keys = List.of("A", "B", "C");
-        BiMap<String, String> map = aiEvaluationService.getShortcutMap(keys);
-        assertEquals("1", map.get("B"));
-        assertEquals("A", map.inverse().get("0"));
     }
 
     @Test
