@@ -8,38 +8,6 @@ tags:
   - name: ai-service
     description: All endpoint for ai service
 paths:
-  /ecomindai/estimation/type/{type}/stage/{stage}:
-    post:
-      tags:
-        - ai-service
-      summary: Get the energy consumption & runtime estimations of your ai configurations and the associated recommendations to reduce this impact
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: launchAIServiceEstimation
-      parameters:
-        - $ref: "#/components/parameters/typePathParam"
-        - $ref: "#/components/parameters/stagePathParam"
-      requestBody:
-        description: Input array of ai configs that need to be estimated
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/AIConfigurationRest"
-      responses:
-        "200":
-          description: Return the energy consumption & runtime estimations and recommendations
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AIServiceEstimationRest"
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
 
   /ecomindai/aiModelConfig/type/{type}:
     get:
