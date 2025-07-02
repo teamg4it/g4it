@@ -205,6 +205,19 @@ export class TopHeaderComponent implements OnInit {
                             );
                         },
                     },
+                    {
+                        label: "common.boaviztapi-github-link",
+                        link: "https://github.com/Boavizta/boaviztapi",
+                        outsideLink: true,
+                        borderClass: "border-light-grey-color",
+                        command: () => {
+                            window.open(
+                                "https://github.com/Boavizta/boaviztapi",
+                                "_blank",
+                                "noopener",
+                            );
+                        },
+                    },
                 ],
             },
         ];
