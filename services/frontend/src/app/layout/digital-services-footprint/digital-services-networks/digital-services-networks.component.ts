@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, ViewChild } from "@angular/core";
+import { Component, computed, inject, signal, ViewChild } from "@angular/core";
 import { addYears } from "date-fns";
 import { MessageService } from "primeng/api";
 import { firstValueFrom } from "rxjs";
@@ -15,11 +15,11 @@ import {
     NetworkType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { InPhysicalEquipmentRest } from "src/app/core/interfaces/input.interface";
+import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in-physical-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import * as uuid from "uuid";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 @Component({
     selector: "app-digital-services-networks",
@@ -29,6 +29,7 @@ import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-ne
 export class DigitalServicesNetworksComponent {
     digitalServiceStore = inject(DigitalServiceStoreService);
     inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
+    private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);
 
     @ViewChild("networkSidePanel", { static: false })
     networkSidePanel!: DigitalServicesNetworksSidePanelComponent;
@@ -36,8 +37,9 @@ export class DigitalServicesNetworksComponent {
     network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;
 
     sidebarVisible = false;
+    existingNames = signal<string[]>([]);
 
-    headerFields = ["typeCode", "yearlyQuantityOfGbExchanged"];
+    headerFields = ["name", "typeCode", "yearlyQuantityOfGbExchanged"];
 
     networkData = computed(() => {
         const networkTypes = this.digitalServiceStore.networkTypes();
@@ -59,6 +61,7 @@ export class DigitalServicesNetworksComponent {
                     typeCode: type?.value,
                     type,
                     yearlyQuantityOfGbExchanged,
+                    name: item.name,
                 } as DigitalServiceNetworkConfig;
             });
     });
@@ -99,7 +102,21 @@ export class DigitalServicesNetworksComponent {
     }
 
     resetNetwork() {
+        this.existingNames.set(
+            this.networkData()
+                .filter((c) =>
+                    this.network.idFront !== undefined
+                        ? this.network.name !== c.name
+                        : true,
+                )
+                .map((network) => network.name),
+        );
         this.network = {
+            name: this.digitalServicesBusiness.getNextAvailableName(
+                this.existingNames(),
+                "Network",
+                true,
+            ),
             uid: undefined,
             type: this.digitalServiceStore.networkTypes()[0],
             yearlyQuantityOfGbExchanged: 0,
@@ -119,7 +136,7 @@ export class DigitalServicesNetworksComponent {
 
         const elementToSave = {
             digitalServiceUid: this.digitalService.uid,
-            name: network.uid || uuid.v4(),
+            name: network.name,
             type: "Network",
             model: network.type.code,
             quantity: this.calculateQuantity(
