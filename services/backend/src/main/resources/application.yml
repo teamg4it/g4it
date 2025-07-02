@@ -91,6 +91,7 @@ spring:
           time_zone: UTC
   liquibase:
     change-log: classpath:/db/changelog/greenitdb.changelog-master.yml
+    contexts: local
   security:
     oauth2:
       resourceserver:

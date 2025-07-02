@@ -17,7 +17,7 @@ import {
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -98,16 +98,17 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     private destroyRef = inject(DestroyRef);
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
-        private router: Router,
-        private confirmationService: ConfirmationService,
-        private translate: TranslateService,
-        public userService: UserService,
-        private messageService: MessageService,
-        private digitalServiceBusinessService: DigitalServiceBusinessService,
-        private inVirtualEquipmentsService: InVirtualEquipmentsService,
-        private aiFormsStore: AIFormsStore,
-        private digitalServicesAiData: DigitalServicesAiDataService,
+        private readonly digitalServicesData: DigitalServicesDataService,
+        private readonly router: Router,
+        private readonly confirmationService: ConfirmationService,
+        private readonly translate: TranslateService,
+        public readonly userService: UserService,
+        private readonly messageService: MessageService,
+        private readonly digitalServiceBusinessService: DigitalServiceBusinessService,
+        private readonly inVirtualEquipmentsService: InVirtualEquipmentsService,
+        private readonly aiFormsStore: AIFormsStore,
+        private readonly digitalServicesAiData: DigitalServicesAiDataService,
+        private readonly route: ActivatedRoute,
     ) {}
 
     ngOnInit() {
@@ -117,7 +118,12 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 switchMap((res) => {
                     this.digitalService = res;
                     this.digitalServiceStore.setDigitalService(this.digitalService);
-                    if (!this.digitalService.isAi) {
+                    const routeDsUid =
+                        this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
+                    if (
+                        !this.digitalService.isAi &&
+                        routeDsUid === this.digitalService.uid
+                    ) {
                         return this.inVirtualEquipmentsService.getByDigitalService(
                             this.digitalService.uid,
                         );
