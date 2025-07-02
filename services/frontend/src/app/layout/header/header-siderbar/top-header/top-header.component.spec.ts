@@ -174,7 +174,7 @@ describe("TopHeaderComponent", () => {
             (item) => item["link"] === "https://github.com/Boavizta/boaviztapi",
         );
 
-        // ✅ Call command with a dummy event object
+        // Call command with a dummy event object
         boaviztapiItem?.command?.({});
 
         expect(windowOpenSpy).toHaveBeenCalledWith(
