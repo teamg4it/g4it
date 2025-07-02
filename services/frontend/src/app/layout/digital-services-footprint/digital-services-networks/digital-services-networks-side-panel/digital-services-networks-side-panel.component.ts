@@ -6,8 +6,10 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
+import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
+import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
 import { DigitalServiceNetworkConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
@@ -21,24 +23,42 @@ export class DigitalServicesNetworksSidePanelComponent {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;
+    @Input() networkData: DigitalServiceNetworkConfig[] = [];
+    existingNames: string[] = [];
 
     @Output() update: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
     @Output() delete: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
     @Output() cancel: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
     @Output() sidebarVisible: EventEmitter<boolean> = new EventEmitter();
 
-    networksForm = this._formBuilder.group({
-        type: [
-            { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
-            Validators.required,
-        ],
-        yearlyQuantityOfGbExchanged: [0, [Validators.required]],
-    });
+    networksForm!: FormGroup;
 
     constructor(
-        private _formBuilder: FormBuilder,
+        private readonly _formBuilder: FormBuilder,
         public userService: UserService,
     ) {}
+
+    ngOnInit() {
+        const isNew = this.network.idFront === undefined;
+        this.existingNames = this.networkData
+            .filter((c) => (!isNew ? this.network.name !== c.name : true))
+            .map((cloud) => cloud.name);
+        this.networksForm = this._formBuilder.group({
+            name: [
+                "",
+                [
+                    Validators.required,
+                    uniqueNameValidator(this.existingNames),
+                    noWhitespaceValidator(),
+                ],
+            ],
+            type: [
+                { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
+                Validators.required,
+            ],
+            yearlyQuantityOfGbExchanged: [0, [Validators.required]],
+        });
+    }
 
     deleteNetwork() {
         this.delete.emit(this.network);
