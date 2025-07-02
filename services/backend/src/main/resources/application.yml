@@ -66,7 +66,7 @@ local.working.folder: ".\\storagetmp"
 
 spring:
   profiles:
-    active: dev, local
+    active: dev, local, liquibase-local
   main:
     allow-bean-definition-overriding: true
   datasource:
@@ -91,6 +91,7 @@ spring:
           time_zone: UTC
   liquibase:
     change-log: classpath:/db/changelog/greenitdb.changelog-master.yml
+    contexts: liquibase-local
   security:
     oauth2:
       resourceserver:

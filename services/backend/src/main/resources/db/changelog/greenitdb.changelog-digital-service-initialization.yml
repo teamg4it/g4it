@@ -95,6 +95,7 @@ databaseChangeLog:
   - changeSet:
       id: delete-obsolete-ref_device_type-data
       author: G4IT Dev Team
+      context: liquibase-local
       changes:
         - delete:
             tableName: ref_device_type
@@ -103,6 +104,7 @@ databaseChangeLog:
   - changeSet:
       id: referential-init-ref_device_type-table
       author: G4IT Dev Team
+      context: liquibase-local
       preConditions:
         onFail: MARK_RAN
         sqlCheck:
@@ -249,6 +251,7 @@ databaseChangeLog:
   - changeSet:
       id: delete-obsolete-ref_network_type-data
       author: G4IT Dev Team
+      context: liquibase-local
       changes:
         - delete:
             tableName: ref_network_type
@@ -257,6 +260,7 @@ databaseChangeLog:
   - changeSet:
       id: referential-init-ref_network_type-table
       author: G4IT Dev Team
+      context: liquibase-local
       preConditions:
         onFail: MARK_RAN
         sqlCheck:
@@ -397,6 +401,7 @@ databaseChangeLog:
   - changeSet:
       id: delete-obsolete-ref_server_host-data
       author: G4IT Dev Team
+      context: liquibase-local
       changes:
         - delete:
             tableName: ref_server_host
@@ -405,6 +410,7 @@ databaseChangeLog:
   - changeSet:
       id: referential-init-ref_server_host-table
       author: G4IT Dev Team
+      context: liquibase-local
       preConditions:
         onFail: MARK_RAN
         sqlCheck:
