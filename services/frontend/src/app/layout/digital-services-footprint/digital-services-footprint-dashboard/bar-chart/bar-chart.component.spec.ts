@@ -67,16 +67,6 @@ describe("BarChartComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should generate valid EChartsOption for Networks", () => {
-        const barChartData: DigitalServiceNetworksImpact[] = require("test/data/digital-service-data/digital_service_networks_footprint.json");
-        component.selectedCriteria = "acidification";
-        const echartsOption: EChartsOption =
-            component.loadStackBarOptionNetwork(barChartData);
-
-        expect(echartsOption).toBeTruthy();
-        expect(echartsOption.series).toBeTruthy();
-    });
-
     it("should generate valid EChartsOption for Servers", () => {
         const barChartData: DigitalServiceServersImpact[] = require("test/data/digital-service-data/digital_service_servers_footprint.json");
         component.selectedCriteria = "acidification";
@@ -291,34 +281,98 @@ describe("BarChartComponent", () => {
 
         const params = {
             value: 200,
-            data: {
-                rawValue: 100,
-                unit: "kg",
-                averageWorkLoad: 50,
-                averageUsage: 30,
-            },
+            data: [50, 20, 10, 20, 30, "kg"],
             seriesName: "Cloud Services",
             color: "#FF0000",
         };
 
         const tooltip = formatter(params);
 
-        expect(tooltip).toContain("200");
-        expect(tooltip).toContain("100 kg");
-        expect(tooltip).toContain("50%");
-        expect(tooltip).toContain("30");
+        expect(tooltip).toContain("30 kg");
+        expect(tooltip).toContain("20");
     });
 
-    it("should return an empty string if value is undefined", () => {
-        const isTerminal = true;
-        const formatter = component["createTooltipFormatter"](isTerminal);
+    it("should generate valid EChartsOption for Network with data", () => {
+        const networkData: DigitalServiceNetworksImpact[] = [
+            {
+                criteria: "climate-change",
+                impacts: [
+                    {
+                        status: {
+                            ok: 80,
+                            error: 20,
+                            total: 100,
+                        },
+                        networkType: "Fixed Network",
+                        items: [
+                            {
+                                unit: "GB",
+                                networkType: "Fixed Network",
+                                sipValue: 50,
+                                rawValue: 500,
+                                status: "OK",
+                                countValue: 10,
+                            },
+                            {
+                                unit: "GB",
+                                networkType: "Fixed Network",
+                                sipValue: 30,
+                                rawValue: 300,
+                                status: "Error",
+                                countValue: 5,
+                            },
+                        ],
+                    },
+                    {
+                        status: {
+                            ok: 60,
+                            error: 40,
+                            total: 100,
+                        },
+                        networkType: "Mobile Network",
+                        items: [
+                            {
+                                name: "Mobile Network A",
+                                unit: "GB",
+                                networkType: "Mobile Network",
+                                sipValue: 70,
+                                rawValue: 700,
+                                status: "OK",
+                                countValue: 15,
+                            },
+                            {
+                                name: "Mobile Network A",
+                                unit: "GB",
+                                networkType: "Mobile Network",
+                                sipValue: 20,
+                                rawValue: 200,
+                                status: "Error",
+                                countValue: 8,
+                            },
+                        ],
+                    },
+                ],
+            },
+        ];
 
-        const params = {
-            value: undefined,
-        };
+        component.selectedCriteria = "climate-change";
 
-        const tooltip = formatter(params);
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionNetwork(networkData);
 
-        expect(tooltip).toBe("");
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should handle empty network data gracefully", () => {
+        const networkData: DigitalServiceNetworksImpact[] = [];
+
+        component.selectedCriteria = "acidification";
+
+        const echartsOption: EChartsOption =
+            component.loadStackBarOptionNetwork(networkData);
+
+        expect(echartsOption).toBeTruthy();
+        expect(echartsOption.series).toBeTruthy();
     });
 });

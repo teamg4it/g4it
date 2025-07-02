@@ -50,3 +50,5 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-migrate-demo-digital-services.yml
   - include:
       file: db/changelog/greenitdb.changelog-admin-actions.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-clean-shared-digital-service.yml

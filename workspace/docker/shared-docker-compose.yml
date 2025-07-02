@@ -212,23 +212,12 @@ services:
       - numecoeval
 
   #EcomindAPI
-  ecomind-api-config:
-    image: clue/json-server
-    container_name: ecomind-api-config
+  ecomind-api:
+    image: soury35/ecomindai:1.0.0
+    container_name: ecomind-api
     ports:
-      - "3000:80"
-    volumes:
-      - ./../ecomind-api/ouput_get_config.json:/data/ouput_get_config.json:Z
-    command: --watch /data/ouput_get_config.json
+      - "3000:8080"
 
-  ecomind-api-estimate:
-    image: clue/json-server
-    container_name: ecomind-api-estimate
-    ports:
-      - "3001:80"
-    volumes:
-      - ./../ecomind-api/output_post_estimate.json:/data/output_post_estimate.json:Z
-    command: --watch /data/output_post_estimate.json
 
 
 volumes:
