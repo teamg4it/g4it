@@ -98,17 +98,17 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     private destroyRef = inject(DestroyRef);
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
-        private router: Router,
-        private confirmationService: ConfirmationService,
-        private translate: TranslateService,
-        public userService: UserService,
-        private messageService: MessageService,
-        private digitalServiceBusinessService: DigitalServiceBusinessService,
-        private inVirtualEquipmentsService: InVirtualEquipmentsService,
-        private aiFormsStore: AIFormsStore,
-        private digitalServicesAiData: DigitalServicesAiDataService,
-        private route: ActivatedRoute,
+        private readonly digitalServicesData: DigitalServicesDataService,
+        private readonly router: Router,
+        private readonly confirmationService: ConfirmationService,
+        private readonly translate: TranslateService,
+        public readonly userService: UserService,
+        private readonly messageService: MessageService,
+        private readonly digitalServiceBusinessService: DigitalServiceBusinessService,
+        private readonly inVirtualEquipmentsService: InVirtualEquipmentsService,
+        private readonly aiFormsStore: AIFormsStore,
+        private readonly digitalServicesAiData: DigitalServicesAiDataService,
+        private readonly route: ActivatedRoute,
     ) {}
 
     ngOnInit() {
