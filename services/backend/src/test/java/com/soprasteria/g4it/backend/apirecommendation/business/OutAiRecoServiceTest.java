@@ -4,6 +4,7 @@ import com.soprasteria.g4it.backend.apirecomandation.business.OutAiRecoService;
 import com.soprasteria.g4it.backend.apirecomandation.mapper.OutAiRecoMapper;
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
+import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutAiRecommendationRest;
@@ -13,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -41,7 +42,7 @@ class OutAiRecoServiceTest {
         OutAiReco recommendation = OutAiReco.builder().build();
         OutAiRecommendationRest recommendationRest = OutAiRecommendationRest.builder().build();
 
-        when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.of(task));
+        when(taskRepository.findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString())).thenReturn(List.of(task));
         when(outAiRecoRepository.findByTaskId(task.getId())).thenReturn(recommendation);
         when(outAiRecoMapper.toDto(recommendation)).thenReturn(recommendationRest);
 
@@ -50,7 +51,7 @@ class OutAiRecoServiceTest {
 
         // Then
         assertThat(result).isEqualTo(recommendationRest);
-        verify(taskRepository, times(1)).findByDigitalServiceUid(digitalServiceUid);
+        verify(taskRepository, times(1)).findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString());
         verify(outAiRecoRepository, times(1)).findByTaskId(task.getId());
         verify(outAiRecoMapper, times(1)).toDto(recommendation);
     }
@@ -59,7 +60,7 @@ class OutAiRecoServiceTest {
     void shouldReturnEmptyRecommendation_whenNoTaskFound() {
         // Given
         String digitalServiceUid = "UNKNOWN-UID";
-        when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.empty());
+        when(taskRepository.findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString())).thenReturn(List.of());
 
         // When
         OutAiRecommendationRest result = outAiRecoService.getByDigitalServiceUid(digitalServiceUid);
@@ -67,7 +68,7 @@ class OutAiRecoServiceTest {
         // Then
         assertThat(result).isNotNull(); // Should not return null
         assertThat(result).isEqualTo(OutAiRecommendationRest.builder().build());
-        verify(taskRepository, times(1)).findByDigitalServiceUid(digitalServiceUid);
+        verify(taskRepository, times(1)).findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString());
         verifyNoMoreInteractions(outAiRecoRepository, outAiRecoMapper);
     }
 }
