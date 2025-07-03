@@ -1,5 +1,12 @@
 package com.soprasteria.g4it.backend.apiaiservice.business;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InfrastructureType;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InputEstimationLLMInference;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.LLMModelConfig;
+import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
 import com.soprasteria.g4it.backend.external.ecomindai.client.AiModelapiClient;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIConfigurationBO;
@@ -12,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,74 +43,78 @@ class AiServiceTest {
     }
 
     @Test
-    void testGetAIModelConfigurations() {
+    void testGetAIModelConfigurations() throws JsonProcessingException {
         // Given
         String json = """
-                [{"modelName":"llama3","parameters":"13b","framework":"llamacpp","quantization":"q2k"},{"modelName":"llama3","parameters":"8b","framework":"vllm","quantization":"none"},{"modelName":"llama3","parameters":"13b","framework":"vllm","quantization":"none"},{"modelName":"llama2","parameters":"13b","framework":"vllm","quantization":"none"}]
+                [{"modelName":"llama3","nbParameters":"13b","framework":"llamacpp","quantization":"q2k"},{"modelName":"llama3","nbParameters":"8b","framework":"vllm","quantization":"none"},{"modelName":"llama3","nbParameters":"13b","framework":"vllm","quantization":"none"},{"modelName":"llama2","nbParameters":"13b","framework":"vllm","quantization":"none"}]
                 """;
         String type ="LLM";
-        when(aiModelapiClient.getAiModelConfig(type)).thenReturn(json);
+
+        ObjectMapper objMap = new ObjectMapper();
+
+
+        when(aiModelapiClient.getAiModelConfig()).thenReturn( objMap.readValue(json, new TypeReference<List<LLMModelConfig>>() {}));
 
         // When
-        List<AIModelConfigBO> result = aiService.getAIModelConfigurations(type);
+        List<LLMModelConfig> result = aiService.getAIModelConfigurations(type);
 
         // Then
         assertEquals(4, result.size());
         assertEquals("llama3", result.getFirst().getModelName());
-        verify(aiModelapiClient, times(1)).getAiModelConfig(type);
+        verify(aiModelapiClient, times(1)).getAiModelConfig();
     }
 
     @Test
-    void testRunEstimation() {
+    void testRunEstimation() throws JsonProcessingException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
         // Given
-        AIConfigurationRest rest = AIConfigurationRest.builder().build();
-        rest.setModelName("llama3");
-        rest.setNbParameters("13b");
-        rest.setFramework("llamacpp");
-        rest.setQuantization("8bit0");
-        rest.setTotalGeneratedTokens(5000000L);
 
-        List<AIConfigurationRest> restList = List.of(rest);
+        InputEstimationLLMInference inputEstimation = new InputEstimationLLMInference();
+        inputEstimation.setRamSize(256);
+        inputEstimation.setNbGpu(1);
+        inputEstimation.setGpuMemory(24);
+        inputEstimation.setNbCpuCores(4);
+        inputEstimation.setInfrastructureType(InfrastructureType.SERVER_DC);
+        inputEstimation.setModelName("llama3");
+        inputEstimation.setNbParameters("13b");
+        inputEstimation.setFramework("llamacpp");
+        inputEstimation.setQuantization("8bit0");
+        inputEstimation.setTotalGeneratedTokens(5000000);
 
-        // BO équivalent (simulé)
-        AIConfigurationBO bo = AIConfigurationBO.builder().build();
-        bo.setModelName("llama3");
-        bo.setNbParameters("13b");
-        bo.setFramework("llamacpp");
-        bo.setQuantization("8bit0");
-        bo.setTotalGeneratedTokens(5000000L);
 
-        List<AIConfigurationBO> boList = List.of(bo);
 
-        String estimationJson = """
-        [
+    String estimationJson = """
+      {
+        "electricityConsumption": 14.85,
+        "runtime": 1322,
+        "recommendations": [
           {
-            "electricityConsumption": 14.85,
-            "runtime": 1322,
-            "recommendations": [
-              {
-                "type": "Quantified",
-                "topic": "⚡ Use the right framework !",
-                "example": "Using the framework vllm instead of llamacpp for some model can lead to a reduction of impact by",
-                "expectedReduction": "18%"
-              }
-            ]
+            "type": "Quantified",
+            "topic": "⚡ Use the right framework !",
+            "example": "Using the framework vllm instead of llamacpp for some model can lead to a reduction of impact by",
+            "expectedReduction": "18%"
           }
         ]
+      }
+    
     """;
 
-        when(aiConfigurationMapper.toAIConfigurationBO(restList)).thenReturn(boList);
-        when(aiModelapiClient.runEstimation("LLM", "INFERENCE", boList)).thenReturn(estimationJson);
+        OutputEstimation outputEstimation = objectMapper.readValue(estimationJson, OutputEstimation.class);
+
+
+        when(aiModelapiClient.runEstimation(inputEstimation)).thenReturn(outputEstimation);
 
         // When
-        List<AIServiceEstimationBO> result = aiService.runEstimation("LLM", "INFERENCE", restList);
+        //TODO fix with moked digital service
+        OutputEstimation result = aiService.runEstimation(inputEstimation);
 
         // Then
-        assertEquals(1, result.size());
-        assertEquals(14.85, result.getFirst().getElectricityConsumption(), 0.001);
-        assertEquals(1, result.getFirst().getRecommendations().size());
 
-        verify(aiConfigurationMapper).toAIConfigurationBO(restList);
-        verify(aiModelapiClient).runEstimation("LLM", "INFERENCE", boList);
+        assertEquals(BigDecimal.valueOf(14.85), result.getElectricityConsumption());
+
+        verify(aiModelapiClient).runEstimation(inputEstimation);
     }
 }

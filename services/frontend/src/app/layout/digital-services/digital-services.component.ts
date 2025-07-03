@@ -78,12 +78,6 @@ export class DigitalServicesComponent {
         this.global.setLoading(true);
         await this.retrieveDigitalServices();
         this.global.setLoading(false);
-        this.router.events.subscribe((event) => {
-            if (event instanceof NavigationEnd) {
-                this.retrieveDigitalServices();
-            }
-        });
-
         this.router.events
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((event) => {

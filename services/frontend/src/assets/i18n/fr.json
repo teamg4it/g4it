@@ -124,6 +124,7 @@
         "account-settings": "Paramètres du compte",
         "help-center": "Centre d'aide",
         "github-link": "Accéder à G4IT GitHub",
+        "boaviztapi-github-link": "Accéder à BoaviztAPI GitHub",
         "doc-link": "Aller à la documentation",
         "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
         "inventories": "Inventaires",
@@ -263,15 +264,19 @@
     },
     "digital-services-networks": {
         "new": "Nouveau Réseau",
+        "edit": "Édition Réseau",
         "networks": "Réseaux",
         "network": "Réseau",
         "add": "+ AJOUTER UN RÉSEAU",
         "id": "#",
+        "name": "Nom",
         "type": "Type",
         "typeCode": "Type",
         "yearly-go": "Quantité totale de Go échangés par an pour tous les utilisateurs",
         "table-yearly-go": "Quantité annuelle de Go échangés",
-        "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés"
+        "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés",
+        "network-name": "Nom du réseau",
+        "error.network-already-exists": "Le réseau existe déjà"
     },
     "digital-services-servers": {
         "Dedicated": "Dédié",

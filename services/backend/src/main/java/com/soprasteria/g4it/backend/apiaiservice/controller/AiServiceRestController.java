@@ -4,10 +4,7 @@ import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiModelConfigMapper;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiServiceEstimationMapper;
 import com.soprasteria.g4it.backend.server.gen.api.AiServiceApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIModelConfigRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AIServiceEstimationRest;
-import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +34,5 @@ public class AiServiceRestController implements AiServiceApiDelegate {
         );
     }
 
-    @Override
-    public ResponseEntity<List<AIServiceEstimationRest>> launchAIServiceEstimation(String type, String stage, List<@Valid AIConfigurationRest> aiConfigurationRest) {
-        return ResponseEntity.ok(aiServiceEstimationMapper.toAIServiceEstimationRest(aiService.runEstimation(type, stage, aiConfigurationRest)));
-    }
+
 }

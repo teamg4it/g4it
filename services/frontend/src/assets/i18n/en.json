@@ -125,6 +125,7 @@
         "account-settings": "Account settings",
         "help-center": "Help Center",
         "github-link": "Go to G4IT GitHub",
+        "boaviztapi-github-link": "Go to BoaviztAPI GitHub",
         "doc-link": "Go to the documentation",
         "useful-info-desc": "G4IT versions, business hours and support contact",
         "inventories": "Inventories",
@@ -266,15 +267,19 @@
     },
     "digital-services-networks": {
         "new": "New Network",
+        "edit": "Edit Network",
         "networks": "Networks",
         "network": "Network",
         "add": "+ ADD NETWORK",
         "id": "#",
+        "name": "Name",
         "type": "Type",
         "typeCode": "Type",
         "yearly-go": "Total quantity of GB exchanged by year for all users",
         "table-yearly-go": "Yearly quantity of GB exchanged",
-        "yearlyQuantityOfGbExchanged": "Yearly quantity of GB exchanged"
+        "yearlyQuantityOfGbExchanged": "Yearly quantity of GB exchanged",
+        "network-name": "Network Name",
+        "error.network-already-exists": "Network already exists"
     },
     "digital-services-servers": {
         "Dedicated": "Dedicated",

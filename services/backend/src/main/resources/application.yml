@@ -29,7 +29,7 @@ aimodelconfigapi:
 #AI Model Estimation configs
 aimodelestimationapi:
   version: 1.0
-  base-url: http://localhost:3001
+  base-url: http://localhost:3000
 
 
 g4it:
@@ -91,6 +91,7 @@ spring:
           time_zone: UTC
   liquibase:
     change-log: classpath:/db/changelog/greenitdb.changelog-master.yml
+    contexts: local
   security:
     oauth2:
       resourceserver:
