@@ -20,8 +20,13 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AllEvaluationStatusRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ConnectionCallback;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.CallableStatement;
+import java.sql.SQLWarning;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +51,11 @@ public class AdministratorActionsService {
     TaskRepository taskRepository;
     @Autowired
     RoleManagementService roleManagementService;
+    private final JdbcTemplate jdbcTemplate;
+
+    public AdministratorActionsService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public AllEvaluationStatusRest evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();
@@ -95,9 +105,70 @@ public class AdministratorActionsService {
         return AllEvaluationStatusRest.builder().response("success").build();
     }
 
-
+    /**
+     * Remove write access on Digital Service for all the
+     * non-admin users on DEMO organization
+     */
     public AllEvaluationStatusRest executeWriteRoleCleanupOnDemoOrg() {
         //call procedure to remove write access
         return roleManagementService.executeRoleCleanup();
+    }
+
+
+    /**
+     * Rename the randomly named terminals
+     */
+    public void renameTerminals() {
+        try {
+            log.info("START-- renaming the terminals");
+
+            jdbcTemplate.execute((ConnectionCallback<Void>) connection -> {
+                // Call the procedure
+                try (CallableStatement cs = connection.prepareCall("CALL rename_randomly_generated_terminal_name()")) {
+                    cs.execute();
+
+                    //  Log NOTICE messages
+                    SQLWarning warning = cs.getWarnings();
+                    while (warning != null) {
+                        log.info("Warning NOTICE: {}", warning.getMessage());
+                        warning = warning.getNextWarning();
+                    }
+                }
+                return null;
+            });
+            log.info("COMPLETED-- terminals renamed");
+        } catch (DataAccessException ex) {
+            log.error("Failed to rename terminals: {}", ex.getMessage());
+        }
+    }
+
+    /**
+     * Rename the randomly named networks
+     */
+    public AllEvaluationStatusRest renameNetworks() {
+        try {
+            log.info("START-- renaming the networks");
+
+            jdbcTemplate.execute((ConnectionCallback<Void>) connection -> {
+                // Call the procedure
+                try (CallableStatement cs = connection.prepareCall("CALL rename_randomly_generated_network_name()")) {
+                    cs.execute();
+
+                    //  Log NOTICE messages
+                    SQLWarning warning = cs.getWarnings();
+                    while (warning != null) {
+                        log.info("Warning NOTICE: {}", warning.getMessage());
+                        warning = warning.getNextWarning();
+                    }
+                }
+                return null;
+            });
+
+            log.info("COMPLETED-- networks renamed");
+            return AllEvaluationStatusRest.builder().response("success").build();
+        } catch (DataAccessException ex) {
+            log.error("Failed to rename networks: {}", ex.getMessage());
+            return AllEvaluationStatusRest.builder().response("error").build();
+        }
     }
 }

@@ -1,0 +1,213 @@
+openapi: 3.0.0
+info:
+  title: FastAPI
+  version: 0.1.0
+paths:
+  /estimate_llm_inference:
+    post:
+      summary: Launchestimation
+      description: Lance un calcul d'estimation des métriques d'impacts environnementaux d'un projet LLM sur sa phase d'inférence sur 1 an
+      operationId: launchEstimation_estimate_llm_inference_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InputEstimationLLMInference"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OutputEstimation"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /llm_configurations:
+    get:
+      summary: Get Llm Configurations
+      description: Récupère les configurations disponibles pour un modèle de type LLM
+      operationId: get_llm_configurations_llm_configurations_get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/LLMModelConfig"
+                type: array
+                title: Response Get Llm Configurations Llm Configurations Get
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    InfrastructureType:
+      type: string
+      enum:
+        - SERVER_DC
+        - LAPTOP
+        - DESKTOP
+      title: InfrastructureType
+    InputEstimationLLMInference:
+      properties:
+        modelName:
+          type: string
+          title: Modelname
+          description: Nom du modèle LLM
+        nbParameters:
+          type: string
+          title: Nbparameters
+          description: Nombre de paramètres (en milliards)
+        framework:
+          type: string
+          title: Framework
+          description: Nom du modèle utilisé
+        quantization:
+          type: string
+          title: Quantization
+          description: Méthode de quantization utilisée (none si pas de quantization)
+        totalGeneratedTokens:
+          type: integer
+          title: Totalgeneratedtokens
+          description: Nombre de tokens générés sur un an
+        infrastructureType:
+          $ref: "#/components/schemas/InfrastructureType"
+          description: Type d'infrastructure utilisée
+        nbCpuCores:
+          type: integer
+          title: Nbcpucores
+          description: Nombre de coeurs de CPU
+        nbGpu:
+          type: integer
+          title: Nbgpu
+          description: Nombre de GPUs
+        gpuMemory:
+          type: integer
+          title: Gpumemory
+          description: Taille de la mémoire GPU en Go
+        ramSize:
+          type: integer
+          title: Ramsize
+          description: Taille de la RAM en Go
+      type: object
+      required:
+        - modelName
+        - nbParameters
+        - framework
+        - quantization
+        - totalGeneratedTokens
+        - infrastructureType
+        - nbCpuCores
+        - nbGpu
+        - gpuMemory
+        - ramSize
+      title: InputEstimationLLMInference
+      description: Données d'entrée du calcul d'estimation de l'impact d'un LLM pour la phase d'inférence
+    LLMModelConfig:
+      properties:
+        modelName:
+          type: string
+          title: Modelname
+          description: Nom du modèle LLM utilisé
+        nbParameters:
+          type: string
+          title: Nbparameters
+          description: Nombre de paramètres (en milliards)
+        framework:
+          type: string
+          title: Framework
+          description: Nom du modèle utilisé
+        quantization:
+          type: string
+          title: Quantization
+          description: Méthode de quantization utilisée (none si pas de quantization)
+      type: object
+      required:
+        - modelName
+        - nbParameters
+        - framework
+        - quantization
+      title: LLMModelConfig
+      description: Configuration de LLM disponibles dans la base
+    OutputEstimation:
+      properties:
+        electricityConsumption:
+          type: number
+          title: Electricityconsumption
+          description: Consommation électrique totale (Wh)
+        runtime:
+          type: number
+          title: Runtime
+          description: Durée d'exécution totale (s)
+        recommendations:
+          items:
+            $ref: "#/components/schemas/Recommendation"
+          type: array
+          title: Recommendations
+          description: Liste des recommandations pour réduire l'impact
+      type: object
+      required:
+        - electricityConsumption
+        - runtime
+        - recommendations
+      title: OutputEstimation
+      description: "Données de sortie du calcul d'estimation de l'impact : electricité consommée, temps + recommandations"
+    Recommendation:
+      properties:
+        type:
+          type: string
+          title: Type
+          description: "Type de recommandation: General ou Specific"
+        topic:
+          type: string
+          title: Topic
+          description: Titre de la recommandation
+        example:
+          type: string
+          title: Example
+          description: Détail et exemple de la recommandation
+        expectedReduction:
+          type: string
+          title: Expectedreduction
+          description: Pourcentage de réduction attendu
+      type: object
+      required:
+        - type
+        - topic
+        - example
+        - expectedReduction
+      title: Recommendation
+      description: "Recommandations personalisées sur comment s'améliorer, en fonction des données d'entrées "
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError

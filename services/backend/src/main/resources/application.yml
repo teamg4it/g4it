@@ -21,6 +21,17 @@ boaviztapi:
   version: 1.3.10
   base-url: http://localhost:5000
 
+#AI Model configs
+aimodelconfigapi:
+  version: 1.0
+  base-url: http://localhost:3000
+
+#AI Model Estimation configs
+aimodelestimationapi:
+  version: 1.0
+  base-url: http://localhost:3000
+
+
 g4it:
   criteria: "Climate change, Particulate matter and respiratory inorganics, Ionising radiation, Acidification, Resource use (minerals and metals)"
   data:
@@ -80,6 +91,7 @@ spring:
           time_zone: UTC
   liquibase:
     change-log: classpath:/db/changelog/greenitdb.changelog-master.yml
+    contexts: local
   security:
     oauth2:
       resourceserver:
@@ -116,3 +128,6 @@ logging:
     org.hibernate: warn
     liquibase: warn
     com.zaxxer: warn
+
+ecomindaimodule:
+  enabled: true

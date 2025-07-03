@@ -47,6 +47,7 @@ class DigitalServiceServiceTest {
     final static String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
     final static String SUBSCRIBER = "subscriber";
     final static long User_ID = 1;
+    final static Boolean IS_AI = false;
 
     final static List<String> criteriaList = List.of("ionising-radiation", "climate-change");
 
@@ -93,7 +94,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
@@ -120,7 +121,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
@@ -145,7 +146,7 @@ class DigitalServiceServiceTest {
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.findByOrganization(linkedOrganization)).thenReturn(List.of(digitalService));
 
-        List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(ORGANIZATION_ID);
+        List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(ORGANIZATION_ID, IS_AI);
         assertThat(result).isEqualTo(List.of(digitalServiceBo));
 
         verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);

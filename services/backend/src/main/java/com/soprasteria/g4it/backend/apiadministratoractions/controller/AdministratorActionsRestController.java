@@ -1,7 +1,6 @@
 package com.soprasteria.g4it.backend.apiadministratoractions.controller;
 
 import com.soprasteria.g4it.backend.apiadministratoractions.business.AdministratorActionsService;
-import com.soprasteria.g4it.backend.apiadministratoractions.business.DsMigrationService;
 import com.soprasteria.g4it.backend.server.gen.api.AdministratorActionsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AllEvaluationStatusRest;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Service;
 public class AdministratorActionsRestController implements AdministratorActionsApiDelegate {
     @Autowired
     AdministratorActionsService administratorActionsService;
-    @Autowired
-    DsMigrationService dsMigrationService;
 
     /**
      * {@inheritDoc}
@@ -23,17 +20,12 @@ public class AdministratorActionsRestController implements AdministratorActionsA
     @Override
     public ResponseEntity<AllEvaluationStatusRest> doAdminActions() {
 
-        // Migration of digital services from DEMO workspace to new workspaces
-        return ResponseEntity.ok(dsMigrationService.migrateDemoDs());
+        //  Rename the randomly generated terminals
+        administratorActionsService.renameTerminals();
+
+        //  Rename the randomly generated networks
+        return ResponseEntity.ok(administratorActionsService.renameNetworks());
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<AllEvaluationStatusRest> removeWriteAccess() {
-
-      //  Remove write access for digital services on demo organizations
-        return ResponseEntity.ok(administratorActionsService.executeWriteRoleCleanupOnDemoOrg());
-    }
 }

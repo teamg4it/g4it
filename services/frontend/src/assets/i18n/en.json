@@ -28,9 +28,13 @@
         "calculate": "CALCULATE",
         "duplicate": "DUPLICATE",
         "add": "Add",
+        "attention": "Attention",
+        "error": "Error",
+        "success": "Success",
         "heading": "Heading",
         "subheading": "Subheading",
         "normal": "Normal",
+        "min": "must be greater than or equal to 1",
         "peopleeq": "People eq.",
         "peopleeq-min": "people. eq.",
         "no-data": "No results available",
@@ -122,10 +126,12 @@
         "account-settings": "Account settings",
         "help-center": "Help Center",
         "github-link": "Go to G4IT GitHub",
+        "boaviztapi-github-link": "Go to BoaviztAPI GitHub",
         "doc-link": "Go to the documentation",
         "useful-info-desc": "G4IT versions, business hours and support contact",
         "inventories": "Inventories",
         "digital-services": "Digital services",
+        "eco-mind-ai": "EcoMind AI (experimental)",
         "skip-to-main-content": "Skip to Main Content",
         "overgreen-logo": "Overgreen Logo",
         "soprasteria-logo": "Sopra Steria logo",
@@ -172,6 +178,8 @@
         "CloudService": "Cloud Services",
         "Network": "Networks",
         "visualize": "Visualize",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "AI Parameters",
         "lifecycle": "Lifecycle",
         "vm": "Vm",
         "country": "Country",
@@ -189,8 +197,58 @@
         "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}",
         "import": "Import"
     },
+    "eco-mind-ai": {
+        "headerForCreatedByMe": "CREATED BY ME ({{count}})",
+        "headerForSharedWithMe": "SHARED WITH ME ({{count}})",
+        "copyLink": "COPY LINK",
+        "not-found": "Digital service AI does not exist.",
+        "expired": "Digital service AI link is expired.",
+        "linkCopied": "LINK COPIED !",
+        "title": "My Digital Services AI - {{OrganizationName}}",
+        "page-title": "My Digital Services AI",
+        "add": "Evaluate New Service AI",
+        "empty-digital-services": "You do not have any digital service.",
+        "impacts": "IMPACTS",
+        "raw": "Raw value",
+        "peopleeq": "People eq.",
+        "Terminal": "Terminals",
+        "Server": "Non-Cloud Servers",
+        "CloudService": "Cloud Services",
+        "Network": "Networks",
+        "visualize": "Visualize",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "AI Parameters",
+        "lifecycle": "Lifecycle",
+        "vm": "Vm",
+        "country": "Country",
+        "type": "Type",
+        "creatorInfo": "Creator",
+        "membersInfo": "Members",
+        "popup": {
+            "delete-question": "Are you sure you want to delete the digital service AI",
+            "delete-text": "All information and associated footprint indicators will be definitely deleted.",
+            "delete-question-shared": "By removing the link to this digital service AI, you will no longer have access to it. Are you sure ?"
+        },
+        "return": "Return to my digital services AI list",
+        "choose-criteria": "Choose criteria for digital service AI {{digitalServiceName}}",
+        "delete-criteria": "Delete digital service AI {{digitalServiceName}}",
+        "unlink-digital-service": "Delete link with digital service AI {{digitalServiceName}}",
+
+        "ai-parameters": {
+            "success": "Parameters saved successfully",
+            "error": "Error while retrieving AI models",
+            "missing-fields": "Missing fields:",
+            "parameters-form": "Parameters Form:",
+            "infrastructure-form": "Infrastructure Form:",
+            "save-success": "Data saved successfully",
+            "save-error": "An error occurred while saving",
+            "service-id-missing": "Digital service ID not found",
+            "fill-all-fields": "Please fill in all fields and load both forms before saving"
+        }
+    },
     "digital-services-terminals": {
         "new": "New Device",
+        "edit": "Edit Device",
         "devices": "Devices",
         "device": "Device",
         "add": "+ ADD DEVICE",
@@ -198,25 +256,32 @@
         "type": "Type of device",
         "typeCode": "Type of device",
         "country": "Country",
+        "name": "Name",
         "nb-user": "Number of unique users",
         "numberOfUsers": "Number of unique users",
         "yearly-usage": "Average time spent per user per year",
         "hours": "hours",
         "table-yearly-usage": "Yearly usage time per user",
         "yearlyUsageTimePerUser": "Yearly usage time per user",
-        "lifespan": "Average device lifespan (years)"
+        "lifespan": "Average device lifespan (years)",
+        "error.terminal-already-exists": "Terminal already exists",
+        "terminal-name": "Terminal Name"
     },
     "digital-services-networks": {
         "new": "New Network",
+        "edit": "Edit Network",
         "networks": "Networks",
         "network": "Network",
         "add": "+ ADD NETWORK",
         "id": "#",
+        "name": "Name",
         "type": "Type",
         "typeCode": "Type",
         "yearly-go": "Total quantity of GB exchanged by year for all users",
         "table-yearly-go": "Yearly quantity of GB exchanged",
-        "yearlyQuantityOfGbExchanged": "Yearly quantity of GB exchanged"
+        "yearlyQuantityOfGbExchanged": "Yearly quantity of GB exchanged",
+        "network-name": "Network Name",
+        "error.network-already-exists": "Network already exists"
     },
     "digital-services-servers": {
         "Dedicated": "Dedicated",
@@ -279,6 +344,7 @@
     },
     "digital-services-cloud-services": {
         "new": "New Cloud Instance",
+        "edit": "Edit Cloud Instance",
         "cloud-services": "Cloud Services",
         "cloud-service": "Cloud Service",
         "add": "+ ADD CLOUD SERVICE",
@@ -293,7 +359,7 @@
         "instance": "Instance",
         "average-workload": "Average workload (% CPU usage)",
         "averageWorkload": "Average workload (% CPU usage)",
-        "annual-usage": "Annual usage duration (hours)",
+        "annual-usage": "Annual usage- duration (hours)",
         "annualUsage": "Annual usage duration (hours)",
         "hours": "hours",
         "quantity": "Quantity",
@@ -303,6 +369,36 @@
         "tooltip_average_workload": "Average workload",
         "tooltip_annual_usage": "Annual usage"
     },
+    "digital-services-ai-parameter": {
+        "devices": "Algorithm",
+        "device": "Algorithm",
+        "id": "#",
+        "model": "Modele details",
+        "parameter": "Parameters",
+        "framework": "Framework",
+        "quantization": "Quantization",
+        "stages": "Stages",
+        "inference": "Inference",
+        "fintuning": "Finetuning",
+        "numberOfUsers": "Nb of user per year",
+        "averageRequest": "Average nb of requests per year",
+        "averageToken": "Average nb of tokens genereted per request",
+        "totalTokenGenerate": "Total nb of genereted tokens"
+    },
+
+    "digital-services-ai-infrastructure": {
+        "type": "Type",
+        "cpu-cores": "CPU cores",
+        "gpu-count": "GPU count",
+        "gpu-memory": "GPU memory (GB)",
+        "ram-size": "RAM size (GB)",
+        "power-effectiveness": "Power effectiveness",
+        "datacenter-pue": "Datacenter PUE",
+        "complementary-pue": "Complementary PUE",
+        "energy-efficiency": "Energy efficiency",
+        "location": "Location"
+    },
+
     "welcome-page": {
         "title": "Welcome Page",
         "name": "Home",
@@ -319,6 +415,12 @@
         },
         "digital-service": {
             "title": "Digital Services",
+            "description": "Calculate the impact of a digital service involves three levels: the end-user terminals, the volume of data passing through the network, and the hosting infrastructures.",
+            "button": "Go to Service",
+            "button-disabled": "Ask for support"
+        },
+        "eco-mind-ai": {
+            "title": "EcoMind AI",
             "description": "Calculate the impact of a digital service involves three levels: the end-user terminals, the volume of data passing through the network, and the hosting infrastructures.",
             "button": "Go to Service",
             "button-disabled": "Ask for support"
@@ -561,6 +663,9 @@
             "title": "Towards the eco-design of your service",
             "content": "This graph represents the various environmental impacts attributed to your digital service for 1 year of operation. It takes into account the entire lifecycle of the equipments that enables your service to operate (from manufacturing to end of life) for all the criteria listed on the left side of the screen. <br> <br> ​It helps you understand where to start your analysis in order to effectively reduce the impact of your service. But beware: by seeking to reduce the impact of one criterion, you run the risk of transferring the impact to another criterion or another phase of the life cycle (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>eco-design principles</a>). One way of avoiding this pitfall is to demonstrate sobriety at all levels of your service. <br> <h3>​ A scale suited to multi-criteria analysis: the people equivalent. </h3>​ All graphs are expressed in 'people Eq': to understand this unit, imagine defining a fixed amount for each resident of the planet, corresponding to the planetary limits that must not be exceeded individually to guarantee the overall balance of the system. This theoretical fixed amount is obtained by dividing the maximum quantity of negative externalities allowed by the Earth system (as defined <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>in this technical report about consumption and consumer footprint</a>) by the number of people. <br> <br> ​This unit makes it possible to compare the criteria and target your eco-design action plan (see <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>eco-design definition</a>) on what really matters. <br> <br>​ To find out more about what's at stake: <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>check this report on the environmental impact of ICT</a>. <br> <br>​ To carry out an audit of your application, the Référentiel Général d'Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) is a great starting point."
         },
+        "global-vision-ai": {
+            "title": "How to do better"
+        },
         "terminal": {
             "title": "Analysis and ecoconception leverage",
             "content": "Here you are looking at the impact of the terminals using your digital service.​ <br> <br> The calculation method currently used as the reference in <a href='https://en.wikipedia.org/wiki/Life-cycle_assessment' target='_blank'>LCA</a> methods takes into account the type of equipment used, its location, and user journey times. ​<br> <br> The type of equipment on which the service is consumed has an influence on the impact at the manufacturing, distribution, and end-of-life stages: the larger and more complex the equipment, the greater its impact. To reduce the impact, you can make sure that your service runs on terminals with small screens, on older equipment (OS more than 5 years old, etc.) and with low performance; you will then be helping to reduce the renewal of equipment... and the digital divide. ​<br> <br> The location of users influences the impact of the service. It is directly linked to the methods used to produce the <a href='https://ourworldindata.org/electricity-mix' target='_blank'>electrical energy consumed when the service is in use</a>.​ <br> <br> Finally, you can optimise the user experience by eliminating functions that provide little or no value, which will also reduce the infrastructure required."
@@ -575,7 +680,7 @@
         },
         "server-lifecycle": {
             "title": "Analysis and ecoconception leverage",
-            "content": "Here is the distribution of your server impact according to its lifecycle step. ​<br> <br>In order to reduce the use’s impact, you need to reduce the amount of energy consumed by your server or VM. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a href='https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiSivi34pqBAxWAVaQEHUXMCAkQFnoECA8QAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FPower_usage_effectiveness&usg=AOvVaw2-B8wi_Zi1A27IGSjPYaEQ&opi=89978449' target='_blank'>PUE</a> and in a country with a less impacting electric mix – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>see table on the impact of electricity mixes</a>).​ ​<br> <br>For a compute server, the aim is to reduce the calculation’s quantity (by selecting <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see good practices in digital service ecodesign for software developers</a>).​ ​<br> <br>For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. ​​<br> <br>For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level. "
+            "content": "Here is the distribution of your server impact according to its lifecycle step. ​<br> <br>In order to reduce the use's impact, you need to reduce the amount of energy consumed by your server or VM. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a href='https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiSivi34pqBAxWAVaQEHUXMCAkQFnoECA8QAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FPower_usage_effectiveness&usg=AOvVaw2-B8wi_Zi1A27IGSjPYaEQ&opi=89978449' target='_blank'>PUE</a> and in a country with a less impacting electric mix – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>see table on the impact of electricity mixes</a>).​ ​<br> <br>For a compute server, the aim is to reduce the calculation's quantity (by selecting <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see good practices in digital service ecodesign for software developers</a>).​ ​<br> <br>For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. ​​<br> <br>For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level. "
         },
         "cloudservice": {
             "title": "Analysis and ecoconception leverage",
@@ -583,7 +688,7 @@
         },
         "cloud-lifecycle": {
             "title": "Analysis and ecoconception leverage",
-            "content": "Here is the distribution of your instance type impact according to its lifecycle step. ​<br/><br/> In order to reduce the use’s impact, you need to reduce the amount of energy consumed. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a target='_blank' href='https://en.wikipedia.org/wiki/Power_usage_effectiveness'>PUE</a> and in a country with a less impacting electric mix – <a target='_blank' href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md'>see table on the impact of electricity mixes</a>). <br/><br/> For a compute server, the aim is to reduce the calculation’s quantity (by selecting <a target='_blank' href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see more</a>).​ <br/><br/> For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. <br/><br/> For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level."
+            "content": "Here is the distribution of your instance type impact according to its lifecycle step. ​<br/><br/> In order to reduce the use's impact, you need to reduce the amount of energy consumed. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a target='_blank' href='https://en.wikipedia.org/wiki/Power_usage_effectiveness'>PUE</a> and in a country with a less impacting electric mix – <a target='_blank' href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md'>see table on the impact of electricity mixes</a>). <br/><br/> For a compute server, the aim is to reduce the calculation's quantity (by selecting <a target='_blank' href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see more</a>).​ <br/><br/> For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. <br/><br/> For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level."
         }
     },
     "acvStep": {
@@ -736,6 +841,7 @@
             "access": "Access",
             "is-module": "Module Information System",
             "ds-module": "Module Digital service",
+            "ecomind-module": "Module EcoMind",
             "role": "Role",
             "actions": "Actions",
             "add": "ADD TO ORGANIZATION",

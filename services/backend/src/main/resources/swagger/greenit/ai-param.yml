@@ -1,0 +1,92 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - AI-PARAM
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: ai-parameter
+    description: Endpoint for ai-parameter
+
+paths:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/ai-parameter-input:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+    post:
+      tags:
+        - ai-parameter
+      summary: Create API POST for ai parameters
+      x-custom-role: "hasRole('ROLE_ECO_MIND_AI_WRITE')"
+      operationId: createAiParameter
+
+      requestBody:
+        description: ai parameter details to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiParameterRest"
+      responses:
+        '201':
+          description: Return the ai parameter created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiParameterRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+          
+    get:
+      tags:
+        - ai-parameter
+      summary: Get existing ai parameters
+      x-custom-role: "hasRole('ROLE_ECO_MIND_AI_READ')"
+      operationId: getAiParameter
+      responses:
+        '200':
+          description: AI parameter fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiParameterRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: AI parameter not found
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - ai-parameter
+      summary: Update existing ai parameters
+      x-custom-role: "hasRole('ROLE_ECO_MIND_AI_WRITE')"
+      operationId: updateAiParameter
+      requestBody:
+        description: ai parameter details to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiParameterRest"
+      responses:
+        '200':
+          description: AI parameter updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiParameterRest"
+        '400':
+          description: Invalid input
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: AI parameter not found
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+
