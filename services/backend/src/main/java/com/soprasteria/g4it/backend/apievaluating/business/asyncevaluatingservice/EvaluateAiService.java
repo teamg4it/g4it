@@ -13,8 +13,6 @@ import com.google.common.collect.HashBiMap;
 import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
-import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
@@ -44,9 +42,6 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.external.ecomindai.model.AIConfigurationBO;
-import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
 import lombok.extern.slf4j.Slf4j;
@@ -90,12 +85,6 @@ public class EvaluateAiService {
 
     @Autowired
     AiService aiService;
-
-    @Autowired
-    AiConfigurationMapper aiConfigurationMapper;
-
-    @Autowired
-    DigitalServiceRepository digitalServiceRepository;
 
     @Autowired
     InAiInfrastructureRepository inAiInfrastructureRepository;
@@ -147,7 +136,7 @@ public class EvaluateAiService {
         InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
 
         if (inAiInfrastructure == null) {
-            throw new G4itRestException("404", String.format("the ai parameter doesn't exist for digital service : %s", context.getDigitalServiceUid()));
+            throw new G4itRestException("404", String.format("the ai infrastructure doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
 
         // Get the data center
@@ -170,7 +159,7 @@ public class EvaluateAiService {
                 datacenters.size(), physicalEquipments.size(), virtualEquipments.size());
 
         // call Ecomind with the data
-        OutputEstimation outputEstimation = evaluateEcomind(inAiParameters, inAiInfrastructure,physicalEquipments.getFirst());
+        OutputEstimation outputEstimation = evaluateEcomind(inAiParameters, inAiInfrastructure, physicalEquipments.getFirst());
 
         // save the result of the call in db
         InPhysicalEquipment inPhysicalEquipment = physicalEquipments.getFirst();
@@ -337,7 +326,7 @@ public class EvaluateAiService {
 
     }
 
-    private OutputEstimation evaluateEcomind(InAiParameter inAiParameter, InAiInfrastructure inAiInfrastructure, InPhysicalEquipment inPhysicalEquipment){
+    private OutputEstimation evaluateEcomind(InAiParameter inAiParameter, InAiInfrastructure inAiInfrastructure, InPhysicalEquipment inPhysicalEquipment) {
 
         InputEstimationLLMInference inputEstimationLLMInference = new InputEstimationLLMInference();
         inputEstimationLLMInference.setFramework(inAiParameter.getFramework());
