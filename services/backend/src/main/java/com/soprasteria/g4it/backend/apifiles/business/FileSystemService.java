@@ -116,7 +116,7 @@ public class FileSystemService {
     public List<FileDescriptionRest> listTemplatesFiles() throws IOException {
         return fileDescriptionRestMapper.toDto(
                 fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
-                        .listFiles(FileFolder.TEMPLATE)
+                        .listFiles(FileFolder.IS_TEMPLATE)
         );
     }
 
@@ -151,7 +151,7 @@ public class FileSystemService {
         final List<String> result = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
-                result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i), isInventory));
+            result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i), isInventory));
         }
 
         return result;

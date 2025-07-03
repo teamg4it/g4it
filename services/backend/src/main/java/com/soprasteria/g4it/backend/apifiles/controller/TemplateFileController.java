@@ -50,9 +50,9 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
     public ResponseEntity<Resource> downloadTemplatesFile(String subscriber,
                                                           Long organizationId,
                                                           String name) {
-        final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_ORGANIZATION), FileFolder.TEMPLATE.getFolderName(), name);
+        final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_ORGANIZATION), FileFolder.IS_TEMPLATE.getFolderName(), name);
         try {
-            InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_SUBSCRIBER, Constants.INTERNAL_ORGANIZATION, FileFolder.TEMPLATE, name);
+            InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_SUBSCRIBER, Constants.INTERNAL_ORGANIZATION, FileFolder.IS_TEMPLATE, name);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (BlobStorageException e) {
             if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {
