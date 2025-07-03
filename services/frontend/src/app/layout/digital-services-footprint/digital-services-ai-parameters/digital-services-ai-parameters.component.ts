@@ -127,6 +127,24 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                             selectedFramework,
                         );
                     });
+                this.terminalsForm
+                    .get("quantization")
+                    ?.valueChanges.subscribe((selectedQuantization) => {
+                        if (!selectedQuantization) {
+                            return;
+                        }
+                        const selectedModel = this.terminalsForm.get("modelName")?.value;
+                        const selectedParameter =
+                            this.terminalsForm.get("nbParameters")?.value;
+                        const selectedFramework =
+                            this.terminalsForm.get("framework")?.value;
+                        this.updateDependentFields(
+                            selectedModel,
+                            selectedParameter,
+                            selectedFramework,
+                            selectedQuantization,
+                        );
+                    });
             },
             error: (err: any) => {
                 this.messageService.add({
@@ -152,6 +170,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                             data.modelName,
                             data.nbParameters,
                             data.framework,
+                            data.quantization,
                         );
                         this.dataParameter = data;
                     }
@@ -222,6 +241,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         modelName?: string,
         selectedParameter?: string,
         selectedFramework?: string,
+        selectedQuantization?: string,
     ): void {
         if (!modelName) return;
 
@@ -261,10 +281,15 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 this.quantizationOptions = Array.from(
                     new Set(filteredByFramework.map((m) => m.quantization)),
                 ).map((q) => ({ label: q, value: q }));
-
-                if (this.quantizationOptions.length > 0) {
+                if (this.quantizationOptions.length > 0 && !selectedQuantization) {
                     this.terminalsForm.patchValue({
                         quantization: this.quantizationOptions[0].value,
+                    });
+                }
+
+                if (selectedQuantization) {
+                    this.terminalsForm.patchValue({
+                        quantization: selectedQuantization,
                     });
                 }
             }
