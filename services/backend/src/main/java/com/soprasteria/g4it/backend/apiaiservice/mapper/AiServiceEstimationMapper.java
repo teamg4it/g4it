@@ -1,7 +1,6 @@
 package com.soprasteria.g4it.backend.apiaiservice.mapper;
 
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AIModelConfigRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIServiceEstimationRest;
 import org.mapstruct.Mapper;
 

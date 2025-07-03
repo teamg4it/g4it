@@ -29,13 +29,13 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     typesOptions: TerminalsType[] = [];
 
     constructor(
-        private fb: FormBuilder,
-        private messageService: MessageService,
-        private aiFormsStore: AIFormsStore,
-        private digitalServicesAiData: DigitalServicesAiDataService,
-        private translate: TranslateService,
-        private digitalServicesDataService: DigitalServicesDataService,
-        private route: ActivatedRoute,
+        private readonly fb: FormBuilder,
+        private readonly messageService: MessageService,
+        private readonly aiFormsStore: AIFormsStore,
+        private readonly digitalServicesAiData: DigitalServicesAiDataService,
+        private readonly translate: TranslateService,
+        private readonly digitalServicesDataService: DigitalServicesDataService,
+        private readonly route: ActivatedRoute,
     ) {}
 
     async ngOnInit() {
@@ -91,7 +91,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
             });
         } else {
             const data = this.aiFormsStore.getInfrastructureFormData();
-            this.infrastructureForm.patchValue(data ? data : defaultData);
+            this.infrastructureForm.patchValue(data ?? defaultData);
         }
 
         // Save data whenever changes are made
@@ -123,26 +123,28 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     }
 
     async loadCountries() {
-        this.digitalServicesAiData.getBoaviztapiCountryMap().subscribe(
-            (countries: MapString) => {
+        this.digitalServicesAiData.getBoaviztapiCountryMap().subscribe({
+            next: (countries: MapString) => {
                 this.locationOptions = Object.entries(countries).map(([name, code]) => ({
                     label: name,
                     value: name,
                 }));
             },
-            (error) => {
+            error: (err) => {
                 this.messageService.add({
                     severity: "error",
                     summary: this.translate.instant("common.error"),
                     detail: "Unable to load country list",
                 });
             },
-        );
+        });
         const referentials = await lastValueFrom(
             this.digitalServicesAiData.getEcomindReferential(),
         );
 
-        this.typesOptions = referentials.sort((a, b) => a.value.localeCompare(b.value));
+        this.typesOptions = [...referentials].sort((a, b) =>
+            a.value.localeCompare(b.value),
+        );
     }
 
     ngOnDestroy(): void {
