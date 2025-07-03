@@ -26,13 +26,13 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     dataParameter: any;
 
     constructor(
-        private fb: FormBuilder,
-        private digitalServicesDataService: DigitalServicesDataService,
-        private messageService: MessageService,
-        private aiFormsStore: AIFormsStore,
-        private translate: TranslateService,
-        private route: ActivatedRoute,
-        private digitalServicesAiData: DigitalServicesAiDataService,
+        private readonly fb: FormBuilder,
+        private readonly digitalServicesDataService: DigitalServicesDataService,
+        private readonly messageService: MessageService,
+        private readonly aiFormsStore: AIFormsStore,
+        private readonly translate: TranslateService,
+        private readonly route: ActivatedRoute,
+        private readonly digitalServicesAiData: DigitalServicesAiDataService,
     ) {}
 
     ngOnInit(): void {
@@ -70,9 +70,9 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     // Save default values in the store
                     const defaultData = {
                         modelName: defaultModel,
-                        nbParameters: this.parameterOptions[0]?.value || "",
-                        framework: this.frameworkOptions[0]?.value || "",
-                        quantization: this.quantizationOptions[0]?.value || "",
+                        nbParameters: this.parameterOptions[0]?.value ?? "",
+                        framework: this.frameworkOptions[0]?.value ?? "",
+                        quantization: this.quantizationOptions[0]?.value ?? "",
                         isInference: true,
                         isFinetuning: false,
                         numberUserYear: 0,
