@@ -135,11 +135,12 @@
                 <div class="form-row">
                     <!-- number of users -->
                     <div class="label-input-div-form">
-                        <label for="numberOfUsers">{{
+                        <label for="nb-user-year">{{
                             "digital-services-ai-parameter.numberOfUsers" | translate
                         }}</label>
                         <p-inputNumber
                             formControlName="numberUserYear"
+                            inputId="nb-user-year"
                             [min]="0"
                             mode="decimal"
                         ></p-inputNumber>
@@ -159,11 +160,12 @@
 
                     <!-- average request -->
                     <div class="label-input-div-form">
-                        <label for="averageRequest">{{
+                        <label for="average-request">{{
                             "digital-services-ai-parameter.averageRequest" | translate
                         }}</label>
                         <p-inputNumber
                             formControlName="averageNumberRequest"
+                            inputId="average-request"
                             [min]="0"
                             mode="decimal"
                         ></p-inputNumber>
@@ -183,11 +185,12 @@
 
                     <!-- average token -->
                     <div class="label-input-div-form">
-                        <label for="averageToken">{{
+                        <label for="average-number-token">{{
                             "digital-services-ai-parameter.averageToken" | translate
                         }}</label>
                         <p-inputNumber
                             formControlName="averageNumberToken"
+                            inputId="average-number-token"
                             [min]="0"
                             mode="decimal"
                         ></p-inputNumber>
@@ -205,11 +208,12 @@
 
                     <!-- total token generated -->
                     <div class="label-input-div-form">
-                        <label for="totalTokenGenerate">{{
+                        <label for="total-generated-tokens">{{
                             "digital-services-ai-parameter.totalTokenGenerate" | translate
                         }}</label>
                         <p-inputNumber
                             formControlName="totalGeneratedTokens"
+                            inputId="total-generated-tokens"
                             mode="decimal"
                         ></p-inputNumber>
                     </div>
