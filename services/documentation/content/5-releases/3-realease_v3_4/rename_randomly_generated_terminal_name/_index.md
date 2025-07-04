@@ -1,5 +1,5 @@
 ---
-title: "Rename terminal with randomly generated name"
+title: "Rename randomly generated terminal name"
 description: "How to rename all the terminals with randomly generated name to Terminal {number} format"
 date: 2025-06-12T14:28:06+01:00
 weight: 3
