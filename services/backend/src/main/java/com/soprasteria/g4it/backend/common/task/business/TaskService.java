@@ -78,7 +78,7 @@ public class TaskService {
 
         Task task = taskRepository.findByDigitalServiceUid(digitalService.getUid())
                 .orElseGet(() -> Task.builder()
-                        .digitalServiceUid(digitalService.getUid())
+                        .digitalService(digitalService)
                         .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
                         .createdBy(user)
                         .build());

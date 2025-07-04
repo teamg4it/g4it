@@ -153,16 +153,18 @@ public class LoadInputFilesService {
         return task;
     }
 
+
+
     /**
      *
-     * @param subscriber
-     * @param organizationId
-     * @param digitalServiceUid
-     * @param datacenters
-     * @param physicalEquipments
-     * @param virtualEquipments
-     * @return
-     */
+     * @param subscriber         the subscriber
+     * @param organizationId     the organization id
+     * @param digitalServiceUid the dig
+     * @param datacenters        the datacenter files
+     * @param physicalEquipments the physical equipment files
+     * @param virtualEquipments  the virtual equipment files
+     * @return the Task created
+     * */
     public Task loadDigitalServiceFiles(final String subscriber,
                           final Long organizationId,
                           final String digitalServiceUid,
@@ -171,6 +173,8 @@ public class LoadInputFilesService {
                           final List<MultipartFile> virtualEquipments) {
 
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
+
 
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
         if (physicalEquipments != null) allFiles.put(FileType.EQUIPEMENT_PHYSIQUE, physicalEquipments);
@@ -178,7 +182,7 @@ public class LoadInputFilesService {
 
         if (allFiles.isEmpty()) return new Task();
 
-        List<Task> tasks = taskRepository.findByDigitalServiceUidAndStatusAndType(digitalServiceUid, TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
+        List<Task> tasks = taskRepository.findByDigitalServiceAndStatusAndType(digitalService, TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
         if (!tasks.isEmpty()) {
             throw new G4itRestException("500", "task.already.running");
         }
@@ -215,7 +219,7 @@ public class LoadInputFilesService {
                 .progressPercentage("0%")
                 .status(TaskStatus.TO_START.toString())
                 .type(TaskType.LOADING.toString())
-                .digitalServiceUid(digitalServiceUid)
+                .digitalService(digitalService)
                 .filenames(filenames)
                 .createdBy(user)
                 .build();
@@ -249,19 +253,36 @@ public class LoadInputFilesService {
                     task.setDetails(new ArrayList<>());
                     task.setProgressPercentage("0%");
                     taskRepository.save(task);
+                    Context context;
 
                     final Inventory inventory = task.getInventory();
-                    final Organization organization = inventory.getOrganization();
-                    final Context context = Context.builder()
-                            .subscriber(organization.getSubscriber().getName())
-                            .organizationId(organization.getId())
-                            .organizationName(organization.getName())
-                            .inventoryId(task.getInventory().getId())
-                            .locale(Locale.getDefault())
-                            .datetime(now)
-                            .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
-                            .hasApplications(inventory.getApplicationCount() > 0)
-                            .build();
+                    if(inventory != null) {
+                        final Organization organization = inventory.getOrganization();
+                        context = Context.builder()
+                                .subscriber(organization.getSubscriber().getName())
+                                .organizationId(organization.getId())
+                                .organizationName(organization.getName())
+                                .inventoryId(task.getInventory().getId())
+                                .locale(Locale.getDefault())
+                                .datetime(now)
+                                .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
+                                .hasApplications(inventory.getApplicationCount() > 0)
+                                .build();
+                    }
+                    else{
+                        DigitalService digitalService =  task.getDigitalService();
+                        Organization organization = digitalService.getOrganization();
+                        context = Context.builder()
+                                .subscriber(organization.getSubscriber().getName())
+                                .organizationId(organization.getId())
+                                .organizationName(organization.getName())
+                                .digitalServiceUid(task.getDigitalService().getUid())
+                                .locale(Locale.getDefault())
+                                .datetime(now)
+                                .hasVirtualEquipments(inVirtualEquipmentRepository.countByDigitalServiceUid(task.getDigitalService().getUid()) > 0)
+                                .hasApplications(false)
+                                .build(); 
+                    }
 
                     log.warn("Restart task {} with taskId={}", TaskType.LOADING, task.getId());
                     taskExecutor.execute(new BackgroundTask(

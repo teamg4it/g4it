@@ -183,7 +183,7 @@ public class EvaluatingService {
                 .progressPercentage("0%")
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
-                .digitalServiceUid(digitalService.getUid())
+                .digitalService(digitalService)
                 .criteria(criteriaToSet)
                 .createdBy(user)
                 .build();
@@ -280,8 +280,9 @@ public class EvaluatingService {
      */
     private void manageDigitalServiceTasks(String subscriber, Long organizationId, String digitalServiceUid) {
 
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
         // clean old tasks
-        taskRepository.findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
+        taskRepository.findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
                 .stream()
                 .sorted(Comparator.comparing(Task::getId).reversed())
                 .skip(2)
