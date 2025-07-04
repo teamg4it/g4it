@@ -1,5 +1,5 @@
 ---
-title: 'Technical architecture'
+title: 'Ecomind architecture'
 weight: 10
 ---
 ### Overview
