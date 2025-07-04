@@ -115,7 +115,7 @@ public class FileSystemService {
     @Cacheable("listTemplatesFiles")
     public List<FileDescriptionRest> listTemplatesFiles(String module) throws IOException {
 
-      if(FileFolder.DS_TEMPLATE.toString().equals(module)){
+      if(FileFolder.DS_TEMPLATE.getFolderName().equals(module)){
       return fileDescriptionRestMapper.toDto(
             fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
                     .listFiles(FileFolder.DS_TEMPLATE)

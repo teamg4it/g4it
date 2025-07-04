@@ -50,7 +50,7 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
     public ResponseEntity<Resource> downloadTemplatesFile(String subscriber,
                                                           Long organizationId,
                                                           String name, final String module) {
-        FileFolder templateFolder =  FileFolder.IS_TEMPLATE.toString().equals(module) ? FileFolder.IS_TEMPLATE : FileFolder.DS_TEMPLATE;
+        FileFolder templateFolder =  FileFolder.IS_TEMPLATE.getFolderName().equals(module) ? FileFolder.IS_TEMPLATE : FileFolder.DS_TEMPLATE;
         final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_ORGANIZATION), templateFolder.getFolderName(), name);
         try {
             InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_SUBSCRIBER, Constants.INTERNAL_ORGANIZATION, templateFolder, name);
