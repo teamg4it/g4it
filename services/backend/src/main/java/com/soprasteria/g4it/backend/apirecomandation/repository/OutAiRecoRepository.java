@@ -1,7 +1,5 @@
 package com.soprasteria.g4it.backend.apirecomandation.repository;
 
-import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
-
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

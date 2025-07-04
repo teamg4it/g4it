@@ -91,6 +91,72 @@ class DigitalServiceReferentialServiceTest {
     }
 
     @Test
+    void shouldGetEcomindDeviceType() {
+        // Given
+        String reference = "ECO-001";
+        DeviceTypeRef mockDeviceTypeRef = DeviceTypeRef.builder().build();
+
+        when(deviceTypeRefRepository.findByReferenceAndCompatibleEcomind(reference, true))
+                .thenReturn(Optional.of(mockDeviceTypeRef));
+
+        // When
+        DeviceTypeRef result = digitalServiceReferentialService.getEcomindDeviceType(reference);
+
+        // Then
+        assertThat(result).isNotNull().isEqualTo(mockDeviceTypeRef);
+        verify(deviceTypeRefRepository, times(1)).findByReferenceAndCompatibleEcomind(reference, true);
+    }
+
+    @Test
+    void shouldGetEcomindDeviceType_whenTypeNotExist() {
+        // Given
+        String reference = "UNKNOWN-REF";
+
+        when(deviceTypeRefRepository.findByReferenceAndCompatibleEcomind(reference, true))
+                .thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> digitalServiceReferentialService.getEcomindDeviceType(reference))
+                .isInstanceOf(InvalidReferentialException.class)
+                .extracting("referentialInErrorCode").isEqualTo("terminal.type.code");
+
+        verify(deviceTypeRefRepository, times(1)).findByReferenceAndCompatibleEcomind(reference, true);
+    }
+
+    @Test
+    void shouldGetAllEcomindDeviceTypes() {
+        // Given
+        List<DeviceTypeRef> mockEntities = List.of(DeviceTypeRef.builder().build());
+        List<DeviceTypeBO> mockBOs = List.of(DeviceTypeBO.builder().build());
+
+        when(deviceTypeRefRepository.findByCompatibleEcomind(true)).thenReturn(mockEntities);
+        when(digitalServiceReferentialMapper.toDeviceTypeBusinessObject(mockEntities)).thenReturn(mockBOs);
+
+        // When
+        List<DeviceTypeBO> result = digitalServiceReferentialService.getEcomindDeviceType();
+
+        // Then
+        assertThat(result).hasSize(1).isEqualTo(mockBOs);
+        verify(deviceTypeRefRepository, times(1)).findByCompatibleEcomind(true);
+        verify(digitalServiceReferentialMapper, times(1)).toDeviceTypeBusinessObject(mockEntities);
+    }
+
+    @Test
+    void shouldReturnEmptyList_whenNoEcomindDeviceTypeFound() {
+        // Given
+        when(deviceTypeRefRepository.findByCompatibleEcomind(true)).thenReturn(List.of());
+        when(digitalServiceReferentialMapper.toDeviceTypeBusinessObject(List.of())).thenReturn(List.of());
+
+        // When
+        List<DeviceTypeBO> result = digitalServiceReferentialService.getEcomindDeviceType();
+
+        // Then
+        assertThat(result).isEmpty();
+        verify(deviceTypeRefRepository, times(1)).findByCompatibleEcomind(true);
+        verify(digitalServiceReferentialMapper, times(1)).toDeviceTypeBusinessObject(List.of());
+    }
+
+    @Test
     void shouldGetCountry() {
         when(referentialGetService.getCountries(null)).thenReturn(List.of("FRANCE"));
 
