@@ -4,8 +4,6 @@ description: 'Get to know the different conditions and roles needed to have acce
 weight: 10
 ---
 
-## The existing roles of Ecomind on G4IT
-
 There are 3 different conditions for a user to have access to Ecomind on G4IT : 
 
 ### Global Ecomind module activation
@@ -23,8 +21,6 @@ You can check [how to enable Ecomind module for a subscriber](../../../1-getting
 - If the global Ecomind module is set to true and Ecomind is set to true for a subscriber, the access will depend on the user's roles. A super admin has access to Ecomind.
 
 ### Ecomind module roles for a particular user
-
-You can check [new user's Ecomind roles](../backend/db/ecomind_roles_management/_index.md) to have a look at new Ecomind roles.
 
 - If the global Ecomind module is set to true, if Ecomind is set to true for a subscriber and if a user has not the role "ROLE_ECO_MIND_AI_READ" or "ROLE_ECO_MIND_AI_WRITE" then he has no access to Ecomind
 

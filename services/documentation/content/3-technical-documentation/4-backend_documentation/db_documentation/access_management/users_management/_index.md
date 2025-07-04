@@ -155,6 +155,24 @@ erDiagram
 #### Primary Key 
 
  - id
+#### Role values
+
+| Role Name | Description                                                                                                                                             |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+|ROLE_INVENTORY_READ| right to access inventories tab, can display equipment and application pages and export inventory result|
+|ROLE_INVENTORY_WRITE| ROLE_INVENTORY_READ + right to create, modify and delete an inventory|
+|ROLE_DIGITAL_SERVICE_READ| right to access digital services tab, can display digital service pages and visualize calculation result|
+|ROLE_DIGITAL_SERVICE_WRITE| ROLE_DIGITAL_SERVICE_READ + right to create, modify and delete a digital service and right to launch a calculation and export its result|
+|ROLE_SUBSCRIBER_ADMINISTRATOR| right to manage all organizations associated with the subscriber to whom the user is associated (via admin module)|
+|ROLE_ORGANIZATION_ADMINISTRATOR| right to manage users access on this organization (via admin module)|
+
+New roles following the addition of Ecomind to G4IT : 
+
+| Role Name | Description                                                                                                                                             |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+|ROLE_ECO_MIND_AI_READ| right to access ecomind tab (if module globally enabled and enable for subscriber aswell), can display forms, visualize calculation result and export it|
+|ROLE_ECO_MIND_AI_WRITE| ROLE_ECO_MIND_AI_READ + right to create new ai digital service, edit forms and launch a calculation|
+
 {{% /expand %}}
 ### g4it_organization 
 

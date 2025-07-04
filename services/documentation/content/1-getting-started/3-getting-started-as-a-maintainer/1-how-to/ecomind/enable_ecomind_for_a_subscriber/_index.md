@@ -10,6 +10,12 @@ By default, Ecomind module is disabled for all subscribers, so it is not accessi
 
 You have to enable it manually for each subscriber.
 
+To do so, a new column has been added to the **g4it_subscriber** table.
+
+This column is called **ecomindai** and is false by default. This column can only be edited via the database.
+
+![The ecomindai column](images/ecomindai.png)
+
 ### How to enable Ecomind for a subscriber ?
 
 To enable Ecomind for a subscriber you have to do it manually via the database.
