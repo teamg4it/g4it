@@ -18,6 +18,8 @@ paths:
       description: Get template files and data model information
       operationId: getTemplateFiles
       x-custom-role: "hasRole('INVENTORY_READ') OR hasRole('DIGITAL_SERVICE_READ')"
+      parameters:
+        - $ref: '#/components/parameters/moduleQueryParam'
       tags:
         - template-file-system
       responses:
@@ -45,6 +47,8 @@ paths:
       description: Endpoint to retrieve template file in storage.
       operationId: downloadTemplatesFile
       x-custom-role: "hasRole('INVENTORY_READ') OR hasRole('DIGITAL_SERVICE_READ')"
+      parameters:
+        - $ref: '#/components/parameters/moduleQueryParam'
       tags:
         - template-file-system
       responses:

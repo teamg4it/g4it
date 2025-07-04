@@ -16,7 +16,8 @@ public enum FileFolder {
     OUTPUT("output"),
     WORK("work"),
     EXPORT("export"),
-    IS_TEMPLATE("is_template");
+    IS_TEMPLATE("is_template"),
+    DS_TEMPLATE("ds_template");
 
     @Getter
     private final String folderName;
