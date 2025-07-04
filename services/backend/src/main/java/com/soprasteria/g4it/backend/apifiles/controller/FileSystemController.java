@@ -47,24 +47,6 @@ public class FileSystemController implements FileSystemApiDelegate {
     private FileSystemService fileSystemService;
 
     /**
-     * InventoryService
-     */
-    @Autowired
-    private InventoryService inventoryService;
-
-    /**
-     * InventoryRepository
-     */
-    @Autowired
-    private InventoryRepository inventoryRepository;
-
-    /**
-     * Task repository
-     */
-    @Autowired
-    private TaskRepository taskRepository;
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -84,7 +66,6 @@ public class FileSystemController implements FileSystemApiDelegate {
     @Override
     public ResponseEntity<Resource> downloadResultsFile(@PathVariable final String subscriber,
                                                         @PathVariable final Long organization,
-                                                        @PathVariable final Long inventoryId,
                                                         @PathVariable final String taskId) {
 
         String filename = String.join("/", taskId, Constants.REJECTED_FILES_ZIP);

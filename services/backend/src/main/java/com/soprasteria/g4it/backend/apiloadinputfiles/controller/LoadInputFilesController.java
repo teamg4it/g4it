@@ -57,7 +57,7 @@ public class LoadInputFilesController implements LoadingFilesApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<TaskIdRest> launchloadInputFilesDigitalService(String subscriber,
+    public ResponseEntity<TaskIdRest> launchLoadInputFilesDigitalService(String subscriber,
                                                                          Long organization,
                                                                          String  digitalServiceUid,
                                                                          String acceptLanguage,

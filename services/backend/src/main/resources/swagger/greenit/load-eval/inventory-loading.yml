@@ -80,7 +80,7 @@ paths:
           type: string
     post:
       summary: Launch loading batch for digital service
-      operationId: launchloadInputFilesDigitalService
+      operationId: launchLoadInputFilesDigitalService
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
       tags:
         - loading-files
