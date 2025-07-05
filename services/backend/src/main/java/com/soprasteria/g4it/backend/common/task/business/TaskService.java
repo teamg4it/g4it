@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.common.task.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
@@ -37,6 +38,8 @@ public class TaskService {
     TaskRepository taskRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    DigitalServiceRepository digitalServiceRepository;
 
     @Autowired
     TaskMapper taskMapper;
@@ -76,7 +79,7 @@ public class TaskService {
 
         User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
 
-        Task task = taskRepository.findByDigitalServiceUid(digitalService.getUid())
+        Task task = taskRepository.findByDigitalService(digitalService)
                 .orElseGet(() -> Task.builder()
                         .digitalService(digitalService)
                         .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
@@ -99,7 +102,9 @@ public class TaskService {
      * @return the task
      */
     public Optional<Task> getTask(String digitalServiceUid) {
-        return taskRepository.findByDigitalServiceUid(digitalServiceUid);
+
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
+        return taskRepository.findByDigitalService(digitalService);
     }
 
     /**

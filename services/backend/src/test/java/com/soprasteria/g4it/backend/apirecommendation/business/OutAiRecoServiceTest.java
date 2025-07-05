@@ -1,5 +1,7 @@
 package com.soprasteria.g4it.backend.apirecommendation.business;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apirecomandation.business.OutAiRecoService;
 import com.soprasteria.g4it.backend.apirecomandation.mapper.OutAiRecoMapper;
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -30,6 +33,8 @@ class OutAiRecoServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
+    @Mock
+    private DigitalServiceRepository digitalServiceRepository;
 
     @InjectMocks
     private OutAiRecoService outAiRecoService;
@@ -39,10 +44,14 @@ class OutAiRecoServiceTest {
         // Given
         String digitalServiceUid = "UID-123";
         Task task = Task.builder().id(42L).build();
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid(digitalServiceUid);
+        digitalService.setUid(digitalServiceUid);
         OutAiReco recommendation = OutAiReco.builder().build();
         OutAiRecommendationRest recommendationRest = OutAiRecommendationRest.builder().build();
 
-        when(taskRepository.findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString())).thenReturn(List.of(task));
+        when(taskRepository.findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString())).thenReturn(List.of(task));
+        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
         when(outAiRecoRepository.findByTaskId(task.getId())).thenReturn(recommendation);
         when(outAiRecoMapper.toDto(recommendation)).thenReturn(recommendationRest);
 
@@ -51,7 +60,8 @@ class OutAiRecoServiceTest {
 
         // Then
         assertThat(result).isEqualTo(recommendationRest);
-        verify(taskRepository, times(1)).findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString());
+        verify(taskRepository, times(1)).findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString());
+        verify(digitalServiceRepository).findById(digitalServiceUid);
         verify(outAiRecoRepository, times(1)).findByTaskId(task.getId());
         verify(outAiRecoMapper, times(1)).toDto(recommendation);
     }
@@ -60,7 +70,11 @@ class OutAiRecoServiceTest {
     void shouldReturnEmptyRecommendation_whenNoTaskFound() {
         // Given
         String digitalServiceUid = "UNKNOWN-UID";
-        when(taskRepository.findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString())).thenReturn(List.of());
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid(digitalServiceUid);
+        digitalService.setUid(digitalServiceUid);
+        when(taskRepository.findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString())).thenReturn(List.of());
+        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
 
         // When
         OutAiRecommendationRest result = outAiRecoService.getByDigitalServiceUid(digitalServiceUid);
@@ -68,7 +82,8 @@ class OutAiRecoServiceTest {
         // Then
         assertThat(result).isNotNull(); // Should not return null
         assertThat(result).isEqualTo(OutAiRecommendationRest.builder().build());
-        verify(taskRepository, times(1)).findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString());
+        verify(taskRepository, times(1)).findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString());
+        verify(digitalServiceRepository).findById(digitalServiceUid);
         verifyNoMoreInteractions(outAiRecoRepository, outAiRecoMapper);
     }
 }

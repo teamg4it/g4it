@@ -31,11 +31,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByStatusAndType(final String status, final String type);
 
     List<Task> findByInventoryAndType(final Inventory inventory, final String type);
-    List<Task> findByDigitalServiceUidAndType(final  String digitalServiceUid, final String type);
     List<Task> findByDigitalServiceAndType(final DigitalService digitalService, final String type);
-
     List<Task> findByInventoryAndStatusAndType(final Inventory inventory, final String status, final String type);
-    List<Task> findByDigitalServiceUidAndStatusAndType(final  String digitalServiceUid, final String status, final String type);
     List<Task> findByDigitalServiceAndStatusAndType(final DigitalService digitalService, final String status, final String type);
 
     Optional<Task> findByDigitalService(final DigitalService digitalService);
