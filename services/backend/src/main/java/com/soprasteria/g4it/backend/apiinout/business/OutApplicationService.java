@@ -8,6 +8,8 @@
 
 package com.soprasteria.g4it.backend.apiinout.business;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutApplicationMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class OutApplicationService {
 
     private OutApplicationRepository outApplicationRepository;
+    private DigitalServiceRepository digitalServiceRepository;
     private TaskRepository taskRepository;
     private OutApplicationMapper outApplicationMapper;
 
@@ -59,7 +62,8 @@ public class OutApplicationService {
      */
     public List<OutApplicationRest> getByDigitalServiceUid(final String digitalServiceUid) {
 
-        Optional<Task> task = taskRepository.findByDigitalServiceUid(digitalServiceUid);
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
+        Optional<Task> task = taskRepository.findByDigitalService(digitalService);
 
         if (task.isEmpty()) {
             return List.of();

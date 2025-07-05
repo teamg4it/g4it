@@ -30,18 +30,18 @@ public class CheckMetadataInventoryFileService {
     private CheckConstraintService checkConstraintService;
 
     /**
-     * Check the metadata inventory file
+     * Check the metadata file
      *
      * @param taskId : The task id to check
      * @return Map of filename, Map of line number, List of LineError : filename -> [ line number -> LineError ]
      * The LineErrors of the filename line
      */
-    public Map<String, Map<Integer, List<LineError>>> checkMetadataInventoryFile(Long taskId, Long inventoryId) {
+    public Map<String, Map<Integer, List<LineError>>> checkMetadataInventoryFile(Long taskId, Long inventoryId, String digitalServiceUid) {
         // check unicity
         Map<String, Map<Integer, List<LineError>>> duplicatesMap = checkConstraintService.checkUnicity(taskId);
 
         // check coherence
-        Map<String, Map<Integer, List<LineError>>> coherenceMap = checkConstraintService.checkCoherence(taskId,inventoryId, duplicatesMap);
+        Map<String, Map<Integer, List<LineError>>> coherenceMap = checkConstraintService.checkCoherence(taskId,inventoryId, digitalServiceUid, duplicatesMap);
 
         // get all the rejected data
         Map<String, Map<Integer, List<LineError>>> resultMap = new HashMap<>(duplicatesMap);

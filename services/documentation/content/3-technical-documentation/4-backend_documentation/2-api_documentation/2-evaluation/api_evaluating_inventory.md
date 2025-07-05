@@ -9,7 +9,7 @@ mermaid: true
 
 | API                                                                                              | Swagger                                                                                                | Use Cases                                                                                                          |
 | :----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------- |
-| POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-evaluating/launchEvaluating) | [Estimate an inventory]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md" %}}) |
+| POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/evaluating/launchEvaluating) | [Estimate an inventory]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md" %}}) |
 
 ## Description
 

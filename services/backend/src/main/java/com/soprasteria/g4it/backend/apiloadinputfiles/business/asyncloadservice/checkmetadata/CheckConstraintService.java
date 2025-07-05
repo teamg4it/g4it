@@ -37,7 +37,7 @@ public class CheckConstraintService {
     private CheckApplicationRepository checkApplicationRepository;
 
     /**
-     * Check the metadata inventory files
+     * Check the metadata files
      *
      * @param taskId the task id
      * @return Map of filename, Map of line number, List of LineError : filename -> [ line number -> LineError ]
@@ -87,19 +87,19 @@ public class CheckConstraintService {
                 // Create error message based on entity type
                 if ("datacenter".equals(entityType)) {
                     errorMessage = String.format(
-                            "The datacenter %s already exists in the inventory." +
+                            "The datacenter %s already exists." +
                                     " The short name of a datacenter must be unique." +
                                     " Please check and modify the name to avoid duplicates.",
                             duplicate.getEquipmentName());
                 } else if ("application".equals(entityType)) {
                     errorMessage = String.format(
-                            "The combination of the fields (%s) already exists in the inventory." +
+                            "The combination of the fields (%s) already exists." +
                                     " The combination of the fields (nomApplication, typeEnvironnement, nomEquipementVirtuel) must be unique." +
                                     " Please check and modify the name to avoid duplicates.",
                             duplicate.getEquipmentName());
                 } else {
                     errorMessage = String.format(
-                            "The %s %s already exists in the inventory. The %s must be unique." +
+                            "The %s %s already exists. The %s must be unique." +
                                     " Please check and modify the name to avoid duplicates.",
                             entityType,
                             duplicate.getEquipmentName(),
@@ -117,18 +117,18 @@ public class CheckConstraintService {
     }
 
     /**
-     * Check the metadata inventory files
+     * Check the metadata files
      *
      * @param taskId     the task id
      * @param unicityMap to exclude the lines present in the map
      * @return Map of filename, Map of line number, List of LineError : filename -> [ line number -> LineError ]
      * The coherence LineErrors of the filename line
      */
-    public Map<String, Map<Integer, List<LineError>>> checkCoherence(Long taskId, Long inventoryId, Map<String, Map<Integer, List<LineError>>> unicityMap) {
+    public Map<String, Map<Integer, List<LineError>>> checkCoherence(Long taskId, Long inventoryId, String digitalServiceUid, Map<String, Map<Integer, List<LineError>>> unicityMap) {
         Map<String, Map<Integer, List<LineError>>> coherenceMap = new HashMap<>();
 
         // Check virtual equipment references to physical equipment
-        checkVirtualEquipmentCoherence(taskId, inventoryId, unicityMap, coherenceMap);
+        checkVirtualEquipmentCoherence(taskId, inventoryId, digitalServiceUid, unicityMap, coherenceMap);
 
         // Check application references to virtual equipment
         checkApplicationCoherence(taskId, inventoryId, coherenceMap, unicityMap);
@@ -141,12 +141,12 @@ public class CheckConstraintService {
      *
      * @param taskId the task id
      */
-    private void checkVirtualEquipmentCoherence(Long taskId, Long inventoryId,
+    private void checkVirtualEquipmentCoherence(Long taskId, Long inventoryId, String digitalServiceUid,
                                                 Map<String, Map<Integer, List<LineError>>> unicityMap,
                                                 Map<String, Map<Integer, List<LineError>>> coherenceMap) {
 
         //Refactor in order to request virtual equipement which don't have parent in checkCoherence table (the parent must not be in the list of duplicated parents)
-        // and does not have parent in the inventory for this given inventoryId.
+        // and does not have parent in the inventory for this given inventoryId OR in the digital service for this given digitalServiceUid.
 
         List<String> errorenousPhysicalEquipement = unicityMap.entrySet()
                 .stream()
@@ -162,9 +162,9 @@ public class CheckConstraintService {
         List<CoherenceParentDTO> incoherentVirtualEquipement = new ArrayList<>();
 
         if (errorenousPhysicalEquipement.isEmpty()) {
-            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId);
+            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceUid);
         } else {
-            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, errorenousPhysicalEquipement);
+            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceUid, errorenousPhysicalEquipement);
         }
 
 

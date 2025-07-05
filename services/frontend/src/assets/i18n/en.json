@@ -85,7 +85,8 @@
             "download": "Click to download your result",
             "note": "Note",
             "accordion-open": "Click to show sub domains",
-            "accordion-close": "Click to hide sub domains"
+            "accordion-close": "Click to hide sub domains",
+            "import": "Click to import digital service data"
         },
         "note": {
             "add": "Add a note",
@@ -193,7 +194,8 @@
         "return": "Return to my digital services list",
         "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",
         "delete-criteria": "Delete digital service {{digitalServiceName}}",
-        "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}"
+        "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}",
+        "import": "Import"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

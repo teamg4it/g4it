@@ -9,6 +9,8 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutApplicationMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -25,8 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OutApplicationServiceTest {
@@ -39,6 +40,8 @@ class OutApplicationServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
+    @Mock
+    private DigitalServiceRepository digitalServiceRepository;
 
     @Mock
     private OutApplicationMapper outApplicationMapper;
@@ -74,12 +77,17 @@ class OutApplicationServiceTest {
     @Test
     void getByDigitalServiceUid_returnsEmptyList_whenNoTaskFound() {
         String digitalServiceUid = "uid123";
-        when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.empty());
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid(digitalServiceUid);
+        when(taskRepository.findByDigitalService(digitalService)).thenReturn(Optional.empty());
+        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
 
         List<OutApplicationRest> result = outApplicationService.getByDigitalServiceUid(digitalServiceUid);
 
         assertEquals(List.of(), result);
-        verify(taskRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(taskRepository).findByDigitalService(digitalService);
+        verify(digitalServiceRepository).findById(digitalServiceUid);
+
     }
 
     @Test
@@ -87,14 +95,18 @@ class OutApplicationServiceTest {
         String digitalServiceUid = "uid123";
         Task task = new Task();
         task.setId(1L);
-        when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.of(task));
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid(digitalServiceUid);
+        when(taskRepository.findByDigitalService(digitalService)).thenReturn(Optional.of(task));
+        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
         when(outApplicationRepository.findByTaskId(1L)).thenReturn(List.of());
         when(outApplicationMapper.toRest(List.of())).thenReturn(List.of(OutApplicationRest.builder().build()));
 
         List<OutApplicationRest> result = outApplicationService.getByDigitalServiceUid(digitalServiceUid);
 
         assertEquals(1, result.size());
-        verify(taskRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(taskRepository).findByDigitalService(digitalService);
+        verify(digitalServiceRepository).findById(digitalServiceUid);
         verify(outApplicationRepository).findByTaskId(1L);
         verify(outApplicationMapper).toRest(List.of());
     }

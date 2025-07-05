@@ -151,6 +151,13 @@ components:
         format: int64
       required: true
       description: The physical equipment id
+    moduleQueryParam:
+      in: query
+      name: module
+      schema:
+        type: string
+      required: true
+      description: The module name.
     typePathParam:
       in: path
       name: type
@@ -631,6 +638,10 @@ components:
         note:
           type: object
           $ref: "#/components/schemas/NoteRest"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskRest"
         isAi:
           type: boolean
           description: Indique si le service digital est un service d’IA

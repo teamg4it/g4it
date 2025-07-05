@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.common.task.modeldb;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import jakarta.persistence.*;
@@ -48,7 +49,12 @@ public class Task {
     /**
      * Linked Digital Service.
      */
-    private String digitalServiceUid;
+//    private String digitalServiceUid;
+
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "digital_service_uid")
+    private DigitalService digitalService;
 
     /**
      * Type.

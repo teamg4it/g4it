@@ -9,7 +9,7 @@ mermaid: true
 
 | API                                                                                                    | Swagger                                                                                                       | Use Cases                                                                                                  |
 |:-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
-| POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
+| POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
 
 ## Description
 

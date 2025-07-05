@@ -10,17 +10,16 @@ package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,5 +95,13 @@ public class DigitalService {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "note_id", referencedColumnName = "id")
     private Note note;
+
+    /**
+     * The Task
+     */
+    @Builder.Default
+    @ToString.Exclude
+    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Task> tasks = new ArrayList<>();
 
 }

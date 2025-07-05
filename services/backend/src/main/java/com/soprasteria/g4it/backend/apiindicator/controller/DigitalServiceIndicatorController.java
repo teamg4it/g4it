@@ -9,6 +9,8 @@ package com.soprasteria.g4it.backend.apiindicator.controller;
 
 import com.azure.storage.blob.models.BlobErrorCode;
 import com.azure.storage.blob.models.BlobStorageException;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -41,6 +43,8 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
+    private DigitalServiceRepository digitalServiceRepository;
+    @Autowired
     private FileSystemService fileSystemService;
 
     @PostConstruct
@@ -54,7 +58,9 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
     public ResponseEntity<Resource> getDigitalServiceIndicatorsExportResult(String subscriber,
                                                                             Long organization,
                                                                             String digitalServiceUid) {
-        Task task = taskRepository.findByDigitalServiceUidAndLastCreationDate(digitalServiceUid)
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
+
+        Task task = taskRepository.findByDigitalServiceAndLastCreationDate(digitalService)
                 .orElseThrow(() -> new G4itRestException("404", "Digital service task not found"));
         String filename = task.getId() + Constants.ZIP;
 
