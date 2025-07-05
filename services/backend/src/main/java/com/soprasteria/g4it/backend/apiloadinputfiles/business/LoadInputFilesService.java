@@ -175,7 +175,6 @@ public class LoadInputFilesService {
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
 
-
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
         if (physicalEquipments != null) allFiles.put(FileType.EQUIPEMENT_PHYSIQUE, physicalEquipments);
         if (virtualEquipments != null) allFiles.put(FileType.EQUIPEMENT_VIRTUEL, virtualEquipments);

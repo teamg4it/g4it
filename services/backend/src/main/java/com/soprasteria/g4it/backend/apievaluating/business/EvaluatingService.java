@@ -150,7 +150,7 @@ public class EvaluatingService {
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
 
-        manageDigitalServiceTasks(subscriber, organizationId, digitalServiceUid);
+        manageDigitalServiceTasks(subscriber, organizationId, digitalService);
 
         Context context = Context.builder()
                 .subscriber(subscriber)
@@ -276,11 +276,10 @@ public class EvaluatingService {
      *
      * @param subscriber     the subscriber
      * @param organizationId the organization id
-     * @param digitalServiceUid      the digitalServiceUid
+     * @param digitalService the digitalService
      */
-    private void manageDigitalServiceTasks(String subscriber, Long organizationId, String digitalServiceUid) {
+    private void manageDigitalServiceTasks(String subscriber, Long organizationId, DigitalService digitalService) {
 
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
         // clean old tasks
         taskRepository.findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
                 .stream()
