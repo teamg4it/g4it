@@ -71,7 +71,7 @@
             **/tasklet/**/*.java,
             **/client/**/*.java,
             **/utils/Constants.java,
-            **/BackendApplication.java
+            **/BackendApplication.java,
             **/AdministratorActionsService.java
         </sonar.coverage.exclusions>
         <sonar.exclusions>
