@@ -192,10 +192,7 @@ public class LoadInputFilesService {
                 .organizationName(organizationService.getOrganizationById(organizationId).getName())
                 .digitalServiceUid(digitalServiceUid)
                 .datetime(LocalDateTime.now())
-                .hasVirtualEquipments(inVirtualEquipmentRepository.countByDigitalServiceUid(digitalServiceUid) > 0)
-                .hasApplications(false)
                 .build();
-
 
         // store files into file storage
         List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL)
@@ -278,8 +275,6 @@ public class LoadInputFilesService {
                                 .digitalServiceUid(task.getDigitalService().getUid())
                                 .locale(Locale.getDefault())
                                 .datetime(now)
-                                .hasVirtualEquipments(inVirtualEquipmentRepository.countByDigitalServiceUid(task.getDigitalService().getUid()) > 0)
-                                .hasApplications(false)
                                 .build(); 
                     }
 

@@ -163,4 +163,16 @@ class TaskServiceTest {
         verifyNoInteractions(exportService);
         verify(taskRepository, never()).deleteAll(anyList());
     }
+
+    @Test
+    void saveTaskShouldCallRepositorySave() {
+
+        Task task = new Task();
+        when(taskRepository.save(task)).thenReturn(task);
+
+        taskService.saveTask(task);
+
+        verify(taskRepository, times(1)).save(task);
+    }
+
 }

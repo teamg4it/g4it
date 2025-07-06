@@ -96,18 +96,6 @@ public class TaskService {
     }
 
     /**
-     * Get the task from digital service uid
-     *
-     * @param digitalServiceUid the digital service uid
-     * @return the task
-     */
-    public Optional<Task> getTask(String digitalServiceUid) {
-
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
-        return taskRepository.findByDigitalService(digitalService);
-    }
-
-    /**
      * Save task in database
      *
      * @param task the task
