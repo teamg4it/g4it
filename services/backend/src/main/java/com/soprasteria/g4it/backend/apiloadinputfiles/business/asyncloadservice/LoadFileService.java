@@ -156,10 +156,11 @@ public class LoadFileService {
                 .collect(groupingBy(LineError::line, mapping(LineError::error, toList())));
 
         String rejectedFileName = String.join("_", REJECTED, fileType.getFileName(), context.getDatetime().format(Constants.FILE_DATE_TIME_FORMATTER)) + Constants.CSV;
+        String pathId = context.getInventoryId() != null ? String.valueOf(context.getInventoryId()) : context.getDigitalServiceUid();
+        final Path path = Path.of(localWorkingFolder).resolve(REJECTED).resolve(pathId).resolve(rejectedFileName);
 
-        final Path path = Path.of(localWorkingFolder).resolve(REJECTED).resolve(String.valueOf(context.getInventoryId())).resolve(rejectedFileName);
         try {
-            Files.createDirectories(Path.of(localWorkingFolder).resolve(REJECTED).resolve(String.valueOf(context.getInventoryId())));
+            Files.createDirectories(Path.of(localWorkingFolder).resolve(REJECTED).resolve(pathId));
         } catch (IOException e) {
             throw new AsyncTaskException(String.format("%s - Cannot create local rejected folder", context.log()), e);
         }
