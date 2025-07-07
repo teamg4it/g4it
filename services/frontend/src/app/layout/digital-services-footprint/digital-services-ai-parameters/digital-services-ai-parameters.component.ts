@@ -87,6 +87,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         savedData?.modelName,
                         savedData?.nbParameters,
                         savedData?.framework,
+                        savedData?.quantization,
                     );
                 }
 
@@ -284,12 +285,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 if (this.quantizationOptions.length > 0 && !selectedQuantization) {
                     this.terminalsForm.patchValue({
                         quantization: this.quantizationOptions[0].value,
-                    });
-                }
-
-                if (selectedQuantization) {
-                    this.terminalsForm.patchValue({
-                        quantization: selectedQuantization,
                     });
                 }
             }
