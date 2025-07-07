@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIParametersForm } from "src/app/core/store/ai-forms.store";
@@ -24,6 +25,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     frameworkOptions: any[] = [];
     quantizationOptions: any[] = [];
     dataParameter: any;
+    public userService = inject(UserService);
 
     constructor(
         private readonly fb: FormBuilder,
@@ -208,6 +210,11 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             value.totalGeneratedTokens = totalTokens;
 
             this.aiFormsStore.setParametersFormData(value as AIParametersForm);
+        });
+        this.userService.isAllowedEcoMindAiWrite$.subscribe((isAllowed) => {
+            if (!isAllowed) {
+                this.terminalsForm.disable();
+            }
         });
     }
 
