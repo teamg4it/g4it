@@ -2,7 +2,6 @@ package com.soprasteria.g4it.backend.apiaiservice.mapper;
 
 import com.soprasteria.g4it.backend.external.ecomindai.model.AIConfigurationBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AIModelConfigRest;
 import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
 

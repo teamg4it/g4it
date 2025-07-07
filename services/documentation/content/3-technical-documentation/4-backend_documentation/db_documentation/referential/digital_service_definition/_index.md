@@ -15,6 +15,7 @@ erDiagram
     text external_referential_description
     numeric lifespan
     text source
+    bool compatible_ecomind
   }
   ref_item_type {
     int8 id PK
@@ -62,14 +63,15 @@ erDiagram
 
 #### Columns 
 
-|Name|Data type|Comments|
-|---|---|---|
-|**id**|int8||
-|description|varchar||
-|reference|varchar||
-|external_referential_description|text||
-|lifespan|numeric||
-|source|text||
+|Name| Data type |Comments|
+|---|-----------|---|
+|**id**| int8      ||
+|description| varchar   ||
+|reference| varchar   ||
+|external_referential_description| text      ||
+|lifespan| numeric   ||
+|source| text      ||
+|compatible_ecomind| bool      ||
 
 #### Primary Key 
 

@@ -2,7 +2,6 @@ package com.soprasteria.g4it.backend.apiparameterai.controller;
 
 
 import com.soprasteria.g4it.backend.apiparameterai.business.InAiParameterService;
-import com.soprasteria.g4it.backend.apiparameterai.mapper.InAiParameterMapper;
 import com.soprasteria.g4it.backend.common.utils.AuthorizationUtils;
 import com.soprasteria.g4it.backend.server.gen.api.AiParameterApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AiParameterRest;
@@ -25,9 +24,6 @@ public class InAIParameterController implements AiParameterApiDelegate {
 
     @Autowired
     private InAiParameterService inAiParameterService;
-
-    @Autowired
-    private InAiParameterMapper inAiParameterMapper;
 
     @Autowired
     private AuthorizationUtils authorizationUtils;
