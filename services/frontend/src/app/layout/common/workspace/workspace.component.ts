@@ -211,21 +211,6 @@ export class WorkspaceComponent implements OnInit {
         });
     }
 
-    handleKeydown(event: KeyboardEvent, panelIndex: number) {
-        let nextIndex = panelIndex;
-        if (event.key === "ArrowDown" || event.key === "ArrowRight") {
-            nextIndex = panelIndex + 1;
-            this.focusElement("space-menu-item-" + nextIndex);
-        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
-            nextIndex = panelIndex - 1;
-            this.focusElement("space-menu-item-" + nextIndex);
-        } else if (event.key === "Enter" || event.key === " ") {
-            this.selectTab(nextIndex);
-            event.preventDefault();
-        }
-        return;
-    }
-
     focusElement(elm: string) {
         if (!document.getElementById(elm)?.classList.contains("disabled")) {
             document.getElementById(elm)?.focus();

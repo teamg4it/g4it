@@ -37,7 +37,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/output/{taskId}:
+  /subscribers/{subscriber}/organizations/{organization}/download-reject/{taskId}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

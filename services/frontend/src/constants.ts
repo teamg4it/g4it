@@ -78,6 +78,13 @@ export abstract class Constants {
         businessHours: "business-hours",
         templateFiles: "template-files",
         workspace: "workspace",
+        downloadReject: "download-reject",
+        task: "task",
+    };
+
+    static readonly TEMPLATE_PARAMS = {
+        IS_MODULE: "is_template",
+        DS_MODULE: "ds_template",
     };
 
     static readonly ERRORS: any = {

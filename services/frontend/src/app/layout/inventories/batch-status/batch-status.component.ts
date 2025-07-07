@@ -7,10 +7,8 @@
  */
 import { Component, Input, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { saveAs } from "file-saver";
 import { MessageService } from "primeng/api";
-import { Subject, firstValueFrom, takeUntil } from "rxjs";
-import { TaskRest } from "src/app/core/interfaces/inventory.interfaces";
+import { Subject, takeUntil } from "rxjs";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { FileSystemDataService } from "src/app/core/service/data/file-system-data.service";
@@ -91,35 +89,17 @@ export class BatchStatusComponent implements OnInit {
         }
     }
 
-    async downloadFile() {
-        try {
-            const blob: Blob = await firstValueFrom(
-                this.fileSystemDataService.downloadResultsFile(
-                    this.inventoryId,
-                    this.taskId,
-                ),
-            );
-            saveAs(
-                blob,
-                `g4it_${this.selectedSubscriber}_${this.selectedOrganization}_${this.inventoryId}_rejected-files.zip`,
-            );
-        } catch (err) {
-            this.messageService.add({
-                severity: "error",
-                summary: this.translate.instant("common.fileNoLongerAvailable"),
-            });
-        }
+    downloadFile() {
+        this.fileSystemDataService.downloadFile(
+            this.taskId,
+            this.selectedSubscriber,
+            this.selectedOrganization,
+            this.inventoryId,
+        );
     }
 
-    async getTaskDetail(taskId: string) {
-        const taskRest: TaskRest = await firstValueFrom(
-            this.taskDataService.getTask(this.inventoryId, +taskId),
-        );
-        this.messageService.add({
-            severity: "error",
-            summary: this.translate.instant("errors.error-occurred"),
-            detail: taskRest.details.join("\n"),
-        });
+    getTaskDetail(taskId: string) {
+        this.fileSystemDataService.getTaskDetail(taskId);
     }
 
     isNumeric(value: string) {

@@ -29,7 +29,11 @@
         (onHide)="importSidebarVisible = false"
         ariaCloseLabel="Close"
     >
-        Hello
+        <ng-template pTemplate="headless">
+            <app-digital-services-import
+                (sidebarVisibleChange)="importSidebarVisible = $event"
+            />
+        </ng-template>
     </p-sidebar>
 }
 
@@ -117,7 +121,7 @@
             (click)="importData()"
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             [disabled]="digitalService.lastCalculationDate === undefined"
-            icon="pi pi-download"
+            icon="pi pi-upload"
             [label]="'digital-services.import' | translate"
         />
 

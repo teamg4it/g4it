@@ -17,6 +17,8 @@ export const environment = {
         "digital-services",
         "eco-mind-ai",
         "template-files",
+        "download-reject",
+        "task",
     ],
     apiBaseUrl: "http://localhost:8080",
     keycloak: {

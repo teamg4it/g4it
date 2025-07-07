@@ -71,6 +71,10 @@ export class DigitalServicesDataService {
             .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
     }
 
+    getDsTasks(uid: DigitalService["uid"]): Observable<DigitalService> {
+        return this.http.get<DigitalService>(`${endpoint}/${uid}`);
+    }
+
     delete(uid: DigitalService["uid"]): Observable<string> {
         return this.http.delete<string>(`${endpoint}/${uid}`);
     }

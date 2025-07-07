@@ -25,6 +25,7 @@
         "next": "Next",
         "previous": "Previous",
         "mandatory": "is mandatory",
+        "optional": "Optional",
         "calculate": "CALCULATE",
         "duplicate": "DUPLICATE",
         "add": "Add",
@@ -135,6 +136,7 @@
         "skip-to-main-content": "Skip to Main Content",
         "overgreen-logo": "Overgreen Logo",
         "soprasteria-logo": "Sopra Steria logo",
+        "no-document-upload": "No document uploaded",
         "workspace": {
             "create": "Create new workspace",
             "mandatory": "Mandatory",
@@ -398,7 +400,27 @@
         "energy-efficiency": "Energy efficiency",
         "location": "Location"
     },
-
+    "digital-services-import": {
+        "import": "Import Data",
+        "non-cloud-text": "Please proceed with loading the CSV files that contain details about the infrastructure, specifically data centers, servers, and virtual machines.",
+        "cloud-text": "Please proceed with loading the CSV files that contain details about the cloud infrastructure as a service (IaaS).",
+        "template-text": "If required, you may download the template to assist you in creating new files.",
+        "templates": {
+            "datacenter-template-file": "Datacenter template file",
+            "physical-template-file": "Physical equipment template file",
+            "virtual-template-file": "Virtual equipment template file",
+            "type-size": "({{type}}, {{size}} KB)"
+        },
+        "add-files": "Add files",
+        "server-upload-info": "Non-cloud servers uploads info",
+        "finish": "Finish",
+        "start-upload": "Start upload",
+        "date": "Date",
+        "time": "Time",
+        "status": "Status",
+        "rejected-files": "Rejected files",
+        "browse-file": "Browse File"
+    },
     "welcome-page": {
         "title": "Welcome Page",
         "name": "Home",

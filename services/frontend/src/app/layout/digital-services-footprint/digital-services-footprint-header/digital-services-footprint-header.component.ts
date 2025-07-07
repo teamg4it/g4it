@@ -21,7 +21,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { EMPTY, finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
+import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     DigitalService,
@@ -46,7 +46,7 @@ import { DigitalServicesAiParametersComponent } from "../digital-services-ai-par
     providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
-    private global = inject(GlobalStoreService);
+    private readonly global = inject(GlobalStoreService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() digitalService: DigitalService = {} as DigitalService;
@@ -96,7 +96,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         }
         return false;
     });
-    private destroyRef = inject(DestroyRef);
+    private readonly destroyRef = inject(DestroyRef);
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
@@ -114,26 +114,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     ngOnInit() {
         this.digitalServicesData.digitalService$
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                switchMap((res) => {
-                    this.digitalService = res;
-                    this.digitalServiceStore.setDigitalService(this.digitalService);
-                    const routeDsUid =
-                        this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
-                    if (
-                        !this.digitalService.isAi &&
-                        routeDsUid === this.digitalService.uid
-                    ) {
-                        return this.inVirtualEquipmentsService.getByDigitalService(
-                            this.digitalService.uid,
-                        );
-                    } else {
-                        return EMPTY;
-                    }
-                }),
-            )
-            .subscribe();
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((res) => {
+                this.digitalService = res;
+                this.digitalServiceStore.setDigitalService(this.digitalService);
+            });
 
         this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
             this.selectedSubscriberName = subscriber.name;
