@@ -2,7 +2,6 @@ package com.soprasteria.g4it.backend.apiaiservice.controller;
 
 import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiModelConfigMapper;
-import com.soprasteria.g4it.backend.apiaiservice.mapper.AiServiceEstimationMapper;
 import com.soprasteria.g4it.backend.server.gen.api.AiServiceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIModelConfigRest;
 import lombok.NoArgsConstructor;
@@ -23,9 +22,6 @@ public class AiServiceRestController implements AiServiceApiDelegate {
 
     @Autowired
     AiModelConfigMapper aiModelConfigMapper;
-
-    @Autowired
-    AiServiceEstimationMapper aiServiceEstimationMapper;
 
     @Override
     public ResponseEntity<List<AIModelConfigRest>> getAIModelConfigurations(String type) {
