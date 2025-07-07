@@ -7,12 +7,12 @@
  */
 package com.soprasteria.g4it.backend.apifiles.business;
 
+import com.azure.core.http.HttpResponse;
 import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
-import com.azure.core.http.HttpResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -145,7 +145,6 @@ class FileSystemServiceTest {
         String fileUrl = "url/file.txt";
         String fileName = "file.txt";
         String expectedPath = "/input/file.txt";
-        final String filePath = String.join("/", subscriber, orgId.toString(), FileFolder.INPUT.getFolderName(), fileName);
 
         FileSystemService spyService = Mockito.spy(fileSystemService);
         doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
