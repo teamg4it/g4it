@@ -7,10 +7,12 @@
  */
 package com.soprasteria.g4it.backend.apifiles.business;
 
+import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
+import com.azure.core.http.HttpResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +29,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class FileSystemServiceTest {
@@ -109,6 +112,29 @@ class FileSystemServiceTest {
 
         assertEquals(expectedPath, result);
         verify(fileStorage).delete(folder, fileName);
+    }
+    @Test
+    void testDeleteFile_FileNotFound() throws Exception {
+        String subscriber = "user";
+        Long orgId = 1L;
+        FileFolder folder = FileFolder.INPUT;
+        String fileUrl = "url/file.txt";
+        String fileName = "file.txt";
+        String expectedPath = "/input/file.txt";
+        HttpResponse mockResponse = mock(HttpResponse.class);
+
+        FileSystemService spyService = Mockito.spy(fileSystemService);
+        doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
+
+        when(fileSystem.mount(subscriber, orgId.toString())).thenReturn(fileStorage);
+        when(fileStorage.getFileUrl(folder, fileName)).thenReturn(expectedPath);
+
+        when(mockResponse.getStatusCode()).thenReturn(404);
+        doThrow(new BlobStorageException("Not found", mockResponse, null)).when(fileStorage).delete(folder, fileName);
+
+        String result = spyService.deleteFile(subscriber, orgId, folder, fileUrl);
+
+        assertEquals(expectedPath, result);
     }
 
     @Test
