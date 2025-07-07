@@ -1,7 +1,7 @@
 ---
 title: "Enable Ecomind module for a particular subscriber"
 description: "How to enable Ecomind module for a particular subscriber on G4IT"
-weight: 3
+weight: 4
 ---
 
 ### Default behavior
