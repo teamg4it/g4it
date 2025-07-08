@@ -28,7 +28,6 @@ import {
     TemplateFileDescription,
 } from "src/app/core/interfaces/file-system.interfaces";
 import { CreateInventory, Inventory } from "src/app/core/interfaces/inventory.interfaces";
-import { FileSystemDataService } from "src/app/core/service/data/file-system-data.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
@@ -78,7 +77,6 @@ export class FilePanelComponent implements OnInit {
     isTemplateParam = Constants.TEMPLATE_PARAMS.IS_MODULE;
     constructor(
         private inventoryService: InventoryDataService,
-        private filesSystemService: FileSystemDataService,
         private loadingService: LoadingDataService,
         private messageService: MessageService,
         private translate: TranslateService,

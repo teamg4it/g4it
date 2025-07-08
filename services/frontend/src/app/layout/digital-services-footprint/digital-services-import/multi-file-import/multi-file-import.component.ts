@@ -5,7 +5,6 @@ import { LoadingDataService } from "src/app/core/service/data/loading-data.servi
 @Component({
     selector: "app-multi-file-import",
     templateUrl: "./multi-file-import.component.html",
-    styleUrl: "./multi-file-import.component.scss",
 })
 export class MultiFileImportComponent {
     private readonly loadingService = inject(LoadingDataService);

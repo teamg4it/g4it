@@ -167,9 +167,13 @@
                                     status.status === "FAILED")
                             ) {
                                 <td>
-                                    <span
-                                        (click)="downloadFile(status)"
-                                        class="cursor-pointer"
+                                    <button
+                                        (onClick)="downloadFile(status)"
+                                        ariaLabel="{{
+                                            'inventories-footprint.header.download'
+                                                | translate
+                                        }}"
+                                        class="cursor-pointer pl-0 ml-0 border-none background-none"
                                     >
                                         <img
                                             src="assets/images/icons/icon-download.svg"
@@ -181,7 +185,7 @@
                                                     | date: 'dd/MM/yyyy HH:mm'
                                             }}"
                                         />
-                                    </span>
+                                    </button>
                                 </td>
                             }
                         </tr>
