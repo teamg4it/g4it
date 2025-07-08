@@ -44,3 +44,6 @@ It calls dedicated G4IT Boavizta APIs to evaluate the environmental impact of cl
 
 #### keycloak
 Keycloak has its own kubernetes statefullset and service. It is connected to the backend and to the user's identity provider as EntraId(Azure AD) or Companies third party identity provider SSO.
+
+## Ecomind
+The architecture for the Ecomind part can be found at [Ecomind](ecomind/_index.md)

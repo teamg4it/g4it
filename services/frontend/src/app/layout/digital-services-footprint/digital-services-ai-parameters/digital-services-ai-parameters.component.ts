@@ -26,13 +26,13 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     dataParameter: any;
 
     constructor(
-        private fb: FormBuilder,
-        private digitalServicesDataService: DigitalServicesDataService,
-        private messageService: MessageService,
-        private aiFormsStore: AIFormsStore,
-        private translate: TranslateService,
-        private route: ActivatedRoute,
-        private digitalServicesAiData: DigitalServicesAiDataService,
+        private readonly fb: FormBuilder,
+        private readonly digitalServicesDataService: DigitalServicesDataService,
+        private readonly messageService: MessageService,
+        private readonly aiFormsStore: AIFormsStore,
+        private readonly translate: TranslateService,
+        private readonly route: ActivatedRoute,
+        private readonly digitalServicesAiData: DigitalServicesAiDataService,
     ) {}
 
     ngOnInit(): void {
@@ -70,9 +70,9 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     // Save default values in the store
                     const defaultData = {
                         modelName: defaultModel,
-                        nbParameters: this.parameterOptions[0]?.value || "",
-                        framework: this.frameworkOptions[0]?.value || "",
-                        quantization: this.quantizationOptions[0]?.value || "",
+                        nbParameters: this.parameterOptions[0]?.value ?? "",
+                        framework: this.frameworkOptions[0]?.value ?? "",
+                        quantization: this.quantizationOptions[0]?.value ?? "",
                         isInference: true,
                         isFinetuning: false,
                         numberUserYear: 0,
@@ -87,6 +87,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         savedData?.modelName,
                         savedData?.nbParameters,
                         savedData?.framework,
+                        savedData?.quantization,
                     );
                 }
 
@@ -127,6 +128,24 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                             selectedFramework,
                         );
                     });
+                this.terminalsForm
+                    .get("quantization")
+                    ?.valueChanges.subscribe((selectedQuantization) => {
+                        if (!selectedQuantization) {
+                            return;
+                        }
+                        const selectedModel = this.terminalsForm.get("modelName")?.value;
+                        const selectedParameter =
+                            this.terminalsForm.get("nbParameters")?.value;
+                        const selectedFramework =
+                            this.terminalsForm.get("framework")?.value;
+                        this.updateDependentFields(
+                            selectedModel,
+                            selectedParameter,
+                            selectedFramework,
+                            selectedQuantization,
+                        );
+                    });
             },
             error: (err: any) => {
                 this.messageService.add({
@@ -152,6 +171,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                             data.modelName,
                             data.nbParameters,
                             data.framework,
+                            data.quantization,
                         );
                         this.dataParameter = data;
                     }
@@ -222,6 +242,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         modelName?: string,
         selectedParameter?: string,
         selectedFramework?: string,
+        selectedQuantization?: string,
     ): void {
         if (!modelName) return;
 
@@ -261,8 +282,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 this.quantizationOptions = Array.from(
                     new Set(filteredByFramework.map((m) => m.quantization)),
                 ).map((q) => ({ label: q, value: q }));
-
-                if (this.quantizationOptions.length > 0) {
+                if (this.quantizationOptions.length > 0 && !selectedQuantization) {
                     this.terminalsForm.patchValue({
                         quantization: this.quantizationOptions[0].value,
                     });

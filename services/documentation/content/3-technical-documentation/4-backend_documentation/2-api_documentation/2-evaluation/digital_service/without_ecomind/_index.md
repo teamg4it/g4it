@@ -1,62 +1,9 @@
 ---
-title: "2.1- Evaluating digital service"
+title: "Evaluating digital service"
 description: "Evaluate digital service"
 weight: 40
 mermaid: true
 ---
-
-## API PATH
-
-| API                                                                                                         | Swagger                                                                                                              | Use Cases                                                                                                                      |
-| :---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
-| POST /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/evaluating/launchEvaluatingDigitalService) | [Estimate a digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md" %}}) |
-
-## Description
-
-The use case allows a project team to launch the calculation for the estimation of impacts of the Digital Service. The
-calculation is based on different indicators that contextualize the impacts observed. The user sends an
-digitalServiceUid as pair as an organisation and subscriber.
-The user will receive a response with a task id.
-
-## API Call Processing
-
-{{< mermaid align="center">}}
-
-flowchart LR
-A[API Call for Evaluation] --> B(Retain the two latest 'EVALUATING_DIGITAL_SERVICE' tasks; remove the rest.)
-B --> C(Get the active criteria to evaluate impacts on)
-C --> D(Create the evaluating task with status TO_START)
-D --> E(Launch evaluating process)
-E --> F(Return the task id)
-{{</ mermaid >}}
-
-Note that, The evaluation process for digital services is performed synchronously. The evaluation runs immediately in the calling thread, and multiple evaluations can be processed in parallel if triggered simultaneously.
-
-The API call is handled
-by [EvaluatingController](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/controller/EvaluatingController.java)
-and the business logic is handled
-by [EvaluatingService](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/EvaluatingService.java).
-The EvaluatingService retrieves active criteria for evaluation or defaults to predefined criteria if none are active and
-then handles the logic for initiating and managing evaluation tasks.
-
-## Evaluation Execution
-
-The evaluation process follows these steps:
-
-{{< mermaid align="center">}}
-
-flowchart LR
-A[Set the Task in IN_PROGRESS] -->B[Create a local export directory specific to each task for storing csv files]
-B --> C(Invoke the doEvaluate method of EvaluateService to perform evaluations)
-C --> D[Set Task as COMPLETED upon successful execution with progress set to 100%]
-D --> E[Save the indicators in the database tables]
-E --> F[Compress results into a ZIP file and uploads it to file storage]
-F --> G[Clean up local directory after successful execution.]
-
-{{</ mermaid >}}
-
-This process is done in
-the [AsyncEvaluatingService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/AsyncEvaluatingService.java).
 
 ## Evaluation Process
 

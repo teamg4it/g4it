@@ -384,8 +384,8 @@
         "fintuning": "Finetuning",
         "numberOfUsers": "Nb of user per year",
         "averageRequest": "Average nb of requests per year",
-        "averageToken": "Average nb of tokens genereted per request",
-        "totalTokenGenerate": "Total nb of genereted tokens"
+        "averageToken": "Average nb of tokens generated per request",
+        "totalTokenGenerate": "Total nb of generated tokens"
     },
 
     "digital-services-ai-infrastructure": {
