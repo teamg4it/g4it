@@ -12,6 +12,10 @@ export enum Role {
     DigitalServiceWrite = "ROLE_DIGITAL_SERVICE_WRITE",
     SubscriberAdmin = "ROLE_SUBSCRIBER_ADMINISTRATOR",
     OrganizationAdmin = "ROLE_ORGANIZATION_ADMINISTRATOR",
+    EcoMindAiRead = "ROLE_ECO_MIND_AI_READ",
+    EcoMindAiWrite = "ROLE_ECO_MIND_AI_WRITE",
+
+
 }
 
 export let BasicRoles = [
@@ -19,6 +23,8 @@ export let BasicRoles = [
     Role.InventoryWrite,
     Role.DigitalServiceRead,
     Role.DigitalServiceWrite,
+    Role.EcoMindAiRead,
+    Role.EcoMindAiWrite,
 ];
 
 export let RoleRightMap: any = {
@@ -28,6 +34,8 @@ export let RoleRightMap: any = {
     ROLE_DIGITAL_SERVICE_WRITE: "write",
     ROLE_ORGANIZATION_ADMINISTRATOR: "admin",
     ROLE_SUBSCRIBER_ADMINISTRATOR: "admin",
+    ROLE_ECO_MIND_AI_READ: "read",
+    ROLE_ECO_MIND_AI_WRITE: "write",
 };
 
 export interface RoleValue {

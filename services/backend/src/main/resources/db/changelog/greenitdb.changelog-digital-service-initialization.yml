@@ -93,6 +93,48 @@ databaseChangeLog:
             encoding: UTF-8
 
   - changeSet:
+      id: delete-obsolete-ref_device_type-data
+      author: G4IT Dev Team
+      context: local
+      changes:
+        - delete:
+            tableName: ref_device_type
+            where: "1=1"
+
+  - changeSet:
+      id: referential-init-ref_device_type-table
+      author: G4IT Dev Team
+      context: local
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_device_type
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: varchar(255)
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: lifespan
+                  type: double
+              - column:
+                  header: source
+                  type: text
+            file: db/changelog/referential-data/ref_device_type.csv
+            primaryKey: id
+            tableName: ref_device_type
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
       id: create-terminal-table
       author: G4IT Dev Team
       changes:
@@ -205,6 +247,55 @@ databaseChangeLog:
             tableName: ref_network_type
             separator: ;
             encoding: UTF-8
+
+  - changeSet:
+      id: delete-obsolete-ref_network_type-data
+      author: G4IT Dev Team
+      context: local
+      changes:
+        - delete:
+            tableName: ref_network_type
+            where: "1=1"
+
+  - changeSet:
+      id: referential-init-ref_network_type-table
+      author: G4IT Dev Team
+      context: local
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_network_type
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: varchar(255)
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: type
+                  type: varchar(255)
+              - column:
+                  header: annual_quantity_of_go
+                  type: integer
+              - column:
+                  header: country
+                  type: varchar(255)
+              - column:
+                  header: source
+                  type: text
+            file: db/changelog/referential-data/ref_network_type.csv
+            primaryKey: id
+            tableName: ref_network_type
+            separator: ;
+            encoding: UTF-8
+
   - changeSet:
       id: create-network-table
       author: G4IT Dev Team
@@ -302,6 +393,54 @@ databaseChangeLog:
                   header: lifespan
                   type: double
             file: db/changelog/data/ref_server_host.csv
+            primaryKey: id
+            tableName: ref_server_host
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
+      id: delete-obsolete-ref_server_host-data
+      author: G4IT Dev Team
+      context: local
+      changes:
+        - delete:
+            tableName: ref_server_host
+            where: "1=1"
+
+  - changeSet:
+      id: referential-init-ref_server_host-table
+      author: G4IT Dev Team
+      context: local
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: SELECT COUNT(*) FROM ref_server_host
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: text
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: type
+                  type: varchar(255)
+              - column:
+                  header: nb_of_vcpu
+                  type: int
+              - column:
+                  header: total_disk
+                  type: int
+              - column:
+                  header: lifespan
+                  type: double
+            file: db/changelog/referential-data/ref_server_host.csv
             primaryKey: id
             tableName: ref_server_host
             separator: ;
@@ -636,3 +775,137 @@ databaseChangeLog:
       changes:
         - sql: update digital_service set is_new_arch = false where is_new_arch is null;
         - sql: update digital_service set is_migrated = false where is_migrated is null;
+
+
+  - changeSet:
+      id: add-column-is_ai
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: is_ai
+                  type: boolean
+                  defaultValue: false
+
+  - changeSet:
+      id: add-compatible-ecomind-to-reDeviceType
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: compatible_ecomind
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+        - update:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: compatible_ecomind
+                  valueBoolean: true
+            where: description IN ('Laptop', 'Desktop')
+        - insert:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: description
+                  value: Server
+              - column:
+                  name: reference
+                  value: blade-server-28
+              - column:
+                  name: external_referential_description
+                  value: Server
+              - column:
+                  name: lifespan
+                  valueNumeric: 10
+              - column:
+                  name: source
+                  value: "Data for test"
+              - column:
+                  name: compatible_ecomind
+                  valueBoolean: true
+  - changeSet:
+      id: rollback-add-compatible-ecomind-to-refDeviceType
+      author: G4IT Dev Team
+      changes:
+        - delete:
+            tableName: ref_device_type
+            where: description = 'Server'
+        - dropColumn:
+            tableName: ref_device_type
+            columnName: compatible_ecomind
+  - changeSet:
+      id: create-ref-ecomind-type-ai-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_ecomind_type_ai
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ecomind_type_ref_id_pk
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: reference
+                  type: varchar(255)
+              - column:
+                  name: external_referential_description
+                  type: text
+              - column:
+                  name: lifespan
+                  type: number
+        - insert:
+            tableName: ref_ecomind_type_ai
+            columns:
+              - column:
+                  name: description
+                  value: Server
+              - column:
+                  name: reference
+                  value: blade-server-28
+              - column:
+                  name: external_referential_description
+                  value: Server
+              - column:
+                  name: lifespan
+                  valueNumeric: 10
+        - insert:
+            tableName: ref_ecomind_type_ai
+            columns:
+              - column:
+                  name: description
+                  value: Desktop
+              - column:
+                  name: reference
+                  value: desktop-4
+              - column:
+                  name: external_referential_description
+                  value: Desktop/ 1 CPU 192 mm² 14 nm lithography, 16 GB RAM, 2000 GB HDD, 512 GB SSD, separated graphic card 363 mm² 28 nm lithography
+              - column:
+                  name: lifespan
+                  valueNumeric: 6
+        - insert:
+            tableName: ref_ecomind_type_ai
+            columns:
+              - column:
+                  name: description
+                  value: Laptop
+              - column:
+                  name: reference
+                  value: laptop-3
+              - column:
+                  name: external_referential_description
+                  value: Laptop/ 15.6 inches display, 1 CPU 126 mm² 14 nm lithography, 16 GB RAM, 512 GB SSD, separated graphic card 445 mm² 12 nm lithography
+              - column:
+                  name: lifespan
+                  valueNumeric: 5

@@ -30,19 +30,20 @@ The connected user must have the write access for that module on the selected or
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
-| Reference | Group      | Elements                        | Type   | Description                                                                                                                                                                               |
-| --------- | ---------- | ------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|           | Tab Header |                                 | group  |                                                                                                                                                                                           |
-| 1         |            | Devices                         | title  |                                                                                                                                                                                           |
-| 2         |            | + Add Device                    | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Device details.<br> |
-|           | Tab        |                                 |        |                                                                                                                                                                                           |
-| 3         |            | Type of device                  | column |                                                                                                                                                                                           |
-| 4         |            | Country                         | column |                                                                                                                                                                                           |
-| 5         |            | Number of unique user           | column |                                                                                                                                                                                           |
-| 6         |            | Yearly usage time per user      | column |                                                                                                                                                                                           |
-| 7         |            | Average device lifespan (years) | column |                                                                                                                                                                                           |
-| 8         |            | Edit                            | button | <li><u>_action rules_</u>: That button open the window Device details.<br>                                                                                                                |
-| 9         |            | Delete                          | button | <li><u>_action rules_</u>: Delete the device from the current Digital Service.<br> Note : The user must click on Calculate to update the footprint estimation.                            |
+| Reference | Group      | Elements                       | Type   | Description                                                                                                                                                                               |
+|-----------| ---------- | ------------------------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|           | Tab Header |                                | group  |                                                                                                                                                                                           |
+| 1         |            | Devices                        | title  |                                                                                                                                                                                           |
+| 2         |            | + Add Device                   | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Device details.<br> |
+|           | Tab        |                                |        |                                                                                                                                                                                           |
+| 3         |            | Name                 | column |                                                                                                                                                                                           |
+| 4         |            | Type of device                 | column |                                                                                                                                                                                           |
+| 5         |            | Country                        | column |                                                                                                                                                                                           |
+| 6         |            | Number of unique user          | column |                                                                                                                                                                                           |
+| 7         |            | Yearly usage time per user     | column |                                                                                                                                                                                           |
+| 8         |            | Average device lifespan (years) | column |                                                                                                                                                                                           |
+| 9         |            | Edit                           | button | <li><u>_action rules_</u>: That button open the window Device details.<br>                                                                                                                |
+| 10        |            | Delete                         | button | <li><u>_action rules_</u>: Delete the device from the current Digital Service.<br> Note : The user must click on Calculate to update the footprint estimation.                            |
 
 {{% /expand %}}
 
@@ -52,16 +53,18 @@ The connected user must have the write access for that module on the selected or
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
-| Reference | Group           | Elements                        | Type                 | Description                                                                                        |
-| --------- | --------------- | ------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------- |
-|           | Title           |                                 |                      | <li><u>_initialization rules_</u>: Coming from "Add Device", the title is "New Device" else "xxx". |
-| 3         |                 | Type of device                  | dropdown             |                                                                                                    |
-| 4         |                 | Country                         | dropdown             |                                                                                                    |
-| 5         |                 | Number of unique user           | Entire number input  |                                                                                                    |
-| 6         |                 | Yearly usage time per user      | Decimal number input |                                                                                                    |
+| Reference | Group           | Elements                     | Type                 | Description                                                                                        |
+|-----------| --------------- |------------------------------|----------------------| -------------------------------------------------------------------------------------------------- |
+|           | Title           |                              |                      | <li><u>_initialization rules_</u>: Coming from "Add Device", the title is "New Device" else "xxx". |
+| 1         |                 | New Device or Edit Device    | title                |                                                                                                    |
+| 2         |                 | Name                         | label input          |                                                                                                    |
+| 3         |                 | Type of device               | dropdown             |                                                                                                    |
+| 4         |                 | Country                      | dropdown             |                                                                                                    |
+| 5         |                 | Number of unique user        | Entire number input  |                                                                                                    |
+| 6         |                 | Yearly usage time per user   | Decimal number input |                                                                                                    |
 | 7         |                 | Average device lifespan (years) | Decimal number input |                                                                                                    |
-| 8         | Cancel          |                                 | button               | <li><u>_action rules_</u>: That button close the window Device details.<br>                        |
-| 9         | Create / Update |                                 | button               |                                                                                                    |
+| 8         | Cancel          |                              | button               | <li><u>_action rules_</u>: That button close the window Device details.<br>                        |
+| 9         | Create / Update |                              | button               |                                                                                                    |
 
 {{% /expand %}}
 

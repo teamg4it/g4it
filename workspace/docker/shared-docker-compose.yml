@@ -210,7 +210,16 @@ services:
       - "5000:5000"
     networks:
       - numecoeval
-      
+
+  #EcomindAPI
+  ecomind-api:
+    image: soury35/ecomindai:1.0.0
+    container_name: ecomind-api
+    ports:
+      - "3000:8080"
+
+
+
 volumes:
   numecoeval_kafka_data:
     driver: local

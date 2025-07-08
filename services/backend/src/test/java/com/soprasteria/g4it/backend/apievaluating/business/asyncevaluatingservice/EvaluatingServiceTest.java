@@ -45,13 +45,13 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EvaluatingServiceTest {
-     static final long USER_ID = 1;
-     static final String SUBSCRIBER = "subscriber";
-     static  final  String ORGANIZATION = "organization";
-     static final  Long ORGANIZATION_ID = 1L;
-     static  final  Long INVENTORY_ID = 2L;
-     static  final  String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
-     static  final List<String> CRITERIA =  List.of("criteria1", "criteria2");
+    static final long USER_ID = 1;
+    static final String SUBSCRIBER = "subscriber";
+    static final String ORGANIZATION = "organization";
+    static final Long ORGANIZATION_ID = 1L;
+    static final Long INVENTORY_ID = 2L;
+    static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
+    static final List<String> CRITERIA = List.of("criteria1", "criteria2");
 
     @InjectMocks
     private EvaluatingService evaluatingService;
@@ -145,9 +145,39 @@ class EvaluatingServiceTest {
     }
 
     @Test
+    void evaluatingDigitalServiceAi_shouldCreateAndReturnTask() {
+
+        Organization org = mock(Organization.class);
+        UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(USER_ID).firstName("fname").build();
+        User user = User.builder().id(USER_ID).build();
+        DigitalService digitalService = mock(DigitalService.class);
+        CriteriaByType criteriaByType = mock(CriteriaByType.class);
+
+        when(criteriaByType.active()).thenReturn(CRITERIA);
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
+        when(digitalService.getName()).thenReturn("digitalService");
+        when(digitalService.isAi()).thenReturn(true);
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
+        when(org.getName()).thenReturn(ORGANIZATION);
+        when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any())).thenReturn(criteriaByType);
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(authService.getUser()).thenReturn(userBO);
+        when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        when(digitalService.getCriteria()).thenReturn(null);
+        when(digitalService.getUid()).thenReturn(DIGITAL_SERVICE_UID);
+
+        Task result = evaluatingService.evaluatingDigitalService(SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
+
+        assertNotNull(result);
+        verify(asyncEvaluatingService).execute(any(Context.class), any(Task.class));
+        verify(digitalServiceRepository).save(any(DigitalService.class));
+    }
+
+    @Test
     void evaluating_shouldThrowIfTaskAlreadyRunning() {
 
-         Task task = mock(Task.class);
+        Task task = mock(Task.class);
         final Inventory inventory = mock(Inventory.class);
 
         when(inventoryRepository.findById(INVENTORY_ID)).thenReturn(Optional.of(inventory));

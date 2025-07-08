@@ -10,12 +10,11 @@ package com.soprasteria.g4it.backend.apidigitalservice.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.ServerHostBO;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRef;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRefDTO;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.*;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DeviceTypeRefRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.EcomindTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.NetworkTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.ServerHostRefRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
@@ -40,6 +39,8 @@ class DigitalServiceReferentialServiceTest {
 
     @Mock
     private DeviceTypeRefRepository deviceTypeRefRepository;
+    @Mock
+    private EcomindTypeRefRepository ecomindTypeRefRepository;
     @Mock
     private NetworkTypeRefRepository networkTypeRefRepository;
     @Mock
@@ -88,6 +89,72 @@ class DigitalServiceReferentialServiceTest {
                 .extracting("referentialInErrorCode").isEqualTo("terminal.type.code");
 
         verify(deviceTypeRefRepository, times(1)).findByReference(reference);
+    }
+
+    @Test
+    void shouldGetEcomindDeviceType() {
+        // Given
+        String reference = "ECO-001";
+        EcomindTypeRef mockDeviceTypeRef = EcomindTypeRef.builder().build();
+
+        when(ecomindTypeRefRepository.findByReference(reference))
+                .thenReturn(Optional.of(mockDeviceTypeRef));
+
+        // When
+        EcomindTypeRef result = digitalServiceReferentialService.getEcomindDeviceType(reference);
+
+        // Then
+        assertThat(result).isNotNull().isEqualTo(mockDeviceTypeRef);
+        verify(ecomindTypeRefRepository, times(1)).findByReference(reference);
+    }
+
+    @Test
+    void shouldGetEcomindDeviceType_whenTypeNotExist() {
+        // Given
+        String reference = "UNKNOWN-REF";
+
+        when(ecomindTypeRefRepository.findByReference(reference))
+                .thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> digitalServiceReferentialService.getEcomindDeviceType(reference))
+                .isInstanceOf(InvalidReferentialException.class)
+                .extracting("referentialInErrorCode").isEqualTo("Ecomind type code not found");
+
+        verify(ecomindTypeRefRepository, times(1)).findByReference(reference);
+    }
+
+    @Test
+    void shouldGetAllEcomindDeviceTypes() {
+        // Given
+        List<EcomindTypeRef> mockEntities = List.of(EcomindTypeRef.builder().build());
+        List<EcomindTypeBO> mockBOs = List.of(EcomindTypeBO.builder().build());
+
+        when(ecomindTypeRefRepository.findAll()).thenReturn(mockEntities);
+        when(digitalServiceReferentialMapper.toEcomindTypeBusinessObject(mockEntities)).thenReturn(mockBOs);
+
+        // When
+        List<EcomindTypeBO> result = digitalServiceReferentialService.getEcomindDeviceType();
+
+        // Then
+        assertThat(result).hasSize(1).isEqualTo(mockBOs);
+        verify(ecomindTypeRefRepository, times(1)).findAll();
+        verify(digitalServiceReferentialMapper, times(1)).toEcomindTypeBusinessObject(mockEntities);
+    }
+
+    @Test
+    void shouldReturnEmptyList_whenNoEcomindDeviceTypeFound() {
+        // Given
+        when(ecomindTypeRefRepository.findAll()).thenReturn(List.of());
+        when(digitalServiceReferentialMapper.toEcomindTypeBusinessObject(List.of())).thenReturn(List.of());
+
+        // When
+        List<EcomindTypeBO> result = digitalServiceReferentialService.getEcomindDeviceType();
+
+//        // Then
+        assertThat(result).isEmpty();
+        verify(ecomindTypeRefRepository, times(1)).findAll();
+        verify(digitalServiceReferentialMapper, times(1)).toEcomindTypeBusinessObject(List.of());
     }
 
     @Test

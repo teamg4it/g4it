@@ -8,9 +8,11 @@
 package com.soprasteria.g4it.backend.apidigitalservice.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.NetworkTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.ServerHostBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DeviceTypeRefRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.EcomindTypeRefRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.NetworkTypeRefRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.ServerHostRefRest;
 import org.mapstruct.Mapper;
@@ -38,6 +40,22 @@ public interface DigitalServiceReferentialRestMapper {
      * @return the DeviceTypeRefRest list.
      */
     List<DeviceTypeRefRest> toDeviceTypeDto(final List<DeviceTypeBO> businessObject);
+
+    /**
+     * Map to Data Transfer Object.
+     *
+     * @param businessObject the source.
+     * @return the DeviceTypeRefRest.
+     */
+    EcomindTypeRefRest toEcomindTypeDto(final EcomindTypeBO businessObject);
+
+    /**
+     * Map to Data Transfer Objects.
+     *
+     * @param businessObject the source.
+     * @return the DeviceTypeRefRest list.
+     */
+    List<EcomindTypeRefRest> toEcomindTypeDto(final List<EcomindTypeBO> businessObject);
 
     /**
      * Map to Data Transfer Object.

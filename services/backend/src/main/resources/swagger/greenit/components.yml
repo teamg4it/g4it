@@ -75,6 +75,14 @@ components:
         format: int64
       required: false
       description: The organization id.
+    isAiPathParam:
+      in: query
+      name: isAi
+      schema:
+        type: boolean
+        default: false
+      required: false
+      description: AI service if true.
     subscriberIdQueryParam:
       in: query
       name: subscriberId
@@ -143,6 +151,22 @@ components:
         format: int64
       required: true
       description: The physical equipment id
+    typePathParam:
+      in: path
+      name: type
+      schema:
+        type: string
+        enum: [ LLM, CLASSIFICATION, REGRESSION ]
+      required: true
+      description: The type of ai.
+    stagePathParam:
+      in: path
+      name: stage
+      schema:
+        type: string
+        enum: [ INFERENCE, TRAINING ]
+      required: true
+      description: The stage of ai which is concerned by the estimation.
 
   responses:
     InternalServerError:
@@ -293,6 +317,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrganizationRest"
+        ecomindai:
+          type: boolean
     OrganizationRest:
       description: Organization information
       type: object
@@ -605,6 +631,9 @@ components:
         note:
           type: object
           $ref: "#/components/schemas/NoteRest"
+        isAi:
+          type: boolean
+          description: Indique si le service digital est un service d’IA
 
     DigitalServiceServerImpactRest:
       type: object
@@ -671,6 +700,24 @@ components:
 
     DeviceTypeRefRest:
       description: Terminal device type referential
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          description: NumEcoEval reference
+          type: string
+          default: laptop-3
+        value:
+          description: Value to display
+          type: string
+          default: Laptop
+        lifespan:
+          description: lifespan of the device
+          type: number
+          format: double
+    EcomindTypeRefRest:
+      description: Ecomind type referential
       type: object
       required:
         - code
@@ -886,6 +933,47 @@ components:
           items:
             type: string
 
+    AiParameterRest:
+      description: Estimations and recommendations made for of an AI Parameter
+      type: object
+      required: [ modelName, nbParameters, framework, quantization ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        modelName:
+          type: string
+        nbParameters:
+          type: string
+        framework:
+          type: string
+        type:
+          type: string
+        quantization:
+          type: string
+        totalGeneratedTokens:
+          type: integer
+          format: int64
+        numberUserYear:
+          type: integer
+          format: int64
+        averageNumberRequest:
+          type: integer
+          format: int64
+        averageNumberToken:
+          type: integer
+          format: int64
+        isInference:
+          type: boolean
+        isFinetuning:
+          type: boolean
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+
     CriteriaRest:
       description: Criteria to evaluate the impact
       type: object
@@ -933,3 +1021,107 @@ components:
           type: string
         status:
           type: string
+    AIConfigurationRest:
+      description: Estimations and recommendations made for of an AI Service configuration
+      type: object
+      properties:
+        modelName:
+          type: string
+        nbParameters:
+          type: string
+        framework:
+          type: string
+        quantization:
+          type: string
+        totalGeneratedTokens:
+          type: integer
+          format: int64
+        infrastructureType:
+          type: string
+          enum: [ SERVER_DC, LAPTOP, DESKTOP ]
+        nbCpuCores:
+          type: integer
+          format: int64
+        nbGpu:
+          type: integer
+          format: int64
+        gpuMemory:
+          type: integer
+          format: int64
+        ramSize:
+          type: integer
+          format: int64
+
+    AIServiceEstimationRest:
+      description: Estimations and recommendations made for of an AI Service configuration
+      type: object
+      properties:
+        electricityConsumption:
+          type: number
+          format: float
+        runtime:
+          type: number
+          format: float
+        recommendations:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecommendationRest"
+
+    RecommendationRest:
+      description: Recommendation of best practices to decrease the impact
+      type: object
+      properties:
+        type:
+          type: string
+        topic:
+          type: string
+        example:
+          type: string
+        expectedReduction:
+          type: string
+
+    AIModelConfigRest:
+      description: Existing configurations for AI model parameters
+      type: object
+      properties:
+        modelName:
+          type: string
+        parameters:
+          type: string
+        framework:
+          type: string
+        quantization:
+          type: string
+
+    InAiInfrastructureRest:
+      description: Version
+      type: object
+      required: [ infrastructureType, location ]
+      properties:
+        infrastructureType:
+          type: object
+          $ref: "#/components/schemas/DeviceTypeRefRest"
+        nbCpuCores:
+          type: integer
+          format: int64
+        nbGpu:
+          type: integer
+          format: int64
+        gpuMemory:
+          type: integer
+          format: int64
+        ramSize:
+          type: integer
+          format: int64
+        location:
+          type: string
+          maxLength: 50
+          pattern: "^[A-Za-z ]*$"
+        pue:
+          type: number
+          format: double
+          minimum: 0
+        complementaryPue:
+          type: number
+          format: double
+          minimum: 0

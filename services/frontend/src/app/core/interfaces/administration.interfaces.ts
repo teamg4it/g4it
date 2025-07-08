@@ -8,6 +8,7 @@ export interface Subscriber {
     roles?: Role[];
     criteria?: string[];
     authorizedDomains?: string[];
+    ecomindai: boolean;
 }
 
 export interface Organization {

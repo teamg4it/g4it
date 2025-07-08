@@ -21,12 +21,37 @@ export interface DigitalService {
     note?: Note;
     userId?: number;
     criteria?: string[];
+    creator?: DigitalServiceUserInfo;
+    isAi?: boolean;
 }
 
 export interface DigitalServiceUserInfo {
     id: number;
     firstName: string;
     lastName: string;
+}
+
+export interface DigitalServiceParameterIa {
+    id: number;
+    modelName: string;
+    nbParameters: string;
+    framework: string;
+    quantization: string;
+    totalGeneratedTokens: number;
+    numberUserYear: number;
+    averageNumberRequest: number;
+    averageNumberToken: number;
+    isInference: boolean;
+    isFinetuning: boolean;
+    creationDate: string;
+    lastUpdateDate: string;
+}
+
+export interface AiModelConfig {
+    modelName: string;
+    parameters: string;
+    framework: string;
+    quantization: string;
 }
 
 export interface DigitalServiceServerConfig {
@@ -65,14 +90,26 @@ export interface DigitalServiceCloudServiceConfig {
     idFront?: number;
 }
 
+export interface DigitalServicesAiInfrastructure {
+    infrastructureType: "SERVER_DC" | "LAPTOP" | "DESKTOP";
+    nbCpuCores: number;
+    nbGpu: number;
+    gpuMemory: number;
+    ramSize: number;
+    location: string;
+    pue: number;
+    complementaryPue: number;
+}
+
 export interface DigitalServiceNetworkConfig {
     id?: number;
     uid?: string;
-    creationDate?: number;
+    creationDate?: Date;
     type: NetworkType;
     typeCode?: string;
     yearlyQuantityOfGbExchanged: number;
     idFront?: number;
+    name: string;
 }
 
 export interface DigitalServiceTerminalConfig {
@@ -109,6 +146,12 @@ export interface TerminalsType {
     lifespan: number;
 }
 
+export interface EcomindType {
+    code: string;
+    value: string;
+    lifespan: number;
+}
+
 export interface NetworkType {
     code: string;
     value: string;
@@ -125,8 +168,8 @@ export interface DigitalServiceTerminalsImpact {
 
 export interface DigitalServiceCloudImpact {
     criteria: string;
-    impactLocation: CloudsImpact[];
-    impactInstance: CloudsImpact[];
+    impactLocation: CloudImpactTypeLocation[];
+    impactInstance: CloudImpactTypeLocation[];
 }
 
 export interface TerminalsImpact {
@@ -162,9 +205,41 @@ export interface CloudsImpact {
     impact: ImpactCloudsACVStep[];
 }
 
+export interface CloudImpactGroup {
+    [location: string]: {
+        [cloudName: string]: CloudNameImpact[];
+    };
+}
+
+export interface CloudNameImpact {
+    lifecycleStep: string;
+    peopleEqImpact: number;
+    unitImpact: number;
+    quantity: number;
+    usageDuration: number;
+    workload: number;
+    unit: string;
+    statusIndicator: string;
+    countValue: number;
+    provider: string;
+    statusCount: StatusCount;
+}
+
+export interface CloudImpactTypeLocation {
+    name: string;
+    clouds: CloudsImpact[];
+    status: StatusCount;
+}
+
 export interface DigitalServiceNetworksImpact {
     criteria: string;
-    impacts: ImpactNetworkSipValue[];
+    impacts: ImpactNetworkNames[];
+}
+
+export interface ImpactNetworkNames {
+    status: StatusCount;
+    networkType: string;
+    items: ImpactNetworkSipValue[];
 }
 
 export interface DigitalServiceServersImpact {
@@ -228,6 +303,7 @@ export interface ImpactNetworkSipValue {
     rawValue: number;
     status: string;
     countValue: number;
+    name?: string;
 }
 
 export interface ImpactSipValue {
@@ -291,4 +367,15 @@ export interface StatusCount {
     ok: number;
     error: number;
     total: number;
+}
+
+export interface AiRecommendation {
+    id: number;
+    taskId: number;
+    electricityConsumption: number;
+    runtime: number;
+    recommendations: string; // JSON string
+    digitalServiceUid: string;
+    creationDate: string;
+    lastUpdateDate: string;
 }
