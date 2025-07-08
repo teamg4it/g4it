@@ -18,8 +18,8 @@ This usecase allows a project team to add network equipment into a digital servi
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Terminals / Add Network
--   My Digital Services / My Digital Service / Terminals / Modify Network
+-   My Digital Services / My Digital Service / Networks / Add Network
+-   My Digital Services / My Digital Service / Networks / Modify Network
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected organization.
@@ -31,15 +31,16 @@ The connected user must have the write access for that module on the selected or
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group      | Elements                        | Type   | Description                                                                                                                                                                                |
-| --------- | ---------- | ------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|-----------| ---------- |---------------------------------| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 |           | Tab Header |                                 | group  |                                                                                                                                                                                            |
 | 1         |            | Networks                        | title  |                                                                                                                                                                                            |
 | 2         |            | + Add Network                   | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Network details.<br> |
-|           | Tab        |                                 |        |                                                                                                                                                                                            |
-| 3         |            | Type                            | column |                                                                                                                                                                                            |
-| 4         |            | Yearly quantity of GB exchanged | column |                                                                                                                                                                                            |
-| 8         |            | Edit                            | button | <li><u>_action rules_</u>: That button open the window Network details.<br>                                                                                                                |
-| 9         |            | Delete                          | button | <li><u>_action rules_</u>: Delete the network from the current Digital Service.<br> Note : The user must click on Calculate to update the footprint estimation.                            |
+|           | Tab        |                                 |        |      <br/>                                                                                                                                                                                      |
+| 3         |            | Name                            | column |                                                                                                                                                                                           |
+| 4         |            | Type                            | column |                                                                                                                                                                                            |
+| 5         |            | Yearly quantity of GB exchanged | column |                                                                                                                                                                                            |
+| 6         |            | Edit                            | button | <li><u>_action rules_</u>: That button open the window Network details.<br>                                                                                                                |
+| 7         |            | Delete                          | button | <li><u>_action rules_</u>: Delete the network from the current Digital Service.<br> Note : The user must click on Calculate to update the footprint estimation.                            |
 
 {{% /expand %}}
 
@@ -50,12 +51,14 @@ The connected user must have the write access for that module on the selected or
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group           | Elements                                             | Type                 | Description                                                                                          |
-| --------- | --------------- | ---------------------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------- |
-| 1         | Title           |                                                      |                      | <li><u>_initialization rules_</u>: Coming from "Add Network", the title is "New Network" else "xxx". |
-| 2         |                 | Type                                                 | dropdown             |                                                                                                      |
-| 3         |                 | Total quantity of GB exchanged by year for all users | Decimal number input |                                                                                                      |
-| 4         | Cancel          |                                                      | button               | <li><u>_action rules_</u>: That button close the window Network details.<br>                         |
-| 5         | Create / Update |                                                      | button               |                                                                                                      |
+|-----------| --------------- |------------------------------------------------------| -------------------- | ---------------------------------------------------------------------------------------------------- |
+|           | Title           |                                                      |                      | <li><u>_initialization rules_</u>: Coming from "Add Network", the title is "New Network" else "xxx". |
+| 1         |                 | New Network or Edit Network                          | label input          |                                                                                                    |
+| 2         |                 | Name                                                 | label input          |                                                                                                    |
+| 3         |                 | Type                                                 | dropdown             |                                                                                                      |
+| 4         |                 | Total quantity of GB exchanged by year for all users | Decimal number input |                                                                                                      |
+| 5         | Cancel          |                                                      | button               | <li><u>_action rules_</u>: That button close the window Network details.<br>                         |
+| 6         | Create / Update |                                                      | button               |                                                                                                      |
 
 {{% /expand %}}
 
