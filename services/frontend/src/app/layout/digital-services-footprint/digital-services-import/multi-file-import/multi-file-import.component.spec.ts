@@ -156,4 +156,14 @@ describe("MultiFileImportComponent", () => {
         component.resetForm();
         expect(Object.keys(component.selectedFiles).length).toBe(0);
     });
+
+    it("should update form field value based on isUploadEnabled", () => {
+        spyOn(component, "isUploadEnabled").and.returnValue(true);
+        component.updateFormValidity();
+
+        const formField = component.importForm.get(
+            component.form[component.selectedMenuIndex!].name,
+        );
+        expect(formField.setValue).toHaveBeenCalledWith("enabled");
+    });
 });
