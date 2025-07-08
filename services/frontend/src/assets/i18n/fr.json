@@ -412,7 +412,8 @@
             "type-size": "({{type}}, {{size}} Ko )"
         },
         "add-files": "Ajouter fichiers",
-        "server-upload-info": "Les serveurs non cloud téléchargent des informations",
+        "non-cloud-server-upload-info": "Les serveurs non cloud téléchargent des informations",
+        "cloud-server-upload-info": "Les serveurs cloud téléchargent des informations",
         "finish": "Finition",
         "start-upload": "Commencer téléverser",
         "date": "Date",

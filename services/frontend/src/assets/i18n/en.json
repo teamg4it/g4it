@@ -412,7 +412,8 @@
             "type-size": "({{type}}, {{size}} KB)"
         },
         "add-files": "Add files",
-        "server-upload-info": "Non-cloud servers uploads info",
+        "non-cloud-server-upload-info": "Non-cloud servers uploads info",
+        "cloud-server-upload-info": "Cloud servers uploads info",
         "finish": "Finish",
         "start-upload": "Start upload",
         "date": "Date",
