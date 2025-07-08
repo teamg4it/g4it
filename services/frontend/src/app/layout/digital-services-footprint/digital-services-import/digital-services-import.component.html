@@ -211,13 +211,13 @@
                             ) {
                                 <p-button
                                     styleClass="p-button-secondary-blue uppercase"
-                                    (click)="previousTab(menuIndex)"
+                                    (onClick)="previousTab(menuIndex)"
                                     [label]="'common.previous' | translate"
                                     [ariaLabel]="'common.previous' | translate"
                                 ></p-button>
                             }
                             <p-button
-                                (click)="closeSidebar()"
+                                (onClick)="closeSidebar()"
                                 styleClass="uppercase bg-light-green"
                                 [label]="'digital-services-import.finish' | translate"
                                 [ariaLabel]="'digital-services-import.finish' | translate"
@@ -225,7 +225,7 @@
                             @if (!lastIndex) {
                                 <p-button
                                     styleClass="p-button-secondary-blue p-button uppercase"
-                                    (click)="nextTab(menuIndex)"
+                                    (onClick)="nextTab(menuIndex)"
                                     [label]="'common.next' | translate"
                                     [ariaLabel]="'common.next' | translate"
                                 ></p-button>

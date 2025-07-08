@@ -32,7 +32,6 @@ export class FormNavComponent {
         if (!document.getElementById(elm)?.classList.contains("disabled")) {
             document.getElementById(elm)?.focus();
         }
-        return;
     }
 
     getValidMenu() {

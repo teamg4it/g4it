@@ -89,7 +89,7 @@
     </div>
     <div class="mr-3 flex align-items-center">
         <p-button
-            (click)="sidebarVisible = true"
+            (onClick)="sidebarVisible = true"
             styleClass="text-gray-900 header-button ml-1"
             [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
@@ -105,7 +105,7 @@
         />
 
         <p-button
-            (click)="sidebarVisible = true"
+            (onClick)="sidebarVisible = true"
             styleClass="text-gray-900 header-button"
             [ariaLabel]="'common.accessibility.attachedNote' | translate"
             *ngIf="!isEcoMindAi && digitalService.note"
@@ -118,7 +118,7 @@
         <p-button
             [ariaLabel]="'common.accessibility.import' | translate"
             styleClass="bg-black text-white header-button"
-            (click)="importData()"
+            (onClick)="importData()"
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             icon="pi pi-upload"
             [label]="'digital-services.import' | translate"
@@ -127,7 +127,7 @@
         <p-button
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
-            (click)="exportData()"
+            (onClick)="exportData()"
             *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi"
             [disabled]="digitalService.lastCalculationDate === undefined"
             icon="pi pi-download"
@@ -153,7 +153,7 @@
                 [text]="true"
                 [raised]="true"
                 [plain]="true"
-                (click)="displayPopupFct()"
+                (onClick)="displayPopupFct()"
                 icon="pi pi-cog"
                 [ariaLabel]="
                     'digital-services.choose-criteria'

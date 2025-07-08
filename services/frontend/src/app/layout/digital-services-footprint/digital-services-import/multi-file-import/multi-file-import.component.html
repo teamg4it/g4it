@@ -24,7 +24,7 @@
         <p-button
             class="mt-1"
             icon="pi pi-times"
-            (click)="onDeleteButton(type.key)"
+            (onClick)="onDeleteButton(type.key)"
             [text]="true"
             [ariaLabel]="'administration.delete' | translate"
         ></p-button>
@@ -34,7 +34,7 @@
 <p-button
     styleClass="p-button-secondary-blue p-button uppercase"
     icon="pi pi-upload"
-    (click)="uploadAllFiles()"
+    (onClick)="uploadAllFiles()"
     label="{{ 'digital-services-import.start-upload' | translate }}"
     [ariaLabel]="'digital-services-import.start-upload' | translate"
     [disabled]="!isUploadEnabled() || fileLoading"
