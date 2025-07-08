@@ -1,6 +1,6 @@
 package com.soprasteria.g4it.backend.apiaiinfra.model;
 
-import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.lang.Nullable;
 @SuperBuilder
 public class InAiInfrastructureBO {
 
-    private DeviceTypeBO infrastructureType;
+    private EcomindTypeBO infrastructureType;
 
     private @Nullable Long nbCpuCores;
 

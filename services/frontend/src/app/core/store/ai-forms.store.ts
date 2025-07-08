@@ -1,8 +1,8 @@
 import { Injectable, signal } from "@angular/core";
-import { TerminalsType } from "../interfaces/digital-service.interfaces";
+import { EcomindType } from "../interfaces/digital-service.interfaces";
 
 export interface AIInfrastructureForm {
-    infrastructureType: TerminalsType;
+    infrastructureType: EcomindType;
     nbCpuCores: number;
     nbGpu: number;
     gpuMemory: number;
