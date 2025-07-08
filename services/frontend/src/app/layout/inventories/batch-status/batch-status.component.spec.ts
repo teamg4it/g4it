@@ -73,4 +73,35 @@ describe("BatchStatusComponent", () => {
         expect(component.toolTip).toBe("common.completed-with-errors");
         expect(component.betweenDiv).toBe("!");
     });
+
+    it("should call fileSystemBusinessService.getTaskDetail with the correct taskId", () => {
+        const taskId = "12345";
+        const fileSystemBusinessServiceSpy = spyOn(
+            (component as any).fileSystemBusinessService,
+            "getTaskDetail",
+        );
+        component.getTaskDetail(taskId);
+        expect(fileSystemBusinessServiceSpy).toHaveBeenCalledWith(taskId);
+    });
+
+    it("should call fileSystemBusinessService.downloadFile with correct arguments", () => {
+        component.taskId = "task-1";
+        component.selectedSubscriber = "subscriber-1";
+        component.selectedOrganization = "org-1";
+        component.inventoryId = 42;
+
+        const fileSystemBusinessServiceSpy = spyOn(
+            (component as any).fileSystemBusinessService,
+            "downloadFile",
+        );
+
+        component.downloadFile();
+
+        expect(fileSystemBusinessServiceSpy).toHaveBeenCalledWith(
+            "task-1",
+            "subscriber-1",
+            "org-1",
+            42,
+        );
+    });
 });

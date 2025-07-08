@@ -59,4 +59,101 @@ describe("MultiFileImportComponent", () => {
     it("should create component", () => {
         expect(component).toBeTruthy();
     });
+
+    it("should delete the selected file for the given key and update form validity", () => {
+        component.selectedFiles = {
+            DATACENTER: new File(["content"], "datacenter.csv"),
+            EQUIPEMENT_PHYSIQUE: new File(["content"], "physique.csv"),
+        };
+        spyOn(component, "updateFormValidity");
+
+        component.onDeleteButton("DATACENTER");
+
+        expect(component.selectedFiles["DATACENTER"]).toBeUndefined();
+        expect(component.selectedFiles["EQUIPEMENT_PHYSIQUE"]).toBeDefined();
+        expect(component.updateFormValidity).toHaveBeenCalled();
+    });
+
+    it("should not throw if the key does not exist in selectedFiles", () => {
+        component.selectedFiles = {
+            EQUIPEMENT_PHYSIQUE: new File(["content"], "physique.csv"),
+        };
+        spyOn(component, "updateFormValidity");
+
+        expect(() => component.onDeleteButton("NON_EXISTENT_KEY")).not.toThrow();
+        expect(component.selectedFiles["EQUIPEMENT_PHYSIQUE"]).toBeDefined();
+        expect(component.updateFormValidity).toHaveBeenCalled();
+    });
+
+    it("should add selected file to selectedFiles and update form validity", () => {
+        const mockFile = new File(["test"], "test.csv");
+        const event = { files: [mockFile] };
+        spyOn(component, "updateFormValidity");
+
+        component.onSelectFile(event, "DATACENTER");
+
+        expect(component.selectedFiles["DATACENTER"]).toBe(mockFile);
+        expect(component.updateFormValidity).toHaveBeenCalled();
+    });
+
+    it("should not add file or call updateFormValidity if no file is selected", () => {
+        const event = { files: [] };
+        spyOn(component, "updateFormValidity");
+
+        component.onSelectFile(event, "DATACENTER");
+
+        expect(component.selectedFiles["DATACENTER"]).toBeUndefined();
+        expect(component.updateFormValidity).not.toHaveBeenCalled();
+    });
+
+    it("should not add file or call updateFormValidity if event is null", () => {
+        spyOn(component, "updateFormValidity");
+
+        component.onSelectFile(null, "DATACENTER");
+
+        expect(component.selectedFiles["DATACENTER"]).toBeUndefined();
+        expect(component.updateFormValidity).not.toHaveBeenCalled();
+    });
+
+    it("should set fileTypes based on selectedMenuIndex", () => {
+        component.selectedMenuIndex = 0;
+        component.ngOnChanges();
+        expect(component.fileTypes.length).toBe(3);
+
+        component.selectedMenuIndex = 1;
+        component.ngOnChanges();
+        expect(component.fileTypes.length).toBe(1);
+    });
+
+    it("should call launchLoadInputFiles and handle success", () => {
+        spyOn(component as any, "createFormData").and.callThrough();
+        spyOn(component as any, "handleUploadSuccess");
+
+        component.selectedFiles = {
+            DATACENTER: new File(["data"], "file.csv"),
+        };
+        component.fileTypes = [{ key: "DATACENTER", label: "Datacenter" }];
+
+        component.uploadAllFiles();
+
+        expect(mockLoadingService.launchLoadInputFiles).toHaveBeenCalled();
+        expect((component as any).handleUploadSuccess).toHaveBeenCalled();
+    });
+
+    it("should reset state and emit submit on successful upload", () => {
+        spyOn(component.formSubmit, "emit");
+        spyOn(component, "resetForm");
+        spyOn(component, "updateFormValidity");
+
+        (component as any).handleUploadSuccess();
+
+        expect(component.resetForm).toHaveBeenCalled();
+        expect(component.updateFormValidity).toHaveBeenCalled();
+        expect(component.formSubmit.emit).toHaveBeenCalledWith("submit");
+    });
+
+    it("resetForm", () => {
+        component.resetForm();
+        expect(Object.keys(component.selectedFiles).length).toBe(0);
+    });
 });

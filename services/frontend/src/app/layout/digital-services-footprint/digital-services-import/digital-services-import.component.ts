@@ -232,12 +232,6 @@ export class DigitalServicesImportComponent {
         });
     }
 
-    getValidMenu() {
-        return this.importDetails["menu"].filter((menu) => {
-            return menu.hidden !== true;
-        });
-    }
-
     closeSidebar() {
         this.selectTab(0);
         this.importForm.reset();
