@@ -6,8 +6,8 @@ import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
-import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.EcomindTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
@@ -111,11 +111,11 @@ class AiInfraServiceTest {
 
         // Setup AiInfraBO
         inAiInfrastructureBO = InAiInfrastructureBO.builder().build();
-        DeviceTypeBO deviceTypeBO = new DeviceTypeBO();
-        deviceTypeBO.setCode("laptop-3");
-        deviceTypeBO.setLifespan(5.0);
-        deviceTypeBO.setValue("Laptop");
-        inAiInfrastructureBO.setInfrastructureType(deviceTypeBO);
+        EcomindTypeBO ecomindTypeBO = new EcomindTypeBO();
+        ecomindTypeBO.setCode("laptop-3");
+        ecomindTypeBO.setLifespan(5.0);
+        ecomindTypeBO.setValue("Laptop");
+        inAiInfrastructureBO.setInfrastructureType(ecomindTypeBO);
         inAiInfrastructureBO.setLocation("Paris");
         inAiInfrastructureBO.setPue(1.5);
         inAiInfrastructureBO.setNbCpuCores(8L);
@@ -249,12 +249,12 @@ class AiInfraServiceTest {
                 .thenReturn(Optional.of(new DigitalService()));
 
         // Mock mapping BO
-        DeviceTypeBO deviceTypeBO = new DeviceTypeBO();
-        deviceTypeBO.setCode("laptop-3");
-        deviceTypeBO.setLifespan(5.0);
-        deviceTypeBO.setValue("Laptop");
+        EcomindTypeBO ecomindTypeBO = new EcomindTypeBO();
+        ecomindTypeBO.setCode("laptop-3");
+        ecomindTypeBO.setLifespan(5.0);
+        ecomindTypeBO.setValue("Laptop");
         InAiInfrastructureBO bo = InAiInfrastructureBO.builder()
-                .infrastructureType(deviceTypeBO)
+                .infrastructureType(ecomindTypeBO)
                 .location("Paris")
                 .pue(1.3)
                 .nbCpuCores(16L)

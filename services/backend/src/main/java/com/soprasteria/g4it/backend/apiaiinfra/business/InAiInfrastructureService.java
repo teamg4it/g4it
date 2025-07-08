@@ -168,7 +168,7 @@ public class InAiInfrastructureService {
 
         InAiInfrastructureBO inAiInfrastructureBO = inAiInfrastructureMapper.entityToBO(inAiInfrastructure);
         if (inAiInfrastructure != null) {
-            //set the deviceType
+            //set the ecomind type
             EcomindTypeRef ecomindTypeRef = digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode());
             inAiInfrastructureBO.getInfrastructureType().setValue(ecomindTypeRef.getDescription());
             inAiInfrastructureBO.getInfrastructureType().setLifespan(ecomindTypeRef.getLifespan());
