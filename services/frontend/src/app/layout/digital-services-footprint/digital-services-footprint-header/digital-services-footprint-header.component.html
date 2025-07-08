@@ -120,7 +120,6 @@
             styleClass="bg-black text-white header-button"
             (click)="importData()"
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            [disabled]="digitalService.lastCalculationDate === undefined"
             icon="pi pi-upload"
             [label]="'digital-services.import' | translate"
         />

@@ -97,12 +97,12 @@ export class WorkspaceComponent implements OnInit {
     existingOrganization: any = [];
 
     constructor(
-        private workspaceService: WorkspaceService,
-        private userService: UserService,
-        private messageService: MessageService,
-        private translate: TranslateService,
-        private router: Router,
-        private administrationService: AdministrationService,
+        private readonly workspaceService: WorkspaceService,
+        private readonly userService: UserService,
+        private readonly messageService: MessageService,
+        private readonly translate: TranslateService,
+        private readonly router: Router,
+        private readonly administrationService: AdministrationService,
     ) {}
 
     spaceForm = new FormGroup({
@@ -209,13 +209,6 @@ export class WorkspaceComponent implements OnInit {
         return this.spaceDetails["menu"].filter((menu) => {
             return menu.hidden !== true;
         });
-    }
-
-    focusElement(elm: string) {
-        if (!document.getElementById(elm)?.classList.contains("disabled")) {
-            document.getElementById(elm)?.focus();
-        }
-        return;
     }
 
     createSpace() {
