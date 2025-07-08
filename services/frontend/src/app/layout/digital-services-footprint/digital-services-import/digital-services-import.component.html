@@ -121,9 +121,21 @@
                         <td>{{ status.creationDate | date: "dd/MM/yyyy" }}</td>
                         <td>{{ status.creationDate | date: "HH:mm" }}</td>
                         <td>
-                            <div [class]="status.cssClass">
-                                {{ status.tooltip | translate }}
-                            </div>
+                            @if (status.status === "IN_PROGRESS") {
+                                <div class="flex align-items-center">
+                                    <span
+                                        class="pi pi-spin pi-spinner icon-running mr-2"
+                                        pTooltip="{{ status.tooltip | translate }}"
+                                        tooltipPosition="left"
+                                        role="application"
+                                        [attr.aria-label]="status.tooltip | translate"
+                                    ></span>
+                                </div>
+                            } @else {
+                                <div [class]="status.cssClass">
+                                    {{ status.tooltip | translate }}
+                                </div>
+                            }
                         </td>
                         @if (
                             (userService.isAllowedInventoryWrite$ | async) &&

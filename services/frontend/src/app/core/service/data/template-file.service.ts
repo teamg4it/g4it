@@ -19,13 +19,37 @@ const endpoint = Constants.ENDPOINTS.templateFiles;
 export class TemplateFileService {
     private readonly translate = inject(TranslateService);
     private readonly messageService = inject(MessageService);
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getTemplateFiles(module: string): Observable<FileDescription[]> {
         let params = new HttpParams();
         params = params.set("module", module);
 
         return this.http.get<FileDescription[]>(endpoint, { params });
+    }
+
+    downloadTemplateFile(fileName: string, module: string): Observable<any> {
+        let params = new HttpParams();
+        params = params.set("module", module);
+        if (fileName.includes(".xlsx")) {
+            return this.http.get(`${endpoint}/${fileName}`, {
+                responseType: "blob",
+                headers: { Accept: "application/vnd.ms-excel" },
+                params,
+            });
+        }
+        if (fileName.includes(".zip")) {
+            return this.http.get(`${endpoint}/${fileName}`, {
+                responseType: "blob",
+                headers: { Accept: "application/zip" },
+                params,
+            });
+        }
+        return this.http.get(`${endpoint}/${fileName}`, {
+            responseType: "blob",
+            headers: { Accept: "text/csv" },
+            params,
+        });
     }
 
     transformTemplateFiles(
@@ -83,8 +107,8 @@ export class TemplateFileService {
 
         csvFiles.sort(
             (a, b) =>
-                Constants.FILE_TYPES.indexOf(a.csvFileType || "") -
-                Constants.FILE_TYPES.indexOf(b.csvFileType || ""),
+                Constants.FILE_TYPES.indexOf(a.csvFileType ?? "") -
+                Constants.FILE_TYPES.indexOf(b.csvFileType ?? ""),
         );
         return isDs ? [...csvFiles] : [zipFile, ...csvFiles, xlsxFile];
     }
@@ -106,29 +130,5 @@ export class TemplateFileService {
                 summary: this.translate.instant("common.fileNoLongerAvailable"),
             });
         }
-    }
-
-    downloadTemplateFile(fileName: string, module: string): Observable<any> {
-        let params = new HttpParams();
-        params = params.set("module", module);
-        if (fileName.includes(".xlsx")) {
-            return this.http.get(`${endpoint}/${fileName}`, {
-                responseType: "blob",
-                headers: { Accept: "application/vnd.ms-excel" },
-                params,
-            });
-        }
-        if (fileName.includes(".zip")) {
-            return this.http.get(`${endpoint}/${fileName}`, {
-                responseType: "blob",
-                headers: { Accept: "application/zip" },
-                params,
-            });
-        }
-        return this.http.get(`${endpoint}/${fileName}`, {
-            responseType: "blob",
-            headers: { Accept: "text/csv" },
-            params,
-        });
     }
 }

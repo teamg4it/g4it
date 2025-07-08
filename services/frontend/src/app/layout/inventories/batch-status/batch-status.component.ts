@@ -5,13 +5,13 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, inject, Input, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Subject, takeUntil } from "rxjs";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
 import { UserService } from "src/app/core/service/business/user.service";
-import { FileSystemDataService } from "src/app/core/service/data/file-system-data.service";
 import { TaskDataService } from "src/app/core/service/data/task-data.service";
 import { Constants } from "src/constants";
 
@@ -20,6 +20,7 @@ import { Constants } from "src/constants";
     templateUrl: "./batch-status.component.html",
 })
 export class BatchStatusComponent implements OnInit {
+    private readonly fileSystemBusinessService = inject(FileSystemBusinessService);
     @Input() batchStatusCode: string = "";
     @Input() type: string = "loading";
     cssClass: string = "";
@@ -38,7 +39,6 @@ export class BatchStatusComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
 
     constructor(
-        private fileSystemDataService: FileSystemDataService,
         private messageService: MessageService,
         private translate: TranslateService,
         protected userService: UserService,
@@ -90,7 +90,7 @@ export class BatchStatusComponent implements OnInit {
     }
 
     downloadFile() {
-        this.fileSystemDataService.downloadFile(
+        this.fileSystemBusinessService.downloadFile(
             this.taskId,
             this.selectedSubscriber,
             this.selectedOrganization,
@@ -99,7 +99,7 @@ export class BatchStatusComponent implements OnInit {
     }
 
     getTaskDetail(taskId: string) {
-        this.fileSystemDataService.getTaskDetail(taskId);
+        this.fileSystemBusinessService.getTaskDetail(taskId);
     }
 
     isNumeric(value: string) {

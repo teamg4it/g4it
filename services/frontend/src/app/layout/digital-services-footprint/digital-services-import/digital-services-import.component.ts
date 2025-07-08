@@ -12,9 +12,9 @@ import {
 } from "src/app/core/interfaces/file-system.interfaces";
 import { TaskRest } from "src/app/core/interfaces/inventory.interfaces";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
-import { FileSystemDataService } from "src/app/core/service/data/file-system-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
@@ -49,7 +49,7 @@ export class DigitalServicesImportComponent {
     private readonly userDataService = inject(UserDataService);
     private readonly destroyRef = inject(DestroyRef);
     protected readonly userService = inject(UserService);
-    private readonly fileSystemDataService = inject(FileSystemDataService);
+    private readonly fileSystemBusinessService = inject(FileSystemBusinessService);
     importDetails: SpaceDetails = {
         menu: [
             {
@@ -257,7 +257,7 @@ export class DigitalServicesImportComponent {
     }
 
     downloadFileDs(taskId: string) {
-        this.fileSystemDataService.downloadFile(
+        this.fileSystemBusinessService.downloadFile(
             taskId,
             this.selectedSubscriber,
             this.selectedOrganization,
@@ -266,7 +266,7 @@ export class DigitalServicesImportComponent {
     }
 
     getTaskDetail(taskId: string) {
-        this.fileSystemDataService.getTaskDetail(taskId);
+        this.fileSystemBusinessService.getTaskDetail(taskId);
     }
 
     ngOnDestroy() {
