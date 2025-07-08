@@ -419,7 +419,7 @@
         },
         "eco-mind-ai": {
             "title": "EcoMind AI",
-            "description": "Évaluez l’impact d’un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
+            "description": "Calculez l’impact d’un service intégrant un algorithme d’IA, orientez dès le démarrage les choix pour le réduire grâce aux bonnes pratiques et assurez son suivi tout au long du projet.",
             "button": "Aller au service",
             "button-disabled": "Demander de l'aide"
         }

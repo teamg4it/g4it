@@ -419,7 +419,7 @@
         },
         "eco-mind-ai": {
             "title": "EcoMind AI",
-            "description": "Calculate the impact of a digital service involves three levels: the end-user terminals, the volume of data passing through the network, and the hosting infrastructures.",
+            "description": "Calculate the impact of a service integrating an AI algorithm, guide early choices to reduce it through best practices, and ensure its monitoring throughout the project.",
             "button": "Go to Service",
             "button-disabled": "Ask for support"
         }
