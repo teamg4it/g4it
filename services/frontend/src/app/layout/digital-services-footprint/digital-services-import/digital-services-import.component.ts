@@ -1,16 +1,24 @@
-import { Component, DestroyRef, EventEmitter, inject, Output } from "@angular/core";
+import {
+    Component,
+    DestroyRef,
+    ElementRef,
+    EventEmitter,
+    inject,
+    Output,
+    ViewChild,
+} from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
-import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
 import {
     FileDescription,
     TemplateFileDescription,
 } from "src/app/core/interfaces/file-system.interfaces";
 import { TaskRest } from "src/app/core/interfaces/inventory.interfaces";
+import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -18,28 +26,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
-interface SpaceDetails {
-    menu: {
-        title?: string;
-        subTitle?: string;
-        description?: string;
-        iconClass?: string;
-        active?: boolean;
-        hidden?: boolean;
-        optional?: boolean;
-    }[];
-    form: {
-        name: string;
-        label?: string;
-        hintText?: string;
-        type?: string;
-        placeholder?: string;
-        options?: {
-            label?: string;
-            value?: string;
-        };
-    }[];
-}
+
 @Component({
     selector: "app-digital-services-import",
     templateUrl: "./digital-services-import.component.html",
@@ -50,7 +37,7 @@ export class DigitalServicesImportComponent {
     private readonly destroyRef = inject(DestroyRef);
     protected readonly userService = inject(UserService);
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);
-    importDetails: SpaceDetails = {
+    importDetails: CustomSidebarMenuForm = {
         menu: [
             {
                 subTitle: this.translate.instant("common.optional"),
@@ -80,9 +67,6 @@ export class DigitalServicesImportComponent {
     @Output() sidebarVisibleChange: EventEmitter<any> = new EventEmitter();
 
     selectedMenuIndex: number | null = null;
-    subscribersDetails: any;
-    organizationlist: DomainSubscribers[] = [];
-    existingOrganization: any = [];
 
     tasks: TaskRest[] = [];
     tableTasks: TaskRest[] = [];
@@ -95,6 +79,7 @@ export class DigitalServicesImportComponent {
     digitalServiceInterval: any;
     waitingLoop = 10000;
     toReloadDigitalService = false;
+    @ViewChild("addFocus", { static: false }) addFocusElement!: ElementRef;
     constructor(
         private readonly translate: TranslateService,
         private readonly templateFileService: TemplateFileService,
@@ -103,7 +88,7 @@ export class DigitalServicesImportComponent {
     ) {}
 
     importForm = new FormGroup({
-        nonCloud: new FormControl<number | undefined>(undefined),
+        nonCloud: new FormControl<string | undefined>(undefined),
         cloud: new FormControl<string | undefined>(undefined),
     });
 
@@ -123,6 +108,12 @@ export class DigitalServicesImportComponent {
         this.selectTab(0);
     }
 
+    focusFirstTemplate() {
+        if (this.addFocusElement) {
+            this.addFocusElement.nativeElement.focus();
+        }
+    }
+
     getTemplates() {
         this.templateFileService
             .getTemplateFiles(this.dsTemplateParam)
@@ -139,6 +130,9 @@ export class DigitalServicesImportComponent {
                         `digital-services-import.templates.${file.csvFileType}-template-file`,
                     );
                 });
+                setTimeout(() => {
+                    this.focusFirstTemplate();
+                }, 0);
             });
     }
 
@@ -220,12 +214,14 @@ export class DigitalServicesImportComponent {
     previousTab(index: number) {
         if (index > 0) {
             this.selectTab(--index);
+            this.focusFirstTemplate();
         }
     }
 
     nextTab(index: number) {
         if (index < this.importDetails["menu"].length - 1) {
             this.selectTab(++index);
+            this.focusFirstTemplate();
         }
     }
 

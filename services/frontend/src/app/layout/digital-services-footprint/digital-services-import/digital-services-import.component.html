@@ -67,6 +67,7 @@
                             class="font-bold cursor-pointer"
                             tabindex="0"
                             role="link"
+                            #addFocus
                             (click)="downloadTemplateFile(template.name)"
                             [attr.id]="
                                 selectedMenuIndex === 0 &&
@@ -188,7 +189,7 @@
                 </p-table>
             </p-scrollPanel>
             <!-- Footer Buttons -->
-            <form [formGroup]="importForm" class="mt-3">
+            <div class="mt-3">
                 @for (
                     spaceDetail of importDetails["form"];
                     track $index;
@@ -232,7 +233,7 @@
                         </div>
                     </div>
                 }
-            </form>
+            </div>
         </div>
     }
 </div>

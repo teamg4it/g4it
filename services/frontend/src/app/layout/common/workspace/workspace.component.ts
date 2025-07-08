@@ -12,35 +12,13 @@ import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
+import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
 import { User } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
-
-interface SpaceDetails {
-    menu: {
-        title?: string;
-        subTitle?: string;
-        description?: string;
-        iconClass?: string;
-        active?: boolean;
-        hidden?: boolean;
-        optional?: boolean;
-    }[];
-    form: {
-        name: string;
-        label?: string;
-        hintText?: string;
-        type?: string;
-        placeholder?: string;
-        options?: {
-            label?: string;
-            value?: string;
-        };
-    }[];
-}
 
 @Component({
     selector: "app-workspace",
@@ -49,7 +27,7 @@ interface SpaceDetails {
 })
 export class WorkspaceComponent implements OnInit {
     private readonly userDataService = inject(UserDataService);
-    @Input() spaceDetails: SpaceDetails = {
+    @Input() spaceDetails: CustomSidebarMenuForm = {
         menu: [
             {
                 subTitle: this.translate.instant("common.workspace.mandatory"),
