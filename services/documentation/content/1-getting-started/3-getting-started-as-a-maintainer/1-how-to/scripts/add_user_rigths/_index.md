@@ -1,5 +1,5 @@
 ---
-title: "Add user rights to end user"
+title: "Add a subscriber and associated right to users"
 weight: 2
 ---
 
@@ -166,30 +166,21 @@ call remove_user_role_on_subscriber('admin@g4it.com', 'SUBSCRIBER-DEMO');
 drop procedure remove_user_role_on_subscriber;
 ```
 
-## Add azure storage account for subscriber
-
+## Add storage account for subscriber
 Each subscriber’s organization has an isolated and dedicated substructure in the platform’s storage container that is specific to the subscriber, in which the G4IT platform deposits.
 
-1. Update .tfvars file in azure infra to add new account details in accounts_config property.
+At infra level make sure to create a storage account for the subscriber. If azure infra is used, follow the steps below:
+
+1. update the variable: accounts_config in vars/$env.tfvars file by adding
 ```sql
 accounts_config = [
-{
-secret_name  = "--INTERNAL-G4IT--",
-account_name = "internalg4it",
-type         = "ZRS"
-},
-{
-secret_name  = "SOPRA-STERIA-GROUP",
-account_name = "sopragroup",
-type         = "ZRS"
-},
-{
-secret_name  = "SUBSCRIBER-DEMO",
-account_name = "subdm",
-type         = "ZRS"
-}
+  {
+    secret_name  = "<THE-SUBSCRIBER-NAME>",  # Real subscriber name, in UPPER-KEBAB-CASE
+    account_name = "<theinternalname>" ,     # Internal account name !!! max 14 characters !!!
+    type         = "<STORAGE-TYPE>" ,        # ZRS or LRS
+  }
 ]
 ```
 
-2. Run infra pipeline to create the storage account in azure. For more details go to https://dep-docs.apps.ocp4.innershift.sodigital.io/docs/platforms/azure/restriction-policies/storage-account-restrictions/
+2. Execute the pipeline with the target Environment
 
