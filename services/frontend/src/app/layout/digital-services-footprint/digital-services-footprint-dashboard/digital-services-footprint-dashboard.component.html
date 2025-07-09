@@ -28,24 +28,20 @@
                 </button>
             </div>
         </p-card>
-        <p-scrollPanel [style]="{ height: '55vh' }">
-            <div class="flex flex-column gap-2 w-full">
-                @for (impact of impacts; track $index) {
-                    <app-impact-button
-                        [impact]="impact.name"
-                        [impactText]="impact.title"
-                        [impactUnite]="impact.unite"
-                        [value]="
-                            selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw
-                        "
-                        [selectedCriteria]="selectedCriteria"
-                        [selectedUnit]="selectedUnit"
-                        [disabled]="onlyOneCriteria"
-                        (selectedCriteriaChange)="handleChartChange($event)"
-                    ></app-impact-button>
-                }
-            </div>
-        </p-scrollPanel>
+        <div class="flex flex-column gap-2 w-full">
+            @for (impact of impacts; track $index) {
+                <app-impact-button
+                    [impact]="impact.name"
+                    [impactText]="impact.title"
+                    [impactUnite]="impact.unite"
+                    [value]="selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw"
+                    [selectedCriteria]="selectedCriteria"
+                    [selectedUnit]="selectedUnit"
+                    [disabled]="onlyOneCriteria"
+                    (selectedCriteriaChange)="handleChartChange($event)"
+                ></app-impact-button>
+            }
+        </div>
     </div>
     <div class="digital-service-chart-container col-12 lg:col-8">
         <div *ngIf="chartType() == 'bar' && barChartChild == true" class="flex">
@@ -166,7 +162,6 @@
         <app-information-card
             [title]="getTitleOrContent('digital-services-card-title')"
             [content]="getTitleOrContent('digital-services-card-content')"
-            [isLong]="true"
             class="mt-5 block"
         ></app-information-card>
     </div>

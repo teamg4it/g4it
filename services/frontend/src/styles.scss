@@ -506,16 +506,8 @@ main {
 /* Footprint page */
 
 .footprint-dashboard-container {
-    margin-top: 25px;
-    display: grid;
-    grid-template-columns: 60% 38%;
-    grid-gap: 30px;
-}
-
-.footprint-dashboard-container-app-criteria {
-    display: grid;
-    grid-template-columns: 70% 28%;
-    grid-gap: 30px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .chart-container {
