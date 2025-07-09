@@ -148,6 +148,12 @@ export interface TerminalsType {
     lifespan: number;
 }
 
+export interface EcomindType {
+    code: string;
+    value: string;
+    lifespan: number;
+}
+
 export interface NetworkType {
     code: string;
     value: string;
