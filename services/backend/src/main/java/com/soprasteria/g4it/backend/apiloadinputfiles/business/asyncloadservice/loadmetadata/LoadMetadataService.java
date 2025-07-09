@@ -49,11 +49,11 @@ public class LoadMetadataService {
      * Load the metadata file
      *
      * @param fileToLoad : the file to load
-     * @param context    : the inventory file loading context
+     * @param context    : the file loading context
      */
     public void loadMetadataFile(FileToLoad fileToLoad, Context context) {
 
-        log.info("Load inventory metadata for file {} {}", fileToLoad.getFilename(), context.log());
+        log.info("Load metadata for file {} {}", fileToLoad.getFilename(), context.log());
 
         IMetadataLoaderService retrieveMetadataLoaderService = retrieveMetadataLoaderService(fileToLoad.getFileType());
 
@@ -73,7 +73,7 @@ public class LoadMetadataService {
             List<Object> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
             for (CSVRecord csvRecord : records) {
-                objects.add(mapCsvToInMetadataObject(csvRecord, context.getInventoryId(), fileToLoad.getFileType()));
+                objects.add(mapCsvToInMetadataObject(csvRecord, context.getInventoryId(), context.getDigitalServiceUid(), fileToLoad.getFileType()));
                 if (row >= Constants.BATCH_SIZE) {
                     retrieveMetadataLoaderService.execute(context, fileToLoad, pageNumber, objects);
                     objects.clear();
@@ -99,13 +99,13 @@ public class LoadMetadataService {
      * @param fileType    : the file type
      * @return The mapped Rest Object
      */
-    private Object mapCsvToInMetadataObject(CSVRecord csvRecord, Long inventoryId, FileType fileType) {
+    private Object mapCsvToInMetadataObject(CSVRecord csvRecord, Long inventoryId, String digitalServiceUid, FileType fileType) {
         Object mappedObject = null;
         switch (fileType) {
-            case DATACENTER -> mappedObject = csvToInMapper.csvInDatacenterToRest(csvRecord, inventoryId);
+            case DATACENTER -> mappedObject = csvToInMapper.csvInDatacenterToRest(csvRecord, inventoryId, digitalServiceUid);
             case EQUIPEMENT_PHYSIQUE ->
-                    mappedObject = csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, inventoryId);
-            case EQUIPEMENT_VIRTUEL -> mappedObject = csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, inventoryId);
+                    mappedObject = csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, inventoryId, digitalServiceUid);
+            case EQUIPEMENT_VIRTUEL -> mappedObject = csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, inventoryId, digitalServiceUid);
             case APPLICATION -> mappedObject = csvToInMapper.csvInApplicationToRest(csvRecord, inventoryId);
         }
         return mappedObject;

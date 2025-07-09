@@ -74,7 +74,7 @@ public class AdministratorActionsService {
 
             List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
             if (!physicalEquipments.isEmpty()) {
-                Optional<Task> tasks = taskRepository.findByDigitalServiceUid(digitalService.getUid());
+                Optional<Task> tasks = taskRepository.findByDigitalService(digitalService);
                 if (tasks.isPresent()) {
                     Task task = tasks.get();
                     int day = task.getLastUpdateDate().getDayOfMonth();

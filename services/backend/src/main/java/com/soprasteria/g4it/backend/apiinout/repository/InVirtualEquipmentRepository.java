@@ -140,6 +140,9 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     @Transactional
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
 
     List<InVirtualEquipment> findByDigitalServiceUid(final String digitalServiceUid, final Pageable pageable);
 

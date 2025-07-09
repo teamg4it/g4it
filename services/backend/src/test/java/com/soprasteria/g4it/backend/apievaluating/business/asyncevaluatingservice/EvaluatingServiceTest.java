@@ -135,7 +135,6 @@ class EvaluatingServiceTest {
         when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
 
         when(digitalService.getCriteria()).thenReturn(null);
-        when(digitalService.getUid()).thenReturn(DIGITAL_SERVICE_UID);
 
         Task result = evaluatingService.evaluatingDigitalService(SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
 
@@ -165,7 +164,6 @@ class EvaluatingServiceTest {
         when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
 
         when(digitalService.getCriteria()).thenReturn(null);
-        when(digitalService.getUid()).thenReturn(DIGITAL_SERVICE_UID);
 
         Task result = evaluatingService.evaluatingDigitalService(SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
 

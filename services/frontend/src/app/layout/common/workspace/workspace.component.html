@@ -1,62 +1,9 @@
 <div pFocusTrap class="app-workspace">
-    @if (spaceDetails && spaceDetails["menu"] && getValidMenu().length > 1) {
-        <ul class="space-menu">
-            @for (
-                spaceMenu of spaceDetails["menu"];
-                track $index;
-                let panelIndex = $index
-            ) {
-                @if (!spaceMenu["hidden"]) {
-                    <li
-                        [id]="'space-menu-item-' + panelIndex"
-                        class="space-menu-item"
-                        [ngClass]="{
-                            active: spaceMenu.active,
-                            disabled:
-                                panelIndex > 0 &&
-                                spaceForm.get(
-                                    spaceDetails['form'][panelIndex - 1]['name']
-                                )?.invalid,
-                        }"
-                        (click)="selectTab(panelIndex)"
-                        [tabindex]="
-                            panelIndex > 0 &&
-                            spaceForm.get(spaceDetails['form'][panelIndex - 1]['name'])
-                                ?.invalid
-                                ? -1
-                                : 0
-                        "
-                        (keydown)="handleKeydown($event, panelIndex)"
-                    >
-                        <p class="space-menu-sub-title">{{ spaceMenu.subTitle }}</p>
-                        <p class="space-menu-title">{{ spaceMenu.title }}</p>
-                        <!-- Not valid field  OR  optional field with empty value -->
-                        @if (
-                            spaceForm.get(spaceDetails["form"][panelIndex]["name"])
-                                ?.invalid ||
-                            (spaceMenu["optional"] &&
-                                (spaceForm.get(spaceDetails["form"][panelIndex]["name"])
-                                    ?.value === "" ||
-                                    spaceForm.get(
-                                        spaceDetails["form"][panelIndex]["name"]
-                                    )?.value === null))
-                        ) {
-                            <p class="space-menu-description">
-                                {{ spaceMenu.description }}
-                                <i [ngClass]="spaceMenu['iconClass']"></i>
-                            </p>
-                        } @else {
-                            <!-- Mandatory valid field  OR  optional field without empty value -->
-                            <p class="space-menu-description completed">
-                                {{ "common.workspace.completed" | translate }}
-                                <i class="pi pi-check-circle"></i>
-                            </p>
-                        }
-                    </li>
-                }
-            }
-        </ul>
-    }
+    <app-form-nav
+        [spaceDetails]="spaceDetails"
+        [spaceForm]="spaceForm"
+        (tabSelected)="selectTab($event)"
+    ></app-form-nav>
     @if (spaceDetails && spaceDetails["form"]) {
         <div class="space-form">
             <h2>{{ "common.workspace.create" | translate }}</h2>

@@ -123,13 +123,13 @@ paths:
       operationId: getEcomindDeviceTypeRef
       responses:
         '200':
-          description: The device type list
+          description: The ecomind type list
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/DeviceTypeRefRest"
+                  $ref: "#/components/schemas/EcomindTypeRefRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '500':

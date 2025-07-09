@@ -25,6 +25,7 @@
         "next": "Next",
         "previous": "Previous",
         "mandatory": "is mandatory",
+        "optional": "Optional",
         "calculate": "CALCULATE",
         "duplicate": "DUPLICATE",
         "add": "Add",
@@ -85,7 +86,8 @@
             "download": "Click to download your result",
             "note": "Note",
             "accordion-open": "Click to show sub domains",
-            "accordion-close": "Click to hide sub domains"
+            "accordion-close": "Click to hide sub domains",
+            "import": "Click to import digital service data"
         },
         "note": {
             "add": "Add a note",
@@ -134,6 +136,7 @@
         "skip-to-main-content": "Skip to Main Content",
         "overgreen-logo": "Overgreen Logo",
         "soprasteria-logo": "Sopra Steria logo",
+        "no-document-upload": "No document uploaded",
         "workspace": {
             "create": "Create new workspace",
             "mandatory": "Mandatory",
@@ -193,7 +196,8 @@
         "return": "Return to my digital services list",
         "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",
         "delete-criteria": "Delete digital service {{digitalServiceName}}",
-        "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}"
+        "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}",
+        "import": "Import"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",
@@ -396,7 +400,28 @@
         "energy-efficiency": "Energy efficiency",
         "location": "Location"
     },
-
+    "digital-services-import": {
+        "import": "Import Data",
+        "non-cloud-text": "Please proceed with loading the CSV files that contain details about the infrastructure, specifically data centers, servers, and virtual machines.",
+        "cloud-text": "Please proceed with loading the CSV files that contain details about the cloud infrastructure as a service (IaaS).",
+        "template-text": "If required, you may download the template to assist you in creating new files.",
+        "templates": {
+            "datacenter-template-file": "Datacenter template file",
+            "physical-template-file": "Physical equipment template file",
+            "virtual-template-file": "Virtual equipment template file",
+            "type-size": "({{type}}, {{size}} KB)"
+        },
+        "add-files": "Add files",
+        "non-cloud-server-upload-info": "Non-cloud servers uploads info",
+        "cloud-server-upload-info": "Cloud servers uploads info",
+        "finish": "Finish",
+        "start-upload": "Start upload",
+        "date": "Date",
+        "time": "Time",
+        "status": "Status",
+        "rejected-files": "Rejected files",
+        "browse-file": "Browse File"
+    },
     "welcome-page": {
         "title": "Welcome Page",
         "name": "Home",
@@ -419,7 +444,7 @@
         },
         "eco-mind-ai": {
             "title": "EcoMind AI",
-            "description": "Calculate the impact of a digital service involves three levels: the end-user terminals, the volume of data passing through the network, and the hosting infrastructures.",
+            "description": "Calculate the impact of a service integrating an AI algorithm, guide early choices to reduce it through best practices, and ensure its monitoring throughout the project.",
             "button": "Go to Service",
             "button-disabled": "Ask for support"
         }

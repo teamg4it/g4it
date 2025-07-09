@@ -6,10 +6,10 @@ import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
-import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.EcomindTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
@@ -24,7 +24,10 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InAiInfrastructureRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -108,11 +111,11 @@ class AiInfraServiceTest {
 
         // Setup AiInfraBO
         inAiInfrastructureBO = InAiInfrastructureBO.builder().build();
-        DeviceTypeBO deviceTypeBO = new DeviceTypeBO();
-        deviceTypeBO.setCode("laptop-3");
-        deviceTypeBO.setLifespan(5.0);
-        deviceTypeBO.setValue("Laptop");
-        inAiInfrastructureBO.setInfrastructureType(deviceTypeBO);
+        EcomindTypeBO ecomindTypeBO = new EcomindTypeBO();
+        ecomindTypeBO.setCode("laptop-3");
+        ecomindTypeBO.setLifespan(5.0);
+        ecomindTypeBO.setValue("Laptop");
+        inAiInfrastructureBO.setInfrastructureType(ecomindTypeBO);
         inAiInfrastructureBO.setLocation("Paris");
         inAiInfrastructureBO.setPue(1.5);
         inAiInfrastructureBO.setNbCpuCores(8L);
@@ -193,16 +196,16 @@ class AiInfraServiceTest {
         pe.setCpuCoreNumber(16.0);
         pe.setSizeMemoryGb(64.0);
 
-        DeviceTypeRef deviceTypeRef = new DeviceTypeRef();
-        deviceTypeRef.setReference("laptop-3");
-        deviceTypeRef.setLifespan(5.0);
-        deviceTypeRef.setDescription("Laptop");
+        EcomindTypeRef ecomindTypeRef = new EcomindTypeRef();
+        ecomindTypeRef.setReference("laptop-3");
+        ecomindTypeRef.setLifespan(5.0);
+        ecomindTypeRef.setDescription("Laptop");
 
         when(digitalServiceService.getDigitalService(uid)).thenReturn(mockDigitalService);
         when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(entity);
         when(inDatacenterService.getByDigitalService(uid)).thenReturn(List.of(dc));
         when(inPhysicalEquipmentService.getByDigitalService(uid)).thenReturn(List.of(pe));
-        when(digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode())).thenReturn(deviceTypeRef);
+        when(digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode())).thenReturn(ecomindTypeRef);
         when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(inAiInfrastructure);
         when(inAiInfrastructureMapper.entityToBO(inAiInfrastructure)).thenReturn(inAiInfrastructureBO);
 
@@ -246,12 +249,12 @@ class AiInfraServiceTest {
                 .thenReturn(Optional.of(new DigitalService()));
 
         // Mock mapping BO
-        DeviceTypeBO deviceTypeBO = new DeviceTypeBO();
-        deviceTypeBO.setCode("laptop-3");
-        deviceTypeBO.setLifespan(5.0);
-        deviceTypeBO.setValue("Laptop");
+        EcomindTypeBO ecomindTypeBO = new EcomindTypeBO();
+        ecomindTypeBO.setCode("laptop-3");
+        ecomindTypeBO.setLifespan(5.0);
+        ecomindTypeBO.setValue("Laptop");
         InAiInfrastructureBO bo = InAiInfrastructureBO.builder()
-                .infrastructureType(deviceTypeBO)
+                .infrastructureType(ecomindTypeBO)
                 .location("Paris")
                 .pue(1.3)
                 .nbCpuCores(16L)

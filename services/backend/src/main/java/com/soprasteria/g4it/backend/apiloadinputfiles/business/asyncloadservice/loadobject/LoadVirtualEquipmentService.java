@@ -76,7 +76,10 @@ public class LoadVirtualEquipmentService {
         virtualEquipmentNames.clear();
         // Delete existing virtual equipments and its sub objects
         final Set<String> names = virtualEquipments.stream().map(InVirtualEquipmentRest::getName).collect(Collectors.toSet());
-        inVirtualEquipmentRepository.deleteByInventoryIdAndNameIn(context.getInventoryId(), names);
+        if(null != context.getInventoryId()){
+            inVirtualEquipmentRepository.deleteByInventoryIdAndNameIn(context.getInventoryId(), names);
+        }
+        else inVirtualEquipmentRepository.deleteByDigitalServiceUidAndNameIn(context.getDigitalServiceUid(), names);
 
         //set country code and workload for cloud services
         Map<String, String> countryMap = boaviztapiService.getCountryMap();

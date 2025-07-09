@@ -49,10 +49,11 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
     @Override
     public ResponseEntity<Resource> downloadTemplatesFile(String subscriber,
                                                           Long organizationId,
-                                                          String name) {
-        final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_ORGANIZATION), FileFolder.TEMPLATE.getFolderName(), name);
+                                                          String name, final String module) {
+        FileFolder templateFolder =  FileFolder.IS_TEMPLATE.getFolderName().equals(module) ? FileFolder.IS_TEMPLATE : FileFolder.DS_TEMPLATE;
+        final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_ORGANIZATION), templateFolder.getFolderName(), name);
         try {
-            InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_SUBSCRIBER, Constants.INTERNAL_ORGANIZATION, FileFolder.TEMPLATE, name);
+            InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_SUBSCRIBER, Constants.INTERNAL_ORGANIZATION, templateFolder, name);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (BlobStorageException e) {
             if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {
@@ -73,9 +74,10 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
      */
     @Override
     public ResponseEntity<List<FileDescriptionRest>> getTemplateFiles(final String subscriber,
-                                                                      final Long organizationId) {
+                                                                      final Long organizationId,
+                                                                      final String module) {
         try {
-            return ResponseEntity.ok().body(fileSystemService.listTemplatesFiles());
+            return ResponseEntity.ok().body(fileSystemService.listTemplatesFiles(module));
         } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while get file: " + e.getMessage());
         }
