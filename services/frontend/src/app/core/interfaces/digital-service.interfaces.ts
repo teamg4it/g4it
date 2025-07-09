@@ -152,6 +152,11 @@ export interface EcomindType {
     code: string;
     value: string;
     lifespan: number;
+    defaultCpuCores: number;
+    defaultGpuCount: number;
+    defaultGpuMemory: number;
+    defaultRamSize: number;
+    defaultDatacenterPue: number;
 }
 
 export interface NetworkType {
