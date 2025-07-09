@@ -8,11 +8,12 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.LoadInputFilesService;
-import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
@@ -53,15 +54,14 @@ class LoadInputFilesServiceTest {
 
     @Mock
     private InventoryRepository inventoryRepository;
+    @Mock
+    private DigitalServiceRepository digitalServiceRepository;
 
     @Mock
     private UserRepository userRepository;
 
     @Mock
     private TaskExecutor taskExecutor;
-
-    @Mock
-    private AsyncLoadFilesService asyncLoadFilesService;
 
     @Mock
     private FileSystemService fileSystemService;
@@ -109,6 +109,39 @@ class LoadInputFilesServiceTest {
         verify(taskRepository).save(any(Task.class));
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
+    @Test
+    void digitalServiceLoadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
+        String subscriber = "testSubscriber";
+        Long organizationId = 1L;
+        String digitalServiceUid = "uid";
+        List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
+        List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
+        List<MultipartFile> virtualEquipments = List.of(mock(MultipartFile.class));
+
+        DigitalService digitalService = DigitalService.builder()
+                .uid(digitalServiceUid)
+                .build();
+
+        Organization organization = Organization.builder()
+                .id(organizationId)
+                .name("Test Organization")
+                .build();
+
+        UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+        User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
+
+        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
+        when(organizationService.getOrganizationById(organizationId)).thenReturn(organization);
+        when(taskRepository.findByDigitalServiceAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
+        when(authService.getUser()).thenReturn(userBO);
+        when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
+
+        Task result = loadInputFilesService.loadDigitalServiceFiles(subscriber, organizationId, digitalServiceUid, datacenters, physicalEquipments, virtualEquipments);
+
+        assertNotNull(result);
+        verify(taskRepository).save(any(Task.class));
+        verify(taskExecutor).execute(any(BackgroundTask.class));
+    }
 
     @Test
     void loadFiles_returnsEmptyTask_whenNoFilesProvided() {
@@ -124,7 +157,7 @@ class LoadInputFilesServiceTest {
     }
 
     @Test
-    void restartLoadingFiles_restartsTasks_whenTasksAreStale() {
+    void restartInventory_LoadingFiles_restartsTasks_whenTasksAreStale() {
         Task staleTask = Task.builder()
                 .id(1L)
                 .lastUpdateDate(LocalDateTime.now().minusMinutes(20))
@@ -139,6 +172,31 @@ class LoadInputFilesServiceTest {
                                 .build())
                         .virtualEquipmentCount(1L)
                         .applicationCount(1L)
+                        .build())
+                .build();
+
+        when(taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString()))
+                .thenReturn(List.of(staleTask));
+
+        loadInputFilesService.restartLoadingFiles();
+
+        verify(taskRepository).save(any(Task.class));
+        verify(taskExecutor).execute(any(BackgroundTask.class));
+    }
+    @Test
+    void restartDigitalService_LoadingFiles_restartsTasks_whenTasksAreStale() {
+        Task staleTask = Task.builder()
+                .id(1L)
+                .lastUpdateDate(LocalDateTime.now().minusMinutes(20))
+                .status(TaskStatus.IN_PROGRESS.toString())
+                .type(TaskType.LOADING.toString())
+                .digitalService(DigitalService.builder()
+                        .uid("uid")
+                        .organization(Organization.builder()
+                                .id(1L)
+                                .name("Test Organization")
+                                .subscriber(Subscriber.builder().name("testSubscriber").build())
+                                .build())
                         .build())
                 .build();
 

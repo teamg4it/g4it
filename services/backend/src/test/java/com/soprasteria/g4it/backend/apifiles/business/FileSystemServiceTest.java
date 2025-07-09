@@ -7,25 +7,41 @@
  */
 package com.soprasteria.g4it.backend.apifiles.business;
 
+import com.azure.core.http.HttpResponse;
+import com.azure.storage.blob.models.BlobStorageException;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class FileSystemServiceTest {
 
     @InjectMocks
     FileSystemService fileSystemService;
+    @Mock
+    MultipartFile file;
+    @Mock
+    private FileSystem fileSystem;
+    @Mock
+    private FileStorage fileStorage;
 
     @Test
     void testCheckFiles() {
@@ -74,4 +90,72 @@ class FileSystemServiceTest {
         assertEquals("file.txt", fileSystemService.getFilenameFromUrl("file.txt", 0));
         assertEquals("file.txt", fileSystemService.getFilenameFromUrl("file.txt", 1));
     }
+
+
+    @Test
+    void testDeleteFile_Success() throws Exception {
+        String subscriber = "user";
+        Long orgId = 1L;
+        FileFolder folder = FileFolder.INPUT;
+        String fileUrl = "url/file.txt";
+        String fileName = "file.txt";
+        String expectedPath = "/input/file.txt";
+
+        // Spy getFilenameFromUrl if needed
+        FileSystemService spyService = Mockito.spy(fileSystemService);
+        doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
+
+        when(fileSystem.mount(subscriber, orgId.toString())).thenReturn(fileStorage);
+        when(fileStorage.getFileUrl(folder, fileName)).thenReturn(expectedPath);
+
+        String result = spyService.deleteFile(subscriber, orgId, folder, fileUrl);
+
+        assertEquals(expectedPath, result);
+        verify(fileStorage).delete(folder, fileName);
+    }
+    @Test
+    void testDeleteFile_FileNotFound() throws Exception {
+        String subscriber = "user";
+        Long orgId = 1L;
+        FileFolder folder = FileFolder.INPUT;
+        String fileUrl = "url/file.txt";
+        String fileName = "file.txt";
+        String expectedPath = "/input/file.txt";
+        HttpResponse mockResponse = mock(HttpResponse.class);
+
+        FileSystemService spyService = Mockito.spy(fileSystemService);
+        doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
+
+        when(fileSystem.mount(subscriber, orgId.toString())).thenReturn(fileStorage);
+        when(fileStorage.getFileUrl(folder, fileName)).thenReturn(expectedPath);
+
+        when(mockResponse.getStatusCode()).thenReturn(404);
+        doThrow(new BlobStorageException("Not found", mockResponse, null)).when(fileStorage).delete(folder, fileName);
+
+        String result = spyService.deleteFile(subscriber, orgId, folder, fileUrl);
+
+        assertEquals(expectedPath, result);
+    }
+
+    @Test
+    void testDeleteFile_OtherException() throws Exception {
+        String subscriber = "user";
+        Long orgId = 1L;
+        FileFolder folder = FileFolder.INPUT;
+        String fileUrl = "url/file.txt";
+        String fileName = "file.txt";
+        String expectedPath = "/input/file.txt";
+
+        FileSystemService spyService = Mockito.spy(fileSystemService);
+        doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
+
+        when(fileSystem.mount(subscriber, orgId.toString())).thenReturn(fileStorage);
+        when(fileStorage.getFileUrl(folder, fileName)).thenReturn(expectedPath);
+        doThrow(new IOException("IO Error")).when(fileStorage).delete(folder, fileName);
+
+        String result = spyService.deleteFile(subscriber, orgId, folder, fileUrl);
+
+        assertEquals(expectedPath, result);
+    }
 }
+

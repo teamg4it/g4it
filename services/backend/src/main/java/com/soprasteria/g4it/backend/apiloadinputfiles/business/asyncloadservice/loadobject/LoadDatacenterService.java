@@ -71,7 +71,11 @@ public class LoadDatacenterService {
 
         // Delete existing datacenters present in csv
         Set<String> datacenterNames = datacenters.stream().map(InDatacenterRest::getName).collect(Collectors.toSet());
+        if(null != context.getInventoryId()){
         inDatacenterRepository.deleteByInventoryIdAndNameIn(context.getInventoryId(), datacenterNames);
+        }
+       else
+           inDatacenterRepository.deleteByDigitalServiceUidAndNameIn(context.getDigitalServiceUid(), datacenterNames);
 
         // Load data into database
         inDatacenterRepository.saveAll(datacentersToSave);

@@ -16,6 +16,8 @@ export const environment = {
         "digital-services",
         "eco-mind-ai",
         "template-files",
+        "download-reject",
+        "task",
     ],
     apiBaseUrl: "",
     frontEndUrl: "http://localhost:4200",
