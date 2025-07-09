@@ -6,7 +6,7 @@ import { MessageService } from "primeng/api";
 import { lastValueFrom, Subscription } from "rxjs";
 import {
     DigitalService,
-    TerminalsType,
+    EcomindType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -26,7 +26,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     locationOptions: { label: string; value: string }[] = [];
     digitalService: DigitalService = {} as DigitalService;
     public userService = inject(UserService);
-    typesOptions: TerminalsType[] = [];
+    typesOptions: EcomindType[] = [];
 
     constructor(
         private readonly fb: FormBuilder,

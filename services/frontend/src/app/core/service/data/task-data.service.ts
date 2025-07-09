@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 import { TaskRest } from "../../interfaces/inventory.interfaces";
 
-const endpoint = Constants.ENDPOINTS.inventories;
+const endpoint = Constants.ENDPOINTS.task;
 
 @Injectable({
     providedIn: "root",
@@ -19,7 +19,7 @@ const endpoint = Constants.ENDPOINTS.inventories;
 export class TaskDataService {
     constructor(private http: HttpClient) {}
 
-    getTask(inventoryId: number, taskId: number): Observable<TaskRest> {
-        return this.http.get<TaskRest>(`${endpoint}/${inventoryId}/task/${taskId}`);
+    getTask(taskId: number): Observable<TaskRest> {
+        return this.http.get<TaskRest>(`${endpoint}/${taskId}`);
     }
 }

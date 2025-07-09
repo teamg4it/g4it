@@ -25,6 +25,7 @@
         "next": "Suivant",
         "previous": "Précédent",
         "mandatory": "est obligatoire",
+        "optional": "Optionnel",
         "calculate": "CALCULER",
         "duplicate": "DUPLIQUER",
         "add": "Ajouter",
@@ -84,7 +85,8 @@
             "download": "Cliquez pour télécharger les résultats",
             "note": "Note",
             "accordion-open": "Cliquez pour afficher les sous-domaines",
-            "accordion-close": "Cliquez pour masquer les sous-domaines"
+            "accordion-close": "Cliquez pour masquer les sous-domaines",
+            "import": "Cliquez pour importer les données de service numériques"
         },
         "note": {
             "add": "Ajouter note",
@@ -133,6 +135,7 @@
         "skip-to-main-content": "Accéder au contenu principal",
         "overgreen-logo": "Overgreen Logo",
         "soprasteria-logo": "Sopra Steria Logo",
+        "no-document-upload": "Aucun document téléchargé",
         "workspace": {
             "create": "Créer un nouvel espace de travail",
             "mandatory": "Obligatoire",
@@ -191,7 +194,8 @@
         "return": "Retourner à la liste de mes services numériques",
         "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",
         "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
-        "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
+        "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}",
+        "import": "Importer"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
@@ -396,7 +400,28 @@
         "energy-efficiency": "Efficacité énergétique",
         "location": "Localisation"
     },
-
+    "digital-services-import": {
+        "import": "Importer des données",
+        "non-cloud-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur l'infrastructure, en particulier les centres de données, les serveurs et les machines virtuelles.",
+        "cloud-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur l'infrastructure cloud en tant que service (IaaS).",
+        "template-text": "Si nécessaire, vous pouvez télécharger le modèle pour vous aider à créer de nouveaux fichiers.",
+        "templates": {
+            "datacenter-template-file": "Fichier de modèle de centre de données",
+            "physical-template-file": "Fichier modèle d'équipement physique",
+            "virtual-template-file": "Fichier de modèle d'équipement virtuel",
+            "type-size": "({{type}}, {{size}} Ko )"
+        },
+        "add-files": "Ajouter fichiers",
+        "non-cloud-server-upload-info": "Les serveurs non cloud téléchargent des informations",
+        "cloud-server-upload-info": "Les serveurs cloud téléchargent des informations",
+        "finish": "Finition",
+        "start-upload": "Commencer téléverser",
+        "date": "Date",
+        "time": "Temps",
+        "status": "Statut",
+        "rejected-files": "Fichiers rejetés",
+        "browse-file": "Parcourir fichier"
+    },
     "welcome-page": {
         "title": "Page de bienvenue",
         "name": "Accueil",

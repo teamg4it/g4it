@@ -151,12 +151,19 @@ components:
         format: int64
       required: true
       description: The physical equipment id
+    moduleQueryParam:
+      in: query
+      name: module
+      schema:
+        type: string
+      required: true
+      description: The module name.
     typePathParam:
       in: path
       name: type
       schema:
         type: string
-        enum: [LLM, CLASSIFICATION, REGRESSION]
+        enum: [ LLM, CLASSIFICATION, REGRESSION ]
       required: true
       description: The type of ai.
     stagePathParam:
@@ -164,7 +171,7 @@ components:
       name: stage
       schema:
         type: string
-        enum: [INFERENCE, TRAINING]
+        enum: [ INFERENCE, TRAINING ]
       required: true
       description: The stage of ai which is concerned by the estimation.
 
@@ -631,6 +638,10 @@ components:
         note:
           type: object
           $ref: "#/components/schemas/NoteRest"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskRest"
         isAi:
           type: boolean
           description: Indique si le service digital est un service d’IA
@@ -700,6 +711,24 @@ components:
 
     DeviceTypeRefRest:
       description: Terminal device type referential
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          description: NumEcoEval reference
+          type: string
+          default: laptop-3
+        value:
+          description: Value to display
+          type: string
+          default: Laptop
+        lifespan:
+          description: lifespan of the device
+          type: number
+          format: double
+    EcomindTypeRefRest:
+      description: Ecomind type referential
       type: object
       required:
         - code
@@ -918,7 +947,7 @@ components:
     AiParameterRest:
       description: Estimations and recommendations made for of an AI Parameter
       type: object
-      required: [modelName, nbParameters, framework, quantization]
+      required: [ modelName, nbParameters, framework, quantization ]
       properties:
         id:
           type: integer

@@ -134,6 +134,31 @@ describe("DigitalServicesDataService", () => {
         httpMock.verify();
     });
 
+    it("should get a digital service", () => {
+        const digitalService: DigitalService = {
+            uid: "ds-uuid",
+            name: "Digital Service#1",
+            lastUpdateDate: Date.now(),
+            creationDate: Date.now(),
+            lastCalculationDate: null,
+            networks: [],
+            servers: [],
+            terminals: [],
+            isAi: false,
+        };
+
+        service.getDsTasks(digitalService.uid).subscribe((res) => {
+            expect(res.name).toBe(digitalService.name);
+        });
+
+        const req = httpMock.expectOne(`digital-services/ds-uuid`);
+        expect(req.request.method).toEqual("GET");
+
+        req.flush(digitalService);
+
+        httpMock.verify();
+    });
+
     it("should delete a digital service", () => {
         const digitalService: DigitalService = {
             uid: "ds-uuid",
