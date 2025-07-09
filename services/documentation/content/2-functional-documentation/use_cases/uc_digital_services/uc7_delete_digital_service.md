@@ -64,6 +64,6 @@ participant DataBase
 
 RND ->> front: Click on "Delete" button
 front ->> back: DELETE /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}
-back -> DataBase: Delete the service, corresponding equipments and the indicator data
-back ->> front: Remove the service in the suited list
+back -> DataBase: Delete the digital service, corresponding data from tables in_physical_equipment,<br> in_virtual_equipment, in_datacenter and tasks
+back ->> front: Remove the digital service in the suited list
 {{</ mermaid >}}

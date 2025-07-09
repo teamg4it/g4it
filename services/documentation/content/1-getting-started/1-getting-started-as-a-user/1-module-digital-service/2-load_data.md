@@ -60,19 +60,22 @@ weight: 20
 
 #### **Step 3:** Add a New Device
 
+-   **Action**: Click the "Digital service name" button to rename the digital service.
 -   **Action**: Click the "Add Device" button to create a new device entry.
+
 
 ![Screenshot showing the "Add Device" button for adding new device information.](../media/03_edit_name_create_device.png "Screenshot showing the 'Add Device' button for adding new device information.")
 
 #### **Step 4:** Complete Device Information
 
 -   **Action**: Fill in the required fields for your end-user device:
-    1. **Device Type**
-    2. **Country of Use**: This information will help determine which electricity mix to use when evaluating the impact of usage.
-    3. **Number of Users**
-    4. **Average Usage Per Year**
-    5. **Device Lifespan**
-    6. Click **Add Device** to save your input.
+    1.  **Name**: Assign a unique name to your terminal.
+    2.  **Device Type**
+    3. **Country of Use**: This information will help determine which electricity mix to use when evaluating the impact of usage.
+    4. **Number of Users**
+    5. **Average Usage Per Year**
+    6. **Device Lifespan**
+    7. Click **Add Device** to save your input.
 
 ![Screenshot showing the form to fill in device information, with fields such as device type, country, and usage.](../media/04_add_device.png "Screenshot showing the form to fill in device information, including device type, country, and usage.")
 
@@ -95,9 +98,10 @@ weight: 20
 #### **Step 7:** Complete Network Information
 
 -   **Action**: Fill in the necessary details about the terminal network:
-    1. **Network Type and Location**
-    2. **Annual Data Exchange Volume**
-    3. Click **Add Network** to save.
+    1. **Name**: Assign a unique name to your network.
+    2. **Network Type and Location**
+    3. **Annual Data Exchange Volume**
+    4. Click **Add Network** to save.
 
 ![Screenshot showing the form to fill in network details, including network type, location, and data volume.](../media/07_add_network.png "Screenshot showing a form to fill in network details, including network type, location, and data volume.")
 

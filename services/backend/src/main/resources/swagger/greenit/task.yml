@@ -9,18 +9,17 @@ tags:
     description: All endpoint for task
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/task/{taskId}:
+  /subscribers/{subscriber}/organizations/{organization}/task/{taskId}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/inventoryIdPathParam'
       - $ref: '#/components/parameters/taskIdPathParam'
     get:
       tags:
         - task
       summary: Get a task
       operationId: getTask
-      x-custom-role: "hasRole('INVENTORY_READ')"
+      x-custom-role: "hasRole('INVENTORY_READ') OR hasRole('DIGITAL_SERVICE_READ')"
       responses:
         '200':
           description: Return the task object

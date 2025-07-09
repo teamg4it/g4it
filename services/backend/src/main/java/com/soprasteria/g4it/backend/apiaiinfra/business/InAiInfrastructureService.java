@@ -8,7 +8,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceRef
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.EcomindTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
@@ -82,7 +82,8 @@ public class InAiInfrastructureService {
 
     /**
      * Saves inAiInfrastructureRest information in tables InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure.
-     * @param digitalServiceUid - The digital Service uid
+     *
+     * @param digitalServiceUid      - The digital Service uid
      * @param inAiInfrastructureRest - The Rest object of the inAiInfrastructure
      * @return The new physical equipment
      */
@@ -114,7 +115,7 @@ public class InAiInfrastructureService {
         // dateWithdrawal
         double lifespan = inAiInfrastructureBO.getInfrastructureType().getLifespan().intValue();
         int numberYear = inAiInfrastructureBO.getInfrastructureType().getLifespan().intValue();
-        int month = (int) Math.round((numberYear-lifespan) * 12);
+        int month = (int) Math.round((numberYear - lifespan) * 12);
         inPhysicalEquipmentToCreate.setDateWithdrawal(LocalDate.from(now.plusYears(numberYear).plusMonths(month)));
 
         inPhysicalEquipmentToCreate.setManufacturer("Manufacturer1");
@@ -151,6 +152,7 @@ public class InAiInfrastructureService {
 
     /**
      * Get the InAiInfrastructureBO that was in InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure.
+     *
      * @param digitalServiceUid - The digital service uid
      * @return The InAiInfrastructureBO with all the information
      */
@@ -165,11 +167,11 @@ public class InAiInfrastructureService {
         InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceUid(digitalServiceUid);
 
         InAiInfrastructureBO inAiInfrastructureBO = inAiInfrastructureMapper.entityToBO(inAiInfrastructure);
-        if(inAiInfrastructure != null) {
-            //set the deviceType
-            DeviceTypeRef deviceTypeBO = digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode());
-            inAiInfrastructureBO.getInfrastructureType().setValue(deviceTypeBO.getDescription());
-            inAiInfrastructureBO.getInfrastructureType().setLifespan(deviceTypeBO.getLifespan());
+        if (inAiInfrastructure != null) {
+            //set the ecomind type
+            EcomindTypeRef ecomindTypeRef = digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode());
+            inAiInfrastructureBO.getInfrastructureType().setValue(ecomindTypeRef.getDescription());
+            inAiInfrastructureBO.getInfrastructureType().setLifespan(ecomindTypeRef.getLifespan());
             List<InDatacenterRest> InDatacenter = inDatacenterService.getByDigitalService(digitalServiceUid);
             for (InDatacenterRest inDatacenterRest : InDatacenter) {
                 inAiInfrastructureBO.setPue(inDatacenterRest.getPue());
@@ -187,7 +189,8 @@ public class InAiInfrastructureService {
 
     /**
      * Update inAiInfrastructureRest information in tables InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure
-     * @param digitalServiceUid - The digital service uid
+     *
+     * @param digitalServiceUid      - The digital service uid
      * @param inAiInfrastructureRest - The Rest object of the inAiInfrastructure
      * @return The new physical equipment
      */
@@ -222,7 +225,7 @@ public class InAiInfrastructureService {
         // dateWithdrawal
         double lifespan = inAiInfrastructureBO.getInfrastructureType().getLifespan().intValue();
         int numberYear = inAiInfrastructureBO.getInfrastructureType().getLifespan().intValue();
-        int month = (int) Math.round((numberYear-lifespan) * 12);
+        int month = (int) Math.round((numberYear - lifespan) * 12);
         inPhysicalEquipmentRest.setDateWithdrawal(LocalDate.from(now.plusYears(numberYear).plusMonths(month)));
 
         inPhysicalEquipmentRest.setCpuCoreNumber(Optional.ofNullable(inAiInfrastructureBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));

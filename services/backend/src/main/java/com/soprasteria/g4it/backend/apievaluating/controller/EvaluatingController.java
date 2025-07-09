@@ -9,7 +9,7 @@ package com.soprasteria.g4it.backend.apievaluating.controller;
 
 import com.soprasteria.g4it.backend.apievaluating.business.EvaluatingService;
 import com.soprasteria.g4it.backend.common.task.mapper.TaskMapper;
-import com.soprasteria.g4it.backend.server.gen.api.InventoryEvaluatingApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.EvaluatingApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.TaskIdRest;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @NoArgsConstructor
-public class EvaluatingController implements InventoryEvaluatingApiDelegate {
+public class EvaluatingController implements EvaluatingApiDelegate {
 
     @Autowired
     TaskMapper taskMapper;

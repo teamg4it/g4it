@@ -12,35 +12,13 @@ import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
+import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
 import { User } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
-
-interface SpaceDetails {
-    menu: {
-        title?: string;
-        subTitle?: string;
-        description?: string;
-        iconClass?: string;
-        active?: boolean;
-        hidden?: boolean;
-        optional?: boolean;
-    }[];
-    form: {
-        name: string;
-        label?: string;
-        hintText?: string;
-        type?: string;
-        placeholder?: string;
-        options?: {
-            label?: string;
-            value?: string;
-        };
-    }[];
-}
 
 @Component({
     selector: "app-workspace",
@@ -49,7 +27,7 @@ interface SpaceDetails {
 })
 export class WorkspaceComponent implements OnInit {
     private readonly userDataService = inject(UserDataService);
-    @Input() spaceDetails: SpaceDetails = {
+    @Input() spaceDetails: CustomSidebarMenuForm = {
         menu: [
             {
                 subTitle: this.translate.instant("common.workspace.mandatory"),
@@ -97,12 +75,12 @@ export class WorkspaceComponent implements OnInit {
     existingOrganization: any = [];
 
     constructor(
-        private workspaceService: WorkspaceService,
-        private userService: UserService,
-        private messageService: MessageService,
-        private translate: TranslateService,
-        private router: Router,
-        private administrationService: AdministrationService,
+        private readonly workspaceService: WorkspaceService,
+        private readonly userService: UserService,
+        private readonly messageService: MessageService,
+        private readonly translate: TranslateService,
+        private readonly router: Router,
+        private readonly administrationService: AdministrationService,
     ) {}
 
     spaceForm = new FormGroup({
@@ -209,28 +187,6 @@ export class WorkspaceComponent implements OnInit {
         return this.spaceDetails["menu"].filter((menu) => {
             return menu.hidden !== true;
         });
-    }
-
-    handleKeydown(event: KeyboardEvent, panelIndex: number) {
-        let nextIndex = panelIndex;
-        if (event.key === "ArrowDown" || event.key === "ArrowRight") {
-            nextIndex = panelIndex + 1;
-            this.focusElement("space-menu-item-" + nextIndex);
-        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
-            nextIndex = panelIndex - 1;
-            this.focusElement("space-menu-item-" + nextIndex);
-        } else if (event.key === "Enter" || event.key === " ") {
-            this.selectTab(nextIndex);
-            event.preventDefault();
-        }
-        return;
-    }
-
-    focusElement(elm: string) {
-        if (!document.getElementById(elm)?.classList.contains("disabled")) {
-            document.getElementById(elm)?.focus();
-        }
-        return;
     }
 
     createSpace() {
