@@ -723,14 +723,14 @@ databaseChangeLog:
             UPDATE public.terminal t SET lifespan = (select lifespan from public.ref_device_type rf where rf.id = t.device_type) WHERE lifespan IS NULL;
 
   - changeSet:
-        id: modifyDataType-avgTime-terminal
-        author: G4IT Dev Team
-        changes:
-          - modifyDataType:
-              columnName: yearly_usage_time_per_user
-              newDataType: double
-              schemaName: public
-              tableName: terminal
+      id: modifyDataType-avgTime-terminal
+      author: G4IT Dev Team
+      changes:
+        - modifyDataType:
+            columnName: yearly_usage_time_per_user
+            newDataType: double
+            schemaName: public
+            tableName: terminal
 
   - changeSet:
       id: add-column-criteria-digital_service
@@ -909,3 +909,10 @@ databaseChangeLog:
               - column:
                   name: lifespan
                   valueNumeric: 5
+  - changeSet:
+      id: drop-non-null-user-id-constraint
+      author: G4IT Dev Team
+      changes:
+        - dropNotNullConstraint:
+            tableName: digital_service
+            columnName: user_id

@@ -47,31 +47,29 @@ foreign key(digital_service_uid)
 references digital_service
 on delete cascade;
 
---TODO to be uncommented when these tables are created with ecomind
---alter table in_ai_infrastructure 
---drop constraint "ai_infrastructure_digital_service_fk";
---alter table in_ai_infrastructure
---add constraint "ai_infrastructure_digital_service_fk"
---foreign key(digital_service_uid)
---references digital_service
---on delete cascade;
+alter table in_ai_infrastructure 
+drop constraint "ai_infrastructure_digital_service_fk";
+alter table in_ai_infrastructure
+add constraint "ai_infrastructure_digital_service_fk"
+foreign key(digital_service_uid)
+references digital_service
+on delete cascade;
 
---alter table in_ai_parameters 
---drop constraint "ai_parameter_digital_service_fk";
---alter table in_ai_parameters
---add constraint "ai_parameter_digital_service_fk"
---foreign key(digital_service_uid)
---references digital_service
---on delete cascade;
+alter table in_ai_parameters 
+drop constraint "ai_parameter_digital_service_fk";
+alter table in_ai_parameters
+add constraint "ai_parameter_digital_service_fk"
+foreign key(digital_service_uid)
+references digital_service
+on delete cascade;
 
---alter table out_ai_reco 
---drop constraint "ai_recommendations_digital_service_fk";
---alter table out_ai_reco 
---add constraint "ai_recommendations_digital_service_fk"
---foreign key(digital_service_uid)
---references digital_service
---on delete cascade;
---TODO to be uncommented when these tables are created with ecomind
+alter table out_ai_reco 
+drop constraint "out_ai_reco_task_fk";
+alter table out_ai_reco 
+add constraint "out_ai_reco_task_fk"
+foreign key(task_id)
+references task
+on delete cascade;
 
 alter table note
 drop constraint "created_by_user_fk";
@@ -88,6 +86,62 @@ add constraint "last_updated_by_user_fk"
 foreign key(last_updated_by)
 references g4it_user
 on delete cascade;
+
+alter table g4it_organization 
+drop constraint "org_created_by_user_fk";
+alter table g4it_organization 
+add constraint "org_created_by_user_fk"
+foreign key(created_by)
+references g4it_user
+on delete set null;
+
+alter table g4it_organization 
+drop constraint "org_last_updated_by_user_fk";
+alter table g4it_organization 
+add constraint "org_last_updated_by_user_fk"
+foreign key(last_updated_by)
+references g4it_user
+on delete set null;
+
+alter table digital_service
+drop constraint "digitalservice-user-fk";
+alter table digital_service 
+add constraint "digitalservice-user-fk"
+foreign key(user_id)
+references g4it_user
+on delete set null;
+
+alter table inventory 
+drop constraint "inventory-g4it_user-fk";
+alter table inventory 
+add constraint "inventory-g4it_user-fk"
+foreign key(created_by)
+references g4it_user
+on delete set null;
+
+alter table task 
+drop constraint "task-g4it_user-fk";
+alter table inventory 
+add constraint "task-g4it_user-fk"
+foreign key(created_by)
+references g4it_user
+on delete set null;
+
+alter table g4it_user_subscriber 
+drop constraint "usersubscriber-user-fk";
+alter table g4it_user_subscriber 
+add constraint "usersubscriber-user-fk"
+foreign key(user_id)
+references g4it_user
+on delete cascade;
+
+alter table g4it_user_role_subscriber 
+drop constraint "userrolesubscriber-usersubscriber-fk";
+alter table g4it_user_role_subscriber 
+add constraint "userrolesubscriber-usersubscriber-fk"
+foreign key(user_subscriber_id)
+references g4it_user_subscriber
+on delete cascade;
 ```
 
 3. Execute the delete user procedure : 
@@ -98,8 +152,8 @@ as $$
 declare
 	user_email varchar;
 	rec record;
-	org_name varchar;
 	subscriber_name varchar;
+	sub_rec record;
 begin
 	foreach user_email in array users
 	loop
@@ -128,7 +182,7 @@ begin
 					where inv.organization_id = rec.organization_id;
 					insert into user_deletion_logs(date, user_email, message)
 					values (now(), user_email, 'Inventories linked to organization ' || rec.organization_id || ' have been deleted');
-						
+	
 					delete from digital_service ds
 					where ds.organization_id = rec.organization_id;
 					insert into user_deletion_logs(date, user_email, message)
@@ -177,24 +231,6 @@ begin
 					else
 						insert into user_deletion_logs(date, user_email, message)
 						values (now(), user_email, 'User ' || user_email || ' is not the only administrator of organization ' || rec.organization_id || ' or is just a member' );
-					
-						-- deletion of inventories linked to the user
-						delete from inventory inv
-						using g4it_user u
-						where inv.organization_id = rec.organization_id
-						and inv.created_by = u.id
-						and u.email = user_email;
-						insert into user_deletion_logs(date, user_email, message)
-						values (now(), user_email, 'Inventories of user ' || user_email || ' linked to organization ' || rec.organization_id || ' have been deleted');
-						
-						-- deletion of digital services not shared with other users
-						delete from digital_service as ds 
-						using g4it_user u
-						where ds.user_id = u.id
-						and u.email = user_email
-						and ds.organization_id = rec.organization_id;
-						insert into user_deletion_logs(date, user_email, message)
-						values (now(), user_email, 'Digital services not shared with other users by user ' || user_email || ' have been deleted');
 	
 						-- deletion g4it_user_role_organization row
 						delete from g4it_user_role_organization
@@ -216,20 +252,6 @@ begin
 				
 				insert into user_deletion_logs(date, user_email, message)
 				values (now(), user_email, user_email || ' is not linked to an organization anymore - link with subscriber can be deleted');
-
-				-- deletion of g4it_user_role_subscriber row
-				delete from g4it_user_role_subscriber giurs
-				using g4it_user_subscriber gius
-				where gius.user_id = rec.user_id
-				and giurs.user_subscriber_id = gius.id;
-				insert into user_deletion_logs(date, user_email, message)
-				values (now(), user_email, 'User role in subscriber ' || rec.subscriber_id || ' has been deleted');
-
-				-- deletion of g4it_user_subscriber row
-				delete from g4it_user_subscriber 
-				where user_id = rec.user_id;
-				insert into user_deletion_logs(date, user_email, message)
-				values (now(), user_email, 'Link between user ' || user_email || ' and subscriber ' || rec.subscriber_id || ' has been deleted');
 
 				delete from g4it_user
 				where email = user_email;
