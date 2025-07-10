@@ -19,7 +19,6 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { KeycloakService } from "keycloak-angular";
 import { Subscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     Organization,
@@ -45,7 +44,6 @@ export class LeftSidebarComponent implements OnInit {
     private readonly router = inject(Router);
     public userService = inject(UserService);
     private readonly translate = inject(TranslateService);
-    private readonly keycloak = inject(KeycloakService);
     constants = Constants;
     homeTitle = computed(() =>
         this.getTitle("welcome-page.title", this.constants.WELCOME_PAGE),
