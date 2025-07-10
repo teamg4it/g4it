@@ -7,7 +7,9 @@
             class="label-input w-11rem h-3rem min-w-0"
             locale="fr-FR"
             id="{{ type.key }}Name"
+            [label]="type.key"
         />
+        <label for="{{ type.key }}Name">{{ type.key }}</label>
         <p-fileUpload
             (onSelect)="onSelectFile($event, type.key)"
             styleClass="cancel-creation-button uppercase mx-2 h-3rem font-bold"

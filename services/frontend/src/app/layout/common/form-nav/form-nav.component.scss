@@ -44,7 +44,7 @@
 
     &.active {
         background-color: var(--light-green-color);
-        color: var(--light-grey-color);
+        color: #ffffff;
     }
 
     .space-menu-title {
@@ -56,7 +56,9 @@
 .space-menu-item:not(.active) {
     .space-menu-sub-title,
     .space-menu-description {
-        color: #737673;
+        opacity: 1;
+        color: #333333;
+        background-color: rgb(224, 224, 224);
     }
 
     .space-menu-description.completed {

@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { lastValueFrom } from "rxjs";
+import { firstValueFrom, lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
     FileDescription,
@@ -23,8 +23,10 @@ import { Organization, Subscriber } from "src/app/core/interfaces/user.interface
 import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { Constants } from "src/constants";
 
 @Component({
@@ -37,6 +39,8 @@ export class DigitalServicesImportComponent {
     private readonly destroyRef = inject(DestroyRef);
     protected readonly userService = inject(UserService);
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);
+    private readonly inDatacentersService = inject(InDatacentersService);
+    public readonly digitalServiceStore = inject(DigitalServiceStoreService);
     importDetails: CustomSidebarMenuForm = {
         menu: [
             {
@@ -165,6 +169,9 @@ export class DigitalServicesImportComponent {
         const lastTaskStatus = this.tasks[this.tasks.length - 1]?.status;
         this.toReloadDigitalService =
             Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(lastTaskStatus);
+        if (!this.toReloadDigitalService) {
+            this.callInputApis();
+        }
     }
 
     async loopLoadInventories() {
@@ -175,6 +182,15 @@ export class DigitalServicesImportComponent {
                 await this.getDigitalServiceStatus();
             }
         }, this.waitingLoop);
+    }
+
+    async callInputApis(): Promise<void> {
+        const inDatacenters = await firstValueFrom(
+            this.inDatacentersService.get(this.digitalServicesId),
+        );
+        this.digitalServiceStore.setInDatacenters(inDatacenters);
+        this.digitalServiceStore.initInPhysicalEquipments(this.digitalServicesId);
+        this.digitalServiceStore.initInVirtualEquipments(this.digitalServicesId);
     }
 
     getClassStatus(status: string, isCss: boolean): string {
