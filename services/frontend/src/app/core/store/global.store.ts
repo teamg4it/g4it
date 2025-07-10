@@ -42,6 +42,6 @@ export class GlobalStoreService {
 
     readonly mobileView = computed(() => this.isMobileSignal());
     setIsMobile(mobile: boolean) {
-        this.isMobileSignal.update((s) => (s = mobile));
+        this.isMobileSignal.update(() => mobile);
     }
 }

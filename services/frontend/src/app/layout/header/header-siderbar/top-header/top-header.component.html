@@ -201,7 +201,7 @@
     </div>
     @if (isMobile()) {
         <div class="flex align-items-center gap-2 ml-2 mobile-menu">
-            <div class="mini-menu-icon" (click)="showDialog()"></div>
+            <button class="mini-menu-icon" (click)="showDialog()"></button>
             <p-dialog
                 [modal]="true"
                 [(visible)]="dialogVisible"
@@ -347,7 +347,7 @@
                         name="language"
                         value="en"
                         [(ngModel)]="selectedLanguage"
-                        (click)="changeLanguage('en')"
+                        (onClick)="changeLanguage('en')"
                         aria-labelledby="enLabel"
                     ></p-radioButton>
                     <label
