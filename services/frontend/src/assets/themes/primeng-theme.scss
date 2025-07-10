@@ -2552,6 +2552,19 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border-color: transparent;
 }
 
+.p-button:not([disabled]).p-button-secondary-blue {
+    color: var(--blue-color);
+    border: 2px solid var(--blue-color);
+    background: var(--surface-0);
+}
+
+.p-button:not([disabled]).p-button-secondary-blue:hover,
+.p-button:not([disabled]).p-button-secondary-blue:focus,
+.p-button:not([disabled]).p-button-secondary-blue:active {
+    color: var(--surface-0);
+    background: var(--blue-color);
+}
+
 .p-speeddial-button.p-button.p-button-icon-only {
     width: 4rem;
     height: 4rem;

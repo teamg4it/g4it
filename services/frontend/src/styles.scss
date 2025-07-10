@@ -1206,3 +1206,7 @@ app-useful-information {
     display: flex;
     justify-content: flex-end;
 }
+
+.multi-file-import .p-fileupload .p-button-icon {
+    display: none;
+}

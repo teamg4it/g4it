@@ -7,6 +7,7 @@
  */
 
 import { DropdownValue } from "./generic.interfaces";
+import { TaskRest } from "./inventory.interfaces";
 import { Note } from "./note.interface";
 
 export interface DigitalService {
@@ -23,6 +24,7 @@ export interface DigitalService {
     criteria?: string[];
     creator?: DigitalServiceUserInfo;
     isAi?: boolean;
+    tasks?: TaskRest[];
 }
 
 export interface DigitalServiceUserInfo {

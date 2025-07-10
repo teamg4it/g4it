@@ -1,0 +1,53 @@
+@if (spaceDetails && spaceDetails["menu"] && getValidMenu().length > 1) {
+    <ul class="space-menu w-18rem h-full">
+        @for (spaceMenu of spaceDetails["menu"]; track $index; let panelIndex = $index) {
+            @if (!spaceMenu["hidden"]) {
+                <li
+                    [id]="'space-menu-item-' + panelIndex"
+                    class="space-menu-item"
+                    [ngClass]="{
+                        active: spaceMenu.active,
+                        disabled:
+                            panelIndex > 0 &&
+                            spaceForm.get(spaceDetails['form'][panelIndex - 1]['name'])
+                                ?.invalid &&
+                            !spaceMenu.optional,
+                    }"
+                    (click)="selectTab(panelIndex)"
+                    [tabindex]="
+                        panelIndex > 0 &&
+                        spaceForm.get(spaceDetails['form'][panelIndex - 1]['name'])
+                            ?.invalid
+                            ? -1
+                            : 0
+                    "
+                    (keydown)="handleKeydown($event, panelIndex)"
+                >
+                    <p class="space-menu-sub-title">{{ spaceMenu.subTitle }}</p>
+                    <p class="space-menu-title">{{ spaceMenu.title }}</p>
+                    <!-- Not valid field OR optional field with empty value -->
+                    @if (
+                        spaceForm.get(spaceDetails["form"][panelIndex]["name"])
+                            ?.invalid ||
+                        (spaceMenu["optional"] &&
+                            (spaceForm.get(spaceDetails["form"][panelIndex]["name"])
+                                ?.value === "" ||
+                                spaceForm.get(spaceDetails["form"][panelIndex]["name"])
+                                    ?.value === null))
+                    ) {
+                        <p class="space-menu-description">
+                            {{ spaceMenu.description }}
+                            <i [ngClass]="spaceMenu['iconClass']"></i>
+                        </p>
+                    } @else {
+                        <!-- Mandatory valid field OR optional field without empty value -->
+                        <p class="space-menu-description completed">
+                            {{ "common.workspace.completed" | translate }}
+                            <i class="pi pi-check-circle"></i>
+                        </p>
+                    }
+                </li>
+            }
+        }
+    </ul>
+}

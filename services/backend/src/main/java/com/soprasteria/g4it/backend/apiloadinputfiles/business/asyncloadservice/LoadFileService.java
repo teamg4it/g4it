@@ -156,10 +156,11 @@ public class LoadFileService {
                 .collect(groupingBy(LineError::line, mapping(LineError::error, toList())));
 
         String rejectedFileName = String.join("_", REJECTED, fileType.getFileName(), context.getDatetime().format(Constants.FILE_DATE_TIME_FORMATTER)) + Constants.CSV;
+        String pathId = context.getInventoryId() != null ? String.valueOf(context.getInventoryId()) : context.getDigitalServiceUid();
+        final Path path = Path.of(localWorkingFolder).resolve(REJECTED).resolve(pathId).resolve(rejectedFileName);
 
-        final Path path = Path.of(localWorkingFolder).resolve(REJECTED).resolve(String.valueOf(context.getInventoryId())).resolve(rejectedFileName);
         try {
-            Files.createDirectories(Path.of(localWorkingFolder).resolve(REJECTED).resolve(String.valueOf(context.getInventoryId())));
+            Files.createDirectories(Path.of(localWorkingFolder).resolve(REJECTED).resolve(pathId));
         } catch (IOException e) {
             throw new AsyncTaskException(String.format("%s - Cannot create local rejected folder", context.log()), e);
         }
@@ -207,7 +208,7 @@ public class LoadFileService {
         List<InDatacenterRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId()));
+            objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadDatacenterService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
@@ -240,7 +241,7 @@ public class LoadFileService {
         List<InPhysicalEquipmentRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId()));
+            objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadPhysicalEquipmentService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
@@ -273,7 +274,7 @@ public class LoadFileService {
         List<InVirtualEquipmentRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, context.getInventoryId()));
+            objects.add(csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadVirtualEquipmentService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
