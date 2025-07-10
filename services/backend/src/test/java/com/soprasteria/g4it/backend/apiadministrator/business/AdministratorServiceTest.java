@@ -72,7 +72,6 @@ class AdministratorServiceTest {
     @Test
     void searchUserByName_withNoLinkedOrg() {
         String searchedUser = "stName";
-        Organization organization = TestUtils.createOrganization();
 
         String authorizedDomains = "soprasteria.com,test.com";
         Subscriber subscriber = TestUtils.createSubscriber(subscriberId);
@@ -118,7 +117,7 @@ class AdministratorServiceTest {
     @Test
     void updateSubscriberCriteria() {
         // Arrange
-        Long subscriberId = 1L;
+        subscriberId = 1L;
         CriteriaRest criteriaRest = CriteriaRest.builder().criteria(List.of("New Criteria")).build();
         Subscriber subscriber = TestUtils.createSubscriber(subscriberId);
         subscriber.setCriteria(List.of("Old Criteria"));

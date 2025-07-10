@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
-import java.time.LocalDate;
 import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -25,7 +24,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RuleApplicationServiceTest {
+class RuleApplicationServiceTest {
     @InjectMocks
     RuleApplicationService service;
 
@@ -39,14 +38,15 @@ public class RuleApplicationServiceTest {
     void testVirtualEquipmentLinkedOk() {
         Assertions.assertTrue(service.checkVirtualEquipmentLinked(locale, filename, line, "virtualEquipmentName").isEmpty());
     }
+
     @Test
     void testNullVirtualEquipmentLinkedError() {
         when(messageSource.getMessage(any(), any(), eq(locale)))
                 .thenReturn("Application must have a virtual equipment name");
-       var actual = service.checkVirtualEquipmentLinked(locale, filename, line, null);
+        var actual = service.checkVirtualEquipmentLinked(locale, filename, line, null);
         Assertions.assertTrue(actual.isPresent());
 
-        Assertions.assertEquals(new LineError(filename,line, "Application must have a virtual equipment name"), actual.get());
+        Assertions.assertEquals(new LineError(filename, line, "Application must have a virtual equipment name"), actual.get());
 
     }
 }
