@@ -15,6 +15,7 @@ describe("TopHeaderComponent", () => {
     let component: TopHeaderComponent;
     let fixture: ComponentFixture<TopHeaderComponent>;
     let mockRouter: any;
+    let routerSpy: any;
     let mockTranslateService: any;
     let mockUserService: any;
     let mockWorkspaceService: any;
@@ -48,12 +49,12 @@ describe("TopHeaderComponent", () => {
         },
         color: "#FFFFFF",
     };
-
     beforeEach(async () => {
         mockRouter = {
             events: of(new NavigationEnd(0, "/path", "/path")),
             navigate: jasmine.createSpy("navigate"),
         };
+        routerSpy = mockRouter;
 
         mockTranslateService = {
             currentLang: "en",
@@ -274,5 +275,69 @@ describe("TopHeaderComponent", () => {
             (i) => i["link"] === "https://github.com/Boavizta/boaviztapi",
         );
         expect(boaviztapiItem).toBeDefined();
+    });
+
+    it("should initialize mobileMenuItems with correct structure", () => {
+        expect(component.mobileMenuItems).toBeDefined();
+        expect(component.mobileMenuItems?.length).toBe(2);
+        expect(component.mobileMenuItems?.[0].label).toBe("common.about");
+        expect(component.mobileMenuItems?.[1].label).toBe("common.help-center");
+    });
+
+    it("should navigate to /useful-information and close dialog when command is called", () => {
+        const item = component.mobileMenuItems?.[0].items?.[0];
+        if (item?.command) {
+            item.command({} as any);
+        }
+        expect(routerSpy.navigate).toHaveBeenCalledWith(["/useful-information"]);
+        expect(component.dialogVisible).toBe(false);
+    });
+
+    it("should navigate to /declarations and close dialog when command is called", () => {
+        const item = component.mobileMenuItems?.[0].items?.[1];
+        if (item?.command) {
+            item.command({} as any);
+        }
+        expect(routerSpy.navigate).toHaveBeenCalledWith(["/declarations"]);
+        expect(component.dialogVisible).toBe(false);
+    });
+
+    it("should open github link in new tab when command is called", () => {
+        spyOn(window, "open");
+        const item = component.mobileMenuItems?.[1].items?.[0];
+        if (item?.command) {
+            item.command({} as any);
+        }
+        expect(window.open).toHaveBeenCalledWith(
+            "https://github.com/G4ITTeam/g4it",
+            "_blank",
+            "noopener",
+        );
+    });
+
+    it("should open documentation link in new tab when command is called", () => {
+        spyOn(window, "open");
+        const item = component.mobileMenuItems?.[1].items?.[1];
+        if (item?.command) {
+            item.command({} as any);
+        }
+        expect(window.open).toHaveBeenCalledWith(
+            "https://saas-g4it.com/documentation/",
+            "_blank",
+            "noopener",
+        );
+    });
+
+    it("should open boaviztapi github link in new tab when command is called", () => {
+        spyOn(window, "open");
+        const item = component.mobileMenuItems?.[1].items?.[2];
+        if (item?.command) {
+            item.command({} as any);
+        }
+        expect(window.open).toHaveBeenCalledWith(
+            "https://github.com/Boavizta/boaviztapi",
+            "_blank",
+            "noopener",
+        );
     });
 });
