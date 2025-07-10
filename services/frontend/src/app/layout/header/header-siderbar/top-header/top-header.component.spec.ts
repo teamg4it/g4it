@@ -191,6 +191,12 @@ describe("TopHeaderComponent", () => {
         expect(component.isOrgMenuVisible).toBeTrue();
     });
 
+    it("should toggle organization menu visibility", () => {
+        component.isOrgMenuVisible = true;
+        component.toggleOrgMenu();
+        expect(component.isOrgMenuVisible).toBeFalse();
+    });
+
     it("should hide menus when clicking outside", () => {
         component.isAccountMenuVisible = true;
         component.isOrgMenuVisible = true;
@@ -206,5 +212,67 @@ describe("TopHeaderComponent", () => {
         component.dialogVisible = false;
         component.showDialog();
         expect(component.dialogVisible).toBeTrue();
+    });
+
+    it("should call setSelectedPage on ngOnInit and NavigationEnd", () => {
+        const spySetSelectedPage = spyOn(component, "setSelectedPage");
+        component.ngOnInit();
+        expect(spySetSelectedPage).toHaveBeenCalled();
+    });
+
+    it("should subscribe to userService.currentSubscriber$ and set currentSubscriber", () => {
+        component.currentSubscriber = {} as any;
+        component.ngOnInit();
+        expect(component.currentSubscriber.name).toBe("subscriber1");
+    });
+
+    it("should populate userDetails and organizations after user$ emits", () => {
+        component.userDetails = {} as any;
+        component.organizations = [];
+        component.ngOnInit();
+        expect(component.userDetails.firstName).toBe("John");
+        expect(component.organizations.length).toBeGreaterThan(0);
+        expect(component.organizations[0].name).toBe("Org1");
+    });
+
+    it("should subscribe to currentOrganization$ and set selectedOrganization, modelOrganization, selectedOrganizationData, selectedPath", () => {
+        component.selectedOrganization = {} as any;
+        component.modelOrganization = 0;
+        component.selectedOrganizationData = undefined;
+        component.selectedPath = "";
+        component.currentSubscriber = { name: "subscriber1" } as any;
+        component.ngOnInit();
+        expect(component.selectedOrganization.id).toBe(1);
+        expect(component.modelOrganization).toBe(1);
+        expect(component.selectedPath).toBe("/subscribers/subscriber1/organizations/1");
+    });
+
+    it("should set initials after user$ emits", () => {
+        component.initials = "";
+        component.ngOnInit();
+        expect(component.initials).toBe("JD");
+    });
+
+    it("should set mobileMenuItems with correct structure", () => {
+        component.mobileMenuItems = [];
+        component.ngOnInit();
+        expect(component.mobileMenuItems?.length).toBe(2);
+        expect(component.mobileMenuItems?.[0].label).toBe("common.about");
+        expect(component.mobileMenuItems?.[1].label).toBe("common.help-center");
+    });
+
+    it("should set items with help-center and correct links", () => {
+        component.items = [];
+        component.ngOnInit();
+        const helpCenter = component.items?.find((i) => i.label === "common.help-center");
+        expect(helpCenter).toBeDefined();
+        const githubItem = helpCenter?.items?.find(
+            (i) => i["link"] === "https://github.com/G4ITTeam/g4it",
+        );
+        expect(githubItem).toBeDefined();
+        const boaviztapiItem = helpCenter?.items?.find(
+            (i) => i["link"] === "https://github.com/Boavizta/boaviztapi",
+        );
+        expect(boaviztapiItem).toBeDefined();
     });
 });
