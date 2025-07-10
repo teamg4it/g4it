@@ -8,8 +8,8 @@
             locale="fr-FR"
             id="{{ type.key }}Name"
             [label]="type.key"
+            [attr.aria-label]="type.label"
         />
-        <label for="{{ type.key }}Name">{{ type.key }}</label>
         <p-fileUpload
             (onSelect)="onSelectFile($event, type.key)"
             styleClass="cancel-creation-button uppercase mx-2 h-3rem font-bold"
@@ -25,7 +25,7 @@
 
         <p-button
             class="mt-1"
-            icon="pi pi-times"
+            icon="pi pi-times "
             (onClick)="onDeleteButton(type.key)"
             [text]="true"
             [ariaLabel]="'administration.delete' | translate"

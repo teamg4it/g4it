@@ -62,9 +62,11 @@
 
                 <ng-template #templateFile let-template>
                     <div>
-                        <span class="pi pi-file-pdf mr-2 font-bold"></span>
+                        <span
+                            class="pi pi-file-pdf mr-2 font-bold light-black-color"
+                        ></span>
                         <a
-                            class="font-bold cursor-pointer"
+                            class="font-bold cursor-pointer light-black-color"
                             tabindex="0"
                             role="link"
                             #addFocus
@@ -231,13 +233,13 @@
                             }
                             <p-button
                                 (onClick)="closeSidebar()"
-                                styleClass="uppercase bg-light-green"
+                                styleClass=" bg-light-green uppercase finish-btn-padding"
                                 [label]="'digital-services-import.finish' | translate"
                                 [ariaLabel]="'digital-services-import.finish' | translate"
                             ></p-button>
                             @if (!lastIndex) {
                                 <p-button
-                                    styleClass="p-button-secondary-blue p-button uppercase"
+                                    styleClass="p-button-secondary-blue uppercase"
                                     (onClick)="nextTab(menuIndex)"
                                     [label]="'common.next' | translate"
                                     [ariaLabel]="'common.next' | translate"

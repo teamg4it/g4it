@@ -1092,14 +1092,12 @@ app-top-header {
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
-
+.cancel-creation-button {
+    border: 1px solid #cacbca;
+    background-color: #f4f4f4;
+    color: var(--black-color);
+}
 .app-workspace {
-    .cancel-creation-button {
-        border: 1px solid #cacbca;
-        background-color: #f4f4f4;
-        color: var(--black-color);
-    }
-
     .p-button {
         height: 43px;
         padding: 13px 24px;
@@ -1227,4 +1225,10 @@ app-useful-information {
 
 .multi-file-import .p-fileupload .p-button-icon {
     display: none;
+}
+
+.import-digital {
+    .finish-btn-padding {
+        padding: 14px;
+    }
 }
