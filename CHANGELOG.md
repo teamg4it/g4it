@@ -4,6 +4,7 @@
 
 ### Major Changes
 
+- 1357 | Integrate EcoMindAI in G4IT
 - 1204 | Import csv files for digital services
 - 1263 | Naming network entries in the Digital Service module – Network input
 - 1261 | Naming user groups in the Digital Service module – Terminales input
