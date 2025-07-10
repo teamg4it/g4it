@@ -140,7 +140,7 @@
                         formControlName="pue"
                         class="p-inputtext"
                         [ngStyle]="
-                            infrastructureForm.get('pue')?.disabled
+                            infrastructureForm.get('pue')?.disabled && writeRight
                                 ? {
                                       'background-color': '#f2eff6',
                                       color: '#282829',
