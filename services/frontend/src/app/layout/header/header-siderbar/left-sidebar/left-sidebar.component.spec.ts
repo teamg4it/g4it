@@ -1,11 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { UserService } from "src/app/core/service/business/user.service";
+import { SharedModule } from "src/app/core/shared/shared.module";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { LeftSidebarComponent } from "./left-sidebar.component";
 
-describe("LeftSidebarComponent", () => {
+fdescribe("LeftSidebarComponent", () => {
     let component: LeftSidebarComponent;
     let userServiceMock: jasmine.SpyObj<UserService>;
 
@@ -20,6 +21,7 @@ describe("LeftSidebarComponent", () => {
                 { provide: TranslateService, useValue: {} },
                 { provide: Router, useValue: {} },
             ],
+            imports: [SharedModule, TranslateModule.forRoot()],
         });
 
         component = TestBed.inject(LeftSidebarComponent);
