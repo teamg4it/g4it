@@ -17,6 +17,7 @@ const initialState: GlobalState = {
 export class GlobalStoreService {
     private readonly _store = signal(initialState);
     private readonly zoomSignal = signal({ zoom: 100 });
+    private readonly isMobileSignal = signal(false);
 
     readonly loading = computed(() => this._store().loading);
     setLoading(loading: boolean) {
@@ -37,5 +38,10 @@ export class GlobalStoreService {
     readonly zoomLevel = computed(() => this.zoomSignal().zoom);
     setZoomLevel(zoom: number) {
         this.zoomSignal.update((s) => ({ ...s, zoom }));
+    }
+
+    readonly mobileView = computed(() => this.isMobileSignal());
+    setIsMobile(mobile: boolean) {
+        this.isMobileSignal.update((s) => (s = mobile));
     }
 }

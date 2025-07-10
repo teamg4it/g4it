@@ -26,7 +26,7 @@
         <h3 class="font-normal text-2xl ml-0 mt-5">
             {{ "welcome-page.modules-access" | translate }}
         </h3>
-        <div class="grid gap-12">
+        <div class="flex flex-column lg:flex-row">
             <!-- Inventories -->
             <p-card
                 class="selection-card-container col md:col-12 lg:col-4"
@@ -38,10 +38,10 @@
                         isEcoMindModuleEnabled
                     ),
                 }"
-                styleClass="selection-card flex h-full"
+                styleClass="selection-card flex h-full flex-column sm:flex-row"
             >
                 <ng-template pTemplate="header">
-                    <div class="py-4 pl-5">
+                    <div class="py-4 sm:pl-5">
                         <div class="custom-icon custom-globe-icon"></div>
                     </div>
                 </ng-template>
@@ -90,10 +90,10 @@
                         isEcoMindModuleEnabled
                     ),
                 }"
-                styleClass="selection-card flex h-full"
+                styleClass="selection-card flex h-full flex-column sm:flex-row"
             >
                 <ng-template pTemplate="header">
-                    <div class="py-4 pl-5">
+                    <div class="py-4 sm:pl-5">
                         <div class="custom-icon custom-at-symbol-icon"></div>
                     </div>
                 </ng-template>
@@ -140,10 +140,10 @@
             ) {
                 <p-card
                     class="selection-card-container col md:col-12 lg:col-4"
-                    styleClass="selection-card flex h-full"
+                    styleClass="selection-card flex h-full flex-column sm:flex-row"
                 >
                     <ng-template pTemplate="header">
-                        <div class="py-4 pl-5">
+                        <div class="py-4 sm:pl-5">
                             <div class="custom-icon custom-at-symbol-icon"></div>
                         </div>
                     </ng-template>
@@ -190,10 +190,10 @@
                 {{ "common.about" | translate }}
             </h2>
             <div class="grid">
-                <div class="col useful-info">
+                <div class="col-12 md:col useful-info">
                     <div class="pt-3"></div>
                     <a
-                        class="p-2 w-auto inline-block"
+                        class="p-2 w-full md:w-auto inline-block"
                         routerLink="/useful-information"
                         tabindex="0"
                         role="link"
@@ -211,10 +211,10 @@
                         </div>
                     </a>
                 </div>
-                <div class="col useful-info">
+                <div class="col-12 md:col useful-info">
                     <div class="pt-3"></div>
                     <a
-                        class="p-2 w-auto inline-block"
+                        class="p-2 w-full md:w-auto inline-block"
                         routerLink="/declarations"
                         tabindex="0"
                         role="link"
@@ -223,7 +223,7 @@
                             <span
                                 ><u>{{ "declarations.title" | translate }}</u></span
                             >
-                            <span class="pi pi-arrow-right ml-8"></span>
+                            <span class="pi pi-arrow-right ml-auto md:ml-8"></span>
                         </div>
                         <div>
                             <span class="text-black"
@@ -238,8 +238,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="col help-center">
-                    <div class="p-3 border-round-sm w-auto inline-block">
+                <div class="col-12 md:col help-center">
+                    <div class="border-round-sm w-auto inline-block">
                         <span
                             class="help-center-color pl-2 mt-3 flex align-items-center text-2xl"
                         >

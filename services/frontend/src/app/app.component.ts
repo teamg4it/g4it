@@ -87,5 +87,6 @@ export class AppComponent {
         const zoomLevel = Math.round((window.devicePixelRatio * 100 * 4) / 5);
         this.isZoomedIn = zoomLevel > 150;
         this.globalStoreService.setZoomLevel(zoomLevel);
+        this.globalStoreService.setIsMobile(window.innerWidth < 992);
     }
 }

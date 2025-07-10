@@ -45,3 +45,41 @@ p-button .name-circle {
 .help-center-color {
     color: var(--tints-black-100);
 }
+
+.dialog-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0.5rem;
+}
+
+.dialog-close-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0 none;
+    background: black;
+    border-radius: 50%;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
+    align-items: center;
+}
+
+.dialog-close-button:enabled:hover {
+    border-color: transparent;
+    background: rgba(0, 0, 0, 0.04);
+}
+
+@media screen and (max-width: 992px) {
+    .mobile-menu .orgNameMenuBtn {
+        width: 100%;
+    }
+
+    .org-menu-new {
+        z-index: 1101 !important;
+        top: 135px;
+        right: 5%;
+        width: 90%;
+    }
+}
