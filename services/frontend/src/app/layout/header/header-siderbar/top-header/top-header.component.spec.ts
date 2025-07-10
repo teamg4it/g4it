@@ -89,6 +89,7 @@ describe("TopHeaderComponent", () => {
 
         mockGlobalStore = {
             zoomLevel: jasmine.createSpy("zoomLevel").and.returnValue(100),
+            mobileView: jasmine.createSpy("mobileView").and.returnValue(false),
         };
 
         await TestBed.configureTestingModule({
