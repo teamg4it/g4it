@@ -51,13 +51,13 @@ class OrganizationServiceTest {
     @InjectMocks
     private OrganizationService organizationService;
 
-    public final static List<String> ORGANIZATION_ACTIVE_STATUS = List.of(
+    public static final List<String> ORGANIZATION_ACTIVE_STATUS = List.of(
             OrganizationStatus.ACTIVE.name(),
             OrganizationStatus.TO_BE_DELETED.name()
     );
-    private final static String LOCAL_FILESYSTEM_PATH = "target/local-filestorage-test/";
-    public static Long SUBSCRIBER_ID = 1L;
-    public static Long ORGANIZATION_ID = 1L;
+    private static final String LOCAL_FILESYSTEM_PATH = "target/local-filestorage-test/";
+    public static final Long SUBSCRIBER_ID = 1L;
+    public static final Long ORGANIZATION_ID = 1L;
     @Mock
     private final FileSystem fileSystem = new LocalFileSystem(LOCAL_FILESYSTEM_PATH);
     @Mock
