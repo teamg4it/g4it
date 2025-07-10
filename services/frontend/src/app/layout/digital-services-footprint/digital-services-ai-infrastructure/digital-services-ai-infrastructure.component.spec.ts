@@ -124,6 +124,41 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         expect(mockAiDataService.getAiInfrastructure).not.toHaveBeenCalled();
     });
 
+    it("should patch form with data from API if infrastructure change is false and data already exists", async () => {
+        const apiInfrastructureType = {
+            code: "server",
+            value: "Server",
+            lifespan: 10,
+            defaultCpuCores: 30,
+            defaultGpuCount: 2,
+            defaultGpuMemory: 32,
+            defaultRamSize: 64,
+            defaultDatacenterPue: 1.5,
+        };
+
+        const apiData = {
+            nbCpuCores: 30,
+            nbGpu: 2,
+            gpuMemory: 32,
+            ramSize: 64,
+            pue: 1.5,
+            complementaryPue: 1.1,
+            location: "Germany",
+            infrastructureType: apiInfrastructureType,
+        };
+
+        component.typesOptions = [apiInfrastructureType];
+
+        component.loadCountries = jasmine.createSpy().and.returnValue(Promise.resolve());
+
+        mockAiDataService.getAiInfrastructure.and.returnValue(of(apiData));
+
+        await component.ngOnInit();
+        await fixture.whenStable();
+
+        expect(component.infrastructureForm.value.nbCpuCores).toBe(30);
+    });
+
     it("should handle error during infrastructure load", async () => {
         mockAiDataService.getAiInfrastructure.and.returnValue(
             throwError(() => new Error("Error")),
