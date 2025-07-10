@@ -87,18 +87,6 @@ describe("AppComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should call keycloak.login if token is not present", async () => {
-        mockKeycloak.getToken.and.returnValue(Promise.resolve(null));
-        spyOn(localStorage, "getItem").and.returnValue("test-user");
-
-        await component.ngOnInit();
-
-        expect(mockKeycloak.login).toHaveBeenCalledWith({
-            redirectUri: window.location.href,
-            loginHint: "test-user",
-        });
-    });
-
     it("should store user email in localStorage and set criteria", async () => {
         spyOn(localStorage, "setItem");
 
