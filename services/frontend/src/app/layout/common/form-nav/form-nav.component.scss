@@ -56,9 +56,7 @@
 .space-menu-item:not(.active) {
     .space-menu-sub-title,
     .space-menu-description {
-        opacity: 1;
         color: #333333;
-        background-color: rgb(224, 224, 224);
     }
 
     .space-menu-description.completed {
