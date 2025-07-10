@@ -40,20 +40,19 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceServiceTest {
 
-    final static Long ORGANIZATION_ID = 1L;
-    final static String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
-    final static String SUBSCRIBER = "subscriber";
-    final static long User_ID = 1;
-    final static Boolean IS_AI = false;
-
-    final static List<String> criteriaList = List.of("ionising-radiation", "climate-change");
+    private static final Long ORGANIZATION_ID = 1L;
+    private static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
+    private static final String SUBSCRIBER = "subscriber";
+    private static final long USER_ID = 1;
+    private static final Boolean IS_AI = false;
 
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
@@ -78,10 +77,14 @@ class DigitalServiceServiceTest {
     private FileMapperInfo fileInfo;
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
-    @Mock private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
-    @Mock private InDatacenterRepository inDatacenterRepository;
-    @Mock private InAiParameterRepository inAiParameterRepository;
-    @Mock private InAiInfrastructureRepository inAiInfrastructureRepository;
+    @Mock
+    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    @Mock
+    private InDatacenterRepository inDatacenterRepository;
+    @Mock
+    private InAiParameterRepository inAiParameterRepository;
+    @Mock
+    private InAiInfrastructureRepository inAiInfrastructureRepository;
     @InjectMocks
     private DigitalServiceService digitalServiceService;
 
@@ -90,7 +93,7 @@ class DigitalServiceServiceTest {
 
         final String organizationName = "test";
         final Organization linkedOrganization = Organization.builder().name(organizationName).build();
-        final User user = User.builder().id(User_ID).build();
+        final User user = User.builder().id(USER_ID).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
         final String expectedName = "Digital Service 1";
         final List<DigitalService> existingDigitalService = new ArrayList<>();
@@ -100,9 +103,9 @@ class DigitalServiceServiceTest {
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
-        when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID, IS_AI);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, USER_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
@@ -110,13 +113,13 @@ class DigitalServiceServiceTest {
         verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
-        verify(userRepository, times(1)).findById(User_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
     }
 
     @Test
     void shouldCreateNewDigitalService_withExistingDigitalService() {
         final String organizationName = "test";
-        final User user = User.builder().id(User_ID).build();
+        final User user = User.builder().id(USER_ID).build();
         final Organization linkedOrganization = Organization.builder().name(organizationName).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
         final String expectedName = "Digital Service 2";
@@ -127,9 +130,9 @@ class DigitalServiceServiceTest {
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
-        when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID, IS_AI);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, USER_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
@@ -137,7 +140,7 @@ class DigitalServiceServiceTest {
         verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
-        verify(userRepository, times(1)).findById(User_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
     }
 
     @Test
@@ -291,6 +294,7 @@ class DigitalServiceServiceTest {
         verify(digitalServiceRepository, times(1)).findById(DIGITAL_SERVICE_UID);
         verifyNoInteractions(digitalServiceMapper);
     }
+
     @Test
     void digitalServiceExists_WhenSubscriberMatchesAndServiceExists_ReturnsTrue() {
 
@@ -323,6 +327,7 @@ class DigitalServiceServiceTest {
         assertFalse(result);
         verify(digitalServiceRepository, never()).findByOrganizationAndUid(any(), any());
     }
+
     @Test
     void digitalServiceExists_WhenSubscriberMatchesAndServiceNotExist_ReturnsFalse() {
 
