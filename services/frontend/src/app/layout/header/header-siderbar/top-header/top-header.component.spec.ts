@@ -184,4 +184,33 @@ describe("TopHeaderComponent", () => {
             "noopener",
         );
     });
+
+    it("should toggle organization menu visibility", () => {
+        component.isOrgMenuVisible = false;
+        component.toggleOrgMenu();
+        expect(component.isOrgMenuVisible).toBeTrue();
+    });
+
+    it("should call logout and clear localStorage", async () => {
+        await component.logout();
+        expect(localStorage.getItem("username")).toBeNull();
+        expect(mockKeycloakService.logout).toHaveBeenCalled();
+    });
+
+    it("should hide menus when clicking outside", () => {
+        component.isAccountMenuVisible = true;
+        component.isOrgMenuVisible = true;
+
+        const event = new MouseEvent("click");
+
+        component.handleGlobalClick(event);
+        expect(component.isAccountMenuVisible).toBeFalse();
+        expect(component.isOrgMenuVisible).toBeFalse();
+    });
+
+    it("should show dialog", () => {
+        component.dialogVisible = false;
+        component.showDialog();
+        expect(component.dialogVisible).toBeTrue();
+    });
 });
