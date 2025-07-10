@@ -420,7 +420,10 @@
         "time": "Time",
         "status": "Status",
         "rejected-files": "Rejected files",
-        "browse-file": "Browse File"
+        "browse-file": "Browse File",
+        "datacenter": "Datacenter",
+        "physical-equipment": "Physical Equipment",
+        "virtual-equipment": "Virtual Equipment"
     },
     "welcome-page": {
         "title": "Welcome Page",

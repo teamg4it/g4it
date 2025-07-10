@@ -145,7 +145,6 @@
                                         "digital-services-import.rejected-files"
                                             | translate
                                     }}
-                                    files
                                 </th>
                             }
                         </tr>
@@ -173,31 +172,38 @@
                             </td>
                             @if (
                                 (userService.isAllowedInventoryWrite$ | async) &&
-                                (status.status === "COMPLETED_WITH_ERRORS" ||
-                                    status.status === "SKIPPED" ||
-                                    status.status === "FAILED")
+                                anyRejectedFiles
                             ) {
-                                <td>
-                                    <button
-                                        (click)="downloadFile(status)"
-                                        ariaLabel="{{
-                                            'inventories-footprint.header.download'
-                                                | translate
-                                        }}"
-                                        class="cursor-pointer pl-0 ml-0 border-none background-none"
-                                    >
-                                        <img
-                                            src="assets/images/icons/icon-download.svg"
-                                            class="mx-3"
-                                            alt="{{
-                                                'inventories.download-result' | translate
-                                            }} {{
-                                                status.creationDate
-                                                    | date: 'dd/MM/yyyy HH:mm'
+                                @if (
+                                    status.status === "COMPLETED_WITH_ERRORS" ||
+                                    status.status === "SKIPPED" ||
+                                    status.status === "FAILED"
+                                ) {
+                                    <td>
+                                        <button
+                                            (click)="downloadFile(status)"
+                                            ariaLabel="{{
+                                                'inventories-footprint.header.download'
+                                                    | translate
                                             }}"
-                                        />
-                                    </button>
-                                </td>
+                                            class="cursor-pointer pl-0 ml-0 border-none background-none"
+                                        >
+                                            <img
+                                                src="assets/images/icons/icon-download.svg"
+                                                class="mx-3"
+                                                alt="{{
+                                                    'inventories.download-result'
+                                                        | translate
+                                                }} {{
+                                                    status.creationDate
+                                                        | date: 'dd/MM/yyyy HH:mm'
+                                                }}"
+                                            />
+                                        </button>
+                                    </td>
+                                } @else {
+                                    <td></td>
+                                }
                             }
                         </tr>
                     </ng-template>

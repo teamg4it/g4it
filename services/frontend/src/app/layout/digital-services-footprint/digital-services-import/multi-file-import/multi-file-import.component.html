@@ -4,7 +4,7 @@
             pInputText
             [value]="type.label"
             [disabled]="true"
-            class="label-input w-11rem h-3rem min-w-0"
+            class="label-input w-12rem h-3rem min-w-0"
             locale="fr-FR"
             id="{{ type.key }}Name"
             [label]="type.key"
@@ -22,14 +22,15 @@
             [customUpload]="true"
         >
         </p-fileUpload>
-
-        <p-button
-            class="mt-1"
-            icon="pi pi-times "
-            (onClick)="onDeleteButton(type.key)"
-            [text]="true"
-            [ariaLabel]="'administration.delete' | translate"
-        ></p-button>
+        @if (selectedFiles[type.key]) {
+            <p-button
+                class="mt-1"
+                icon="pi pi-times "
+                (onClick)="onDeleteButton(type.key)"
+                [text]="true"
+                [ariaLabel]="'administration.delete' | translate"
+            ></p-button>
+        }
     </div>
 }
 

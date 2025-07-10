@@ -163,10 +163,10 @@ export class DigitalServicesImportComponent {
             ["COMPLETED_WITH_ERRORS", "SKIPPED", "FAILED"].includes(task.status),
         );
 
-        this.tasks.sort(sortByProperty("creationDate", "asc"));
-        this.tableTasks = this.tasks.slice(-5);
+        this.tasks.sort(sortByProperty("creationDate", "desc"));
+        this.tableTasks = this.tasks.slice(0, 5);
 
-        const lastTaskStatus = this.tasks[this.tasks.length - 1]?.status;
+        const lastTaskStatus = this.tasks[0]?.status;
         this.toReloadDigitalService =
             Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(lastTaskStatus);
         if (!this.toReloadDigitalService) {
