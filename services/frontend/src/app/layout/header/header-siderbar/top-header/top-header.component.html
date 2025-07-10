@@ -142,7 +142,6 @@
             }"
             class="flex flex-column gap-2 overflow-y-auto"
             role="radiogroup"
-            aria-labelledby="organization-label"
             (keydown)="handleKeydown($event)"
             tabindex="0"
             #radioGroupContainer
@@ -159,11 +158,13 @@
                     name="group1"
                     [value]="organization.id.toString()"
                     [(ngModel)]="modelOrganization"
-                    (click)="selectCompany(organization)"
+                    (onClick)="selectCompany(organization)"
+                    [attr.aria-labelledby]="'org-' + organization.id"
                 ></p-radioButton>
 
                 <label
                     [for]="'org-' + organization.id"
+                    [id]="'org-' + organization.id"
                     class="ml-2"
                     [attr.aria-label]="
                         ('common.workspace-name' | translate) +
@@ -179,7 +180,7 @@
             </div>
         </div>
         <p-button
-            (click)="openWorkspaceSidebar(); isOrgMenuVisible = false"
+            (onClick)="openWorkspaceSidebar(); isOrgMenuVisible = false"
             icon="pi pi-plus-circle"
             styleClass="uppercase bg-light-green text-white"
             iconPos="right"
@@ -193,7 +194,7 @@
             [ariaLabel]="'common.settings' | translate"
             [label]="initials"
             role="menuitem"
-            (click)="isAccountMenuVisible = !isAccountMenuVisible"
+            (onClick)="isAccountMenuVisible = !isAccountMenuVisible"
             (onFocus)="isOrgMenuVisible = false"
             styleClass="border-circle text-md p-0 w-2-5rem h-2-5rem name-circle"
         >
@@ -349,6 +350,7 @@
                         [(ngModel)]="selectedLanguage"
                         (onClick)="changeLanguage('en')"
                         aria-labelledby="enLabel"
+                        inputId="en"
                     ></p-radioButton>
                     <label
                         for="en"
@@ -364,8 +366,9 @@
                         name="language"
                         value="fr"
                         [(ngModel)]="selectedLanguage"
-                        (click)="changeLanguage('fr')"
+                        (onClick)="changeLanguage('fr')"
                         aria-labelledby="frLabel"
+                        inputId="fr"
                     ></p-radioButton>
                     <label
                         for="fr"

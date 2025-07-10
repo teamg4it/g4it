@@ -23,10 +23,11 @@ You have first to define what you want to evaluate :
 if it is the impact of sum of physical equiment or virtual equipement (group by application portofolio or not)
 
 Use **Information System Module** (=Inventory)
-- If it is the impact of software or a digital service, according to the state of the art
+- The Module Information System (=Inventory) is more configurable than Digital Service Module.
 
 Use **Digital Service Module**
-- The Module Information System (=Inventory) is more configurable than Digital Service Module.
+- If it is the impact of software or a digital service, according to the state of the art
+
 {{% /expand %}}
 
 {{% expand title="Are the two modules interconnected ?" expanded="false" %}}
