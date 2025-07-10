@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { lastValueFrom, Subscription } from "rxjs";
+import { lastValueFrom, Subscription, take } from "rxjs";
 import {
     DigitalService,
     EcomindType,
@@ -27,6 +27,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     digitalService: DigitalService = {} as DigitalService;
     public userService = inject(UserService);
     typesOptions: EcomindType[] = [];
+    writeRight: boolean = false;
 
     constructor(
         private readonly fb: FormBuilder,
@@ -39,6 +40,12 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     ) {}
 
     async ngOnInit() {
+        this.userService.isAllowedEcoMindAiWrite$.pipe(take(1)).subscribe((isAllowed) => {
+            if (isAllowed) {
+                this.writeRight = true;
+            }
+        });
+
         // Load countries from API
         await this.loadCountries();
 
@@ -75,7 +82,8 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
                 );
                 if (
                     selectedEcomindType.value === "Desktop" ||
-                    selectedEcomindType.value === "Laptop"
+                    selectedEcomindType.value === "Laptop" ||
+                    !this.writeRight
                 ) {
                     this.infrastructureForm.get("pue")?.disable();
                 } else {
@@ -138,9 +146,9 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
             this.aiFormsStore.setInfrastructureFormData(formData as AIInfrastructureForm);
         });
 
-        this.userService.isAllowedEcoMindAiWrite$.subscribe((isAllowed) => {
+        this.userService.isAllowedEcoMindAiWrite$.pipe(take(1)).subscribe((isAllowed) => {
             if (!isAllowed) {
-                this.infrastructureForm.disable();
+                this.infrastructureForm.disable({ emitEvent: false });
             }
         });
     }
