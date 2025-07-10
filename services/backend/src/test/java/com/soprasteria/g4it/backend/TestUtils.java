@@ -45,11 +45,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TestUtils {
 
-    public static String SUBSCRIBER = "SUBSCRIBER";
-    public static String ORGANIZATION = "ORGANIZATION";
-    public static Long ORGANIZATION_ID = 1L;
-    public static String EMAIL = "user.test@unitaire";
-    public static String ROLE = "ROLE";
+    public static final String SUBSCRIBER = "SUBSCRIBER";
+    public static final String ORGANIZATION = "ORGANIZATION";
+    public static final Long ORGANIZATION_ID = 1L;
+    public static final String EMAIL = "user.test@unitaire";
+    public static final String ROLE = "ROLE";
     public static ObjectMapper mapper = new ObjectMapper()
             .configure(SerializationFeature.INDENT_OUTPUT, true)
             .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
@@ -80,8 +80,8 @@ public class TestUtils {
         return Subscriber.builder().id(1L).name(SUBSCRIBER).build();
     }
 
-    public static Subscriber createSubscriber(Long SubscriberId) {
-        return Subscriber.builder().id(SubscriberId).name(SUBSCRIBER).build();
+    public static Subscriber createSubscriber(Long subscriberId) {
+        return Subscriber.builder().id(subscriberId).name(SUBSCRIBER).build();
     }
 
     public static Organization createOrganization() {
@@ -120,7 +120,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static Organization createToBeDeletedOrganization(String status, LocalDateTime deletionDate) {
+    public static Organization createToBeDeletedOrganization(LocalDateTime deletionDate) {
         return Organization.builder()
                 .id(ORGANIZATION_ID)
                 .name(ORGANIZATION)
@@ -132,11 +132,9 @@ public class TestUtils {
                 .build();
     }
 
-
     public static DigitalService createDigitalService() {
         final String digitalServiceUid = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
-        final DigitalService digitalService = DigitalService.builder().uid(digitalServiceUid).name("name").lastUpdateDate(LocalDateTime.now()).build();
-        return digitalService;
+        return DigitalService.builder().uid(digitalServiceUid).name("name").lastUpdateDate(LocalDateTime.now()).build();
     }
 
     public static DigitalServiceBO createDigitalServiceBO() {
@@ -176,7 +174,7 @@ public class TestUtils {
     }
 
 
-    public static UserOrganization createUserOrganization(Long organizationId, List<Role> roles, String status) {
+    public static UserOrganization createUserOrganization(List<Role> roles, String status) {
         return UserOrganization
                 .builder().defaultFlag(true).roles(roles).organization(createOrganizationWithStatus(status)).build();
     }
