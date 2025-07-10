@@ -1114,6 +1114,14 @@ app-top-header {
         }
     }
 }
+
+.form-container .button-bottom-right {
+    position: relative;
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+}
+
 .welcome-page-container {
     .selection-card-container {
         .p-card-body {
@@ -1174,4 +1182,49 @@ app-useful-information {
         margin: 0 10px;
         font-size: 16px;
     }
+}
+
+.form-container {
+    padding: 20px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .form-section {
+        margin-bottom: 20px;
+        h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            width: 100%;
+            > .label-input-div-form {
+                margin-top: 10px;
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+            }
+        }
+    }
+}
+
+.label-input-div-form .p-dropdown {
+    width: 100%;
+}
+
+.p-scrollPanel .button-bottom-rights {
+    position: relative;
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.multi-file-import .p-fileupload .p-button-icon {
+    display: none;
 }

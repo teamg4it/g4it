@@ -74,7 +74,7 @@ public class AdministratorActionsService {
 
             List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
             if (!physicalEquipments.isEmpty()) {
-                Optional<Task> tasks = taskRepository.findByDigitalServiceUid(digitalService.getUid());
+                Optional<Task> tasks = taskRepository.findByDigitalService(digitalService);
                 if (tasks.isPresent()) {
                     Task task = tasks.get();
                     int day = task.getLastUpdateDate().getDayOfMonth();
@@ -114,10 +114,11 @@ public class AdministratorActionsService {
         return roleManagementService.executeRoleCleanup();
     }
 
+
     /**
      * Rename the randomly named terminals
      */
-    public AllEvaluationStatusRest renameTerminals() {
+    public void renameTerminals() {
         try {
             log.info("START-- renaming the terminals");
 
@@ -135,11 +136,38 @@ public class AdministratorActionsService {
                 }
                 return null;
             });
-
             log.info("COMPLETED-- terminals renamed");
-            return AllEvaluationStatusRest.builder().response("success").build();
         } catch (DataAccessException ex) {
             log.error("Failed to rename terminals: {}", ex.getMessage());
+        }
+    }
+
+    /**
+     * Rename the randomly named networks
+     */
+    public AllEvaluationStatusRest renameNetworks() {
+        try {
+            log.info("START-- renaming the networks");
+
+            jdbcTemplate.execute((ConnectionCallback<Void>) connection -> {
+                // Call the procedure
+                try (CallableStatement cs = connection.prepareCall("CALL rename_randomly_generated_network_name()")) {
+                    cs.execute();
+
+                    //  Log NOTICE messages
+                    SQLWarning warning = cs.getWarnings();
+                    while (warning != null) {
+                        log.info("Warning NOTICE: {}", warning.getMessage());
+                        warning = warning.getNextWarning();
+                    }
+                }
+                return null;
+            });
+
+            log.info("COMPLETED-- networks renamed");
+            return AllEvaluationStatusRest.builder().response("success").build();
+        } catch (DataAccessException ex) {
+            log.error("Failed to rename networks: {}", ex.getMessage());
             return AllEvaluationStatusRest.builder().response("error").build();
         }
     }

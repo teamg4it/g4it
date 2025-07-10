@@ -48,6 +48,13 @@ erDiagram
     int4 total_disk
     float8 lifespan
   }
+  ref_ecomind_type_ai {
+    int8 id PK
+    varchar description
+    varchar reference
+    text external_referential_description
+    numeric lifespan
+  }
 ``` 
 
 ## Tables 
@@ -62,14 +69,14 @@ erDiagram
 
 #### Columns 
 
-|Name|Data type|Comments|
-|---|---|---|
-|**id**|int8||
-|description|varchar||
-|reference|varchar||
-|external_referential_description|text||
-|lifespan|numeric||
-|source|text||
+|Name| Data type |Comments|
+|---|-----------|---|
+|**id**| int8      ||
+|description| varchar   ||
+|reference| varchar   ||
+|external_referential_description| text      ||
+|lifespan| numeric   ||
+|source| text      ||
 
 #### Primary Key 
 
@@ -153,3 +160,25 @@ erDiagram
  - id
 {{% /expand %}}
 
+### ref_ecomind_type_ai
+
+{{% expand title="Show details" expanded="false" center="true"%}}
+
+#### Comments
+
+- This table lists the ecomind type which can be selected for the Digital Service AI infrastructure
+
+#### Columns
+
+|Name| Data type |Comments|
+|---|-----------|---|
+|**id**| int8      ||
+|description| varchar   ||
+|reference| varchar   ||
+|external_referential_description| text      ||
+|lifespan| numeric   ||
+
+#### Primary Key
+
+- id
+  {{% /expand %}}

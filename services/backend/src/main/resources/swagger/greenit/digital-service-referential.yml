@@ -111,6 +111,30 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/ecomind-type:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+    get:
+      tags:
+        - digital-service referential
+      summary: Get ecomind device type referential
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      operationId: getEcomindDeviceTypeRef
+      responses:
+        '200':
+          description: The ecomind type list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EcomindTypeRefRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
   /referential/boaviztapi/countries:
     get:
       tags:

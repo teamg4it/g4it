@@ -150,7 +150,7 @@ public class EvaluatingService {
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
 
-        manageDigitalServiceTasks(subscriber, organizationId, digitalServiceUid);
+        manageDigitalServiceTasks(subscriber, organizationId, digitalService);
 
         Context context = Context.builder()
                 .subscriber(subscriber)
@@ -162,6 +162,7 @@ public class EvaluatingService {
                 .datetime(LocalDateTime.now())
                 .hasVirtualEquipments(true)
                 .hasApplications(false)
+                .isAi(digitalService.isAi())
                 .build();
 
         List<String> activeCriteria = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalService.getCriteria())
@@ -182,7 +183,7 @@ public class EvaluatingService {
                 .progressPercentage("0%")
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
-                .digitalServiceUid(digitalService.getUid())
+                .digitalService(digitalService)
                 .criteria(criteriaToSet)
                 .createdBy(user)
                 .build();
@@ -275,12 +276,12 @@ public class EvaluatingService {
      *
      * @param subscriber     the subscriber
      * @param organizationId the organization id
-     * @param digitalServiceUid      the digitalServiceUid
+     * @param digitalService the digitalService
      */
-    private void manageDigitalServiceTasks(String subscriber, Long organizationId, String digitalServiceUid) {
+    private void manageDigitalServiceTasks(String subscriber, Long organizationId, DigitalService digitalService) {
 
         // clean old tasks
-        taskRepository.findByDigitalServiceUidAndType(digitalServiceUid, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
+        taskRepository.findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
                 .stream()
                 .sorted(Comparator.comparing(Task::getId).reversed())
                 .skip(2)

@@ -25,12 +25,17 @@
         "next": "Suivant",
         "previous": "Précédent",
         "mandatory": "est obligatoire",
+        "optional": "Optionnel",
         "calculate": "CALCULER",
         "duplicate": "DUPLIQUER",
         "add": "Ajouter",
+        "attention": "Attention",
+        "error": "Erreur",
+        "success": "Succès",
         "heading": "Titre",
         "subheading": "Sous-titre",
         "normal": "Normal",
+        "min": "doit être supérieure ou égale à 1",
         "peopleeq": "Hab. eq.",
         "peopleeq-min": "hab. eq.",
         "no-data": "Aucun résultats disponibles",
@@ -80,7 +85,8 @@
             "download": "Cliquez pour télécharger les résultats",
             "note": "Note",
             "accordion-open": "Cliquez pour afficher les sous-domaines",
-            "accordion-close": "Cliquez pour masquer les sous-domaines"
+            "accordion-close": "Cliquez pour masquer les sous-domaines",
+            "import": "Cliquez pour importer les données de service numériques"
         },
         "note": {
             "add": "Ajouter note",
@@ -120,13 +126,16 @@
         "account-settings": "Paramètres du compte",
         "help-center": "Centre d'aide",
         "github-link": "Accéder à G4IT GitHub",
+        "boaviztapi-github-link": "Accéder à BoaviztAPI GitHub",
         "doc-link": "Aller à la documentation",
         "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
         "inventories": "Inventaires",
         "digital-services": "Services numériques",
+        "eco-mind-ai": "EcoMind AI (experimental)",
         "skip-to-main-content": "Accéder au contenu principal",
         "overgreen-logo": "Overgreen Logo",
         "soprasteria-logo": "Sopra Steria Logo",
+        "no-document-upload": "Aucun document téléchargé",
         "workspace": {
             "create": "Créer un nouvel espace de travail",
             "mandatory": "Obligatoire",
@@ -167,6 +176,8 @@
         "Terminal": "Terminaux",
         "Server": "Serveurs hors Cloud",
         "CloudService": "Services Cloud",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "Paramètres AI",
         "Network": "Réseaux",
         "visualize": "Visualiser",
         "lifecycle": "Cycle de vie",
@@ -183,7 +194,56 @@
         "return": "Retourner à la liste de mes services numériques",
         "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",
         "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
-        "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
+        "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}",
+        "import": "Importer"
+    },
+    "eco-mind-ai": {
+        "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
+        "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
+        "copyLink": "COPIER LE LIEN",
+        "not-found": "Le service numérique IA n'existe pas.",
+        "expired": "Le lien du service numérique IA a expiré.",
+        "linkCopied": "LIEN COPIÉ !",
+        "title": "Mes Services Numériques IA - {{OrganizationName}}",
+        "page-title": "Mes Services Numériques IA",
+        "add": "Evaluer Un Nouveau Service IA",
+        "empty-digital-services": "Vous n'avez pas de service numérique.",
+        "impacts": "IMPACTS",
+        "raw": "Unité",
+        "Terminal": "Terminaux",
+        "Server": "Serveurs hors Cloud",
+        "CloudService": "Services Cloud",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "Paramètres IA",
+        "Network": "Réseaux",
+        "visualize": "Visualiser",
+        "lifecycle": "Cycle de vie",
+        "vm": "VM",
+        "country": "Pays",
+        "type": "Type",
+        "creatorInfo": "Créateur",
+        "membersInfo": "Membres",
+        "popup": {
+            "delete-question": "Êtes-vous sûr de vouloir supprimer le service numérique IA",
+            "delete-text": "Toutes les informations et les indicateurs d'impact associés seront définitivement supprimés.",
+            "delete-question-shared": "En supprimant le lien vers ce service numérique IA, vous n'y aurez plus accès. Êtes-vous sûr ?"
+        },
+        "return": "Retourner à la liste de mes services numériques IA",
+        "choose-criteria": "Choisir les critères pour le service numérique IA {{digitalServiceName}}",
+        "delete-criteria": "Supprimer le service numérique IA {{digitalServiceName}}",
+        "unlink-digital-service": "Supprimer le lien avec le service IA {{digitalServiceName}}",
+
+        "ai-parameters": {
+            "success": "Paramètres sauvegardés avec succès",
+            "error": "Erreur lors de la récupération des modèles IA",
+            "missing-fields": "Champs manquants :",
+            "parameters-form": "Formulaire Paramètres :",
+            "infrastructure-form": "Formulaire Infrastructure :",
+            "save-success": "Données sauvegardées avec succès",
+            "save-error": "Une erreur est survenue lors de la sauvegarde",
+            "service-id-missing": "ID du service numérique non trouvé",
+            "fill-all-fields": "Veuillez remplir tous les champs et ouvrir les deux formulaires avant de sauvegarder"
+        }
     },
     "digital-services-terminals": {
         "new": "Nouveau terminal",
@@ -208,15 +268,19 @@
     },
     "digital-services-networks": {
         "new": "Nouveau Réseau",
+        "edit": "Édition Réseau",
         "networks": "Réseaux",
         "network": "Réseau",
         "add": "+ AJOUTER UN RÉSEAU",
         "id": "#",
+        "name": "Nom",
         "type": "Type",
         "typeCode": "Type",
         "yearly-go": "Quantité totale de Go échangés par an pour tous les utilisateurs",
         "table-yearly-go": "Quantité annuelle de Go échangés",
-        "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés"
+        "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés",
+        "network-name": "Nom du réseau",
+        "error.network-already-exists": "Le réseau existe déjà"
     },
     "digital-services-servers": {
         "Dedicated": "Dédié",
@@ -305,6 +369,59 @@
         "tooltip_average_workload": "Charge de travail moyenne",
         "tooltip_annual_usage": "Utilisation annuelle"
     },
+    "digital-services-ai-parameter": {
+        "new": "Nouveau terminal",
+        "devices": "Algorithme",
+        "device": "Algorithme",
+        "id": "#",
+        "country": "Pays",
+        "model": "Détails du modèle",
+        "parameter": "Paramètres",
+        "framework": "Framework",
+        "quantization": "Quantification",
+        "stages": "Etape",
+        "inference": "Inférence",
+        "fintuning": "Fintuning",
+        "numberOfUsers": "Nb d'utilisateurs par an",
+        "averageRequest": "Nb moyen de requêtes par an",
+        "averageToken": "Nb moyen de jetons générés par requête",
+        "totalTokenGenerate": "Nb total de jetons générés"
+    },
+
+    "digital-services-ai-infrastructure": {
+        "type": "Type",
+        "cpu-cores": "Nombre de cœurs CPU",
+        "gpu-count": "Nombre de GPU",
+        "gpu-memory": "Mémoire du GPU (Go)",
+        "ram-size": "Taille de la RAM (Go)",
+        "power-effectiveness": "Efficacité électrique",
+        "datacenter-pue": "PUE du datacenter",
+        "complementary-pue": "PUE complémentaire",
+        "energy-efficiency": "Efficacité énergétique",
+        "location": "Localisation"
+    },
+    "digital-services-import": {
+        "import": "Importer des données",
+        "non-cloud-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur l'infrastructure, en particulier les centres de données, les serveurs et les machines virtuelles.",
+        "cloud-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur l'infrastructure cloud en tant que service (IaaS).",
+        "template-text": "Si nécessaire, vous pouvez télécharger le modèle pour vous aider à créer de nouveaux fichiers.",
+        "templates": {
+            "datacenter-template-file": "Fichier de modèle de centre de données",
+            "physical-template-file": "Fichier modèle d'équipement physique",
+            "virtual-template-file": "Fichier de modèle d'équipement virtuel",
+            "type-size": "({{type}}, {{size}} Ko )"
+        },
+        "add-files": "Ajouter fichiers",
+        "non-cloud-server-upload-info": "Les serveurs non cloud téléchargent des informations",
+        "cloud-server-upload-info": "Les serveurs cloud téléchargent des informations",
+        "finish": "Finition",
+        "start-upload": "Commencer téléverser",
+        "date": "Date",
+        "time": "Temps",
+        "status": "Statut",
+        "rejected-files": "Fichiers rejetés",
+        "browse-file": "Parcourir fichier"
+    },
     "welcome-page": {
         "title": "Page de bienvenue",
         "name": "Accueil",
@@ -322,6 +439,12 @@
         "digital-service": {
             "title": "Services numériques",
             "description": "Évaluez l’impact d’un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
+        },
+        "eco-mind-ai": {
+            "title": "EcoMind AI",
+            "description": "Calculez l’impact d’un service intégrant un algorithme d’IA, orientez dès le démarrage les choix pour le réduire grâce aux bonnes pratiques et assurez son suivi tout au long du projet.",
             "button": "Aller au service",
             "button-disabled": "Demander de l'aide"
         }
@@ -563,6 +686,9 @@
             "title": "Vers l'écoconception de votre service",
             "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères mentionnés à gauche de l’écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>principes de l'éco-conception</a>). L’une des manières d’éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3 role='content'>​ Une échelle adaptée à l'analyse multicritère : l’équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>consultez ce rapport sur l'impact environnemental des TIC</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d’Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
         },
+        "global-vision-ai": {
+            "title": "Comment faire mieux"
+        },
         "terminal": {
             "title": "Analyse et levier de l'écoconception",
             "content": "Vous regardez ici l'impact des terminaux utilisant votre service numérique.​ <br> <br> La méthode de calcul qui fait actuellement référence dans les méthodes d'ACV prend en compte le type d'équipement sollicité, sa localisation et le temps de parcours utilisateurs. ​<br> <br> Le type d'équipement sur lequel le service est consommé a une influence sur l'impact à la fabrication, à la distribution et à la fin de vie du matériel : plus l'équipement est imposant et complexe, plus ses impacts sont importants. Pour réduire l'impact, vous pouvez faire en sorte que votre service tourne sur des terminaux avec de petits écrans, sur des équipements anciens (OS sup à 5 ans, …) et peu performants; vous contribuerez alors à réduire le renouvellement du matériel…et la fracture numérique. ​<br> <br> La localisation des utilisateurs influe sur l'impact du service. Il est directement lié aux modes de production de <a href='https://ourworldindata.org/electricity-mix' target='_blank'>l'énergie électrique consommée lors de la phase d'utilisation du service</a>.​ <br> <br> Enfin, vous pouvez faire en sorte d'optimiser le parcours utilisateur en éliminant les fonctionnalités qui n'apportent que peu ou pas de valeur, ce qui permettra aussi d'alléger les infrastructures nécessaires."
@@ -737,6 +863,7 @@
             "access": "Accéder",
             "is-module": "Module Système d'Information",
             "ds-module": "Module Services Numériques",
+            "ecomind-module": "Module EcoMind",
             "role": "Rôle",
             "actions": "Actions",
             "add": "AJOUTER À L'ORGANISATION",

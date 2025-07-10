@@ -42,6 +42,13 @@ services:
     extends:
       file: shared-docker-compose.yml
       service: boaviztapi
+
+  ecomind-api:
+    extends:
+      file: shared-docker-compose.yml
+      service: ecomind-api
+
+
       
 volumes:
   numecoeval_kafka_data:

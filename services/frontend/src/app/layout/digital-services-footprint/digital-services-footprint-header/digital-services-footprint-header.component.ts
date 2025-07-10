@@ -14,13 +14,14 @@ import {
     Input,
     OnInit,
     Output,
+    ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
+import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     DigitalService,
@@ -30,10 +31,14 @@ import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
+import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { DigitalServicesAiInfrastructureComponent } from "../digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
+import { DigitalServicesAiParametersComponent } from "../digital-services-ai-parameters/digital-services-ai-parameters.component";
 
 @Component({
     selector: "app-digital-services-footprint-header",
@@ -41,12 +46,13 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
-    private global = inject(GlobalStoreService);
+    private readonly global = inject(GlobalStoreService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     sidebarVisible: boolean = false;
+    importSidebarVisible = false;
     selectedSubscriberName = "";
     selectedOrganizationId!: number;
     selectedOrganizationName = "";
@@ -54,6 +60,18 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
+    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindAi: boolean = false;
+    @Input() set isAi(value: boolean) {
+        this.isEcoMindAi = value;
+    }
+
+    @ViewChild(DigitalServicesAiParametersComponent) aiParametersComponent:
+        | DigitalServicesAiParametersComponent
+        | undefined;
+    @ViewChild(DigitalServicesAiInfrastructureComponent) aiInfrastructureComponent:
+        | DigitalServicesAiInfrastructureComponent
+        | undefined;
 
     enableCalcul = computed(() => {
         const digitalService = this.digitalServiceStore.digitalService();
@@ -70,41 +88,42 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 ? true
                 : digitalService.lastUpdateDate > digitalService.lastCalculationDate;
 
-        if (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) {
+        if (
+            (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) ||
+            this.isEcoMindAi
+        ) {
             return true;
         }
         return false;
     });
-    private destroyRef = inject(DestroyRef);
+    private readonly destroyRef = inject(DestroyRef);
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
-        private router: Router,
-        private confirmationService: ConfirmationService,
-        private translate: TranslateService,
-        public userService: UserService,
-        private messageService: MessageService,
-        private digitalServiceBusinessService: DigitalServiceBusinessService,
-        private inVirtualEquipmentsService: InVirtualEquipmentsService,
+        private readonly digitalServicesData: DigitalServicesDataService,
+        private readonly router: Router,
+        private readonly confirmationService: ConfirmationService,
+        private readonly translate: TranslateService,
+        public readonly userService: UserService,
+        private readonly messageService: MessageService,
+        private readonly digitalServiceBusinessService: DigitalServiceBusinessService,
+        private readonly inVirtualEquipmentsService: InVirtualEquipmentsService,
+        private readonly aiFormsStore: AIFormsStore,
+        private readonly digitalServicesAiData: DigitalServicesAiDataService,
+        private readonly route: ActivatedRoute,
     ) {}
 
     ngOnInit() {
         this.digitalServicesData.digitalService$
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                switchMap((res) => {
-                    this.digitalService = res;
-                    this.digitalServiceStore.setDigitalService(this.digitalService);
-                    return this.inVirtualEquipmentsService.getByDigitalService(
-                        this.digitalService.uid,
-                    );
-                }),
-            )
-            .subscribe();
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((res) => {
+                this.digitalService = res;
+                this.digitalServiceStore.setDigitalService(this.digitalService);
+            });
 
         this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
             this.selectedSubscriberName = subscriber.name;
             this.subscriber = subscriber;
+            this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
         });
         this.userService.currentOrganization$.subscribe((organization: Organization) => {
             this.organization.subscriberName = this.subscriber.name;
@@ -117,6 +136,12 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.organization.criteriaDs = organization.criteriaDs!;
             this.organization.criteriaIs = organization.criteriaIs!;
         });
+        //to reset the form when a new digitalService is set
+        if (this.digitalService.isAi) {
+            this.aiFormsStore.setParameterChange(false);
+            this.aiFormsStore.setInfrastructureChange(false);
+            this.aiFormsStore.clearForms();
+        }
     }
 
     onNameUpdate(digitalServiceName: string) {
@@ -156,6 +181,15 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     async launchCalcul() {
+        if (this.isEcoMindAi) {
+            await this.handleSave();
+            if (
+                !this.aiFormsStore.getInfrastructureFormData() ||
+                !this.aiFormsStore.getParametersFormData()
+            ) {
+                return;
+            }
+        }
         this.global.setLoading(true);
         await firstValueFrom(
             this.digitalServicesData.launchEvaluating(this.digitalService.uid),
@@ -174,11 +208,23 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             const digitalServiceId = this.digitalService?.uid;
 
             if (digitalServiceId) {
-                this.router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-                    this.router.navigate([
-                        `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
-                    ]);
-                });
+                if (this.isEcoMindAi) {
+                    this.router
+                        .navigateByUrl("/", { skipLocationChange: true })
+                        .then(() => {
+                            this.router.navigate([
+                                `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai/${digitalServiceId}/footprint/dashboard`,
+                            ]);
+                        });
+                } else {
+                    this.router
+                        .navigateByUrl("/", { skipLocationChange: true })
+                        .then(() => {
+                            this.router.navigate([
+                                `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
+                            ]);
+                        });
+                }
             }
         }
     }
@@ -203,8 +249,14 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let [_, _1, subscriber, _2, organization] = this.router.url.split("/");
-        return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
+        let [_, _1, subscriber, _2, organization, serviceType] =
+            this.router.url.split("/");
+        // serviceType can be 'digital-services' or 'eco-mind-ai'
+        if (serviceType === "eco-mind-ai") {
+            return `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai`;
+        } else {
+            return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
+        }
     }
 
     noteSaveValue(event: any) {
@@ -248,6 +300,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         }
     }
 
+    importData(): void {
+        this.importSidebarVisible = true;
+    }
+
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.global.criteriaList()).slice(0, 5);
         this.selectedCriteria =
@@ -269,6 +325,144 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                     .subscribe();
                 this.displayPopup = false;
                 this.digitalServiceStore.setEnableCalcul(true);
+            });
+    }
+
+    async handleSave() {
+        const parametersData = this.aiFormsStore.getParametersFormData();
+        const infrastructureData = this.aiFormsStore.getInfrastructureFormData();
+
+        // Check that both forms are complete
+        if (!parametersData || !infrastructureData) {
+            this.messageService.add({
+                severity: "warn",
+                summary: this.translate.instant("common.attention"),
+                detail: this.translate.instant(
+                    "eco-mind-ai.ai-parameters.fill-all-fields",
+                ),
+            });
+            return;
+        }
+
+        // Check that all required fields have been completed
+        const requiredParametersFields = [
+            "modelName",
+            "nbParameters",
+            "framework",
+            "quantization",
+            "numberUserYear",
+            "averageNumberRequest",
+            "averageNumberToken",
+        ] as const;
+
+        const requiredInfrastructureFields = [
+            "infrastructureType",
+            "nbCpuCores",
+            "nbGpu",
+            "gpuMemory",
+            "ramSize",
+            "pue",
+            "complementaryPue",
+            "location",
+        ] as const;
+
+        const missingParametersFields = requiredParametersFields.filter(
+            (field) =>
+                parametersData[field] === undefined ||
+                parametersData[field] === null ||
+                parametersData[field] === "",
+        );
+        const missingInfrastructureFields = requiredInfrastructureFields.filter(
+            (field) => {
+                const value = infrastructureData[field];
+                // For numeric fields, 0 is accepted as the valid value.
+                if (typeof value === "number") {
+                    return value === undefined || value === null;
+                }
+                // For other string fields, check as before
+                return value === undefined || value === null || value === "";
+            },
+        );
+
+        if (
+            missingParametersFields.length > 0 ||
+            missingInfrastructureFields.length > 0
+        ) {
+            let missingFieldsMessage =
+                this.translate.instant("eco-mind-ai.ai-parameters.missing-fields") +
+                " :\n";
+
+            if (missingParametersFields.length > 0) {
+                missingFieldsMessage +=
+                    "\n" +
+                    this.translate.instant("eco-mind-ai.ai-parameters.parameters-form") +
+                    " :\n" +
+                    missingParametersFields.join(", ");
+            }
+
+            if (missingInfrastructureFields.length > 0) {
+                missingFieldsMessage +=
+                    "\n" +
+                    this.translate.instant(
+                        "eco-mind-ai.ai-parameters.infrastructure-form",
+                    ) +
+                    " :\n" +
+                    missingInfrastructureFields.join(", ");
+            }
+
+            this.messageService.add({
+                severity: "warn",
+                summary: this.translate.instant("common.attention"),
+                detail: missingFieldsMessage,
+            });
+            return;
+        }
+
+        const digitalServiceUid = this.digitalService?.uid;
+
+        if (!digitalServiceUid) {
+            this.messageService.add({
+                severity: "error",
+                summary: this.translate.instant("common.error"),
+                detail: this.translate.instant(
+                    "eco-mind-ai.ai-parameters.service-id-missing",
+                ),
+            });
+            return;
+        }
+
+        this.global.setLoading(true);
+
+        // Save both forms
+        await Promise.all([
+            this.digitalServicesAiData
+                .saveAiInfrastructure(digitalServiceUid, infrastructureData)
+                .toPromise(),
+            this.digitalServicesAiData
+                .saveAiParameters(digitalServiceUid, parametersData)
+                .toPromise(),
+        ])
+            .then(() => {
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.success"),
+                    detail: this.translate.instant(
+                        "eco-mind-ai.ai-parameters.save-success",
+                    ),
+                });
+                this.digitalServiceStore.setEnableCalcul(true);
+            })
+            .catch((error) => {
+                this.messageService.add({
+                    severity: "error",
+                    summary: this.translate.instant("common.error"),
+                    detail: this.translate.instant(
+                        "eco-mind-ai.ai-parameters.save-error",
+                    ),
+                });
+            })
+            .finally(() => {
+                this.global.setLoading(false);
             });
     }
 }

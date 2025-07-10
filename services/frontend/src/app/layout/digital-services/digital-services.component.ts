@@ -18,6 +18,7 @@ import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-digital-services",
@@ -35,10 +36,15 @@ export class DigitalServicesComponent {
     paginatedDigitalServices: DigitalService[] = [];
     selectedOrganization!: string;
     isAllowedDigitalService: boolean = false;
+    isAllowedEcoMindAiService: boolean = false;
+    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+
     first: number = 0;
 
     rowsPerPage: number = 10;
     currentPage = 0;
+    isEcoMindAi = false;
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -51,20 +57,27 @@ export class DigitalServicesComponent {
     ) {}
 
     async ngOnInit(): Promise<void> {
+        this.route.parent?.data.subscribe((data) => {
+            this.isEcoMindAi = data["isIa"] === true;
+        });
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
             });
+        this.userService.currentSubscriber$.subscribe((subscriber: any) => {
+            this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
+        });
         this.userService.roles$.subscribe((roles: Role[]) => {
             this.isAllowedDigitalService =
                 roles.includes(Role.DigitalServiceRead) ||
                 roles.includes(Role.DigitalServiceWrite);
+            this.isAllowedEcoMindAiService =
+                roles.includes(Role.EcoMindAiRead) || roles.includes(Role.EcoMindAiWrite);
         });
         this.global.setLoading(true);
         await this.retrieveDigitalServices();
         this.global.setLoading(false);
-
         this.router.events
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((event) => {
@@ -78,16 +91,36 @@ export class DigitalServicesComponent {
 
     async retrieveDigitalServices() {
         this.allDigitalServices = [];
-
-        const apiResult = await lastValueFrom(this.digitalServicesData.list());
-        apiResult.sort((x, y) => x.name.localeCompare(y.name));
-        this.allDigitalServices.push(...apiResult);
+        if (
+            this.isEcoMindAi &&
+            this.isAllowedEcoMindAiService &&
+            this.isEcoMindEnabledForCurrentSubscriber &&
+            this.isEcoMindModuleEnabled
+        ) {
+            const apiResult = await lastValueFrom(this.digitalServicesData.list(true));
+            apiResult.sort((x, y) => x.name.localeCompare(y.name));
+            this.allDigitalServices.push(...apiResult);
+        } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
+            const apiResult = await lastValueFrom(this.digitalServicesData.list(false));
+            apiResult.sort((x, y) => x.name.localeCompare(y.name));
+            this.allDigitalServices.push(...apiResult);
+        }
         this.updatePaginatedItems();
     }
 
     async createNewDigitalService() {
-        const { uid } = await lastValueFrom(this.digitalServicesData.create());
-        this.goToDigitalServiceFootprint(uid);
+        if (
+            this.isEcoMindAi &&
+            this.isAllowedEcoMindAiService &&
+            this.isEcoMindEnabledForCurrentSubscriber &&
+            this.isEcoMindModuleEnabled
+        ) {
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(true));
+            this.goToDigitalServiceFootprint(uid);
+        } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(false));
+            this.goToDigitalServiceFootprint(uid);
+        }
     }
 
     onPageChange(event: PaginatorState) {
@@ -104,9 +137,15 @@ export class DigitalServicesComponent {
     }
 
     goToDigitalServiceFootprint(uid: string) {
-        this.router.navigate([`${uid}/footprint/terminals`], {
-            relativeTo: this.route,
-        });
+        if (this.isEcoMindAi) {
+            this.router.navigate([`${uid}/footprint/infrastructure`], {
+                relativeTo: this.route,
+            });
+        } else {
+            this.router.navigate([`${uid}/footprint/terminals`], {
+                relativeTo: this.route,
+            });
+        }
     }
 
     itemNoteOpened(digitalService: DigitalService) {

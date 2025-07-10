@@ -7,12 +7,16 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
+import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
+import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -47,6 +51,7 @@ class DigitalServiceServiceTest {
     final static String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
     final static String SUBSCRIBER = "subscriber";
     final static long User_ID = 1;
+    final static Boolean IS_AI = false;
 
     final static List<String> criteriaList = List.of("ionising-radiation", "climate-change");
 
@@ -73,6 +78,10 @@ class DigitalServiceServiceTest {
     private FileMapperInfo fileInfo;
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Mock private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    @Mock private InDatacenterRepository inDatacenterRepository;
+    @Mock private InAiParameterRepository inAiParameterRepository;
+    @Mock private InAiInfrastructureRepository inAiInfrastructureRepository;
     @InjectMocks
     private DigitalServiceService digitalServiceService;
 
@@ -93,7 +102,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
@@ -120,7 +129,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
@@ -129,6 +138,23 @@ class DigitalServiceServiceTest {
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
         verify(userRepository, times(1)).findById(User_ID);
+    }
+
+    @Test
+    void deleteDigitalService_shouldCallAllRepositoriesWithCorrectUid() {
+        // Arrange
+        String digitalServiceUid = "ds-123";
+
+        // Act
+        digitalServiceService.deleteDigitalService(digitalServiceUid); // appelle ta méthode
+
+        // Assert : on vérifie que tous les repositories ont bien été appelés
+        verify(inVirtualEquipmentRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(inPhysicalEquipmentRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(inDatacenterRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(inAiParameterRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(inAiInfrastructureRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(digitalServiceRepository).deleteById(digitalServiceUid);
     }
 
     @Test
@@ -145,7 +171,7 @@ class DigitalServiceServiceTest {
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.findByOrganization(linkedOrganization)).thenReturn(List.of(digitalService));
 
-        List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(ORGANIZATION_ID);
+        List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(ORGANIZATION_ID, IS_AI);
         assertThat(result).isEqualTo(List.of(digitalServiceBo));
 
         verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);

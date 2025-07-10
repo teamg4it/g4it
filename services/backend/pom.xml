@@ -71,7 +71,8 @@
             **/tasklet/**/*.java,
             **/client/**/*.java,
             **/utils/Constants.java,
-            **/BackendApplication.java
+            **/BackendApplication.java,
+            **/AdministratorActionsService.java
         </sonar.coverage.exclusions>
         <sonar.exclusions>
             **/gen/**/*.java,
@@ -465,6 +466,52 @@
                             </configOptions>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <id>ecomind-api-v2</id>
+                        <configuration>
+                            <generatorName>spring</generatorName>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/swagger/ecomind/api-ai-service-EcomindAIv2.yaml
+                            </inputSpec>
+                            <apiPackage>com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2</apiPackage>
+                            <modelPackage>com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto
+                            </modelPackage>
+                            <invokerPackage>
+                                com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.invoker
+                            </invokerPackage>
+                            <generateApis>true</generateApis>
+                            <generateModels>true</generateModels>
+                            <generateModelTests>false</generateModelTests>
+                            <generateApiTests>false</generateApiTests>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generatorName>java</generatorName>
+                            <library>webclient</library>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useTags>true</useTags>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <dateLibrary>java8</dateLibrary>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <sourceFolder>src/gen/java</sourceFolder>
+                                <serializableModel>true</serializableModel>
+                                <interfaceOnly>true</interfaceOnly>
+                                <reactive>false</reactive>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <useOptional>false</useOptional>
+                                <serviceInterface>true</serviceInterface>
+                                <serviceImplementation>true</serviceImplementation>
+                                <booleanGetterPrefix>is</booleanGetterPrefix>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
             <plugin>

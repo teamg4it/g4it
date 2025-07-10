@@ -70,12 +70,21 @@ export abstract class Constants {
         referential: "referential",
         users: "users",
         subscribers: "administrator/subscribers",
+        subscriberbyid: "administrator/subscriber",
         organizations: "administrator/organizations",
+        ecomindaiModelConfig: "ecomindai/aiModelConfig/type",
         actions: "administrator-actions",
         version: "version",
         businessHours: "business-hours",
         templateFiles: "template-files",
         workspace: "workspace",
+        downloadReject: "download-reject",
+        task: "task",
+    };
+
+    static readonly TEMPLATE_PARAMS = {
+        IS_MODULE: "is_template",
+        DS_MODULE: "ds_template",
     };
 
     static readonly ERRORS: any = {

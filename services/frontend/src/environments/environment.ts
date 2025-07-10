@@ -11,7 +11,15 @@
 
 export const environment = {
     production: false,
-    securedEndpoints: ["inventories", "digital-services", "template-files"],
+    isEcomindEnabled: true,
+    securedEndpoints: [
+        "inventories",
+        "digital-services",
+        "eco-mind-ai",
+        "template-files",
+        "download-reject",
+        "task",
+    ],
     apiBaseUrl: "http://localhost:8080",
     keycloak: {
         issuer: "http://localhost:8180/auth",

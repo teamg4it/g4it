@@ -17,14 +17,18 @@ import { RadioButtonModule } from "primeng/radiobutton";
 import { SidebarModule } from "primeng/sidebar";
 import { TableModule } from "primeng/table";
 import { TabMenuModule } from "primeng/tabmenu";
+import { TagModule } from "primeng/tag";
 
 import { NgxEchartsModule } from "ngx-echarts";
 import { CardModule } from "primeng/card";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DividerModule } from "primeng/divider";
+import { FileUploadModule } from "primeng/fileupload";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
+import { DigitalServicesAiInfrastructureComponent } from "./digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
+import { DigitalServicesAiParametersComponent } from "./digital-services-ai-parameters/digital-services-ai-parameters.component";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
@@ -35,6 +39,8 @@ import { RadialChartComponent } from "./digital-services-footprint-dashboard/rad
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header/digital-services-footprint-header.component";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
 import { digitalServicesFootprintRouter } from "./digital-services-footprint.router";
+import { DigitalServicesImportComponent } from "./digital-services-import/digital-services-import.component";
+import { MultiFileImportComponent } from "./digital-services-import/multi-file-import/multi-file-import.component";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
 import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
@@ -68,6 +74,10 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         PanelServerParametersComponent,
         PanelAddVmComponent,
         PanelListVmComponent,
+        DigitalServicesAiParametersComponent,
+        DigitalServicesAiInfrastructureComponent,
+        DigitalServicesImportComponent,
+        MultiFileImportComponent,
     ],
     imports: [
         CommonModule,
@@ -79,8 +89,10 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         InputNumberModule,
         InputTextModule,
         SharedModule,
+        FileUploadModule,
         TabMenuModule,
         TableModule,
+        TagModule,
         CardModule,
         ScrollPanelModule,
         SidebarModule,
@@ -92,6 +104,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         RadioButtonModule,
         DividerModule,
         digitalServicesFootprintRouter,
+        TableModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],

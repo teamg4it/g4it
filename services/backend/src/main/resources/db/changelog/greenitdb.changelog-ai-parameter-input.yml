@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ai-parameter
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ai_parameters
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ai_parameters_id_pk
+              - column:
+                  name: nb_parameters
+                  type: varchar(255)
+              - column:
+                  name: framework
+                  type: varchar(255)
+              - column:
+                  name: quantization
+                  type: varchar(255)
+              - column:
+                  name: total_generated_tokens
+                  type: bigint
+              - column:
+                  name: number_user_year
+                  type: bigint
+              - column:
+                  name: average_number_request
+                  type: bigint
+              - column:
+                  name: average_number_token
+                  type: bigint
+              - column:
+                  name: is_inference
+                  type: boolean
+              - column:
+                  name: is_finetuning
+                  type: boolean
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: ai_parameter_digital_service_fk
+                    references: digital_service(uid)
+
+
+
+  - changeSet:
+      id: add-modelName-and-type-ai_parameters-table
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: ai_parameters
+            columns:
+              - column:
+                  name: model_name
+                  type: varchar(255)
+              - column:
+                  name: type
+                  type: varchar(255)
+  - changeSet:
+      id: rename-ai_parameters-table
+      author: G4IT Dev Team
+      changes:
+        - renameTable:
+            oldTableName: ai_parameters
+            newTableName: in_ai_parameters
