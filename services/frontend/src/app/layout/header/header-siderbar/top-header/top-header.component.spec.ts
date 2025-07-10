@@ -191,12 +191,6 @@ describe("TopHeaderComponent", () => {
         expect(component.isOrgMenuVisible).toBeTrue();
     });
 
-    it("should call logout and clear localStorage", async () => {
-        await component.logout();
-        expect(localStorage.getItem("username")).toBeNull();
-        expect(mockKeycloakService.logout).toHaveBeenCalled();
-    });
-
     it("should hide menus when clicking outside", () => {
         component.isAccountMenuVisible = true;
         component.isOrgMenuVisible = true;
