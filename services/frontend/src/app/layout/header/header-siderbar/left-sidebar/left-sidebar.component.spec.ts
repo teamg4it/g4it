@@ -6,7 +6,7 @@ import { SharedModule } from "src/app/core/shared/shared.module";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { LeftSidebarComponent } from "./left-sidebar.component";
 
-fdescribe("LeftSidebarComponent", () => {
+describe("LeftSidebarComponent", () => {
     let component: LeftSidebarComponent;
     let userServiceMock: jasmine.SpyObj<UserService>;
 
