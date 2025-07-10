@@ -102,14 +102,9 @@
                 <!-- loading history column -->
                 <div class="flex flex-column">
                     <div class="flex align-items-center">
-                        <span
-                            id="loading-history"
-                            class="mr-3"
-                            role="heading"
-                            [ariaLevel]="4"
-                        >
+                        <h4 id="loading-history" class="mr-3 my-0 text-base">
                             {{ "inventories.history.loadings" | translate }}
-                        </span>
+                        </h4>
                         <p-button
                             *ngIf="userService.isAllowedInventoryWrite$ | async"
                             styleClass="black-button-small vertical-align-top uppercase"
@@ -139,14 +134,9 @@
                 <!-- estimate history column -->
                 <div class="flex flex-column">
                     <div class="flex align-items-center">
-                        <span
-                            id="estimate-history"
-                            class="mr-3"
-                            role="heading"
-                            [ariaLevel]="4"
-                        >
+                        <h4 id="estimate-history" class="mr-3 my-0 text-base">
                             {{ "inventories.history.estimations" | translate }}
-                        </span>
+                        </h4>
                         <p-button
                             *ngIf="userService.isAllowedInventoryWrite$ | async"
                             [disabled]="isEstimationDisabled()"
