@@ -83,6 +83,7 @@ public interface InputToCsvRecord {
                 print(physicalEquipment.getElectricityConsumption()),
                 print(physicalEquipment.getManufacturer()),
                 print(physicalEquipment.getSizeDiskGb()),
+                print(physicalEquipment.getSizeMemoryGb()),
                 print(physicalEquipment.getCpuType()) // processor type
         );
     }
@@ -110,7 +111,7 @@ public interface InputToCsvRecord {
                 print(virtualEquipment.getType()),
                 print(virtualEquipment.getAllocationFactor()),
                 "", //nomSourceDonnee
-                print(virtualEquipment.getSizeDiskGb())
+                print(virtualEquipment.getSizeMemoryGb())
         );
     }
 

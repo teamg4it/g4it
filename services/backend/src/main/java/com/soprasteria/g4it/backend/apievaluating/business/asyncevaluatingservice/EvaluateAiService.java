@@ -214,6 +214,7 @@ public class EvaluateAiService {
 
         EvaluateReportBO evaluateReportBO = EvaluateReportBO.builder()
                 .export(true)
+                .verbose(true)
                 .isDigitalService(true)
                 .nbPhysicalEquipmentLines(1)
                 .nbVirtualEquipmentLines(1)
@@ -241,7 +242,12 @@ public class EvaluateAiService {
                 // ai data
                 csvInAiParameters.printRecord(inputToCsvRecord.toCsv(inAiParameters));
                 csvInAiInfrastructure.printRecord(inputToCsvRecord.toCsv(inAiInfrastructure));
-                csvOutAiReco.printRecord(impactToCsvRecord.toCsv(outAiReco));
+
+                List<String[]> outAiRecoCsvRecords = impactToCsvRecord.toCsv(outAiReco);
+
+                for (String[] aiRecoRecord : outAiRecoCsvRecords) {
+                    csvOutAiReco.printRecord((Object[]) aiRecoRecord);
+                }
             }
 
             while (!physicalEquipments.isEmpty()) {
