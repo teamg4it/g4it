@@ -68,8 +68,8 @@ public class DigitalService {
     /**
      * The user behind the digital service.
      */
-    @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

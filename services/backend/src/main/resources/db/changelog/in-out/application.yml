@@ -204,3 +204,17 @@ databaseChangeLog:
               - column:
                   name: provider
                   type: varchar(255)
+  - changeSet:
+      id: modify-in-application-digital-service-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: in_application
+            constraintName: in_application_digital_service_fk
+        - addForeignKeyConstraint:
+            baseTableName: in_application
+            baseColumnNames: digital_service_uid
+            constraintName: in_application_digital_service_fk
+            referencedTableName: digital_service
+            referencedColumnNames: uid
+            onDelete: CASCADE

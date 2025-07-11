@@ -54,3 +54,18 @@ databaseChangeLog:
             oldColumnName: infrastructure_type_enum
             newColumnName: infrastructure_type
             columnDataType: VARCHAR(50)
+
+  - changeSet:
+      id: modify-ai-infrastructure-digital-service-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: in_ai_infrastructure
+            constraintName: ai_infrastructure_digital_service_fk
+        - addForeignKeyConstraint:
+            baseTableName: in_ai_infrastructure
+            baseColumnNames: digital_service_uid
+            constraintName: ai_infrastructure_digital_service_fk
+            referencedTableName: digital_service
+            referencedColumnNames: uid
+            onDelete: CASCADE

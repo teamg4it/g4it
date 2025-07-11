@@ -909,6 +909,7 @@ databaseChangeLog:
               - column:
                   name: lifespan
                   valueNumeric: 5
+
   - changeSet:
       id: add-default-value-columns-to-ref-ecomind-type-ai
       author: G4IT Dev Team

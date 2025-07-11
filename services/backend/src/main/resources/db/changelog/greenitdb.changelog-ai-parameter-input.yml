@@ -76,3 +76,18 @@ databaseChangeLog:
         - renameTable:
             oldTableName: ai_parameters
             newTableName: in_ai_parameters
+
+  - changeSet:
+      id: modify-ai-parameter-digital-service-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: in_ai_parameters
+            constraintName: ai_parameter_digital_service_fk
+        - addForeignKeyConstraint:
+            baseTableName: in_ai_parameters
+            baseColumnNames: digital_service_uid
+            constraintName: ai_parameter_digital_service_fk
+            referencedTableName: digital_service
+            referencedColumnNames: uid
+            onDelete: CASCADE

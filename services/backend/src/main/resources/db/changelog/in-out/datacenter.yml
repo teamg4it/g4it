@@ -70,3 +70,17 @@ databaseChangeLog:
             columns:
               - column:
                   name: inventory_id
+  - changeSet:
+      id: modify-in-datacenter-digital-service-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: in_datacenter
+            constraintName: in_datacenter_digital_service_fk
+        - addForeignKeyConstraint:
+            baseTableName: in_datacenter
+            baseColumnNames: digital_service_uid
+            constraintName: in_datacenter_digital_service_fk
+            referencedTableName: digital_service
+            referencedColumnNames: uid
+            onDelete: CASCADE

@@ -257,3 +257,18 @@ databaseChangeLog:
                   name: inventory_id
               - column:
                   name: name
+
+  - changeSet:
+      id: modify-virtual-eqp-digital-service-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: in_virtual_equipment
+            constraintName: virtual_eqp_digital_service_fk
+        - addForeignKeyConstraint:
+            baseTableName: in_virtual_equipment
+            baseColumnNames: digital_service_uid
+            constraintName: virtual_eqp_digital_service_fk
+            referencedTableName: digital_service
+            referencedColumnNames: uid
+            onDelete: CASCADE
