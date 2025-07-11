@@ -45,4 +45,27 @@ public class EcomindTypeRef {
      * Device's lifespan.
      */
     private Double lifespan;
+
+    /**
+     * Default cpu cores value
+     */
+    private Double defaultCpuCores;
+
+    /**
+     * Default GPU count value
+     */
+    private Long defaultGpuCount;
+
+    /**
+     * Default GPU memory value
+     */
+    private Long defaultGpuMemory;
+    /**
+     * Default RAM size value
+     */
+    private Double defaultRamSize;
+    /**
+     * Default Datacenter PUE value
+     */
+    private Double defaultDatacenterPue;
 }
