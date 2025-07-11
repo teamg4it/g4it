@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -101,20 +101,62 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
     it("should patch form with store data if infrastructure change is true", async () => {
         mockAiFormsStore.getInfrastructureChange.and.returnValue(true);
         mockAiFormsStore.getInfrastructureFormData.and.returnValue({
-            nbCpuCores: 2,
-            nbGpu: 1,
-            gpuMemory: 8,
-            ramSize: 16,
-            pue: 1.2,
+            nbCpuCores: 30,
+            nbGpu: 2,
+            gpuMemory: 32,
+            ramSize: 64,
+            pue: 1.5,
             complementaryPue: 1.1,
             location: "Germany",
-            infrastructureType: "GPU",
+            infrastructureType: {
+                value: "Server",
+                defaultCpuCores: 30,
+                defaultGpuCount: 2,
+                defaultGpuMemory: 32,
+                defaultRamSize: 64,
+                defaultDatacenterPue: 1.5,
+            },
         });
 
         await component.ngOnInit();
 
-        expect(component.infrastructureForm.value.nbCpuCores).toBe(2);
+        expect(component.infrastructureForm.value.nbCpuCores).toBe(30);
         expect(mockAiDataService.getAiInfrastructure).not.toHaveBeenCalled();
+    });
+
+    it("should patch form with data from API if infrastructure change is false and data already exists", async () => {
+        const apiInfrastructureType = {
+            code: "server",
+            value: "Server",
+            lifespan: 10,
+            defaultCpuCores: 30,
+            defaultGpuCount: 2,
+            defaultGpuMemory: 32,
+            defaultRamSize: 64,
+            defaultDatacenterPue: 1.5,
+        };
+
+        const apiData = {
+            nbCpuCores: 30,
+            nbGpu: 2,
+            gpuMemory: 32,
+            ramSize: 64,
+            pue: 1.5,
+            complementaryPue: 1.1,
+            location: "Germany",
+            infrastructureType: apiInfrastructureType,
+        };
+
+        component.typesOptions = [apiInfrastructureType];
+
+        component.loadCountries = jasmine.createSpy().and.returnValue(Promise.resolve());
+
+        mockAiDataService.getAiInfrastructure.and.returnValue(of(apiData));
+
+        await component.ngOnInit();
+        await fixture.whenStable();
+
+        expect(component.infrastructureForm.value.nbCpuCores).toBe(30);
     });
 
     it("should handle error during infrastructure load", async () => {
@@ -125,11 +167,12 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         expect(mockMessageService.add).toHaveBeenCalled();
     });
 
-    it("should disable form if user is not allowed", async () => {
+    it("should disable form if user is not allowed", fakeAsync(() => {
         mockUserService.isAllowedEcoMindAiWrite$ = of(false);
-        await component.ngOnInit();
+        component.ngOnInit();
+        tick();
         expect(component.infrastructureForm.disabled).toBeTrue();
-    });
+    }));
 
     it("should unsubscribe on destroy", () => {
         const mockSub = jasmine.createSpyObj("Subscription", ["unsubscribe"]);
