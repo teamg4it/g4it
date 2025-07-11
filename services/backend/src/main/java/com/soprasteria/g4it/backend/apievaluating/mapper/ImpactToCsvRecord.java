@@ -8,6 +8,8 @@
 
 package com.soprasteria.g4it.backend.apievaluating.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
 import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
@@ -21,12 +23,15 @@ import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.ecomindai.model.RecommendationBO;
 import org.mapstruct.Mapper;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.soprasteria.g4it.backend.common.utils.CsvUtils.*;
@@ -171,10 +176,14 @@ public interface ImpactToCsvRecord {
 
     }
 
-    default List<String> toCsv(OutAiReco outAiReco) {
-        return List.of(
-                outAiReco.getElectricityConsumption().toString(),
-                outAiReco.getRecommendations()
-        );
+    default List<String[]> toCsv(OutAiReco outAiReco) throws JsonProcessingException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        RecommendationBO[] recommendationBOS = objectMapper.readValue(outAiReco.getRecommendations(), RecommendationBO[].class);
+
+        List<String[]> result = new ArrayList<>();
+
+        Arrays.stream(recommendationBOS).map(recommendationBO -> new String[]{recommendationBO.getType(), recommendationBO.getTopic(), recommendationBO.getExample(), recommendationBO.getExpectedReduction()}).forEach(result::add);
+        return result;
     }
 }

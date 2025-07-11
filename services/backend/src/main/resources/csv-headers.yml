@@ -432,9 +432,13 @@ filesystem.config.headers:
     - name: "sipImpact"
       optional: false
   outAiReco:
-    - name: "electricityConsumption"
+    - name: "type"
       optional: false
-    - name: "recommendations"
+    - name: "topic"
+      optional: false
+    - name: "example"
+      optional: false
+    - name: "expectedReduction"
       optional: false
   aiParameters:
     - name: "digitalServiceUid"
