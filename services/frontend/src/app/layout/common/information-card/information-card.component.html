@@ -12,11 +12,6 @@
             aria-level="3"
         ></div>
     </div>
-    @if (isLong()) {
-        <p-scrollPanel [style]="{ width: '100%', height: '330px' }">
-            <p [innerHTML]="safeContent()" class="mx-3"></p>
-        </p-scrollPanel>
-    } @else {
-        <p class="mx-3" [innerHTML]="safeContent()"></p>
-    }
+
+    <p class="mx-3" [innerHTML]="safeContent()"></p>
 </p-card>
