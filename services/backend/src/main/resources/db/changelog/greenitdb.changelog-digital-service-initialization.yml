@@ -909,28 +909,6 @@ databaseChangeLog:
               - column:
                   name: lifespan
                   valueNumeric: 5
-  - changeSet:
-      id: drop-non-null-user-id-constraint
-      author: G4IT Dev Team
-      changes:
-        - dropNotNullConstraint:
-            tableName: digital_service
-            columnName: user_id
-
-  - changeSet:
-      id: modify-digitalservice-user-fk
-      author: G4IT Dev Team
-      changes:
-        - dropForeignKeyConstraint:
-            baseTableName: digital_service
-            constraintName: digitalservice-user-fk
-        - addForeignKeyConstraint:
-            baseTableName: digital_service
-            baseColumnNames: user_id
-            constraintName: digitalservice-user-fk
-            referencedTableName: g4it_user
-            referencedColumnNames: id
-            onDelete: SET NULL
 
   - changeSet:
       id: add-default-value-columns-to-ref-ecomind-type-ai
