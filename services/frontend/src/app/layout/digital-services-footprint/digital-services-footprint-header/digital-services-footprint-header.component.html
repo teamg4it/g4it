@@ -115,14 +115,16 @@
             [label]="'common.note.attached' | translate"
         />
 
-        <p-button
-            [ariaLabel]="'common.accessibility.import' | translate"
-            styleClass="bg-black text-white header-button"
-            (onClick)="importData()"
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            icon="pi pi-upload"
-            [label]="'digital-services.import' | translate"
-        />
+        @if (!isEcoMindAi) {
+            <p-button
+                [ariaLabel]="'common.accessibility.import' | translate"
+                styleClass="bg-black text-white header-button"
+                (onClick)="importData()"
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                icon="pi pi-upload"
+                [label]="'digital-services.import' | translate"
+            />
+        }
 
         <p-button
             [ariaLabel]="'common.accessibility.download' | translate"

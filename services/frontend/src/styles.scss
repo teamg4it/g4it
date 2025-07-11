@@ -188,14 +188,15 @@ main {
     height: 70px;
 }
 
-.left-sidebar {
-    position: relative;
-    width: 80px;
-    height: 100vh;
-    flex-shrink: 0;
-    background-color: var(--black-color);
+@media screen and (min-width: 992px) {
+    .left-sidebar {
+        position: relative;
+        width: 80px;
+        height: 100vh;
+        flex-shrink: 0;
+        background-color: var(--black-color);
+    }
 }
-
 /* Header Panel */
 
 .org-menu {
@@ -1092,14 +1093,12 @@ app-top-header {
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
-
+.cancel-creation-button {
+    border: 1px solid #cacbca;
+    background-color: #f4f4f4;
+    color: var(--black-color);
+}
 .app-workspace {
-    .cancel-creation-button {
-        border: 1px solid #cacbca;
-        background-color: #f4f4f4;
-        color: var(--black-color);
-    }
-
     .p-button {
         height: 43px;
         padding: 13px 24px;
@@ -1157,6 +1156,16 @@ app-top-header {
                 color: var(--surface-0);
                 background: var(--blue-color);
             }
+        }
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .welcome-page-container {
+        .selection-card-container .p-card-header {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
         }
     }
 }
@@ -1227,4 +1236,43 @@ app-useful-information {
 
 .multi-file-import .p-fileupload .p-button-icon {
     display: none;
+}
+
+.import-digital {
+    .finish-btn-padding {
+        padding: 14px;
+    }
+}
+
+.mini-menu-icon {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    mask: url("assets/images/icons/icon-mini-menu.svg") no-repeat center / contain;
+    -webkit-mask: url("assets/images/icons/icon-mini-menu.svg") no-repeat center / contain;
+}
+
+.plus-menu-icon {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    mask: url("assets/images/icons/icon-outline.svg") no-repeat center / contain;
+    -webkit-mask: url("assets/images/icons/icon-outline.svg") no-repeat center / contain;
+}
+
+.mobile-top-header-menu {
+    width: 100%;
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 2rem;
+
+    .p-submenu-header {
+        background-color: black;
+        color: white;
+    }
+
+    .p-menuitem-link {
+        color: white !important;
+    }
 }

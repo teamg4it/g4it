@@ -51,6 +51,13 @@
         gap: 8px;
         padding: 1rem 1.5rem 1rem;
     }
+
+    h2,
+    h3,
+    h4,
+    p {
+        color: var(--tints-black-100);
+    }
 }
 /*  new */
 .status-tag {
@@ -91,4 +98,8 @@
 
 .background-none {
     background: none;
+}
+
+.light-black-color {
+    color: var(--tints-black-80);
 }

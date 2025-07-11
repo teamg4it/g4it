@@ -25,6 +25,7 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
 import { MenuItem } from "primeng/api";
 import { ButtonModule } from "primeng/button";
+import { DialogModule } from "primeng/dialog";
 import { MenuModule } from "primeng/menu";
 import { RadioButtonModule } from "primeng/radiobutton";
 import {
@@ -55,6 +56,7 @@ import { environment } from "src/environments/environment";
         FormsModule,
         TranslateModule,
         SharedModule,
+        DialogModule,
     ],
 })
 export class TopHeaderComponent implements OnInit {
@@ -85,6 +87,9 @@ export class TopHeaderComponent implements OnInit {
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
     @ViewChildren("radioItem") radioItems!: QueryList<ElementRef>;
     languages = ["en", "fr"];
+    isMobile = computed(() => this.globalStore.mobileView());
+    dialogVisible: boolean = false;
+    mobileMenuItems: MenuItem[] | undefined;
 
     constructor(private workspaceService: WorkspaceService) {}
 
@@ -139,6 +144,73 @@ export class TopHeaderComponent implements OnInit {
                     this.getCapitaleLetter(this.userDetails?.firstName) +
                     this.getCapitaleLetter(this.userDetails?.lastName);
             });
+        this.mobileMenuItems = [
+            {
+                label: "common.about",
+                items: [
+                    {
+                        label: "common.useful-info",
+                        route: Constants.USEFUL_INFORMATION,
+                        subHeading: "common.useful-info-desc",
+                        command: () => {
+                            this.router.navigate(["/useful-information"]);
+                            this.dialogVisible = false;
+                        },
+                    },
+                    {
+                        label: "declarations.title",
+                        route: Constants.USEFUL_INFORMATION,
+                        subHeading: "declarations.accessibility-text",
+                        ecoHeading: "declarations.ecodesign",
+                        command: () => {
+                            this.router.navigate(["/declarations"]);
+                            this.dialogVisible = false;
+                        },
+                    },
+                ],
+            },
+            {
+                label: "common.help-center",
+                items: [
+                    {
+                        label: "common.github-link",
+                        link: "https://github.com/G4ITTeam/g4it",
+                        outsideLink: true,
+                        command: () => {
+                            window.open(
+                                "https://github.com/G4ITTeam/g4it",
+                                "_blank",
+                                "noopener",
+                            );
+                        },
+                    },
+                    {
+                        label: "common.doc-link",
+                        link: "https://saas-g4it.com/documentation/",
+                        outsideLink: true,
+                        command: () => {
+                            window.open(
+                                "https://saas-g4it.com/documentation/",
+                                "_blank",
+                                "noopener",
+                            );
+                        },
+                    },
+                    {
+                        label: "common.boaviztapi-github-link",
+                        link: "https://github.com/Boavizta/boaviztapi",
+                        outsideLink: true,
+                        command: () => {
+                            window.open(
+                                "https://github.com/Boavizta/boaviztapi",
+                                "_blank",
+                                "noopener",
+                            );
+                        },
+                    },
+                ],
+            },
+        ];
         this.items = [
             {
                 label: undefined,
@@ -299,6 +371,9 @@ export class TopHeaderComponent implements OnInit {
             this.selectedPage(),
         );
         this.isOrgMenuVisible = false;
+        if (this.isMobile()) {
+            this.dialogVisible = false;
+        }
     }
 
     toggleOrgMenu() {
@@ -310,6 +385,7 @@ export class TopHeaderComponent implements OnInit {
             setTimeout(() => {
                 elementToView?.scrollIntoView({ behavior: "smooth", block: "start" });
             }, 0);
+            this.showDialog();
         }
     }
 
@@ -358,5 +434,9 @@ export class TopHeaderComponent implements OnInit {
         ) {
             this.isOrgMenuVisible = false;
         }
+    }
+
+    showDialog() {
+        this.dialogVisible = true;
     }
 }

@@ -4,6 +4,7 @@
 
 ### Major Changes
 
+- 1357 | Integrate EcoMindAI in G4IT
 - 1204 | Import csv files for digital services
 - 1263 | Naming network entries in the Digital Service module – Network input
 - 1261 | Naming user groups in the Digital Service module – Terminales input
@@ -11,6 +12,7 @@
 
 ### Minor Changes
 
+- 1320 | Mobile Screen Responsiveness for Top Header, Left side nav and Welcome page
 - 1255 | Add BoaviztAPI link to github
 - 1271 | Open Source - Be able to launch a calculation just after first installation
 - 1200 | New Bug on electricity consumption : total display different than sum compute manually with export file
