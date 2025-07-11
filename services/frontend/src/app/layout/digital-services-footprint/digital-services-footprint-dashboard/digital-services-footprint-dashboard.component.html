@@ -1,5 +1,5 @@
-<div class="footprint-digital-dashboard-container">
-    <div>
+<div class="footprint-digital-dashboard-container grid">
+    <div class="col-12 lg:col-4">
         <div
             class="border-bottom-2 border-primary text-base font-medium p-1 text-center mt-2 mb-1 uppercase"
             role="heading"
@@ -28,27 +28,22 @@
                 </button>
             </div>
         </p-card>
-        <p-scrollPanel [style]="{ height: '52vh', width: 'auto' }">
-            <div class="flex flex-column align-items-start w-full">
-                <div *ngFor="let impact of impacts">
-                    <app-impact-button
-                        [impact]="impact.name"
-                        [impactText]="impact.title"
-                        [impactUnite]="impact.unite"
-                        [value]="
-                            selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw
-                        "
-                        [selectedCriteria]="selectedCriteria"
-                        [selectedUnit]="selectedUnit"
-                        [disabled]="onlyOneCriteria"
-                        (selectedCriteriaChange)="handleChartChange($event)"
-                        class="w-22rem"
-                    ></app-impact-button>
-                </div>
-            </div>
-        </p-scrollPanel>
+        <div class="flex flex-column gap-2 w-full">
+            @for (impact of impacts; track $index) {
+                <app-impact-button
+                    [impact]="impact.name"
+                    [impactText]="impact.title"
+                    [impactUnite]="impact.unite"
+                    [value]="selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw"
+                    [selectedCriteria]="selectedCriteria"
+                    [selectedUnit]="selectedUnit"
+                    [disabled]="onlyOneCriteria"
+                    (selectedCriteriaChange)="handleChartChange($event)"
+                ></app-impact-button>
+            }
+        </div>
     </div>
-    <div class="digital-service-chart-container">
+    <div class="digital-service-chart-container col-12 lg:col-8">
         <div *ngIf="chartType() == 'bar' && barChartChild == true" class="flex">
             <div class="inline">
                 <span (click)="barChartChild = false">
@@ -163,12 +158,11 @@
                 (selectedDetailNameChange)="selectedDetailName = $event"
             ></app-bar-chart>
         </ng-template>
-    </div>
-    <div class="information-car-digital-service">
+
         <app-information-card
             [title]="getTitleOrContent('digital-services-card-title')"
             [content]="getTitleOrContent('digital-services-card-content')"
-            [isLong]="true"
+            class="my-5 block"
         ></app-information-card>
     </div>
 </div>

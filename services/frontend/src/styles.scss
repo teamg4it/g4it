@@ -506,17 +506,27 @@ main {
 
 /* Footprint page */
 
-.footprint-dashboard-container {
-    margin-top: 25px;
-    display: grid;
-    grid-template-columns: 60% 38%;
-    grid-gap: 30px;
+.footprint-dashboard-container,
+.footprint-dashboard-container-app-criteria {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.footprint-dashboard-container-app-criteria {
-    display: grid;
-    grid-template-columns: 70% 28%;
-    grid-gap: 30px;
+@media screen and (min-width: 992px) {
+    .footprint-dashboard-container,
+    .footprint-dashboard-container-app-criteria {
+        margin-top: 25px;
+        display: grid;
+        grid-gap: 30px;
+    }
+
+    .footprint-dashboard-container {
+        grid-template-columns: 60% 38%;
+    }
+
+    .footprint-dashboard-container-app-criteria {
+        grid-template-columns: 70% 28%;
+    }
 }
 
 .chart-container {
@@ -619,9 +629,9 @@ main {
 }
 
 .round-button-container {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 8px;
 }
 
@@ -711,13 +721,10 @@ main {
 
 .footprint-digital-dashboard-container {
     margin-top: 5px;
-    display: flex;
-    justify-content: center;
     width: -webkit-fill-available;
 }
 
 .digital-service-chart-container {
-    width: 150%;
     padding: 20px;
     border-radius: 4px 0 0 4px;
 }
@@ -735,13 +742,6 @@ main {
 .digital-service-chart-container div h3 {
     margin: 10px;
     font-size: 26px;
-}
-
-.information-car-digital-service {
-    padding-top: 76px;
-    padding-right: 30px;
-    width: -webkit-fill-available;
-    border-radius: 0 4px 4px 0;
 }
 
 /* Critere buttons */
@@ -1093,14 +1093,12 @@ app-top-header {
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
-
+.cancel-creation-button {
+    border: 1px solid #cacbca;
+    background-color: #f4f4f4;
+    color: var(--black-color);
+}
 .app-workspace {
-    .cancel-creation-button {
-        border: 1px solid #cacbca;
-        background-color: #f4f4f4;
-        color: var(--black-color);
-    }
-
     .p-button {
         height: 43px;
         padding: 13px 24px;
@@ -1238,6 +1236,12 @@ app-useful-information {
 
 .multi-file-import .p-fileupload .p-button-icon {
     display: none;
+}
+
+.import-digital {
+    .finish-btn-padding {
+        padding: 14px;
+    }
 }
 
 .mini-menu-icon {

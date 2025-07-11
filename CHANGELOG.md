@@ -12,6 +12,7 @@
 
 ### Minor Changes
 
+- 950 | Accessibility Corrections
 - 1320 | Mobile Screen Responsiveness for Top Header, Left side nav and Welcome page
 - 1255 | Add BoaviztAPI link to github
 - 1271 | Open Source - Be able to launch a calculation just after first installation

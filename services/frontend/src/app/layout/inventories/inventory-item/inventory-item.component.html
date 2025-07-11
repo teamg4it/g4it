@@ -73,29 +73,136 @@
         </div>
     </ng-template>
     <ng-template pTemplate>
-        <div class="h-2rem border-top-2 border-primary p-0 mt-1"></div>
-        <div class="grid">
-            <div class="col-12 lg:col-4">
-                <div class="flex flex-row">
-                    <app-equipments-card
-                        [count]="inventory.dataCenterCount"
-                        [type]="'datacenter'"
-                    ></app-equipments-card>
-                    <app-equipments-card
-                        [count]="inventory.physicalEquipmentCount"
-                        [type]="'physical'"
-                    ></app-equipments-card>
+        <div class="flex flex-column p-3 border-top-2 border-primary">
+            <div class="flex flex-wrap justify-content-between">
+                <!-- inventory count grid -->
+                <div class="flex flex-column basis-1/3">
+                    <div class="flex align-items-center">
+                        <app-equipments-card
+                            [count]="inventory.dataCenterCount"
+                            [type]="'datacenter'"
+                        ></app-equipments-card>
+                        <app-equipments-card
+                            [count]="inventory.physicalEquipmentCount"
+                            [type]="'physical'"
+                        ></app-equipments-card>
+                    </div>
+                    <div class="flex align-items-center">
+                        <app-equipments-card
+                            [count]="inventory.virtualEquipmentCount"
+                            [type]="'virtual'"
+                        ></app-equipments-card>
+                        <app-equipments-card
+                            [count]="inventory.applicationCount"
+                            [type]="'app'"
+                        ></app-equipments-card>
+                    </div>
                 </div>
-                <div class="flex flex-row">
-                    <app-equipments-card
-                        [count]="inventory.virtualEquipmentCount"
-                        [type]="'virtual'"
-                    ></app-equipments-card>
-                    <app-equipments-card
-                        [count]="inventory.applicationCount"
-                        [type]="'app'"
-                    ></app-equipments-card>
+
+                <!-- loading history column -->
+                <div class="flex flex-column">
+                    <div class="flex align-items-center">
+                        <h4 id="loading-history" class="mr-3 my-0 text-base">
+                            {{ "inventories.history.loadings" | translate }}
+                        </h4>
+                        <p-button
+                            *ngIf="userService.isAllowedInventoryWrite$ | async"
+                            styleClass="black-button-small vertical-align-top uppercase"
+                            (onClick)="openSidebarUploadFile()"
+                            >{{ "inventories.load-files-button" | translate }}</p-button
+                        >
+                    </div>
+                    <ul aria-labelledby="loading-history" style="padding: 0">
+                        <li
+                            class="loading-data-container"
+                            *ngFor="let task of taskLoading"
+                        >
+                            <app-batch-status
+                                [batchStatusCode]="task.status"
+                                [createTime]="task.creationDate"
+                                [batchLoading]="true"
+                                [type]="'loading'"
+                                [inventoryId]="inventory.id"
+                                [inventoryName]="inventory.name"
+                                [fileUrl]="task.resultFileUrl"
+                                [taskId]="task.id.toString()"
+                            ></app-batch-status>
+                        </li>
+                    </ul>
                 </div>
+
+                <!-- estimate history column -->
+                <div class="flex flex-column">
+                    <div class="flex align-items-center">
+                        <h4 id="estimate-history" class="mr-3 my-0 text-base">
+                            {{ "inventories.history.estimations" | translate }}
+                        </h4>
+                        <p-button
+                            *ngIf="userService.isAllowedInventoryWrite$ | async"
+                            [disabled]="isEstimationDisabled()"
+                            styleClass="black-button-small vertical-align-top uppercase"
+                            class="disabled-text-black"
+                            (onClick)="launchEstimate($event)"
+                            id="launch-estimate"
+                            ><span *ngIf="inventory.lastTaskEvaluating">
+                                {{ "inventories.update-estimate" | translate }}
+                            </span>
+                            <span *ngIf="!inventory.lastTaskEvaluating">
+                                {{ "inventories.launch-estimate" | translate }}
+                            </span>
+                        </p-button>
+                    </div>
+                    <div *ngIf="inventory.lastTaskEvaluating">
+                        <div
+                            *ngIf="isTaskRunning()"
+                            [attr.aria-label]="
+                                'common.accessibility.updateInProgress'
+                                    | translate
+                                        : {
+                                              value: inventory.lastTaskEvaluating
+                                                  .progress,
+                                          }
+                            "
+                        >
+                            <div class="font-bold mt-2">
+                                {{
+                                    "inventories.evaluation_batch_status." +
+                                        batchStatusMapping[
+                                            inventory.lastTaskEvaluating.status
+                                        ] | translate
+                                }}
+                                {{ inventory.lastTaskEvaluating.progress }}%
+                            </div>
+
+                            <p-progressBar
+                                [value]="inventory.lastTaskEvaluating.progress"
+                                [showValue]="false"
+                                >{{ inventory.lastTaskEvaluating.progress }}
+                            </p-progressBar>
+                        </div>
+
+                        <ul aria-labelledby="estimate-history" class="p-0">
+                            <li
+                                class="loading-data-container"
+                                *ngFor="let task of taskEvaluating"
+                            >
+                                <app-batch-status
+                                    [batchStatusCode]="task.status"
+                                    [createTime]="task.creationDate"
+                                    [batchLoading]="true"
+                                    [type]="'estimation'"
+                                    [inventoryId]="inventory.id"
+                                    [inventoryName]="inventory.name"
+                                    [fileUrl]="task.resultFileUrl"
+                                    [taskId]="task.id.toString()"
+                                ></app-batch-status>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap">
                 <p-button
                     *ngIf="userService.isAllowedInventoryWrite$ | async"
                     styleClass="bg-transparent text-black-alpha-90 border-1 border-solid border-black-alpha-90 mt-2 pt-1 px-2 pb-1 hover:bg-green-50"
@@ -116,127 +223,36 @@
                         closeOnEscape="true"
                     ></p-confirmPopup>
                 </p-button>
-            </div>
-
-            <div class="col-12 lg:col-4">
-                <span id="loading-history" class="mr-3" role="heading" [ariaLevel]="4">
-                    {{ "inventories.history.loadings" | translate }}
-                </span>
-                <p-button
-                    *ngIf="userService.isAllowedInventoryWrite$ | async"
-                    styleClass="black-button-small vertical-align-top uppercase"
-                    (onClick)="openSidebarUploadFile()"
-                    >{{ "inventories.load-files-button" | translate }}</p-button
-                >
-                <br />
-                <ul aria-labelledby="loading-history" style="padding: 0">
-                    <li class="loading-data-container" *ngFor="let task of taskLoading">
-                        <app-batch-status
-                            [batchStatusCode]="task.status"
-                            [createTime]="task.creationDate"
-                            [batchLoading]="true"
-                            [type]="'loading'"
-                            [inventoryId]="inventory.id"
-                            [inventoryName]="inventory.name"
-                            [fileUrl]="task.resultFileUrl"
-                            [taskId]="task.id.toString()"
-                        ></app-batch-status>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-12 lg:col-4">
-                <span id="estimate-history" class="mr-3" role="heading" [ariaLevel]="4">
-                    {{ "inventories.history.estimations" | translate }}
-                </span>
-                <p-button
-                    *ngIf="userService.isAllowedInventoryWrite$ | async"
-                    [disabled]="isEstimationDisabled()"
-                    styleClass="black-button-small vertical-align-top uppercase"
-                    class="disabled-text-black"
-                    (onClick)="launchEstimate($event)"
-                    id="launch-estimate"
-                    ><span *ngIf="inventory.lastTaskEvaluating">
-                        {{ "inventories.update-estimate" | translate }}
-                    </span>
-                    <span *ngIf="!inventory.lastTaskEvaluating">
-                        {{ "inventories.launch-estimate" | translate }}
-                    </span>
-                </p-button>
-                <br />
-                <div *ngIf="inventory.lastTaskEvaluating">
-                    <div
-                        *ngIf="isTaskRunning()"
-                        [attr.aria-label]="
-                            'common.accessibility.updateInProgress'
+                <!-- settings button -->
+                <div class="flex justify-content-end ml-auto">
+                    <p-button
+                        styleClass="white-button"
+                        styleClass="ml-2"
+                        [rounded]="true"
+                        [text]="true"
+                        [raised]="true"
+                        [plain]="true"
+                        (click)="displayPopupFct()"
+                        icon="pi pi-cog"
+                        [ariaLabel]="
+                            'inventories.choose-criteria'
                                 | translate
-                                    : {
-                                          value: inventory.lastTaskEvaluating.progress,
-                                      }
+                                    : { inventoryName: (inventory.name | monthYear) }
                         "
                     >
-                        <div class="font-bold mt-2">
-                            {{
-                                "inventories.evaluation_batch_status." +
-                                    batchStatusMapping[
-                                        inventory.lastTaskEvaluating.status
-                                    ] | translate
-                            }}
-                            {{ inventory.lastTaskEvaluating.progress }}%
-                        </div>
-
-                        <p-progressBar
-                            [value]="inventory.lastTaskEvaluating.progress"
-                            [showValue]="false"
-                            >{{ inventory.lastTaskEvaluating.progress }}
-                        </p-progressBar>
-                    </div>
-
-                    <ul aria-labelledby="estimate-history" class="p-0">
-                        <li
-                            class="loading-data-container"
-                            *ngFor="let task of taskEvaluating"
-                        >
-                            <app-batch-status
-                                [batchStatusCode]="task.status"
-                                [createTime]="task.creationDate"
-                                [batchLoading]="true"
-                                [type]="'estimation'"
-                                [inventoryId]="inventory.id"
-                                [inventoryName]="inventory.name"
-                                [fileUrl]="task.resultFileUrl"
-                                [taskId]="task.id.toString()"
-                            ></app-batch-status>
-                        </li>
-                    </ul>
+                    </p-button>
                 </div>
             </div>
-            <div class="flex justify-content-end ml-auto">
-                <p-button
-                    styleClass="white-button"
-                    styleClass="ml-2"
-                    [rounded]="true"
-                    [text]="true"
-                    [raised]="true"
-                    [plain]="true"
-                    (click)="displayPopupFct()"
-                    icon="pi pi-cog"
-                    [ariaLabel]="
-                        'inventories.choose-criteria'
-                            | translate: { inventoryName: (inventory.name | monthYear) }
-                    "
-                >
-                </p-button>
-            </div>
-            <app-criteria-popup
-                [displayPopup]="displayPopup"
-                [type]="'inventory'"
-                [subscriber]="subscriber"
-                [organization]="organization"
-                [inventory]="inventory"
-                [selectedCriteriaIS]="selectedCriteria"
-                (onSaveInventory)="saveInventory.emit($event)"
-                (onClose)="displayPopup = false"
-            ></app-criteria-popup>
         </div>
+        <app-criteria-popup
+            [displayPopup]="displayPopup"
+            [type]="'inventory'"
+            [subscriber]="subscriber"
+            [organization]="organization"
+            [inventory]="inventory"
+            [selectedCriteriaIS]="selectedCriteria"
+            (onSaveInventory)="saveInventory.emit($event)"
+            (onClose)="displayPopup = false"
+        ></app-criteria-popup>
     </ng-template>
 </p-accordionTab>
