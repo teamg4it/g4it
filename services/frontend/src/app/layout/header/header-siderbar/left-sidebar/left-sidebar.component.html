@@ -1,16 +1,18 @@
 <nav
-    class="flex flex-column align-items-stretch h-screen"
+    class="left-sidebar-nav lg:flex flex-row lg:flex-column align-items-stretch h-5rem lg:h-screen w-screen lg:w-auto bottom-0 lg:bottom-auto fixed lg:static z-1 lg:z-auto justify-content-between"
     role="navigation"
     [attr.aria-label]="'common.left-navigation' | translate"
 >
-    <div class="flex align-items-center justify-content-center mb-2 mt-4 logo-icon">
-        <img
-            src="assets/images/logos/logo-overgreen.svg"
-            alt="{{ 'common.overgreen-logo' | translate }}"
-            width="50"
-        />
-    </div>
-    <div class="flex align-items-center justify-content-center extra-div"></div>
+    @if (!isMobile()) {
+        <div class="flex align-items-center justify-content-center mb-2 mt-4 logo-icon">
+            <img
+                src="assets/images/logos/logo-overgreen.svg"
+                alt="{{ 'common.overgreen-logo' | translate }}"
+                width="50"
+            />
+        </div>
+        <div class="flex align-items-center justify-content-center extra-div"></div>
+    }
     <div
         class="flex align-items-center justify-content-center my-1"
         [ngClass]="{ 'bg-light-green': selectedPage() === constants.WELCOME_PAGE }"
@@ -94,6 +96,31 @@
             }}</span>
         </a>
     </div>
+    @if (isMobile() && isPlusMenuEnabled) {
+        <div class="flex align-items-center justify-content-center my-1 plus-menu-option">
+            <a
+                [ngClass]="{
+                    'digital-padding-zoomin': isZoomedIn(),
+                    'digital-padding': !isZoomedIn(),
+                }"
+                (click)="togglePlusMenu()"
+            >
+                <div class="flex justify-content-center">
+                    <img
+                        src="assets/images/icons/icon-outline.svg"
+                        alt="{{
+                            'common.plus-menu'
+                                | translate
+                                    : { OrganizationName: selectedOrganization.name }
+                        }}"
+                    />
+                </div>
+                <span class="text-white span-font nav-span-text ds-text">
+                    {{ "common.plus-menu" | translate }}
+                </span>
+            </a>
+        </div>
+    }
     @if (
         (userService.isAllowedEcoMindAiRead$ | async) &&
         isEcoMindEnabledForCurrentSubscriber &&
@@ -131,9 +158,11 @@
             </a>
         </div>
     }
-    <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
+    @if (!isMobile()) {
+        <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
+    }
     <div
-        class="flex align-items-center justify-content-center mt-2 mb-5"
+        class="flex align-items-center justify-content-center my-1 lg:mt-2 lg:mb-5 mr-2 lg:mr-auto"
         [ngClass]="{ 'bg-light-green': selectedPage() === 'administration' }"
     >
         <a
