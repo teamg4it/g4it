@@ -916,3 +916,63 @@ databaseChangeLog:
                   name: ecomindai
                   type: boolean
                   defaultValue: false
+
+  - changeSet:
+      id: modify-org-created-by-user-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: g4it_organization
+            constraintName: org_created_by_user_fk
+        - addForeignKeyConstraint:
+            baseTableName: g4it_organization
+            baseColumnNames: created_by
+            constraintName: org_created_by_user_fk
+            referencedTableName: g4it_user
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+  - changeSet:
+      id: modify-org-last-updated-by-user-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: g4it_organization
+            constraintName: org_last_updated_by_user_fk
+        - addForeignKeyConstraint:
+            baseTableName: g4it_organization
+            baseColumnNames: last_updated_by
+            constraintName: org_last_updated_by_user_fk
+            referencedTableName: g4it_user
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+  - changeSet:
+      id: modify-usersubscriber-user-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: g4it_user_subscriber
+            constraintName: usersubscriber-user-fk
+        - addForeignKeyConstraint:
+            baseTableName: g4it_user_subscriber
+            baseColumnNames: user_id
+            constraintName: usersubscriber-user-fk
+            referencedTableName: g4it_user
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: modify-userrolesubscriber-usersubscriber-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: g4it_user_role_subscriber
+            constraintName: userrolesubscriber-usersubscriber-fk
+        - addForeignKeyConstraint:
+            baseTableName: g4it_user_role_subscriber
+            baseColumnNames: user_subscriber_id
+            constraintName: userrolesubscriber-usersubscriber-fk
+            referencedTableName: g4it_user_subscriber
+            referencedColumnNames: id
+            onDelete: CASCADE

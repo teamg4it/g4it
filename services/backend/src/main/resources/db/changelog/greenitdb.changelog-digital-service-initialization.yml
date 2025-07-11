@@ -916,3 +916,18 @@ databaseChangeLog:
         - dropNotNullConstraint:
             tableName: digital_service
             columnName: user_id
+
+  - changeSet:
+      id: modify-digitalservice-user-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: digital_service
+            constraintName: digitalservice-user-fk
+        - addForeignKeyConstraint:
+            baseTableName: digital_service
+            baseColumnNames: user_id
+            constraintName: digitalservice-user-fk
+            referencedTableName: g4it_user
+            referencedColumnNames: id
+            onDelete: SET NULL

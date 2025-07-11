@@ -1044,3 +1044,47 @@ databaseChangeLog:
                     references: g4it_user(id)
                     deleteCascade: false
 
+  - changeSet:
+      id: modify-note-created-by-user-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: note
+            constraintName: created_by_user_fk
+        - addForeignKeyConstraint:
+            baseTableName: note
+            baseColumnNames: created_by
+            constraintName: created_by_user_fk
+            referencedTableName: g4it_user
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: modify-note-updated-by-user-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: note
+            constraintName: last_updated_by_user_fk
+        - addForeignKeyConstraint:
+            baseTableName: note
+            baseColumnNames: last_updated_by
+            constraintName: last_updated_by_user_fk
+            referencedTableName: g4it_user
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: modify-inventory-g4it-user-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: inventory
+            constraintName: inventory-g4it_user-fk
+        - addForeignKeyConstraint:
+            baseTableName: inventory
+            baseColumnNames: created_by
+            constraintName: inventory-g4it_user-fk
+            referencedTableName: g4it_user
+            referencedColumnNames: id
+            onDelete: SET NULL

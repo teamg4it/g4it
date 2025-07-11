@@ -106,3 +106,18 @@ databaseChangeLog:
                     foreignKeyName: task-g4it_user-fk
                     references: g4it_user(id)
                     deleteCascade: false
+
+  - changeSet:
+      id: modify-task-g4it-user-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: task
+            constraintName: task-g4it_user-fk
+        - addForeignKeyConstraint:
+            baseTableName: task
+            baseColumnNames: created_by
+            constraintName: task-g4it_user-fk
+            referencedTableName: g4it_user
+            referencedColumnNames: id
+            onDelete: SET NULL
