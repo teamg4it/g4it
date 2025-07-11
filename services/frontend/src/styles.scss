@@ -505,9 +505,27 @@ main {
 
 /* Footprint page */
 
-.footprint-dashboard-container {
+.footprint-dashboard-container,
+.footprint-dashboard-container-app-criteria {
     display: flex;
     flex-wrap: wrap;
+}
+
+@media screen and (min-width: 992px) {
+    .footprint-dashboard-container,
+    .footprint-dashboard-container-app-criteria {
+        margin-top: 25px;
+        display: grid;
+        grid-gap: 30px;
+    }
+
+    .footprint-dashboard-container {
+        grid-template-columns: 60% 38%;
+    }
+
+    .footprint-dashboard-container-app-criteria {
+        grid-template-columns: 70% 28%;
+    }
 }
 
 .chart-container {
