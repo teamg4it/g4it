@@ -745,6 +745,26 @@ components:
           description: lifespan of the device
           type: number
           format: double
+        defaultCpuCores:
+          description: default cpu cores value
+          type: number
+          format: double
+        defaultGpuCount:
+          description: default GPU count value
+          type: number
+          format: int64
+        defaultGpuMemory:
+          description: default GPU memory value
+          type: number
+          format: int64
+        defaultRamSize:
+          description: default RAM size value
+          type: number
+          format: double
+        defaultDatacenterPue:
+          description: default Datacenter PUE value
+          type: number
+          format: double
     NetworkTypeRefRest:
       description: Network type referential
       type: object

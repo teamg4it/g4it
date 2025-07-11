@@ -24,4 +24,14 @@ public class EcomindTypeBO {
     private String value;
 
     private Double lifespan;
+
+    private Double defaultCpuCores;
+
+    private Long defaultGpuCount;
+
+    private Long defaultGpuMemory;
+
+    private Double defaultRamSize;
+
+    private Double defaultDatacenterPue;
 }
