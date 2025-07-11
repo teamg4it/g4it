@@ -383,6 +383,7 @@
         "stages": "Stages",
         "inference": "Inference",
         "fintuning": "Finetuning",
+        "finetuning-disabled-message": "Work in progress : finetuning is not currently taken into account",
         "numberOfUsers": "Nb of user per year",
         "averageRequest": "Average nb of requests per year",
         "averageToken": "Average nb of tokens generated per request",
