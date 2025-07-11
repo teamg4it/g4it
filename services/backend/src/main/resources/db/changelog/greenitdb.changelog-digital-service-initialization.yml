@@ -723,14 +723,14 @@ databaseChangeLog:
             UPDATE public.terminal t SET lifespan = (select lifespan from public.ref_device_type rf where rf.id = t.device_type) WHERE lifespan IS NULL;
 
   - changeSet:
-        id: modifyDataType-avgTime-terminal
-        author: G4IT Dev Team
-        changes:
-          - modifyDataType:
-              columnName: yearly_usage_time_per_user
-              newDataType: double
-              schemaName: public
-              tableName: terminal
+      id: modifyDataType-avgTime-terminal
+      author: G4IT Dev Team
+      changes:
+        - modifyDataType:
+            columnName: yearly_usage_time_per_user
+            newDataType: double
+            schemaName: public
+            tableName: terminal
 
   - changeSet:
       id: add-column-criteria-digital_service
@@ -909,3 +909,86 @@ databaseChangeLog:
               - column:
                   name: lifespan
                   valueNumeric: 5
+  - changeSet:
+      id: add-default-value-columns-to-ref-ecomind-type-ai
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: ref_ecomind_type_ai
+            columns:
+              - column:
+                  name: default_cpu_cores
+                  type: float
+              - column:
+                  name: default_gpu_count
+                  type: bigint
+              - column:
+                  name: default_gpu_memory
+                  type: bigint
+              - column:
+                  name: default_ram_size
+                  type: float
+              - column:
+                  name: default_datacenter_pue
+                  type: float
+  - changeSet:
+      id: insert-default-value-to-ref-ecomind-type-ai
+      author: G4IT Dev Team
+      changes:
+        - update:
+            columns:
+              - column:
+                  name: default_cpu_cores
+                  value: 30
+              - column:
+                  name: default_gpu_count
+                  value: 2
+              - column:
+                  name: default_gpu_memory
+                  value: 32
+              - column:
+                  name: default_ram_size
+                  value: 64
+              - column:
+                  name: default_datacenter_pue
+                  value: 1.5
+            tableName: ref_ecomind_type_ai
+            where: description='Server' and reference='blade-server-28'
+        - update:
+            columns:
+              - column:
+                  name: default_cpu_cores
+                  value: 8
+              - column:
+                  name: default_gpu_count
+                  value: 1
+              - column:
+                  name: default_gpu_memory
+                  value: 12
+              - column:
+                  name: default_ram_size
+                  value: 32
+              - column:
+                  name: default_datacenter_pue
+                  value: 1
+            tableName: ref_ecomind_type_ai
+            where: description='Desktop' and reference='desktop-4'
+        - update:
+            columns:
+              - column:
+                  name: default_cpu_cores
+                  value: 8
+              - column:
+                  name: default_gpu_count
+                  value: 0
+              - column:
+                  name: default_gpu_memory
+                  value: 0
+              - column:
+                  name: default_ram_size
+                  value: 16
+              - column:
+                  name: default_datacenter_pue
+                  value: 1
+            tableName: ref_ecomind_type_ai
+            where: description='Laptop' and reference='laptop-3'
