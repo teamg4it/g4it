@@ -138,8 +138,8 @@
 
         <p-button
             *ngIf="
-                (userService.isAllowedDigitalServiceWrite$ | async) ||
-                (userService.isAllowedEcoMindAiWrite$ | async)
+                ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
+                ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
             "
             styleClass="bg-black text-white header-button"
             [disabled]="!enableCalcul()"
