@@ -156,7 +156,8 @@
             "no-organization": "Aucune organisation correspondant à votre nom de domaine n’a été trouvée. Veuillez contacter votre administrateur pour demander l’accès ou vérifier la configuration de votre organisation.",
             "space-name-maxlength": "Le nom de l'espace de travail ne doit pas dépasser 20 caractères.",
             "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés."
-        }
+        },
+        "plus-menu": "Plus"
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"
@@ -420,7 +421,10 @@
         "time": "Temps",
         "status": "Statut",
         "rejected-files": "Fichiers rejetés",
-        "browse-file": "Parcourir fichier"
+        "browse-file": "Parcourir fichier",
+        "datacenter": "Centre de données",
+        "physical-equipment": "Équipement physique",
+        "virtual-equipment": "Équipement virtuel"
     },
     "welcome-page": {
         "title": "Page de bienvenue",

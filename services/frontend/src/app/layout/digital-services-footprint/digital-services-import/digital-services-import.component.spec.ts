@@ -5,11 +5,14 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
+import { InDatacenterRest } from "src/app/core/interfaces/input.interface";
 import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { DigitalServicesImportComponent } from "./digital-services-import.component";
 
 const mockTemplateFileService = {
@@ -241,5 +244,31 @@ describe("DigitalServicesImportComponent", () => {
         await component.onFormSubmit("not-submit");
         expect(component.getDigitalServiceStatus).not.toHaveBeenCalled();
         expect(component.loopLoadInventories).not.toHaveBeenCalled();
+    });
+
+    it("should call inDatacentersService.get with digitalServicesId and update digitalServiceStore", async () => {
+        const mockInDatacenters = [{ name: "datacenters" }] as InDatacenterRest[];
+        const inDatacentersService = TestBed.inject(InDatacentersService);
+        const digitalServiceStore = TestBed.inject(DigitalServiceStoreService);
+
+        spyOn(inDatacentersService, "get").and.returnValue(of(mockInDatacenters));
+        spyOn(digitalServiceStore, "setInDatacenters");
+        spyOn(digitalServiceStore, "initInPhysicalEquipments");
+        spyOn(digitalServiceStore, "initInVirtualEquipments");
+
+        await component.callInputApis();
+
+        expect(inDatacentersService.get).toHaveBeenCalledWith(
+            component.digitalServicesId,
+        );
+        expect(digitalServiceStore.setInDatacenters).toHaveBeenCalledWith(
+            mockInDatacenters,
+        );
+        expect(digitalServiceStore.initInPhysicalEquipments).toHaveBeenCalledWith(
+            component.digitalServicesId,
+        );
+        expect(digitalServiceStore.initInVirtualEquipments).toHaveBeenCalledWith(
+            component.digitalServicesId,
+        );
     });
 });
