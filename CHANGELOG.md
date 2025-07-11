@@ -11,6 +11,7 @@
 
 ### Minor Changes
 
+-950 | Accessibility Corrections
 - 1255 | Add BoaviztAPI link to github
 - 1271 | Open Source - Be able to launch a calculation just after first installation
 - 1200 | New Bug on electricity consumption : total display different than sum compute manually with export file
