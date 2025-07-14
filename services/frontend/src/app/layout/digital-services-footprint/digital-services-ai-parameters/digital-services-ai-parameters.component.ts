@@ -46,9 +46,9 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             framework: ["", Validators.required],
             quantization: ["", Validators.required],
             isInference: [true],
-            isFinetuning: [false],
-            numberUserYear: [10000, [Validators.required, Validators.min(0)]],
-            averageNumberRequest: [200, [Validators.required, Validators.min(0)]],
+            isFinetuning: [{ value: false, disabled: true }],
+            numberUserYear: [0, [Validators.required, Validators.min(0)]],
+            averageNumberRequest: [0, [Validators.required, Validators.min(0)]],
         });
 
         this.digitalServicesDataService.getModels(this.model).subscribe({
@@ -196,8 +196,11 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         }
 
         // Save data whenever changes are made
-        this.formSubscription = this.terminalsForm.valueChanges.subscribe((value) => {
+        this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
             this.aiFormsStore.setParameterChange(true);
+
+            const value = this.terminalsForm.getRawValue();
+
             // Calculate totalGeneratedTokens
             const totalTokens =
                 value.numberUserYear *
