@@ -35,10 +35,10 @@ import { Constants } from "src/constants";
     templateUrl: "./inventories-application-footprint.component.html",
 })
 export class InventoriesApplicationFootprintComponent {
-    protected footprintStore = inject(FootprintStoreService);
-    private globalStore = inject(GlobalStoreService);
+    protected readonly footprintStore = inject(FootprintStoreService);
+    private readonly globalStore = inject(GlobalStoreService);
     footprintDataService = inject(FootprintDataService);
-    private outApplicationsService = inject(OutApplicationsService);
+    private readonly outApplicationsService = inject(OutApplicationsService);
     private readonly inventoryService = inject(InventoryService);
     private readonly userService = inject(UserService);
     currentLang: string = this.translate.currentLang;
@@ -69,9 +69,9 @@ export class InventoriesApplicationFootprintComponent {
     filterFields = Constants.APPLICATION_FILTERS;
 
     constructor(
-        private activatedRoute: ActivatedRoute,
-        public footprintService: FootprintService,
-        private translate: TranslateService,
+        private readonly activatedRoute: ActivatedRoute,
+        public readonly footprintService: FootprintService,
+        private readonly translate: TranslateService,
     ) {}
 
     async ngOnInit() {
