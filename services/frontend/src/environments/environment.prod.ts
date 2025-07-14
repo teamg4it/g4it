@@ -14,6 +14,8 @@ export const environment = {
         "digital-services",
         "eco-mind-ai",
         "template-files",
+        "download-reject",
+        "task",
     ],
     keycloak: {
         issuer: "${KEYCLOAK_URL}",

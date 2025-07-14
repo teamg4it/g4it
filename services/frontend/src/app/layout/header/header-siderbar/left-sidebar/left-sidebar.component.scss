@@ -55,3 +55,32 @@ nav a {
 .admin-padding-zoomin {
     padding: 8px 7px;
 }
+
+nav.left-sidebar-nav {
+    background-color: var(--black-color);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 5rem;
+}
+
+@media screen and (max-width: 992px) {
+    nav.open-menu-full {
+        height: auto !important;
+        padding-top: 40px;
+        border-radius: 24px 24px 0px 0px;
+
+        .plus-menu-option {
+            display: none !important;
+        }
+
+        &:before {
+            content: "";
+            position: absolute;
+            width: 30%;
+            right: 35%;
+            top: 18px;
+            border: 3px solid white;
+            border-radius: 5px;
+        }
+    }
+}

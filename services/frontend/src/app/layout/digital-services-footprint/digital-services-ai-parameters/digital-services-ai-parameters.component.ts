@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Subscription } from "rxjs";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIParametersForm } from "src/app/core/store/ai-forms.store";
@@ -24,6 +25,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     frameworkOptions: any[] = [];
     quantizationOptions: any[] = [];
     dataParameter: any;
+    public userService = inject(UserService);
 
     constructor(
         private readonly fb: FormBuilder,
@@ -38,13 +40,13 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.terminalsForm = this.fb.group({
             modelName: ["", Validators.required],
-            averageNumberToken: [0, [Validators.required, Validators.min(0)]],
-            totalGeneratedTokens: [{ value: 0, disabled: true }],
+            averageNumberToken: [500, [Validators.required, Validators.min(0)]],
+            totalGeneratedTokens: [{ value: 1000000000, disabled: true }],
             nbParameters: ["", Validators.required],
             framework: ["", Validators.required],
             quantization: ["", Validators.required],
             isInference: [true],
-            isFinetuning: [false],
+            isFinetuning: [{ value: false, disabled: true }],
             numberUserYear: [0, [Validators.required, Validators.min(0)]],
             averageNumberRequest: [0, [Validators.required, Validators.min(0)]],
         });
@@ -75,10 +77,10 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         quantization: this.quantizationOptions[0]?.value ?? "",
                         isInference: true,
                         isFinetuning: false,
-                        numberUserYear: 0,
-                        averageNumberRequest: 0,
-                        averageNumberToken: 0,
-                        totalGeneratedTokens: 0,
+                        numberUserYear: 10000,
+                        averageNumberRequest: 200,
+                        averageNumberToken: 500,
+                        totalGeneratedTokens: 1000000000,
                     };
                     this.aiFormsStore.setParametersFormData(defaultData);
                 } else {
@@ -194,8 +196,11 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         }
 
         // Save data whenever changes are made
-        this.formSubscription = this.terminalsForm.valueChanges.subscribe((value) => {
+        this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
             this.aiFormsStore.setParameterChange(true);
+
+            const value = this.terminalsForm.getRawValue();
+
             // Calculate totalGeneratedTokens
             const totalTokens =
                 value.numberUserYear *
@@ -208,6 +213,11 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             value.totalGeneratedTokens = totalTokens;
 
             this.aiFormsStore.setParametersFormData(value as AIParametersForm);
+        });
+        this.userService.isAllowedEcoMindAiWrite$.subscribe((isAllowed) => {
+            if (!isAllowed) {
+                this.terminalsForm.disable();
+            }
         });
     }
 

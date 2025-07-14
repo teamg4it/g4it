@@ -25,17 +25,6 @@ A new button (Home button) is available in the left pannel when we access to the
 
 ![Welcome page visualization](../images/welcome_page.png)
 
-As a projet team member:
-When I don't have access to the inventories module associated to the selected organization
-Then the icon of the module is in grey and the button is disabled.
-
-![Welcome page visualization](../images/welcome_page_disabled_inventories.png)
-
-As a sustainable IT leader:
-When I don't have access to the digital service module associated to the selected organization
-Then the icon of the module is in grey and the button is disabled.
-
-![Welcome page visualization](../images/welcome_page_disabled_digital_services.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
@@ -48,9 +37,21 @@ Then the icon of the module is in grey and the button is disabled.
 | 5         | Module Access | Digital Services |         | Card | As a sustainable IT leader: When I don't have access to the digital  service module associated to the selected organization, Then the icon of the module is in grey and the button is disabled. On clicking this button, it navigates to Digital Services module. |
 | 6         | Footer | Useful Information |              | Link | On clicking this link, it navigates to "Useful information" page. |
 | 7         | Footer | G4IT Declarations |              | Link | On clicking this link, it navigates to "G4IT Declarations" page.  |
-| 7         | Footer | Help Center |              | Link | Here, we have two links like G4IT github and G4IT documentation, clicking on these link, it will navigate to respective pages. |
+| 8         | Footer | Help Center |              | Link | Here, we have two links like G4IT github and G4IT documentation, clicking on these link, it will navigate to respective pages. |
 
 {{% /expand %}}
+
+As a projet team member:
+When I don't have access to the inventories module associated to the selected organization
+Then the icon of the module is in grey and the button is disabled.
+
+![Welcome page visualization](../images/welcome_page_disabled_inventories.png)
+
+As a sustainable IT leader:
+When I don't have access to the digital service module associated to the selected organization
+Then the icon of the module is in grey and the button is disabled.
+
+![Welcome page visualization](../images/welcome_page_disabled_digital_services.png)
 
 ## Accessibility
 

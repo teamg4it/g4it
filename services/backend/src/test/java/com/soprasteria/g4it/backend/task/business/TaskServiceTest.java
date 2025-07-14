@@ -89,20 +89,21 @@ class TaskServiceTest {
         digitalService.setUser(User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build());
         List<String> criteria = List.of("criterion1", "criterion2");
         Task newTask = new Task();
-        newTask.setDigitalServiceUid("uid123");
+
+        newTask.setDigitalService(digitalService);
 
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
-        when(taskRepository.findByDigitalServiceUid("uid123")).thenReturn(Optional.empty());
+        when(taskRepository.findByDigitalService(digitalService)).thenReturn(Optional.empty());
         when(taskRepository.save(any(Task.class))).thenReturn(newTask);
 
         Task result = taskService.createDigitalServiceTask(digitalService, criteria);
 
         assertEquals(newTask, result);
-        verify(taskRepository).findByDigitalServiceUid("uid123");
+        verify(taskRepository).findByDigitalService(digitalService);
         verify(taskRepository).save(any(Task.class));
     }
 
@@ -113,7 +114,7 @@ class TaskServiceTest {
         digitalService.setUser(User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build());
         List<String> criteria = List.of("criterion1", "criterion2");
         Task existingTask = new Task();
-        existingTask.setDigitalServiceUid("uid123");
+        existingTask.setDigitalService(digitalService);
 
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
@@ -121,13 +122,13 @@ class TaskServiceTest {
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
 
-        when(taskRepository.findByDigitalServiceUid("uid123")).thenReturn(Optional.of(existingTask));
+        when(taskRepository.findByDigitalService(digitalService)).thenReturn(Optional.of(existingTask));
         when(taskRepository.save(existingTask)).thenReturn(existingTask);
 
         Task result = taskService.createDigitalServiceTask(digitalService, criteria);
 
         assertEquals(existingTask, result);
-        verify(taskRepository).findByDigitalServiceUid("uid123");
+        verify(taskRepository).findByDigitalService(digitalService);
         verify(taskRepository).save(existingTask);
     }
 
@@ -162,4 +163,16 @@ class TaskServiceTest {
         verifyNoInteractions(exportService);
         verify(taskRepository, never()).deleteAll(anyList());
     }
+
+    @Test
+    void saveTaskShouldCallRepositorySave() {
+
+        Task task = new Task();
+        when(taskRepository.save(task)).thenReturn(task);
+
+        taskService.saveTask(task);
+
+        verify(taskRepository, times(1)).save(task);
+    }
+
 }

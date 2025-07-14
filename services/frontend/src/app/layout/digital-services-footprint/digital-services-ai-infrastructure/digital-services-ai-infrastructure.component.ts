@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { lastValueFrom, Subscription } from "rxjs";
+import { lastValueFrom, Subscription, take } from "rxjs";
 import {
     DigitalService,
-    TerminalsType,
+    EcomindType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -26,7 +26,8 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     locationOptions: { label: string; value: string }[] = [];
     digitalService: DigitalService = {} as DigitalService;
     public userService = inject(UserService);
-    typesOptions: TerminalsType[] = [];
+    typesOptions: EcomindType[] = [];
+    writeRight: boolean = false;
 
     constructor(
         private readonly fb: FormBuilder,
@@ -39,19 +40,56 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     ) {}
 
     async ngOnInit() {
+        this.userService.isAllowedEcoMindAiWrite$.pipe(take(1)).subscribe((isAllowed) => {
+            if (isAllowed) {
+                this.writeRight = true;
+            }
+        });
+
         // Load countries from API
         await this.loadCountries();
+
+        const defaultInfrastructureType =
+            this.typesOptions.find((t) => t.value === "Server") ?? this.typesOptions[0];
+
         //set default value
         this.infrastructureForm = this.fb.group({
-            infrastructureType: [this.typesOptions[1], [Validators.required]],
-            nbCpuCores: [0, [Validators.min(0)]],
-            nbGpu: [0, [Validators.required, Validators.min(0)]],
-            gpuMemory: [0, [Validators.required, Validators.min(0)]],
-            ramSize: [0, [Validators.required, Validators.min(0)]],
-            pue: [1, [Validators.required, Validators.min(1)]],
-            complementaryPue: [1, [Validators.required, Validators.min(1)]],
-            location: ["France", Validators.required],
+            infrastructureType: [null, Validators.required],
+            nbCpuCores: [null, Validators.min(0)],
+            nbGpu: [null, [Validators.required, Validators.min(0)]],
+            gpuMemory: [null, [Validators.required, Validators.min(0)]],
+            ramSize: [null, [Validators.required, Validators.min(0)]],
+            pue: [null, [Validators.required, Validators.min(1)]],
+            complementaryPue: [null, [Validators.required, Validators.min(1)]],
+            location: [null, Validators.required],
         });
+
+        //change default fields value on infrastructure type value change
+        this.infrastructureForm
+            .get("infrastructureType")
+            ?.valueChanges.subscribe((selectedEcomindType: EcomindType) => {
+                if (!selectedEcomindType) return;
+
+                this.infrastructureForm.patchValue(
+                    {
+                        nbCpuCores: selectedEcomindType.defaultCpuCores,
+                        nbGpu: selectedEcomindType.defaultGpuCount,
+                        gpuMemory: selectedEcomindType.defaultGpuMemory,
+                        ramSize: selectedEcomindType.defaultRamSize,
+                        pue: selectedEcomindType.defaultDatacenterPue,
+                    },
+                    { emitEvent: false },
+                );
+                if (
+                    selectedEcomindType.value === "Desktop" ||
+                    selectedEcomindType.value === "Laptop" ||
+                    !this.writeRight
+                ) {
+                    this.infrastructureForm.get("pue")?.disable();
+                } else {
+                    this.infrastructureForm.get("pue")?.enable();
+                }
+            });
 
         //get the digital service uid with the activatedRoute
         const uid = this.route.pathFromRoot
@@ -59,12 +97,12 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
             .find((v) => v !== null);
         // default value for the form
         const defaultData = {
-            infrastructureType: this.typesOptions[1],
-            nbCpuCores: 0,
-            nbGpu: 0,
-            gpuMemory: 0,
-            ramSize: 0,
-            pue: 1.5,
+            infrastructureType: defaultInfrastructureType,
+            nbCpuCores: defaultInfrastructureType.defaultCpuCores,
+            nbGpu: defaultInfrastructureType.defaultGpuCount,
+            gpuMemory: defaultInfrastructureType.defaultGpuMemory,
+            ramSize: defaultInfrastructureType.defaultRamSize,
+            pue: defaultInfrastructureType.defaultDatacenterPue,
             complementaryPue: 1.3,
             location: "France",
         };
@@ -73,7 +111,13 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
             this.digitalServicesAiData.getAiInfrastructure(uid).subscribe({
                 next: (data) => {
                     if (data) {
-                        this.infrastructureForm.patchValue(data);
+                        const selectedType = this.typesOptions.find(
+                            (t) => t.value === data.infrastructureType.value,
+                        );
+                        this.infrastructureForm.patchValue({
+                            ...data,
+                            infrastructureType: selectedType ?? defaultInfrastructureType,
+                        });
                     } else {
                         //set the value
                         this.infrastructureForm.patchValue(defaultData);
@@ -95,29 +139,16 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
         }
 
         // Save data whenever changes are made
-        this.formSubscription = this.infrastructureForm.valueChanges.subscribe(
-            (value) => {
-                this.aiFormsStore.setInfrastructureChange(true);
-                // Extract simple values from the form
-                const formData = {
-                    infrastructureType: value.infrastructureType,
-                    nbCpuCores: value.nbCpuCores,
-                    nbGpu: value.nbGpu,
-                    gpuMemory: value.gpuMemory,
-                    ramSize: value.ramSize,
-                    pue: value.pue,
-                    complementaryPue: value.complementaryPue,
-                    location: value.location,
-                };
-                this.aiFormsStore.setInfrastructureFormData(
-                    formData as AIInfrastructureForm,
-                );
-            },
-        );
+        this.formSubscription = this.infrastructureForm.valueChanges.subscribe(() => {
+            this.aiFormsStore.setInfrastructureChange(true);
+            // Get all values from the form including disabled ones
+            const formData = this.infrastructureForm.getRawValue();
+            this.aiFormsStore.setInfrastructureFormData(formData as AIInfrastructureForm);
+        });
 
-        this.userService.isAllowedEcoMindAiWrite$.subscribe((isAllowed) => {
+        this.userService.isAllowedEcoMindAiWrite$.pipe(take(1)).subscribe((isAllowed) => {
             if (!isAllowed) {
-                this.infrastructureForm.disable();
+                this.infrastructureForm.disable({ emitEvent: false });
             }
         });
     }

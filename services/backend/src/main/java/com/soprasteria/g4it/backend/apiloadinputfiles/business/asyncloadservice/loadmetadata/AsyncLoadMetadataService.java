@@ -31,14 +31,14 @@ public class AsyncLoadMetadataService {
      * Load the inventory metadata
      * @param context : the inventory file loading context
      */
-    public void loadInventoryMetadata(Context context) {
-        log.info("Load inventory metadata {}", context.log());
+    public void loadInputMetadata(Context context) {
+        log.info("Load input metadata {}", context.log());
 
         try(ExecutorService executorService = Executors.newFixedThreadPool(4)){
             for (FileToLoad fileToLoad :  context.getFilesToLoad()) {
                 executorService.submit(() -> {
                     try{
-                        log.info("Load inventory metadata for file {} {}",fileToLoad.getFilename(), context.log());
+                        log.info("Load input metadata for file {} {}",fileToLoad.getFilename(), context.log());
                         loadMetadataService.loadMetadataFile(fileToLoad, context);
                     }
                     catch (Exception e){

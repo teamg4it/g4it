@@ -31,4 +31,24 @@ describe("FileSystemDataService", () => {
     it("should be created", () => {
         expect(fileSystemService).toBeTruthy();
     });
+
+    it("should call the correct endpoint with proper headers and responseType when downloadResultsFile is called", () => {
+        const taskId = "12345";
+        const mockBlob = new Blob(["test"], { type: "application/zip" });
+
+        fileSystemService.downloadResultsFile(taskId).subscribe((response) => {
+            expect(response).toEqual(mockBlob);
+        });
+
+        const req = httpMock.expectOne(
+            (request) =>
+                request.url.endsWith(`download-reject/${taskId}`) &&
+                request.method === "GET",
+        );
+        expect(req.request.headers.get("Accept")).toBe("application/zip");
+        expect(req.request.responseType).toBe("blob");
+
+        req.flush(mockBlob);
+        httpMock.verify();
+    });
 });

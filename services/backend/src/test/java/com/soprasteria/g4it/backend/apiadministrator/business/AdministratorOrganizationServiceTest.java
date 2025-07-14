@@ -84,15 +84,6 @@ class AdministratorOrganizationServiceTest {
     @Mock
     UserService userService;
 
-/*    private final Organization organization = TestUtils.createOrganization();
-
-    @BeforeEach
-    void init() {
-        MockitoAnnotations.openMocks(this);
-        organizationId = organization.getId();
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), any(), any());
-    }*/
-
     @Test
     void linkUserToOrg_WithRoles() {
 
@@ -168,7 +159,7 @@ class AdministratorOrganizationServiceTest {
         verify(administratorRoleService).hasAdminRightsOnAnySubscriberOrAnyOrganization(userBO);
         assertEquals(1, result.size());
 
-        SubscriberBO subscriberBO = result.get(0);
+        SubscriberBO subscriberBO = result.getFirst();
         assertEquals(1, subscriberBO.getOrganizations().size());
     }
 

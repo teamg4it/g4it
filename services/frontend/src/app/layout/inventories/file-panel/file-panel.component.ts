@@ -19,21 +19,18 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-import { saveAs } from "file-saver";
 import { MessageService } from "primeng/api";
 import { RadioButton } from "primeng/radiobutton";
-import { firstValueFrom, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import {
     FileDescription,
     FileType,
     TemplateFileDescription,
 } from "src/app/core/interfaces/file-system.interfaces";
 import { CreateInventory, Inventory } from "src/app/core/interfaces/inventory.interfaces";
-import { FileSystemDataService } from "src/app/core/service/data/file-system-data.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
-import { extractFileName } from "src/app/core/utils/path";
 import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
 import { SelectFileComponent } from "./select-file/select-file.component";
@@ -77,10 +74,9 @@ export class FilePanelComponent implements OnInit {
     arrayComponents: Array<ComponentRef<SelectFileComponent>> = [];
 
     templateFiles: TemplateFileDescription[] = [];
-
+    isTemplateParam = Constants.TEMPLATE_PARAMS.IS_MODULE;
     constructor(
         private inventoryService: InventoryDataService,
-        private filesSystemService: FileSystemDataService,
         private loadingService: LoadingDataService,
         private messageService: MessageService,
         private translate: TranslateService,
@@ -131,78 +127,18 @@ export class FilePanelComponent implements OnInit {
 
     getTemplateFiles() {
         this.templateFileService
-            .getTemplateFiles()
+            .getTemplateFiles(this.isTemplateParam)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((templateFiles: FileDescription[]) => {
                 if (templateFiles.length === 0) {
                     this.templateFiles = [];
                     return;
                 }
-
-                let zipFile: TemplateFileDescription = {} as TemplateFileDescription;
-                let xlsxFile: TemplateFileDescription = {} as TemplateFileDescription;
-                const csvFiles: TemplateFileDescription[] = [];
-
-                templateFiles.forEach((res: FileDescription) => {
-                    let templateFileDescription = { ...res } as TemplateFileDescription;
-                    templateFileDescription.name = extractFileName(
-                        templateFileDescription.name,
-                    );
-
-                    if (res.name.includes("zip")) {
-                        templateFileDescription.type = "zip";
-                        templateFileDescription.displayFileName = this.translate.instant(
-                            "inventories.templates.all-template-files",
-                            {
-                                type: templateFileDescription.type,
-                                size: this.toKB(res.metadata.size),
-                            },
-                        );
-                        zipFile = templateFileDescription;
-                    }
-                    if (res.name.includes("xlsx")) {
-                        templateFileDescription.type = "xlsx";
-                        templateFileDescription.displayFileName = this.translate.instant(
-                            "inventories.templates.data-model",
-                            {
-                                type: templateFileDescription.type,
-                                size: this.toKB(res.metadata.size),
-                            },
-                        );
-                        xlsxFile = templateFileDescription;
-                    }
-                    if (res.name.includes("csv")) {
-                        templateFileDescription.type = "csv";
-                        Constants.FILE_TYPES.forEach((csvFileType) => {
-                            if (res.name.includes(csvFileType)) {
-                                templateFileDescription.displayFileName =
-                                    this.translate.instant(
-                                        `inventories.templates.${csvFileType}-template-file`,
-                                        {
-                                            type: templateFileDescription.type,
-                                            size: this.toKB(res.metadata.size),
-                                        },
-                                    );
-                                templateFileDescription.csvFileType = csvFileType;
-                            }
-                        });
-
-                        csvFiles.push(templateFileDescription);
-                    }
-                });
-
-                csvFiles.sort(
-                    (a, b) =>
-                        Constants.FILE_TYPES.indexOf(a.csvFileType || "") -
-                        Constants.FILE_TYPES.indexOf(b.csvFileType || ""),
+                this.templateFiles = this.templateFileService.transformTemplateFiles(
+                    templateFiles,
+                    false,
                 );
-                this.templateFiles = [zipFile, ...csvFiles, xlsxFile];
             });
-    }
-
-    toKB(bytes: string | undefined) {
-        if (bytes === undefined) return 0;
-        return (parseInt(bytes) / 1024).toFixed(2);
     }
 
     checkForDuplicate() {
@@ -347,18 +283,11 @@ export class FilePanelComponent implements OnInit {
         this.clearSidePanel();
     }
 
-    async downloadTemplateFile(selectedFileName: string) {
-        try {
-            const blob: Blob = await firstValueFrom(
-                this.templateFileService.downloadTemplateFile(selectedFileName),
-            );
-            saveAs(blob, selectedFileName);
-        } catch (err) {
-            this.messageService.add({
-                severity: "error",
-                summary: this.translate.instant("common.fileNoLongerAvailable"),
-            });
-        }
+    downloadTemplateFile(selectedFileName: string) {
+        this.templateFileService.getdownloadTemplateFile(
+            selectedFileName,
+            this.isTemplateParam,
+        );
     }
 
     ngOnDestroy() {

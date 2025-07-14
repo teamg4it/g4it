@@ -78,6 +78,9 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
     @Transactional
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
 
     /**
      * Count physical equipments linked to an inventory

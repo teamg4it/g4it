@@ -1,0 +1,260 @@
+<div pFocusTrap class="import-digital">
+    <app-form-nav
+        [spaceDetails]="importDetails"
+        [spaceForm]="importForm"
+        (tabSelected)="selectTab($event)"
+    ></app-form-nav>
+    @if (importDetails && importDetails["form"]) {
+        <div class="space-form">
+            <p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+                <h2>{{ "digital-services-import.import" | translate }}</h2>
+                <p-button
+                    (onClick)="closeSidebar()"
+                    [link]="true"
+                    [rounded]="true"
+                    ariaLabel="Outlined Close Button"
+                    icon="pi pi-times"
+                    class="space-sidebar-close"
+                    styleClass="space-sidebar-close-button text-black-alpha-60"
+                ></p-button>
+                @if (selectedMenuIndex === 0) {
+                    <h3 class="font-semibold text-2xl ml-0">
+                        {{ "digital-services.Server" | translate }}
+                    </h3>
+                    <p class="mb-3">
+                        {{ "digital-services-import.non-cloud-text" | translate }}
+                    </p>
+                } @else {
+                    <h3 class="font-semibold text-2xl ml-0">
+                        {{ "digital-services.CloudService" | translate }}
+                    </h3>
+                    <p class="mb-3">
+                        {{ "digital-services-import.cloud-text" | translate }}
+                    </p>
+                }
+                @if (selectedMenuIndex === 0) {
+                    @for (
+                        template of templateFilesDescription
+                            | slice: 0 : templateFilesDescription.length - 1;
+                        track $index
+                    ) {
+                        <ng-container
+                            *ngTemplateOutlet="
+                                templateFile;
+                                context: { $implicit: template }
+                            "
+                        ></ng-container>
+                    }
+                } @else {
+                    @for (
+                        template of templateFilesDescription
+                            | slice: templateFilesDescription.length - 1;
+                        track $index
+                    ) {
+                        <ng-container
+                            *ngTemplateOutlet="
+                                templateFile;
+                                context: { $implicit: template }
+                            "
+                        ></ng-container>
+                    }
+                }
+
+                <ng-template #templateFile let-template>
+                    <div>
+                        <span
+                            class="pi pi-file-pdf mr-2 font-bold light-black-color"
+                        ></span>
+                        <a
+                            class="font-bold cursor-pointer light-black-color"
+                            tabindex="0"
+                            role="link"
+                            #addFocus
+                            (click)="downloadTemplateFile(template.name)"
+                            [attr.id]="
+                                selectedMenuIndex === 0 &&
+                                template.csvFileType === 'datacenter'
+                                    ? 'addFocus'
+                                    : ''
+                            "
+                        >
+                            <u>{{ template.displayFileName }}</u>
+                        </a>
+                        {{
+                            "digital-services-import.templates.type-size"
+                                | translate
+                                    : {
+                                          type: template.type,
+                                          size: template.metadata.size,
+                                      }
+                        }}
+                    </div>
+                </ng-template>
+                <p class="mb-3">
+                    {{ "digital-services-import.template-text" | translate }}
+                </p>
+                <hr />
+
+                <h4 class="font-semibold">
+                    {{ "digital-services-import.add-files" | translate }}
+                </h4>
+                <app-multi-file-import
+                    [selectedMenuIndex]="selectedMenuIndex"
+                    [form]="importDetails['form']"
+                    [importForm]="importForm"
+                    (formSubmit)="onFormSubmit($event)"
+                ></app-multi-file-import>
+                <h4 class="font-semibold">
+                    @if (selectedMenuIndex === 0) {
+                        {{
+                            "digital-services-import.non-cloud-server-upload-info"
+                                | translate
+                        }}
+                    } @else {
+                        {{
+                            "digital-services-import.cloud-server-upload-info" | translate
+                        }}
+                    }
+                </h4>
+
+                <!-- Task Status Table -->
+                <p-table
+                    [value]="tableTasks"
+                    styleClass="mb-7"
+                    [tableStyle]="{ 'min-width': '8rem' }"
+                >
+                    <ng-template pTemplate="header">
+                        <caption class="visually-hidden">
+                            {{
+                                "digital-services-import.server-upload-info" | translate
+                            }}
+                        </caption>
+                        <tr>
+                            <th scope="col" id="date">
+                                {{ "digital-services-import.date" | translate }}
+                            </th>
+                            <th scope="col" id="time">
+                                {{ "digital-services-import.time" | translate }}
+                            </th>
+                            <th scope="col" id="status">
+                                {{ "digital-services-import.status" | translate }}
+                            </th>
+                            @if (anyRejectedFiles) {
+                                <th scope="col" id="status">
+                                    {{
+                                        "digital-services-import.rejected-files"
+                                            | translate
+                                    }}
+                                </th>
+                            }
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-status>
+                        <tr>
+                            <td>{{ status.creationDate | date: "dd/MM/yyyy" }}</td>
+                            <td>{{ status.creationDate | date: "HH:mm" }}</td>
+                            <td>
+                                @if (status.status === "IN_PROGRESS") {
+                                    <div class="flex align-items-center">
+                                        <span
+                                            class="pi pi-spin pi-spinner icon-running mr-2"
+                                            pTooltip="{{ status.tooltip | translate }}"
+                                            tooltipPosition="left"
+                                            role="application"
+                                            [attr.aria-label]="status.tooltip | translate"
+                                        ></span>
+                                    </div>
+                                } @else {
+                                    <div [class]="status.cssClass">
+                                        {{ status.tooltip | translate }}
+                                    </div>
+                                }
+                            </td>
+                            @if (
+                                (userService.isAllowedInventoryWrite$ | async) &&
+                                anyRejectedFiles
+                            ) {
+                                @if (
+                                    status.status === "COMPLETED_WITH_ERRORS" ||
+                                    status.status === "SKIPPED" ||
+                                    status.status === "FAILED"
+                                ) {
+                                    <td>
+                                        <button
+                                            (click)="downloadFile(status)"
+                                            ariaLabel="{{
+                                                'inventories-footprint.header.download'
+                                                    | translate
+                                            }}"
+                                            class="cursor-pointer pl-0 ml-0 border-none background-none"
+                                        >
+                                            <img
+                                                src="assets/images/icons/icon-download.svg"
+                                                class="mx-3"
+                                                alt="{{
+                                                    'inventories.download-result'
+                                                        | translate
+                                                }} {{
+                                                    status.creationDate
+                                                        | date: 'dd/MM/yyyy HH:mm'
+                                                }}"
+                                            />
+                                        </button>
+                                    </td>
+                                } @else {
+                                    <td></td>
+                                }
+                            }
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-scrollPanel>
+            <!-- Footer Buttons -->
+            <div class="mt-3">
+                @for (
+                    spaceDetail of importDetails["form"];
+                    track $index;
+                    let menuIndex = $index;
+                    let lastIndex = $last
+                ) {
+                    <div
+                        class="space-form--input"
+                        [ngClass]="{
+                            active: selectedMenuIndex === menuIndex,
+                        }"
+                    >
+                        <div
+                            class="bg-light-grey-color space-form--button-group flex align-content-end justify-content-end flex-wrap"
+                        >
+                            @if (
+                                menuIndex > 0 &&
+                                !importDetails["menu"][menuIndex - 1]["hidden"]
+                            ) {
+                                <p-button
+                                    styleClass="p-button-secondary-blue uppercase"
+                                    (onClick)="previousTab(menuIndex)"
+                                    [label]="'common.previous' | translate"
+                                    [ariaLabel]="'common.previous' | translate"
+                                ></p-button>
+                            }
+                            <p-button
+                                (onClick)="closeSidebar()"
+                                styleClass=" bg-light-green uppercase finish-btn-padding"
+                                [label]="'digital-services-import.finish' | translate"
+                                [ariaLabel]="'digital-services-import.finish' | translate"
+                            ></p-button>
+                            @if (!lastIndex) {
+                                <p-button
+                                    styleClass="p-button-secondary-blue uppercase"
+                                    (onClick)="nextTab(menuIndex)"
+                                    [label]="'common.next' | translate"
+                                    [ariaLabel]="'common.next' | translate"
+                                ></p-button>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
