@@ -77,7 +77,8 @@ main {
     height: calc(100vh - 70px);
     width: calc(100vw - 80px);
     margin-top: 70px;
-    background-image: url("assets/images/background/blue-elipse.svg"),
+    background-image:
+        url("assets/images/background/blue-elipse.svg"),
         url("assets/images/background/yellow-elipse.svg"),
         url("assets/images/background/fingerprint-background.svg");
     background-repeat: no-repeat;
@@ -216,7 +217,8 @@ main {
     flex-shrink: 0;
     background-color: var(--header-color);
     width: 100%;
-    background-image: url("assets/images/background/fingerprint.svg"),
+    background-image:
+        url("assets/images/background/fingerprint.svg"),
         url("assets/images/background/fingerprint.svg");
     background-repeat: no-repeat;
     background-position:
@@ -1227,6 +1229,13 @@ app-useful-information {
             }
         }
     }
+}
+
+.inference-operation-sign {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-top: 25px;
 }
 
 .label-input-div-form .p-dropdown {
