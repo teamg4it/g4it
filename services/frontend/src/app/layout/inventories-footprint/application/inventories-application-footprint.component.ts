@@ -51,7 +51,7 @@ export class InventoriesApplicationFootprintComponent {
         Constants.MUTLI_CRITERIA,
         ...Object.keys(this.globalStore.criteriaList()),
     ];
-    inventoryId!: number;
+    inventoryId = +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
     multiCriteria = Constants.MUTLI_CRITERIA;
     allUnmodifiedFilters = signal({});
     savedFilers: Filter<string | TransformedDomain> = {};
@@ -77,9 +77,6 @@ export class InventoriesApplicationFootprintComponent {
     async ngOnInit() {
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
         this.globalStore.setLoading(true);
-        // Set active inventory based on route
-        this.inventoryId =
-            +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
 
         let footprint: ApplicationFootprint[] = [];
         const currentOrgName = (
