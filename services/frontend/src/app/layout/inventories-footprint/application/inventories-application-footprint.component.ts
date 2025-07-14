@@ -21,10 +21,7 @@ import {
     ApplicationFootprint,
 } from "src/app/core/interfaces/footprint.interface";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
-import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
-import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
-import { OutApplicationsService } from "src/app/core/service/data/in-out/out-applications.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
@@ -37,9 +34,6 @@ import { Constants } from "src/constants";
 export class InventoriesApplicationFootprintComponent {
     protected readonly footprintStore = inject(FootprintStoreService);
     private readonly globalStore = inject(GlobalStoreService);
-    footprintDataService = inject(FootprintDataService);
-    private readonly outApplicationsService = inject(OutApplicationsService);
-    private readonly inventoryService = inject(InventoryService);
     private readonly userService = inject(UserService);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
