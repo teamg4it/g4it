@@ -383,9 +383,9 @@
         "stages": "Stages",
         "inference": "Inference",
         "fintuning": "Finetuning",
-        "numberOfUsers": "Nb of user per year",
-        "averageRequest": "Average nb of requests per year",
-        "averageToken": "Average nb of tokens generated per request",
+        "numberOfUsers": "Nb of users per year",
+        "averageRequest": "Nb of requests per year",
+        "averageToken": "Nb of tokens generated per request",
         "totalTokenGenerate": "Total nb of generated tokens"
     },
 
