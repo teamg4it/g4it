@@ -7,14 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.mapper;
 
-import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
-import com.soprasteria.g4it.backend.apidigitalservice.model.NetworkTypeBO;
-import com.soprasteria.g4it.backend.apidigitalservice.model.ServerCharacteristicBO;
-import com.soprasteria.g4it.backend.apidigitalservice.model.ServerHostBO;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRef;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRefDTO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.*;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.*;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
@@ -44,6 +38,25 @@ public abstract class DigitalServiceReferentialMapper {
     @Mapping(target = "value", source = "description")
     @Mapping(target = "lifespan", source = "lifespan")
     public abstract DeviceTypeBO toDeviceTypeBusinessObject(final DeviceTypeRef source);
+
+    /**
+     * Map ecomind type referential entities to business objects.
+     *
+     * @param source entities to map.
+     * @return the business object list.
+     */
+    public abstract List<EcomindTypeBO> toEcomindTypeBusinessObject(final List<EcomindTypeRef> source);
+
+    /**
+     * Map ecomind type referential entity to business object.
+     *
+     * @param source the entity to map.
+     * @return the business object.
+     */
+    @Mapping(target = "code", source = "reference")
+    @Mapping(target = "value", source = "description")
+    @Mapping(target = "lifespan", source = "lifespan")
+    public abstract EcomindTypeBO toEcomindTypeBusinessObject(final EcomindTypeRef source);
 
     /**
      * Map network type referential entities to business objects.

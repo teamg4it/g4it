@@ -9,7 +9,14 @@
 export const environment = {
     production: true,
     apiBaseUrl: "$URL_INVENTORY",
-    securedEndpoints: ["inventories", "digital-services", "template-files"],
+    securedEndpoints: [
+        "inventories",
+        "digital-services",
+        "eco-mind-ai",
+        "template-files",
+        "download-reject",
+        "task",
+    ],
     keycloak: {
         issuer: "${KEYCLOAK_URL}",
         realm: "g4it",
@@ -17,10 +24,13 @@ export const environment = {
         enabled: "${KEYCLOAK_ENABLED}",
     },
     frontEndUrl: "${FRONTEND_URL}",
+    subpath: "${SUBPATH}",
+    subpathfront: "${SUB_PATH_FRONT}",
     showBetaFeatures: "${SHOW_BETA_FEATURES}",
     matomo: {
         matomoTagManager: {
             containerUrl: "${MATOMO_TAG_MANAGER_URL}",
         },
     },
+    isEcomindEnabled: true,
 };

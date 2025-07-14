@@ -13,12 +13,14 @@ import { Organization, Subscriber, User } from "./../../interfaces/user.interfac
 import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { Constants } from "src/constants";
 import { BasicRoles, Role } from "../../interfaces/roles.interfaces";
 
 @Injectable({
     providedIn: "root",
 })
 export class UserService {
+    ecoDesignPercent = 77;
     public organizationSubject = new ReplaySubject<Organization>(1);
 
     public subscriberSubject = new ReplaySubject<Subscriber>(1);
@@ -55,6 +57,14 @@ export class UserService {
 
     isAllowedDigitalServiceWrite$ = this.roles$.pipe(
         map((roles) => roles.includes(Role.DigitalServiceWrite)),
+    );
+
+    isAllowedEcoMindAiRead$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.EcoMindAiRead)),
+    );
+
+    isAllowedEcoMindAiWrite$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.EcoMindAiWrite)),
     );
 
     constructor(
@@ -103,7 +113,10 @@ export class UserService {
             return;
         }
 
-        if (page !== undefined && ["inventories", "digital-services"].includes(page)) {
+        if (
+            page !== undefined &&
+            ["inventories", "digital-services", "eco-mind-ai"].includes(page)
+        ) {
             return this.handlePageRouting(
                 currentUser,
                 subscriberName,
@@ -139,11 +152,9 @@ export class UserService {
             this.router.navigateByUrl("/");
             return;
         }
-
-        if (this.checkIfAllowed(subscriber, organization, page)) {
-            this.setSubscriberAndOrganization(subscriber, organization);
-        } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
+        this.setSubscriberAndOrganization(subscriber, organization);
+        if (!this.checkIfAllowed(subscriber, organization, page)) {
+            this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 
@@ -156,11 +167,18 @@ export class UserService {
             organization = this.getOrganization(subscriber);
         }
 
+        if (Constants.VALID_PAGES.includes(subscribers)) {
+            this.setSubscriberAndOrganization(subscriber, organization!);
+            return;
+        }
         if (subscribers === "administration") {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
                 return;
-            } else this.router.navigateByUrl(`something-went-wrong/403`);
+            } else {
+                this.setSubscriberAndOrganization(subscriber, organization!);
+                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+            }
         }
 
         if (subscriber && organization) {
@@ -263,6 +281,10 @@ export class UserService {
             roles.push(Role.DigitalServiceRead);
         }
 
+        if (organization.roles.includes(Role.EcoMindAiWrite)) {
+            roles.push(Role.EcoMindAiRead);
+        }
+
         return roles;
     }
 
@@ -273,11 +295,23 @@ export class UserService {
     ): boolean {
         let roles: Role[] = this.getRoles(subscriber, organization);
 
+        if (Constants.VALID_PAGES.includes(uri)) {
+            return true;
+        }
+
         if (uri === "inventories" && roles.includes(Role.InventoryRead)) {
             return true;
         }
 
         if (uri === "digital-services" && roles.includes(Role.DigitalServiceRead)) {
+            return true;
+        }
+
+        if (
+            uri === "eco-mind-ai" &&
+            roles.includes(Role.EcoMindAiRead) &&
+            subscriber.ecomindai
+        ) {
             return true;
         }
 
@@ -308,13 +342,34 @@ export class UserService {
         organization: Organization,
         page: string,
     ): void {
+        this.setSubscriberAndOrganization(subscriber, organization);
         if (this.checkIfAllowed(subscriber, organization, page)) {
-            this.setSubscriberAndOrganization(subscriber, organization);
-            this.router.navigateByUrl(
-                `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
-            );
+            if (
+                page === "inventories" ||
+                page === "digital-services" ||
+                page === "eco-mind-ai"
+            ) {
+                this.router.navigateByUrl(
+                    `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
+                );
+            }
         } else {
-            this.router.navigateByUrl(`something-went-wrong/403`);
+            this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
+    }
+
+    getSelectedPage(): string {
+        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
+
+        const validPages = ["administration", ...Constants.VALID_PAGES];
+        return validPages.includes(subscribers) ? subscribers : page;
+    }
+
+    composeEmail(
+        currentSubscriber: Subscriber,
+        selectedOrganization: Organization,
+    ): string {
+        let subject = `[${currentSubscriber.name}/${selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
+        return `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
     }
 }

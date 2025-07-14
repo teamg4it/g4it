@@ -34,12 +34,14 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.TaskIdRest;
 import lombok.extern.slf4j.Slf4j;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -47,11 +49,13 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.zeroturnaround.zip.ZipUtil;
@@ -121,7 +125,7 @@ public class FunctionalTests {
     OutVirtualEquipmentRepository outVirtualEquipmentRepository;
     @Autowired
     OutApplicationRepository outApplicationRepository;
-    @MockBean
+    @MockitoBean
     BoaviztapiService boaviztapiService;
 
     /**
@@ -151,7 +155,12 @@ public class FunctionalTests {
 
         // case with no input data
         ResponseEntity<TaskIdRest> response = loadInputFilesController.launchloadInputFiles(SUBSCRIBER, organization.getId(), inventory.getId(), "fr", null, null, null, null);
-        Assertions.assertNull(response.getBody().getTaskId());
+        Long taskId = response.getBody().getTaskId();
+        Assertions.assertNull(taskId);
+
+
+
+
 
         final Path targetInputFiles = Path.of("target/local-filesystem").resolve(SUBSCRIBER).resolve(String.valueOf(organization.getId())).resolve("input");
         Files.createDirectories(targetInputFiles);
@@ -180,15 +189,8 @@ public class FunctionalTests {
             var testCase = testFolder.getName();
 
             // clean tables
-            checkDatacenterRepository.deleteAll();
-            checkVirtualEquipmentRepository.deleteAll();
-            checkPhysicalEquipmentRepository.deleteAll();
-            checkApplicationRepository.deleteAll();
-            inDatacenterRepository.deleteAll();
-            inPhysicalEquipmentRepository.deleteAll();
-            inVirtualEquipmentRepository.deleteAll();
-            inApplicationRepository.deleteAll();
-            taskRepository.deleteAll();
+            cleanDB();
+
 
             //Load already existing PE in inventory
             InPhysicalEquipment oldPhysicalEquipment = createAlreadyExistingPEinInventory(inventory, organization.getId());
@@ -293,11 +295,7 @@ public class FunctionalTests {
             var testCase = testFolder.getName();
 
             // clean tables
-            inDatacenterRepository.deleteAll();
-            inPhysicalEquipmentRepository.deleteAll();
-            inVirtualEquipmentRepository.deleteAll();
-            inApplicationRepository.deleteAll();
-            taskRepository.deleteAll();
+            cleanDB();
 
             // copy files in work
             File inputFolder = apievaluating.resolve(testCase).resolve("input").toFile();
@@ -387,10 +385,10 @@ public class FunctionalTests {
     private InPhysicalEquipment createAlreadyExistingPEinInventory(Inventory inv, Long OrganizationId) {
 
         InPhysicalEquipment inPE = new InPhysicalEquipment();
+
         inPE.setName("MyMagicalPE");
         inPE.setInventoryId(inv.getId());
         inPE.setCreationDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
-        inPE.setId(-1L);
         inPE.setQuantity(12d);
         inPE.setCpuCoreNumber(2d);
         inPE.setSizeDiskGb(2353d);
@@ -401,7 +399,7 @@ public class FunctionalTests {
         inPE.setDatacenterName("default");
         inPE.setDatePurchase(LocalDate.of(2020, 1, 1));
         inPE.setDescription("OldPE");
-        inPE.setDurationHour(24l);
+        inPE.setDurationHour(24.0);
         inPE.setLocation("France");
         inPE.setLastUpdateDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
 
@@ -416,8 +414,6 @@ public class FunctionalTests {
 
 
         InVirtualEquipment inVe = new InVirtualEquipment();
-
-        inVe.setId(-1l);
         inVe.setName("MyMagicalVE");
         inVe.setPhysicalEquipmentName("MyMagicalPE");
         inVe.setInventoryId(inv.getId());
@@ -438,6 +434,21 @@ public class FunctionalTests {
 
         return inVirtualEquipmentRepository.save(inVe);
 
+
+    }
+
+
+
+    public void cleanDB(){
+        checkDatacenterRepository.deleteAll();
+        checkVirtualEquipmentRepository.deleteAll();
+        checkPhysicalEquipmentRepository.deleteAll();
+        checkApplicationRepository.deleteAll();
+        inDatacenterRepository.deleteAll();
+        inPhysicalEquipmentRepository.deleteAll();
+        inVirtualEquipmentRepository.deleteAll();
+        inApplicationRepository.deleteAll();
+        taskRepository.deleteAll();
 
     }
 

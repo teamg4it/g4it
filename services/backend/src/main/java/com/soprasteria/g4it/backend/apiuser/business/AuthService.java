@@ -7,8 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiuser.business;
 
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.common.utils.Constants;
@@ -40,13 +40,13 @@ public class AuthService {
 
     private UserService userService;
     private DigitalServiceRepository digitalServiceRepository;
-    private DigitalServiceSharedRepository digitalServiceSharedRepository;
     private InventoryService inventoryService;
+    private DigitalServiceService digitalServiceService;
     private Environment environment;
     private static final String TOKEN_ERROR_MESSAGE = "The token is not a JWT token";
     private static final String SUPPORT_ERROR_MESSAGE = "To access to G4IT, you must be added as a member of a organization, please contact your administrator or the support at support.g4it@soprasteria.com";
     private static final String SUBSCRIBERS = "subscribers";
-    private static final Set<String> NOT_DIGITAL_SERVICE = Set.of("device-type", "country", "network-type", "server-host");
+    private static final Set<String> NOT_DIGITAL_SERVICE = Set.of("device-type", "country", "network-type", "server-host", "ecomind-type");
 
 
     /**
@@ -229,6 +229,9 @@ public class AuthService {
         if (roles.contains(Constants.ROLE_INVENTORY_WRITE)) {
             roles.add(Constants.ROLE_INVENTORY_READ);
         }
+        if (roles.contains(Constants.ROLE_ECO_MIND_AI_WRITE)) {
+            roles.add(Constants.ROLE_ECO_MIND_AI_READ);
+        }
         if (roles.contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)) {
             roles.addAll(Constants.ALL_BASIC_ROLES);
         }
@@ -251,14 +254,11 @@ public class AuthService {
 
         final String digitalServiceUid = urlSplit[6];
         if (NOT_DIGITAL_SERVICE.contains(digitalServiceUid)) return;
+        String subscriber = urlSplit[2];
+        Long organizationId = Long.parseLong(urlSplit[4]);
 
-        if (urlSplit.length > 7 && urlSplit[7].equals("shared")) {
-            return;
-        }
-
-        if (!(digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, getUser().getId())
-                || digitalServiceSharedRepository.existsByDigitalServiceUidAndUserId(digitalServiceUid, getUser().getId()))) {
-            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "The user has no right to manage this digitalService");
+        if (!digitalServiceService.digitalServiceExists(subscriber, organizationId, digitalServiceUid)) {
+            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("The digital service '%s' does not exist or is not linked to %s/%s", digitalServiceUid, subscriber, organizationId));
         }
     }
 

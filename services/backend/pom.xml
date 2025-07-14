@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.12</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
+        <version>3.4.5</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -31,12 +31,12 @@
     <properties>
         <numecoeval.version>2.2.0-SNAPSHOT</numecoeval.version>
         <java.version>21</java.version>
-        <swagger.version>2.2.26</swagger.version>
+        <swagger.version>2.2.30</swagger.version>
         <mapstruct.dependency.version>1.6.3</mapstruct.dependency.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
 
         <lombok.dependency.version>1.18.36</lombok.dependency.version>
-        <liquibase-core.version>4.30.0</liquibase-core.version>
+        <liquibase-core.version>4.31.1</liquibase-core.version>
 
         <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version>
         <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version>
@@ -45,7 +45,7 @@
         <spring-cloud-azure-starter-keyvault.version>5.18.0</spring-cloud-azure-starter-keyvault.version>
 
         <!-- springdoc 2.7.0 is not working -->
-        <springdoc-openapi-starter-webmvc-ui.version>2.6.0</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.8.8</springdoc-openapi-starter-webmvc-ui.version>
 
         <guava.version>33.3.1-jre</guava.version>
         <commons-csv.version>1.12.0</commons-csv.version>
@@ -54,7 +54,7 @@
         <zt-zip.version>1.17</zt-zip.version>
         <vavr.version>0.10.5</vavr.version>
 
-        <maven-openapi-generator-plugin.version>7.10.0</maven-openapi-generator-plugin.version>
+        <maven-openapi-generator-plugin.version>7.13.0</maven-openapi-generator-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <shedlock.version>6.0.2</shedlock.version>
@@ -71,8 +71,24 @@
             **/tasklet/**/*.java,
             **/client/**/*.java,
             **/utils/Constants.java,
-            **/BackendApplication.java
+            **/BackendApplication.java,
+            **/AdministratorActionsService.java
         </sonar.coverage.exclusions>
+        <sonar.exclusions>
+            **/gen/**/*.java,
+            **/controller/**/*.java,
+            **/mapper/**/*.java,
+            **/config/**/*.java,
+            **/exception/**/*.java,
+            **/model/**/*.java,
+            **/modeldb/**/*.java,
+            **/repository/**/*.java,
+            **/tasklet/**/*.java,
+            **/client/**/*.java,
+            **/utils/Constants.java,
+            **/BackendApplication.java,
+            **/*Test.java
+        </sonar.exclusions>
         <sonar.java.binaries>**/*</sonar.java.binaries>
     </properties>
 
@@ -148,8 +164,19 @@
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+            <version>26.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-starter</artifactId>
             <version>${keycloak-spring-boot-starter.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.keycloak</groupId>
+                    <artifactId>keycloak-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Database -->
         <dependency>
@@ -251,6 +278,12 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>4.3.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -261,6 +294,12 @@
                 <version>${keycloak-adapter-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.keycloak</groupId>
+                        <artifactId>keycloak-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -427,6 +466,52 @@
                             </configOptions>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <id>ecomind-api-v2</id>
+                        <configuration>
+                            <generatorName>spring</generatorName>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/swagger/ecomind/api-ai-service-EcomindAIv2.yaml
+                            </inputSpec>
+                            <apiPackage>com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2</apiPackage>
+                            <modelPackage>com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto
+                            </modelPackage>
+                            <invokerPackage>
+                                com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.invoker
+                            </invokerPackage>
+                            <generateApis>true</generateApis>
+                            <generateModels>true</generateModels>
+                            <generateModelTests>false</generateModelTests>
+                            <generateApiTests>false</generateApiTests>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generatorName>java</generatorName>
+                            <library>webclient</library>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useTags>true</useTags>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <dateLibrary>java8</dateLibrary>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <sourceFolder>src/gen/java</sourceFolder>
+                                <serializableModel>true</serializableModel>
+                                <interfaceOnly>true</interfaceOnly>
+                                <reactive>false</reactive>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <useOptional>false</useOptional>
+                                <serviceInterface>true</serviceInterface>
+                                <serviceImplementation>true</serviceImplementation>
+                                <booleanGetterPrefix>is</booleanGetterPrefix>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
             <plugin>

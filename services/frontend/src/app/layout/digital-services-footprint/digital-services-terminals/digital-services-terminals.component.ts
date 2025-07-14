@@ -19,7 +19,6 @@ import { InPhysicalEquipmentRest } from "src/app/core/interfaces/input.interface
 import { UserService } from "src/app/core/service/business/user.service";
 import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in-physical-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import * as uuid from "uuid";
 @Component({
     selector: "app-digital-services-terminals",
     templateUrl: "./digital-services-terminals.component.html",
@@ -35,6 +34,7 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     digitalService: DigitalService = {} as DigitalService;
 
     headerFields = [
+        "name",
         "typeCode",
         "country",
         "numberOfUsers",
@@ -49,22 +49,17 @@ export class DigitalServicesTerminalsComponent implements OnInit {
             .inPhysicalEquipments()
             .filter((item) => item.type === "Terminal")
             .map((item) => {
-                let numberOfUsers = 0;
-
-                if (item.durationHour) {
-                    numberOfUsers = (item.quantity * (365 * 24)) / item.durationHour;
-                }
-
                 const deviceType = deviceTypes.find((type) => type.code === item.model);
 
                 return {
                     id: item.id,
+                    name: item.name,
                     creationDate: item.creationDate,
                     typeCode: deviceType?.value,
                     lifespan:
                         differenceInDays(item.dateWithdrawal!, item.datePurchase!) / 365,
                     country: item.location,
-                    numberOfUsers,
+                    numberOfUsers: item.numberOfUsers,
                     yearlyUsageTimePerUser: item.durationHour,
                 } as DigitalServiceTerminalConfig;
             });
@@ -118,7 +113,7 @@ export class DigitalServicesTerminalsComponent implements OnInit {
 
         const elementToSave = {
             digitalServiceUid: this.digitalService.uid,
-            name: terminal.uid || uuid.v4(),
+            name: terminal.name,
             type: "Terminal",
             model: terminal.type.code,
             location: terminal.country,
@@ -157,4 +152,5 @@ export class DigitalServicesTerminalsComponent implements OnInit {
             this.digitalServicesData.get(this.digitalService.uid),
         );
     }
+    
 }

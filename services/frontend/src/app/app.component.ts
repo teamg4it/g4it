@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, inject } from "@angular/core";
+import { Component, HostListener, inject } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -23,6 +23,7 @@ import { GlobalStoreService } from "./core/store/global.store";
 export class AppComponent {
     ngUnsubscribe = new Subject<void>();
     selectedLang: string = this.translate.currentLang;
+    isZoomedIn = false;
     private readonly matomoScriptService = inject(MatomoScriptService);
     constructor(
         private userService: UserDataService,
@@ -52,6 +53,7 @@ export class AppComponent {
         this.globalStoreService.setcriteriaList(
             this.translate.translations[this.selectedLang]["criteria"],
         );
+        this.checkZoom();
         this.router.events
             .pipe(
                 filter((event) => event instanceof NavigationEnd),
@@ -74,5 +76,17 @@ export class AppComponent {
         if (matomoTagManagerUrl !== "") {
             this.matomoScriptService.appendScriptToHead(matomoTagManagerUrl);
         }
+    }
+
+    @HostListener("window:resize", [])
+    onResize() {
+        this.checkZoom();
+    }
+
+    checkZoom() {
+        const zoomLevel = Math.round((window.devicePixelRatio * 100 * 4) / 5);
+        this.isZoomedIn = zoomLevel > 150;
+        this.globalStoreService.setZoomLevel(zoomLevel);
+        this.globalStoreService.setIsMobile(window.innerWidth < 992);
     }
 }

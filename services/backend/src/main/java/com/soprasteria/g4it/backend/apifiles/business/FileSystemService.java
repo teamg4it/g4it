@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
 import jakarta.annotation.PostConstruct;
@@ -81,6 +82,7 @@ public class FileSystemService {
     @PostConstruct
     public void initFolder() throws IOException {
         Files.createDirectories(Path.of(localWorkingFolder, "input", "inventory"));
+        Files.createDirectories(Path.of(localWorkingFolder, "input", "digital-service"));
     }
 
     /**
@@ -111,10 +113,17 @@ public class FileSystemService {
      * @return the list of files
      */
     @Cacheable("listTemplatesFiles")
-    public List<FileDescriptionRest> listTemplatesFiles() throws IOException {
-        return fileDescriptionRestMapper.toDto(
+    public List<FileDescriptionRest> listTemplatesFiles(String module) throws IOException {
+
+      if(FileFolder.DS_TEMPLATE.getFolderName().equals(module)){
+      return fileDescriptionRestMapper.toDto(
+            fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
+                    .listFiles(FileFolder.DS_TEMPLATE)
+       );
+      }
+       else return fileDescriptionRestMapper.toDto(
                 fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
-                        .listFiles(FileFolder.TEMPLATE)
+                        .listFiles(FileFolder.IS_TEMPLATE)
         );
     }
 
@@ -141,7 +150,7 @@ public class FileSystemService {
      * @return the fileName list uploaded
      */
     public List<String> manageFilesAndRename(final String subscriber, final Long organizationId,
-                                             final List<MultipartFile> files, final List<String> filenames) {
+                                             final List<MultipartFile> files, final List<String> filenames, Boolean isInventory) {
         if (files == null) return List.of();
         checkFiles(files);
         FileStorage fileStorage = fetchStorage(subscriber, organizationId.toString());
@@ -149,7 +158,7 @@ public class FileSystemService {
         final List<String> result = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
-            result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i)));
+            result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i), isInventory));
         }
 
         return result;
@@ -200,11 +209,41 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) {
-        final Path tempPath = Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString());
+    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
+        final Path tempPath = Boolean.TRUE.equals(isInventory) ? Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString())
+                : Path.of(localWorkingFolder, "input", "digital-service", UUID.randomUUID().toString());
+        File outputFile = tempPath.toFile();
+
+        // Detect file type by extension
+        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+        boolean isBinary = extension.equalsIgnoreCase("xlsx") || extension.equalsIgnoreCase("ods");
+
         try {
-            Files.copy(file.getInputStream(), tempPath);
-            InputStream tmpInputStream = new FileInputStream(tempPath.toFile());
+            if (isBinary) {
+                // Direct binary copy for Excel/ODS files
+                try (InputStream in = file.getInputStream(); OutputStream out = new FileOutputStream(outputFile)) {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                }
+            } else {
+                // if the encoding was not utf8 for plain text,
+                // we open the file again with an encoding adapted to ANSI
+
+                BufferedReader br = getBufferedReader(file);
+                try (Writer out = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        out.append(line).append("\n");
+                    }
+                }
+            }
+
+            InputStream tmpInputStream = new FileInputStream(outputFile);
             var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
             var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
             tmpInputStream.close();

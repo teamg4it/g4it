@@ -70,11 +70,21 @@ export abstract class Constants {
         referential: "referential",
         users: "users",
         subscribers: "administrator/subscribers",
+        subscriberbyid: "administrator/subscriber",
         organizations: "administrator/organizations",
+        ecomindaiModelConfig: "ecomindai/aiModelConfig/type",
         actions: "administrator-actions",
         version: "version",
         businessHours: "business-hours",
         templateFiles: "template-files",
+        workspace: "workspace",
+        downloadReject: "download-reject",
+        task: "task",
+    };
+
+    static readonly TEMPLATE_PARAMS = {
+        IS_MODULE: "is_template",
+        DS_MODULE: "ds_template",
     };
 
     static readonly ERRORS: any = {
@@ -208,4 +218,13 @@ export abstract class Constants {
     ];
 
     static readonly TOTAL_VISIBLE_GRAPH_ITEMS = 10;
+    static readonly USEFUL_INFORMATION = "useful-information";
+    static readonly DECLARATIONS = "declarations";
+    static readonly WELCOME_PAGE = "welcome-page";
+
+    static readonly VALID_PAGES = [
+        this.USEFUL_INFORMATION,
+        this.DECLARATIONS,
+        this.WELCOME_PAGE,
+    ];
 }

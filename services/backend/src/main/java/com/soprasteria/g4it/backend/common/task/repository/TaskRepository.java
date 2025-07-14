@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.common.task.repository;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.transaction.Transactional;
@@ -30,10 +31,24 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByStatusAndType(final String status, final String type);
 
     List<Task> findByInventoryAndType(final Inventory inventory, final String type);
-
+    List<Task> findByDigitalServiceAndType(final DigitalService digitalService, final String type);
     List<Task> findByInventoryAndStatusAndType(final Inventory inventory, final String status, final String type);
+    List<Task> findByDigitalServiceAndStatusAndType(final DigitalService digitalService, final String status, final String type);
 
-    Optional<Task> findByDigitalServiceUid(final String digitalServiceUid);
+    Optional<Task> findByDigitalService(final DigitalService digitalService);
+
+    /**
+     * Find by digitalService
+     *
+     * @param digitalService the digitalService
+     * @return task linked to digital service
+     */
+    @Query("""
+            SELECT t FROM Task t
+            WHERE t.digitalService = :digitalService AND type = 'EVALUATING_DIGITAL_SERVICE'
+            ORDER BY creationDate DESC LIMIT 1
+            """)
+    Optional<Task> findByDigitalServiceAndLastCreationDate(@Param("digitalService") final DigitalService digitalService);
 
     /**
      * Find by inventory id

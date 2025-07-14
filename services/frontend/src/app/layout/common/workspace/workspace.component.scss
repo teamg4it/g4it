@@ -1,0 +1,105 @@
+.app-workspace {
+    display: flex;
+    height: 100vh;
+
+    .cancel-creation {
+        flex: 1 0 auto;
+    }
+
+    .space-sidebar-close {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 0.5rem;
+    }
+
+    .space-sidebar-close-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        color: rgba(0, 0, 0, 0.6);
+        border: 0 none;
+        background: transparent;
+        border-radius: 50%;
+        transition:
+            background-color 0.2s,
+            color 0.2s,
+            box-shadow 0.2s;
+        align-items: center;
+    }
+
+    .space-sidebar-close-button:enabled:hover {
+        border-color: transparent;
+        background: rgba(0, 0, 0, 0.04);
+    }
+
+    .space-menu {
+        background-color: #e0e0e0;
+        margin: 0;
+        border-radius: 8px 0px 0px 8px;
+        min-width: 30%;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .space-menu-item {
+        padding: 1.5rem;
+        cursor: default;
+
+        &:not(.disabled) {
+            cursor: pointer;
+        }
+
+        &.active {
+            background-color: var(--light-green-color);
+            color: var(--light-grey-color);
+        }
+
+        .space-menu-title {
+            font-weight: 400;
+            font-size: 22px;
+        }
+    }
+
+    .space-menu-item:not(.active) {
+        .space-menu-sub-title,
+        .space-menu-description {
+            color: #737673;
+        }
+
+        .space-menu-description.completed {
+            color: #086308;
+            font-weight: 700;
+        }
+    }
+
+    .space-menu-description i.pi {
+        left: 2.4px;
+        top: 2.4px;
+        position: relative;
+    }
+
+    .space-form {
+        padding: 1.5rem;
+        position: relative;
+        flex: 1 1 auto;
+    }
+
+    .space-form--input:not(.active) {
+        display: none;
+    }
+
+    .space-form--input.active,
+    .help-text {
+        display: block;
+    }
+
+    .space-form--button-group {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        min-width: 100%;
+        gap: 8px;
+        padding: 0 1.5rem 1.5rem;
+    }
+}

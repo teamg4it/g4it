@@ -55,6 +55,22 @@
             [showClear]="true"
             id="module-ds-dropdown"
         ></p-dropdown>
+        @if (isEcoMindModuleEnabled && userDetailEcoMind) {
+            <br />
+            <br />
+            <label>{{ "administration.user.ecomind-module" | translate }}</label>
+            <p-dropdown
+                appendTo="body"
+                [style]="{ width: '100%' }"
+                [(ngModel)]="ecomindModule"
+                [options]="ecomindModuleValues"
+                optionLabel="value"
+                placeholder="{{ 'administration.user.ecomind-module' | translate }}"
+                [disabled]="isAdmin"
+                [showClear]="true"
+                id="module-ecomind-dropdown"
+            ></p-dropdown>
+        }
     </div>
     <br />
     <div>
@@ -106,6 +122,7 @@
             [disabled]="!adminModule"
             type="submit"
             (click)="addUpdateOrg()"
+            id="update-button"
         >
             <span>{{ "common.save" | translate }}</span>
         </p-button>

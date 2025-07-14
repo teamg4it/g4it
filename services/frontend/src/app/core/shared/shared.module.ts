@@ -21,8 +21,10 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DialogModule } from "primeng/dialog";
 import { DropdownModule } from "primeng/dropdown";
 import { EditorModule } from "primeng/editor";
+import { FocusTrapModule } from "primeng/focustrap";
 import { InputTextModule } from "primeng/inputtext";
 import { OverlayModule } from "primeng/overlay";
+import { PaginatorModule } from "primeng/paginator";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SidebarModule } from "primeng/sidebar";
@@ -33,12 +35,12 @@ import { ToastModule } from "primeng/toast";
 import { TooltipModule } from "primeng/tooltip";
 import { CommonEditorComponent } from "src/app/layout/common/common-editor/common-editor.component";
 import { CriteriaPopupComponent } from "src/app/layout/common/criteria-popup/criteria-popup.component";
+import { FormNavComponent } from "src/app/layout/common/form-nav/form-nav.component";
 import { InformationCardComponent } from "src/app/layout/common/information-card/information-card.component";
 import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
 import { StackBarChartComponent } from "src/app/layout/common/stack-bar-chart/stack-bar-chart.component";
 import { StatsComponent } from "src/app/layout/common/stats/stats.component";
-import { CompaniesMenuComponent } from "src/app/layout/header/companies-menu/companies-menu.component";
-import { HeaderComponent } from "src/app/layout/header/header.component";
+import { WorkspaceComponent } from "src/app/layout/common/workspace/workspace.component";
 import { DatavizFilterComponent } from "src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component";
 import { InventoriesHeaderFootprintComponent } from "src/app/layout/inventories-footprint/header/inventories-header-footprint.component";
 import { AutofocusDirective } from "../directives/auto-focus.directive";
@@ -56,14 +58,14 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         InformationCardComponent,
         InventoriesHeaderFootprintComponent,
         DatavizFilterComponent,
-        CompaniesMenuComponent,
         CommonEditorComponent,
-        HeaderComponent,
         BusinessHoursRendererPipe,
         StatsComponent,
         CriteriaPopupComponent,
         AutofocusDirective,
         StackBarChartComponent,
+        WorkspaceComponent,
+        FormNavComponent,
     ],
     imports: [
         CommonModule,
@@ -86,6 +88,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DropdownModule,
         ConfirmDialogModule,
         TabMenuModule,
+        PaginatorModule,
         AccordionModule,
         InputTextModule,
         ClipboardModule,
@@ -93,6 +96,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
             echarts: () => import("echarts"),
         }),
         DialogModule,
+        FocusTrapModule,
     ],
     exports: [
         TooltipModule,
@@ -105,13 +109,13 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         TranslateModule,
         ToastModule,
         InformationCardComponent,
-        CompaniesMenuComponent,
         CardModule,
         ScrollPanelModule,
         InventoriesHeaderFootprintComponent,
         ConfirmPopupModule,
         ButtonModule,
         DatavizFilterComponent,
+        PaginatorModule,
         CheckboxModule,
         TabViewModule,
         OverlayModule,
@@ -122,7 +126,6 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DropdownModule,
         ConfirmDialogModule,
         TableModule,
-        HeaderComponent,
         TabMenuModule,
         AccordionModule,
         BusinessHoursRendererPipe,
@@ -132,6 +135,8 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         CriteriaPopupComponent,
         AutofocusDirective,
         StackBarChartComponent,
+        WorkspaceComponent,
+        FormNavComponent,
     ],
     providers: [DecimalsPipe, IntegerPipe],
 })

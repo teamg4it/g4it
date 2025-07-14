@@ -6,7 +6,7 @@
     <module name="backend" />
     <option name="VM_PARAMETERS" value="-Xmx256m -Xms256m" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../services/backend" />
-    <extension name="coverage">
+    <extension name="coverage" runner="jacoco">
       <pattern>
         <option name="PATTERN" value="com.soprasteria.g4it.backend.*" />
         <option name="ENABLED" value="true" />

@@ -9,6 +9,7 @@ package com.soprasteria.g4it.backend.apidigitalservice.model;
 
 import com.soprasteria.g4it.backend.apiuser.model.UserInfoBO;
 import com.soprasteria.g4it.backend.common.model.NoteBO;
+import com.soprasteria.g4it.backend.common.task.model.TaskBO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,16 +43,6 @@ public class DigitalServiceBO {
     private String userName;
 
     /**
-     * Creator's info of the digital service.
-     */
-    private UserInfoBO creator;
-
-    /**
-     * Users' info having access to the digital service.
-     */
-    private List<UserInfoBO> members;
-
-    /**
      * The Criterias key.
      */
     private List<String> criteria;
@@ -78,5 +69,16 @@ public class DigitalServiceBO {
      * Note
      */
     private NoteBO note;
+
+    /**
+     * tasks
+     */
+
+    private List<TaskBO> tasks;
+
+    /**
+     * isAi
+     */
+    private Boolean isAi;
 
 }

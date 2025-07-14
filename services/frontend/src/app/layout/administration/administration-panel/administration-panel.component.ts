@@ -6,7 +6,6 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -17,11 +16,9 @@ import { UserService } from "src/app/core/service/business/user.service";
 })
 export class AdministrationPanelComponent {
     tabMenuList!: MenuItem[];
-
     constructor(
         public userService: UserService,
-        public router: Router,
-        private translate: TranslateService,
+        private readonly translate: TranslateService,
     ) {}
 
     ngOnInit() {
@@ -38,7 +35,7 @@ export class AdministrationPanelComponent {
 
             if (this.userService.hasAnySubscriberAdminRole(user)) {
                 this.tabMenuList.push({
-                    label: this.translate.instant("administration.manage-organizations"),
+                    label: this.translate.instant("administration.manage-workspaces"),
                     routerLink: "organizations",
                     id: "organizations-tab",
                 });

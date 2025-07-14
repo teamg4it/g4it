@@ -18,7 +18,8 @@
             membersAndSearchVisible = true;
             getUsersDetails();
             clearSearchField();
-            checkForValidation()
+            checkForValidation();
+            getSelectedSubscriber()
         "
         inputId="organizationName"
         [ariaLabel]="'administration.user.select-org' | translate"
@@ -97,6 +98,7 @@
             [sortOrder]="1"
             [rowsPerPageOptions]="[5, 10, 20, 50, 100]"
             styleClass="mt-3 mr-3"
+            [(first)]="firstPage"
         >
             <ng-template pTemplate="caption">
                 <div class="table-header">
@@ -139,6 +141,14 @@
                     <th scope="col" class="text-center">
                         {{ "administration.user.ds-module" | translate }}
                     </th>
+                    @if (
+                        isEcoMindModuleEnabled &&
+                        isEcoMindEnabledForCurrentSubscriberSelected
+                    ) {
+                        <th scope="col" class="text-center">
+                            {{ "administration.user.ecomind-module" | translate }}
+                        </th>
+                    }
                     <th scope="col" class="text-center">
                         {{ "administration.user.role" | translate }}
                     </th>
@@ -155,13 +165,25 @@
                     <td>{{ user.email }}</td>
                     <td class="text-center">{{ user?.isModule | translate }}</td>
                     <td class="text-center">{{ user?.dsModule | translate }}</td>
+                    @if (
+                        isEcoMindModuleEnabled &&
+                        isEcoMindEnabledForCurrentSubscriberSelected
+                    ) {
+                        <td class="text-center">{{ user?.ecomindModule | translate }}</td>
+                    }
                     <td class="text-center">{{ user?.role | translate }}</td>
                     <td class="text-center">
                         <div *ngIf="!user.isSubscriberAdmin">
                             <p-button
                                 *ngIf="user.roles.length > 0"
                                 styleClass="p-button-text bg-white p-0 m-0"
-                                (click)="openSidepanelForAddORUpdateOrg(user)"
+                                (click)="
+                                    openSidepanelForAddORUpdateOrg(
+                                        user,
+                                        isEcoMindEnabledForCurrentSubscriberSelected
+                                    )
+                                "
+                                id="edit-button"
                             >
                                 <img
                                     src="assets/images/icons/icon-edit.svg"
@@ -191,7 +213,12 @@
                             </p-button>
                             <i
                                 *ngIf="user.roles.length === 0"
-                                (click)="openSidepanelForAddORUpdateOrg(user)"
+                                (click)="
+                                    openSidepanelForAddORUpdateOrg(
+                                        user,
+                                        isEcoMindEnabledForCurrentSubscriberSelected
+                                    )
+                                "
                                 class="pi pi-plus bg-tertiary text-white p-2 border-round cursor-pointer"
                                 id="actions-button"
                             ></i>
@@ -212,6 +239,7 @@
         >
             <app-add-organization
                 #addOrganisationPanel
+                [userDetailEcoMind]="userDetailEcoMind"
                 [userDetail]="userDetail"
                 (close)="searchList(); sidebarVisible = false"
                 [organization]="organization"

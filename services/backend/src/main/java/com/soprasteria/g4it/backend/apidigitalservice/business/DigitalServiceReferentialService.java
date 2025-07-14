@@ -9,12 +9,15 @@ package com.soprasteria.g4it.backend.apidigitalservice.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.NetworkTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.ServerHostBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.EcomindTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DeviceTypeRefRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.EcomindTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.NetworkTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.ServerHostRefRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
@@ -51,6 +54,12 @@ public class DigitalServiceReferentialService {
     private ServerHostRefRepository serverHostRefRepository;
 
     /**
+     * Ecomind type referential repository.
+     */
+    @Autowired
+    private EcomindTypeRefRepository ecomindTypeRefRepository;
+
+    /**
      * Referential Mapper.
      */
     @Autowired
@@ -76,6 +85,25 @@ public class DigitalServiceReferentialService {
      */
     public List<DeviceTypeBO> getTerminalDeviceType() {
         return digitalServiceReferentialMapper.toDeviceTypeBusinessObject(deviceTypeRefRepository.findAll());
+    }
+
+    /**
+     * Get all Ecomind type referential data.
+     *
+     * @return the list of ecomind type (business object).
+     */
+    public List<EcomindTypeBO> getEcomindDeviceType() {
+        return digitalServiceReferentialMapper.toEcomindTypeBusinessObject(ecomindTypeRefRepository.findAll());
+    }
+
+    /**
+     * Get Ecomind type by reference.
+     *
+     * @param reference the searched reference
+     * @return the referential data or else throw runtime exception.
+     */
+    public EcomindTypeRef getEcomindDeviceType(final String reference) {
+        return ecomindTypeRefRepository.findByReference(reference).orElseThrow(() -> new InvalidReferentialException("Ecomind type code not found"));
     }
 
     /**

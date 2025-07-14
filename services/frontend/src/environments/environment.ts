@@ -11,14 +11,24 @@
 
 export const environment = {
     production: false,
-    securedEndpoints: ["inventories", "digital-services", "template-files"],
+    isEcomindEnabled: true,
+    securedEndpoints: [
+        "inventories",
+        "digital-services",
+        "eco-mind-ai",
+        "template-files",
+        "download-reject",
+        "task",
+    ],
     apiBaseUrl: "http://localhost:8080",
     keycloak: {
         issuer: "http://localhost:8180/auth",
         realm: "g4it",
         clientId: "g4it",
-        enabled: "false",
+        enabled: "true",
     },
+    subpath: "",
+    subpathfront: "/",
     frontEndUrl: "http://localhost:4200",
     showBetaFeatures: "true",
     matomo: {

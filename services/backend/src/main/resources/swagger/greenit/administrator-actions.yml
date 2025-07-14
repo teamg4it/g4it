@@ -9,19 +9,20 @@ tags:
     description: Endpoint for subscriber administration actions
 
 paths:
-  /administrator-actions/evaluate-all-ds-data:
+  /administrator-actions/do-admin-actions:
     post:
       tags:
         - administrator-actions
-      summary: Evaluate all the digital services
-      operationId: evaluateDigitalService
+      summary: do admin actions
+      operationId: doAdminActions
       x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
       responses:
         '200':
           description: response status
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                $ref: "#/components/schemas/AllEvaluationStatusRest"
           '500':
             $ref: "#/components/responses/InternalServerError"
+

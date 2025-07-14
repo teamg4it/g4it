@@ -1,0 +1,404 @@
+<div class="flex flex-row align-items-stretch w-screen h-full">
+    @if (!isZoomedIn()) {
+        <div class="flex align-items-center justify-content-center ml-8 pl-5"></div>
+    } @else {
+        <div class="flex align-items-center justify-content-center ml-4 pl-4"></div>
+    }
+    @if (!isZoomedIn()) {
+        <div class="hidden md:flex align-items-center justify-content-center top-header">
+            <span class="flex white-g4">G4</span><span class="green-it">IT</span>
+        </div>
+    } @else if (isMobile()) {
+        <div class="flex align-items-center justify-content-center top-header">
+            <span class="flex white-g4">G4</span><span class="green-it">IT</span>
+        </div>
+    }
+
+    <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
+    @if (!isMobile()) {
+        <div class="flex align-items-center">
+            <!-- About Us Menu -->
+            <p-menu
+                #aboutmenu
+                [model]="items"
+                [popup]="true"
+                (onShow)="isAboutMenuOpen = true"
+                (onHide)="isAboutMenuOpen = false"
+            >
+                <ng-template pTemplate="submenuheader" let-item>
+                    @if (item.label) {
+                        <span
+                            class="help-center-color pl-2 flex align-items-center"
+                            [ngClass]="
+                                isZoomedIn() ? 'text-xl p-0 mt-1' : 'text-2xl mt-3'
+                            "
+                        >
+                            {{ item.label | translate }}</span
+                        >
+                    }
+                </ng-template>
+                <ng-template pTemplate="item" let-item>
+                    @if (!item.outsideLink) {
+                        <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
+                            <a
+                                class="pl-0 flex align-items-center p-menuitem-link"
+                                [ngClass]="isZoomedIn() ? 'text-lg py-1' : 'text-2xl'"
+                            >
+                                <span
+                                    ><u>{{ item.label | translate }}</u></span
+                                >
+                                <span class="pi pi-arrow-right ml-auto"></span>
+                            </a>
+                            @if (item?.ecoHeading) {
+                                <div>
+                                    <span
+                                        class="text-black"
+                                        [ngClass]="isZoomedIn() ? 'text-sm' : ''"
+                                        >{{ item.ecoHeading | translate }} :
+                                        {{ ecoDesignPercent }}%</span
+                                    >
+                                </div>
+                            }
+                            <div>
+                                <span
+                                    class="text-black"
+                                    [ngClass]="isZoomedIn() ? 'text-sm' : ''"
+                                    >{{ item.subHeading | translate }}</span
+                                >
+                            </div>
+                        </div>
+                    } @else {
+                        <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
+                            <div
+                                class="border border-left-1"
+                                [ngClass]="item.borderClass"
+                            >
+                                <a
+                                    target="_blank"
+                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link"
+                                    [ngClass]="isZoomedIn() ? 'text-sm' : 'text-base'"
+                                    ><span
+                                        ><u>{{ item.label | translate }}</u></span
+                                    >
+                                    <span class="pi pi-sign-out ml-auto"></span
+                                ></a>
+                            </div>
+                        </div>
+                    }
+                </ng-template>
+            </p-menu>
+            <button
+                type="button"
+                (focus)="isOrgMenuVisible = false; isAccountMenuVisible = false"
+                class="flex align-items-center p-menuitem-link text-xl border-none text-white aboutMenuBtn cursor-pointer"
+                [ngClass]="isAboutMenuOpen ? 'aboutMenuOpen' : ''"
+                (click)="aboutmenu.toggle($event); isAboutMenuOpen = !isAboutMenuOpen"
+            >
+                <span class="ml-2">{{ "common.about" | translate }}</span>
+                <span class="pi pi-chevron-down ml-3"></span>
+            </button>
+        </div>
+        <div
+            class="org-menu-new-btn flex align-items-center"
+            [ngClass]="isZoomedIn() ? 'ml-2' : 'ml-7'"
+        >
+            <button
+                (focus)="isAboutMenuOpen = false; isAccountMenuVisible = false"
+                type="button"
+                class="flex align-items-center p-menuitem-link text-xl border-none text-white orgNameMenuBtn cursor-pointer"
+                [ngClass]="isOrgMenuVisible ? 'orgMenuOpen' : ''"
+                (click)="toggleOrgMenu(); isAboutMenuOpen = false"
+            >
+                <span class="ml-2">
+                    {{
+                        selectedOrganization &&
+                        selectedOrganization.name &&
+                        selectedOrganization.name.length > maxLength
+                            ? selectedOrganization.name.slice(0, maxLength) + "..."
+                            : selectedOrganization.name
+                    }}
+
+                    @if (!isZoomedIn()) {
+                        ({{ currentSubscriber.name }})
+                    }
+                </span>
+                <span class="pi pi-chevron-down ml-3"></span>
+            </button>
+        </div>
+    }
+    <!-- Organization Menu -->
+    @if (isOrgMenuVisible) {
+        <div
+            class="org-menu-new p-4 pr-3 bg-white shadow-5 border-round-xs"
+            [ngClass]="{ block: isOrgMenuVisible, 'max-h-15rem': isZoomedIn() }"
+        >
+            <span class="text-2xl">{{ "common.workspaces" | translate }}</span>
+
+            <div
+                [ngClass]="{
+                    'max-h-7rem': isZoomedIn(),
+                    'max-h-13rem': !isZoomedIn(),
+                    'my-2': isZoomedIn(),
+                    'my-3': !isZoomedIn(),
+                }"
+                class="flex flex-column gap-2 overflow-y-auto"
+                role="radiogroup"
+                (keydown)="handleKeydown($event)"
+                tabindex="0"
+                #radioGroupContainer
+            >
+                <div
+                    *ngFor="let organization of organizations; let i = index"
+                    class="field-radiobutton"
+                    [attr.data-index]="i"
+                    #radioItem
+                    [attr.data-id]="organization.id"
+                >
+                    <p-radioButton
+                        [inputId]="'org-' + organization.id"
+                        name="group1"
+                        [value]="organization.id.toString()"
+                        [(ngModel)]="modelOrganization"
+                        (onClick)="selectCompany(organization)"
+                        [attr.aria-labelledby]="'org-' + organization.id"
+                    ></p-radioButton>
+
+                    <label
+                        [for]="'org-' + organization.id"
+                        [id]="'org-' + organization.id"
+                        class="ml-2"
+                        [attr.aria-label]="
+                            ('common.workspace-name' | translate) +
+                            ' ' +
+                            organization.organization!.name
+                        "
+                    >
+                        {{ "common.workspace-name" | translate }}
+                        {{ organization.organization!.name }} ({{
+                            organization.subscriber!.name
+                        }})
+                    </label>
+                </div>
+            </div>
+            <p-button
+                (onClick)="openWorkspaceSidebar(); isOrgMenuVisible = false"
+                icon="pi pi-plus-circle"
+                styleClass="uppercase bg-light-green text-white"
+                iconPos="right"
+                [label]="'common.workspace.create' | translate | uppercase"
+                [ariaLabel]="'common.workspace.create' | translate"
+            ></p-button>
+        </div>
+    }
+
+    <div class="account-menu-btn flex align-items-center gap-2 ml-4">
+        <p-button
+            [ariaLabel]="'common.settings' | translate"
+            [label]="initials"
+            role="menuitem"
+            (onClick)="isAccountMenuVisible = !isAccountMenuVisible"
+            (onFocus)="isOrgMenuVisible = false"
+            styleClass="border-circle text-md p-0 w-2-5rem h-2-5rem name-circle"
+        >
+        </p-button>
+    </div>
+    @if (isMobile()) {
+        <div class="flex align-items-center gap-2 ml-2 mobile-menu">
+            <button class="mini-menu-icon" (click)="showDialog()"></button>
+            <p-dialog
+                [modal]="true"
+                [(visible)]="dialogVisible"
+                [style]="{
+                    width: '100%',
+                    maxHeight: '100vh',
+                    position: 'fixed',
+                    top: '0',
+                    bottom: '0',
+                    backgroundColor: 'black',
+                }"
+            >
+                <ng-template pTemplate="headless">
+                    <!-- dialog close button -->
+                    <p-button
+                        (onClick)="dialogVisible = false"
+                        [link]="true"
+                        [rounded]="true"
+                        ariaLabel="Outlined Close Button"
+                        icon="pi pi-times"
+                        class="dialog-close"
+                        styleClass="dialog-close-button text-white"
+                    ></p-button>
+
+                    <!-- Organization dropdown -->
+                    <div
+                        class="org-menu-new-btn flex align-items-center mobile-top-header-menu mt-5"
+                        [ngClass]="isZoomedIn() ? 'ml-2' : 'ml-7'"
+                    >
+                        <button
+                            (focus)="
+                                isAboutMenuOpen = false; isAccountMenuVisible = false
+                            "
+                            type="button"
+                            class="flex align-items-center p-menuitem-link text-xl border-none text-white orgNameMenuBtn cursor-pointer"
+                            [ngClass]="isOrgMenuVisible ? 'orgMenuOpen' : ''"
+                            (click)="toggleOrgMenu(); isAboutMenuOpen = false"
+                        >
+                            <span class="ml-2">
+                                {{
+                                    selectedOrganization &&
+                                    selectedOrganization.name &&
+                                    selectedOrganization.name.length > maxLength
+                                        ? selectedOrganization.name.slice(0, maxLength) +
+                                          "..."
+                                        : selectedOrganization.name
+                                }}
+                                ({{ currentSubscriber.name }})
+                            </span>
+                            <span
+                                class="flex-grow-1 flex align-items-center justify-content-center"
+                            ></span>
+                            <span class="pi pi-chevron-down mr-1"></span>
+                        </button>
+                    </div>
+
+                    <!-- About us & Help center -->
+                    <p-menu
+                        [model]="mobileMenuItems"
+                        [styleClass]="'mobile-top-header-menu'"
+                    >
+                        <ng-template pTemplate="submenuheader" let-item>
+                            @if (item.label) {
+                                <span
+                                    class="pl-2 flex align-items-center"
+                                    [ngClass]="
+                                        isZoomedIn()
+                                            ? 'text-xl p-0 mt-1'
+                                            : 'text-2xl mt-3'
+                                    "
+                                >
+                                    {{ item.label | translate }}</span
+                                >
+                            }
+                        </ng-template>
+                        <ng-template pTemplate="item" let-item>
+                            <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
+                                <a
+                                    target="_blank"
+                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link"
+                                    [ngClass]="isZoomedIn() ? 'text-sm' : 'text-base'"
+                                    ><span
+                                        ><u>{{ item.label | translate }}</u></span
+                                    >
+                                    @if (item.outsideLink) {
+                                        <span class="pi pi-sign-out ml-auto"></span>
+                                    } @else {
+                                        <span class="pi pi-arrow-right ml-auto"></span>
+                                    }
+                                </a>
+                            </div>
+                        </ng-template>
+                    </p-menu>
+                </ng-template>
+            </p-dialog>
+        </div>
+        <div class="mr-3"></div>
+    } @else {
+        <div class="mr-6"></div>
+    }
+</div>
+
+<!-- Account Settings Menu -->
+@if (isAccountMenuVisible) {
+    <div
+        class="account-menu p-4 bg-white shadow-5 border-round-xs overflow-y-auto"
+        [ngClass]="{ block: isAccountMenuVisible }"
+    >
+        <span class="text-2xl">{{ "common.account-settings" | translate }} </span>
+        <div class="my-5">
+            <div class="flex">
+                <p-button
+                    [ariaLabel]="'common.settings' | translate"
+                    [label]="initials"
+                    tabindex="-1"
+                    styleClass="cursor-auto border-circle text-md p-0 w-2-5rem h-2-5rem name-circle"
+                >
+                </p-button>
+                <div class="flex flex-column ml-2">
+                    @if (
+                        (userDetails && userDetails.firstName) ||
+                        (userDetails && userDetails.lastName)
+                    ) {
+                        <div>
+                            {{ userDetails.firstName + " " + userDetails.lastName }}
+                        </div>
+                    }
+                    @if (userDetails && userDetails.email) {
+                        <div>{{ userDetails.email }}</div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <div id="langTitle" class="text-lg p-1">
+                {{ "common.lang" | translate }}
+            </div>
+            <div role="group" aria-labelledby="langTitle" class="">
+                <ul
+                    aria-labelledby="langTitle"
+                    class="mt-2 mb-3"
+                    (keydown)="handleKeydownLanguage($event)"
+                >
+                    <li class="inline-block">
+                        <p-radioButton
+                            name="language"
+                            value="en"
+                            [(ngModel)]="selectedLanguage"
+                            (onClick)="changeLanguage('en')"
+                            aria-labelledby="enLabel"
+                            inputId="en"
+                        ></p-radioButton>
+                        <label
+                            for="en"
+                            id="enLabel"
+                            class="ml-1"
+                            [attr.aria-label]="'common.english-button' | translate"
+                        >
+                            {{ "common.english" | translate }}
+                        </label>
+                    </li>
+                    <li class="inline-block ml-5">
+                        <p-radioButton
+                            name="language"
+                            value="fr"
+                            [(ngModel)]="selectedLanguage"
+                            (onClick)="changeLanguage('fr')"
+                            aria-labelledby="frLabel"
+                            inputId="fr"
+                        ></p-radioButton>
+                        <label
+                            for="fr"
+                            id="frLabel"
+                            class="ml-1"
+                            [attr.aria-label]="'common.french-button' | translate"
+                        >
+                            {{ "common.french" | translate }}
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <p-button
+                styleClass="text-white bg-light-green"
+                (click)="logout()"
+                [ariaLabel]="'common.logout' | translate"
+                class="mx-1"
+                icon="pi pi-sign-out"
+                [label]="'common.logout' | translate"
+                iconPos="right"
+                (keydown.tab)="isAccountMenuVisible = false"
+            >
+            </p-button>
+        </div>
+    </div>
+}

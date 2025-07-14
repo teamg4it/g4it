@@ -62,6 +62,9 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     @Transactional
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
 
     /**
      * Count distinct datacenter name by inventory id.

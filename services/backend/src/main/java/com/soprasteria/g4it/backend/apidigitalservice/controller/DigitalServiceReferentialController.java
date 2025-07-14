@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceRef
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceReferentialApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DeviceTypeRefRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.EcomindTypeRefRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.NetworkTypeRefRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.ServerHostRefRest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,14 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
     @Override
     public ResponseEntity<List<DeviceTypeRefRest>> getTerminalDeviceTypeRef(final String subscriber, final Long organization) {
         return ResponseEntity.ok(digitalServiceReferentialRestMapper.toDeviceTypeDto(digitalServiceReferentialService.getTerminalDeviceType()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<EcomindTypeRefRest>> getEcomindDeviceTypeRef(final String subscriber, final Long organization) {
+        return ResponseEntity.ok(digitalServiceReferentialRestMapper.toEcomindTypeDto(digitalServiceReferentialService.getEcomindDeviceType()));
     }
 
     /**

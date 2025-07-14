@@ -20,6 +20,23 @@
     </p-sidebar>
 }
 
+@if (importSidebarVisible) {
+    <p-sidebar
+        [(visible)]="importSidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-7"
+        [showCloseIcon]="true"
+        (onHide)="importSidebarVisible = false"
+        ariaCloseLabel="Close"
+    >
+        <ng-template pTemplate="headless">
+            <app-digital-services-import
+                (sidebarVisibleChange)="importSidebarVisible = $event"
+            />
+        </ng-template>
+    </p-sidebar>
+}
+
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
 <div class="flex justify-content-between align-items-center flex-wrap mb-2">
     <div>
@@ -30,8 +47,11 @@
             [ariaLabel]="'digital-services.return' | translate"
             icon="pi pi-arrow-left"
             [label]="
-                'digital-services.title'
-                    | translate: { OrganizationName: organization.organizationName }
+                isEcoMindAi
+                    ? ('eco-mind-ai.title'
+                      | translate: { OrganizationName: organization.organizationName })
+                    : ('digital-services.title'
+                      | translate: { OrganizationName: organization.organizationName })
             "
             id="return-button"
         />
@@ -69,10 +89,11 @@
     </div>
     <div class="mr-3 flex align-items-center">
         <p-button
-            (click)="sidebarVisible = true"
+            (onClick)="sidebarVisible = true"
             styleClass="text-gray-900 header-button ml-1"
             [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
+                !isEcoMindAi &&
                 !digitalService.note &&
                 (userService.isAllowedDigitalServiceWrite$ | async)
             "
@@ -84,81 +105,67 @@
         />
 
         <p-button
-            (click)="sidebarVisible = true"
+            (onClick)="sidebarVisible = true"
             styleClass="text-gray-900 header-button"
             [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            *ngIf="digitalService.note"
+            *ngIf="!isEcoMindAi && digitalService.note"
             [text]="true"
             [plain]="true"
             icon="pi pi-clipboard"
             [label]="'common.note.attached' | translate"
         />
-        @if (digitalService.members && digitalService.members.length) {
+
+        @if (!isEcoMindAi) {
             <p-button
-                class="header-share-count"
-                styleClass="ml-1 "
-                [rounded]="true"
-                (click)="sidebarDsVisible = true"
-                [text]="true"
-                [plain]="true"
-                icon="pi pi-users"
-                [ariaLabel]="'common.accessibility.sharedUsers' | translate"
-                size="large"
+                [ariaLabel]="'common.accessibility.import' | translate"
+                styleClass="bg-black text-white header-button"
+                (onClick)="importData()"
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                icon="pi pi-upload"
+                [label]="'digital-services.import' | translate"
             />
-            <span class="ml-1 mr-4 text-xl">({{ digitalService.members.length }})</span>
         }
-
-        <p-button
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
-            styleClass="bg-black text-white header-button"
-            (click)="copyUrl()"
-            [ariaLabel]="'digital-services.copyLink' | translate"
-            icon="pi pi-link"
-            [label]="'digital-services.copyLink' | translate"
-        />
-
-        <p-button
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && isLinkCopied"
-            styleClass="bg-black text-white header-button"
-            [disabled]="true"
-            class="disabled-text-black"
-            [ariaLabel]="'digital-services.copyLink' | translate"
-            [label]="'digital-services.linkCopied' | translate"
-        />
 
         <p-button
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
-            (click)="exportData()"
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            (onClick)="exportData()"
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi"
+            [disabled]="digitalService.lastCalculationDate === undefined"
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"
         />
 
         <p-button
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            *ngIf="
+                ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
+                ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
+            "
             styleClass="bg-black text-white header-button"
             [disabled]="!enableCalcul()"
             (onClick)="launchCalcul()"
             [label]="'common.calculate' | translate"
             id="calculate"
         />
-        <p-button
-            styleClass="white-button"
-            styleClass="ml-2"
-            [rounded]="true"
-            [text]="true"
-            [raised]="true"
-            [plain]="true"
-            (click)="displayPopupFct()"
-            icon="pi pi-cog"
-            [ariaLabel]="
-                'digital-services.choose-criteria'
-                    | translate: { digitalServiceName: digitalService.name }
-            "
-            id="criteria-button"
-        >
-        </p-button>
+        @if (userService.isAllowedDigitalServiceWrite$ | async) {
+            <p-button
+                styleClass="white-button"
+                styleClass="ml-2"
+                [rounded]="true"
+                [text]="true"
+                [raised]="true"
+                [plain]="true"
+                (onClick)="displayPopupFct()"
+                icon="pi pi-cog"
+                [ariaLabel]="
+                    'digital-services.choose-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
+                id="criteria-button"
+            >
+            </p-button>
+        }
+
         <app-criteria-popup
             [displayPopup]="displayPopup"
             [type]="'ds'"
@@ -169,48 +176,21 @@
             (onSaveDs)="handleSaveDs($event)"
             (onClose)="displayPopup = false"
         ></app-criteria-popup>
-        @if (!isShared) {
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="ml-2"
-                [rounded]="true"
-                [text]="true"
-                [raised]="true"
-                [plain]="true"
-                (click)="confirmDelete($event)"
-                icon="pi pi-trash"
-                size="large"
-                [ariaLabel]="
-                    'digital-services.delete-criteria'
-                        | translate: { digitalServiceName: digitalService.name }
-                "
-                id="delete-service"
-            />
-        } @else {
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="ml-2"
-                [rounded]="true"
-                [text]="true"
-                [raised]="true"
-                [plain]="true"
-                (click)="confirmUnlink($event)"
-                icon="pi pi-eye-slash"
-                size="large"
-                [ariaLabel]="
-                    'digital-services.unlink-digital-service'
-                        | translate: { digitalServiceName: digitalService.name }
-                "
-            />
-        }
+        <p-button
+            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            styleClass="ml-2"
+            [rounded]="true"
+            [text]="true"
+            [raised]="true"
+            [plain]="true"
+            (click)="confirmDelete($event)"
+            icon="pi pi-trash"
+            size="large"
+            [ariaLabel]="
+                'digital-services.delete-criteria'
+                    | translate: { digitalServiceName: digitalService.name }
+            "
+            id="delete-service"
+        />
     </div>
 </div>
-
-@if (digitalService) {
-    <app-side-panel-ds-shared-users
-        [visible]="sidebarDsVisible"
-        [creator]="digitalService.creator"
-        [members]="digitalService.members"
-        (sidenavClose)="sidebarDsVisible = false"
-    ></app-side-panel-ds-shared-users>
-}

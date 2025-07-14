@@ -10,6 +10,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { environment } from "src/environments/environment";
 import { AuthGuard } from "./guard/auth.gard";
 import { ErrorComponent } from "./layout/common/error/error.component";
+import { LandingPageComponent } from "./layout/landing-page/landing-page.component";
 
 const canActivate = [];
 if (environment.keycloak.enabled === "true") canActivate.push(AuthGuard);
@@ -20,17 +21,12 @@ const routes: Routes = [
         component: ErrorComponent,
     },
     {
-        path: "administration",
+        path: "",
+        component: LandingPageComponent,
         loadChildren: () =>
-            import("./layout/administration/administration.module").then(
-                (modules) => modules.AdministrationModule,
-            ),
-        canActivate,
-    },
-    {
-        path: "subscribers/:subscriber/organizations/:organization",
-        loadChildren: () =>
-            import("./layout/layout.module").then((modules) => modules.LayoutModule),
+            import("./layout/landing-page/landing-page.router").then((t) => {
+                return t.appRoutes;
+            }),
         canActivate,
     },
     {

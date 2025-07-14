@@ -33,11 +33,15 @@ public enum FileType {
 
     PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE("PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE"),
 
-    VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE("VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE"),
+    VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE("VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE"),
 
-    VIRTUAL_EQUIPMENT_CLOUD_INSTANCE("VIRTUAL_EQUIPMENT_CLOUD_INSTANCE"),
+    UNKNOWN("UNKNOWN"),
 
-    UNKNOWN("UNKNOWN");
+    OUT_AI_RECO("OUT_AI_RECO"),
+
+    IN_AI_PARAMETERS("IN_AI_PARAMETERS"),
+
+    IN_AI_INFRASTRUCTURE("IN_AI_INFRASTRUCTURE");
 
     private String value;
 
@@ -56,11 +60,14 @@ public enum FileType {
             case "EQUIPEMENT_PHYSIQUE" -> "physical_equipment";
             case "EQUIPEMENT_VIRTUEL", "VIRTUAL_EQUIPMENT" -> "virtual_equipment";
             case "APPLICATION" -> "application";
-            case "PHYSICAL_EQUIPMENT_INDICATOR" -> "ind_physical_equipment";
-            case "VIRTUAL_EQUIPMENT_INDICATOR" -> "ind_virtual_equipment";
+            case "PHYSICAL_EQUIPMENT_INDICATOR", "PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE" ->
+                    "ind_physical_equipment";
+            case "VIRTUAL_EQUIPMENT_INDICATOR", "VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE" ->
+                    "ind_virtual_equipment";
             case "APPLICATION_INDICATOR" -> "ind_application";
-            case "VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE" -> "ind_cloud_instances";
-            case "VIRTUAL_EQUIPMENT_CLOUD_INSTANCE" -> "cloud_instances";
+            case "OUT_AI_RECO" -> "ai_recommendations";
+            case "IN_AI_PARAMETERS" -> "ai_parameters";
+            case "IN_AI_INFRASTRUCTURE" -> "ai_infrastructure";
             default -> this.getValue();
         };
     }

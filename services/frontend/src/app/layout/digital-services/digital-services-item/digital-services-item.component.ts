@@ -3,11 +3,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { firstValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
-import { delay } from "src/app/core/utils/time";
 
 @Component({
     selector: "app-digital-services-item",
@@ -16,6 +14,7 @@ import { delay } from "src/app/core/utils/time";
 })
 export class DigitalServicesItemComponent {
     @Input() digitalService: DigitalService = {} as DigitalService;
+    @Input() isAi: boolean = false;
 
     @Output() noteOpened: EventEmitter<DigitalService> = new EventEmitter();
     @Output() deleteUid: EventEmitter<string> = new EventEmitter();
@@ -23,7 +22,7 @@ export class DigitalServicesItemComponent {
 
     isLinkCopied = false;
     sidebarVisible = false;
-    isShared = false;
+    firstFootprintTab = "terminals";
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -33,29 +32,16 @@ export class DigitalServicesItemComponent {
         private route: ActivatedRoute,
         public userService: UserService,
         private clipboardService: ClipboardService,
-    ) {}
-
-    async ngOnInit(): Promise<void> {
-        const userId = (await firstValueFrom(this.userService.user$)).id;
-        if (this.digitalService.creator?.id !== userId) {
-            this.isShared = true;
-        }
+    ) {
+        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
     }
 
-    async copyUrl() {
-        this.isLinkCopied = true;
-        const url = await firstValueFrom(
-            this.digitalServicesData.copyUrl(this.digitalService.uid),
-        );
-
-        this.clipboardService.copy(url);
-
-        await delay(10000);
-        this.isLinkCopied = false;
+    async ngOnInit(): Promise<void> {
+        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
     }
 
     goToDigitalServiceFootprint(uid: string) {
-        this.router.navigate([`${uid}/footprint/terminals`], {
+        this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
             relativeTo: this.route,
         });
     }

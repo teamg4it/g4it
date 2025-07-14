@@ -9,7 +9,7 @@ mermaid: true
 
 | API                                                                                                    | Swagger                                                                                                       | Use Cases                                                                                                  |
 |:-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
-| POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
+| POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
 
 ## Description
 
@@ -49,11 +49,12 @@ The asynchronous loading process follows these steps:
 
 flowchart LR
 A[Download files] --> B(Transform files into CSV)
-B --> C[Load files in metadata checking tables, then wait for complete loading]
-C --> D[Check coherence errors]
-D --> E[Bulk parse files]
-E --> F[Handle rejected files]
-F --> G[Update task status]
+B--> C[Check for missing mandatory headers]
+C --> D[Load files in metadata checking tables, then wait for complete loading]
+D --> E[Check coherence errors]
+E --> F[Bulk parse files]
+F --> G[Handle rejected files]
+G --> H[Update task status]
 
 {{</ mermaid >}}
 
@@ -61,6 +62,9 @@ This process is done in
 the [AsyncLoadFilesService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiloadinputfiles/business/asyncloadservice/AsyncLoadFilesService.java).
 
 ### Checking process
+
+Before any checking process starts, a check for missing mandatory headers is done. In case there is any mandatory field
+mising for any of the uploaded files, the task fails with status 'FAILED' and no further processing is done.
 
 The main purpose of the checking process is to check the global coherence of the files to be loaded between each other
 and
@@ -173,7 +177,8 @@ stateDiagram-v2
 [] --> TO_START: creation of the loading task
 TO_START --> IN_PROGRESS: Launching of the asynchronous loading process
 IN_PROGRESS --> COMPLETED: Loading process is completed without error
-IN_PROGRESS --> COMPLETED_WITH_ERRORS : Loading process is completed with some loading errors (there is rejected lines in the rejected files)
+IN_PROGRESS --> COMPLETED_WITH_ERRORS : Loading process is completed with some loading errors (there is rejected lines
+in the rejected files)
 IN_PROGRESS --> FAILED : Blocking error during the loading process (details of the error persisted in the task)
 IN_PROGRESS --> TO_START : Retry of the stuck loading process
 {{</ mermaid >}}

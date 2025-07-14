@@ -1,0 +1,168 @@
+<div pFocusTrap class="app-workspace">
+    <app-form-nav
+        [spaceDetails]="spaceDetails"
+        [spaceForm]="spaceForm"
+        (tabSelected)="selectTab($event)"
+    ></app-form-nav>
+    @if (spaceDetails && spaceDetails["form"]) {
+        <div class="space-form">
+            <h2>{{ "common.workspace.create" | translate }}</h2>
+            <p-button
+                (onClick)="closeSidebar()"
+                [link]="true"
+                [rounded]="true"
+                ariaLabel="Outlined Close Button"
+                icon="pi pi-times"
+                class="space-sidebar-close"
+                styleClass="space-sidebar-close-button text-black-alpha-60"
+            ></p-button>
+            <p class="mb-3">
+                {{ "common.workspace.form-description" | translate }}
+            </p>
+            <hr />
+            <form [formGroup]="spaceForm" class="mt-3">
+                @for (
+                    spaceDetail of spaceDetails["form"];
+                    track $index;
+                    let menuIndex = $index;
+                    let lastIndex = $last
+                ) {
+                    <div
+                        class="space-form--input"
+                        [ngClass]="{
+                            active: selectedMenuIndex === menuIndex,
+                        }"
+                    >
+                        <label [for]="spaceDetail['name'] + '-' + menuIndex">{{
+                            spaceDetail["label"]
+                        }}</label>
+                        <small
+                            [id]="spaceDetail['name'] + '-' + menuIndex + '-help'"
+                            class="help-text mt-2"
+                            >{{ spaceDetail["hintText"] }}</small
+                        >
+                        @if (spaceDetail["type"] === "text") {
+                            <input
+                                pInputText
+                                [id]="spaceDetail['name'] + '-' + menuIndex"
+                                [attr.aria-describedby]="
+                                    spaceDetail['name'] + '-' + menuIndex + '-help'
+                                "
+                                [placeholder]="spaceDetail['placeholder']"
+                                [formControlName]="spaceDetail['name']"
+                                class="mt-2"
+                                autofocus="true"
+                            />
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.["duplicate"]
+                            ) {
+                                <p class="error-text">
+                                    {{ "common.workspace.duplicate-error" | translate }}
+                                </p>
+                            }
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.[
+                                    "spaceNotAllowed"
+                                ]
+                            ) {
+                                <p class="error-text">
+                                    {{
+                                        "administration.organization.spaceValidation"
+                                            | translate
+                                    }}
+                                </p>
+                            }
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.["maxlength"]
+                            ) {
+                                <p class="error-text">
+                                    {{
+                                        "common.workspace.space-name-maxlength"
+                                            | translate
+                                    }}
+                                </p>
+                            }
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.["pattern"]
+                            ) {
+                                <p class="error-text">
+                                    {{
+                                        "common.workspace.space-name-pattern" | translate
+                                    }}
+                                </p>
+                            }
+                        }
+
+                        @if (spaceDetail["type"] === "select") {
+                            <p-dropdown
+                                [formControlName]="spaceDetail['name']"
+                                [placeholder]="spaceDetail['placeholder']"
+                                class="w-full md:w-56"
+                                styleClass="mt-2"
+                                [options]="organizationlist"
+                                optionLabel="name"
+                                name="organizationName"
+                                optionValue="id"
+                                autofocus="true"
+                            />
+                            @if (
+                                spaceForm.get(spaceDetail["name"])?.errors?.[
+                                    "noOrganization"
+                                ]
+                            ) {
+                                <p class="error-text">
+                                    {{ "common.workspace.no-organization" | translate }}
+                                </p>
+                            }
+                        }
+
+                        <div
+                            class="space-form--button-group flex align-content-end justify-content-end flex-wrap"
+                        >
+                            <p-button
+                                class="cancel-creation"
+                                styleClass="cancel-creation-button uppercase"
+                                (onClick)="closeSidebar()"
+                                [label]="'common.workspace.cancel' | translate"
+                                [ariaLabel]="'common.workspace.cancel' | translate"
+                            ></p-button>
+                            @if (
+                                menuIndex > 0 &&
+                                !spaceDetails["menu"][menuIndex - 1]["hidden"]
+                            ) {
+                                <p-button
+                                    styleClass="button-secondary-green uppercase"
+                                    (click)="previousTab(menuIndex)"
+                                    [label]="'common.previous' | translate"
+                                    [ariaLabel]="'common.previous' | translate"
+                                ></p-button>
+                            }
+                            <p-button
+                                (click)="createSpace()"
+                                styleClass="uppercase bg-light-green"
+                                [disabled]="spaceForm.invalid"
+                                [label]="'common.workspace.create-workspace' | translate"
+                                [ariaLabel]="
+                                    'common.workspace.create-workspace' | translate
+                                "
+                            ></p-button>
+                            @if (!lastIndex) {
+                                <p-button
+                                    styleClass="button-secondary-green p-button uppercase"
+                                    (click)="nextTab(menuIndex)"
+                                    [label]="'common.next' | translate"
+                                    [ariaLabel]="'common.next' | translate"
+                                    [disabled]="
+                                        spaceForm.get(
+                                            spaceDetails['form'][menuIndex]['name']
+                                        )?.invalid
+                                    "
+                                ></p-button>
+                            }
+                        </div>
+                    </div>
+                }
+            </form>
+        </div>
+    }
+</div>

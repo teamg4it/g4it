@@ -70,7 +70,13 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
             and not exists (
                 select physical_equipment_name
                 from in_physical_equipment ipe
-                where ipe.inventory_id = :inventoryId
+                where
+                (
+                  (:inventoryId IS NOT NULL AND ipe.inventory_id = :inventoryId)
+                  OR
+                  (:digitalServiceUid IS NOT NULL AND ipe.digital_service_uid = :digitalServiceUid)
+                )
+                
                 and cilve.physical_equipment_name = ipe.name
             )
             and not exists (
@@ -84,7 +90,9 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
             and cilve.task_id = :taskId
                         
             """)
-    List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId, @Param("inventoryId") Long inventoryId, @Param("parentDuplicates") List<String> parentDuplicates);
+    List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId, @Param("inventoryId") Long inventoryId,
+                                                             @Param("digitalServiceUid") String digitalServiceUid,
+                                                             @Param("parentDuplicates") List<String> parentDuplicates);
 
     @Query(nativeQuery = true, value = """
              select filename,
@@ -107,7 +115,11 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
              and not exists (
                  select physical_equipment_name
                  from in_physical_equipment ipe
-                 where ipe.inventory_id = :inventoryId
+                 where(
+                  (:inventoryId IS NOT NULL AND ipe.inventory_id = :inventoryId)
+                  OR
+                  (:digitalServiceUid IS NOT NULL AND ipe.digital_service_uid = :digitalServiceUid)
+                )
                  and cilve.physical_equipment_name = ipe.name
              )
              and not exists (
@@ -119,6 +131,8 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
              and cilve.physical_equipment_name is not null
              and cilve.task_id = :taskId
              
-            """)    List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId, @Param("inventoryId") Long inventoryId);
+            """)    List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId,
+                                                                             @Param("inventoryId") Long inventoryId,
+                                                                             @Param("digitalServiceUid") String digitalServiceUid);
 
 }

@@ -14,7 +14,7 @@ import { LoadingBody } from "../../interfaces/file-system.interfaces";
 import { TaskIdRest } from "../../interfaces/task.interfaces";
 
 const endpoint = Constants.ENDPOINTS.inventories;
-
+const endpointDS = Constants.ENDPOINTS.digitalServices;
 @Injectable({
     providedIn: "root",
 })
@@ -27,14 +27,15 @@ export class LoadingDataService {
     ) {}
 
     launchLoadInputFiles(
-        inventoryId: number,
+        inventoryId: number | string,
         formData: FormData,
+        isDs: boolean = false,
     ): Observable<TaskIdRest> {
         const headers = new HttpHeaders({
             "Accept-Language": this.translate.currentLang,
         });
         return this.http.post<TaskIdRest>(
-            `${endpoint}/${inventoryId}/load-input-files`,
+            `${isDs ? endpointDS : endpoint}/${inventoryId}/load-input-files`,
             formData,
             {
                 headers,

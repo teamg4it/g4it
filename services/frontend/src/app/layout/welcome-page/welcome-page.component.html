@@ -1,0 +1,270 @@
+<p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+    <div class="welcome-page-container px-3 pt-4">
+        <h1 class="welcome-page-title font-semibold line-height-3">
+            {{ "welcome-page.hello" | translate }},
+            <span class="username">{{ userName }}</span>
+        </h1>
+        <p
+            class="text-2xl line-height-3"
+            [innerHTML]="'welcome-page.about-g4it' | translate"
+        ></p>
+        <h2 class="getting-started">{{ "welcome-page.getting-started" | translate }}</h2>
+        <p class="text-xl mt-4 line-height-3">
+            {{
+                "welcome-page.getting-started-text"
+                    | translate: { subscriberName: currentSubscriber.name }
+            }}
+        </p>
+        <p-button
+            (click)="openWorkspaceSidebar()"
+            icon="pi pi-plus-circle"
+            styleClass="uppercase bg-light-green text-white mt-4"
+            iconPos="right"
+            [label]="'common.workspace.create' | translate | uppercase"
+            [ariaLabel]="'common.workspace.create' | translate"
+        ></p-button>
+        <h3 class="font-normal text-2xl ml-0 mt-5">
+            {{ "welcome-page.modules-access" | translate }}
+        </h3>
+        <div class="flex flex-column lg:flex-row">
+            <!-- Inventories -->
+            <p-card
+                class="selection-card-container col md:col-12 lg:col-4"
+                [ngClass]="{
+                    disabled: !(userService.isAllowedInventoryRead$ | async),
+                    'lg:col-6': !(
+                        (userService.isAllowedEcoMindAiRead$ | async) &&
+                        isEcoMindEnabledForCurrentSubscriber &&
+                        isEcoMindModuleEnabled
+                    ),
+                }"
+                styleClass="selection-card flex h-full flex-column sm:flex-row"
+            >
+                <ng-template pTemplate="header">
+                    <div class="py-4 sm:pl-5">
+                        <div class="custom-icon custom-globe-icon"></div>
+                    </div>
+                </ng-template>
+                <div class="p-card-title font-normal line-height-1">
+                    {{ "welcome-page.inventories.title" | translate }}
+                </div>
+                <p class="selection-card-content text-lg mt-3">
+                    {{ "welcome-page.inventories.description" | translate }}
+                </p>
+                <div class="p-card-footer p-0">
+                    <p-button
+                        (click)="inventories()"
+                        icon="pi pi-arrow-circle-right"
+                        [styleClass]="
+                            'uppercase inventories-button navigation-button mt-5 white-space-nowrap' +
+                            ((userService.isAllowedInventoryRead$ | async)
+                                ? ''
+                                : ' disabled')
+                        "
+                        iconPos="right"
+                        [label]="
+                            (userService.isAllowedInventoryRead$ | async)
+                                ? ('welcome-page.inventories.button'
+                                  | translate
+                                  | uppercase)
+                                : ('welcome-page.inventories.button-disabled'
+                                  | translate
+                                  | uppercase)
+                        "
+                        [ariaLabel]="
+                            (userService.isAllowedInventoryRead$ | async)
+                                ? ('welcome-page.inventories.button' | translate)
+                                : ('welcome-page.inventories.button-disabled' | translate)
+                        "
+                    ></p-button>
+                </div>
+            </p-card>
+            <!-- Digital Services -->
+            <p-card
+                class="selection-card-container col md:col-12 lg:col-4"
+                [ngClass]="{
+                    disabled: !(userService.isAllowedDigitalServiceRead$ | async),
+                    'lg:col-6': !(
+                        (userService.isAllowedEcoMindAiRead$ | async) &&
+                        isEcoMindEnabledForCurrentSubscriber &&
+                        isEcoMindModuleEnabled
+                    ),
+                }"
+                styleClass="selection-card flex h-full flex-column sm:flex-row"
+            >
+                <ng-template pTemplate="header">
+                    <div class="py-4 sm:pl-5">
+                        <div class="custom-icon custom-at-symbol-icon"></div>
+                    </div>
+                </ng-template>
+                <div class="p-card-title font-normal line-height-1">
+                    {{ "welcome-page.digital-service.title" | translate }}
+                </div>
+                <p class="selection-card-content text-lg mt-3">
+                    {{ "welcome-page.digital-service.description" | translate }}
+                </p>
+                <div class="p-card-footer p-0">
+                    <p-button
+                        (click)="digitalServices()"
+                        icon="pi pi-arrow-circle-right"
+                        [styleClass]="
+                            'uppercase digital-service-button navigation-button mt-5 white-space-nowrap' +
+                            ((userService.isAllowedDigitalServiceRead$ | async)
+                                ? ''
+                                : ' disabled')
+                        "
+                        iconPos="right"
+                        [label]="
+                            (userService.isAllowedDigitalServiceRead$ | async)
+                                ? ('welcome-page.digital-service.button'
+                                  | translate
+                                  | uppercase)
+                                : ('welcome-page.digital-service.button-disabled'
+                                  | translate
+                                  | uppercase)
+                        "
+                        [ariaLabel]="
+                            (userService.isAllowedDigitalServiceRead$ | async)
+                                ? ('welcome-page.digital-service.button' | translate)
+                                : ('welcome-page.digital-service.button-disabled'
+                                  | translate)
+                        "
+                    ></p-button>
+                </div>
+            </p-card>
+            <!-- EcoMinAi -->
+            @if (
+                (userService.isAllowedEcoMindAiRead$ | async) &&
+                isEcoMindEnabledForCurrentSubscriber &&
+                isEcoMindModuleEnabled
+            ) {
+                <p-card
+                    class="selection-card-container col md:col-12 lg:col-4"
+                    styleClass="selection-card flex h-full flex-column sm:flex-row"
+                >
+                    <ng-template pTemplate="header">
+                        <div class="py-4 sm:pl-5">
+                            <div class="custom-icon custom-at-symbol-icon"></div>
+                        </div>
+                    </ng-template>
+                    <div class="p-card-title font-normal line-height-1">
+                        {{ "welcome-page.eco-mind-ai.title" | translate }}
+                    </div>
+                    <p class="selection-card-content text-lg mt-3">
+                        {{ "welcome-page.eco-mind-ai.description" | translate }}
+                    </p>
+                    <div class="p-card-footer p-0">
+                        <p-button
+                            (click)="ecoMindAi()"
+                            icon="pi pi-arrow-circle-right"
+                            [styleClass]="
+                                'uppercase eco-mind-ai-button navigation-button mt-5 white-space-nowrap' +
+                                ((userService.isAllowedEcoMindAiRead$ | async)
+                                    ? ''
+                                    : ' disabled')
+                            "
+                            iconPos="right"
+                            [label]="
+                                (userService.isAllowedEcoMindAiRead$ | async)
+                                    ? ('welcome-page.eco-mind-ai.button'
+                                      | translate
+                                      | uppercase)
+                                    : ('welcome-page.eco-mind-ai.button-disabled'
+                                      | translate
+                                      | uppercase)
+                            "
+                            [ariaLabel]="
+                                (userService.isAllowedEcoMindAiRead$ | async)
+                                    ? ('welcome-page.eco-mind-ai.button' | translate)
+                                    : ('welcome-page.eco-mind-ai.button-disabled'
+                                      | translate)
+                            "
+                        ></p-button>
+                    </div>
+                </p-card>
+            }
+        </div>
+        <!-- Footer -->
+        <footer>
+            <h2 class="mt-5">
+                {{ "common.about" | translate }}
+            </h2>
+            <div class="grid">
+                <div class="col-12 md:col useful-info">
+                    <div class="pt-3"></div>
+                    <a
+                        class="p-2 w-full md:w-auto inline-block"
+                        routerLink="/useful-information"
+                        tabindex="0"
+                        role="link"
+                    >
+                        <div class="text-2xl align-items-center flex py-3 hover-text">
+                            <span
+                                ><u>{{ "common.useful-info" | translate }}</u></span
+                            >
+                            <span class="pi pi-arrow-right ml-auto"></span>
+                        </div>
+                        <div>
+                            <span class="text-black">{{
+                                "common.useful-info-desc" | translate
+                            }}</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 md:col useful-info">
+                    <div class="pt-3"></div>
+                    <a
+                        class="p-2 w-full md:w-auto inline-block"
+                        routerLink="/declarations"
+                        tabindex="0"
+                        role="link"
+                    >
+                        <div class="text-2xl align-items-center flex py-3 hover-text">
+                            <span
+                                ><u>{{ "declarations.title" | translate }}</u></span
+                            >
+                            <span class="pi pi-arrow-right ml-auto md:ml-8"></span>
+                        </div>
+                        <div>
+                            <span class="text-black"
+                                >{{ "declarations.ecodesign" | translate }} :
+                                {{ ecoDesignPercent }}%</span
+                            >
+                        </div>
+                        <div>
+                            <span class="text-black">{{
+                                "declarations.accessibility-text" | translate
+                            }}</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 md:col help-center">
+                    <div class="border-round-sm w-auto inline-block">
+                        <span
+                            class="help-center-color pl-2 mt-3 flex align-items-center text-2xl"
+                        >
+                            {{ "common.help-center" | translate }}</span
+                        >
+
+                        <div *ngFor="let linkObj of externalLinks" class="p-1 relative">
+                            <div class="border border-left-1 border-light-grey-color">
+                                <a
+                                    [href]="linkObj.href"
+                                    target="_blank"
+                                    role="link"
+                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
+                                    tabindex="0"
+                                >
+                                    <span
+                                        ><u>{{ linkObj.label | translate }}</u></span
+                                    >
+                                    <span [class]="linkObj.iconClass"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</p-scrollPanel>

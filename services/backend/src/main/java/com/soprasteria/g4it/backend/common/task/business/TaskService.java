@@ -9,7 +9,11 @@
 package com.soprasteria.g4it.backend.common.task.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.task.mapper.TaskMapper;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
@@ -18,7 +22,6 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.TaskRest;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,18 +31,27 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class TaskService {
 
     @Autowired
     TaskRepository taskRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    DigitalServiceRepository digitalServiceRepository;
 
     @Autowired
     TaskMapper taskMapper;
 
     @Autowired
     private ExportService exportService;
+
+    private AuthService authService;
+
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
+    }
 
     /**
      * Get task by taskId
@@ -64,11 +76,14 @@ public class TaskService {
      */
     public Task createDigitalServiceTask(DigitalService digitalService, List<String> criteria) {
         final LocalDateTime now = LocalDateTime.now();
-        Task task = taskRepository.findByDigitalServiceUid(digitalService.getUid())
+
+        User user = userRepository.findById(authService.getUser().getId()).orElseThrow();
+
+        Task task = taskRepository.findByDigitalService(digitalService)
                 .orElseGet(() -> Task.builder()
-                        .digitalServiceUid(digitalService.getUid())
+                        .digitalService(digitalService)
                         .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
-                        .createdBy(digitalService.getUser())
+                        .createdBy(user)
                         .build());
 
         task.setProgressPercentage("0%");
@@ -78,16 +93,6 @@ public class TaskService {
         task.setCriteria(criteria);
 
         return taskRepository.save(task);
-    }
-
-    /**
-     * Get the task from digital service uid
-     *
-     * @param digitalServiceUid the digital service uid
-     * @return the task
-     */
-    public Optional<Task> getTask(String digitalServiceUid) {
-        return taskRepository.findByDigitalServiceUid(digitalServiceUid);
     }
 
     /**

@@ -9,31 +9,6 @@ tags:
     description: All endpoint for digital service indicators
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/indicators:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
-    get:
-      tags:
-        - digital-service-indicator
-      summary: Get indicators from one digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceIndicatorRest
-      responses:
-        '200':
-          description: return digital service indicators
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DigitalServiceIndicatorRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
-
   /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/export:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
@@ -45,7 +20,7 @@ paths:
       tags:
         - digital-service-indicator
       operationId: getDigitalServiceIndicatorsExportResult
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_READ')"
       responses:
         "200":
           description: return zip file contains all the indicators results
@@ -62,28 +37,3 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         "500":
           $ref: '#/components/responses/InternalServerError'
-
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/cloud/indicators:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
-    get:
-      tags:
-        - digital-service-indicator
-      summary: Get cloud indicators from one digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceCloudIndicatorRest
-      responses:
-        '200':
-          description: return digital service cloud indicators
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DigitalServiceCloudIndicatorRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"

@@ -65,8 +65,11 @@ public class AsyncLoadFilesService implements ITaskExecute {
         task.setStatus(TaskStatus.IN_PROGRESS.toString());
         taskRepository.save(task);
         final List<String> errors = new ArrayList<>();
+
+        final boolean isInventory = context.getInventoryId() != null;
+
         List<String> filenames = task.getFilenames();
-        context.initFileToLoad(fileLoadingUtils.mapFileToLoad(filenames));
+        context.initFileToLoad(fileLoadingUtils.mapFileToLoad(filenames, isInventory));
         context.initTaskId(task.getId());
 
         try {
@@ -76,10 +79,23 @@ public class AsyncLoadFilesService implements ITaskExecute {
             //Convert all files
             fileLoadingUtils.convertAllFileToLoad(context);
 
-            //Load Metadata files
-            asyncLoadMetadataService.loadInventoryMetadata(context);
+            // Task fails if mandatory headers are missing
+            List<String> mandatoryHeaderErrors = loadFileService.mandatoryHeadersCheck(context);
+            if (mandatoryHeaderErrors != null && !mandatoryHeaderErrors.isEmpty()) {
+                task.setErrors(mandatoryHeaderErrors);
+                task.setStatus(TaskStatus.FAILED.toString());
+                details.addAll(mandatoryHeaderErrors.stream().map(LogUtils::error).toList());
+                details.add(LogUtils.info("Task failed"));
+                task.setDetails(details);
+                taskRepository.save(task);
+                log.error("Task with id '{}' failed due to missing mandatory headers: {}", task.getId(), mandatoryHeaderErrors);
+                return;
+            }
 
-            Map<String, Map<Integer, List<LineError>>> coherenceErrors = checkMetadataInventoryFileService.checkMetadataInventoryFile(task.getId(), context.getInventoryId());
+            //Load Metadata files
+            asyncLoadMetadataService.loadInputMetadata(context);
+
+            Map<String, Map<Integer, List<LineError>>> coherenceErrors = checkMetadataInventoryFileService.checkMetadataInventoryFile(task.getId(), context.getInventoryId(), context.getDigitalServiceUid());
 
             //  Check if any file is exceeding the error threshold before processing any files.
             for (FileToLoad fileToLoad : context.getFilesToLoad()) {
@@ -128,7 +144,8 @@ public class AsyncLoadFilesService implements ITaskExecute {
                 }
             }
 
-            boolean hasRejectedFile = fileLoadingUtils.handelRejectedFiles(context.getSubscriber(), context.getOrganizationId(), task.getInventory().getId(), task.getId(), filenames);
+            boolean hasRejectedFile = fileLoadingUtils.handelRejectedFiles(context.getSubscriber(), context.getOrganizationId(),
+                    context.getInventoryId(), context.getDigitalServiceUid(), task.getId(), filenames);
 
             fileLoadingUtils.cleanConvertedFiles(context);
 
@@ -152,7 +169,9 @@ public class AsyncLoadFilesService implements ITaskExecute {
 
         taskRepository.save(task);
 
-        loadFileService.setInventoryCounts(context.getInventoryId());
+        if (isInventory) {
+            loadFileService.setInventoryCounts(context.getInventoryId());
+        }
 
         long end = System.currentTimeMillis();
         log.info("End load input files for {}. Time taken: {}s", context.log(), (end - start) / 1000);

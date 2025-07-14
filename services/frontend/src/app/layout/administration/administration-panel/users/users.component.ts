@@ -5,12 +5,13 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, effect, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { take } from "rxjs";
+import { firstValueFrom, take } from "rxjs";
 import {
     OrganizationCriteriaRest,
     OrganizationWithSubscriber,
@@ -22,6 +23,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-users",
@@ -32,13 +34,14 @@ export class UsersComponent {
     private destroyRef = inject(DestroyRef);
 
     userDetails!: UserDetails[];
+    userDetailEcoMind: boolean = false;
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     organizationlist: OrganizationWithSubscriber[] = [];
     enableList = false;
     clearForm: any;
     enableSearchButton: boolean = true;
     membersAndSearchVisible = false;
-    subscribersDetails: any;
+    subscribersDetails!: any;
     membersList: any;
     filteredMembers: any[] = [];
     openSearchResult: boolean = false;
@@ -58,6 +61,10 @@ export class UsersComponent {
     selectedCriteriaDS: string[] = [];
     defaultCriteria: string[] = [];
     subscriber!: Subscriber;
+    firstPage: number = 0;
+
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+    isEcoMindEnabledForCurrentSubscriberSelected: boolean = false;
 
     constructor(
         private administrationService: AdministrationService,
@@ -67,7 +74,14 @@ export class UsersComponent {
         private userService: UserService,
         private userDataService: UserDataService,
         private globalStore: GlobalStoreService,
-    ) {}
+        private readonly router: Router,
+    ) {
+        effect(() => {
+            if (this.administrationService.getUsersTriggered()) {
+                this.getUsers();
+            }
+        });
+    }
 
     ngOnInit() {
         this.getUsers();
@@ -147,6 +161,7 @@ export class UsersComponent {
         user.isModule = this.getRole(user.roles, "INVENTORY_");
         user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
         user.role = this.getRole(user.roles, "ADMINISTRATOR");
+        user.ecomindModule = this.getRole(user.roles, "ECO_MIND_AI_");
         return user;
     }
 
@@ -172,6 +187,7 @@ export class UsersComponent {
         this.administrationService
             .getUserDetails(this.organization.organizationId)
             .subscribe((res) => {
+                this.firstPage = 0; // To reset the paginator to the first page
                 this.membersList = res.map((user: any) => this.enrichAdmin(user));
                 this.filteredMembers = [...this.membersList];
             });
@@ -207,7 +223,8 @@ export class UsersComponent {
         return userRoles[0] || "";
     }
 
-    deleteUserDetails(event: Event, user: UserDetails) {
+    async deleteUserDetails(event: Event, user: UserDetails) {
+        const userId = (await firstValueFrom(this.userService.user$)).id;
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             message: this.translate.instant("administration.user.delete-message", {
@@ -234,16 +251,33 @@ export class UsersComponent {
                     ],
                 };
                 this.administrationService.deleteUserDetails(body).subscribe((res) => {
-                    this.searchList();
+                    const currentUserRoles = body.users.find(
+                        (u) => u.userId === userId,
+                    )?.roles;
+                    if (currentUserRoles?.includes(Role.OrganizationAdmin)) {
+                        this.userDataService
+                            .fetchUserInfo()
+                            .pipe(take(1))
+                            .subscribe(() => {
+                                this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                                return;
+                            });
+                    } else {
+                        this.searchList();
+                    }
                 });
             },
         });
     }
 
-    openSidepanelForAddORUpdateOrg(user: UserDetails) {
+    openSidepanelForAddORUpdateOrg(
+        user: UserDetails,
+        isEcoMindEnabledForCurrentSubscriberSelected: boolean,
+    ) {
         this.sidebarVisible = true;
         this.sidebarCreateMode = user.roles.length === 0;
         this.userDetail = user;
+        this.userDetailEcoMind = isEcoMindEnabledForCurrentSubscriberSelected;
     }
 
     displayPopupFct() {
@@ -268,6 +302,13 @@ export class UsersComponent {
                 this.displayPopup = false;
                 this.getUsers(true);
                 this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
+            });
+    }
+    getSelectedSubscriber() {
+        this.administrationService
+            .getSubscriberById(this.organization.subscriberId)
+            .subscribe((res) => {
+                this.isEcoMindEnabledForCurrentSubscriberSelected = res.ecomindai;
             });
     }
 }

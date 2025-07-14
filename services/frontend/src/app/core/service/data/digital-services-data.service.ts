@@ -5,12 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Observable, ReplaySubject, tap } from "rxjs";
+import { Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
-import { environment } from "src/environments/environment";
 import {
+    AiModelConfig,
     DigitalService,
     DSCriteriaRest,
     Host,
@@ -20,6 +20,7 @@ import {
 import { MapString } from "../../interfaces/generic.interfaces";
 
 const endpoint = Constants.ENDPOINTS.digitalServices;
+const ecomindaiModelConfig = Constants.ENDPOINTS.ecomindaiModelConfig;
 
 @Injectable({
     providedIn: "root",
@@ -32,15 +33,23 @@ export class DigitalServicesDataService {
     private readonly digitalServiceSubject = new ReplaySubject<DigitalService>(1);
     digitalService$ = this.digitalServiceSubject.asObservable();
 
-    list(): Observable<DigitalService[]> {
-        return this.http.get<DigitalService[]>(`${endpoint}`);
+    list(isAi?: boolean): Observable<DigitalService[]> {
+        let params = new HttpParams();
+        if (isAi !== undefined) {
+            params = params.set("isAi", isAi);
+        }
+        return this.http.get<DigitalService[]>(`${endpoint}`, { params });
     }
 
-    create(): Observable<DigitalService> {
+    create(isAi?: boolean): Observable<DigitalService> {
+        let params = new HttpParams();
+        if (isAi !== undefined) {
+            params = params.set("isAi", isAi);
+        }
         return this.http.post<DigitalService>(
             `${endpoint}`,
             {},
-            { headers: this.HEADERS },
+            { headers: this.HEADERS, params: params },
         );
     }
 
@@ -62,12 +71,12 @@ export class DigitalServicesDataService {
             .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
     }
 
-    delete(uid: DigitalService["uid"]): Observable<string> {
-        return this.http.delete<string>(`${endpoint}/${uid}`);
+    getDsTasks(uid: DigitalService["uid"]): Observable<DigitalService> {
+        return this.http.get<DigitalService>(`${endpoint}/${uid}`);
     }
 
-    unlink(uid: DigitalService["uid"]): Observable<string> {
-        return this.http.delete<string>(`${endpoint}/${uid}/share`);
+    delete(uid: DigitalService["uid"]): Observable<string> {
+        return this.http.delete<string>(`${endpoint}/${uid}`);
     }
 
     getDeviceReferential(): Observable<TerminalsType[]> {
@@ -98,22 +107,12 @@ export class DigitalServicesDataService {
         );
     }
 
+    getModels(model: string): Observable<AiModelConfig[]> {
+        return this.http.get<AiModelConfig[]>(`${ecomindaiModelConfig}/${model}`);
+    }
+
     launchEvaluating(uid: DigitalService["uid"]): Observable<string> {
         return this.http.post<string>(`${endpoint}/${uid}/evaluating`, {});
-    }
-
-    copyUrl(uid: DigitalService["uid"]): Observable<string> {
-        return this.http
-            .post<string>(
-                `${endpoint}/${uid}/share`,
-                {},
-                { responseType: "text" as "json" },
-            )
-            .pipe(map((response) => environment.frontEndUrl + response));
-    }
-
-    sharedDS(uid: string, generatedId: string): Observable<string> {
-        return this.http.post<string>(`${endpoint}/${uid}/shared/${generatedId}`, {});
     }
 
     downloadFile(uid: DigitalService["uid"]): Observable<any> {

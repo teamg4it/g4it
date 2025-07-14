@@ -1,0 +1,66 @@
+<p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+    <section class="useful-page">
+        <div class="breadcrumb mb-4">
+            <span>{{ "common.home" | translate }}</span>
+            <i class="pi pi-angle-right separator"></i>
+            <span>{{ "common.about" | translate }}</span>
+            <i class="pi pi-angle-right separator"></i>
+            <span class="active">{{ "common.useful-info" | translate }} </span>
+        </div>
+        <h1 class="font-semibold">{{ "common.useful-info" | translate }}</h1>
+        <div class="my-4">
+            <span class="text-2xl">{{ "common.useful-line" | translate }}</span>
+        </div>
+
+        <div class="my-4">
+            <div class="text-4xl font-semibold">
+                {{ "common.versions" | translate }}
+            </div>
+            <div class="w-10rem">
+                <ul aria-labelledby="openVersion">
+                    <li
+                        class="flex justify-content-between flex-wrap text-base"
+                        *ngFor="let software of versions"
+                    >
+                        <span>{{ software.name | uppercase }}</span>
+                        <span>{{ software.version }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="my-4">
+            <div class="text-4xl font-semibold">
+                {{ "common.open-hours" | translate }}
+            </div>
+
+            <div class="w-16rem">
+                <ul aria-labelledby="openTitle">
+                    <li
+                        class="flex justify-content-between flex-wrap text-base"
+                        *ngFor="let data of businessHoursData"
+                    >
+                        <span>{{ "common.week." + data.day | translate }}</span
+                        ><span *ngIf="data.start_time"
+                            >{{ data.start_time | businessHoursRenderer }} -
+                            {{ data.end_time | businessHoursRenderer
+                            }}<span *ngIf="selectedLanguage === 'en'"> UTC</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="my-4">
+            <div class="text-4xl font-semibold mb-4">
+                {{ "common.support" | translate }}
+            </div>
+            <p-button
+                autofocus="true"
+                styleClass="bg-light-green text-white"
+                (onClick)="composeEmail()"
+                >{{ "common.mailTo" | translate }}
+            </p-button>
+        </div>
+    </section>
+</p-scrollPanel>

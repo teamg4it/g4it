@@ -10,17 +10,16 @@ package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +46,11 @@ public class DigitalService {
      */
     @NotNull
     private String name;
+
+    /**
+     * Specifies whether it's an IA service
+     */
+    private boolean isAi;
 
     /**
      * The Criterias key.
@@ -93,19 +97,11 @@ public class DigitalService {
     private Note note;
 
     /**
-     * Digital service links
+     * The Task
      */
+    @Builder.Default
     @ToString.Exclude
-    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<DigitalServiceLink> digitalServiceLinks;
-
-    /**
-     * Mapped digital services with users
-     */
-    @ToString.Exclude
-    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<DigitalServiceShared> digitalServiceShared;
+    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Task> tasks = new ArrayList<>();
 
 }

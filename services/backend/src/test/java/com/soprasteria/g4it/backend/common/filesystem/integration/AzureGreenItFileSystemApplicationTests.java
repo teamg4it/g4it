@@ -19,13 +19,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,25 +47,25 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 class AzureGreenItFileSystemApplicationTests {
 
-    private final String FILE_TEST_NAME = "test.txt";
-    private final String UPLOAD_FILE_TEST_NAME = "test-upload.txt";
-    private final String UPLOAD_MULTIPART_FILE_TEST_NAME = "test-multipart-upload.txt";
-    private final String FILE_NEW_NAME1 = "test1.txt";
-    private final String FILE_NEW_NAME2 = "test2.txt";
+    private static final String FILE_TEST_NAME = "test.txt";
+    private static final String UPLOAD_FILE_TEST_NAME = "test-upload.txt";
+    private static final String UPLOAD_MULTIPART_FILE_TEST_NAME = "test-multipart-upload.txt";
+    private static final String FILE_NEW_NAME1 = "test1.txt";
+    private static final String FILE_NEW_NAME2 = "test2.txt";
     /**
      * Organization associated to test container
      */
-    private final String ORGANIZATION = "0";
+    private static final String ORGANIZATION = "0";
 
     /**
      * The real subscriber name in Azure.
      */
-    private final String SUBSCRIBER = "FS-TEST";
+    private static final String SUBSCRIBER = "FS-TEST";
     @Autowired
     ResourceLoader resourceLoader;
     @Autowired
     private FileSystem fileSystem;
-    @MockBean
+    @MockitoBean
     private CacheManager cacheManager;
 
     private static boolean hasAzureEnvVars() {
@@ -295,7 +295,7 @@ class AzureGreenItFileSystemApplicationTests {
     }
 
     @Test
-    void getFileUrl_shouldReturnEmptyStringIfFileDoesNotExists() throws IOException {
+    void getFileUrl_shouldReturnEmptyStringIfFileDoesNotExists() {
         FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
         // Given an unknown file in the work folder
         // when we get url
@@ -322,7 +322,7 @@ class AzureGreenItFileSystemApplicationTests {
     }
 
     @Test
-    void getFileSize_shouldReturnZeroForUnknownFile() throws IOException {
+    void getFileSize_shouldReturnZeroForUnknownFile() {
         FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
         // Given an unknown file in the work folder
         // when we get size

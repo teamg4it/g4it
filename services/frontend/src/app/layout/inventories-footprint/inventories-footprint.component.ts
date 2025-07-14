@@ -9,7 +9,7 @@ import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
-import { finalize, firstValueFrom, map } from "rxjs";
+import { finalize, firstValueFrom, forkJoin, map } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import {
     ChartData,
@@ -106,73 +106,72 @@ export class InventoriesFootprintComponent implements OnInit {
         // Set active inventory based on route
         this.inventoryId =
             +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
+        this.getDataApis(currentOrgName, criteria);
+    }
 
-        this.footprintDataService
-            .getFootprint(this.inventoryId)
+    getDataApis(currentOrgName: string, criteria: string | null) {
+        forkJoin([
+            this.footprintDataService
+                .getFootprint(this.inventoryId)
+                .pipe(
+                    map((data) =>
+                        this.inventoryUtilService.removeOrganizationNameFromCriteriaType(
+                            data,
+                            currentOrgName,
+                        ),
+                    ),
+                ),
+            this.footprintDataService.getDatacenters(this.inventoryId),
+            this.footprintDataService
+                .getPhysicalEquipments(this.inventoryId)
+                .pipe(
+                    map((data) =>
+                        this.inventoryUtilService.removeOrganizationNameFromType(
+                            data,
+                            currentOrgName,
+                        ),
+                    ),
+                ),
+            this.outVirtualEquipmentService.getByInventory(this.inventoryId),
+            this.inVirtualEquipmentsService.getByInventory(this.inventoryId),
+        ])
             .pipe(finalize(() => (this.showTabMenu = true)))
-            .subscribe((criterias: Criterias) => {
-                const footprintCriteriaKeys = Object.keys(criterias);
-                const sortedCriteriaKeys = Object.keys(this.global.criteriaList()).filter(
-                    (key) => footprintCriteriaKeys.includes(key),
+            .subscribe((results) => {
+                const [
+                    footprint,
+                    datacenters,
+                    physicalEquipments,
+                    outVirtualEquipments,
+                    inVirtualEquipments,
+                ] = results;
+
+                this.processFootprintData(
+                    footprint,
+                    inVirtualEquipments,
+                    outVirtualEquipments,
                 );
-                this.criteres = sortedCriteriaKeys.map((key: string) => {
-                    return {
-                        label: this.translate.instant(`criteria.${key}.title`),
-                        routerLink: `../${key}`,
-                        id: `${key}`,
-                    };
+
+                this.initializeCriteriaMenu(footprint, criteria!);
+
+                this.initializeFootprintData(footprint, datacenters, physicalEquipments);
+
+                // React on criteria url param change
+                this.activatedRoute.paramMap.subscribe((params) => {
+                    const criteria = params.get("criteria")!;
+                    this.footprintStore.setCriteria(criteria);
+
+                    if (criteria !== Constants.MUTLI_CRITERIA) {
+                        this.allUnmodifiedCriteriaFootprint =
+                            this.allUnmodifiedFootprint[criteria];
+                    }
                 });
-                if (this.criteres.length > 1) {
-                    this.criteres.unshift({
-                        label: this.translate.instant(
-                            "criteria-title.multi-criteria.title",
-                        ),
-                        routerLink: `../${Constants.MUTLI_CRITERIA}`,
-                    });
-                }
             });
-
-        this.footprintStore.setCriteria(criteria || Constants.MUTLI_CRITERIA);
-
-        const [
-            footprint,
-            datacenters,
-            physicalEquipments,
-            outVirtualEquipments,
-            inVirtualEquipments,
-        ] = await Promise.all([
-            firstValueFrom(
-                this.footprintDataService
-                    .getFootprint(this.inventoryId)
-                    .pipe(
-                        map((data) =>
-                            this.inventoryUtilService.removeOrganizationNameFromCriteriaType(
-                                data,
-                                currentOrgName,
-                            ),
-                        ),
-                    ),
-            ),
-            firstValueFrom(this.footprintDataService.getDatacenters(this.inventoryId)),
-            firstValueFrom(
-                this.footprintDataService
-                    .getPhysicalEquipments(this.inventoryId)
-                    .pipe(
-                        map((data) =>
-                            this.inventoryUtilService.removeOrganizationNameFromType(
-                                data,
-                                currentOrgName,
-                            ),
-                        ),
-                    ),
-            ),
-            firstValueFrom(
-                this.outVirtualEquipmentService.getByInventory(this.inventoryId),
-            ),
-            firstValueFrom(
-                this.inVirtualEquipmentsService.getByInventory(this.inventoryId),
-            ),
-        ]);
+    }
+    processFootprintData(
+        footprint: Criterias,
+        inVirtualEquipments: InVirtualEquipmentRest[],
+        outVirtualEquipments: OutVirtualEquipmentRest[],
+    ) {
         this.transformedInVirtualEquipments =
             this.transformInVirtualEquipment(inVirtualEquipments);
         const transformedOutVirtualEquipments =
@@ -184,8 +183,24 @@ export class InventoriesFootprintComponent implements OnInit {
 
             if (matchedFootprint) {
                 matchedFootprint.impacts.push(equipment);
+            } else {
+                footprint[equipment.criteria] = {
+                    label: equipment?.criteria?.toLocaleLowerCase().replaceAll("-", "_"),
+                    unit: equipment.unit!,
+                    impacts: [equipment],
+                };
             }
         });
+    }
+    initializeFootprintData(
+        footprint: Criterias,
+        datacenters: Datacenter[],
+        physicalEquipments: [
+            PhysicalEquipmentAvgAge[],
+            PhysicalEquipmentLowImpact[],
+            PhysicalEquipmentsElecConsumption[],
+        ],
+    ) {
         this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
         this.allUnmodifiedDatacenters = datacenters;
         this.allUnmodifiedEquipments = physicalEquipments;
@@ -207,17 +222,27 @@ export class InventoriesFootprintComponent implements OnInit {
         });
 
         this.global.setLoading(false);
+    }
 
-        // React on criteria url param change
-        this.activatedRoute.paramMap.subscribe((params) => {
-            const criteria = params.get("criteria")!;
-            this.footprintStore.setCriteria(criteria);
-
-            if (criteria !== Constants.MUTLI_CRITERIA) {
-                this.allUnmodifiedCriteriaFootprint =
-                    this.allUnmodifiedFootprint[criteria];
-            }
+    initializeCriteriaMenu(footprint: Criterias, criteria: string) {
+        const footprintCriteriaKeys = Object.keys(footprint);
+        const sortedCriteriaKeys = Object.keys(this.global.criteriaList()).filter((key) =>
+            footprintCriteriaKeys.includes(key),
+        );
+        this.criteres = sortedCriteriaKeys.map((key: string) => {
+            return {
+                label: this.translate.instant(`criteria.${key}.title`),
+                routerLink: `../${key}`,
+                id: `${key}`,
+            };
         });
+        if (this.criteres.length > 1) {
+            this.criteres.unshift({
+                label: this.translate.instant("criteria-title.multi-criteria.title"),
+                routerLink: `../${Constants.MUTLI_CRITERIA}`,
+            });
+        }
+        this.footprintStore.setCriteria(criteria || Constants.MUTLI_CRITERIA);
     }
 
     transformOutVirtualEquipment(
@@ -241,6 +266,7 @@ export class InventoriesFootprintComponent implements OnInit {
                         statusIndicator: item.statusIndicator,
                         countValue: item.countValue,
                         quantity: item.quantity,
+                        unit: item.unit,
                     }) as Impact,
             );
     }

@@ -54,7 +54,7 @@ class OrganizationDeletionServiceTest {
         var now = LocalDateTime.now().minusHours(1);
         final Optional<Inventory> inventoryEntity1 = Optional.ofNullable(Inventory.builder().id(1L).name("03-2023").lastUpdateDate(now).build());
         final Optional<DigitalService> digitalServiceEntity = Optional.ofNullable(DigitalService.builder().uid("1234").name("name").lastUpdateDate(now).build());
-        final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(OrganizationStatus.TO_BE_DELETED.name(), now);
+        final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(now);
 
         when(inventoryRepo.findByOrganization(linkedOrganization)).thenReturn(List.of(inventoryEntity1.get()));
         when(digitalServiceRepo.findByOrganization(linkedOrganization)).thenReturn(List.of(digitalServiceEntity.get()));
@@ -70,7 +70,7 @@ class OrganizationDeletionServiceTest {
 
     @Test
     void testOrganizationDeletionService_toBeDeletedStatusWithFutureDate() {
-        final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(OrganizationStatus.TO_BE_DELETED.name(), LocalDateTime.now().plusDays(1));
+        final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(LocalDateTime.now().plusDays(1));
         when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedOrganization));
 
         // EXECUTE

@@ -14,11 +14,12 @@ paths:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/isAiPathParam'
     post:
       tags:
         - digital-service
       summary: Create a new digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
       operationId: createDigitalService
       responses:
         '201':
@@ -35,7 +36,7 @@ paths:
       tags:
         - digital-service
       summary: Get the digital service list
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
       operationId: getDigitalServices
       responses:
         '200':
@@ -72,7 +73,7 @@ paths:
       tags:
         - digital-service
       summary: Get a digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
       operationId: getDigitalService
       responses:
         '200':
@@ -110,62 +111,5 @@ paths:
           $ref: "#/components/responses/BadRequestError"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
-
-
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/share:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
-    post:
-      tags:
-        - digital-service
-      summary: Share a digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: shareDigitalService
-      responses:
-        '200':
-          description: the digital service link to share
-          content:
-            text/plain:
-              schema:
-                type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
-    delete:
-      tags:
-        - digital-service
-      summary: unlink a shared digital service
-      operationId: unlinkSharedDigitalService
-      responses:
-        '204':
-          description: digital service is unlinked with user
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
-
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/shared/{sharedUid}:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
-      - $ref: '#/components/parameters/sharedUidPathParam'
-    post:
-      tags:
-        - digital-service
-      summary: associate digital service with user
-      operationId: linkDigitalServiceToUser
-      responses:
-        '204':
-          description: digital service is associated with user
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: "#/components/responses/InternalServerError"

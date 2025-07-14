@@ -10,10 +10,7 @@ package com.soprasteria.g4it.backend.apifiles.controller;
 import com.azure.storage.blob.models.BlobErrorCode;
 import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
-import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
-import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.FileSystemApiDelegate;
@@ -47,24 +44,6 @@ public class FileSystemController implements FileSystemApiDelegate {
     private FileSystemService fileSystemService;
 
     /**
-     * InventoryService
-     */
-    @Autowired
-    private InventoryService inventoryService;
-
-    /**
-     * InventoryRepository
-     */
-    @Autowired
-    private InventoryRepository inventoryRepository;
-
-    /**
-     * Task repository
-     */
-    @Autowired
-    private TaskRepository taskRepository;
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -84,7 +63,6 @@ public class FileSystemController implements FileSystemApiDelegate {
     @Override
     public ResponseEntity<Resource> downloadResultsFile(@PathVariable final String subscriber,
                                                         @PathVariable final Long organization,
-                                                        @PathVariable final Long inventoryId,
                                                         @PathVariable final String taskId) {
 
         String filename = String.join("/", taskId, Constants.REJECTED_FILES_ZIP);

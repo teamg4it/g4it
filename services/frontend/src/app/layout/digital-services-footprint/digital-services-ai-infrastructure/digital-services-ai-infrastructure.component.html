@@ -1,0 +1,243 @@
+<div class="form-container">
+    <form
+        *ngIf="infrastructureForm"
+        [formGroup]="infrastructureForm"
+        (ngSubmit)="submitFormData()"
+    >
+        <div class="label-input-div-full-server">
+            <label for="typeInput">{{
+                "digital-services-ai-infrastructure.type" | translate
+            }}</label>
+            <p-dropdown
+                appendTo="body"
+                inputId="typeInput"
+                formControlName="infrastructureType"
+                optionLabel="value"
+                [options]="typesOptions"
+            ></p-dropdown>
+            <p
+                class="error-text"
+                *ngIf="
+                    infrastructureForm.get('infrastructureType')?.invalid &&
+                    infrastructureForm.get('infrastructureType')?.touched
+                "
+            >
+                {{ "digital-services-ai-infrastructure.type" | translate }}
+                {{ "common.mandatory" | translate }}
+            </p>
+            <p
+                class="error-text"
+                *ngIf="
+                    infrastructureForm.get('infrastructureType')?.hasError('pattern') &&
+                    infrastructureForm.get('infrastructureType')?.touched
+                "
+            >
+                {{ "digital-services-ai-infrastructure.type" | translate }}
+                {{ "common.invalid" | translate }}
+            </p>
+        </div>
+
+        <div class="form-section">
+            <div class="form-row">
+                <div class="label-input-div-form">
+                    <label for="cpu-cores">{{
+                        "digital-services-ai-infrastructure.cpu-cores" | translate
+                    }}</label>
+                    <p-inputNumber
+                        inputId="cpu-cores"
+                        formControlName="nbCpuCores"
+                        [min]="0"
+                    ></p-inputNumber>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            infrastructureForm.get('nbCpuCores')?.hasError('min') &&
+                            infrastructureForm.get('nbCpuCores')?.touched
+                        "
+                    >
+                        {{ "digital-services-ai-infrastructure.cpu-cores" | translate }}
+                        {{ "common.min" | translate }} 0
+                    </p>
+                </div>
+                <div class="label-input-div-form">
+                    <label for="gpu-count">{{
+                        "digital-services-ai-infrastructure.gpu-count" | translate
+                    }}</label>
+                    <p-inputNumber
+                        class="input-number"
+                        inputId="gpu-count"
+                        formControlName="nbGpu"
+                        [min]="0"
+                    ></p-inputNumber>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            infrastructureForm.get('nbGpu')?.invalid &&
+                            infrastructureForm.get('nbGpu')?.touched
+                        "
+                    >
+                        {{ "digital-services-ai-infrastructure.gpu-count" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                </div>
+                <div class="label-input-div-form">
+                    <label for="gpu-memory">{{
+                        "digital-services-ai-infrastructure.gpu-memory" | translate
+                    }}</label>
+                    <p-inputNumber
+                        inputId="gpu-memory"
+                        formControlName="gpuMemory"
+                        [min]="0"
+                    ></p-inputNumber>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            infrastructureForm.get('gpuMemory')?.invalid &&
+                            infrastructureForm.get('gpuMemory')?.touched
+                        "
+                    >
+                        {{ "digital-services-ai-infrastructure.gpu-memory" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                </div>
+                <div class="label-input-div-form">
+                    <label for="ram-size">{{
+                        "digital-services-ai-infrastructure.ram-size" | translate
+                    }}</label>
+                    <p-inputNumber
+                        inputId="ram-size"
+                        formControlName="ramSize"
+                        [min]="0"
+                    ></p-inputNumber>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            infrastructureForm.get('ramSize')?.invalid &&
+                            infrastructureForm.get('ramSize')?.touched
+                        "
+                    >
+                        {{ "digital-services-ai-infrastructure.ram-size" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>
+                {{ "digital-services-ai-infrastructure.power-effectiveness" | translate }}
+            </h3>
+            <div class="form-row">
+                <div class="label-input-div-form">
+                    <label for="pue">{{
+                        "digital-services-ai-infrastructure.datacenter-pue" | translate
+                    }}</label>
+                    <input
+                        id="pue"
+                        type="number"
+                        step="0.1"
+                        min="1"
+                        formControlName="pue"
+                        class="p-inputtext"
+                        [ngStyle]="
+                            infrastructureForm.get('pue')?.disabled && writeRight
+                                ? {
+                                      'background-color': '#f2eff6',
+                                      color: '#282829',
+                                  }
+                                : {}
+                        "
+                    />
+                    <p
+                        class="error-text"
+                        *ngIf="infrastructureForm.get('pue')?.hasError('required')"
+                    >
+                        {{
+                            "digital-services-ai-infrastructure.datacenter-pue"
+                                | translate
+                        }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                    <p
+                        class="error-text"
+                        *ngIf="infrastructureForm.get('pue')?.hasError('min')"
+                    >
+                        {{
+                            "digital-services-ai-infrastructure.datacenter-pue"
+                                | translate
+                        }}
+                        {{ "common.min" | translate }}
+                    </p>
+                </div>
+                <div class="label-input-div-form">
+                    <label for="complementary-pue">{{
+                        "digital-services-ai-infrastructure.complementary-pue" | translate
+                    }}</label>
+                    <input
+                        id="complementary-pue"
+                        type="number"
+                        step="0.1"
+                        min="1"
+                        formControlName="complementaryPue"
+                        class="p-inputtext"
+                    />
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            infrastructureForm
+                                .get('complementaryPue')
+                                ?.hasError('required')
+                        "
+                    >
+                        {{
+                            "digital-services-ai-infrastructure.complementary-pue"
+                                | translate
+                        }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            infrastructureForm.get('complementaryPue')?.hasError('min')
+                        "
+                    >
+                        {{
+                            "digital-services-ai-infrastructure.complementary-pue"
+                                | translate
+                        }}
+                        {{ "common.min" | translate }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>
+                {{ "digital-services-ai-infrastructure.energy-efficiency" | translate }}
+            </h3>
+            <div class="label-input-div-full-server">
+                <label for="location">{{
+                    "digital-services-ai-infrastructure.location" | translate
+                }}</label>
+                <p-dropdown
+                    appendTo="body"
+                    inputId="location"
+                    formControlName="location"
+                    [options]="locationOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                ></p-dropdown>
+                <p
+                    class="error-text"
+                    *ngIf="
+                        infrastructureForm.get('location')?.invalid &&
+                        infrastructureForm.get('location')?.touched
+                    "
+                >
+                    {{ "digital-services-ai-infrastructure.location" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            </div>
+        </div>
+    </form>
+</div>

@@ -8,10 +8,12 @@
 
 package com.soprasteria.g4it.backend.apiinout.mapper;
 
+import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -29,6 +31,31 @@ public interface InputToCsvRecord {
                 datacenter.getLocation(),
                 "", // entityName
                 "" // source
+        );
+    }
+
+    default List<String> toCsv(InAiParameter inAiParameter) {
+        return List.of(
+                inAiParameter.getDigitalServiceUid(),
+                inAiParameter.getModelName(),
+                inAiParameter.getNbParameters(),
+                inAiParameter.getFramework(),
+                inAiParameter.getQuantization(),
+                inAiParameter.getTotalGeneratedTokens().toString(),
+                inAiParameter.getNumberUserYear().toString(),
+                inAiParameter.getAverageNumberRequest().toString(),
+                inAiParameter.getAverageNumberToken().toString(),
+                inAiParameter.getIsInference().toString(),
+                inAiParameter.getIsFinetuning().toString()
+        );
+    }
+
+    default List<String> toCsv(InAiInfrastructure inAiInfrastructure) {
+        return List.of(
+                inAiInfrastructure.getDigitalServiceUid(),
+                inAiInfrastructure.getComplementaryPue().toString(),
+                inAiInfrastructure.getNbGpu().toString(),
+                inAiInfrastructure.getGpuMemory().toString()
         );
     }
 
@@ -56,11 +83,12 @@ public interface InputToCsvRecord {
                 print(physicalEquipment.getElectricityConsumption()),
                 print(physicalEquipment.getManufacturer()),
                 print(physicalEquipment.getSizeDiskGb()),
+                print(physicalEquipment.getSizeMemoryGb()),
                 print(physicalEquipment.getCpuType()) // processor type
         );
     }
 
-    default List<String> toCsv(InVirtualEquipment virtualEquipment) {
+    default List<String> toCsv(InVirtualEquipment virtualEquipment, String location) {
 
         String entityName = virtualEquipment.getCommonFilters() == null ? null : virtualEquipment.getCommonFilters().getFirst();
         String cluster = virtualEquipment.getFilters() == null ? null : virtualEquipment.getFilters().getFirst();
@@ -71,7 +99,7 @@ public interface InputToCsvRecord {
                 print(virtualEquipment.getQuantity()), //quantite
                 print(virtualEquipment.getCloudProvider()), //cloudProvider
                 print(virtualEquipment.getInstanceType()), //InstanceType
-                print(virtualEquipment.getLocation()), //location
+                print(location), //location
                 print(virtualEquipment.getWorkload()), //averageWorkload
                 print(virtualEquipment.getUsageDuration()), //annualUsageDuration
                 print(virtualEquipment.getPhysicalEquipmentName()),
@@ -83,7 +111,7 @@ public interface InputToCsvRecord {
                 print(virtualEquipment.getType()),
                 print(virtualEquipment.getAllocationFactor()),
                 "", //nomSourceDonnee
-                print(virtualEquipment.getSizeDiskGb())
+                print(virtualEquipment.getSizeMemoryGb())
         );
     }
 

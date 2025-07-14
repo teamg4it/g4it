@@ -1,0 +1,32 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - AI Service
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: "1.0.0"
+
+tags:
+  - name: ai-service
+    description: All endpoint for ai service
+paths:
+
+  /ecomindai/aiModelConfig/type/{type}:
+    get:
+      tags:
+        - ai-service
+      summary: Get the available configurations for LLMs in term of name, nb_parameters, framework & quantization
+      operationId: getAIModelConfigurations
+      parameters:
+        - $ref: "#/components/parameters/typePathParam"
+      responses:
+        "200":
+          description: Return a list of existing configurations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AIModelConfigRest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"

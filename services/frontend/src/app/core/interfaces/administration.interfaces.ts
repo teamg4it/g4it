@@ -8,6 +8,7 @@ export interface Subscriber {
     roles?: Role[];
     criteria?: string[];
     authorizedDomains?: string[];
+    ecomindai: boolean;
 }
 
 export interface Organization {
@@ -54,4 +55,23 @@ export interface OrganizationCriteriaRest {
     dataRetentionDays: number;
     criteriaIs: string[];
     criteriaDs: string[];
+}
+
+export interface OrganizationSubscriber {
+    id: number;
+    name: string;
+    status: string;
+}
+
+export interface DomainSubscribers {
+    id: number;
+    name: string;
+    organizations: OrganizationSubscriber[];
+}
+
+export interface Workspace {
+    id: number;
+    name: string;
+    status: string;
+    defaultFlag: boolean;
 }

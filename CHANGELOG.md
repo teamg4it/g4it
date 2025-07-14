@@ -1,5 +1,82 @@
 # G4IT
 
+## 3.4.0
+
+### Major Changes
+
+- 1357 | Integrate EcoMindAI in G4IT
+- 1204 | Import csv files for digital services
+- 1263 | Naming network entries in the Digital Service module – Network input
+- 1261 | Naming user groups in the Digital Service module – Terminales input
+- 740 | Visualize different cloud instances for the same type
+
+### Minor Changes
+
+- 950 | Accessibility Corrections
+- 1320 | Mobile Screen Responsiveness for Top Header, Left side nav and Welcome page
+- 1255 | Add BoaviztAPI link to github
+- 1271 | Open Source - Be able to launch a calculation just after first installation
+- 1200 | New Bug on electricity consumption : total display different than sum compute manually with export file
+- 1193 | DB cleanup:Remove the link between a user and a digital service
+- 1257 | Very High level of Digital Service calculated - Click in May
+- 1200 | New Bug on electricity consumption : total display different than sum compute manually with export file
+- 1174 | When there is one criteria evaluated, multicriteria view should be disabled in digital service module and criteria should be selected in inventory module
+- 1251 | Character "%" breaks the note feature
+- 1258 | Table "task", the column "created_by" is not alway valuated
+
+## 3.3.0
+
+### Major Changes
+
+- 1079 | [BE]: Migrate digital services from "Demo" workspace to new workspace
+- 1001 | Modify the first connection workflow
+- 1149 | Visualize ecodesign & accessibility declaration
+- 1003 | Remove the link between a user and a digital service
+
+### Minor Changes
+
+- 1166 | [BE]: Allow G4IT to accept a copy/paste of model with special character from DataModel
+- 1189 | CalculImpactDSI Inventories have been deleted in Prod
+- 1205 | [BE] Error in administation page when changing criteria
+- 797 | Lag on the filter when there is a lot of data
+- 1218 | Issue on the DS export feature
+- 1246 | Inventory : Export available from Demo Workspace
+
+## 3.2.1
+
+### Minor Changes
+
+- 1215 | Back-end is crashing then restarting automatically
+
+## 3.2.0
+
+### Major Changes
+
+- 1004 | Welcome page
+
+### Minor Changes
+
+- 1108 | Workspace navigation from Admin module if i am not admin of the workspace
+- 795 | Update the docker image of BoaviztAPI
+- 1102 | Regression on total electricity consumption compute
+- 1144 | G4IT KO with "not specified" location
+
+## 3.1.0
+
+### Major Changes
+
+- 885 | New Header with Menu added, Left sidebar, Useful information page
+- 1038 | Allow to estimate a inventory if only virtual equipments = CLOUD_SERVICES
+- 1002 | Add a button to create its own personnal organization
+
+### Minor Changes
+
+- 1035| [Back-end] Improve the test cases and coverage for the new architecture
+- 1005| Prod : Manage Users - bug on the users list when organization changes
+- 1078| 2 files where without explicit error
+- 988 | [Digital service] Edit a value with a decimal reset the values to 0
+- 985 | Issue while exporting virtual equipment with new architecture
+
 ## 3.0.1
 
 ### Minor Changes

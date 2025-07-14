@@ -19,7 +19,7 @@ This usecase allows a project team to delete one of its digital service
 
 **Navigation Path**
 
--   My Digital Services / "Created by me" section / Delete button
+-   My Digital Services / Digital Service list view / Delete button
 -   My Digital Services / Digital Service view / Delete button
 
 **Access Conditions**
@@ -49,9 +49,9 @@ Decision2 -->|Yes|Step4[Digital Service deleted] -->Step1
 -   On click of the delete button, a warning and confirmation message appears :
     ![uc5_confirmationmessage.png](../images/uc5_confirmationmessage.png)
 
-| Management rules | Title  | Rule description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| ---------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1                | Delete | <li><u>_initialization rules_</u>: The button is displayed only if the digital service is on the section "Created with me".<br><li><u>_action rules_</u>: The confirmation message : "Are you sure you want to delete the digital service "Digital Service name" ? All information and associated footprint indicators will be definitely deleted." is displayed.<br> If the user click on "no", the window is closed and no change.<br>If the user click on "Yes", the digital service is deleted. The Digital service is not more displayed in the section "Created with me" and "Share with me" for the shared user. |
+| Management rules | Title  | Rule description                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1                | Delete | <li><u>_initialization rules_</u>: The button is displayed only if user has the write access. <br><li><u>_action rules_</u>: The confirmation message : "Are you sure you want to delete the digital service "Digital Service name" ? All information and associated footprint indicators will be definitely deleted." is displayed.<br> If the user click on "no", the window is closed and no change.<br>If the user click on "Yes", the digital service is deleted. |
 
 ## Sequence Diagram
 
@@ -64,6 +64,6 @@ participant DataBase
 
 RND ->> front: Click on "Delete" button
 front ->> back: DELETE /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}
-back -> DataBase: Delete the service, corresponding equipments and the indicator data
-back ->> front: Remove the service in the suited list
+back -> DataBase: Delete the digital service, corresponding data from tables in_physical_equipment,<br> in_virtual_equipment, in_datacenter and tasks
+back ->> front: Remove the digital service in the suited list
 {{</ mermaid >}}

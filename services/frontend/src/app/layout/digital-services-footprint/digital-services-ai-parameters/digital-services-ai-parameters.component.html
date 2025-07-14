@@ -1,0 +1,237 @@
+<div class="form-container">
+    <form [formGroup]="terminalsForm" (ngSubmit)="submitFormData()">
+        <div class="form-section">
+            <label class="section-label">
+                <h3>{{ "digital-services-ai-parameter.devices" | translate }}</h3>
+            </label>
+            <div class="form-row">
+                <!-- Model -->
+                <div class="label-input-div-form">
+                    <label for="modelInput">{{
+                        "digital-services-ai-parameter.model" | translate
+                    }}</label>
+                    <p-dropdown
+                        [options]="modelOptions"
+                        formControlName="modelName"
+                        placeholder="Select model"
+                    ></p-dropdown>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            terminalsForm.get('modelName')?.invalid &&
+                            terminalsForm.get('modelName')?.touched
+                        "
+                    >
+                        {{ "digital-services-ai-parameter.model" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                </div>
+
+                <!-- Parameter -->
+                <div class="label-input-div-form">
+                    <label for="parameterInput">{{
+                        "digital-services-ai-parameter.parameter" | translate
+                    }}</label>
+                    <p-dropdown
+                        [options]="parameterOptions"
+                        formControlName="nbParameters"
+                        placeholder="Select parameter"
+                    ></p-dropdown>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            terminalsForm.get('nbParameters')?.invalid &&
+                            terminalsForm.get('nbParameters')?.touched
+                        "
+                    >
+                        {{ "digital-services-ai-parameter.parameter" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                </div>
+
+                <!-- Framework -->
+                <div class="label-input-div-form">
+                    <label for="frameworkInput">{{
+                        "digital-services-ai-parameter.framework" | translate
+                    }}</label>
+                    <p-dropdown
+                        [options]="frameworkOptions"
+                        formControlName="framework"
+                        placeholder="Select framework"
+                    ></p-dropdown>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            terminalsForm.get('framework')?.invalid &&
+                            terminalsForm.get('framework')?.touched
+                        "
+                    >
+                        {{ "digital-services-ai-parameter.framework" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                </div>
+
+                <!-- Quantization -->
+                <div class="label-input-div-form">
+                    <label for="quantizationInput">{{
+                        "digital-services-ai-parameter.quantization" | translate
+                    }}</label>
+                    <p-dropdown
+                        [options]="quantizationOptions"
+                        formControlName="quantization"
+                        placeholder="Select quantization"
+                    ></p-dropdown>
+                    <p
+                        class="error-text"
+                        *ngIf="
+                            terminalsForm.get('quantization')?.invalid &&
+                            terminalsForm.get('quantization')?.touched
+                        "
+                    >
+                        {{ "digital-services-ai-parameter.quantization" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label class="section-label"
+                ><h3>{{ "digital-services-ai-parameter.stages" | translate }}</h3></label
+            >
+            <div class="form-row">
+                <!-- Inference -->
+                <div class="checkbox-item">
+                    <p-checkbox
+                        inputId="inference"
+                        binary="true"
+                        formControlName="isInference"
+                        [label]="'digital-services-ai-parameter.inference' | translate"
+                        (onChange)="onCheckboxChange('isInference')"
+                    >
+                    </p-checkbox>
+                </div>
+
+                <!-- Finetuning -->
+                <div class="checkbox-item">
+                    <p-checkbox
+                        inputId="finetuning"
+                        binary="true"
+                        formControlName="isFinetuning"
+                        [label]="'digital-services-ai-parameter.fintuning' | translate"
+                        (onChange)="onCheckboxChange('isFinetuning')"
+                    >
+                    </p-checkbox>
+                </div>
+                <span class="pi pi-info-circle text-red-900">
+                    {{
+                        "digital-services-ai-parameter.finetuning-disabled-message"
+                            | translate
+                    }}</span
+                >
+            </div>
+        </div>
+        @if (isInference) {
+            <div class="form-section">
+                <label class="section-label"
+                    ><h3>
+                        {{ "digital-services-ai-parameter.inference" | translate }}
+                    </h3></label
+                >
+                <div class="form-row">
+                    <!-- number of users -->
+                    <div class="label-input-div-form">
+                        <label for="nb-user-year">{{
+                            "digital-services-ai-parameter.numberOfUsers" | translate
+                        }}</label>
+                        <p-inputNumber
+                            formControlName="numberUserYear"
+                            inputId="nb-user-year"
+                            [min]="0"
+                            mode="decimal"
+                        ></p-inputNumber>
+                        <p
+                            class="error-text"
+                            *ngIf="
+                                terminalsForm.get('numberUserYear')?.invalid &&
+                                terminalsForm.get('numberUserYear')?.touched
+                            "
+                        >
+                            {{
+                                "digital-services-ai-parameter.numberOfUsers" | translate
+                            }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    </div>
+
+                    <div class="inference-operation-sign">x</div>
+
+                    <!-- average request -->
+                    <div class="label-input-div-form">
+                        <label for="average-request">{{
+                            "digital-services-ai-parameter.averageRequest" | translate
+                        }}</label>
+                        <p-inputNumber
+                            formControlName="averageNumberRequest"
+                            inputId="average-request"
+                            [min]="0"
+                            mode="decimal"
+                        ></p-inputNumber>
+                        <p
+                            class="error-text"
+                            *ngIf="
+                                terminalsForm.get('averageNumberRequest')?.invalid &&
+                                terminalsForm.get('averageNumberRequest')?.touched
+                            "
+                        >
+                            {{
+                                "digital-services-ai-parameter.averageRequest" | translate
+                            }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    </div>
+
+                    <div class="inference-operation-sign">x</div>
+
+                    <!-- average token -->
+                    <div class="label-input-div-form">
+                        <label for="average-number-token">{{
+                            "digital-services-ai-parameter.averageToken" | translate
+                        }}</label>
+                        <p-inputNumber
+                            formControlName="averageNumberToken"
+                            inputId="average-number-token"
+                            [min]="0"
+                            mode="decimal"
+                        ></p-inputNumber>
+                        <p
+                            class="error-text"
+                            *ngIf="
+                                terminalsForm.get('averageNumberToken')?.invalid &&
+                                terminalsForm.get('averageNumberToken')?.touched
+                            "
+                        >
+                            {{ "digital-services-ai-parameter.averageToken" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    </div>
+
+                    <div class="inference-operation-sign">=</div>
+
+                    <!-- total token generated -->
+                    <div class="label-input-div-form">
+                        <label for="total-generated-tokens">{{
+                            "digital-services-ai-parameter.totalTokenGenerate" | translate
+                        }}</label>
+                        <p-inputNumber
+                            formControlName="totalGeneratedTokens"
+                            inputId="total-generated-tokens"
+                            mode="decimal"
+                        ></p-inputNumber>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (isFinetuning) {}
+    </form>
+</div>

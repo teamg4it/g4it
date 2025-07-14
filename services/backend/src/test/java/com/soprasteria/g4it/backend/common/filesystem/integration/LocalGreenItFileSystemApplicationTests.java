@@ -15,9 +15,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.FileSystemUtils;
@@ -34,10 +34,10 @@ class LocalGreenItFileSystemApplicationTests {
     @Autowired
     private FileSystem fileSystem;
 
-    @MockBean
+    @Mock
     private VaultAccessClient vaultAccessClient;
 
-    @MockBean
+    @Mock
     private CacheManager cacheManager;
 
     @AfterAll
@@ -57,14 +57,16 @@ class LocalGreenItFileSystemApplicationTests {
         assertFalse(new File("target/local-filesystem/input").exists());
         assertFalse(new File("target/local-filesystem/work").exists());
         assertFalse(new File("target/local-filesystem/output").exists());
-        assertFalse(new File("target/local-filesystem/template").exists());
+        assertFalse(new File("target/local-filesystem/is_template").exists());
+        assertFalse(new File("target/local-filesystem/ds_template").exists());
 
         Assertions.assertEquals(LocalFileStorage.class, fileSystem.mount("local", "G4IT").getClass());
 
         assertTrue(new File("target/local-filesystem/local/G4IT/input").exists());
         assertTrue(new File("target/local-filesystem/local/G4IT/work").exists());
         assertTrue(new File("target/local-filesystem/local/G4IT/output").exists());
-        assertTrue(new File("target/local-filesystem/local/G4IT/template").exists());
+        assertTrue(new File("target/local-filesystem/local/G4IT/is_template").exists());
+        assertTrue(new File("target/local-filesystem/local/G4IT/ds_template").exists());
     }
 
 }

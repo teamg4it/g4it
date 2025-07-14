@@ -7,19 +7,20 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
+import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceLink;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceShared;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
+import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
@@ -39,20 +40,19 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceServiceTest {
 
-    final static Long ORGANIZATION_ID = 1L;
-    final static String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
-    final static String SUBSCRIBER = "subscriber";
-    final static long User_ID = 1;
-
-    final static List<String> criteriaList = List.of("ionising-radiation", "climate-change");
+    private static final Long ORGANIZATION_ID = 1L;
+    private static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
+    private static final String SUBSCRIBER = "subscriber";
+    private static final long USER_ID = 1;
+    private static final Boolean IS_AI = false;
 
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
@@ -68,11 +68,6 @@ class DigitalServiceServiceTest {
     @Mock
     private SubscriberRepository subscriberRepository;
     @Mock
-    private DigitalServiceLinkRepository digitalServiceLinkRepository;
-    @Mock
-    private DigitalServiceSharedRepository digitalServiceSharedRepository;
-
-    @Mock
     private DigitalServiceMapper digitalServiceMapper;
     @Mock
     private DigitalServiceReferentialService digitalServiceReferentialService;
@@ -82,6 +77,14 @@ class DigitalServiceServiceTest {
     private FileMapperInfo fileInfo;
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Mock
+    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    @Mock
+    private InDatacenterRepository inDatacenterRepository;
+    @Mock
+    private InAiParameterRepository inAiParameterRepository;
+    @Mock
+    private InAiInfrastructureRepository inAiInfrastructureRepository;
     @InjectMocks
     private DigitalServiceService digitalServiceService;
 
@@ -90,54 +93,71 @@ class DigitalServiceServiceTest {
 
         final String organizationName = "test";
         final Organization linkedOrganization = Organization.builder().name(organizationName).build();
-        final User user = User.builder().id(User_ID).build();
+        final User user = User.builder().id(USER_ID).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
         final String expectedName = "Digital Service 1";
         final List<DigitalService> existingDigitalService = new ArrayList<>();
 
         final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).build();
-        when(digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, User_ID)).thenReturn(existingDigitalService);
+        when(digitalServiceRepository.findByOrganization(linkedOrganization)).thenReturn(existingDigitalService);
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
-        when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, USER_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
         verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
-        verify(digitalServiceRepository, times(1)).findByOrganizationAndUserId(linkedOrganization, User_ID);
+        verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
-        verify(userRepository, times(1)).findById(User_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
     }
 
     @Test
     void shouldCreateNewDigitalService_withExistingDigitalService() {
         final String organizationName = "test";
-        final User user = User.builder().id(User_ID).build();
+        final User user = User.builder().id(USER_ID).build();
         final Organization linkedOrganization = Organization.builder().name(organizationName).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
         final String expectedName = "Digital Service 2";
         final List<DigitalService> existingDigitalService = List.of(DigitalService.builder().name("Digital Service 1").build(), DigitalService.builder().name("My Digital Service").build());
 
         final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).build();
-        when(digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, User_ID)).thenReturn(existingDigitalService);
+        when(digitalServiceRepository.findByOrganization(linkedOrganization)).thenReturn(existingDigitalService);
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
-        when(userRepository.findById(User_ID)).thenReturn(Optional.of(user));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, User_ID);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, USER_ID, IS_AI);
 
         assertThat(result).isEqualTo(expectedBo);
 
         verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
-        verify(digitalServiceRepository, times(1)).findByOrganizationAndUserId(linkedOrganization, User_ID);
+        verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
-        verify(userRepository, times(1)).findById(User_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
+    }
+
+    @Test
+    void deleteDigitalService_shouldCallAllRepositoriesWithCorrectUid() {
+        // Arrange
+        String digitalServiceUid = "ds-123";
+
+        // Act
+        digitalServiceService.deleteDigitalService(digitalServiceUid); // appelle ta méthode
+
+        // Assert : on vérifie que tous les repositories ont bien été appelés
+        verify(inVirtualEquipmentRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(inPhysicalEquipmentRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(inDatacenterRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(inAiParameterRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(inAiInfrastructureRepository).deleteByDigitalServiceUid(digitalServiceUid);
+        verify(digitalServiceRepository).deleteById(digitalServiceUid);
     }
 
     @Test
@@ -145,28 +165,20 @@ class DigitalServiceServiceTest {
         final String organizationName = "test";
         final Organization linkedOrganization = Organization.builder().name(organizationName).build();
         User creator = User.builder().id(1L).firstName("first").lastName("last").build();
-        User member = User.builder().id(2L).firstName("test").lastName("").build();
 
         DigitalService digitalService = DigitalService.builder().name("name").user(creator).build();
-        List<DigitalServiceShared> sharedDigitalServices = List.of(DigitalServiceShared.builder().digitalService(DigitalService.builder().name("digitalService-2").user(member).build()).build());
         final DigitalServiceBO digitalServiceBo = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
 
         when(digitalServiceMapper.toBusinessObject(anyList())).thenReturn(List.of(digitalServiceBo));
 
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
-        when(digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, User_ID)).thenReturn(List.of(digitalService));
-        when(digitalServiceSharedRepository.findByOrganizationAndUserId(linkedOrganization, User_ID)).thenReturn(sharedDigitalServices);
-        when(digitalServiceSharedRepository.findByDigitalServiceUid(DIGITAL_SERVICE_UID))
-                .thenReturn(List.of(DigitalServiceShared.builder().user(member).build()));
+        when(digitalServiceRepository.findByOrganization(linkedOrganization)).thenReturn(List.of(digitalService));
 
-        List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(ORGANIZATION_ID, User_ID);
+        List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(ORGANIZATION_ID, IS_AI);
         assertThat(result).isEqualTo(List.of(digitalServiceBo));
 
-        verify(digitalServiceRepository, times(1)).findById(DIGITAL_SERVICE_UID);
+        verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);
         verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
-        verify(digitalServiceRepository, times(1)).findByOrganizationAndUserId(linkedOrganization, User_ID);
-        verify(digitalServiceSharedRepository, times(1)).findByOrganizationAndUserId(linkedOrganization, User_ID);
         verify(digitalServiceMapper, times(1)).toBusinessObject(anyList());
 
     }
@@ -284,87 +296,52 @@ class DigitalServiceServiceTest {
     }
 
     @Test
-    void testShareDigitalService_DigitalServiceFound() {
-        String subscriber = "subscriber";
-        Long organizationId = 1L;
+    void digitalServiceExists_WhenSubscriberMatchesAndServiceExists_ReturnsTrue() {
 
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(DigitalService.builder().uid(DIGITAL_SERVICE_UID).build()));
-
-        DigitalServiceLink savedDigitalServiceLink = DigitalServiceLink.builder().digitalService(DigitalService.builder().uid(DIGITAL_SERVICE_UID).build()).uid("mockedUid").build();
-        savedDigitalServiceLink.setUid("mockedUid");
-
-        String expectedUrl = String.format("/subscribers/%s/organizations/%d/digital-services/%s/share/%s",
-                subscriber, organizationId, DIGITAL_SERVICE_UID, "mockedUid");
-        when(digitalServiceLinkRepository.save(any(DigitalServiceLink.class))).thenReturn(savedDigitalServiceLink);
-
-        String result = digitalServiceService.shareDigitalService(subscriber, organizationId, DIGITAL_SERVICE_UID);
-        verify(digitalServiceLinkRepository, times(1)).save(any());
-        assertEquals(expectedUrl, result);
-    }
-
-    @Test
-    void testShareDigitalService_DigitalServiceNotFound() {
-        String subscriber = "subscriber";
-        Long organizationId = 1L;
-
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.empty());
-
-        G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                digitalServiceService.shareDigitalService(subscriber, organizationId, DIGITAL_SERVICE_UID));
-
-        verify(digitalServiceRepository, times(1)).findById(DIGITAL_SERVICE_UID);
-
-        String expectedMessage = String.format("Digital service %s not found in %s/%d", DIGITAL_SERVICE_UID, subscriber, organizationId);
-        assertEquals(expectedMessage, exception.getMessage());
-    }
-
-    @Test
-    void testLinkDigitalServiceToUser_SharedLinkExpired() {
-
-        String sharedUid = "57d82582-b9ae-46b9-a430-b485b5e0367e";
-
+        final Organization organization = Organization.builder().name("test")
+                .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
 
-        // if the link has expired
-        when(digitalServiceLinkRepository.findById(sharedUid)).thenReturn(Optional.empty());
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
-        G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                digitalServiceService.linkDigitalServiceToUser(SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID, sharedUid, User_ID));
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(organization);
+        when(digitalServiceRepository.findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID))
+                .thenReturn(Optional.of(digitalService));
 
-        verify(digitalServiceLinkRepository, times(1)).findById(sharedUid);
-        verify(digitalServiceRepository, times(1)).findById(DIGITAL_SERVICE_UID);
+        boolean result = digitalServiceService.digitalServiceExists(
+                SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
 
-        String expectedMessage = String.format("The shared url for Digital service %s/%s/%d has expired.", DIGITAL_SERVICE_UID, SUBSCRIBER, ORGANIZATION_ID);
-        assert expectedMessage.equals(exception.getMessage());
+        assertTrue(result);
+        verify(digitalServiceRepository).findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID);
     }
 
     @Test
-    void testLinkDigitalServiceToUser_DigitalServiceNotFound() {
+    void digitalServiceExists_WhenSubscriberMismatch_ReturnsFalse() {
 
-        String sharedUid = "57d82582-b9ae-46b9-a430-b485b5e0367e";
+        final Organization organization = Organization.builder().name("test")
+                .subscriber(Subscriber.builder().name("Subscriber2").build()).build();
 
-        //digital service doesn't exist
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID))
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(organization);
+
+        boolean result = digitalServiceService.digitalServiceExists(
+                SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
+
+        assertFalse(result);
+        verify(digitalServiceRepository, never()).findByOrganizationAndUid(any(), any());
+    }
+
+    @Test
+    void digitalServiceExists_WhenSubscriberMatchesAndServiceNotExist_ReturnsFalse() {
+
+        final Organization organization = Organization.builder().name("test")
+                .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build();
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(organization);
+        when(digitalServiceRepository.findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID))
                 .thenReturn(Optional.empty());
 
-        G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                digitalServiceService.linkDigitalServiceToUser(SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID, sharedUid, User_ID));
+        boolean result = digitalServiceService.digitalServiceExists(
+                SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
 
-        verify(digitalServiceRepository, times(1)).findById(DIGITAL_SERVICE_UID);
-
-        String expectedMessage = String.format("Digital service %s not found in %s/%d", DIGITAL_SERVICE_UID, SUBSCRIBER, ORGANIZATION_ID);
-        assertEquals(expectedMessage, exception.getMessage());
-    }
-
-    @Test
-    void shouldUnlinkSharedDigitalServiceWhenPresent() {
-        DigitalServiceShared digitalServiceShared = DigitalServiceShared.builder().digitalService(DigitalService.builder().name("digitalService-2").build()).build();
-
-        when(digitalServiceSharedRepository.findByDigitalServiceUidAndUserId(DIGITAL_SERVICE_UID, User_ID))
-                .thenReturn(Optional.of(digitalServiceShared));
-        digitalServiceService.unlinkSharedDigitalService(DIGITAL_SERVICE_UID, User_ID);
-        verify(digitalServiceSharedRepository, times(1)).delete(digitalServiceShared);
-
+        assertFalse(result);
+        verify(digitalServiceRepository).findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID);
     }
 
 }

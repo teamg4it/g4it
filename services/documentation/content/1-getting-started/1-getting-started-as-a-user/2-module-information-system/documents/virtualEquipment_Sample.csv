@@ -1,0 +1,8 @@
+﻿nomEquipementVirtuel;nomEquipementPhysique;nomSourceDonneeEquipementPhysique;quantite;vCPU;capaciteStockage;cleRepartition;location;typeEqv;dureeUtilisationAnnuelle;typeInfrastructure;provider;typeInstance;chargeMoy;cluster;consoElecAn;nomEntite;nomSourceDonnee
+VM 1;Host_ComputeServer_L;Cloud Management  tool;1;2;;;India;calcul;8760;NON_CLOUD_SERVERS;;;;;;;
+VM 6;Host_StorageServer_L;Cloud Management  tool;1;;8;;India;stockage;8760;NON_CLOUD_SERVERS;;;;;;;
+SW1;SwitchStandard1;Other;1;;;0.01;India;;8760;NON_CLOUD_SERVERS;;;;;;;
+AZ1;;;1;;;;India;;8760;CLOUD_SERVICES;azure;d2ads_v5;25;;;;
+AWS1;;;1;;;;India;;8760;CLOUD_SERVICES;aws;a1.medium;30;;;;
+SCALEWAY1;;;1;;;;India;;8760;CLOUD_SERVICES;scaleway;coparm1-16c-64g;30;;;;
+GCP1;;;1;;;;India;;8760;CLOUD_SERVICES;gcp;c4a-standard-1;30;;;;

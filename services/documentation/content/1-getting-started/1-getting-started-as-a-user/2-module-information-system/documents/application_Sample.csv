@@ -1,0 +1,10 @@
+nomApplication;typeEnvironnement;nomEquipementVirtuel;nomSourceDonneeEquipementVirtuel;domaine;sousDomaine;nomEntite;nomSourceDonnee;nomEquipementPhysique;associeAvecUnEquipmentCloud
+APP1;production;VM 1;;Domain1;SubDomain1;;;;
+APP1;production;VM 2;;Domain1;SubDomain1;;;;
+APP1;recette;VM 3;;Domain1;SubDomain1;;;;
+APP1;production;VM 4;;Domain1;SubDomain1;;;;
+APP1;production;VM 5;;Domain1;SubDomain1;;;;
+APP1;recette;VM 6;;Domain1;SubDomain1;;;;
+APP1;production;SW1;;Domain1;SubDomain1;;;;
+APP1;production;AZ1;;Domain1;SubDomain1;;;;
+APP1;production;AWS1;;Domain1;SubDomain1;;;;

@@ -1,0 +1,200 @@
+<nav
+    class="left-sidebar-nav lg:flex flex-row lg:flex-column align-items-stretch h-5rem lg:h-screen w-screen lg:w-auto bottom-0 lg:bottom-auto fixed lg:static z-1 lg:z-auto justify-content-between"
+    role="navigation"
+    [attr.aria-label]="'common.left-navigation' | translate"
+>
+    @if (!isMobile()) {
+        <div class="flex align-items-center justify-content-center mb-2 mt-4 logo-icon">
+            <img
+                src="assets/images/logos/logo-overgreen.svg"
+                alt="{{ 'common.overgreen-logo' | translate }}"
+                width="50"
+            />
+        </div>
+        <div class="flex align-items-center justify-content-center extra-div"></div>
+    }
+    <div
+        class="flex align-items-center justify-content-center my-1"
+        [ngClass]="{ 'bg-light-green': selectedPage() === constants.WELCOME_PAGE }"
+    >
+        <a
+            [routerLink]="constants.WELCOME_PAGE"
+            id="home"
+            [ngClass]="{
+                'home-padding-zoomin': isZoomedIn(),
+                'home-padding': !isZoomedIn(),
+            }"
+        >
+            <div class="flex justify-content-center">
+                <img
+                    src="assets/images/icons/icon-home.svg"
+                    alt="{{ 'welcome-page.title' | translate }}"
+                    [attr.title]="homeTitle()"
+                />
+            </div>
+            <span class="text-white span-font nav-span-text">{{
+                "welcome-page.name" | translate
+            }}</span>
+        </a>
+    </div>
+    <div
+        class="flex align-items-center justify-content-center my-1"
+        [ngClass]="{ 'bg-light-green': selectedPage() === 'inventories' }"
+    >
+        <a
+            *ngIf="userService.isAllowedInventoryRead$ | async"
+            [routerLink]="selectedPath + '/inventories'"
+            id="information-system"
+            [ngClass]="{
+                'inventory-padding-zoomin': isZoomedIn(),
+                'inventory-padding': !isZoomedIn(),
+            }"
+        >
+            <div class="flex justify-content-center">
+                <img
+                    src="assets/images/icons/icon-dashboard.svg"
+                    alt="{{
+                        'inventories.title'
+                            | translate: { OrganizationName: selectedOrganization.name }
+                    }}"
+                    [attr.title]="inventoriesTitle()"
+                />
+            </div>
+            <span class="text-white span-font nav-span-text">{{
+                "common.inventories" | translate
+            }}</span>
+        </a>
+    </div>
+    <div
+        class="flex align-items-center justify-content-center my-1"
+        [attr.aria-label]="'header.menu' | translate"
+        [ngClass]="{ 'bg-light-green': selectedPage() === 'digital-services' }"
+    >
+        <a
+            *ngIf="userService.isAllowedDigitalServiceRead$ | async"
+            [routerLink]="selectedPath + '/digital-services'"
+            id="digital-services"
+            [ngClass]="{
+                'digital-padding-zoomin': isZoomedIn(),
+                'digital-padding': !isZoomedIn(),
+            }"
+        >
+            <div class="flex justify-content-center">
+                <img
+                    src="assets/images/icons/icon-digital-service.svg"
+                    alt="{{
+                        'digital-services.title'
+                            | translate: { OrganizationName: selectedOrganization.name }
+                    }}"
+                    [attr.title]="digitalServicesTitle()"
+                    [attr.aria-current]="digitalServicesAriaCurrent()"
+                />
+            </div>
+
+            <span class="text-white span-font nav-span-text ds-text">{{
+                "common.digital-services" | translate
+            }}</span>
+        </a>
+    </div>
+    @if (isMobile() && isPlusMenuEnabled) {
+        <div class="flex align-items-center justify-content-center my-1 plus-menu-option">
+            <a
+                [ngClass]="{
+                    'digital-padding-zoomin': isZoomedIn(),
+                    'digital-padding': !isZoomedIn(),
+                }"
+                (click)="togglePlusMenu()"
+            >
+                <div class="flex justify-content-center">
+                    <img
+                        src="assets/images/icons/icon-outline.svg"
+                        alt="{{
+                            'common.plus-menu'
+                                | translate
+                                    : { OrganizationName: selectedOrganization.name }
+                        }}"
+                    />
+                </div>
+                <span class="text-white span-font nav-span-text ds-text">
+                    {{ "common.plus-menu" | translate }}
+                </span>
+            </a>
+        </div>
+    }
+    @if (
+        (userService.isAllowedEcoMindAiRead$ | async) &&
+        isEcoMindEnabledForCurrentSubscriber &&
+        isEcoMindModuleEnabled
+    ) {
+        <div
+            class="flex align-items-center justify-content-center my-1"
+            [attr.aria-label]="'header.menu' | translate"
+            [ngClass]="{ 'bg-light-green': selectedPage() === 'eco-mind-ai' }"
+        >
+            <a
+                [routerLink]="selectedPath + '/eco-mind-ai'"
+                id="eco-mind-ai"
+                [ngClass]="{
+                    'digital-padding-zoomin': isZoomedIn(),
+                    'digital-padding': !isZoomedIn(),
+                }"
+            >
+                <div class="flex justify-content-center">
+                    <img
+                        src="assets/images/icons/icon-digital-service.svg"
+                        alt="{{
+                            'eco-mind-ai.title'
+                                | translate
+                                    : { OrganizationName: selectedOrganization.name }
+                        }}"
+                        [attr.title]="ecoMindAiTitle()"
+                        [attr.aria-current]="ecoMindAiAriaCurrent()"
+                    />
+                </div>
+
+                <span class="text-white span-font nav-span-text ds-text">{{
+                    "common.eco-mind-ai" | translate
+                }}</span>
+            </a>
+        </div>
+    }
+    @if (!isMobile()) {
+        <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
+    }
+    <div
+        class="flex align-items-center justify-content-center my-1 lg:mt-2 lg:mb-5 mr-2 lg:mr-auto"
+        [ngClass]="{ 'bg-light-green': selectedPage() === 'administration' }"
+    >
+        <a
+            routerLink="/administration/users"
+            *ngIf="isAdminOnSubscriberOrOrganization"
+            id="administration"
+            [ngClass]="{
+                'admin-padding-zoomin': isZoomedIn(),
+                'admin-padding': !isZoomedIn(),
+            }"
+        >
+            <div class="flex justify-content-center">
+                <img
+                    src="assets/images/icons/icon-key.svg"
+                    alt="{{ 'common.administration' | translate }}"
+                    [attr.title]="administrationTitle()"
+                    [attr.aria-current]="administrationAriaCurrent()"
+                    width="25"
+                />
+            </div>
+            <span class="text-white span-font nav-span-text">{{
+                "common.administration" | translate
+            }}</span>
+        </a>
+    </div>
+    @if (!isZoomedIn()) {
+        <div class="flex align-items-center justify-content-center mb-5">
+            <img
+                src="assets/images/logos/logo-ssg.svg"
+                alt="{{ 'common.soprasteria-logo' | translate }}"
+                width="38"
+            />
+        </div>
+    }
+</nav>

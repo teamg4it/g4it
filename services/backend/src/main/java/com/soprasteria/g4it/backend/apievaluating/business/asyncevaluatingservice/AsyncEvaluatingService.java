@@ -15,10 +15,12 @@ import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
+import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,9 @@ public class AsyncEvaluatingService implements ITaskExecute {
 
     @Autowired
     EvaluateService evaluateService;
+
+    @Autowired
+    EvaluateAiService evaluateAiService;
 
     @Autowired
     private ExportService exportService;
@@ -56,9 +61,15 @@ public class AsyncEvaluatingService implements ITaskExecute {
         task.setStatus(TaskStatus.IN_PROGRESS.toString());
         taskRepository.save(task);
 
+
         try {
             Path exportDirectory = exportService.createExportDirectory(taskId);
-            evaluateService.doEvaluate(context, task, exportDirectory);
+
+            if(context.isAi()) {
+                evaluateAiService.doEvaluateAi(context, task, exportDirectory);
+            } else {
+                evaluateService.doEvaluate(context, task, exportDirectory);
+            }
             exportService.uploadExportZip(taskId, context.getSubscriber(), context.getOrganizationId().toString());
             exportService.clean(taskId);
 
@@ -73,6 +84,8 @@ public class AsyncEvaluatingService implements ITaskExecute {
             log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
             task.setStatus(TaskStatus.FAILED.toString());
             details.add(LogUtils.error(e.getMessage()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
             task.setDetails(details);
         }
@@ -80,7 +93,7 @@ public class AsyncEvaluatingService implements ITaskExecute {
         taskRepository.save(task);
 
         long end = System.currentTimeMillis();
-        log.info("End load input files for {}/{}. Time taken: {}s", context.log(), taskId, (end - start) / 1000);
+        log.info("End evaluating for {}/{}. Time taken: {}s", context.log(), taskId, (end - start) / 1000);
     }
 
 }

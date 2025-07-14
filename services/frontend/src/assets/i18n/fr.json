@@ -25,12 +25,17 @@
         "next": "Suivant",
         "previous": "Précédent",
         "mandatory": "est obligatoire",
+        "optional": "Optionnel",
         "calculate": "CALCULER",
         "duplicate": "DUPLIQUER",
         "add": "Ajouter",
+        "attention": "Attention",
+        "error": "Erreur",
+        "success": "Succès",
         "heading": "Titre",
         "subheading": "Sous-titre",
         "normal": "Normal",
+        "min": "doit être supérieure ou égale à 1",
         "peopleeq": "Hab. eq.",
         "peopleeq-min": "hab. eq.",
         "no-data": "Aucun résultats disponibles",
@@ -55,6 +60,8 @@
         "parameters": "Paramètres",
         "administration": "Administration",
         "homepage": "Page d'accueil",
+        "home": "Accueil",
+        "workspace-name": "Espace de travail",
         "access-filters": "Accéder aux filtres de mes indicateurs",
         "refresh": "Actualiser",
         "all": "Tout sélectionner",
@@ -77,7 +84,9 @@
             "attachedNote": "Cliquer pour consulter la note",
             "download": "Cliquez pour télécharger les résultats",
             "note": "Note",
-            "sharedUsers": "Nombre de personnes ayant accès à un service numérique"
+            "accordion-open": "Cliquez pour afficher les sous-domaines",
+            "accordion-close": "Cliquez pour masquer les sous-domaines",
+            "import": "Cliquez pour importer les données de service numériques"
         },
         "note": {
             "add": "Ajouter note",
@@ -89,7 +98,7 @@
         },
         "confirmMessageForEditor": "Êtes-vous sûr de vouloir supprimer cette note ?",
         "cancelConfirmMsgForEditor": "En quittant cette page, tout travail non sauvegardé sera perdu. Êtes-vous sûr de vouloir continuer ?",
-        "versions": "Versions",
+        "versions": "G4IT version",
         "updateInProgress": "mise à jour en cours",
         "preparingResults": "Résultats en cours de préparation",
         "fileNoLongerAvailable": "La fichier n'est plus disponible",
@@ -107,7 +116,48 @@
         "left-navigation": "Navigation à gauche",
         "font-selectbox": "Sélectionnez une police",
         "size-selectbox": "Sélectionnez une taille",
-        "position-selectbox": "Sélectionnez la position du contenu"
+        "position-selectbox": "Sélectionnez la position du contenu",
+        "about": "À propos de G4IT",
+        "workspaces": "Vos espaces de travail",
+        "logout": "DÉCONNEXION",
+        "useful-info": "Informations utiles",
+        "useful-line": "Vous trouverez ici quelques informations utiles concernant G4IT.",
+        "support": "Contact d'assistance",
+        "account-settings": "Paramètres du compte",
+        "help-center": "Centre d'aide",
+        "github-link": "Accéder à G4IT GitHub",
+        "boaviztapi-github-link": "Accéder à BoaviztAPI GitHub",
+        "doc-link": "Aller à la documentation",
+        "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
+        "inventories": "Inventaires",
+        "digital-services": "Services numériques",
+        "eco-mind-ai": "EcoMind AI (experimental)",
+        "skip-to-main-content": "Accéder au contenu principal",
+        "overgreen-logo": "Overgreen Logo",
+        "soprasteria-logo": "Sopra Steria Logo",
+        "no-document-upload": "Aucun document téléchargé",
+        "workspace": {
+            "create": "Créer un nouvel espace de travail",
+            "mandatory": "Obligatoire",
+            "choose-organisation": "Choisissez une organisation",
+            "no-organization-chosen": "Aucune organisation choisie",
+            "set-workspace-name": "Définir un nom",
+            "no-space-name": "Aucun nom d'espace indiqué",
+            "hint-text": "Avant de créer votre espace, veuillez vérifier dans quelle organisation il sera situé.",
+            "hint-text-workspace-name": "Choisissez un nom pour votre espace de travail. Il ne doit pas dépasser 20 caractères et ne peut contenir ni espaces ni caractères spéciaux.",
+            "select-organisation": "Sélectionnez une organisation",
+            "type-space-name": "Tapez le nom de l'espace",
+            "workspace-created": "Espace de travail créé",
+            "completed": "Complété",
+            "form-description": "Cet espace de travail vous permet d’évaluer l’impact environnemental de vos services numériques et de vos inventaires. Vous pouvez également inviter et gérer des contributeurs pour collaborer à vos évaluations.",
+            "cancel": "Annuler la création",
+            "create-workspace": "Créer un espace de travail",
+            "duplicate-error": "Le nom de l'espace de travail existe déjà",
+            "no-organization": "Aucune organisation correspondant à votre nom de domaine n’a été trouvée. Veuillez contacter votre administrateur pour demander l’accès ou vérifier la configuration de votre organisation.",
+            "space-name-maxlength": "Le nom de l'espace de travail ne doit pas dépasser 20 caractères.",
+            "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés."
+        },
+        "plus-menu": "Plus"
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"
@@ -115,7 +165,6 @@
     "digital-services": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
         "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
-        "copyLink": "COPIER LE LIEN",
         "not-found": "Le service numérique n'existe pas.",
         "expired": "Le lien de service numérique a expiré.",
         "linkCopied": "LIEN COPIÉ !",
@@ -128,6 +177,8 @@
         "Terminal": "Terminaux",
         "Server": "Serveurs hors Cloud",
         "CloudService": "Services Cloud",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "Paramètres AI",
         "Network": "Réseaux",
         "visualize": "Visualiser",
         "lifecycle": "Cycle de vie",
@@ -144,10 +195,60 @@
         "return": "Retourner à la liste de mes services numériques",
         "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",
         "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
-        "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
+        "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}",
+        "import": "Importer"
+    },
+    "eco-mind-ai": {
+        "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
+        "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
+        "copyLink": "COPIER LE LIEN",
+        "not-found": "Le service numérique IA n'existe pas.",
+        "expired": "Le lien du service numérique IA a expiré.",
+        "linkCopied": "LIEN COPIÉ !",
+        "title": "Mes Services Numériques IA - {{OrganizationName}}",
+        "page-title": "Mes Services Numériques IA",
+        "add": "Evaluer Un Nouveau Service IA",
+        "empty-digital-services": "Vous n'avez pas de service numérique.",
+        "impacts": "IMPACTS",
+        "raw": "Unité",
+        "Terminal": "Terminaux",
+        "Server": "Serveurs hors Cloud",
+        "CloudService": "Services Cloud",
+        "infrastructure": "Infrastructure",
+        "AiParameters": "Paramètres IA",
+        "Network": "Réseaux",
+        "visualize": "Visualiser",
+        "lifecycle": "Cycle de vie",
+        "vm": "VM",
+        "country": "Pays",
+        "type": "Type",
+        "creatorInfo": "Créateur",
+        "membersInfo": "Membres",
+        "popup": {
+            "delete-question": "Êtes-vous sûr de vouloir supprimer le service numérique IA",
+            "delete-text": "Toutes les informations et les indicateurs d'impact associés seront définitivement supprimés.",
+            "delete-question-shared": "En supprimant le lien vers ce service numérique IA, vous n'y aurez plus accès. Êtes-vous sûr ?"
+        },
+        "return": "Retourner à la liste de mes services numériques IA",
+        "choose-criteria": "Choisir les critères pour le service numérique IA {{digitalServiceName}}",
+        "delete-criteria": "Supprimer le service numérique IA {{digitalServiceName}}",
+        "unlink-digital-service": "Supprimer le lien avec le service IA {{digitalServiceName}}",
+
+        "ai-parameters": {
+            "success": "Paramètres sauvegardés avec succès",
+            "error": "Erreur lors de la récupération des modèles IA",
+            "missing-fields": "Champs manquants :",
+            "parameters-form": "Formulaire Paramètres :",
+            "infrastructure-form": "Formulaire Infrastructure :",
+            "save-success": "Données sauvegardées avec succès",
+            "save-error": "Une erreur est survenue lors de la sauvegarde",
+            "service-id-missing": "ID du service numérique non trouvé",
+            "fill-all-fields": "Veuillez remplir tous les champs et ouvrir les deux formulaires avant de sauvegarder"
+        }
     },
     "digital-services-terminals": {
         "new": "Nouveau terminal",
+        "edit": "Édition terminal",
         "devices": "Terminaux",
         "device": "Terminal",
         "add": "+ Ajouter un terminal",
@@ -155,25 +256,32 @@
         "type": "Type de terminal",
         "typeCode": "Type de terminal",
         "country": "Pays",
+        "name": "Nom",
         "nb-user": "Nombre d'utilisateurs uniques",
         "numberOfUsers": "Nombre d'utilisateurs uniques",
         "yearly-usage": "Temps moyen passé par utilisateur et par an",
         "hours": "heures",
         "table-yearly-usage": "Temps d'utilisation annuel par utilisateur",
         "yearlyUsageTimePerUser": "Temps d'utilisation annuel par utilisateur",
-        "lifespan": "Durée de vie moyenne de l'équipement (années)"
+        "lifespan": "Durée de vie moyenne de l'équipement (années)",
+        "error.terminal-already-exists": "Le terminal existe déjà",
+        "terminal-name": "Nom du terminal"
     },
     "digital-services-networks": {
         "new": "Nouveau Réseau",
+        "edit": "Édition Réseau",
         "networks": "Réseaux",
         "network": "Réseau",
         "add": "+ AJOUTER UN RÉSEAU",
         "id": "#",
+        "name": "Nom",
         "type": "Type",
         "typeCode": "Type",
         "yearly-go": "Quantité totale de Go échangés par an pour tous les utilisateurs",
         "table-yearly-go": "Quantité annuelle de Go échangés",
-        "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés"
+        "yearlyQuantityOfGbExchanged": "Quantité annuelle de Go échangés",
+        "network-name": "Nom du réseau",
+        "error.network-already-exists": "Le réseau existe déjà"
     },
     "digital-services-servers": {
         "Dedicated": "Dédié",
@@ -237,6 +345,7 @@
     },
     "digital-services-cloud-services": {
         "new": "Nouvelle instance Cloud",
+        "edit": "Édition instance Cloud",
         "cloud-services": "Services Cloud",
         "cloud-service": "Service Cloud",
         "add": "+ AJOUTER UN SERVICE CLOUD",
@@ -261,6 +370,90 @@
         "tooltip_average_workload": "Charge de travail moyenne",
         "tooltip_annual_usage": "Utilisation annuelle"
     },
+    "digital-services-ai-parameter": {
+        "new": "Nouveau terminal",
+        "devices": "Algorithme",
+        "device": "Algorithme",
+        "id": "#",
+        "country": "Pays",
+        "model": "Détails du modèle",
+        "parameter": "Paramètres",
+        "framework": "Framework",
+        "quantization": "Quantification",
+        "stages": "Etape",
+        "inference": "Inférence",
+        "fintuning": "Fintuning",
+        "finetuning-disabled-message": "Work in progress : le finetuning n'est pas pris en compte pour l'instant",
+        "numberOfUsers": "Nb d'utilisateurs par an",
+        "averageRequest": "Nb de requêtes par an",
+        "averageToken": "Nb de jetons générés par requête",
+        "totalTokenGenerate": "Nb total de jetons générés"
+    },
+
+    "digital-services-ai-infrastructure": {
+        "type": "Type",
+        "cpu-cores": "Nombre de cœurs CPU",
+        "gpu-count": "Nombre de GPU",
+        "gpu-memory": "Mémoire du GPU (Go)",
+        "ram-size": "Taille de la RAM (Go)",
+        "power-effectiveness": "Efficacité électrique",
+        "datacenter-pue": "PUE du datacenter",
+        "complementary-pue": "PUE complémentaire",
+        "energy-efficiency": "Efficacité énergétique",
+        "location": "Localisation"
+    },
+    "digital-services-import": {
+        "import": "Importer des données",
+        "non-cloud-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur l'infrastructure, en particulier les centres de données, les serveurs et les machines virtuelles.",
+        "cloud-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur l'infrastructure cloud en tant que service (IaaS).",
+        "template-text": "Si nécessaire, vous pouvez télécharger le modèle pour vous aider à créer de nouveaux fichiers.",
+        "templates": {
+            "datacenter-template-file": "Fichier de modèle de centre de données",
+            "physical-template-file": "Fichier modèle d'équipement physique",
+            "virtual-template-file": "Fichier de modèle d'équipement virtuel",
+            "type-size": "({{type}}, {{size}} Ko )"
+        },
+        "add-files": "Ajouter fichiers",
+        "non-cloud-server-upload-info": "Les serveurs non cloud téléchargent des informations",
+        "cloud-server-upload-info": "Les serveurs cloud téléchargent des informations",
+        "finish": "Finition",
+        "start-upload": "Commencer téléverser",
+        "date": "Date",
+        "time": "Temps",
+        "status": "Statut",
+        "rejected-files": "Fichiers rejetés",
+        "browse-file": "Parcourir fichier",
+        "datacenter": "Centre de données",
+        "physical-equipment": "Équipement physique",
+        "virtual-equipment": "Équipement virtuel"
+    },
+    "welcome-page": {
+        "title": "Page de bienvenue",
+        "name": "Accueil",
+        "hello": "Bonjour",
+        "about-g4it": "G4IT est conçu pour vous aider à mettre en œuvre une <strong>approche numérique durable</strong> pour vos <strong>systèmes d’information</strong> et vos <strong>services numériques.</strong>",
+        "getting-started": "Prêt à démarrer",
+        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d’un espace de travail à un autre via le menu situé en haut à droite de l’application (le nom de l’espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation {{ subscriberName }}, afin de réaliser vos propres évaluations et inviter d’autres utilisateurs à vous y rejoindre.",
+        "modules-access": "Accès aux modules",
+        "inventories": {
+            "title": "Inventaires",
+            "description": "Évaluez l’impact d’un ensemble d’équipements représentant tout ou partie du système d’information d’une organisation, d’un parc applicatif, d’un projet ou d’une équipe…",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
+        },
+        "digital-service": {
+            "title": "Services numériques",
+            "description": "Évaluez l’impact d’un service numérique qui est composé de trois niveaux : les terminaux des utilisateurs, les données échangées sur le réseau, et les infrastructures.",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
+        },
+        "eco-mind-ai": {
+            "title": "EcoMind AI",
+            "description": "Calculez l’impact d’un service intégrant un algorithme d’IA, orientez dès le démarrage les choix pour le réduire grâce aux bonnes pratiques et assurez son suivi tout au long du projet.",
+            "button": "Aller au service",
+            "button-disabled": "Demander de l'aide"
+        }
+    },
     "Jan": "janv",
     "Feb": "févr",
     "Mar": "mars",
@@ -282,7 +475,7 @@
         "inventory": "Inventaire",
         "page-title": "Mon Système d'information",
         "equipment-page-title": "Mon impact G4IT",
-        "title": "Mon Système d'information - Organisation {{OrganizationName}}",
+        "title": "Mon Système d'information - {{OrganizationName}}",
         "add": "Nouvel Inventaire",
         "created": "créé",
         "details.equipment": "EQUIPEMENT",
@@ -498,6 +691,9 @@
             "title": "Vers l'écoconception de votre service",
             "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères mentionnés à gauche de l’écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>principes de l'éco-conception</a>). L’une des manières d’éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3 role='content'>​ Une échelle adaptée à l'analyse multicritère : l’équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>consultez ce rapport sur l'impact environnemental des TIC</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d’Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
         },
+        "global-vision-ai": {
+            "title": "Comment faire mieux"
+        },
         "terminal": {
             "title": "Analyse et levier de l'écoconception",
             "content": "Vous regardez ici l'impact des terminaux utilisant votre service numérique.​ <br> <br> La méthode de calcul qui fait actuellement référence dans les méthodes d'ACV prend en compte le type d'équipement sollicité, sa localisation et le temps de parcours utilisateurs. ​<br> <br> Le type d'équipement sur lequel le service est consommé a une influence sur l'impact à la fabrication, à la distribution et à la fin de vie du matériel : plus l'équipement est imposant et complexe, plus ses impacts sont importants. Pour réduire l'impact, vous pouvez faire en sorte que votre service tourne sur des terminaux avec de petits écrans, sur des équipements anciens (OS sup à 5 ans, …) et peu performants; vous contribuerez alors à réduire le renouvellement du matériel…et la fracture numérique. ​<br> <br> La localisation des utilisateurs influe sur l'impact du service. Il est directement lié aux modes de production de <a href='https://ourworldindata.org/electricity-mix' target='_blank'>l'énergie électrique consommée lors de la phase d'utilisation du service</a>.​ <br> <br> Enfin, vous pouvez faire en sorte d'optimiser le parcours utilisateur en éliminant les fonctionnalités qui n'apportent que peu ou pas de valeur, ce qui permettra aussi d'alléger les infrastructures nécessaires."
@@ -652,30 +848,31 @@
     "administration": {
         "title": "Panneau d'administration",
         "manage-users": "Gérer les utilisateurs",
-        "manage-organizations": "Gérer les organisations",
+        "manage-workspaces": "Gérer les espaces de travail",
         "super-admin-title": "Super Admin",
-        "subsriber-placeholder": "Sélectionnez le souscripteur",
+        "organization-placeholder": "Choisissez l'organisation",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
             "on-deletion": "Confirmez la suppresion de la suppression de toutes les données de l'organisation.",
             "on-edit": "Changer le nom de l'organisation"
         },
-        "user-placeholder": "Choisissez l'organisation",
+        "user-placeholder": "Choisissez un espace de travail",
         "delete": "Supprimer",
         "cancel-deletion": "Annuler la suppression",
         "cancel-deletion-accessibility": "Annuler la suppresion de l'organisation {{organizationName}}",
-        "cancel-deletion-message": "Les données de l'organisation seront supprimées le {{date}}",
+        "cancel-deletion-message": "Les données de votre espace de travail seront supprimées le {{date}}",
         "delete-confirmation": "Confirmation de la suppresion",
-        "delete-message": "Au bout de 7 jours, toutes les données relatives à l'organisation seront supprimées. Êtes-vous sûr de vouloir supprimer cette organisation ?",
+        "delete-message": "Après 7 jours, toutes les données de votre espace de travail seront supprimées. Voulez-vous vraiment supprimer cet espace de travail ?",
         "user": {
             "accessAndRole": "Sélectionnez l'accès et le rôle",
             "access": "Accéder",
             "is-module": "Module Système d'Information",
             "ds-module": "Module Services Numériques",
+            "ecomind-module": "Module EcoMind",
             "role": "Rôle",
             "actions": "Actions",
             "add": "AJOUTER À L'ORGANISATION",
-            "select-org": "Sélectionnez une organisation",
+            "select-org": "Sélectionnez un espace de travail",
             "search-user": "Rechercher un utilisateur référencé",
             "list-members": "Liste des membres",
             "members": "membres",
@@ -689,7 +886,7 @@
             "searchEmailValidation": "Les caractères spéciaux ne sont pas autorisés sauf @.-_",
             "delete-message": "L'utilisateur {{FirstName}} {{LastName}} n'aura plus accès à cette organisation. Êtes-vous sur de vouloir continuer ?",
             "search": "Recherche",
-            "choose-criteria": "Choississez les critères pour le souscripteur {{subscriber}}",
+            "choose-criteria": "Choisissez les critères pour l'organisation {{subscriber}}",
             "error": "Au moins un critère doit être sélectionné",
             "is-header": "Module système d'information",
             "ds-header": "Module service numérique",
@@ -703,21 +900,21 @@
             "admin": "Administrateur"
         },
         "organization": {
-            "new": "Nouvelle organisation",
-            "addAnOrganization": "Ajouter une organisation",
+            "new": "Nouvel espace de travail",
+            "addAnOrganization": "Ajouter un espace de travail",
             "addAnOrganizationValidation": "Les caractères spéciaux ne sont pas autorisés sauf -_",
             "duplicateOrganizationValidation": "L'organisation existe déjà",
             "spaceValidation": "L'espace n'est pas autorisé",
             "accessibility": {
-                "addAnOrganization": "Ajouter l'organisation"
+                "addAnOrganization": "Ajouter un espace de travail"
             },
-            "choose-criteria": "Choisissez les critères pour l'organisation {{organizationName}}",
+            "choose-criteria": "Choisissez les critères de l'espace de travail {{organizationName}}",
             "error": "Au moins un critère doit être sélectionné",
             "information-system-module": "Information system",
             "digital-service-module": "Digital service module"
         },
         "super-admin": {
-            "migrate-data-title": "Évaluer tous les services numériques"
+            "launch-release-script": "Lancer les scripts de la version"
         }
     },
     "error-graph": {
@@ -726,5 +923,163 @@
     },
     "header": {
         "menu": "menu principal"
+    },
+    "declarations": {
+        "title": "G4IT Déclarations",
+        "accessibility-text": "Accessibilité : Non conforme",
+        "ecodesign": "Éco-conception",
+        "ecodesign-declaration": "Déclaration d’écoconception",
+        "objectives": "Objectifs",
+        "commited-paragraph": "L'équipe G4IT s’engage dans une démarche d’écoconception visant à réduire l’empreinte environnementale de ses services numériques. La présente déclaration a été rédigée le 28/04/2025 dans le cadre de la mise en œuvre du Référentiel général d’écoconception de services numériques (version 2024).",
+        "framework-paragraph": "Ce référentiel, élaboré conjointement par l’Arcep et l’Arcom, en collaboration avec l’ADEME, la DINUM, la CNIL et l’Inria, définit les grandes orientations pour intégrer les enjeux de sobriété numérique dans la conception et l’exploitation des services numériques. Le document officiel est accessible sur le site de l’Arcep : ",
+        "framework-link": "Référentiel général d’écoconception des services numériques – version 2024",
+        "objectives-paragraph": "Sa mise en œuvre repose sur quatre objectifs principaux :",
+        "functional-areas-paragraph": "Dans cette déclaration, nous nous efforçons d’être exhaustifs quant aux cas d’usage couverts par l’application, représentés par quatre grands volets fonctionnels :",
+        "first-objectives": "Concevoir des services numériques plus durables, afin de prolonger la durée de vie des équipements des utilisateurs ;",
+        "second-objectives": "Favoriser une logique de sobriété numérique, en réponse aux stratégies de captation de l’attention, et en cohérence avec les engagements environnementaux internationaux ;",
+        "third-objectives": "Réduire les ressources informatiques mobilisées sur l’ensemble du cycle de vie des services numériques, notamment via l’optimisation du trafic de données et de l’infrastructure numérique ;",
+        "fourth-objectives": "Renforcer la transparence sur l’empreinte environnementale des services numériques.",
+        "functional-areas-first": "L’évaluation de l’impact d’un inventaire, pouvant correspondre à un système d’information, un parc applicatif, ou un ensemble d’équipements physiques et virtuels ;",
+        "functional-areas-second": "L’évaluation de l’impact d’un service numérique ;",
+        "functional-areas-third": "L’administration des organisations et des utilisateurs de la plateforme.",
+        "key-results": {
+            "title": "Résultats principaux",
+            "key-results-paragraph": "L'audit de conformité a permis d'évaluer à {{ecoDesignPercent}}% la conformité RGESN (version 2024) du site web en date du 28/04/2025.",
+            "strategy": "Stratégie : {{percentage}}%",
+            "specifications": "Spécifications : {{percentage}}%",
+            "architecture": "Architecture : {{percentage}}%",
+            "user-experience": "Expériences et interface utilisateur : {{percentage}}%",
+            "content": "Contenus : {{percentage}}%",
+            "frontEnd": "FrontEnd : {{percentage}}%",
+            "backEnd": "BackEnd : {{percentage}}%",
+            "hosting": "Hébergement : {{percentage}}%",
+            "algorithms": "Algorithmie : {{percentage}}%"
+        },
+        "commitment": "Engagements et plan d’avancement",
+        "action-item": {
+            "title": "D’autre part, les pistes d’actions suivantes seront mises en place en 2025 :",
+            "item": {
+                "one": "Amélioration de l'affichage avec un zoom de 200% pour permettre l'utilisation sur différents types d'écran ;",
+                "two": "Faire un POC sur la compilation native de Springboot 3.3 afin de limiter la consommation RAM et CPU ;",
+                "three": "Migrer l'environnement d'intégration vers un DC France et migration des hébergements vers un cloud provider plus engagé, souverain et transparent."
+            }
+        },
+        "future-development": "Pour ce faire, des revues et audits seront réalisés tous les ans et l'attention à l'écoconception des nouvelles fonctionnalités est réalisée au quotidien.",
+        "download-declaration": "Télécharger la déclaration complète (PDF, {{pdfSize}}Ko)",
+        "accessibility-declaration": "Déclaration d'accessibilité",
+        "accessibility-declaration-para": "L'équipe G4IT s’engage à rendre ses sites internet, intranet, extranet et ses logiciels accessibles, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.",
+        "declaration-applies": "Cette déclaration d’accessibilité s’applique au site",
+        "compliance-status": "État de conformité",
+        "compliance-status-para": "Le site n’est pas conforme au Référentiel général d’amélioration de l’accessibilité (RGAA), version 4. La non-conformité résulte des points et dérogations listés ci-dessous.",
+        "test-result": {
+            "title": "Résultats des tests",
+            "one": "45,31 % des critères RGAA version 4 sont respectés",
+            "two": "Taux de conformité moyen du site : 57,34 %"
+        },
+        "non-accessible-content": {
+            "title": "Contenus non accessibles",
+            "one": "Graphiques du site",
+            "two": "Modales",
+            "three": "Structure des pages"
+        },
+        "technology-used": {
+            "title": "Technologies utilisées",
+            "one": "Angular - 18.2.13",
+            "two": "HTML5",
+            "three": "CSS"
+        },
+        "test-env": {
+            "title": "Environnement de test",
+            "one": "Chrome, Firefox et NVDA",
+            "two": "Safari et VoiceOver"
+        },
+        "accessibility-evaluation-tools": {
+            "title": "Outils d’évaluation de l’accessibilité",
+            "one": "Web Developer",
+            "two": "Stylus",
+            "three": "HeadingsMap",
+            "four": "WCAG Contrast Checker"
+        },
+        "pages-audited": {
+            "title": "Pages du site ayant fait l’objet de la vérification de conformité",
+            "equipment-page": "Page Équipement",
+            "service-details": "Détail du service",
+            "visualization": "Visualisation"
+        },
+        "feedback-contact": {
+            "title": "Retour d’information et contact",
+            "para": "Si vous ne parvenez pas à accéder à un contenu ou à un service, vous pouvez contacter la personne responsable de G4IT pour obtenir une alternative accessible ou le contenu sous une autre forme.",
+            "send-message": "Envoyer un message : ",
+            "contact-entity": "Contacter l’entité responsable du service en ligne"
+        },
+        "appeal-procedures": {
+            "title": "Voies de recours",
+            "para": "Si vous constatez un défaut d’accessibilité et que vous n’obtenez pas de réponse satisfaisante, vous pouvez :",
+            "one": "Écrire au Défenseur des droits :",
+            "two": "Contacter le délégué du Défenseur des droits dans votre région :",
+            "three": "Envoyer un courrier sans affranchissement à : Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07",
+            "list-delegates": "liste des délégués",
+            "form": "formulaire"
+        },
+        "accessibility": {
+            "declaration-pdf": "Téléchargez la déclaration complète d'éco-conception au format PDF ({{pdfSize}}Ko)",
+            "internal-link": "Redirection vers la page du site {{title}}",
+            "external-link": "Overture de la page {{title}} dans un nouvel onglet",
+            "email-link": "Envoyez un e-mail à support.g4it@soprasteria.com",
+            "heading-link": "Faites défiler jusqu'à la section {{title}}"
+        },
+        "multi-year-accessibility-plan": {
+            "title": "Schéma pluriannuel de mise en accessibilité",
+            "para": "Conformément au RGAA et dans une démarche d'amélioration continue, nous nous engageons à renforcer l’accessibilité de nos services numériques. Notre plan d’action s’organise selon les échéances suivantes :",
+            "short-term": {
+                "title": "Court terme (dans un délai d’un mois) :",
+                "training": {
+                    "title": "Plan de formation :",
+                    "para": "Tous les membres de l’équipe G4IT (à l’exception des contributeurs occasionnels) devront avoir suivi, dans le premier mois de leur mission, un module de sensibilisation en e-learning sur le développement web accessible."
+                },
+                "checklist": {
+                    "title": "Checklist accessibilité :",
+                    "para": "Mise en place d’une checklist accessibilité dans la Definition of Done (DoD) pour tous les développements front-end US, afin de vérifier les principales bonnes pratiques d’accessibilité."
+                },
+                "monitoring": {
+                    "title": "Suivi de l’accessibilité :",
+                    "para": "Suivi de chaque scénario CYPRESS et correction des anomalies critiques et majeures avant toute mise en production."
+                }
+            },
+            "medium-term": {
+                "title": "Moyen terme (dans un délai de 3 à 6 mois) :",
+                "zoom": {
+                    "title": "Zoom 200 % :",
+                    "para": "Permettre à l’utilisateur de zoomer à 200 % sans perte de contenu ni de fonctionnalité sur les deux parcours principaux :"
+                },
+                "is-module": {
+                    "title": "Inventory Module :",
+                    "para": "Visualisation de l’impact des équipements physiques."
+                },
+                "ds-module": {
+                    "title": "Digital Service Module :",
+                    "para": "Visualisation de l’impact d’un service numérique."
+                },
+                "training-plan": {
+                    "title": "Plan de formation :",
+                    "para": "Les Product Owners de l’équipe G4IT devront avoir suivi une formation sur la conception de sites accessibles dans les 3 premiers mois de leur mission."
+                }
+            },
+            "long-term": {
+                "title": "Long terme (dans un délai de 6 à 12 mois) ",
+                "graph": {
+                    "title": "Graphiques :",
+                    "para": "Implémentation d’une description textuelle des principales informations présentées dans les radars multicritères."
+                },
+                "audit": {
+                    "title": "Audit d’accessibilité :",
+                    "para": "Réalisation d’un nouvel audit d’accessibilité en 2026."
+                },
+                "training-plan": {
+                    "title": "Plan de formation :",
+                    "para": "Tous les membres de l’équipe G4IT doivent avoir suivi une formation adaptée à leur profil (Product Owner, développeur front-end, testeur, etc.) sur la conception de sites accessibles dans les 3 premiers mois de leur mission.m"
+                }
+            }
+        }
     }
 }

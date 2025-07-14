@@ -42,7 +42,7 @@ describe("DigitalServicesDataService", () => {
                 networks: [],
                 servers: [],
                 terminals: [],
-                members: [],
+                isAi: false,
             },
         ];
 
@@ -69,7 +69,7 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
+            isAi: false,
         };
 
         service.create().subscribe((res) => {
@@ -94,7 +94,7 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
+            isAi: false,
         };
 
         service.update(updatedDigitalService).subscribe((res) => {
@@ -119,10 +119,35 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
+            isAi: false,
         };
 
         service.get(digitalService.uid).subscribe((res) => {
+            expect(res.name).toBe(digitalService.name);
+        });
+
+        const req = httpMock.expectOne(`digital-services/ds-uuid`);
+        expect(req.request.method).toEqual("GET");
+
+        req.flush(digitalService);
+
+        httpMock.verify();
+    });
+
+    it("should get a digital service", () => {
+        const digitalService: DigitalService = {
+            uid: "ds-uuid",
+            name: "Digital Service#1",
+            lastUpdateDate: Date.now(),
+            creationDate: Date.now(),
+            lastCalculationDate: null,
+            networks: [],
+            servers: [],
+            terminals: [],
+            isAi: false,
+        };
+
+        service.getDsTasks(digitalService.uid).subscribe((res) => {
             expect(res.name).toBe(digitalService.name);
         });
 
@@ -144,7 +169,7 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
-            members: [],
+            isAi: false,
         };
 
         service.delete(digitalService.uid).subscribe();
