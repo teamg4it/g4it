@@ -1170,6 +1170,12 @@ app-top-header {
             align-items: center !important;
         }
     }
+
+    main {
+        margin: 70px 0px;
+        height: calc(100vh - 140px);
+        width: calc(100vw);
+    }
 }
 
 app-declarations,

@@ -21,10 +21,7 @@ import {
     ApplicationFootprint,
 } from "src/app/core/interfaces/footprint.interface";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
-import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
-import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
-import { OutApplicationsService } from "src/app/core/service/data/in-out/out-applications.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
@@ -35,11 +32,8 @@ import { Constants } from "src/constants";
     templateUrl: "./inventories-application-footprint.component.html",
 })
 export class InventoriesApplicationFootprintComponent {
-    protected footprintStore = inject(FootprintStoreService);
-    private globalStore = inject(GlobalStoreService);
-    footprintDataService = inject(FootprintDataService);
-    private outApplicationsService = inject(OutApplicationsService);
-    private readonly inventoryService = inject(InventoryService);
+    protected readonly footprintStore = inject(FootprintStoreService);
+    private readonly globalStore = inject(GlobalStoreService);
     private readonly userService = inject(UserService);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
@@ -51,7 +45,7 @@ export class InventoriesApplicationFootprintComponent {
         Constants.MUTLI_CRITERIA,
         ...Object.keys(this.globalStore.criteriaList()),
     ];
-    inventoryId!: number;
+    inventoryId = +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
     multiCriteria = Constants.MUTLI_CRITERIA;
     allUnmodifiedFilters = signal({});
     savedFilers: Filter<string | TransformedDomain> = {};
@@ -69,17 +63,14 @@ export class InventoriesApplicationFootprintComponent {
     filterFields = Constants.APPLICATION_FILTERS;
 
     constructor(
-        private activatedRoute: ActivatedRoute,
-        public footprintService: FootprintService,
-        private translate: TranslateService,
+        private readonly activatedRoute: ActivatedRoute,
+        public readonly footprintService: FootprintService,
+        private readonly translate: TranslateService,
     ) {}
 
     async ngOnInit() {
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
         this.globalStore.setLoading(true);
-        // Set active inventory based on route
-        this.inventoryId =
-            +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
 
         let footprint: ApplicationFootprint[] = [];
         const currentOrgName = (
