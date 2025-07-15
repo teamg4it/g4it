@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class GenericRuleServiceTest {
+class GenericRuleServiceTest {
     @Mock
     private MessageSource messageSource;
     @Mock
@@ -47,7 +47,7 @@ public class GenericRuleServiceTest {
     private final int line = 1;
 
     @Test
-    void testValidLocation_Ok(){
+    void testValidLocation_Ok() {
         when(referentialGetService.getCountries(subscriber)).thenReturn(List.of("FR"));
         Assertions.assertTrue(genericRuleService.checkLocation(locale, subscriber, filename, line, "FR").isEmpty());
     }
@@ -67,7 +67,7 @@ public class GenericRuleServiceTest {
 
         var actual = genericRuleService.checkLocation(locale, subscriber, filename, line, "testLocation");
         Assertions.assertTrue(actual.isPresent());
-        Assertions.assertEquals(new LineError(filename,1, "Invalid location"), actual.get());
+        Assertions.assertEquals(new LineError(filename, 1, "Invalid location"), actual.get());
 
     }
 
@@ -87,7 +87,7 @@ public class GenericRuleServiceTest {
                 .thenReturn(List.of(globalType));
 
         // Test subscriber-specific type
-       var actual = genericRuleService.checkType(
+        var actual = genericRuleService.checkType(
                 locale, subscriber, filename, line, "Laptop");
         assertTrue(actual.isEmpty());
 
