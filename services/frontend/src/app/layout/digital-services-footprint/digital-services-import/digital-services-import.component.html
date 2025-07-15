@@ -105,16 +105,7 @@
                     (formSubmit)="onFormSubmit($event)"
                 ></app-multi-file-import>
                 <h4 class="font-semibold">
-                    @if (selectedMenuIndex === 0) {
-                        {{
-                            "digital-services-import.non-cloud-server-upload-info"
-                                | translate
-                        }}
-                    } @else {
-                        {{
-                            "digital-services-import.cloud-server-upload-info" | translate
-                        }}
-                    }
+                    {{ "digital-services-import.loading-history" | translate }}
                 </h4>
 
                 <!-- Task Status Table -->
