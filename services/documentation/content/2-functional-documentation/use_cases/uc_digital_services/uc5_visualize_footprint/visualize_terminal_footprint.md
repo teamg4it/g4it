@@ -1,7 +1,7 @@
 ---
-title: "2.5. Visualize digital service's footprint"
+title: "2.5.1. Visualize digital service's terminal footprint"
 description: "This use case describes how to visualize the impact of a digital service"
-weight: 50
+weight: 10
 mermaid: true
 ---
 
@@ -9,8 +9,6 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [State Diagram](#state-diagram)
--   [Sequence Diagram](#sequence-diagram)
 
 ## Description
 
@@ -19,17 +17,6 @@ The key indicators displayed on the radar graph are terminal, network and server
 The results can be filtered by the type of equipment.
 It is also possible to display results for a single criteria only.
 
-## State Diagram
-
-{{< mermaid align="center">}}
-graph TD;
-Step1[Digital Service view] --> Decision1{First Calculation is done?}
-Decision1-->|Yes|Step2[Button 'Visualize' is enabled]
-Decision1-->|No|Step3[Button 'Visualize' is not enabled]
-Step2-->|Click on 'Visualize' button|Step4[Multi criteria view about the impacts of my DS is displayed]-->|Click on one of the criteria impacts in the bar menu, or on the graph|Step5[Specific view for this criteria is displayed]-->|New filters selected|Step8
-Step8[View is updated according to the filters]
-Step8-->|Click on 'Global Vision' button|Step4
-{{< /mermaid >}}
 
 ## Mockup
 
@@ -92,22 +79,3 @@ Step8-->|Click on 'Global Vision' button|Step4
 
 {{% /expand %}}
 
-## Sequence Diagram
-
-{{< mermaid >}}
-sequenceDiagram
-actor RND as project team
-participant front as G4IT Front-End
-participant back as G4IT Back-End
-participant DataBase
-
-RND ->> front: Click on "Visualize" button in the digital service view
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/physical-equipments
-DataBase-->> back: Get indicators from out_physical_equipment table
-back-->> front: Send the physical equipment indicators for the multi-criteria view
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/virtual-equipments
-DataBase-->> back: Get indicators from out_virtual_equipment table
-back-->> front: Send the virtual equipment indicators for the multi-criteria view
-front->> RND : Display the indicators by equipment type to display on my view related to my view
-
-{{< /mermaid >}}

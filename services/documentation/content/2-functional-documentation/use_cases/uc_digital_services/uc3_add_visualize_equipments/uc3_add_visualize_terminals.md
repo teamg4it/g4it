@@ -14,7 +14,7 @@ mermaid: true
 
 ## Description
 
-This usecase allows a project team to add Terminal equipment into a digital service previously created.
+This use case allows a project team to add Terminal equipment into a digital service previously created.
 
 **Navigation Path**
 
