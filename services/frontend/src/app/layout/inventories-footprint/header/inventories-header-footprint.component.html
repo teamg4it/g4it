@@ -13,7 +13,6 @@
             "
             id="my-is-return-button"
         />
-
         <h1 *ngIf="inventory.type === types.INFORMATION_SYSTEM" class="px-2">
             {{ (inventory.name | monthYear) + " - " + indicatorType }}
         </h1>
@@ -24,7 +23,7 @@
     <div>
         <p-button
             *ngIf="!inventory.note && (userService.isAllowedInventoryWrite$ | async)"
-            (click)="sidebarVisible = true"
+            (onClick)="sidebarVisible = true"
             styleClass="text-gray-900 header-button"
             [text]="true"
             [plain]="true"

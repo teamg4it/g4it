@@ -56,7 +56,7 @@ class IndicatorServiceTest {
     void getEquipmentIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
         Long taskId = 1L;
         List<OutPhysicalEquipment> equipmentList = List.of(OutPhysicalEquipment.builder().id(3L).criterion("Resource_Group").build());
-        Map<String, List<OutPhysicalEquipment>> groupedEquipment = Map.of("criterion", equipmentList);
+        
         EquipmentIndicatorBO indicatorBO = EquipmentIndicatorBO.builder().build();
 
         when(outPhysicalEquipmentRepository.findByTaskId(taskId)).thenReturn(equipmentList);

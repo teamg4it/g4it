@@ -1,13 +1,13 @@
 <div class="footprint-dashboard-container my-3">
     <div class="chart-container col-12">
         <div class="flex flex-wrap align-items-center">
-            <span class="text-xl" role="heading" [ariaLevel]="3">
+            <h3 class="text-xl line-height-2">
                 {{ "inventories-footprint.global.global-vision" | translate }} <br />
                 ({{ "common.peopleeq" | translate }})
-            </span>
+            </h3>
             @if (criteriaCalculated().hasError) {
                 <p-button
-                    (click)="showInconsitencyGraph = !showInconsitencyGraph"
+                    (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
                     [rounded]="true"
                     [label]="'inventories-footprint.data-consistency' | translate"
                     [outlined]="!showInconsitencyGraph"
