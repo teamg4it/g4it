@@ -1,5 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 
 @Component({
@@ -8,6 +9,7 @@ import { LoadingDataService } from "src/app/core/service/data/loading-data.servi
 })
 export class MultiFileImportComponent {
     private readonly loadingService = inject(LoadingDataService);
+    private readonly translate = inject(TranslateService);
     private readonly route = inject(ActivatedRoute);
     @Output() formSubmit = new EventEmitter<string>();
     @Input() selectedMenuIndex: number | null = 0;
@@ -23,11 +25,33 @@ export class MultiFileImportComponent {
         this.fileTypes =
             this.selectedMenuIndex === 0
                 ? [
-                      { key: "DATACENTER", label: "Datacenter" },
-                      { key: "EQUIPEMENT_PHYSIQUE", label: "Physical Equipment" },
-                      { key: "EQUIPEMENT_VIRTUEL_1", label: "Virtual Equipment" },
+                      {
+                          key: "DATACENTER",
+                          label: this.translate.instant(
+                              "digital-services-import.datacenter",
+                          ),
+                      },
+                      {
+                          key: "EQUIPEMENT_PHYSIQUE",
+                          label: this.translate.instant(
+                              "digital-services-import.physical-equipment",
+                          ),
+                      },
+                      {
+                          key: "EQUIPEMENT_VIRTUEL_1",
+                          label: this.translate.instant(
+                              "digital-services-import.virtual-equipment",
+                          ),
+                      },
                   ]
-                : [{ key: "EQUIPEMENT_VIRTUEL_2", label: "Virtual Equipment" }];
+                : [
+                      {
+                          key: "EQUIPEMENT_VIRTUEL_2",
+                          label: this.translate.instant(
+                              "digital-services-import.virtual-equipment",
+                          ),
+                      },
+                  ];
     }
 
     onSelectFile(event: any, key: string): void {

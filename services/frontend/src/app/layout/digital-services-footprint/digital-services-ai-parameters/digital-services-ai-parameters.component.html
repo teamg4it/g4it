@@ -123,6 +123,12 @@
                     >
                     </p-checkbox>
                 </div>
+                <span class="pi pi-info-circle text-red-900">
+                    {{
+                        "digital-services-ai-parameter.finetuning-disabled-message"
+                            | translate
+                    }}</span
+                >
             </div>
         </div>
         @if (isInference) {
@@ -158,6 +164,8 @@
                         </p>
                     </div>
 
+                    <div class="inference-operation-sign">x</div>
+
                     <!-- average request -->
                     <div class="label-input-div-form">
                         <label for="average-request">{{
@@ -183,6 +191,8 @@
                         </p>
                     </div>
 
+                    <div class="inference-operation-sign">x</div>
+
                     <!-- average token -->
                     <div class="label-input-div-form">
                         <label for="average-number-token">{{
@@ -205,6 +215,8 @@
                             {{ "common.mandatory" | translate }}
                         </p>
                     </div>
+
+                    <div class="inference-operation-sign">=</div>
 
                     <!-- total token generated -->
                     <div class="label-input-div-form">

@@ -156,7 +156,8 @@
             "no-organization": "Aucune organisation correspondant à votre nom de domaine n’a été trouvée. Veuillez contacter votre administrateur pour demander l’accès ou vérifier la configuration de votre organisation.",
             "space-name-maxlength": "Le nom de l'espace de travail ne doit pas dépasser 20 caractères.",
             "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés."
-        }
+        },
+        "plus-menu": "Plus"
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"
@@ -382,9 +383,10 @@
         "stages": "Etape",
         "inference": "Inférence",
         "fintuning": "Fintuning",
+        "finetuning-disabled-message": "Work in progress : le finetuning n'est pas pris en compte pour l'instant",
         "numberOfUsers": "Nb d'utilisateurs par an",
-        "averageRequest": "Nb moyen de requêtes par an",
-        "averageToken": "Nb moyen de jetons générés par requête",
+        "averageRequest": "Nb de requêtes par an",
+        "averageToken": "Nb de jetons générés par requête",
         "totalTokenGenerate": "Nb total de jetons générés"
     },
 
@@ -420,7 +422,10 @@
         "time": "Temps",
         "status": "Statut",
         "rejected-files": "Fichiers rejetés",
-        "browse-file": "Parcourir fichier"
+        "browse-file": "Parcourir fichier",
+        "datacenter": "Centre de données",
+        "physical-equipment": "Équipement physique",
+        "virtual-equipment": "Équipement virtuel"
     },
     "welcome-page": {
         "title": "Page de bienvenue",

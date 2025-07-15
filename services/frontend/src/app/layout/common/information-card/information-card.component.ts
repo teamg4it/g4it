@@ -15,7 +15,6 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 export class InformationCardComponent {
     title = input<string>();
     content = input<string>();
-    isLong = input<boolean>();
 
     safeContent = computed(() => this.renderHTML(this.content()));
     safeTitle = computed(() => this.renderHTML(this.title()));

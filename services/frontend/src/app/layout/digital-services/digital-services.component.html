@@ -13,8 +13,8 @@
         styleClass="black-button"
         (onClick)="createNewDigitalService()"
         *ngIf="
-            (userService.isAllowedDigitalServiceWrite$ | async) ||
-            (userService.isAllowedEcoMindAiWrite$ | async)
+            ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
+            ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
         "
         id="add-digital"
     >

@@ -157,7 +157,8 @@
             "no-organization": "No eligible organization was found based on your domain name. Please contact your administrator to request access or verify your organization's configuration.",
             "space-name-maxlength": "The workspace name must be no longer than 20 characters.",
             "space-name-pattern": "Special characters @ / ; ? are not allowed."
-        }
+        },
+        "plus-menu": "Plus"
     },
     "errors": {
         "error-occurred": "An error occurred"
@@ -382,9 +383,13 @@
         "stages": "Stages",
         "inference": "Inference",
         "fintuning": "Finetuning",
+        "finetuning-disabled-message": "Work in progress : finetuning is not currently taken into account",
         "numberOfUsers": "Nb of user per year",
         "averageRequest": "Average nb of requests per year",
         "averageToken": "Average nb of tokens generated per request",
+        "numberOfUsers": "Nb of users per year",
+        "averageRequest": "Nb of requests per year",
+        "averageToken": "Nb of tokens generated per request",
         "totalTokenGenerate": "Total nb of generated tokens"
     },
 
@@ -420,7 +425,10 @@
         "time": "Time",
         "status": "Status",
         "rejected-files": "Rejected files",
-        "browse-file": "Browse File"
+        "browse-file": "Browse File",
+        "datacenter": "Datacenter",
+        "physical-equipment": "Physical Equipment",
+        "virtual-equipment": "Virtual Equipment"
     },
     "welcome-page": {
         "title": "Welcome Page",
