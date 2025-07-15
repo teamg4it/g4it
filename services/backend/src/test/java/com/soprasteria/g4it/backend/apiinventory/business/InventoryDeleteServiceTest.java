@@ -18,10 +18,10 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -53,7 +53,7 @@ class InventoryDeleteServiceTest {
     private final String subscriber = "subscriber";
 
     @Test
-    void testDeleteAllInventoriesOfOrganization(){
+    void testDeleteAllInventoriesOfOrganization() {
         final Organization organization = TestUtils.createOrganization();
 
         final List<Inventory> inventorysEntitiesList = List.of(Inventory.builder().id(2L).name("03-2023").build());
