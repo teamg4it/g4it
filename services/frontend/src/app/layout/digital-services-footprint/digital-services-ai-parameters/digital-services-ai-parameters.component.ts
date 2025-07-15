@@ -40,13 +40,13 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.terminalsForm = this.fb.group({
             modelName: ["", Validators.required],
-            averageNumberToken: [0, [Validators.required, Validators.min(0)]],
-            totalGeneratedTokens: [{ value: 0, disabled: true }],
+            averageNumberToken: [500, [Validators.required, Validators.min(0)]],
+            totalGeneratedTokens: [{ value: 1000000000, disabled: true }],
             nbParameters: ["", Validators.required],
             framework: ["", Validators.required],
             quantization: ["", Validators.required],
             isInference: [true],
-            isFinetuning: [false],
+            isFinetuning: [{ value: false, disabled: true }],
             numberUserYear: [0, [Validators.required, Validators.min(0)]],
             averageNumberRequest: [0, [Validators.required, Validators.min(0)]],
         });
@@ -77,10 +77,10 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                         quantization: this.quantizationOptions[0]?.value ?? "",
                         isInference: true,
                         isFinetuning: false,
-                        numberUserYear: 0,
-                        averageNumberRequest: 0,
-                        averageNumberToken: 0,
-                        totalGeneratedTokens: 0,
+                        numberUserYear: 10000,
+                        averageNumberRequest: 200,
+                        averageNumberToken: 500,
+                        totalGeneratedTokens: 1000000000,
                     };
                     this.aiFormsStore.setParametersFormData(defaultData);
                 } else {
@@ -196,8 +196,11 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         }
 
         // Save data whenever changes are made
-        this.formSubscription = this.terminalsForm.valueChanges.subscribe((value) => {
+        this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
             this.aiFormsStore.setParameterChange(true);
+
+            const value = this.terminalsForm.getRawValue();
+
             // Calculate totalGeneratedTokens
             const totalTokens =
                 value.numberUserYear *

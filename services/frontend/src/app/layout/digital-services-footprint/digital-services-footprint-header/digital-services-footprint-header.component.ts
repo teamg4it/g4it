@@ -435,12 +435,18 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
         // Save both forms
         await Promise.all([
-            this.digitalServicesAiData
-                .saveAiInfrastructure(digitalServiceUid, infrastructureData)
-                .toPromise(),
-            this.digitalServicesAiData
-                .saveAiParameters(digitalServiceUid, parametersData)
-                .toPromise(),
+            firstValueFrom(
+                this.digitalServicesAiData.saveAiInfrastructure(
+                    digitalServiceUid,
+                    infrastructureData,
+                ),
+            ),
+            firstValueFrom(
+                this.digitalServicesAiData.saveAiParameters(
+                    digitalServiceUid,
+                    parametersData,
+                ),
+            ),
         ])
             .then(() => {
                 this.messageService.add({

@@ -383,9 +383,10 @@
         "stages": "Etape",
         "inference": "Inférence",
         "fintuning": "Fintuning",
+        "finetuning-disabled-message": "Work in progress : le finetuning n'est pas pris en compte pour l'instant",
         "numberOfUsers": "Nb d'utilisateurs par an",
-        "averageRequest": "Nb moyen de requêtes par an",
-        "averageToken": "Nb moyen de jetons générés par requête",
+        "averageRequest": "Nb de requêtes par an",
+        "averageToken": "Nb de jetons générés par requête",
         "totalTokenGenerate": "Nb total de jetons générés"
     },
 
