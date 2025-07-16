@@ -68,6 +68,29 @@ class AzureGreenItFileSystemApplicationTests {
     @MockitoBean
     private CacheManager cacheManager;
 
+    private static boolean hasAzureEnvVars() {
+        var hasEnvVar = System.getenv("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT") != null;
+        if (hasEnvVar) {
+            log.info("ENV VARIABLES:");
+            log.info("AZURE_CLIENT_ID : {}", System.getenv("AZURE_CLIENT_ID"));
+            log.info("AZURE_CLIENT_SECRET : {}...", System.getenv("AZURE_CLIENT_SECRET").substring(0, 5));
+            log.info("AZURE_TENANT_ID : {}", System.getenv("AZURE_TENANT_ID"));
+            log.info("AZURE_SUBSCRIPTION_ID : {}", System.getenv("AZURE_SUBSCRIPTION_ID"));
+            log.info("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT : {}", System.getenv("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT"));
+        }
+        if (!hasEnvVar) {
+            log.info("""
+                    To activate azure filestorage tests, you need to set variables:
+                    - AZURE_CLIENT_ID
+                    - AZURE_CLIENT_SECRET
+                    - AZURE_TENANT_ID
+                    - AZURE_SUBSCRIPTION_ID
+                    - SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT
+                    """);
+        }
+        return hasEnvVar;
+    }
+
     @Test
     void fileSystemShouldBeOfAzureFileSystemType() {
         assertEquals(AzureFileSystem.class, fileSystem.getClass());
