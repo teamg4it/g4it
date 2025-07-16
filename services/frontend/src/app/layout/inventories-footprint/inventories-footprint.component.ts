@@ -84,7 +84,7 @@ export class InventoriesFootprintComponent implements OnInit {
 
     filterFields = Constants.EQUIPMENT_FILTERS;
     multiCriteria = Constants.MUTLI_CRITERIA;
-    inventoryId = 0;
+    inventoryId = +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
     showTabMenu = false;
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     transformedInVirtualEquipments: InVirtualEquipmentRest[] = [];
@@ -103,9 +103,6 @@ export class InventoriesFootprintComponent implements OnInit {
         ).name;
         this.global.setLoading(true);
         this.digitalBusinessService.initCountryMap();
-        // Set active inventory based on route
-        this.inventoryId =
-            +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
         this.getDataApis(currentOrgName, criteria);
     }
 
