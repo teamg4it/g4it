@@ -29,14 +29,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LocalFileStorageTest {
 
-    private final static String LOCAL_FILESYSTEM_PATH = "target/local-filestorage-test/";
+    private static final String LOCAL_FILESYSTEM_PATH = "target/local-filestorage-test/";
 
-    private final static String SUBSCRIBER = "local";
-    private final static String ORGANIZATION = "G4IT";
+    private static final String SUBSCRIBER = "local";
+    private static final String ORGANIZATION = "G4IT";
     private final FileSystem fileSystem = new LocalFileSystem(LOCAL_FILESYSTEM_PATH);
     private final FileStorage storage = fileSystem.mount("local", "G4IT");
 
-    private final static Path testFolder = Path.of("src/test/resources/common/filesystem/local");
+    private static final Path testFolder = Path.of("src/test/resources/common/filesystem/local");
 
     @BeforeAll
     @AfterAll
@@ -110,37 +110,37 @@ class LocalFileStorageTest {
     @Test
     void moveShouldMoveFileToDifferentFolder() throws IOException {
         storage.writeFile(FileFolder.INPUT, "file_to_move", new ByteArrayInputStream("something".getBytes()));
-        File file_to_move = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.INPUT.getFolderName(), "/file_to_move"));
-        File moved_filed = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_to_move"));
-        assertTrue(file_to_move.exists());
-        assertFalse(moved_filed.exists());
+        File fileToMove = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.INPUT.getFolderName(), "/file_to_move"));
+        File movedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_to_move"));
+        assertTrue(fileToMove.exists());
+        assertFalse(movedFiles.exists());
         storage.move(FileFolder.INPUT, FileFolder.OUTPUT, "file_to_move");
-        assertFalse(file_to_move.exists());
-        assertTrue(moved_filed.exists());
+        assertFalse(fileToMove.exists());
+        assertTrue(movedFiles.exists());
     }
 
     @Test
     void renameShouldChangeFileName() throws IOException {
         storage.writeFile(FileFolder.OUTPUT, "file_to_rename", new ByteArrayInputStream("something".getBytes()));
-        File file_to_rename = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_to_rename"));
-        File renamed_filed = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/renamed_file"));
-        assertTrue(file_to_rename.exists());
-        assertFalse(renamed_filed.exists());
+        File fileToRename = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_to_rename"));
+        File renamedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/renamed_file"));
+        assertTrue(fileToRename.exists());
+        assertFalse(renamedFiles.exists());
         storage.rename(FileFolder.OUTPUT, "file_to_rename", "renamed_file");
-        assertFalse(file_to_rename.exists());
-        assertTrue(renamed_filed.exists());
+        assertFalse(fileToRename.exists());
+        assertTrue(renamedFiles.exists());
     }
 
     @Test
     void moveAndRenameShouldMoveFileToDifferentFolderAndRenameIt() throws IOException {
         storage.writeFile(FileFolder.INPUT, "file_to_move", new ByteArrayInputStream("something".getBytes()));
-        File file_to_move = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.INPUT.getFolderName(), "/file_to_move"));
-        File moved_filed = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_moved_and_renamed"));
-        assertTrue(file_to_move.exists());
-        assertFalse(moved_filed.exists());
+        File fileToMove = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.INPUT.getFolderName(), "/file_to_move"));
+        File movedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_moved_and_renamed"));
+        assertTrue(fileToMove.exists());
+        assertFalse(movedFiles.exists());
         storage.moveAndRename(FileFolder.INPUT, FileFolder.OUTPUT, "file_to_move", "file_moved_and_renamed");
-        assertFalse(file_to_move.exists());
-        assertTrue(moved_filed.exists());
+        assertFalse(fileToMove.exists());
+        assertTrue(movedFiles.exists());
     }
 
     @Test
@@ -198,7 +198,7 @@ class LocalFileStorageTest {
     }
 
     @Test
-    void getFileUrlShouldReturnEmptyIfFileUnknown() throws IOException {
+    void getFileUrlShouldReturnEmptyIfFileUnknown() {
         // when we get url of unknown file
         String url = storage.getFileUrl(FileFolder.WORK, "unknown.zip");
         assertNotNull(url);
@@ -213,7 +213,7 @@ class LocalFileStorageTest {
     }
 
     @Test
-    void getFileSizeShouldReturnMZeroForUnknownFile() throws IOException {
+    void getFileSizeShouldReturnMZeroForUnknownFile() {
         assertEquals(0, storage.getFileSize(FileFolder.OUTPUT, "unknown"));
     }
 

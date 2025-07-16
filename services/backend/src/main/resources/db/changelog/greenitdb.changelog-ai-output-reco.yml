@@ -36,3 +36,18 @@ databaseChangeLog:
               - column:
                   name: last_update_date
                   type: timestamp
+
+  - changeSet:
+      id: modify-out_ai_reco_task-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: out_ai_reco
+            constraintName: out_ai_reco_task_fk
+        - addForeignKeyConstraint:
+            baseTableName: out_ai_reco
+            baseColumnNames: task_id
+            constraintName: out_ai_reco_task_fk
+            referencedTableName: task
+            referencedColumnNames: id
+            onDelete: CASCADE
