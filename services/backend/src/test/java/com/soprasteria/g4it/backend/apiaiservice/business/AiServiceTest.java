@@ -3,16 +3,12 @@ package com.soprasteria.g4it.backend.apiaiservice.business;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InfrastructureType;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InputEstimationLLMInference;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.LLMModelConfig;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
 import com.soprasteria.g4it.backend.external.ecomindai.client.AiModelapiClient;
-import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
-import com.soprasteria.g4it.backend.external.ecomindai.model.AIConfigurationBO;
-import com.soprasteria.g4it.backend.external.ecomindai.model.AIModelConfigBO;
-import com.soprasteria.g4it.backend.external.ecomindai.model.AIServiceEstimationBO;
-import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -48,12 +44,13 @@ class AiServiceTest {
         String json = """
                 [{"modelName":"llama3","nbParameters":"13b","framework":"llamacpp","quantization":"q2k"},{"modelName":"llama3","nbParameters":"8b","framework":"vllm","quantization":"none"},{"modelName":"llama3","nbParameters":"13b","framework":"vllm","quantization":"none"},{"modelName":"llama2","nbParameters":"13b","framework":"vllm","quantization":"none"}]
                 """;
-        String type ="LLM";
+        String type = "LLM";
 
         ObjectMapper objMap = new ObjectMapper();
 
 
-        when(aiModelapiClient.getAiModelConfig()).thenReturn( objMap.readValue(json, new TypeReference<List<LLMModelConfig>>() {}));
+        when(aiModelapiClient.getAiModelConfig()).thenReturn(objMap.readValue(json, new TypeReference<List<LLMModelConfig>>() {
+        }));
 
         // When
         List<LLMModelConfig> result = aiService.getAIModelConfigurations(type);
@@ -85,33 +82,27 @@ class AiServiceTest {
         inputEstimation.setTotalGeneratedTokens(5000000);
 
 
-
-    String estimationJson = """
-      {
-        "electricityConsumption": 14.85,
-        "runtime": 1322,
-        "recommendations": [
-          {
-            "type": "Quantified",
-            "topic": "⚡ Use the right framework !",
-            "example": "Using the framework vllm instead of llamacpp for some model can lead to a reduction of impact by",
-            "expectedReduction": "18%"
-          }
-        ]
-      }
-    
-    """;
+        String estimationJson = """
+                  {
+                    "electricityConsumption": 14.85,
+                    "runtime": 1322,
+                    "recommendations": [
+                      {
+                        "type": "Quantified",
+                        "topic": "⚡ Use the right framework !",
+                        "example": "Using the framework vllm instead of llamacpp for some model can lead to a reduction of impact by",
+                        "expectedReduction": "18%"
+                      }
+                    ]
+                  }
+                """;
 
         OutputEstimation outputEstimation = objectMapper.readValue(estimationJson, OutputEstimation.class);
 
 
         when(aiModelapiClient.runEstimation(inputEstimation)).thenReturn(outputEstimation);
 
-        // When
-        //TODO fix with moked digital service
         OutputEstimation result = aiService.runEstimation(inputEstimation);
-
-        // Then
 
         assertEquals(BigDecimal.valueOf(14.85), result.getElectricityConsumption());
 

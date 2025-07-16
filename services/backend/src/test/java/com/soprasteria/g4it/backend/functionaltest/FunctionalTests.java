@@ -34,14 +34,12 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
-import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.TaskIdRest;
 import lombok.extern.slf4j.Slf4j;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -54,8 +52,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.zeroturnaround.zip.ZipUtil;
@@ -72,12 +68,11 @@ import java.util.*;
 @ActiveProfiles({"local", "test"})
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class FunctionalTests {
+class FunctionalTests {
     private static final String SUBSCRIBER = "SUBSCRIBER";
-    private static final Path apiloadinputfiles = Path.of("src/test/resources/apiloadinputfiles");
-    private static final Path apievaluating = Path.of("src/test/resources/apievaluating");
-    // Set to true if you want Assertions on each fail
-    // please commit with  SHOW_ASSERTION = false;
+    private static final Path API_LOAD_INPUT_FILES = Path.of("src/test/resources/apiloadinputfiles");
+    private static final Path API_EVALUATING = Path.of("src/test/resources/apievaluating");
+    // Set to true if you want Assertions on each fail,please commit with  SHOW_ASSERTION = false;
     private static final boolean SHOW_ASSERTION = false;
     @Autowired
     LoadInputFilesController loadInputFilesController;
@@ -159,9 +154,6 @@ public class FunctionalTests {
         Assertions.assertNull(taskId);
 
 
-
-
-
         final Path targetInputFiles = Path.of("target/local-filesystem").resolve(SUBSCRIBER).resolve(String.valueOf(organization.getId())).resolve("input");
         Files.createDirectories(targetInputFiles);
 
@@ -183,7 +175,7 @@ public class FunctionalTests {
          * LOAD INPUT FILES FUNCTIONAL TESTS
          */
         boolean allOk = true;
-        for (File testFolder : Arrays.stream(Objects.requireNonNull(apiloadinputfiles.toFile().listFiles())).sorted().toList()) {
+        for (File testFolder : Arrays.stream(Objects.requireNonNull(API_LOAD_INPUT_FILES.toFile().listFiles())).sorted().toList()) {
 
             // PREPARE
             var testCase = testFolder.getName();
@@ -191,13 +183,12 @@ public class FunctionalTests {
             // clean tables
             cleanDB();
 
-
             //Load already existing PE in inventory
-            InPhysicalEquipment oldPhysicalEquipment = createAlreadyExistingPEinInventory(inventory, organization.getId());
-            InVirtualEquipment oldVE = createAlreadyExistingVEinInventory(inventory, organization.getId());
+            createAlreadyExistingPEinInventory(inventory);
+            createAlreadyExistingVEinInventory(inventory);
 
             // copy files in work
-            File inputFolder = apiloadinputfiles.resolve(testCase).resolve("input").toFile();
+            File inputFolder = API_LOAD_INPUT_FILES.resolve(testCase).resolve("input").toFile();
             List<String> filenames = new ArrayList<>();
 
             for (File f : Objects.requireNonNull(inputFolder.listFiles())) {
@@ -206,7 +197,7 @@ public class FunctionalTests {
                 filenames.add(targetFilename);
             }
 
-            File refFolder = apiloadinputfiles.resolve(testCase).resolve("ref").toFile();
+            File refFolder = API_LOAD_INPUT_FILES.resolve(testCase).resolve("ref").toFile();
             for (File f : Objects.requireNonNull(refFolder.listFiles())) {
                 MultipartFile multipartFile = new MockMultipartFile("file", f.getName(), "text/csv", Files.readAllBytes(f.toPath()));
                 referentialImportService.importReferentialCSV(f.getName().replace(".csv", ""), multipartFile, null);
@@ -216,14 +207,14 @@ public class FunctionalTests {
             var task = taskRepository.save(TestUtils.createTask(context, filenames, TaskType.LOADING, null, inventory));
             asyncLoadFilesService.execute(context, task);
 
-            //TODO to delete this debug code
+            //TO DO to delete this debug code
             //TEST checks
             List<CheckVirtualEquipment> cve = checkVirtualEquipmentRepository.findAll();
             List<CheckPhysicalEquipment> pec = checkPhysicalEquipmentRepository.findAll();
             List<CheckApplication> apc = checkApplicationRepository.findAll();
 
             // ASSERT
-            Path outputPath = apiloadinputfiles.resolve(testCase).resolve("output");
+            Path outputPath = API_LOAD_INPUT_FILES.resolve(testCase).resolve("output");
 
             for (File file : Objects.requireNonNull(outputPath.toFile().listFiles())) {
                 var actual = switch (file.getName()) {
@@ -259,7 +250,7 @@ public class FunctionalTests {
                 File[] rejectFiles = zipDirPath.resolve("out").toFile().listFiles();
                 for (File file : rejectFiles) {
                     var actual = Files.readString(file.toPath()).replaceAll("\r\n", "\n");
-                    var expected = Files.readString(apiloadinputfiles.resolve(testCase).resolve("rejects").resolve(file.getName())).replaceAll("\r\n", "\n");
+                    var expected = Files.readString(API_LOAD_INPUT_FILES.resolve(testCase).resolve("rejects").resolve(file.getName())).replaceAll("\r\n", "\n");
                     if (actual.equals(expected)) {
                         log.info("*{}* - OK Assert file {}", testCase, "rejects/" + file.getName());
                     } else {
@@ -290,7 +281,7 @@ public class FunctionalTests {
         final Path targetExportFiles = Path.of("target/local-filesystem").resolve(SUBSCRIBER).resolve(String.valueOf(organization.getId())).resolve("export");
         FileSystemUtils.deleteRecursively(targetExportFiles);
 
-        for (File testFolder : Arrays.stream(Objects.requireNonNull(apievaluating.toFile().listFiles())).sorted().toList()) {
+        for (File testFolder : Arrays.stream(Objects.requireNonNull(API_EVALUATING.toFile().listFiles())).sorted().toList()) {
             // PREPARE
             var testCase = testFolder.getName();
 
@@ -298,7 +289,7 @@ public class FunctionalTests {
             cleanDB();
 
             // copy files in work
-            File inputFolder = apievaluating.resolve(testCase).resolve("input").toFile();
+            File inputFolder = API_EVALUATING.resolve(testCase).resolve("input").toFile();
             List<String> filenames = new ArrayList<>();
 
             for (File f : Objects.requireNonNull(inputFolder.listFiles())) {
@@ -307,7 +298,7 @@ public class FunctionalTests {
                 filenames.add(targetFilename);
             }
 
-            File refFolder = apievaluating.resolve(testCase).resolve("ref").toFile();
+            File refFolder = API_EVALUATING.resolve(testCase).resolve("ref").toFile();
             for (File f : Objects.requireNonNull(refFolder.listFiles())) {
                 MultipartFile multipartFile = new MockMultipartFile("file", f.getName(), "text/csv", Files.readAllBytes(f.toPath()));
                 referentialImportService.importReferentialCSV(f.getName().replace(".csv", ""), multipartFile, null);
@@ -322,7 +313,7 @@ public class FunctionalTests {
             asyncEvaluatingService.execute(context, taskEvaluating);
 
             // ASSERT
-            Path outputPath = apievaluating.resolve(testCase).resolve("output");
+            Path outputPath = API_EVALUATING.resolve(testCase).resolve("output");
 
             for (File file : Objects.requireNonNull(outputPath.toFile().listFiles())) {
                 var actual = switch (file.getName()) {
@@ -356,7 +347,7 @@ public class FunctionalTests {
                 File[] rejectFiles = zipDirPath.resolve("out").toFile().listFiles();
                 for (File file : rejectFiles) {
                     var actual = Files.readString(file.toPath()).replaceAll("\r\n", "\n");
-                    var expected = Files.readString(apievaluating.resolve(testCase).resolve("export").resolve(file.getName())).replaceAll("\r\n", "\n");
+                    var expected = Files.readString(API_EVALUATING.resolve(testCase).resolve("export").resolve(file.getName())).replaceAll("\r\n", "\n");
                     if (actual.equals(expected)) {
                         log.info("*{}* - OK Assert file {}", testCase, "export/" + file.getName());
                     } else {
@@ -382,7 +373,7 @@ public class FunctionalTests {
 
     }
 
-    private InPhysicalEquipment createAlreadyExistingPEinInventory(Inventory inv, Long OrganizationId) {
+    private void createAlreadyExistingPEinInventory(Inventory inv) {
 
         InPhysicalEquipment inPE = new InPhysicalEquipment();
 
@@ -407,11 +398,10 @@ public class FunctionalTests {
         inPE.setManufacturer("manufacturer");
         inPE.setType("type");
 
-        return inPhysicalEquipmentRepository.save(inPE);
+        inPhysicalEquipmentRepository.save(inPE);
     }
 
-    private InVirtualEquipment createAlreadyExistingVEinInventory(Inventory inv, Long OrganizationId) {
-
+    private void createAlreadyExistingVEinInventory(Inventory inv) {
 
         InVirtualEquipment inVe = new InVirtualEquipment();
         inVe.setName("MyMagicalVE");
@@ -431,15 +421,10 @@ public class FunctionalTests {
         inVe.setDatacenterName("default");
         inVe.setLocation("France");
         inVe.setInfrastructureType("infrastructureType");
-
-        return inVirtualEquipmentRepository.save(inVe);
-
-
+        inVirtualEquipmentRepository.save(inVe);
     }
 
-
-
-    public void cleanDB(){
+    public void cleanDB() {
         checkDatacenterRepository.deleteAll();
         checkVirtualEquipmentRepository.deleteAll();
         checkPhysicalEquipmentRepository.deleteAll();
@@ -449,7 +434,6 @@ public class FunctionalTests {
         inVirtualEquipmentRepository.deleteAll();
         inApplicationRepository.deleteAll();
         taskRepository.deleteAll();
-
     }
 
 

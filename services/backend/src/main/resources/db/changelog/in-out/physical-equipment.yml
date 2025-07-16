@@ -309,3 +309,18 @@ databaseChangeLog:
       author: G4IT Dev Team
       changes:
         - sql: update in_physical_equipment set duration_hour = (quantity  *(365*24))/nb_user  where type = 'Terminal' and quantity <> 0 and nb_user <> 0 and duration_hour = 0;
+
+  - changeSet:
+      id: modify-physical-eqp-digital-service-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: in_physical_equipment
+            constraintName: physical_eqp_digital_service_fk
+        - addForeignKeyConstraint:
+            baseTableName: in_physical_equipment
+            baseColumnNames: digital_service_uid
+            constraintName: physical_eqp_digital_service_fk
+            referencedTableName: digital_service
+            referencedColumnNames: uid
+            onDelete: CASCADE
