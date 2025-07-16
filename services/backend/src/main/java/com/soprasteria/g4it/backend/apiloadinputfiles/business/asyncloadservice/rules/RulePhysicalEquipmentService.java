@@ -42,12 +42,12 @@ public class RulePhysicalEquipmentService {
 
         return Optional.empty();
     }
-    public Optional<LineError> checkDurationHour(Locale locale, String filename, int line, final BigDecimal durationHour) {
-                if (durationHour == null || durationHour.compareTo(BigDecimal.ZERO) < 0) {
+    public Optional<LineError> checkDurationHour(Locale locale, String filename, int line, final Double usageDuration) {
+        if (usageDuration == null || usageDuration < 0) {
             return Optional.of(new LineError(filename, line,
                     messageSource.getMessage("durationHour.blank", new String[]{}, locale)
             ));
-        } else if (durationHour.compareTo(BigDecimal.valueOf(8760)) > 0) {
+        } else if (usageDuration > 8760) {
             return Optional.of(new LineError(filename, line,
                     messageSource.getMessage("durationHour.invalid", new String[]{}, locale)
             ));
