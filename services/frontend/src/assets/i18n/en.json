@@ -417,9 +417,8 @@
             "type-size": "({{type}}, {{size}} KB)"
         },
         "add-files": "Add files",
-        "non-cloud-server-upload-info": "Non-cloud servers uploads info",
-        "cloud-server-upload-info": "Cloud servers uploads info",
-        "finish": "Finish",
+        "loading-history": "Loading history",
+        "finish": "Finish import",
         "start-upload": "Start upload",
         "date": "Date",
         "time": "Time",

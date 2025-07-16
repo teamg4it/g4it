@@ -4,11 +4,12 @@
 
 ### Major Changes
 
+- 994  | Update changelog file
 - 1357 | Integrate EcoMindAI in G4IT
 - 1204 | Import csv files for digital services
 - 1263 | Naming network entries in the Digital Service module – Network input
 - 1261 | Naming user groups in the Digital Service module – Terminales input
-- 740 | Visualize different cloud instances for the same type
+- 740  | Visualize different cloud instances for the same type
 
 ### Minor Changes
 
