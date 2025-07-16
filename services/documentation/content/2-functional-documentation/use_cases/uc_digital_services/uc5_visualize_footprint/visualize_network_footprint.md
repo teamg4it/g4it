@@ -9,6 +9,8 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
+-   [View by equipment](#view-by-equipment)
+-   [View by equipment and criteria](#view-by-equipment-and-criteria)
 
 
 
