@@ -14,16 +14,11 @@ import com.soprasteria.g4it.backend.apiinout.business.InApplicationService;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
-import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.controller.LoadInputFilesController;
-import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckApplication;
-import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckPhysicalEquipment;
-import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckVirtualEquipment;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckApplicationRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenterRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
@@ -34,14 +29,12 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
-import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.TaskIdRest;
 import lombok.extern.slf4j.Slf4j;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -54,8 +47,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.zeroturnaround.zip.ZipUtil;
@@ -64,7 +55,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -72,12 +62,11 @@ import java.util.*;
 @ActiveProfiles({"local", "test"})
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class FunctionalTests {
+class FunctionalTests {
     private static final String SUBSCRIBER = "SUBSCRIBER";
     private static final Path apiloadinputfiles = Path.of("src/test/resources/apiloadinputfiles");
     private static final Path apievaluating = Path.of("src/test/resources/apievaluating");
-    // Set to true if you want Assertions on each fail
-    // please commit with  SHOW_ASSERTION = false;
+    // Set to true if you want Assertions on each fail;
     private static final boolean SHOW_ASSERTION = false;
     @Autowired
     LoadInputFilesController loadInputFilesController;
@@ -159,9 +148,6 @@ public class FunctionalTests {
         Assertions.assertNull(taskId);
 
 
-
-
-
         final Path targetInputFiles = Path.of("target/local-filesystem").resolve(SUBSCRIBER).resolve(String.valueOf(organization.getId())).resolve("input");
         Files.createDirectories(targetInputFiles);
 
@@ -192,10 +178,6 @@ public class FunctionalTests {
             cleanDB();
 
 
-            //Load already existing PE in inventory
-            InPhysicalEquipment oldPhysicalEquipment = createAlreadyExistingPEinInventory(inventory, organization.getId());
-            InVirtualEquipment oldVE = createAlreadyExistingVEinInventory(inventory, organization.getId());
-
             // copy files in work
             File inputFolder = apiloadinputfiles.resolve(testCase).resolve("input").toFile();
             List<String> filenames = new ArrayList<>();
@@ -215,12 +197,6 @@ public class FunctionalTests {
             // EXECUTE LOADING
             var task = taskRepository.save(TestUtils.createTask(context, filenames, TaskType.LOADING, null, inventory));
             asyncLoadFilesService.execute(context, task);
-
-            //TODO to delete this debug code
-            //TEST checks
-            List<CheckVirtualEquipment> cve = checkVirtualEquipmentRepository.findAll();
-            List<CheckPhysicalEquipment> pec = checkPhysicalEquipmentRepository.findAll();
-            List<CheckApplication> apc = checkApplicationRepository.findAll();
 
             // ASSERT
             Path outputPath = apiloadinputfiles.resolve(testCase).resolve("output");
@@ -379,67 +355,10 @@ public class FunctionalTests {
         }
 
         log.info("Virtual equipements {}", checkVirtualEquipmentRepository.findAll());
-
-    }
-
-    private InPhysicalEquipment createAlreadyExistingPEinInventory(Inventory inv, Long OrganizationId) {
-
-        InPhysicalEquipment inPE = new InPhysicalEquipment();
-
-        inPE.setName("MyMagicalPE");
-        inPE.setInventoryId(inv.getId());
-        inPE.setCreationDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
-        inPE.setQuantity(12d);
-        inPE.setCpuCoreNumber(2d);
-        inPE.setSizeDiskGb(2353d);
-        inPE.setSizeMemoryGb(234d);
-        inPE.setElectricityConsumption(234d);
-        inPE.setCpuType("cpuType");
-        inPE.setCpuCoreNumber(2d);
-        inPE.setDatacenterName("default");
-        inPE.setDatePurchase(LocalDate.of(2020, 1, 1));
-        inPE.setDescription("OldPE");
-        inPE.setDurationHour(24.0);
-        inPE.setLocation("France");
-        inPE.setLastUpdateDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
-
-        inPE.setModel("model");
-        inPE.setManufacturer("manufacturer");
-        inPE.setType("type");
-
-        return inPhysicalEquipmentRepository.save(inPE);
-    }
-
-    private InVirtualEquipment createAlreadyExistingVEinInventory(Inventory inv, Long OrganizationId) {
-
-
-        InVirtualEquipment inVe = new InVirtualEquipment();
-        inVe.setName("MyMagicalVE");
-        inVe.setPhysicalEquipmentName("MyMagicalPE");
-        inVe.setInventoryId(inv.getId());
-        inVe.setCreationDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
-        inVe.setLastUpdateDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
-        inVe.setQuantity(12d);
-        inVe.setInfrastructureType("infrastructureType");
-        inVe.setDurationHour(33d);
-        inVe.setWorkload(33d);
-        inVe.setElectricityConsumption(22d);
-        inVe.setVcpuCoreNumber(2d);
-        inVe.setSizeMemoryGb(3d);
-        inVe.setSizeDiskGb(234d);
-        inVe.setAllocationFactor(0.5d);
-        inVe.setDatacenterName("default");
-        inVe.setLocation("France");
-        inVe.setInfrastructureType("infrastructureType");
-
-        return inVirtualEquipmentRepository.save(inVe);
-
-
     }
 
 
-
-    public void cleanDB(){
+    public void cleanDB() {
         checkDatacenterRepository.deleteAll();
         checkVirtualEquipmentRepository.deleteAll();
         checkPhysicalEquipmentRepository.deleteAll();
@@ -449,7 +368,6 @@ public class FunctionalTests {
         inVirtualEquipmentRepository.deleteAll();
         inApplicationRepository.deleteAll();
         taskRepository.deleteAll();
-
     }
 
 
