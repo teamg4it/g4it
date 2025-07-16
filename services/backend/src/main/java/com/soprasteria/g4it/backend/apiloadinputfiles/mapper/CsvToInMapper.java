@@ -44,11 +44,6 @@ public interface CsvToInMapper {
 
     default InPhysicalEquipmentRest csvInPhysicalEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceUid) {
 
-        Double duration = readDouble(csvRecord, "dureeUtilisation");
-        BigDecimal durationHour = Optional.ofNullable(duration)
-                .map(BigDecimal::valueOf)
-                .orElse(null);
-
         return InPhysicalEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementPhysique"))
                 .inventoryId(inventoryId)
@@ -58,7 +53,7 @@ public interface CsvToInMapper {
                 .quantity(readDouble(csvRecord, "quantite", 1d))
                 .type(read(csvRecord, "type"))
                 .model(read(csvRecord, "modele"))
-                .durationHour(durationHour)
+                .durationHour(readDouble(csvRecord, "dureeUtilisation"))
                 .datePurchase(readLocalDate(csvRecord, "dateAchat"))
                 .dateWithdrawal(readLocalDate(csvRecord, "dateRetrait"))
                 .source(read(csvRecord, "nomSourceDonnee"))

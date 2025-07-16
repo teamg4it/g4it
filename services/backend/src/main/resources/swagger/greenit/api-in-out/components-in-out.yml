@@ -123,6 +123,7 @@ components:
           minimum: 0
         durationHour:
           type: number
+          format: double
           minimum: 0
           maximum: 8760
         commonFilters:
