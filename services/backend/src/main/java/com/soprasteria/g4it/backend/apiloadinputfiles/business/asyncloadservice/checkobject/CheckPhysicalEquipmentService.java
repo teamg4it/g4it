@@ -60,7 +60,7 @@ public class CheckPhysicalEquipmentService {
                 .ifPresent(errors::add);
 
         // check model for digital service
-        if(!isDigitalService) {
+        if(isDigitalService) {
             rulePhysicalEqpService.checkDigitalServiceModel(context.getLocale(), filename, line, physicalEquipment.getModel(),physicalEquipment )
                     .ifPresent(errors::add);
             rulePhysicalEqpService.checkElectricityConsumption(context.getLocale(), filename, line, physicalEquipment.getElectricityConsumption())
