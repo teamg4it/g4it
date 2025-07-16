@@ -378,6 +378,8 @@ filesystem.config.headers:
       optional: false
     - name: "sipImpact"
       optional: false
+    - name: "dureeUtilisation"
+      optional: true
   virtualEquipmentIndicatorDigitalService:
     - name: "digitalServiceName"
       optional: false
