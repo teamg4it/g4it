@@ -184,8 +184,8 @@ class FunctionalTests {
             cleanDB();
 
             //Load already existing PE in inventory
-            InPhysicalEquipment oldPhysicalEquipment = createAlreadyExistingPEinInventory(inventory);
-            InVirtualEquipment oldVE = createAlreadyExistingVEinInventory(inventory);
+            createAlreadyExistingPEinInventory(inventory);
+            createAlreadyExistingVEinInventory(inventory);
 
             // copy files in work
             File inputFolder = API_LOAD_INPUT_FILES.resolve(testCase).resolve("input").toFile();
@@ -373,7 +373,7 @@ class FunctionalTests {
 
     }
 
-    private InPhysicalEquipment createAlreadyExistingPEinInventory(Inventory inv) {
+    private void createAlreadyExistingPEinInventory(Inventory inv) {
 
         InPhysicalEquipment inPE = new InPhysicalEquipment();
 
@@ -398,10 +398,10 @@ class FunctionalTests {
         inPE.setManufacturer("manufacturer");
         inPE.setType("type");
 
-        return inPhysicalEquipmentRepository.save(inPE);
+        inPhysicalEquipmentRepository.save(inPE);
     }
 
-    private InVirtualEquipment createAlreadyExistingVEinInventory(Inventory inv) {
+    private void createAlreadyExistingVEinInventory(Inventory inv) {
 
         InVirtualEquipment inVe = new InVirtualEquipment();
         inVe.setName("MyMagicalVE");
@@ -421,7 +421,7 @@ class FunctionalTests {
         inVe.setDatacenterName("default");
         inVe.setLocation("France");
         inVe.setInfrastructureType("infrastructureType");
-        return inVirtualEquipmentRepository.save(inVe);
+        inVirtualEquipmentRepository.save(inVe);
     }
 
     public void cleanDB() {
