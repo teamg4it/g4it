@@ -36,8 +36,6 @@ It is also possible to display results for a single criteria only.
 | Reference | Group                          | Elements      | Sub-Elements | Type         | Description                                                                 |
 | --------- | ------------------------------ | ------------- | ------------ | ------------ | --------------------------------------------------------------------------- |
 | 1         | View by criteria and equipment |               |              | group        |                                                                             |
-| 2         |                                | Graph by type |              | radio button | <li><u>_action rules_</u>: Click the radio button to see the filtered view. |
-
 {{% /expand %}}
 
 ### View by equipment and lifecycle
