@@ -414,7 +414,7 @@
             "type-size": "({{type}}, {{size}} Ko )"
         },
         "add-files": "Ajouter fichiers",
-        "loading-history": "Historique des chargement",
+        "loading-history": "Historique des chargements",
         "finish": "Terminer le chargement",
         "start-upload": "Lancer l'import",
         "date": "Date",
