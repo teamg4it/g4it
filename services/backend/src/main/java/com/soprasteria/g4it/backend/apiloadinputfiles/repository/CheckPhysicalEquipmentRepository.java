@@ -68,7 +68,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                 select datacenter_name
                 from in_datacenter idc
                 where
-                idc.digital_service_uid = :digitalServiceUid)
+                idc.digital_service_uid = :digitalServiceUid
                
                 and cilpe.datacenter_name =  idc.name
             )
@@ -107,7 +107,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                  select datacenter_name
                  from in_datacenter idc
                  where
-                 idc.digital_service_uid = :digitalServiceUid)
+                 idc.digital_service_uid = :digitalServiceUid
                 
                  and cilpe.datacenter_name = idc.name
              )
