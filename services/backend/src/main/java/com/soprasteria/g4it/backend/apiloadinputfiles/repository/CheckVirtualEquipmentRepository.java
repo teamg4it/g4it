@@ -50,6 +50,33 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
     List<DuplicateEquipmentDTO> findDuplicateVirtualEquipments(@Param("taskId") Long taskId);
 
     @Query(nativeQuery = true, value = """
+            
+                           SELECT
+                               CASE
+                                   WHEN ve.infrastructure_type = 'NON_CLOUD_SERVERS'
+                                       THEN ve.virtual_equipment_name || ', ' || ve.physical_equipment_name
+                                   ELSE ve.virtual_equipment_name
+                               END AS equipmentName,
+                               STRING_AGG(ve.filename || ':' || ve.line_nb, ',') AS filenameLineInfo
+                           FROM
+                               check_inv_load_virtual_equipment ve
+                           WHERE
+                               ve.task_id = :taskId
+                           GROUP BY
+                               CASE
+                                   WHEN ve.infrastructure_type = 'NON_CLOUD_SERVERS'
+                                       THEN ve.virtual_equipment_name || ', ' || ve.physical_equipment_name
+                                   ELSE ve.virtual_equipment_name
+                               END,
+                               ve.infrastructure_type
+                           HAVING
+                               COUNT(*) > 1
+                           LIMIT 50000
+                           
+            """)
+    List<DuplicateEquipmentDTO> findDuplicateNonCloudVirtualEquipments(@Param("taskId") Long taskId);
+
+    @Query(nativeQuery = true, value = """
             select filename,
                    line_nb as lineNb,
                    physical_equipment_name as parentEquipmentName,

@@ -79,14 +79,14 @@ class RuleVirtualEquipmentServiceTest {
         when(messageSource.getMessage(eq("virtual.equipment.must.have.typeEqv"), any(), eq(locale)))
                 .thenReturn("TypeEqv required");
 
-        var actual = service.checkType(locale, filename, line, "");
+        var actual = service.checkType(locale, filename, line, "", 0D, 0D,false);
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename,1, "TypeEqv required"), actual.get());
     }
 
     @Test
     void testTypeOk(){
-        var actual = service.checkType(locale, filename, line, "TYPE");
+        var actual = service.checkType(locale, filename, line, "TYPE", 0D, 0D,false);
         assertTrue(actual.isEmpty());
     }
 

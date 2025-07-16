@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.GenericRuleService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RuleDateService;
+import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RulePhysicalEquipmentService;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -27,6 +28,8 @@ public class CheckPhysicalEquipmentService {
 
     @Autowired
     RuleDateService ruleDateService;
+    @Autowired
+    RulePhysicalEquipmentService rulePhysicalEqpService;
 
     /**
      * Check a physical equipment object
@@ -38,6 +41,7 @@ public class CheckPhysicalEquipmentService {
      */
     public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment,final String filename, final int line) {
         List<LineError> errors = new ArrayList<>();
+        final boolean isDigitalService = context.getDigitalServiceUid() != null;
 
         // check InPhysicalEquipmentRest constraint violations
         genericRuleService.checkViolations(physicalEquipment,filename, line).ifPresent(errors::add);
@@ -47,12 +51,23 @@ public class CheckPhysicalEquipmentService {
                 .ifPresent(errors::add);
 
         // check type is in itemTypes referential
-        genericRuleService.checkType(context.getLocale(), context.getSubscriber(),filename, line, physicalEquipment.getType())
+        genericRuleService.checkType(context.getLocale(), context.getSubscriber(),filename, line, physicalEquipment.getType(), isDigitalService)
                 .ifPresent(errors::add);
 
+
         // check date purchase < date retrieval
-        ruleDateService.checkDatesPurcaseRetrieval(context.getLocale(), filename, line, physicalEquipment.getDatePurchase(), physicalEquipment.getDateWithdrawal())
+        ruleDateService.checkDatesPurchaseRetrieval(context.getLocale(), filename, line, physicalEquipment.getDatePurchase(), physicalEquipment.getDateWithdrawal(), isDigitalService)
                 .ifPresent(errors::add);
+
+        // check model for digital service
+        if(!isDigitalService) {
+            rulePhysicalEqpService.checkDigitalServiceModel(context.getLocale(), filename, line, physicalEquipment.getModel(),physicalEquipment )
+                    .ifPresent(errors::add);
+            rulePhysicalEqpService.checkElectricityConsumption(context.getLocale(), filename, line, physicalEquipment.getElectricityConsumption())
+            .ifPresent(errors::add);
+            rulePhysicalEqpService.checkDurationHour(context.getLocale(), filename, line, physicalEquipment.getDurationHour())
+            .ifPresent(errors::add);
+        }
 
         return errors;
     }

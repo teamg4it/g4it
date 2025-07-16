@@ -70,6 +70,8 @@ filesystem.config.headers:
       optional: true
     - name: "typeDeProcesseur"
       optional: true
+    - name: "dureeUtilisation"
+      optional: true
   equipementVirtuel:
     - name: "nomEquipementVirtuel"
       optional: false
