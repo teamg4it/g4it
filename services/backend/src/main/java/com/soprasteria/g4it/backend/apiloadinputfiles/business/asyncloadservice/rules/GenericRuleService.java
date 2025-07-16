@@ -72,7 +72,7 @@ public class GenericRuleService {
         if (isDigitalService) {
             if( !"Shared Server".equals(type) && !"Dedicated Server".equals(type))
                 return Optional.of(new LineError(filename, line,
-                        messageSource.getMessage("type.invalid",
+                        messageSource.getMessage("physical.eqp.type.invalid",
                                 new String[]{type},
                                 locale)));
         }

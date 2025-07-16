@@ -99,6 +99,7 @@ public interface ImpactToCsvRecord {
                 "", // source
                 impact.getStatutIndicateur(),
                 evaluateReportBO.isVerbose() ? print(impact.getTrace()) : "",
+                print(virtualEquipment.getType()),
                 "1.1", // calculationVersion
                 print(impact.getImpactUnitaire()),
                 print(impact.getUnite()),

@@ -415,6 +415,8 @@ filesystem.config.headers:
       optional: false
     - name: "trace"
       optional: false
+    - name: "typeEqv"
+      optional: true
     - name: "calculationVersion"
       optional: false
     - name: "unitImpact"
