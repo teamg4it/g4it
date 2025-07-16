@@ -383,9 +383,10 @@
         "stages": "Etape",
         "inference": "Inférence",
         "fintuning": "Fintuning",
+        "finetuning-disabled-message": "Work in progress : le finetuning n'est pas pris en compte pour l'instant",
         "numberOfUsers": "Nb d'utilisateurs par an",
-        "averageRequest": "Nb moyen de requêtes par an",
-        "averageToken": "Nb moyen de jetons générés par requête",
+        "averageRequest": "Nb de requêtes par an",
+        "averageToken": "Nb de jetons générés par requête",
         "totalTokenGenerate": "Nb total de jetons générés"
     },
 
@@ -413,15 +414,14 @@
             "type-size": "({{type}}, {{size}} Ko )"
         },
         "add-files": "Ajouter fichiers",
-        "non-cloud-server-upload-info": "Les serveurs non cloud téléchargent des informations",
-        "cloud-server-upload-info": "Les serveurs cloud téléchargent des informations",
-        "finish": "Finition",
-        "start-upload": "Commencer téléverser",
+        "loading-history": "Historique des chargement",
+        "finish": "Terminer le chargement",
+        "start-upload": "Lancer l'import",
         "date": "Date",
-        "time": "Temps",
+        "time": "Heure",
         "status": "Statut",
         "rejected-files": "Fichiers rejetés",
-        "browse-file": "Parcourir fichier",
+        "browse-file": "Charger un fichier",
         "datacenter": "Centre de données",
         "physical-equipment": "Équipement physique",
         "virtual-equipment": "Équipement virtuel"

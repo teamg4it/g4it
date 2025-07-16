@@ -49,7 +49,7 @@
 
         <guava.version>33.3.1-jre</guava.version>
         <commons-csv.version>1.12.0</commons-csv.version>
-        <poi-ooxml.version>5.3.0</poi-ooxml.version>
+        <poi-ooxml.version>5.4.0</poi-ooxml.version>
         <jOpenDocument.version>1.3</jOpenDocument.version>
         <zt-zip.version>1.17</zt-zip.version>
         <vavr.version>0.10.5</vavr.version>
@@ -58,6 +58,8 @@
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <shedlock.version>6.0.2</shedlock.version>
+
+        <postgresql.version>42.7.7</postgresql.version>
 
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
@@ -183,6 +185,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
