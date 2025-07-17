@@ -6,7 +6,14 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, ElementRef, inject, ViewChild } from "@angular/core";
+import {
+    Component,
+    computed,
+    DestroyRef,
+    ElementRef,
+    inject,
+    ViewChild,
+} from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
@@ -32,6 +39,7 @@ export class LandingPageComponent {
     private readonly destroyRef = inject(DestroyRef);
     private workspaceService = inject(WorkspaceService);
     protected spaceSidebarVisible: boolean = false;
+    isZoom125 = computed(() => this.globalStore.zoomLevel() >= 125);
 
     @ViewChild("mainContent") mainContent!: ElementRef;
 

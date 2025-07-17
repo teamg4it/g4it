@@ -308,9 +308,9 @@ class AdministratorOrganizationServiceTest {
     void getUsersOfOrgNotFound() {
         Long orgId = 12L;
         when(organizationRepository.findById(orgId)).thenReturn(Optional.empty());
-
+        UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
         G4itRestException g4itRestException = assertThrows(G4itRestException.class, () ->
-                administratorOrganizationService.getUsersOfOrg(orgId, TestUtils.createUserBO(List.of(ROLE)))
+                administratorOrganizationService.getUsersOfOrg(orgId, userBO)
         );
 
         assertEquals("Organization 12 not found.", g4itRestException.getMessage());
