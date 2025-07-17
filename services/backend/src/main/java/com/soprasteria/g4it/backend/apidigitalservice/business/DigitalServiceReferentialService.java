@@ -163,11 +163,11 @@ public class DigitalServiceReferentialService {
     public List<ServerHostBO> getServerHosts() {
         List<ServerHostBO> compute = digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(serverHostRefRepository.findServerHostRefByType("Compute"));
         List<ServerHostBO> storage = digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(serverHostRefRepository.findServerHostRefByType("Storage"));
-        List<ServerHostBO> combined = new ArrayList<>();
-        combined.addAll(compute);
-        combined.addAll(storage);
+        List<ServerHostBO> allHosts = new ArrayList<>();
+        allHosts.addAll(compute);
+        allHosts.addAll(storage);
 
-        return combined;
+        return allHosts;
     }
     /**
      * Get server host referential data.
