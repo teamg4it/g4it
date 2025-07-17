@@ -229,21 +229,21 @@ describe("DigitalServicesImportComponent", () => {
         expect(component.templateFilesDescription).toEqual([]);
     });
 
-    it("should call getDigitalServiceStatus and loopLoadInventories on onFormSubmit with 'submit'", async () => {
+    it("should call getDigitalServiceStatus and loopLoadDigitalServices on onFormSubmit with 'submit'", async () => {
         spyOn(component, "getDigitalServiceStatus").and.returnValue(Promise.resolve());
-        spyOn(component, "loopLoadInventories");
+        spyOn(component, "loopLoadDigitalServices");
         component.digitalServiceInterval = setInterval(() => {}, 1000);
         await component.onFormSubmit("submit");
         expect(component.getDigitalServiceStatus).toHaveBeenCalled();
-        expect(component.loopLoadInventories).toHaveBeenCalled();
+        expect(component.loopLoadDigitalServices).toHaveBeenCalled();
     });
 
-    it("should not call getDigitalServiceStatus or loopLoadInventories on onFormSubmit with non-submit event", async () => {
+    it("should not call getDigitalServiceStatus or loopLoadDigitalServices on onFormSubmit with non-submit event", async () => {
         spyOn(component, "getDigitalServiceStatus");
-        spyOn(component, "loopLoadInventories");
+        spyOn(component, "loopLoadDigitalServices");
         await component.onFormSubmit("not-submit");
         expect(component.getDigitalServiceStatus).not.toHaveBeenCalled();
-        expect(component.loopLoadInventories).not.toHaveBeenCalled();
+        expect(component.loopLoadDigitalServices).not.toHaveBeenCalled();
     });
 
     it("should call inDatacentersService.get with digitalServicesId and update digitalServiceStore", async () => {
