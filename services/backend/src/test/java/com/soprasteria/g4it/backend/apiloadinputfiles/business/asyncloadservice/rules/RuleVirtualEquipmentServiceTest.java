@@ -21,7 +21,6 @@ import org.springframework.context.MessageSource;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +53,7 @@ class RuleVirtualEquipmentServiceTest {
     @Test
     void testValidInfrastructureTypeOk() {
         var actual = service.checkInfrastructureType(locale, filename, line, InfrastructureType.CLOUD_SERVICES.name());
-        assertTrue(actual.isEmpty());
+        Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
@@ -71,7 +70,7 @@ class RuleVirtualEquipmentServiceTest {
     @Test
     void testNullPhysicalEquipmentForCloudServiceOk() {
         var actual = service.checkPhysicalEquipmentLinked(locale, filename, line, InfrastructureType.CLOUD_SERVICES.name(), null);
-        assertTrue(actual.isEmpty());
+        Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
@@ -87,7 +86,7 @@ class RuleVirtualEquipmentServiceTest {
     @Test
     void testTypeOk(){
         var actual = service.checkType(locale, filename, line, "TYPE", 0D, 0D,false);
-        assertTrue(actual.isEmpty());
+        Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
@@ -120,7 +119,7 @@ class RuleVirtualEquipmentServiceTest {
         when(boaviztapiService.getCountryMap()).thenReturn(countryMap);
 
         var actual = service.checkCloudLocation(locale, filename, line, location);
-        assertTrue(actual.isEmpty());
+        Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
@@ -151,7 +150,7 @@ class RuleVirtualEquipmentServiceTest {
         when(boaviztapiService.getProviderList()).thenReturn(List.of(provider));
 
         var actual = service.checkCloudProvider(locale, filename, line, provider);
-        assertTrue(actual.isEmpty());
+        Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
@@ -186,7 +185,7 @@ class RuleVirtualEquipmentServiceTest {
         when(boaviztapiService.getInstanceList(provider)).thenReturn(List.of(instanceType));
 
         var actual = service.checkCloudInstanceType(locale, filename, line, provider, instanceType);
-        assertTrue(actual.isEmpty());
+        Assertions.assertTrue(actual.isEmpty());
     }
 
     @Test
@@ -194,35 +193,35 @@ class RuleVirtualEquipmentServiceTest {
         when(messageSource.getMessage(eq("cloud.quantity.blank"), any(), eq(locale)))
                 .thenReturn("Quantity is blank");
 
-        assertTrue(service.checkCloudQuantity(locale, filename, line, null).isPresent());
-        assertTrue(service.checkCloudQuantity(locale, filename, line, 0.0).isPresent());
+        Assertions.assertTrue(service.checkCloudQuantity(locale, filename, line, null).isPresent());
+        Assertions.assertTrue(service.checkCloudQuantity(locale, filename, line, 0.0).isPresent());
     }
 
     @Test
     void testValidCloudQuantityOk(){
-        assertTrue(service.checkCloudQuantity(locale, filename, line, 10.0).isEmpty());
+        Assertions.assertTrue(service.checkCloudQuantity(locale, filename, line, 10.0).isEmpty());
     }
 
     @Test
     void testInValidCloudUsageDurationError(){
-        when(messageSource.getMessage(eq("cloud.duration.blank"), any(), eq(locale)))
+        when(messageSource.getMessage(eq("duration.blank"), any(), eq(locale)))
                 .thenReturn("Duration is blank");
 
-        assertTrue(service.checkCloudUsageDuration(locale, filename, line, null).isPresent());
-        assertTrue(service.checkCloudUsageDuration(locale, filename, line, -1.0).isPresent());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, null).isPresent());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, -1.0).isPresent());
     }
 
     @Test
     void testInValidCloudUsageDurationGreaterThan8760Error(){
-        when(messageSource.getMessage(eq("cloud.duration.invalid"), any(), eq(locale)))
+        when(messageSource.getMessage(eq("duration.invalid"), any(), eq(locale)))
                 .thenReturn("Duration invalid");
 
-        assertTrue(service.checkCloudUsageDuration(locale, filename, line, 9000.0).isPresent());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, 9000.0).isPresent());
     }
 
     @Test
     void testValidCloudUsageDurationOk() {
-        assertTrue(service.checkCloudUsageDuration(locale, filename, line, 100.0).isEmpty());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, 100.0).isEmpty());
     }
 
     @Test
@@ -230,7 +229,7 @@ class RuleVirtualEquipmentServiceTest {
         when(messageSource.getMessage(eq("cloud.workload.blank"), any(), eq(locale)))
                 .thenReturn("Workload blank");
 
-        assertTrue(service.checkCloudWorkload(locale, filename, line, null).isPresent());
+        Assertions.assertTrue(service.checkCloudWorkload(locale, filename, line, null).isPresent());
     }
 
     @Test
@@ -238,13 +237,13 @@ class RuleVirtualEquipmentServiceTest {
         when(messageSource.getMessage(eq("cloud.workload.invalid"), any(), eq(locale)))
                 .thenReturn("Workload invalid");
 
-        assertTrue(service.checkCloudWorkload(locale, filename, line, -1.0).isPresent());
-        assertTrue(service.checkCloudWorkload(locale, filename, line, 101.0).isPresent());
+        Assertions.assertTrue(service.checkCloudWorkload(locale, filename, line, -1.0).isPresent());
+        Assertions.assertTrue(service.checkCloudWorkload(locale, filename, line, 101.0).isPresent());
     }
 
     @Test
     void testValidCloudWorkloadOk() {
-        assertTrue(service.checkCloudWorkload(locale, filename, line, 50.0).isEmpty());
+        Assertions.assertTrue(service.checkCloudWorkload(locale, filename, line, 50.0).isEmpty());
     }
 
     @Test
@@ -253,7 +252,7 @@ class RuleVirtualEquipmentServiceTest {
                 .thenReturn("nomEquipementVirtuel is mandatory");
 
         Set<String> names = new HashSet<>();
-        var actual = service.checkVirtualEquipmentName(locale, filename, line, null, names, true);
+        var actual = service.checkVirtualEquipmentName(locale, filename, line, null, names, true, false);
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename,1, "nomEquipementVirtuel is mandatory"), actual.get());
     }
@@ -264,7 +263,7 @@ class RuleVirtualEquipmentServiceTest {
                 .thenReturn("nomEquipementVirtuel should be unique");
 
         Set<String> names = new HashSet<>(Set.of("VM1"));
-        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM1", names, true);
+        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM1", names, true, false);
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename,1, "nomEquipementVirtuel should be unique"), actual.get());
     }
@@ -272,8 +271,187 @@ class RuleVirtualEquipmentServiceTest {
     @Test
     void testUniqueVirtualEquipmentNameOk() {
         Set<String> names = new HashSet<>();
-        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM2", names, true);
-        assertTrue(actual.isEmpty());
-        assertTrue(names.contains("VM2"));
+        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM2", names, true, false);
+        Assertions.assertTrue(actual.isEmpty());
+        Assertions.assertTrue(names.contains("VM2"));
+    }
+    @Test
+    void testDigitalServiceReturnsEmpty() {
+        Set<String> names = new HashSet<>();
+        boolean isDigitalService = true;
+        boolean isCloudService = false;
+
+        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM3", names, isCloudService, isDigitalService);
+
+        Assertions.assertTrue(actual.isEmpty());
+        // The name should NOT be added to the set in this case
+        Assertions.assertFalse(names.contains("VM3"));
+    }
+    @Test
+    void testCheckInfrastructureTypeNullIsValid() {
+        Assertions.assertTrue(service.checkInfrastructureType(locale, filename, line, null).isEmpty());
+    }
+
+    @Test
+    void testCheckInfrastructureTypeCloudServicesIsValid() {
+        Assertions.assertTrue(service.checkInfrastructureType(locale, filename, line, InfrastructureType.CLOUD_SERVICES.name()).isEmpty());
+    }
+
+    @Test
+    void testCheckInfrastructureTypeNonCloudServersIsValid() {
+        Assertions.assertTrue(service.checkInfrastructureType(locale, filename, line, InfrastructureType.NON_CLOUD_SERVERS.name()).isEmpty());
+    }
+
+    @Test
+    void testCheckPhysicalEquipmentLinkedWithNotCloudAndNonNullEquipment() {
+        Assertions.assertTrue(service.checkPhysicalEquipmentLinked(locale, filename, line, InfrastructureType.NON_CLOUD_SERVERS.name(), "someEquip").isEmpty());
+    }
+
+    @Test
+    void testCheckPhysicalEquipmentLinkedWithCloudAndNotNullEquipment() {
+        Assertions.assertTrue(service.checkPhysicalEquipmentLinked(locale, filename, line, InfrastructureType.CLOUD_SERVICES.name(), "someEquip").isEmpty());
+    }
+
+    @Test
+    void testCheckTypeDigitalServiceInvalidTypeEqv() {
+        when(messageSource.getMessage(eq("typeEqv.invalid"), any(), eq(locale)))
+                .thenReturn("Field 'typeEqv' support only two values calcul and stockage. " +
+                        "Value INVALID is not recognized as an authorized value.");
+        Optional<LineError> result = service.checkType(locale, filename, line, "INVALID", 1.0, 1.0, true);
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename, line, "Field 'typeEqv' support only two values calcul and stockage. " +
+                "Value INVALID is not recognized as an authorized value."), result.get());
+    }
+
+    @Test
+    void testCheckTypeDigitalServiceCalculNullVCpu() {
+        when(messageSource.getMessage(eq("vCpu.blank"), any(), eq(locale)))
+                .thenReturn("Field 'vCPU' is mandatory for type \"calcul\".");
+        Optional<LineError> result = service.checkType(locale, filename, line, "calcul", 1.0, null, true);
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename, line, "Field 'vCPU' is mandatory for type \"calcul\"."), result.get());
+    }
+
+    @Test
+    void testCheckTypeDigitalServiceStockageNullDiskSize() {
+        when(messageSource.getMessage(eq("diskSize.blank"), any(), eq(locale)))
+                .thenReturn("Field 'capaciteStockage' is mandatory for type \"stockage\".");
+        Optional<LineError> result = service.checkType(locale, filename, line, "stockage", null, 1.0, true);
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename, line, "Field 'capaciteStockage' is mandatory for type \"stockage\"."), result.get());
+    }
+
+    @Test
+    void testCheckTypeDigitalServiceValidCalcul() {
+        Optional<LineError> result = service.checkType(locale, filename, line, "calcul", 10.0, 1.0, true);
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testCheckTypeDigitalServiceValidStockage() {
+        Optional<LineError> result = service.checkType(locale, filename, line, "stockage", 5.0, 1.0, true);
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    // checkCloudLocation edge: location found
+    @Test
+    void testCheckCloudLocationPresentInReferentialIsOk(){
+        String location = "US";
+        Map<String, String> countryMap = new HashMap<>();
+        countryMap.put(location, "US");
+        when(boaviztapiService.getCountryMap()).thenReturn(countryMap);
+
+        var result = service.checkCloudLocation(locale, filename, line, location);
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testCheckCloudProviderWithNullGetProviderList() {
+        when(boaviztapiService.getProviderList()).thenReturn(List.of());
+        when(messageSource.getMessage(eq("boaviztAPI.referential.provider.not.exist"), any(), eq(locale))).
+                thenReturn("Provider XXX does not exist in BoaviztAPI. Please check your references.");
+        var result = service.checkCloudProvider(locale, filename, line, "XXX");
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename, 1, "Provider XXX does not exist in BoaviztAPI. Please check your references."), result.get());
+    }
+    @Test
+    void testCheckCloudInstanceTypeWithEmptyProviderNoReferentialCheck() {
+        when(messageSource.getMessage(eq("cloud.typeInstance.blank"), any(), eq(locale))).thenReturn("typeInstance is mandatory for cloud services");
+        var result = service.checkCloudInstanceType(locale, filename, line, "", "");
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename,1, "typeInstance is mandatory for cloud services"), result.get());
+    }
+
+    @Test
+    void testCheckCloudInstanceTypeWithProviderListNull() {
+        when(boaviztapiService.getProviderList()).thenReturn(List.of());
+        String provider = "Test";
+        String instanceType = "anything";
+        var result = service.checkCloudInstanceType(locale, filename, line, provider, instanceType);
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testCheckCloudQuantityNegative() {
+        when(messageSource.getMessage(eq("cloud.quantity.blank"), any(), eq(locale))).thenReturn
+                ("quantity is mandatory for cloud services");
+        var result = service.checkCloudQuantity(locale, filename, line, -1.0);
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename,1, "quantity is mandatory for cloud services"), result.get());
+    }
+
+    @Test
+    void testCheckCloudUsageDurationZeroIsOk() {
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, 0.0).isEmpty());
+    }
+
+    @Test
+    void testCheckCloudUsageDurationMaxLimitIsOk() {
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, 8760.0).isEmpty());
+    }
+
+    @Test
+    void testCheckCloudWorkloadZeroBoundary() {
+        Assertions.assertTrue(service.checkCloudWorkload(locale, filename, line, 0.0).isEmpty());
+    }
+    @Test
+    void testCheckCloudWorkloadMaxBoundary() {
+        Assertions.assertTrue(service.checkCloudWorkload(locale, filename, line, 100.0).isEmpty());
+    }
+
+    @Test
+    void testCheckCloudWorkloadNegativeInvalid() {
+        when(messageSource.getMessage(eq("cloud.workload.invalid"), any(), eq(locale))).thenReturn("Workload invalid");
+        Assertions.assertTrue(service.checkCloudWorkload(locale, filename, line, -0.01).isPresent());
+    }
+
+
+    @Test
+    void testCheckVirtualEquipmentNameNullNonCloudService() {
+        when(messageSource.getMessage(eq("nomequipementvirtuel.not.blank"), any(), eq(locale)))
+                .thenReturn("Field 'nomEquipementVirtuel' is mandatory.");
+        Set<String> names = new HashSet<>();
+        var result = service.checkVirtualEquipmentName(locale, filename, line, null, names, false, false);
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename,1,"Field 'nomEquipementVirtuel' is mandatory."), result.get());
+    }
+
+    // checkVirtualEquipmentName unique for !isCloudService
+    @Test
+    void testCheckVirtualEquipmentNameDuplicateNonCloudService() {
+        when(messageSource.getMessage(eq("cloud.equipment.unique"), any(), eq(locale))).
+                thenReturn("nomEquipementVirtuel should be unique");
+        Set<String> names = new HashSet<>(Set.of("N1"));
+        var result = service.checkVirtualEquipmentName(locale, filename, line, "N1", names, false, false);
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(new LineError(filename,1,"nomEquipementVirtuel should be unique"), result.get());
+    }
+
+    @Test
+    void testCheckVirtualEquipmentNameAddToSet() {
+        Set<String> names = new HashSet<>();
+        var result = service.checkVirtualEquipmentName(locale, filename, line, "name", names, false, false);
+        Assertions.assertTrue(result.isEmpty());
+        Assertions.assertTrue(names.contains("name"));
     }
 }
