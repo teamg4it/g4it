@@ -16,8 +16,10 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.apache.commons.csv.CSVRecord;
 import org.mapstruct.Mapper;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.common.utils.CsvUtils.*;
 
@@ -41,6 +43,7 @@ public interface CsvToInMapper {
     }
 
     default InPhysicalEquipmentRest csvInPhysicalEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceUid) {
+
         return InPhysicalEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementPhysique"))
                 .inventoryId(inventoryId)
@@ -50,10 +53,12 @@ public interface CsvToInMapper {
                 .quantity(readDouble(csvRecord, "quantite", 1d))
                 .type(read(csvRecord, "type"))
                 .model(read(csvRecord, "modele"))
+                .durationHour(readDouble(csvRecord, "dureeUtilisation"))
                 .datePurchase(readLocalDate(csvRecord, "dateAchat"))
                 .dateWithdrawal(readLocalDate(csvRecord, "dateRetrait"))
                 .source(read(csvRecord, "nomSourceDonnee"))
                 .cpuCoreNumber(readDouble(csvRecord, "nbCoeur"))
+                .sizeDiskGb(readDouble(csvRecord, "tailleDuDisque"))
                 .electricityConsumption(readDouble(csvRecord, "consoElecAnnuelle"))
                 .creationDate(LocalDateTime.now())
                 .filters(List.of(read(csvRecord, "statut", "")))
@@ -73,6 +78,7 @@ public interface CsvToInMapper {
                 .quantity(readDouble(csvRecord, "quantite", 1d))
                 .type(read(csvRecord, "typeEqv"))
                 .vcpuCoreNumber(readDouble(csvRecord, "vCPU"))
+                .sizeDiskGb(readDouble(csvRecord, "capaciteStockage"))
                 .allocationFactor(readDouble(csvRecord, "cleRepartition"))
                 .electricityConsumption(readDouble(csvRecord, "consoElecAnnuelle"))
                 .infrastructureType(read(csvRecord, "typeInfrastructure", InfrastructureType.NON_CLOUD_SERVERS.name()))

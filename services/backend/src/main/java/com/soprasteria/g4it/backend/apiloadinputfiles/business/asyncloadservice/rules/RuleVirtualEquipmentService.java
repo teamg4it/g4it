@@ -59,14 +59,36 @@ public class RuleVirtualEquipmentService {
         return Optional.empty();
     }
 
-    public Optional<LineError> checkType(Locale locale, String filename, int line, String typeEqv) {
+    public Optional<LineError> checkType(Locale locale, String filename, int line, String typeEqv,
+                                         Double diskSize, Double vCpu, boolean isDigitalService) {
         if (StringUtils.isEmpty(typeEqv)) {
             return Optional.of(new LineError(filename, line,
                     messageSource.getMessage("virtual.equipment.must.have.typeEqv",
                             new String[]{},
                             locale)));
         }
-        return Optional.empty();
+        if(isDigitalService) {
+            if (!"calcul".equals(typeEqv) && !"stockage".equals(typeEqv)) {
+                return Optional.of(new LineError(filename, line,
+                        messageSource.getMessage("typeEqv.invalid",
+                                new String[]{typeEqv},
+                                locale)));
+            }
+            if ("calcul".equals(typeEqv) && vCpu == null) {
+                return Optional.of(new LineError(filename, line,
+                        messageSource.getMessage("vCpu.blank",
+                                new String[]{},
+                                locale)));
+            }
+            if ("stockage".equals(typeEqv) && diskSize == null) {
+                return Optional.of(new LineError(filename, line,
+                        messageSource.getMessage("diskSize.blank",
+                                new String[]{},
+                                locale)));
+            }
+        }
+            return Optional.empty();
+
     }
 
     /**
