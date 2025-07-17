@@ -10,7 +10,6 @@ package com.soprasteria.g4it.backend;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -52,8 +51,6 @@ public class TestUtils {
     public static final String ROLE = "ROLE";
     public static ObjectMapper mapper = new ObjectMapper()
             .configure(SerializationFeature.INDENT_OUTPUT, true)
-            .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
-            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .registerModule(new JavaTimeModule()
