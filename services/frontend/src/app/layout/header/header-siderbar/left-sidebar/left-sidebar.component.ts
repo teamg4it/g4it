@@ -76,7 +76,7 @@ export class LeftSidebarComponent implements OnInit {
     isAdminOnSubscriberOrOrganization = false;
     userDetails!: UserInfo;
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
-
+    isZoomedIn125 = computed(() => this.globalStore.zoomLevel() >= 125);
     isEcoMindEnabledForCurrentSubscriber: boolean = false;
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
     isMobile = computed(() => this.globalStore.mobileView());
