@@ -124,6 +124,6 @@ front ->> RND : Display the 'completed' button if all the uploaded data is corre
 front -->> RND : Display the 'failed' button if most of the uploaded data is incorrect or <br> mandatory headers missing
 front ->> RND : Display the 'completed with errors' and 'download' button if some of the uploaded data is incorrect
 RND ->> front : Click the 'completed with errors' button to download the rejected data
-front -->> back: GET /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/output/{taskId}
+front -->> back: GET /subscribers/{subscriber}/organizations/{organization}/download-reject/{taskId}
 back ->> front : Rejected files downloaded to the user's local machine
 {{< /mermaid >}}

@@ -24,8 +24,10 @@ import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetServic
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -153,6 +155,20 @@ public class DigitalServiceReferentialService {
         return digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(serverHostRefRepository.findServerHostRefByType(type));
     }
 
+    /**
+     *
+     * @return the list of server host
+     */
+    @Cacheable("ref_getHosts")
+    public List<ServerHostBO> getServerHosts() {
+        List<ServerHostBO> compute = digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(serverHostRefRepository.findServerHostRefByType("Compute"));
+        List<ServerHostBO> storage = digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(serverHostRefRepository.findServerHostRefByType("Storage"));
+        List<ServerHostBO> combined = new ArrayList<>();
+        combined.addAll(compute);
+        combined.addAll(storage);
+
+        return combined;
+    }
     /**
      * Get server host referential data.
      *

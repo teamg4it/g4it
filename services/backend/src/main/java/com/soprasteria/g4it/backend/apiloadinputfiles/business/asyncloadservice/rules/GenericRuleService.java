@@ -8,16 +8,23 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules;
 
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
+import com.soprasteria.g4it.backend.apidigitalservice.model.ServerHostBO;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.ValidationUtils;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import jakarta.validation.Validator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class GenericRuleService {
@@ -30,6 +37,7 @@ public class GenericRuleService {
 
     @Autowired
     ReferentialGetService referentialGetService;
+
 
     /**
      * Check location is in referential item impacts
@@ -53,12 +61,34 @@ public class GenericRuleService {
      * @param type       the location
      * @return error
      */
-    public Optional<LineError> checkType(Locale locale, String subscriber, String filename, int line, String type) {
+   public Optional<LineError> checkType(Locale locale, String subscriber, String filename, int line, String type, boolean isDigitalService) {
 
-        if (!referentialGetService.getItemTypes(type, subscriber).isEmpty()) return Optional.empty();
-        if (!referentialGetService.getItemTypes(type, null).isEmpty()) return Optional.empty();
+        if (StringUtils.isEmpty(type)) {
+            return Optional.of(new LineError(filename, line,
+                    messageSource.getMessage("physical.equipment.must.have.type",
+                            new String[]{},
+                            locale)));
+        }
+        if (isDigitalService) {
+            if( !"Shared Server".equals(type) && !"Dedicated Server".equals(type))
+                return Optional.of(new LineError(filename, line,
+                        messageSource.getMessage("physical.eqp.type.invalid",
+                                new String[]{type},
+                                locale)));
+        }
+        else {
+            if (referentialGetService.getItemTypes(type, subscriber).isEmpty() &&
+                    referentialGetService.getItemTypes(type, null).isEmpty()) {
 
-        return Optional.of(new LineError(filename,line, messageSource.getMessage("referential.type.not.exist", new String[]{type}, locale)));
+                return Optional.of(new LineError(
+                        filename,
+                        line,
+                        messageSource.getMessage("referential.type.not.exist", new String[]{type}, locale)
+                ));
+            }
+
+        } return Optional.empty();
+
     }
 
     /**

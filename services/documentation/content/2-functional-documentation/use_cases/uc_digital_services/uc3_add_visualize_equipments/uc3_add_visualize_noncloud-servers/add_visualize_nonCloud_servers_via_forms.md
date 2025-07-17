@@ -1,7 +1,7 @@
 ---
-title: "2.3.3 Add or Visualize Non-Cloud Servers"
-description: "This use case describes how to add Non-Cloud Servers equipments to a digital service"
-weight: 30
+title: "2.3.3.1. Add Non-Cloud Servers using the form"
+description: "This use case describes how to add Non-Cloud Server equipments to a digital service using the form"
+weight: 20
 mermaid: true
 ---
 
@@ -9,12 +9,19 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Non-Cloud Servers visualization](#non-cloud-server-visualization)
--   [Non-Cloud Servers add / edit](#non-cloud-servers-add--edit)
+-   [Non-Cloud Server add](#non-cloud-server-add)
 
 ## Description
 
-This usecase allows a project team to add Non-Cloud Server equipment into a digital service previously created.
+This use case allows a project team to add Non-Cloud Server equipment directly via form, into a digital service previously created.
+
+**Navigation Path**
+
+-   My Digital Services / My Digital Service / Cloud Services / Add Cloud Service
+
+## Description
+
+This use case allows a project team to add Non-Cloud Server equipment into a digital service previously created.
 
 **Navigation Path**
 
@@ -26,7 +33,7 @@ The connected user must have the write access for that module on the selected or
 
 ## Non-Cloud Server visualization
 
-![uc3_add_visualize_equipments_NCServersList.png](../../images/uc3_add_visualize_equipments_NCServersList.png)
+![uc3_add_visualize_equipments_NCServersList.png](../../../images/uc3_add_visualize_equipments_NCServersList.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
@@ -47,9 +54,9 @@ The connected user must have the write access for that module on the selected or
 
 {{% /expand %}}
 
-## Non-Cloud Servers add / edit
+## Non-Cloud Server add
 
-![uc3_add_visualize_equipments_NonCloudServer.png](../../images/uc3_add_visualize_equipments_NonCloudServer.png)
+![uc3_add_visualize_equipments_NonCloudServer.png](../../../images/uc3_add_visualize_equipments_NonCloudServer.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Elements                  | Type         | Description                                                             |
@@ -66,7 +73,7 @@ The connected user must have the write access for that module on the selected or
 ### Step 2—field depending on the "Dedicated/Shared" & "Compute/Storage" options
 
 _example:_
-![uc3_add_visualize_equipments_NCServerAdd_Step2.png](../../images/uc3_add_visualize_equipments_NCServerAdd_Step2.png)
+![uc3_add_visualize_equipments_NCServerAdd_Step2.png](../../../images/uc3_add_visualize_equipments_NCServerAdd_Step2.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
@@ -96,7 +103,7 @@ _example:_
 ### Step 3—for "Add Datacenter"
 
 _example:_
-![uc3_add_visualize_equipments_NCServerAdd_Step3.png](../../images/uc3_add_visualize_equipments_NCServerAdd_Step3.png)
+![uc3_add_visualize_equipments_NCServerAdd_Step3.png](../../../images/uc3_add_visualize_equipments_NCServerAdd_Step3.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
@@ -114,7 +121,7 @@ _example:_
 ### Step 4—Only for "Shared" option - VM list
 
 _example:_
-![uc3_add_visualize_equipments_NCServerAdd_Step4.png](../../images/uc3_add_visualize_equipments_NCServerAdd_Step4.png)
+![uc3_add_visualize_equipments_NCServerAdd_Step4.png](../../../images/uc3_add_visualize_equipments_NCServerAdd_Step4.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
@@ -140,7 +147,7 @@ _example:_
 ### Step 5—Only for "Shared" option—Add VM
 
 _example:_
-![uc3_add_visualize_equipments_NCServerAdd_Step5.png](../../images/uc3_add_visualize_equipments_NCServerAdd_Step5.png)
+![uc3_add_visualize_equipments_NCServerAdd_Step5.png](../../../images/uc3_add_visualize_equipments_NCServerAdd_Step5.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
@@ -170,12 +177,16 @@ participant DataBase
 RND ->> front: Click on "Add" button in the digital service Non-Cloud Server view
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 back--> DataBase: Create non-cloud server record in the in_physical_equipment table
+front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters
+back--> DataBase: Create non-cloud server record in the in_datacenter table
 front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 DataBase-->> back: Get non-cloud servers from the in_physical_equipment table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
 back-->> DataBase: Create non-cloud server's vm record in the in_virtual_equipment table
 front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
 DataBase-->> back: Get non-cloud servers' vms from the in_virtual_equipment table
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters
+DataBase-->> back: Get non-cloud servers' datacenter from the in_datacenter table
 back-->> front: Send the physical and virtual equipments for the non-cloud server view
 front->> RND : Display the non-cloud server list view
 
