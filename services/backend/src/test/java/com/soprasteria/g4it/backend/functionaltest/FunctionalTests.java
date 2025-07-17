@@ -69,7 +69,7 @@ class FunctionalTests {
     private static final String SUBSCRIBER = "SUBSCRIBER";
     private static final Path API_LOAD_INPUT_FILES = Path.of("src/test/resources/apiloadinputfiles");
     private static final Path API_EVALUATING = Path.of("src/test/resources/apievaluating");
-    // Set to true if you want Assertions on each fail,please commit with  SHOW_ASSERTION = false;
+    
     private static final boolean SHOW_ASSERTION = false;
     @Autowired
     LoadInputFilesController loadInputFilesController;
