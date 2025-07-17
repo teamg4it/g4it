@@ -254,7 +254,7 @@ filesystem.config.headers:
       optional: false
     - name: "trace"
       optional: false
-    - name: "typeEqv"
+    - name: "type"
       optional: true
     - name: "calculationVersion"
       optional: false
@@ -419,7 +419,7 @@ filesystem.config.headers:
       optional: false
     - name: "trace"
       optional: false
-    - name: "typeEqv"
+    - name: "type"
       optional: true
     - name: "calculationVersion"
       optional: false
