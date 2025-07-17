@@ -217,6 +217,8 @@ filesystem.config.headers:
       optional: false
     - name: "sipImpact"
       optional: false
+    - name: "dureeUtilisation"
+      optional: true
   virtualEquipmentIndicator:
     - name: "inventoryName"
       optional: false
@@ -252,6 +254,8 @@ filesystem.config.headers:
       optional: false
     - name: "trace"
       optional: false
+    - name: "typeEqv"
+      optional: true
     - name: "calculationVersion"
       optional: false
     - name: "unitImpact"
