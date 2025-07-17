@@ -103,3 +103,10 @@
 .light-black-color {
     color: var(--tints-black-80);
 }
+
+@media screen and (max-width: 630px) {
+    .import-digital {
+        width: 100vw;
+        overflow: auto;
+    }
+}
