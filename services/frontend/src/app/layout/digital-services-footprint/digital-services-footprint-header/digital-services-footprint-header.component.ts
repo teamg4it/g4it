@@ -51,6 +51,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
+    isZoom125 = computed(() => this.global.zoomLevel() >= 125);
     sidebarVisible: boolean = false;
     importSidebarVisible = false;
     selectedSubscriberName = "";
