@@ -28,7 +28,7 @@ export class DeclarationsComponent {
             this.titleService.setTitle(translatedTitle);
         });
         this.currentLang = this.translate.currentLang;
-        this.pdfSize = this.currentLang === "en" ? 139 : 253;
+        this.pdfSize = this.currentLang === "en" ? 139 : 428;
 
         this.userService.currentSubscriber$
             .pipe(takeUntilDestroyed(this.destroyRef))
