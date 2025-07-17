@@ -27,16 +27,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceReferentialServiceTest {
 
@@ -261,23 +259,25 @@ class DigitalServiceReferentialServiceTest {
 
         when(serverHostRefRepository.findServerHostRefByType("Compute")).thenReturn(computeDtos);
         when(serverHostRefRepository.findServerHostRefByType("Storage")).thenReturn(storageDtos);
-        when(digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(computeDtos)).thenReturn(computeBOs);when(digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(storageDtos)).thenReturn(storageBOs);
+        when(digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(computeDtos)).thenReturn(computeBOs);
+        when(digitalServiceReferentialMapper.serverDTOtoServerHostBusinessObject(storageDtos)).thenReturn(storageBOs);
 
-       List<ServerHostBO> result = digitalServiceReferentialService.getServerHosts();
+        List<ServerHostBO> result = digitalServiceReferentialService.getServerHosts();
 
-       List<ServerHostBO> expected = new ArrayList<>();
-       expected.addAll(computeBOs);
-       expected.addAll(storageBOs);
+        List<ServerHostBO> expected = new ArrayList<>();
+        expected.addAll(computeBOs);
+        expected.addAll(storageBOs);
 
-       assertThat(result)
-            .containsExactlyInAnyOrderElementsOf(expected);
+        assertThat(result)
+                .containsExactlyInAnyOrderElementsOf(expected);
 
 
-       verify(serverHostRefRepository, times(1)).findServerHostRefByType("Compute");
-       verify(serverHostRefRepository, times(1)).findServerHostRefByType("Storage");
-       verify(digitalServiceReferentialMapper, times(1)).serverDTOtoServerHostBusinessObject(computeDtos);
-       verify(digitalServiceReferentialMapper, times(1)).serverDTOtoServerHostBusinessObject(storageDtos);
+        verify(serverHostRefRepository, times(1)).findServerHostRefByType("Compute");
+        verify(serverHostRefRepository, times(1)).findServerHostRefByType("Storage");
+        verify(digitalServiceReferentialMapper, times(1)).serverDTOtoServerHostBusinessObject(computeDtos);
+        verify(digitalServiceReferentialMapper, times(1)).serverDTOtoServerHostBusinessObject(storageDtos);
     }
+
     @Test
     void shouldGetNetworkType() {
         // Arrange
