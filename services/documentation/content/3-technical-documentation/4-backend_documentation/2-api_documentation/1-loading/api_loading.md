@@ -1,5 +1,5 @@
 ---
-title: "1- Load inventory files"
+title: "1.1- Load inventory files"
 description: "This use case describes how to load files"
 weight: 30
 mermaid: true
@@ -31,7 +31,7 @@ D --> E(Return the task id)
 {{</ mermaid >}}
 
 Note that, the loading process is done asynchronous. The user can track the loading process by calling the
-API [`GET /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/task/{taskId}`](https://saas-g4it.com/api/swagger-ui/index.html#/task/getTask).
+API [`GET /subscribers/{subscriber}/organizations/{organization}/task/{taskId}`](https://saas-g4it.com/api/swagger-ui/index.html#/task/getTask).
 
 Attention, to consume small resource the loading process is done by one thread. So if there are two loads
 in the instance, one will wait for the other to finish.
@@ -127,7 +127,7 @@ in bulk using the appropriate repository.
 The batch of records is inserted by the loader of the apiloadinputfiles.business.asyncloadservice.loadobject package as
 a LoadApplicationService.
 
-The loader service uses a repository of the package apiinout.resitory as the used tables are the responsibility of inout
+The loader service uses a repository of the package apiinout.repository as the used tables are the responsibility of inout
 api used for digital service inventory input.
 
 Similar to efficiently loading the data, the entity must have a generated id using sequence incrementing in batch (such

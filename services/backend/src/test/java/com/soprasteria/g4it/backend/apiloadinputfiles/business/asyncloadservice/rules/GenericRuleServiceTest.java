@@ -88,12 +88,12 @@ class GenericRuleServiceTest {
 
         // Test subscriber-specific type
         var actual = genericRuleService.checkType(
-                locale, subscriber, filename, line, "Laptop");
+                locale, subscriber, filename, line, "Laptop", false);
         assertTrue(actual.isEmpty());
 
         // Test global type
         var actualGlobal = genericRuleService.checkType(
-                locale, "subscriber", filename, line, "Monitor");
+                locale, "subscriber", filename, line, "Monitor", false);
         assertTrue(actualGlobal.isEmpty());
 
         // Verify interactions

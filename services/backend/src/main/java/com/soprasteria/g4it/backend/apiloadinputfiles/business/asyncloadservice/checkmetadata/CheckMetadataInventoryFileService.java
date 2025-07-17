@@ -38,7 +38,8 @@ public class CheckMetadataInventoryFileService {
      */
     public Map<String, Map<Integer, List<LineError>>> checkMetadataInventoryFile(Long taskId, Long inventoryId, String digitalServiceUid) {
         // check unicity
-        Map<String, Map<Integer, List<LineError>>> duplicatesMap = checkConstraintService.checkUnicity(taskId);
+        boolean isDigitalService = digitalServiceUid != null;
+        Map<String, Map<Integer, List<LineError>>> duplicatesMap = checkConstraintService.checkUnicity(taskId, isDigitalService);
 
         // check coherence
         Map<String, Map<Integer, List<LineError>>> coherenceMap = checkConstraintService.checkCoherence(taskId,inventoryId, digitalServiceUid, duplicatesMap);

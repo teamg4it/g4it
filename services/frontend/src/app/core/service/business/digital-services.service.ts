@@ -148,6 +148,7 @@ export class DigitalServiceBusinessService {
             quantity: vm.quantity,
             vcpuCoreNumber: vm.vCpu,
             sizeDiskGb: vm.disk,
+            type: server.type === "Compute" ? "calcul" : "stockage",
             physicalEquipmentName: server.name,
             allocationFactor:
                 server.type === "Compute" && server.mutualizationType === "Shared"

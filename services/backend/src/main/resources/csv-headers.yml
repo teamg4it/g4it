@@ -70,6 +70,8 @@ filesystem.config.headers:
       optional: true
     - name: "typeDeProcesseur"
       optional: true
+    - name: "dureeUtilisation"
+      optional: true
   equipementVirtuel:
     - name: "nomEquipementVirtuel"
       optional: false
@@ -215,6 +217,8 @@ filesystem.config.headers:
       optional: false
     - name: "sipImpact"
       optional: false
+    - name: "dureeUtilisation"
+      optional: true
   virtualEquipmentIndicator:
     - name: "inventoryName"
       optional: false
@@ -250,6 +254,8 @@ filesystem.config.headers:
       optional: false
     - name: "trace"
       optional: false
+    - name: "type"
+      optional: true
     - name: "calculationVersion"
       optional: false
     - name: "unitImpact"
@@ -376,6 +382,8 @@ filesystem.config.headers:
       optional: false
     - name: "sipImpact"
       optional: false
+    - name: "dureeUtilisation"
+      optional: true
   virtualEquipmentIndicatorDigitalService:
     - name: "digitalServiceName"
       optional: false
@@ -411,6 +419,8 @@ filesystem.config.headers:
       optional: false
     - name: "trace"
       optional: false
+    - name: "type"
+      optional: true
     - name: "calculationVersion"
       optional: false
     - name: "unitImpact"

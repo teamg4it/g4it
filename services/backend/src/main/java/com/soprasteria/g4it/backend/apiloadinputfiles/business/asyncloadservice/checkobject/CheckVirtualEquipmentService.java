@@ -48,6 +48,8 @@ public class CheckVirtualEquipmentService {
                 .ifPresent(errors::add);
 
         boolean isCloudService = Objects.equals(InfrastructureType.CLOUD_SERVICES.name(), virtualEquipment.getInfrastructureType());
+        final boolean isDigitalService = context.getDigitalServiceUid() != null;
+
         //  check equipment name is not empty
         ruleVirtualEquipmentService.checkVirtualEquipmentName(context.getLocale(), filename, line,
                         virtualEquipment.getName(), virtualEquipmentNames, isCloudService)
@@ -90,9 +92,8 @@ public class CheckVirtualEquipmentService {
                             virtualEquipment.getInfrastructureType(), virtualEquipment.getPhysicalEquipmentName())
                     .ifPresent(errors::add);
             ruleVirtualEquipmentService.checkType(context.getLocale(), filename, line,
-                            virtualEquipment.getType())
+                            virtualEquipment.getType(),virtualEquipment.getSizeDiskGb(), virtualEquipment.getVcpuCoreNumber(), isDigitalService)
                     .ifPresent(errors::add);
-
         }
         return errors;
     }

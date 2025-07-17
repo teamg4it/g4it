@@ -71,6 +71,7 @@
                             role="link"
                             #addFocus
                             (click)="downloadTemplateFile(template.name)"
+                            (keydown.enter)="downloadTemplateFile(template.name)"
                             [attr.id]="
                                 selectedMenuIndex === 0 &&
                                 template.csvFileType === 'datacenter'
