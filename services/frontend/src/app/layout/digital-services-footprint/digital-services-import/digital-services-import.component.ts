@@ -136,7 +136,7 @@ export class DigitalServicesImportComponent {
                 });
                 setTimeout(() => {
                     this.focusFirstTemplate();
-                }, 0);
+                }, 100);
             });
     }
 

@@ -103,3 +103,25 @@
         padding: 0 1.5rem 1.5rem;
     }
 }
+
+@media screen and (max-width: 992px) {
+    .app-workspace {
+        .space-form h2 {
+            font-size: 26px;
+            line-height: 32px;
+        }
+
+        p,
+        small {
+            font-size: 10px;
+            line-height: 15px;
+        }
+    }
+}
+
+@media screen and (max-width: 630px) {
+    .app-workspace {
+        width: 100vw;
+        overflow: auto;
+    }
+}
