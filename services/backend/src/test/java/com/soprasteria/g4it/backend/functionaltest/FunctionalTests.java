@@ -21,9 +21,6 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.controller.LoadInputFilesController;
-import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckApplication;
-import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckPhysicalEquipment;
-import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckVirtualEquipment;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckApplicationRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenterRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
@@ -206,12 +203,6 @@ class FunctionalTests {
             // EXECUTE LOADING
             var task = taskRepository.save(TestUtils.createTask(context, filenames, TaskType.LOADING, null, inventory));
             asyncLoadFilesService.execute(context, task);
-
-            //TO DO to delete this debug code
-            //TEST checks
-            List<CheckVirtualEquipment> cve = checkVirtualEquipmentRepository.findAll();
-            List<CheckPhysicalEquipment> pec = checkPhysicalEquipmentRepository.findAll();
-            List<CheckApplication> apc = checkApplicationRepository.findAll();
 
             // ASSERT
             Path outputPath = API_LOAD_INPUT_FILES.resolve(testCase).resolve("output");
