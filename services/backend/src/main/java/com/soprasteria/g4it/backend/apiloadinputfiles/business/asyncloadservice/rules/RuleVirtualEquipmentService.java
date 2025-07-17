@@ -176,14 +176,14 @@ public class RuleVirtualEquipmentService {
      * @param usageDuration the workload
      * @return errors
      */
-    public Optional<LineError> checkCloudUsageDuration(Locale locale, String filename, int line, Double usageDuration) {
+    public Optional<LineError> checkUsageDuration(Locale locale, String filename, int line, Double usageDuration) {
         if (usageDuration == null || usageDuration < 0) {
             return Optional.of(new LineError(filename, line,
-                    messageSource.getMessage("cloud.duration.blank", new String[]{}, locale)
+                    messageSource.getMessage("duration.blank", new String[]{}, locale)
             ));
         } else if (usageDuration > 8760) {
             return Optional.of(new LineError(filename, line,
-                    messageSource.getMessage("cloud.duration.invalid", new String[]{}, locale)
+                    messageSource.getMessage("duration.invalid", new String[]{}, locale)
             ));
         }
         return Optional.empty();
@@ -215,13 +215,16 @@ public class RuleVirtualEquipmentService {
      * @return errors
      */
     public Optional<LineError> checkVirtualEquipmentName(Locale locale, String filename, int line, String virtualEquipmentName, Set<String> virtualEquipmentNames,
-                                                         boolean isCloudService) {
+                                                         boolean isCloudService, boolean isDigitalService) {
         if (virtualEquipmentName == null) {
             String messageCode = isCloudService ? "cloud.equipment.blank" : "nomequipementvirtuel.not.blank";
             return Optional.of(new LineError(filename, line,
                     messageSource.getMessage(messageCode, new String[]{}, locale)
             ));
-        } else if (virtualEquipmentNames.contains(virtualEquipmentName)) {
+        } else if (isDigitalService && !isCloudService){
+            return Optional.empty();
+        }
+        else if (virtualEquipmentNames.contains(virtualEquipmentName)) {
             return Optional.of(new LineError(filename, line,
                     messageSource.getMessage("cloud.equipment.unique", new String[]{}, locale)
             ));

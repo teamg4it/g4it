@@ -112,7 +112,7 @@ public interface InputToCsvRecord {
                 print(virtualEquipment.getType()),
                 print(virtualEquipment.getAllocationFactor()),
                 "", //nomSourceDonnee
-                print(virtualEquipment.getSizeMemoryGb())
+                print(virtualEquipment.getSizeDiskGb())
         );
     }
 

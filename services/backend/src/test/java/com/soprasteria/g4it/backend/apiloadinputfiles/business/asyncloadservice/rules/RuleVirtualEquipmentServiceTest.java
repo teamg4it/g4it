@@ -204,24 +204,24 @@ class RuleVirtualEquipmentServiceTest {
 
     @Test
     void testInValidCloudUsageDurationError(){
-        when(messageSource.getMessage(eq("cloud.duration.blank"), any(), eq(locale)))
+        when(messageSource.getMessage(eq("duration.blank"), any(), eq(locale)))
                 .thenReturn("Duration is blank");
 
-        Assertions.assertTrue(service.checkCloudUsageDuration(locale, filename, line, null).isPresent());
-        Assertions.assertTrue(service.checkCloudUsageDuration(locale, filename, line, -1.0).isPresent());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, null).isPresent());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, -1.0).isPresent());
     }
 
     @Test
     void testInValidCloudUsageDurationGreaterThan8760Error(){
-        when(messageSource.getMessage(eq("cloud.duration.invalid"), any(), eq(locale)))
+        when(messageSource.getMessage(eq("duration.invalid"), any(), eq(locale)))
                 .thenReturn("Duration invalid");
 
-        Assertions.assertTrue(service.checkCloudUsageDuration(locale, filename, line, 9000.0).isPresent());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, 9000.0).isPresent());
     }
 
     @Test
     void testValidCloudUsageDurationOk() {
-        Assertions.assertTrue(service.checkCloudUsageDuration(locale, filename, line, 100.0).isEmpty());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, 100.0).isEmpty());
     }
 
     @Test
@@ -252,7 +252,7 @@ class RuleVirtualEquipmentServiceTest {
                 .thenReturn("nomEquipementVirtuel is mandatory");
 
         Set<String> names = new HashSet<>();
-        var actual = service.checkVirtualEquipmentName(locale, filename, line, null, names, true);
+        var actual = service.checkVirtualEquipmentName(locale, filename, line, null, names, true, false);
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename,1, "nomEquipementVirtuel is mandatory"), actual.get());
     }
@@ -263,7 +263,7 @@ class RuleVirtualEquipmentServiceTest {
                 .thenReturn("nomEquipementVirtuel should be unique");
 
         Set<String> names = new HashSet<>(Set.of("VM1"));
-        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM1", names, true);
+        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM1", names, true, false);
         Assertions.assertTrue(actual.isPresent());
         Assertions.assertEquals(new LineError(filename,1, "nomEquipementVirtuel should be unique"), actual.get());
     }
@@ -271,9 +271,21 @@ class RuleVirtualEquipmentServiceTest {
     @Test
     void testUniqueVirtualEquipmentNameOk() {
         Set<String> names = new HashSet<>();
-        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM2", names, true);
+        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM2", names, true, false);
         Assertions.assertTrue(actual.isEmpty());
         Assertions.assertTrue(names.contains("VM2"));
+    }
+    @Test
+    void testDigitalServiceReturnsEmpty() {
+        Set<String> names = new HashSet<>();
+        boolean isDigitalService = true;
+        boolean isCloudService = false;
+
+        var actual = service.checkVirtualEquipmentName(locale, filename, line, "VM3", names, isCloudService, isDigitalService);
+
+        Assertions.assertTrue(actual.isEmpty());
+        // The name should NOT be added to the set in this case
+        Assertions.assertFalse(names.contains("VM3"));
     }
     @Test
     void testCheckInfrastructureTypeNullIsValid() {
@@ -390,12 +402,12 @@ class RuleVirtualEquipmentServiceTest {
 
     @Test
     void testCheckCloudUsageDurationZeroIsOk() {
-        Assertions.assertTrue(service.checkCloudUsageDuration(locale, filename, line, 0.0).isEmpty());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, 0.0).isEmpty());
     }
 
     @Test
     void testCheckCloudUsageDurationMaxLimitIsOk() {
-        Assertions.assertTrue(service.checkCloudUsageDuration(locale, filename, line, 8760.0).isEmpty());
+        Assertions.assertTrue(service.checkUsageDuration(locale, filename, line, 8760.0).isEmpty());
     }
 
     @Test
@@ -419,7 +431,7 @@ class RuleVirtualEquipmentServiceTest {
         when(messageSource.getMessage(eq("nomequipementvirtuel.not.blank"), any(), eq(locale)))
                 .thenReturn("Field 'nomEquipementVirtuel' is mandatory.");
         Set<String> names = new HashSet<>();
-        var result = service.checkVirtualEquipmentName(locale, filename, line, null, names, false);
+        var result = service.checkVirtualEquipmentName(locale, filename, line, null, names, false, false);
         Assertions.assertTrue(result.isPresent());
         Assertions.assertEquals(new LineError(filename,1,"Field 'nomEquipementVirtuel' is mandatory."), result.get());
     }
@@ -430,7 +442,7 @@ class RuleVirtualEquipmentServiceTest {
         when(messageSource.getMessage(eq("cloud.equipment.unique"), any(), eq(locale))).
                 thenReturn("nomEquipementVirtuel should be unique");
         Set<String> names = new HashSet<>(Set.of("N1"));
-        var result = service.checkVirtualEquipmentName(locale, filename, line, "N1", names, false);
+        var result = service.checkVirtualEquipmentName(locale, filename, line, "N1", names, false, false);
         Assertions.assertTrue(result.isPresent());
         Assertions.assertEquals(new LineError(filename,1,"nomEquipementVirtuel should be unique"), result.get());
     }
@@ -438,7 +450,7 @@ class RuleVirtualEquipmentServiceTest {
     @Test
     void testCheckVirtualEquipmentNameAddToSet() {
         Set<String> names = new HashSet<>();
-        var result = service.checkVirtualEquipmentName(locale, filename, line, "name", names, false);
+        var result = service.checkVirtualEquipmentName(locale, filename, line, "name", names, false, false);
         Assertions.assertTrue(result.isEmpty());
         Assertions.assertTrue(names.contains("name"));
     }

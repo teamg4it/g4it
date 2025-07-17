@@ -4,4 +4,4 @@ virtual-eq-2-2;;;;1;Cluster 2;;calcul;;Entity 1;;;nominal.csv;5;Virtual Equipmen
 virt-rejected-phys-not-exsist;DONTEXIST;;;4;Cluster 1;;calcul;;Entity 1;;;nominal.csv;6;Physical equipment DONTEXIST does not exist.
 virt-rejected-phys-load-duplicate;dupl-phys-eq;;;4;Cluster 1;;calcul;;Entity 1;;;nominal.csv;7;Physical equipment dupl-phys-eq does not exist.
 dupl-virt-equip;physical-eq-1;;;2;Cluster 1;;calcul;;Entity 1;;;nominal.csv;9;The virtual equipment dupl-virt-equip already exists. The virtual equipment must be unique. Please check and modify the name to avoid duplicates.
-dupl-virt-equip;physical-eq-1;;;2;Cluster 1;;calcul;;Entity 1;;;nominal.csv;10;nomEquipementVirtuel should be unique, The virtual equipment dupl-virt-equip already exists. The virtual equipment must be unique. Please check and modify the name to avoid duplicates.
+dupl-virt-equip;physical-eq-1;;;2;Cluster 1;;calcul;;Entity 1;;;nominal.csv;10;The virtual equipment dupl-virt-equip already exists. The virtual equipment must be unique. Please check and modify the name to avoid duplicates.

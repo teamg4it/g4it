@@ -134,6 +134,20 @@ export class DigitalServicesImportComponent {
                         `digital-services-import.templates.${file.csvFileType}-template-file`,
                     );
                 });
+                this.templateFilesDescription.sort((a, b) => {
+                    if (a.csvFileType === "virtual" && b.csvFileType === "virtual") {
+                        return (
+                            (b.name.includes("non_cloud") ? 1 : 0) -
+                                (a.name.includes("non_cloud") ? 1 : 0) ||
+                            a.name.localeCompare(b.name)
+                        );
+                    }
+                    return (
+                        Constants.FILE_TYPES.indexOf(a.csvFileType ?? "") -
+                        Constants.FILE_TYPES.indexOf(b.csvFileType ?? "")
+                    );
+                });
+
                 setTimeout(() => {
                     this.focusFirstTemplate();
                 }, 0);
