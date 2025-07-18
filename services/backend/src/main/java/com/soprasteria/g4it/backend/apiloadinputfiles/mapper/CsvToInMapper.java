@@ -80,7 +80,7 @@ public interface CsvToInMapper {
                 .vcpuCoreNumber(readDouble(csvRecord, "vCPU"))
                 .sizeDiskGb(readDouble(csvRecord, "capaciteStockage"))
                 .allocationFactor(readDouble(csvRecord, "cleRepartition"))
-                .electricityConsumption(readDouble(csvRecord, "consoElecAn"))
+                .electricityConsumption(readDouble(csvRecord, "consoElecAnnuelle"))
                 .infrastructureType(read(csvRecord, "typeInfrastructure", InfrastructureType.NON_CLOUD_SERVERS.name()))
                 .provider(read(csvRecord, "provider"))
                 .instanceType(read(csvRecord, "typeInstance"))
