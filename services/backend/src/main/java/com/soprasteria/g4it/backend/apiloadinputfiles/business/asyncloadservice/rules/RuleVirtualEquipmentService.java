@@ -173,7 +173,7 @@ public class RuleVirtualEquipmentService {
     /**
      * @param locale        the Locale
      * @param line          current line number
-     * @param usageDuration the workload
+     * @param usageDuration the usageDuration
      * @return errors
      */
     public Optional<LineError> checkUsageDuration(Locale locale, String filename, int line, Double usageDuration) {
@@ -192,15 +192,15 @@ public class RuleVirtualEquipmentService {
     /**
      * @param locale        the Locale
      * @param line          current line number
-     * @param usageDuration the usageDuration
+     * @param workload the workload
      * @return errors
      */
-    public Optional<LineError> checkCloudWorkload(Locale locale, String filename, int line, Double usageDuration) {
-        if (usageDuration == null) {
+    public Optional<LineError> checkCloudWorkload(Locale locale, String filename, int line, Double workload) {
+        if (workload == null) {
             return Optional.of(new LineError(filename, line,
                     messageSource.getMessage("cloud.workload.blank", new String[]{}, locale)
             ));
-        } else if (usageDuration < 0 || usageDuration > 100) {
+        } else if (workload < 0 || workload > 100) {
             return Optional.of(new LineError(filename, line,
                     messageSource.getMessage("cloud.workload.invalid", new String[]{}, locale)
             ));

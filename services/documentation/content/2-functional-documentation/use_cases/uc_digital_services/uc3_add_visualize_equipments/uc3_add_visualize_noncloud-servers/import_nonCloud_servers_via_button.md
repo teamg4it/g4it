@@ -46,6 +46,60 @@ other encoding formats, while untested, may also work.
 
 {{% /expand %}}
 
+## Rules to upload the files
+***Datacenter file***
+| Field Name           | Value Pattern                             | PK? | Consistency                                     | Mandatory? | Specific Rule |
+|----------------------|-------------------------------------------|-----|-------------------------------------------------|------------|--------------|
+| nomCourtDatacenter   | ^[A-Za-z0-9_-]+$                          | Yes | N/A                                             | Yes        | No           |
+| nomLongDatacenter    | ^[A-Za-z0-9_-]+$                          | No  | N/A                                             | Yes        | No           |
+| pue                  | ^(\d+)?(\.\d+)?$                          | No  | N/A                                             | Yes        | No           |
+| localisation         | Consistent with list of countries in G4IT | No  | Consistent with the list of countries in G4IT   | Yes        | No           |
+| nomEntite            | ^[A-Za-z0-9_-]+$                          | No  | N/A                                             | No         | No           |
+| nomSourceDonnee      | ^[A-Za-z0-9_-]+$                          | No  | N/A                                             | No         | No
+
+
+***Physical equipment file***
+| Field Name            | Value Pattern / Possible Values              | PK? | Consistency / Reference                                    | Mandatory?                        | Specific Rule / Comment                                        |
+|-----------------------|----------------------------------------------|-----|------------------------------------------------------------|-----------------------------------|----------------------------------------------------------------|
+| nomEquipementPhysique | ^[A-Za-z0-9_-]+$                             | Yes | N/A                                                        | Yes                               |                                                                |
+| nomEntite             | ^[A-Za-z0-9_-]+$                             | No  | N/A                                                        | No                                |                                                                |
+| nomSourceDonnee       | ^[A-Za-z0-9_-]+$                             | No  | N/A                                                        | No                                |                                                                |
+| modele                | (ref_server_host.reference)                  | No  | Consistent with the list of models in ref_server_host       | Yes                               |                                                                |
+| quantite              | ^\d+$                                        | No  | N/A                                                        | No                                | Set to 1 if not specified                                      |
+| type                  | ***Dedicated Server*** / ***Shared Server*** | No  | Only 2 values possible                                     | Yes                               | Only 2 values possible                                         |
+| statut                | ^[A-Za-z0-9_-]+$                             | No  | N/A                                                        | No                                |                                                                |
+| paysDUlisation        | ^[A-Za-z0-9_-]+$                             | No  | Consistent with G4IT countries list                        | Yes                               |                                                                |
+| utilisateur           | ^[A-Za-z0-9_-]+$                             | No  | N/A                                                        | No                                |                                                                |
+| dateAchat             | As per inventory module                      | No  | N/A                                                        | Yes                                |                                                                |
+| dateRetrait           | As per inventory module                      | No  | N/A                                                        | Yes                                |                                                                |
+| nbCoeur               | ^\d+$                                        | No  | N/A                                                        | Yes if compute server model       | Mandatory only if model is a compute server                    |
+| nomCourtDatacenter    | ^[A-Za-z0-9_-]+$                             | No  | Must reference an existing datacenter or loaded at the same time in the datacenter file                      | Yes                               | Should be associated to an existing datacenter                 |
+| consoElecAnnuelle     | ^(\d{1,7}(\.\d{1,3})?)$                      | No  | N/A                                                        | Yes                               |                                                                |
+| fabricant             | ^[A-Za-z0-9_-]+$                             | No  | N/A                                                        | No                                |                                                                |
+| tailleDuDisque        | ^(\d{1,7}(\.\d{1,3})?)$                      | No  | N/A                                                        | Yes if model is a storage server  | Mandatory only if model is associated to a storage server      |
+| tailleMemoire         | ^(\d{1,7}(\.\d{1,3})?)$                      | No  | N/A                                                        | No                                |                                                                |
+| typeDeProcesseur      | ^[A-Za-z0-9_-]+$                             | No  | N/A                                                        | No                                |                                                                |
+| dureeUtilisation      | Between 0 and 8760                           | No  | N/A                                                        | Yes                               | Value should be between 0 and 8760                             |
+
+***Virtual equipment file***
+| Field Name               | Value Pattern / Possible Values     | PK?                                | Consistency / Reference                                                                               | Mandatory?                        | Specific Rule                                   |
+|--------------------------|-------------------------------------|------------------------------------|------------------------------------------------------------------------------------------------------|-----------------------------------|-------------------------------------------------|
+| nomEquipementVirtuel     | ^[A-Za-z0-9_-]+$                    | Yes, combined with nomEquipementPhysique | N/A                                                                                                  | Yes                               | No                                              |
+| typeInfrastructure       | ***NON_CLOUD_SERVER***              | No                                 | N/A                                                                                                  | Yes                               | No                                              |
+| quantite                 | ^\d+$                               | No                                 | N/A                                                                                                  | No                                | Set to 1 if not specified                                             |
+| nomEquipementPhysique    | ^[A-Za-z0-9_-]+$                    | Yes, combined with nomEquipementVirtuel | Should exist in the database in in_physical_equipment for this digital service or loaded at the same time in the physical equipment file        | Yes                               | No                                              |
+| nomSourceDonnee          | ^[A-Za-z0-9_-]+$                    | No                                 | N/A                                                                                                  | No                                | No                                              |
+| vCPU                     | ^(\d+)?(\.\d+)?$                    | No                                 | N/A                                                                                                  | Yes if typeEqv is "calcul"           | No                                              |
+| nomEntite                | ^[A-Za-z0-9_-]+$                    | No                                 | N/A                                                                                                  | No                                | No                                              |
+| cluster                  | ^[A-Za-z0-9_-]+$                    | No                                 | N/A                                                                                                  | No                                | No                                              |
+| consoElecAn              | ^(\d+)?(\.\d+)?$                    | No                                 | N/A                                                                                                  | No                               | No                                              |
+| typeEqv                  | calcul / stockage                    | No                                 | N/A                                                                                                 | Yes                               | No                                              |
+| cleRepartition           | ^(\d+)?(\.\d+)?$                    | No                                 | Automatically calculated if empty                                                                    | No                                | Automatically calculated if empty                |
+| nomSourceDonnee          | ^[A-Za-z0-9_-]+$                    | No                                 | N/A                                                                                                  | No                               | No                                              |
+| capaciteStockage         | ^(\d+)?(\.\d+)?$                    | No                                 | N/A                                                                                                  | Yes if typeEqv is "stockage"      | No                                              |
+| dureeUtilisationAnnuelle | ^(\d+)?(\.\d+)?$                    | No                                 | N/A                                                                                                  | Yes                              | No                                              |
+
+
 
 ## Sequence Diagram
 
