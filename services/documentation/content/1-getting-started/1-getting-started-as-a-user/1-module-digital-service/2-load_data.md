@@ -166,6 +166,8 @@ weight: 20
 
 ##### **Step 8:** Import server file
 1. **Action:** Action: Click the "Import" button to open the import form.
+   ![Import button](../media/8_import-button.png "Import button")
+                 
 2. **Action:** Navigate to the "Non-Cloud Servers" tab to begin the import process.
 3. **Action:** Click the "Browse File" buttons to select and attach the file.
 4. **Action:** Click "Start Upload" to initiate the file upload.
@@ -205,6 +207,8 @@ weight: 20
 
 ##### **Step 13:** ***Import Cloud Services file***
 1. **Action:** Action: Click the "Import" button to open the import form.
+   ![Import button](../media/8_import-button.png "Import button")
+
 2. **Action:** Navigate to the "Cloud Service" tab to begin the import process.
 3. **Action:** Click the "Browse File" button to select and attach the file.
 4. **Action:** Click "Start Upload" to initiate the file upload.
