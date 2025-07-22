@@ -36,7 +36,7 @@ export class RadialChartComponent extends AbstractDashboard {
     options: EChartsOption = {};
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
-    private global = inject(GlobalStoreService);
+    private readonly global = inject(GlobalStoreService);
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes) {

@@ -16,9 +16,9 @@ import { Constants } from "src/constants";
     providedIn: "root",
 })
 export class OutVirtualEquipmentsService {
-    private API = "virtual-equipments";
+    private readonly API = "virtual-equipments";
 
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getByDigitalService(
         digitalServiceUid: string,

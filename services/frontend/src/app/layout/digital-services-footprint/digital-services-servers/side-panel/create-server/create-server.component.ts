@@ -22,17 +22,17 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     providers: [MessageService],
 })
 export class PanelCreateServerComponent implements OnInit {
-    private digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
 
     serverForm!: FormGroup;
 
     server = {} as DigitalServiceServerConfig;
 
     constructor(
-        private digitalBusinessService: DigitalServiceBusinessService,
-        private _formBuilder: FormBuilder,
-        private router: Router,
-        private route: ActivatedRoute,
+        private readonly digitalBusinessService: DigitalServiceBusinessService,
+        private readonly _formBuilder: FormBuilder,
+        private readonly router: Router,
+        private readonly route: ActivatedRoute,
         public userService: UserService,
     ) {}
 

@@ -18,7 +18,7 @@ const endpoint = Constants.ENDPOINTS.version;
     providedIn: "root",
 })
 export class VersionDataService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getVersion(): Observable<VersionRest> {
         return this.http.get<VersionRest>(`${endpoint}`);

@@ -67,13 +67,13 @@ export class UsersComponent {
     isEcoMindEnabledForCurrentSubscriberSelected: boolean = false;
 
     constructor(
-        private administrationService: AdministrationService,
-        private formBuilder: FormBuilder,
-        private confirmationService: ConfirmationService,
-        private translate: TranslateService,
-        private userService: UserService,
-        private userDataService: UserDataService,
-        private globalStore: GlobalStoreService,
+        private readonly administrationService: AdministrationService,
+        private readonly formBuilder: FormBuilder,
+        private readonly confirmationService: ConfirmationService,
+        private readonly translate: TranslateService,
+        private readonly userService: UserService,
+        private readonly userDataService: UserDataService,
+        private readonly globalStore: GlobalStoreService,
         private readonly router: Router,
     ) {
         effect(() => {

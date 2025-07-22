@@ -38,9 +38,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
     constructor(
         public router: Router,
-        private messageService: MessageService,
-        private userService: UserService,
-        private translate: TranslateService,
+        private readonly messageService: MessageService,
+        private readonly userService: UserService,
+        private readonly translate: TranslateService,
     ) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

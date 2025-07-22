@@ -32,8 +32,8 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 })
 export class DigitalServicesServersComponent {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
-    private inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
-    private inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
+    private readonly inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
+    private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
 
     ngUnsubscribe = new Subject<void>();
 
@@ -127,10 +127,10 @@ export class DigitalServicesServersComponent {
     });
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
-        private digitalServicesBusiness: DigitalServiceBusinessService,
-        private router: Router,
-        private route: ActivatedRoute,
+        private readonly digitalServicesData: DigitalServicesDataService,
+        private readonly digitalServicesBusiness: DigitalServiceBusinessService,
+        private readonly router: Router,
+        private readonly route: ActivatedRoute,
         public userService: UserService,
     ) {}
 

@@ -40,7 +40,7 @@ export class CriteriaPopupComponent implements OnChanges {
     @Output() onSaveDs = new EventEmitter<DSCriteriaRest>();
     @Output() onClose = new EventEmitter<void>();
 
-    constructor(private globalStore: GlobalStoreService) {}
+    constructor(private readonly globalStore: GlobalStoreService) {}
 
     criteriaList: string[] = Object.keys(this.globalStore.criteriaList());
     tempSelectedCriteriaIS: string[] = [];

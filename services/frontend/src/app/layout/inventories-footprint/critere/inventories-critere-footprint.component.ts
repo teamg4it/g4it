@@ -40,7 +40,7 @@ import { AbstractDashboard } from "../abstract-dashboard";
 })
 export class InventoriesCritereFootprintComponent extends AbstractDashboard {
     protected footprintStore = inject(FootprintStoreService);
-    private footprintService = inject(FootprintService);
+    private readonly footprintService = inject(FootprintService);
     @Input() footprint: Criterias = {} as Criterias;
     @Input() criteriaFootprint: Criteria = {} as Criteria;
     @Input() filterFields: string[] = [];

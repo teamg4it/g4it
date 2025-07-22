@@ -26,7 +26,7 @@ import { environment } from "src/environments/environment";
     providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesComponent {
-    private global = inject(GlobalStoreService);
+    private readonly global = inject(GlobalStoreService);
 
     digitalServices: DigitalService[] = [];
     selectedDigitalService: DigitalService = {} as DigitalService;
@@ -45,14 +45,14 @@ export class DigitalServicesComponent {
     rowsPerPage: number = 10;
     currentPage = 0;
     isEcoMindAi = false;
-    private destroyRef = inject(DestroyRef);
+    private readonly destroyRef = inject(DestroyRef);
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private translate: TranslateService,
-        private messageService: MessageService,
+        private readonly digitalServicesData: DigitalServicesDataService,
+        private readonly route: ActivatedRoute,
+        private readonly router: Router,
+        private readonly translate: TranslateService,
+        private readonly messageService: MessageService,
         public userService: UserService,
     ) {}
 

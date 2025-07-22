@@ -22,7 +22,7 @@ const endpoint = Constants.ENDPOINTS.inventories;
     providedIn: "root",
 })
 export class InventoryDataService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     createInventory(creationObj: CreateInventory): Observable<Inventory> {
         return this.http.post<Inventory>(`${endpoint}`, creationObj);

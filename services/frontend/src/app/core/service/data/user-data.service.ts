@@ -19,7 +19,7 @@ const endpoint = Constants.ENDPOINTS.users;
 export class UserDataService {
     userSubject = new ReplaySubject<User>(1);
 
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     fetchUserInfo(): Observable<User> {
         return this.http.get<User>(`${endpoint}/me`).pipe(
