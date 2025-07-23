@@ -20,10 +20,13 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
@@ -61,6 +64,8 @@ public class DigitalServiceService {
     private IndicatorService indicatorService;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private UserOrganizationRepository userOrganizationRepository;
     @Autowired
     private CriteriaService criteriaService;
     @Autowired
@@ -161,13 +166,14 @@ public class DigitalServiceService {
     }
 
     /**
-     * Update a digital service.
+     * Update a digital service if has write access or
+     * update enableDataInconsistency
      *
      * @param digitalService the business object containing data to update.
      * @param user           the user entity
-     * @return the updated digital service.
+     * @return the updated digital service
      */
-    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final UserBO user) {
+    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final Long organizationId,final UserBO user) {
 
         // Check if digital service exist.
         final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalService.getUid());
@@ -178,6 +184,17 @@ public class DigitalServiceService {
             return digitalServiceToUpdateBO;
         }
 
+        boolean changeDataInconsistency = !Objects.equals(digitalService.getEnableDataInconsistency(),
+                digitalServiceToUpdate.isEnableDataInconsistency()
+        );
+        Long userId = user.getId();
+        UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organizationId, userId).orElseThrow();
+
+        boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "DIGITAL_SERVICE_WRITE".equals(role.getName()));
+
+        if (!(changeDataInconsistency || hasWriteAccess)) {
+            throw new G4itRestException("403", "Not authorized");
+        }
         // Merge digital service.
         digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService, User.builder().id(user.getId()).build());
 
