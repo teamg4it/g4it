@@ -22,7 +22,7 @@ import { UserService } from "../service/business/user.service";
     providedIn: "root",
 })
 export class ApiInterceptor implements HttpInterceptor {
-    constructor(private userService: UserService) {}
+    constructor(private readonly userService: UserService) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // We only modify request to our API

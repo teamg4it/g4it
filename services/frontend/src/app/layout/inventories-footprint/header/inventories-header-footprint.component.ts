@@ -42,12 +42,12 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
     selectedSubscriber = "";
 
     constructor(
-        private inventoryService: InventoryService,
+        private readonly inventoryService: InventoryService,
         public footprintService: FootprintDataService,
-        private translate: TranslateService,
+        private readonly translate: TranslateService,
         public router: Router,
         public userService: UserService,
-        private messageService: MessageService,
+        private readonly messageService: MessageService,
     ) {}
 
     async ngOnInit() {

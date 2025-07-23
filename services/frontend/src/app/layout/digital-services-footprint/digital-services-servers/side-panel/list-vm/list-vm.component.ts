@@ -39,9 +39,9 @@ export class PanelListVmComponent {
     });
 
     constructor(
-        private digitalServiceBusiness: DigitalServiceBusinessService,
-        private router: Router,
-        private route: ActivatedRoute,
+        private readonly digitalServiceBusiness: DigitalServiceBusinessService,
+        private readonly router: Router,
+        private readonly route: ActivatedRoute,
         public userService: UserService,
     ) {}
 

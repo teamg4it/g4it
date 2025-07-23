@@ -24,7 +24,7 @@ export class SuperAdminComponent implements OnInit {
     isMigrateDataButtonDisabled = false;
     isMigrateDemoDsButtonDisabled = false;
 
-    constructor(public superAdminDataService: SuperAdminDataService) {}
+    constructor(private readonly superAdminDataService: SuperAdminDataService) {}
 
     ngOnInit() {
         this.userService.user$

@@ -25,8 +25,8 @@ export class InventoryService {
     maxReportsSize = 6;
 
     constructor(
-        private inventoryDataService: InventoryDataService,
-        private inventoryRepo: InventoryRepository,
+        private readonly inventoryDataService: InventoryDataService,
+        private readonly inventoryRepo: InventoryRepository,
     ) {}
 
     createInventory(creationObj: CreateInventory): Observable<Inventory> {

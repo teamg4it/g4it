@@ -17,13 +17,13 @@ const endpoint = Constants.ENDPOINTS.digitalServices;
     providedIn: "root",
 })
 export class InVirtualEquipmentsService {
-    private HEADERS = new HttpHeaders({
+    private readonly HEADERS = new HttpHeaders({
         "content-type": "application/json",
     });
 
-    private API = "virtual-equipments";
+    private readonly API = "virtual-equipments";
 
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getByDigitalService(digitalServiceUid: string): Observable<InVirtualEquipmentRest[]> {
         return this.http.get<InVirtualEquipmentRest[]>(

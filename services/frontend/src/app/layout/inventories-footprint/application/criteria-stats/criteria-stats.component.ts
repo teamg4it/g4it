@@ -28,8 +28,8 @@ interface CriteriaData {
 })
 export class CriteriaStatsComponent {
     protected footprintStore = inject(FootprintStoreService);
-    private filterService = inject(FilterService);
-    private translate = inject(TranslateService);
+    private readonly filterService = inject(FilterService);
+    private readonly translate = inject(TranslateService);
 
     selectedCriteria = computed(() => {
         return this.translate.instant(
@@ -45,7 +45,9 @@ export class CriteriaStatsComponent {
         return this.computeApplicationStats();
     });
 
-    constructor(private appComponent: InventoriesApplicationFootprintComponent) {}
+    constructor(
+        private readonly appComponent: InventoriesApplicationFootprintComponent,
+    ) {}
 
     updateSelectedUnite(typeOfUnit: string) {
         switch (typeOfUnit) {
