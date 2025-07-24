@@ -59,7 +59,7 @@ public class EvaluateBoaviztapiService {
                         new AbstractMap.SimpleEntry<>("OZONE_DEPLETION", response.getImpacts().getOdp()),
                         new AbstractMap.SimpleEntry<>("PHOTOCHEMICAL_OZONE_FORMATION", response.getImpacts().getPocp()),
                         new AbstractMap.SimpleEntry<>("EUTROPHICATION_TERRESTRIAL", response.getImpacts().getEpt()),
-                        new AbstractMap.SimpleEntry<>("EUTROPHICATION_FRESHWATER", response.getImpacts().getEpf()),
+//                        new AbstractMap.SimpleEntry<>("EUTROPHICATION_FRESHWATER", response.getImpacts().getEpf()),
                         new AbstractMap.SimpleEntry<>("EUTROPHICATION_MARINE", response.getImpacts().getEpm()),
                         new AbstractMap.SimpleEntry<>("RESOURCE_USE_FOSSILS", response.getImpacts().getAdpf())
                 );

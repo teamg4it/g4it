@@ -144,7 +144,7 @@ public class BoaviztapiClient {
                 .queryParam(CRITERIA, "odp")
                 .queryParam(CRITERIA, "pocp")
                 .queryParam(CRITERIA, "ept")
-                .queryParam(CRITERIA, "epf")
+//                .queryParam(CRITERIA, "epf")
                 .queryParam(CRITERIA, "epm")
                 .queryParam(CRITERIA, "adpf")
                 .build();
