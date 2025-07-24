@@ -76,7 +76,7 @@ export class DigitalServicesFootprintDashboardComponent
     options: EChartsOption = {};
     digitalService: DigitalService = {} as DigitalService;
     aiRecommendation: AiRecommendation = {} as AiRecommendation;
-
+    showDataButton = false;
     title = "";
     content = "";
 
@@ -351,6 +351,10 @@ export class DigitalServicesFootprintDashboardComponent
 
     updateInconsistent(event: any): void {
         this.showInconsitencyBtn = event;
+    }
+
+    OnData(): void {
+        this.showDataButton = !this.showDataButton;
     }
 
     ngOnDestroy() {

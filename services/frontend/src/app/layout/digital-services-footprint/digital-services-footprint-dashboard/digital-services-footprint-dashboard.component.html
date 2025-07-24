@@ -132,6 +132,7 @@
                 [selectedCriteria]="selectedCriteria"
                 [showInconsitency]="showInconsitency"
                 (selectedCriteriaChange)="handleChartChange($event)"
+                [showDataButton]="showDataButton"
             ></app-radial-chart>
             <app-pie-chart
                 *ngIf="chartType() == 'pie'"
@@ -140,6 +141,7 @@
                 [showInconsitency]="showInconsitency"
                 (selectedParamChange)="selectedParam = $event"
                 (chartTypeChange)="chartType.set($event)"
+                [showDataButton]="showDataButton"
             ></app-pie-chart>
             <app-bar-chart
                 *ngIf="chartType() == 'bar'"
@@ -152,6 +154,7 @@
                 [serverData]="serverData()"
                 [cloudData]="cloudData()"
                 [terminalData]="terminalData()"
+                [showDataButton]="showDataButton"
                 [showInconsitency]="showInconsitency"
                 (barChartChildChange)="barChartChild = $event"
                 (selectedDetailParamChange)="selectedDetailParam = $event"
@@ -167,7 +170,8 @@
     </div>
 </div>
 <ng-template #dataConsistencyRef>
-    @if (showInconsitencyBtn) {
+    <button (click)="OnData()">On</button>
+    @if (showInconsitencyBtn && showDataButton) {
         <p-button
             (click)="showInconsitency = !showInconsitency"
             [rounded]="true"

@@ -40,7 +40,7 @@ export class BarChartComponent extends AbstractDashboard {
     @Input() selectedDetailParam: string = "";
     @Input() selectedDetailName: string = "";
     @Input() selectedCriteria: string = "acidification";
-
+    @Input() showDataButton: boolean = false;
     @Input() networkData: DigitalServiceNetworksImpact[] = [];
     @Input() serverData: DigitalServiceServersImpact[] = [];
     @Input() terminalData: DigitalServiceTerminalsImpact[] = [];
@@ -201,8 +201,8 @@ export class BarChartComponent extends AbstractDashboard {
                     data: xAxis,
                     axisLabel: {
                         rotate: 30, // Rotate labels if they overlap
-                        color: function (value: any) {
-                            return !networkMap[value].status.error
+                        color: (value: any) => {
+                            return !networkMap[value].status.error || !this.showDataButton
                                 ? Constants.GRAPH_GREY
                                 : Constants.GRAPH_RED;
                         },
@@ -274,12 +274,12 @@ export class BarChartComponent extends AbstractDashboard {
                     axisLabel: {
                         rotate: 30, // Rotate labels if they overlap
                         color: (value: any) => {
-                            return !okMap[value].status.error
+                            return !okMap[value].status.error || !this.showDataButton
                                 ? Constants.GRAPH_GREY
                                 : Constants.GRAPH_RED;
                         },
                         formatter: (value: any) => {
-                            return !okMap[value].status.error
+                            return !okMap[value].status.error || !this.showDataButton
                                 ? `{grey| ${value}}`
                                 : `{redBold| \u24d8} {red|${value}}`;
                         },
@@ -662,8 +662,8 @@ export class BarChartComponent extends AbstractDashboard {
                             ? `{grey| ${this.translate.instant(value) || value}}`
                             : `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`,
                     interval: 0, // Display all labels
-                    color: function (value: any) {
-                        return !serverOkmap[value].status.error
+                    color: (value: any) => {
+                        return !serverOkmap[value].status.error || !this.showDataButton
                             ? Constants.GRAPH_GREY
                             : Constants.GRAPH_RED;
                     },
