@@ -176,7 +176,7 @@ public class DigitalServiceService {
         if (!isAdmin) {
             UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organizationId, userId).orElseThrow();
 
-            boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "DIGITAL_SERVICE_WRITE".equals(role.getName()));
+            boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_DIGITAL_SERVICE_WRITE".equals(role.getName()));
 
             if (!(changeDataInconsistency || hasWriteAccess)) {
                 throw new G4itRestException("403", "Not authorized");
