@@ -615,13 +615,6 @@ components:
           type: string
         name:
           type: string
-        creator:
-          type: object
-          $ref: "#/components/schemas/UserInfoRest"
-        members:
-          type: array
-          items:
-            $ref: "#/components/schemas/UserInfoRest"
         creationDate:
           type: string
           format: date-time
