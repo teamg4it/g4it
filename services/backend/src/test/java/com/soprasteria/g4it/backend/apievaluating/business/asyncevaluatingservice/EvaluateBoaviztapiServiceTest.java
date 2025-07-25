@@ -42,13 +42,73 @@ class EvaluateBoaviztapiServiceTest {
         List<String> criteria = List.of("CLIMATE_CHANGE");
         List<String> lifecycleSteps = List.of(Constants.MANUFACTURING, Constants.USING);
 
-        BoaImpactRest impactRest = new BoaImpactRest();
-        impactRest.setUnit("kgCO2e");
-        impactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
-        impactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+        BoaImpactRest criteriaImpactRest = new BoaImpactRest();
+        criteriaImpactRest.setUnit("kgCO2e");
+        criteriaImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        criteriaImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest resourceUseImpactRest = new BoaImpactRest();
+        resourceUseImpactRest.setUnit("kg SB eq.");
+        resourceUseImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        resourceUseImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest irImpactRest = new BoaImpactRest();
+        irImpactRest.setUnit("kg U235 eq.");
+        irImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        irImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest acidificationImpactRest = new BoaImpactRest();
+        acidificationImpactRest.setUnit("mol H+ eq.");
+        acidificationImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        acidificationImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest pmImpactRest = new BoaImpactRest();
+        pmImpactRest.setUnit("Disease occurrence");
+        pmImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        pmImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest odImpactRest = new BoaImpactRest();
+        odImpactRest.setUnit("kg CFC-11 eq.");
+        odImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        odImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest pofImpactRest = new BoaImpactRest();
+        pofImpactRest.setUnit("kg NMVOC eq.");
+        pofImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+
+        BoaImpactRest eptImpactRest = new BoaImpactRest();
+        eptImpactRest.setUnit("mol N eq.");
+        eptImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        eptImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest epfImpactRest = new BoaImpactRest();
+        epfImpactRest.setUnit("kg P eq.");
+        epfImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        epfImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest epmImpactRest = new BoaImpactRest();
+        epmImpactRest.setUnit("kg N eq.");
+        epmImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        epmImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
+
+        BoaImpactRest adpfImpactRest = new BoaImpactRest();
+        adpfImpactRest.setUnit("MJ");
+        adpfImpactRest.setEmbedded(BoaManufacturingRest.builder().value(100.0).build());
+        adpfImpactRest.setUse(BoaUtilizationRest.builder().value(50.0).build());
 
         BoaResponseRest responseRest = new BoaResponseRest();
-        responseRest.setImpacts(BoaImpactsRest.builder().gwp(impactRest).build());
+        responseRest.setImpacts(BoaImpactsRest.builder().gwp(criteriaImpactRest)
+                .adpe(resourceUseImpactRest)
+                .epm(epmImpactRest)
+                .epf(epfImpactRest)
+                .ept(eptImpactRest)
+                .ap(acidificationImpactRest)
+                .adpf(adpfImpactRest)
+                .ir(irImpactRest)
+                .odp(odImpactRest)
+                .pm(pmImpactRest)
+                .pocp(pofImpactRest)
+                .build());
 
         when(boaviztapiService.runBoaviztCalculations(inVirtualEquipment)).thenReturn(responseRest);
 

@@ -19,6 +19,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class BoaImpactsRest {
     private BoaImpactRest gwp;
-    private BoaImpactRest adp;
-    private BoaImpactRest pe;
+    private BoaImpactRest adpe;
+    private BoaImpactRest ir;
+    private BoaImpactRest ap;
+    private BoaImpactRest pm;
+    private BoaImpactRest odp;
+    private BoaImpactRest pocp;
+    private BoaImpactRest ept;
+    private BoaImpactRest epf;
+    private BoaImpactRest epm;
+    private BoaImpactRest adpf;
 }

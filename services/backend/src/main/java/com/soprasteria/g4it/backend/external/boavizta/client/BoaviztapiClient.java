@@ -137,8 +137,16 @@ public class BoaviztapiClient {
                 .queryParam("verbose", false)
                 .queryParam("duration", virtualEquipment.getDurationHour())
                 .queryParam(CRITERIA, "gwp")
-                .queryParam(CRITERIA, "adp")
-                .queryParam(CRITERIA, "pe")
+                .queryParam(CRITERIA, "adpe")
+                .queryParam(CRITERIA, "ir")
+                .queryParam(CRITERIA, "ap")
+                .queryParam(CRITERIA, "pm")
+                .queryParam(CRITERIA, "odp")
+                .queryParam(CRITERIA, "pocp")
+                .queryParam(CRITERIA, "ept")
+                .queryParam(CRITERIA, "epf")
+                .queryParam(CRITERIA, "epm")
+                .queryParam(CRITERIA, "adpf")
                 .build();
         try {
             BoaResponseRest response = webClient.post()

@@ -20,10 +20,7 @@ import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponse
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class EvaluateBoaviztapiService {
@@ -53,7 +50,19 @@ public class EvaluateBoaviztapiService {
 
         var criteriaImpactMap = response == null ?
                 new HashMap<String, BoaImpactRest>() :
-                Map.of("CLIMATE_CHANGE", response.getImpacts().getGwp());
+                Map.ofEntries(
+                        new AbstractMap.SimpleEntry<>("CLIMATE_CHANGE", response.getImpacts().getGwp()),
+                        new AbstractMap.SimpleEntry<>("RESOURCE_USE", response.getImpacts().getAdpe()),
+                        new AbstractMap.SimpleEntry<>("IONISING_RADIATION", response.getImpacts().getIr()),
+                        new AbstractMap.SimpleEntry<>("ACIDIFICATION", response.getImpacts().getAp()),
+                        new AbstractMap.SimpleEntry<>("PARTICULATE_MATTER", response.getImpacts().getPm()),
+                        new AbstractMap.SimpleEntry<>("OZONE_DEPLETION", response.getImpacts().getOdp()),
+                        new AbstractMap.SimpleEntry<>("PHOTOCHEMICAL_OZONE_FORMATION", response.getImpacts().getPocp()),
+                        new AbstractMap.SimpleEntry<>("EUTROPHICATION_TERRESTRIAL", response.getImpacts().getEpt()),
+                        new AbstractMap.SimpleEntry<>("EUTROPHICATION_FRESHWATER", response.getImpacts().getEpf()),
+                        new AbstractMap.SimpleEntry<>("EUTROPHICATION_MARINE", response.getImpacts().getEpm()),
+                        new AbstractMap.SimpleEntry<>("RESOURCE_USE_FOSSILS", response.getImpacts().getAdpf())
+                );
 
         for (String criterion : criteria) {
             BoaImpactRest impact = null;
