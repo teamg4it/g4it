@@ -1,5 +1,11 @@
 # G4IT
 
+## 3.5.0
+
+### Major Changes
+
+- 796  |  Add new criteria based on the one available in BoaviztAPI
+
 ## 3.4.0
 
 ### Major Changes
