@@ -190,4 +190,25 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         spyOn(component.translate, "instant").and.returnValue("translated");
         expect(component.getTNSTranslation("test")).toBe("translated");
     });
+
+    it("should call updateDsCriteria, get, setEnableCalcul, and triggerLaunchCalcul in handleSaveDs", () => {
+        const DSCriteria = { criteria: ["CO2"] } as any;
+        component.digitalService = { uid: "test-uid" } as any;
+
+        // Spies for chained calls
+        const updateDsCriteriaSpy = digitalServiceBusinessServiceMock.updateDsCriteria;
+        const getSpy = digitalServicesDataServiceMock.get;
+        const setEnableCalculSpy = digitalServiceStoreMock.setEnableCalcul;
+        const triggerLaunchCalculSpy =
+            digitalServiceBusinessServiceMock.triggerLaunchCalcul;
+
+        component.displayCriteriaPopup = true;
+        component.handleSaveDs(DSCriteria);
+
+        expect(updateDsCriteriaSpy).toHaveBeenCalledWith("test-uid", DSCriteria);
+        expect(getSpy).toHaveBeenCalledWith("test-uid");
+        expect(setEnableCalculSpy).toHaveBeenCalledWith(true);
+        expect(triggerLaunchCalculSpy).toHaveBeenCalled();
+        expect(component.displayCriteriaPopup).toBeFalse();
+    });
 });
