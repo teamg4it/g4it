@@ -50,9 +50,9 @@
             [label]="
                 isEcoMindAi
                     ? ('eco-mind-ai.title'
-                      | translate: { OrganizationName: organization.organizationName })
+                      | translate: { OrganizationName: selectedOrganizationName })
                     : ('digital-services.title'
-                      | translate: { OrganizationName: organization.organizationName })
+                      | translate: { OrganizationName: selectedOrganizationName })
             "
             id="return-button"
         />
@@ -148,35 +148,6 @@
             [label]="'common.calculate' | translate"
             id="calculate"
         />
-        @if (userService.isAllowedDigitalServiceWrite$ | async) {
-            <p-button
-                styleClass="white-button"
-                styleClass="ml-2 mb-3 lg:mb-0"
-                [rounded]="true"
-                [text]="true"
-                [raised]="true"
-                [plain]="true"
-                (onClick)="displayPopupFct()"
-                icon="pi pi-cog"
-                [ariaLabel]="
-                    'digital-services.choose-criteria'
-                        | translate: { digitalServiceName: digitalService.name }
-                "
-                id="criteria-button"
-            >
-            </p-button>
-        }
-
-        <app-criteria-popup
-            [displayPopup]="displayPopup"
-            [type]="'ds'"
-            [subscriberDetails]="subscriber"
-            [organizationDetails]="organization"
-            [ds]="digitalService"
-            [selectedCriteriaIS]="selectedCriteria"
-            (onSaveDs)="handleSaveDs($event)"
-            (onClose)="displayPopup = false"
-        ></app-criteria-popup>
         <p-button
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             styleClass="ml-2 mb-3 lg:mb-0"

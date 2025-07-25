@@ -22,11 +22,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
-import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
-import {
-    DigitalService,
-    DSCriteriaRest,
-} from "src/app/core/interfaces/digital-service.interfaces";
+import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
@@ -57,9 +53,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedSubscriberName = "";
     selectedOrganizationId!: number;
     selectedOrganizationName = "";
-    displayPopup = false;
-    selectedCriteria: string[] = [];
-    organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
     isEcoMindEnabledForCurrentSubscriber: boolean = false;
     isEcoMindAi: boolean = false;
@@ -121,28 +114,28 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.digitalServiceStore.setDigitalService(this.digitalService);
             });
 
-        this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
-            this.selectedSubscriberName = subscriber.name;
-            this.subscriber = subscriber;
-            this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
-        });
-        this.userService.currentOrganization$.subscribe((organization: Organization) => {
-            this.organization.subscriberName = this.subscriber.name;
-            this.organization.subscriberId = this.subscriber.id;
-            this.organization.organizationName = organization.name;
-            this.organization.organizationId = organization.id;
-            this.organization.status = organization.status;
-            this.organization.dataRetentionDays = organization.dataRetentionDays!;
-            this.organization.displayLabel = `${organization.name} - (${this.subscriber.name})`;
-            this.organization.criteriaDs = organization.criteriaDs!;
-            this.organization.criteriaIs = organization.criteriaIs!;
-        });
+        this.userService.currentSubscriber$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((subscriber: Subscriber) => {
+                this.selectedSubscriberName = subscriber.name;
+                this.subscriber = subscriber;
+                this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
+            });
+        this.userService.currentOrganization$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((organization: Organization) => {
+                this.selectedOrganizationName = organization.name;
+            });
         //to reset the form when a new digitalService is set
         if (this.digitalService.isAi) {
             this.aiFormsStore.setParameterChange(false);
             this.aiFormsStore.setInfrastructureChange(false);
             this.aiFormsStore.clearForms();
         }
+
+        this.digitalServiceBusinessService.launchCalcul$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => this.launchCalcul());
     }
 
     onNameUpdate(digitalServiceName: string) {
@@ -303,30 +296,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     importData(): void {
         this.importSidebarVisible = true;
-    }
-
-    displayPopupFct() {
-        const defaultCriteria = Object.keys(this.global.criteriaList()).slice(0, 5);
-        this.selectedCriteria =
-            this.digitalService.criteria ??
-            this.organization.criteriaDs ??
-            this.subscriber.criteria ??
-            defaultCriteria;
-        this.displayPopup = true;
-    }
-
-    handleSaveDs(DSCriteria: DSCriteriaRest) {
-        this.digitalServiceBusinessService
-            .updateDsCriteria(this.digitalService.uid, DSCriteria)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() => {
-                this.digitalServicesData
-                    .get(this.digitalService.uid)
-                    .pipe(takeUntilDestroyed(this.destroyRef))
-                    .subscribe();
-                this.displayPopup = false;
-                this.digitalServiceStore.setEnableCalcul(true);
-            });
     }
 
     async handleSave() {

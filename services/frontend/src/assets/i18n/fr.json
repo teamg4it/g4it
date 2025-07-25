@@ -196,7 +196,9 @@
         "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",
         "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
         "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}",
-        "import": "Importer"
+        "import": "Importer",
+        "edit-criteria": "Modifier critères",
+        "set-view": "Paramétrer la vue"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",

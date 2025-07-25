@@ -7,7 +7,7 @@
  */
 import { Injectable, inject } from "@angular/core";
 import { addDays, formatDate } from "date-fns";
-import { Observable, ReplaySubject, firstValueFrom, lastValueFrom } from "rxjs";
+import { Observable, ReplaySubject, Subject, firstValueFrom, lastValueFrom } from "rxjs";
 import { removeBlankSpaces } from "../../custom-validators/unique-name.validator";
 import {
     DSCriteriaRest,
@@ -37,6 +37,8 @@ export class DigitalServiceBusinessService {
 
     private readonly panelSubject = new ReplaySubject<boolean>(1);
     panelSubject$ = this.panelSubject.asObservable();
+    private readonly launchCalculSubject = new Subject<void>();
+    launchCalcul$ = this.launchCalculSubject.asObservable();
 
     constructor(private readonly digitalServiceData: DigitalServicesDataService) {}
 
@@ -201,5 +203,9 @@ export class DigitalServiceBusinessService {
 
     getModels(model: string): Observable<AiModelConfig[]> {
         return this.digitalServiceData.getModels(model);
+    }
+
+    triggerLaunchCalcul() {
+        this.launchCalculSubject.next();
     }
 }

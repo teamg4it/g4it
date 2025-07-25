@@ -13,14 +13,12 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIInfrastructureForm } from "src/app/core/store/ai-forms.store";
-import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 
 @Component({
     selector: "app-digital-services-ai-infrastructure",
     templateUrl: "./digital-services-ai-infrastructure.component.html",
 })
 export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
-    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
     infrastructureForm!: FormGroup;
     private formSubscription: Subscription | undefined;
     locationOptions: { label: string; value: string }[] = [];
