@@ -53,6 +53,10 @@ public class DigitalService {
     private boolean isAi;
 
     /**
+     * Specifies whether data consistency view is enabled
+     */
+    private boolean enableDataInconsistency;
+    /**
      * The Criterias key.
      */
     private List<String> criteria;

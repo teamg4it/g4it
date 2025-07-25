@@ -81,4 +81,9 @@ public class DigitalServiceBO {
      */
     private Boolean isAi;
 
+    /**
+     * enableDataInconsistency
+     */
+    private Boolean enableDataInconsistency;
+
 }

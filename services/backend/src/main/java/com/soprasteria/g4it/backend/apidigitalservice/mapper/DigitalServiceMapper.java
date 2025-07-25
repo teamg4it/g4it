@@ -85,6 +85,7 @@ public abstract class DigitalServiceMapper {
 
         target.setName(source.getName());
         target.setLastUpdateDate(LocalDateTime.now());
+        target.setEnableDataInconsistency(source.getEnableDataInconsistency());
 
         List<String> sourceCriteria = source.getCriteria();
         List<String> targetCriteria = target.getCriteria();

@@ -109,7 +109,7 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
                                                                    final DigitalServiceRest digitalService) {
         digitalService.setUid(digitalServiceUid);
         return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.updateDigitalService(
-                digitalServiceRestMapper.toBusinessObject(digitalService),
+                digitalServiceRestMapper.toBusinessObject(digitalService), subscriber, organization,
                 authService.getUser()
         )));
     }
