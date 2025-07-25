@@ -76,12 +76,12 @@ export class FilePanelComponent implements OnInit {
     templateFiles: TemplateFileDescription[] = [];
     isTemplateParam = Constants.TEMPLATE_PARAMS.IS_MODULE;
     constructor(
-        private inventoryService: InventoryDataService,
-        private loadingService: LoadingDataService,
-        private messageService: MessageService,
-        private translate: TranslateService,
+        private readonly inventoryService: InventoryDataService,
+        private readonly loadingService: LoadingDataService,
+        private readonly messageService: MessageService,
+        private readonly translate: TranslateService,
         private readonly formBuilder: FormBuilder,
-        private templateFileService: TemplateFileService,
+        private readonly templateFileService: TemplateFileService,
     ) {}
 
     async ngOnInit() {

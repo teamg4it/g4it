@@ -61,10 +61,10 @@ export class AddOrganizationComponent {
     private destroyRef = inject(DestroyRef);
     constructor(
         public administrationService: AdministrationService,
-        private translate: TranslateService,
-        private userDataService: UserDataService,
-        private userService: UserService,
-        private router: Router,
+        private readonly translate: TranslateService,
+        private readonly userDataService: UserDataService,
+        private readonly userService: UserService,
+        private readonly router: Router,
     ) {}
     ngOnInit() {
         this.isModuleValues = this.isRoles.map((role) => this.getRoleValue(role));

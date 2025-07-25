@@ -41,11 +41,11 @@ export class OrganizationsComponent {
     selectedCriteria: string[] = [];
 
     constructor(
-        private confirmationService: ConfirmationService,
+        private readonly confirmationService: ConfirmationService,
         public administrationService: AdministrationService,
-        private translate: TranslateService,
-        private userDataService: UserDataService,
-        private globalStore: GlobalStoreService,
+        private readonly translate: TranslateService,
+        private readonly userDataService: UserDataService,
+        private readonly globalStore: GlobalStoreService,
     ) {}
 
     ngOnInit() {

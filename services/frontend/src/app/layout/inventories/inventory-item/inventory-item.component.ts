@@ -33,7 +33,7 @@ import { Constants } from "src/constants";
     providers: [ConfirmationService, MessageService],
 })
 export class InventoryItemComponent implements OnInit {
-    private global = inject(GlobalStoreService);
+    private readonly global = inject(GlobalStoreService);
 
     @Input() inventory: Inventory = {} as Inventory;
     @Input() open: boolean = false;
@@ -62,13 +62,13 @@ export class InventoryItemComponent implements OnInit {
     taskEvaluating: TaskRest[] = [];
 
     constructor(
-        private inventoryService: InventoryService,
-        private evaluationService: EvaluationDataService,
-        private footprintService: FootprintDataService,
+        private readonly inventoryService: InventoryService,
+        private readonly evaluationService: EvaluationDataService,
+        private readonly footprintService: FootprintDataService,
         public router: Router,
-        private confirmationService: ConfirmationService,
-        private translate: TranslateService,
-        private route: ActivatedRoute,
+        private readonly confirmationService: ConfirmationService,
+        private readonly translate: TranslateService,
+        private readonly route: ActivatedRoute,
         public userService: UserService,
     ) {}
 

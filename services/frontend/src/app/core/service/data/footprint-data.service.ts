@@ -26,7 +26,7 @@ const endpoint = Constants.ENDPOINTS.inventories;
     providedIn: "root",
 })
 export class FootprintDataService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getFootprint(inventoryId: number): Observable<Criterias> {
         return this.http.get<Criterias>(

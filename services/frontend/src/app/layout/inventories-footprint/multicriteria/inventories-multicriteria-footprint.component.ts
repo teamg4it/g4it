@@ -30,8 +30,8 @@ import { AbstractDashboard } from "../abstract-dashboard";
     templateUrl: "./inventories-multicriteria-footprint.component.html",
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
-    private store = inject(FootprintStoreService);
-    private footprintService = inject(FootprintService);
+    private readonly store = inject(FootprintStoreService);
+    private readonly footprintService = inject(FootprintService);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
     @Input() footprint: Criterias = {} as Criterias;

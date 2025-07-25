@@ -26,13 +26,13 @@ export class AppComponent {
     isZoomedIn = false;
     private readonly matomoScriptService = inject(MatomoScriptService);
     constructor(
-        private userService: UserDataService,
-        private keycloak: KeycloakService,
-        private translate: TranslateService,
-        private globalStoreService: GlobalStoreService,
+        private readonly userService: UserDataService,
+        private readonly keycloak: KeycloakService,
+        private readonly translate: TranslateService,
+        private readonly globalStoreService: GlobalStoreService,
         public router: Router,
-        private activatedRoute: ActivatedRoute,
-        private titleService: Title,
+        private readonly activatedRoute: ActivatedRoute,
+        private readonly titleService: Title,
     ) {}
 
     async ngOnInit() {
