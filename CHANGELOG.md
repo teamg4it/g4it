@@ -8,6 +8,10 @@
 
 ### Minor Changes
 
+### Minor Changes
+
+- 1245 | Facilitate the criteria selection
+
 ## 3.4.0
 
 ### Major Changes

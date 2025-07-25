@@ -1,3 +1,20 @@
+<div
+    class="digital-service-chart-heading-container mt-4 block lg:flex bg-white px-4 py-3 border-round"
+>
+    <h3>
+        <ng-container [ngSwitch]="chartType()">
+            <ng-container *ngSwitchCase="'bar'">
+                {{
+                    barChartChild ? selectedDetailName : getTNSTranslation(selectedParam)
+                }}
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+                {{ getCriteriaTranslation(selectedCriteria) }}
+            </ng-container>
+        </ng-container>
+    </h3>
+    <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
+</div>
 <div class="footprint-digital-dashboard-container grid">
     <div class="col-12 lg:col-4">
         <div
@@ -43,82 +60,51 @@
             }
         </div>
     </div>
-    <div class="digital-service-chart-container col-12 lg:col-8">
-        <div *ngIf="chartType() == 'bar' && barChartChild == true" class="flex">
-            <div class="inline">
-                <span (click)="barChartChild = false">
+    <div class="digital-service-chart-container col-12 lg:col-8 mt-3">
+        <ng-container [ngSwitch]="chartType()">
+            <div *ngSwitchCase="'bar'" class="flex">
+                @if (barChartChild) {
                     <p-button
+                        (onClick)="barChartChild = false"
                         styleClass="color-tertiary font-semibold p-2"
                         [text]="true"
                         icon="pi pi-arrow-left"
-                        aria-label="{{ getCriteriaTranslation(selectedCriteria) }} / {{
+                        [aria-label]="
+                            getCriteriaTranslation(selectedCriteria) +
+                            ' / ' +
                             getTNSTranslation(selectedParam)
-                        }}"
-                        label="{{ getCriteriaTranslation(selectedCriteria) }} / {{
-                            getTNSTranslation(selectedParam)
-                        }}"
-                    />
-                </span>
-
-                <h3>
-                    {{ selectedDetailName }}
-                </h3>
-            </div>
-
-            <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
-        </div>
-        <div *ngIf="chartType() == 'bar' && barChartChild == false" class="flex">
-            <div class="inline">
-                <span (click)="chartType.set('pie')">
-                    <p-button
-                        styleClass="color-tertiary font-semibold p-2"
-                        [text]="true"
-                        icon="pi pi-arrow-left"
-                        aria-label="{{ getCriteriaTranslation(selectedCriteria) }}"
-                        label="{{ getCriteriaTranslation(selectedCriteria) }}"
-                    />
-                </span>
-                <h3>
-                    {{ getTNSTranslation(selectedParam) }}
-                </h3>
-            </div>
-
-            <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
-        </div>
-        <div *ngIf="chartType() == 'pie'" class="flex">
-            <div class="inline">
-                @if (!onlyOneCriteria) {
-                    <span
-                        (click)="
-                            this.chartType.set('radial');
-                            this.selectedCriteria = 'Global Vision'
                         "
-                    >
-                        <p-button
-                            styleClass="color-tertiary font-semibold p-2"
-                            [text]="true"
-                            icon="pi pi-arrow-left"
-                            [aria-label]="
-                                'criteria-title.global-vision.title' | translate
-                            "
-                            [label]="'criteria-title.global-vision.title' | translate"
-                        />
-                    </span>
+                        [label]="
+                            getCriteriaTranslation(selectedCriteria) +
+                            ' / ' +
+                            getTNSTranslation(selectedParam)
+                        "
+                    />
+                } @else {
+                    <p-button
+                        (onClick)="chartType.set('pie')"
+                        styleClass="color-tertiary font-semibold p-2"
+                        [text]="true"
+                        icon="pi pi-arrow-left"
+                        [aria-label]="getCriteriaTranslation(selectedCriteria)"
+                        [label]="getCriteriaTranslation(selectedCriteria)"
+                    />
                 }
-
-                <h3>
-                    {{ getCriteriaTranslation(selectedCriteria) }}
-                </h3>
             </div>
-
-            <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
-        </div>
-        <div *ngIf="chartType() == 'radial'" class="flex">
-            <h3 class="inline mt-5">
-                {{ getCriteriaTranslation(selectedCriteria) }}
-            </h3>
-            <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
-        </div>
+            <div *ngSwitchCase="'pie'" class="flex">
+                <p-button
+                    *ngIf="!onlyOneCriteria"
+                    (onClick)="
+                        chartType.set('radial'); selectedCriteria = 'Global Vision'
+                    "
+                    styleClass="color-tertiary font-semibold p-2"
+                    [text]="true"
+                    icon="pi pi-arrow-left"
+                    [aria-label]="'criteria-title.global-vision.title' | translate"
+                    [label]="'criteria-title.global-vision.title' | translate"
+                />
+            </div>
+        </ng-container>
         <div *ngIf="noData; else chart" class="no-data-round no-data-digital-service">
             <p class="grey-text text-round-empty">
                 {{ "common.no-data" | translate }}
@@ -165,21 +151,60 @@
         <app-information-card
             [title]="getTitleOrContent('digital-services-card-title')"
             [content]="getTitleOrContent('digital-services-card-content')"
-            class="my-5 block"
+            class="m-5 block"
         ></app-information-card>
     </div>
 </div>
 <ng-template #dataConsistencyRef>
-    <button (click)="OnData()">On</button>
-    @if (showInconsitencyBtn && showDataButton) {
-        <p-button
-            (click)="showInconsitency = !showInconsitency"
-            [rounded]="true"
-            [label]="'inventories-footprint.data-consistency' | translate"
-            [outlined]="!showInconsitency"
-            severity="danger"
-            class="ml-auto mt-3 mb-2"
-            [ariaLabel]="'inventories-footprint.data-consistency' | translate"
-        />
-    }
+    <div class="ml-auto block align-items-center lg:flex">
+        @if (userService.isAllowedDigitalServiceWrite$ | async) {
+            <p-button
+                (onClick)="displayPopupFct()"
+                styleClass="cancel-creation-button uppercase font-bold px-3 py-2 mb-3 sm:mb-0"
+                [label]="'digital-services.edit-criteria' | translate"
+                icon="pi pi-filter"
+                [ariaLabel]="
+                    'digital-services.choose-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
+            />
+        }
+
+        @if (false) {
+            <p-button
+                (onClick)="displayPopupFct()"
+                styleClass="cancel-creation-button uppercase font-bold px-3 py-2 ml-0 sm:ml-3 mb-3 sm:mb-0"
+                [label]="'digital-services.set-view' | translate"
+                icon="pi pi-cog"
+                [ariaLabel]="
+                    'digital-services.choose-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
+            />
+        }
+
+        @if (showInconsitencyBtn) {
+            <p-button
+                (onClick)="showInconsitency = !showInconsitency"
+                [rounded]="true"
+                [label]="'inventories-footprint.data-consistency' | translate"
+                [outlined]="!showInconsitency"
+                severity="danger"
+                class="ml-0 sm:ml-3"
+                [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+            />
+        }
+    </div>
 </ng-template>
+@if (displayCriteriaPopup) {
+    <app-criteria-popup
+        [displayPopup]="displayCriteriaPopup"
+        [type]="'ds'"
+        [subscriberDetails]="subscriber"
+        [organizationDetails]="organization"
+        [ds]="digitalService"
+        [selectedCriteriaIS]="selectedCriteriaPopup"
+        (onSaveDs)="handleSaveDs($event)"
+        (onClose)="displayCriteriaPopup = false"
+    ></app-criteria-popup>
+}
