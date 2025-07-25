@@ -18,7 +18,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard.component";
 
-fdescribe("DigitalServicesFootprintDashboardComponent", () => {
+describe("DigitalServicesFootprintDashboardComponent", () => {
     let component: DigitalServicesFootprintDashboardComponent;
     let fixture: ComponentFixture<DigitalServicesFootprintDashboardComponent>;
 
@@ -159,22 +159,13 @@ fdescribe("DigitalServicesFootprintDashboardComponent", () => {
         expect(component.retrieveFootprintData).toHaveBeenCalled();
     });
 
-    // it("should set onlyOneCriteria and selectedCriteria if impacts length is 1", () => {
-    //     component.impacts = [{ name: "CO2" }];
-    //     component.ngOnInit();
-    //     expect(component.onlyOneCriteria).toBeTrue();
-    //     expect(component.selectedCriteria).toBe("CO2");
-    // });
-
-    // it("should handle chart change logic", () => {
-    //     component.selectedCriteria = "Global Vision";
-    //     component.handleChartChange("CO2");
-    //     expect(component.selectedCriteria).toBe("CO2");
-    //     component.handleChartChange("CO2");
-    //     expect(component.selectedCriteria).toBe("Global Vision");
-    // });
-
-    
+    it("should handle chart change logic", () => {
+        component.selectedCriteria = "Global Vision";
+        component.handleChartChange("CO2");
+        expect(component.selectedCriteria).toBe("CO2");
+        component.handleChartChange("CO2");
+        expect(component.selectedCriteria).toBe("Global Vision");
+    });
 
     it("should set showInconsitencyBtn on updateInconsistent", () => {
         component.updateInconsistent(true);
