@@ -1139,6 +1139,13 @@ app-top-header {
                 contain;
         }
 
+        .custom-at-ecomind-icon {
+            mask: url("assets/images/icons/icon_ecomind_ai.svg") no-repeat center /
+                contain;
+            -webkit-mask: url("assets/images/icons/icon_ecomind_ai.svg") no-repeat
+                center / contain;
+        }
+
         .navigation-button.disabled {
             color: var(--tints-black-80);
             border: 2px solid var(--gray-300);
