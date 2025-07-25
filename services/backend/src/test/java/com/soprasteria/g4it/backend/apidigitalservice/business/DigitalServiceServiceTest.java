@@ -12,23 +12,18 @@ import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMappe
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
-import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
-import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
-import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
-import com.soprasteria.g4it.backend.common.dbmodel.Note;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
 import com.soprasteria.g4it.backend.common.model.NoteBO;
-import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,10 +31,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,6 +47,7 @@ import static org.mockito.Mockito.*;
 class DigitalServiceServiceTest {
 
     private static final Long ORGANIZATION_ID = 1L;
+    private static final Long SUBSCRIBER_ID = 1L;
     private static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
     private static final String SUBSCRIBER = "subscriber";
     private static final long USER_ID = 1;
@@ -60,19 +56,19 @@ class DigitalServiceServiceTest {
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
     @Mock
-
     private OrganizationService organizationService;
     @Mock
     private UserRepository userRepository;
     @Mock
-    private AuthService authService;
+    private RoleService roleService;
+    @Mock
+    private SubscriberRepository subscriberRepository;
     @Mock
     private UserOrganizationRepository userOrganizationRepository;
     @Mock
     private DigitalServiceMapper digitalServiceMapper;
     @Mock
     private DigitalServiceReferentialService digitalServiceReferentialService;
-
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Mock
@@ -186,23 +182,29 @@ class DigitalServiceServiceTest {
         final UserBO userBO = UserBO.builder().id(USER_ID).build();
         final User user = User.builder().id(USER_ID).build();
         final UserOrganization userOrganization = UserOrganization.builder().id(1).roles(
-                List.of(Role.builder().name("DIGITAL_SERVICE_WRITE").build())).build();
+                List.of(Role.builder().name("ROLE_DIGITAL_SERVICE_WRITE").build())).build();
 
         final DigitalServiceBO inputDigitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
         final DigitalServiceBO digitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
         final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
+        Subscriber subscriberObj = Subscriber.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
 
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(subscriberObj));
+        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+                .thenReturn(false);
         // No change in dataInconsistency
         when(userOrganizationRepository.findByOrganizationIdAndUserId(ORGANIZATION_ID, USER_ID))
                 .thenReturn(Optional.of(userOrganization));
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
-        doNothing().when(digitalServiceMapper).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, user);
+        doNothing().when(digitalServiceMapper)
+                .mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, user);
         when(digitalServiceRepository.save(digitalService)).thenReturn(digitalServiceUpdated);
         when(digitalServiceMapper.toFullBusinessObject(digitalServiceUpdated)).thenReturn(inputDigitalServiceBO);
 
-        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, ORGANIZATION_ID, userBO);
+        final DigitalServiceBO result = digitalServiceService
+                .updateDigitalService(inputDigitalServiceBO, SUBSCRIBER, ORGANIZATION_ID, userBO);
 
         assertThat(result).isEqualTo(inputDigitalServiceBO);
         verify(digitalServiceRepository, times(1)).findById(digitalServiceBO.getUid());
@@ -211,7 +213,10 @@ class DigitalServiceServiceTest {
         verify(digitalServiceRepository, times(1)).save(digitalService);
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
         verify(userOrganizationRepository, times(1)).findByOrganizationIdAndUserId(ORGANIZATION_ID, USER_ID);
+        verify(subscriberRepository, times(1)).findByName(SUBSCRIBER);
+        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
     }
+
 
 
     @Test
@@ -219,13 +224,17 @@ class DigitalServiceServiceTest {
         final UserBO userBO = UserBO.builder().id(USER_ID).build();
         final User user = User.builder().id(USER_ID).build();
         final UserOrganization userOrganization = UserOrganization.builder().id(1).roles(
-                List.of(Role.builder().name("DIGITAL_SERVICE_WRITE").build())).build();
+                List.of(Role.builder().name("ROLE_DIGITAL_SERVICE_WRITE").build())).build();
 
         final DigitalServiceBO inputDigitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
         final DigitalServiceBO digitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
         final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
+        Subscriber subscriberObj = Subscriber.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
 
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(subscriberObj));
+        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+                .thenReturn(false);
         when(userOrganizationRepository.findByOrganizationIdAndUserId(ORGANIZATION_ID, USER_ID))
                 .thenReturn(Optional.of(userOrganization));
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
@@ -234,7 +243,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceRepository.save(digitalService)).thenReturn(digitalServiceUpdated);
         when(digitalServiceMapper.toFullBusinessObject(digitalServiceUpdated)).thenReturn(inputDigitalServiceBO);
 
-        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, ORGANIZATION_ID, userBO);
+        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, SUBSCRIBER, ORGANIZATION_ID, userBO);
 
         assertThat(result).isEqualTo(inputDigitalServiceBO);
         verify(digitalServiceRepository, times(1)).findById(digitalServiceBO.getUid());
@@ -243,6 +252,8 @@ class DigitalServiceServiceTest {
         verify(digitalServiceRepository, times(1)).save(digitalService);
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
         verify(userOrganizationRepository, times(1)).findByOrganizationIdAndUserId(ORGANIZATION_ID, USER_ID);
+        verify(subscriberRepository, times(1)).findByName(SUBSCRIBER);
+        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
     }
 
     @Test
@@ -253,7 +264,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
 
-        final DigitalServiceBO result = digitalServiceService.updateDigitalService(digitalServiceBO, ORGANIZATION_ID, null);
+        final DigitalServiceBO result = digitalServiceService.updateDigitalService(digitalServiceBO, SUBSCRIBER, ORGANIZATION_ID, null);
 
         assertThat(result).isEqualTo(digitalServiceBO);
         verify(digitalServiceRepository, times(1)).findById(digitalServiceBO.getUid());
@@ -266,7 +277,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.empty());
 
         final DigitalServiceBO bo = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
-        assertThatThrownBy(() -> digitalServiceService.updateDigitalService(bo, ORGANIZATION_ID, null))
+        assertThatThrownBy(() -> digitalServiceService.updateDigitalService(bo, SUBSCRIBER, ORGANIZATION_ID, null))
                 .hasMessageContaining("Digital Service " + DIGITAL_SERVICE_UID + " not found.")
                 .isInstanceOf(G4itRestException.class);
 
@@ -274,6 +285,42 @@ class DigitalServiceServiceTest {
         verifyNoInteractions(digitalServiceMapper);
         verifyNoInteractions(userOrganizationRepository);
     }
+
+    @Test
+    void shouldUpdateWhenUser_IsAdmin() {
+        final UserBO userBO = UserBO.builder().id(USER_ID).build();
+        final DigitalServiceBO inputDigitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
+        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
+        final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).name("name").build();
+        final DigitalServiceBO digitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
+        Subscriber subscriberObj = Subscriber.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
+
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(subscriberObj));
+        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+                .thenReturn(true);   // user is admin
+
+        when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
+        when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
+        doNothing().when(digitalServiceMapper).mergeEntity(eq(digitalService), eq(inputDigitalServiceBO), eq(digitalServiceReferentialService), any());
+        when(digitalServiceRepository.save(digitalService)).thenReturn(digitalServiceUpdated);
+        when(digitalServiceMapper.toFullBusinessObject(digitalServiceUpdated)).thenReturn(inputDigitalServiceBO);
+
+        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, SUBSCRIBER, ORGANIZATION_ID, userBO);
+
+        assertThat(result).isEqualTo(inputDigitalServiceBO);
+
+        verify(subscriberRepository, times(1)).findByName(SUBSCRIBER);
+        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
+
+        // Key point: should NOT check user org roles since admin
+        verify(userOrganizationRepository, never()).findByOrganizationIdAndUserId(anyLong(), anyLong());
+        verify(digitalServiceRepository, times(1)).findById(digitalService.getUid());
+        verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalService);
+        verify(digitalServiceMapper, times(1)).mergeEntity(eq(digitalService), eq(inputDigitalServiceBO), eq(digitalServiceReferentialService), any());
+        verify(digitalServiceRepository, times(1)).save(digitalService);
+        verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
+    }
+
     @Test
     void shouldThrowIfNotAuthorized_NoRoleAndNoInconsistencyChange() {
         final UserBO userBO = UserBO.builder().id(USER_ID).build();
@@ -284,17 +331,24 @@ class DigitalServiceServiceTest {
 
         UserOrganization userOrg = new UserOrganization();
         userOrg.setRoles(List.of(Role.builder().name("READ").build()));
+        Subscriber subscriberObj = Subscriber.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
+
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(subscriberObj));
+        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+                .thenReturn(false);
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build());
         when(userOrganizationRepository.findByOrganizationIdAndUserId(ORGANIZATION_ID, USER_ID))
                 .thenReturn(Optional.of(userOrg));
 
-        assertThatThrownBy(() -> digitalServiceService.updateDigitalService(digitalServiceBO, ORGANIZATION_ID, userBO))
+        assertThatThrownBy(() -> digitalServiceService.updateDigitalService(digitalServiceBO, SUBSCRIBER, ORGANIZATION_ID, userBO))
                 .hasMessageContaining("Not authorized")
                 .isInstanceOf(G4itRestException.class);
 
         verify(userOrganizationRepository, times(1)).findByOrganizationIdAndUserId(ORGANIZATION_ID, USER_ID);
+        verify(subscriberRepository, times(1)).findByName(SUBSCRIBER);
+        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
     }
     @Test
     void shouldAllowDataInconsistencyChangeEvenWithout_WriteRole() {
@@ -310,6 +364,11 @@ class DigitalServiceServiceTest {
 
         UserOrganization userOrg= new UserOrganization();
         userOrg.setRoles(List.of(Role.builder().name("READ").build()));
+        Subscriber subscriberObj = Subscriber.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
+
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(subscriberObj));
+        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+                .thenReturn(false);
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(
@@ -321,11 +380,46 @@ class DigitalServiceServiceTest {
         when(digitalServiceRepository.save(digitalService)).thenReturn(digitalServiceUpdated);
         when(digitalServiceMapper.toFullBusinessObject(digitalServiceUpdated)).thenReturn(digitalServiceBO);
 
-        final DigitalServiceBO result = digitalServiceService.updateDigitalService(digitalServiceBO, ORGANIZATION_ID, userBO);
+        final DigitalServiceBO result = digitalServiceService.updateDigitalService(digitalServiceBO, SUBSCRIBER, ORGANIZATION_ID, userBO);
 
         assertThat(result).isEqualTo(digitalServiceBO);
     }
 
+    @Test
+    void shouldUpdateWhenUserHas_WriteAccessAnd_NoDataInconsistencyChange() {
+        final UserBO userBO = UserBO.builder().id(USER_ID).build();
+        final User user = User.builder().id(USER_ID).build();
+
+        final DigitalServiceBO inputDigitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).name("service").build();
+        final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build();
+        final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).name("service").build();
+        final DigitalServiceBO digitalServiceBO = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build();
+        Subscriber subscriberObj = Subscriber.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
+        final UserOrganization userOrganization = UserOrganization.builder().id(1)
+                .roles(List.of(Role.builder().name("ROLE_DIGITAL_SERVICE_WRITE").build())).build();
+
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(subscriberObj));
+        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID)).thenReturn(false);
+        when(userOrganizationRepository.findByOrganizationIdAndUserId(ORGANIZATION_ID, USER_ID)).thenReturn(Optional.of(userOrganization));
+        when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
+        when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
+        doNothing().when(digitalServiceMapper).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, user);
+        when(digitalServiceRepository.save(digitalService)).thenReturn(digitalServiceUpdated);
+        when(digitalServiceMapper.toFullBusinessObject(digitalServiceUpdated)).thenReturn(inputDigitalServiceBO);
+
+        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, SUBSCRIBER, ORGANIZATION_ID, userBO);
+
+        assertThat(result).isEqualTo(inputDigitalServiceBO);
+
+        verify(subscriberRepository, times(1)).findByName(SUBSCRIBER);
+        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
+        verify(userOrganizationRepository, times(1)).findByOrganizationIdAndUserId(ORGANIZATION_ID, USER_ID);
+        verify(digitalServiceRepository, times(1)).findById(digitalService.getUid());
+        verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalService);
+        verify(digitalServiceMapper, times(1)).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, user);
+        verify(digitalServiceRepository, times(1)).save(digitalService);
+        verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
+    }
 
     @Test
     void shouldGetDigitalService() {
@@ -404,6 +498,17 @@ class DigitalServiceServiceTest {
 
         assertFalse(result);
         verify(digitalServiceRepository).findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID);
+    }
+    @Test
+    void shouldUpdateLastUpdateDate() {
+
+        digitalServiceService.updateLastUpdateDate(DIGITAL_SERVICE_UID);
+        verify(digitalServiceRepository, times(1))
+                .updateLastUpdateDate(
+                        argThat(date -> date.isAfter(LocalDateTime.now().minusSeconds(1)) && date.isBefore(LocalDateTime.now().plusSeconds(1))),
+                        eq(DIGITAL_SERVICE_UID)
+                );
+
     }
 
 }

@@ -7,30 +7,24 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
-import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
-import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
-import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
-import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
-import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
-import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
-import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,17 +53,14 @@ public class DigitalServiceService {
     private UserRepository userRepository;
     @Autowired
     private DigitalServiceMapper digitalServiceMapper;
-
     @Autowired
-    private IndicatorService indicatorService;
+    private RoleService roleService;
     @Autowired
     private OrganizationService organizationService;
     @Autowired
     private UserOrganizationRepository userOrganizationRepository;
     @Autowired
-    private CriteriaService criteriaService;
-    @Autowired
-    private FileMapperInfo fileInfo;
+    private SubscriberRepository subscriberRepository;
     @Autowired
     private InDatacenterRepository inDatacenterRepository;
     @Autowired
@@ -82,14 +73,6 @@ public class DigitalServiceService {
     private InAiInfrastructureRepository inAiInfrastructureRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
-    @Autowired
-    private TaskService taskService;
-
-    @Autowired
-    private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
-    @Autowired
-    private ExportService exportService;
-    private Boolean isAi;
 
     /**
      * Create a new digital service.
@@ -173,7 +156,7 @@ public class DigitalServiceService {
      * @param user           the user entity
      * @return the updated digital service
      */
-    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final Long organizationId,final UserBO user) {
+    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final String subscriber, final Long organizationId, final UserBO user) {
 
         // Check if digital service exist.
         final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalService.getUid());
@@ -188,12 +171,16 @@ public class DigitalServiceService {
                 digitalServiceToUpdate.isEnableDataInconsistency()
         );
         Long userId = user.getId();
-        UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organizationId, userId).orElseThrow();
+        boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization
+                (user, subscriberRepository.findByName(subscriber).get().getId(), organizationId);
+        if (!isAdmin) {
+            UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organizationId, userId).orElseThrow();
 
-        boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "DIGITAL_SERVICE_WRITE".equals(role.getName()));
+            boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_DIGITAL_SERVICE_WRITE".equals(role.getName()));
 
-        if (!(changeDataInconsistency || hasWriteAccess)) {
-            throw new G4itRestException("403", "Not authorized");
+            if (!(changeDataInconsistency || hasWriteAccess)) {
+                throw new G4itRestException("403", "Not authorized");
+            }
         }
         // Merge digital service.
         digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService, User.builder().id(user.getId()).build());
