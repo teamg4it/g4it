@@ -21,7 +21,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header.component";
 
-describe("DigitalServicesFootprintHeaderComponent", () => {
+fdescribe("DigitalServicesFootprintHeaderComponent", () => {
     let component: DigitalServicesFootprintHeaderComponent;
     let fixture: ComponentFixture<DigitalServicesFootprintHeaderComponent>;
 
@@ -136,5 +136,58 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             ],
         };
         expect(component.canLaunchCompute(false)).toBeFalse();
+    });
+
+    it("ngOnInit should subscribe to digitalService$ and set digitalService and call setDigitalService", () => {
+        const digitalServiceStoreSpy = spyOn(
+            component.digitalServiceStore,
+            "setDigitalService",
+        );
+        const testDigitalService = {
+            name: "Test Digital Service",
+            uid: "test-uid",
+            creationDate: Date.now(),
+            lastUpdateDate: Date.now(),
+            lastCalculationDate: null,
+            terminals: [],
+            servers: [],
+            networks: [],
+        } as DigitalService;
+
+        // Patch the observable to emit a new value
+        (component as any).digitalServicesData.digitalService$ = of(testDigitalService);
+
+        component.ngOnInit();
+
+        expect(component.digitalService).toEqual(testDigitalService);
+        expect(digitalServiceStoreSpy).toHaveBeenCalledWith(testDigitalService);
+    });
+
+    it("ngOnInit should subscribe to currentSubscriber$ and set selectedSubscriberName, subscriber, and isEcoMindEnabledForCurrentSubscriber", () => {
+        const testSubscriber = { name: "SubName", ecomindai: true };
+        (component as any).userService.currentSubscriber$ = of(testSubscriber);
+
+        component.ngOnInit();
+
+        expect(component.selectedSubscriberName).toBe("SubName");
+        expect(component.isEcoMindEnabledForCurrentSubscriber).toBeTrue();
+    });
+
+    it("ngOnInit should subscribe to currentOrganization$ and set selectedOrganizationName", () => {
+        const testOrganization = { name: "OrgName" };
+        (component as any).userService.currentOrganization$ = of(testOrganization);
+
+        component.ngOnInit();
+
+        expect(component.selectedOrganizationName).toBe("OrgName");
+    });
+
+    it("ngOnInit should subscribe to launchCalcul$ and call launchCalcul", () => {
+        const launchCalculSpy = spyOn(component, "launchCalcul");
+        (component as any).digitalServiceBusinessService.launchCalcul$ = of(true);
+
+        component.ngOnInit();
+
+        expect(launchCalculSpy).toHaveBeenCalled();
     });
 });
