@@ -26,7 +26,7 @@ public class BoaImpactsRest {
     private BoaImpactRest odp;
     private BoaImpactRest pocp;
     private BoaImpactRest ept;
-    //    private BoaImpactRest epf;
+    private BoaImpactRest epf;
     private BoaImpactRest epm;
     private BoaImpactRest adpf;
 }
