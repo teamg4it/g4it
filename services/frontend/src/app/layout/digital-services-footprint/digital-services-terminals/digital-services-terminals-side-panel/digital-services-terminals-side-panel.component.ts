@@ -44,8 +44,8 @@ export class DigitalServicesTerminalsSidePanelComponent {
     existingNames: string[] = [];
 
     constructor(
-        private digitalDataService: DigitalServicesDataService,
-        private _formBuilder: FormBuilder,
+        private readonly digitalDataService: DigitalServicesDataService,
+        private readonly _formBuilder: FormBuilder,
         public userService: UserService,
     ) {}
 

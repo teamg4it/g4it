@@ -19,7 +19,7 @@ export class InformationCardComponent {
     safeContent = computed(() => this.renderHTML(this.content()));
     safeTitle = computed(() => this.renderHTML(this.title()));
 
-    constructor(private sanitizer: DomSanitizer) {}
+    constructor(private readonly sanitizer: DomSanitizer) {}
 
     renderHTML(html: string | undefined): SafeHtml {
         if (html) {

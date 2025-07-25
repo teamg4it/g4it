@@ -21,8 +21,8 @@ import { Constants } from "src/constants";
 export class DatavizFilterApplicationComponent {
     @Input() allFilters: Filter<string | TransformedDomain> = {};
     allUnusedFilters: Filter<TransformedDomain> = {};
-    private filterService = inject(FilterService);
-    private translate = inject(TranslateService);
+    private readonly filterService = inject(FilterService);
+    private readonly translate = inject(TranslateService);
     protected footprintStore = inject(FootprintStoreService);
 
     overlayVisible: boolean = false;

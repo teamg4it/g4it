@@ -26,7 +26,7 @@ const endpointForUser = Constants.ENDPOINTS.users;
     providedIn: "root",
 })
 export class AdministrationDataService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getOrganizations(): Observable<Subscriber[]> {
         return this.http.get<Subscriber[]>(`${endpoint}`);

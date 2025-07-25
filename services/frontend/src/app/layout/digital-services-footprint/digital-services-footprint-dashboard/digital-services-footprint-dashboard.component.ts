@@ -56,10 +56,10 @@ export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard
     implements OnInit, OnDestroy
 {
-    private digitalServiceStore = inject(DigitalServiceStoreService);
-    private outPhysicalEquipmentsService = inject(OutPhysicalEquipmentsService);
-    private outVirtualEquipmentsService = inject(OutVirtualEquipmentsService);
-    private digitalServicesAiData = inject(DigitalServicesAiDataService);
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly outPhysicalEquipmentsService = inject(OutPhysicalEquipmentsService);
+    private readonly outVirtualEquipmentsService = inject(OutVirtualEquipmentsService);
+    private readonly digitalServicesAiData = inject(DigitalServicesAiDataService);
 
     chartType = signal("radial");
     showInconsitencyBtn = false;
@@ -121,8 +121,8 @@ export class DigitalServicesFootprintDashboardComponent
     calculatedCriteriaList: string[] = [];
 
     constructor(
-        private digitalServicesDataService: DigitalServicesDataService,
-        private digitalServicesService: DigitalServiceBusinessService,
+        private readonly digitalServicesDataService: DigitalServicesDataService,
+        private readonly digitalServicesService: DigitalServiceBusinessService,
         override globalStore: GlobalStoreService,
         override translate: TranslateService,
         override integerPipe: IntegerPipe,

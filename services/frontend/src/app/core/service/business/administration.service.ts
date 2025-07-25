@@ -20,7 +20,7 @@ import { AdministrationDataService } from "../data/administration-data-service";
     providedIn: "root",
 })
 export class AdministrationService {
-    constructor(private administrationDataService: AdministrationDataService) {}
+    constructor(private readonly administrationDataService: AdministrationDataService) {}
 
     getUsersTriggered = signal<boolean>(false);
 

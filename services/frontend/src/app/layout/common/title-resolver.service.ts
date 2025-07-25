@@ -8,7 +8,7 @@ import { map } from "rxjs/operators";
     providedIn: "root",
 })
 export class TitleResolver implements Resolve<string> {
-    constructor(private translateService: TranslateService) {}
+    constructor(private readonly translateService: TranslateService) {}
 
     resolve(route: ActivatedRouteSnapshot): Observable<string> {
         const titleKey = route.data["titleKey"];

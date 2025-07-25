@@ -45,6 +45,19 @@ other encoding formats, while untested, may also work.
 
 {{% /expand %}}
 
+## Rules to upload the files
+***Virtual equipment file***
+| Field Name               | Value Pattern / Possible Values      | PK? | Consistency / Reference                                                                                     | Mandatory? | Specific Rule          |
+|--------------------------|--------------------------------------|-----|------------------------------------------------------------------------------------------------------------|------------|------------------------|
+| nomEquipementVirtuel     | ^[A-Za-z0-9_-]+$                     | Yes | N/A                                                                                                        | Yes        |                        |
+| typeInfrastructure       | ***CLOUD_SERVICES***                 | No  | Only one value                                                                                             | Yes        |                        |
+| quantite                 | ^\d+$                                | No  | N/A                                                                                                        | Yes        |                        |
+| provider                 |                                      | No  | Consistent with the list of cloud provider available in BoaviztAPI                                         | Yes        |                        |
+| typeInstance             |                                      | No  | Consistent with the list of instances available in BoaviztAPI                                              | Yes        |                        |
+| location                 |                                      | No  | Consistent with the list of locations available in BoaviztAPI                                              | Yes        |                        |
+| chargeMoy                | ^(\d+)?(\.\d+)?$                     | No  | N/A                                                                                                        | Yes        |                        |
+| dureeUtilisationAnnuelle | ^(\d+)?(\.\d+)?$                     | No  | N/A                                                                                                        | Yes        |                        |
+
 
 ## Sequence Diagram
 

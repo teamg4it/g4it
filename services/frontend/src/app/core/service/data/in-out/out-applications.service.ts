@@ -17,9 +17,9 @@ const endpoint = Constants.ENDPOINTS.inventories;
     providedIn: "root",
 })
 export class OutApplicationsService {
-    private API = "applications";
+    private readonly API = "applications";
 
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     get(inventoryId: number): Observable<OutApplicationsRest[]> {
         return this.http.get<OutApplicationsRest[]>(

@@ -48,8 +48,8 @@ const initialState: DigitalServiceState = {
     providedIn: "root",
 })
 export class DigitalServiceStoreService {
-    private inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
-    private inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
+    private readonly inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
+    private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
     private readonly _store = signal(initialState);
 
     readonly enableCalcul = computed(() => this._store().enableCalcul);
