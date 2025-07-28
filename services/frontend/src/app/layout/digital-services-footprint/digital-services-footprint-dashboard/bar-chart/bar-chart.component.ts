@@ -40,7 +40,7 @@ export class BarChartComponent extends AbstractDashboard {
     @Input() selectedDetailParam: string = "";
     @Input() selectedDetailName: string = "";
     @Input() selectedCriteria: string = "acidification";
-    @Input() showDataButton: boolean = false;
+    @Input() enableDataInconsistency: boolean = false;
     @Input() networkData: DigitalServiceNetworksImpact[] = [];
     @Input() serverData: DigitalServiceServersImpact[] = [];
     @Input() terminalData: DigitalServiceTerminalsImpact[] = [];
@@ -202,12 +202,14 @@ export class BarChartComponent extends AbstractDashboard {
                     axisLabel: {
                         rotate: 30, // Rotate labels if they overlap
                         color: (value: any) => {
-                            return !networkMap[value].status.error || !this.showDataButton
+                            return !networkMap[value].status.error ||
+                                !this.enableDataInconsistency
                                 ? Constants.GRAPH_GREY
                                 : Constants.GRAPH_RED;
                         },
-                        formatter: function (value: any) {
-                            return !networkMap[value].status.error
+                        formatter: (value: any) => {
+                            return !networkMap[value].status.error ||
+                                !this.enableDataInconsistency
                                 ? `{grey| ${value}}`
                                 : `{redBold| \u24d8} {red|${value}}`;
                         },
@@ -274,12 +276,14 @@ export class BarChartComponent extends AbstractDashboard {
                     axisLabel: {
                         rotate: 30, // Rotate labels if they overlap
                         color: (value: any) => {
-                            return !okMap[value].status.error || !this.showDataButton
+                            return !okMap[value].status.error ||
+                                !this.enableDataInconsistency
                                 ? Constants.GRAPH_GREY
                                 : Constants.GRAPH_RED;
                         },
                         formatter: (value: any) => {
-                            return !okMap[value].status.error || !this.showDataButton
+                            return !okMap[value].status.error ||
+                                !this.enableDataInconsistency
                                 ? `{grey| ${value}}`
                                 : `{redBold| \u24d8} {red|${value}}`;
                         },
@@ -658,12 +662,13 @@ export class BarChartComponent extends AbstractDashboard {
                 axisLabel: {
                     rotate: 30, // Rotate labels if they overlap
                     formatter: (value) =>
-                        !serverOkmap[value].status.error
+                        !serverOkmap[value].status.error || !this.enableDataInconsistency
                             ? `{grey| ${this.translate.instant(value) || value}}`
                             : `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`,
                     interval: 0, // Display all labels
                     color: (value: any) => {
-                        return !serverOkmap[value].status.error || !this.showDataButton
+                        return !serverOkmap[value].status.error ||
+                            !this.enableDataInconsistency
                             ? Constants.GRAPH_GREY
                             : Constants.GRAPH_RED;
                     },
@@ -810,12 +815,14 @@ export class BarChartComponent extends AbstractDashboard {
                     axisLabel: {
                         rotate: 30, // Rotate labels if they overlap
                         formatter: (value) =>
-                            !serverChildOkmap[value].status.error
+                            !serverChildOkmap[value].status.error ||
+                            !this.enableDataInconsistency
                                 ? this.noError(value)
                                 : this.errorDetected(value),
                         interval: 0, // Display all labels
-                        color: function (value: any) {
-                            return !serverChildOkmap[value].status.error
+                        color: (value: any) => {
+                            return !serverChildOkmap[value].status.error ||
+                                !this.enableDataInconsistency
                                 ? Constants.GRAPH_GREY
                                 : Constants.GRAPH_RED;
                         },

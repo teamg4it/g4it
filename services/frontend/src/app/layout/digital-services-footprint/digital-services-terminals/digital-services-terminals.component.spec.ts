@@ -35,6 +35,7 @@ describe("DigitalServicesTerminalsComponent", () => {
             networks: [],
             servers: [],
             terminals: [],
+            enableDataInconsistency: false,
         } as DigitalService),
     };
 

@@ -1,0 +1,69 @@
+<p-dialog
+    [modal]="true"
+    [(visible)]="displayPopup"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '50vw' }"
+    [draggable]="false"
+    [dismissableMask]="true"
+    (onHide)="closePopup()"
+    id="criteria"
+    appendTo="body"
+>
+    <ng-template pTemplate="header">
+        <h3 class="font-semibold ml-0 text-2xl">
+            {{ "digital-services.set-view" | translate }}
+        </h3>
+    </ng-template>
+    <h4 class="mt-0 mb-3 text-xl font-semibold">
+        {{ "digital-services.enable-data-consistency" | translate }}
+    </h4>
+    <p class="text-base">
+        {{ "digital-services.data-consistency-description" | translate }}
+    </p>
+    <div class="card mt-3">
+        <form class="flex items-center gap-1" [formGroup]="formGroup">
+            <p-checkbox
+                formControlName="dataConsistencyCheckbox"
+                [binary]="true"
+                inputId="ny"
+            ></p-checkbox>
+            <label for="ny" class="ml-2">{{
+                "digital-services.data-consistency-checkbox-text" | translate
+            }}</label>
+        </form>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex align-items-center justify-content-between">
+            <div class="flex justify-content-start mr-auto">
+                <p-button
+                    styleClass="cancel-creation-button font-bold uppercase"
+                    (onClick)="closePopup()"
+                    aria-label="Cancel"
+                    id="criteria-cancel"
+                >
+                    {{ "common.cancel" | translate }}
+                </p-button>
+            </div>
+            <p-button
+                styleClass="p-button-secondary-blue uppercase"
+                aria-label="Reset"
+                class="m-0"
+                (onClick)="resetForm()"
+            >
+                {{ "digital-services.reset-settings" | translate }}
+            </p-button>
+
+            <p-button
+                styleClass=""
+                aria-label="Save"
+                [disabled]="
+                    !formGroup.valid ||
+                    intitalDataState === formGroup.value.dataConsistencyCheckbox
+                "
+                (onClick)="onClose.emit(formGroup.value.dataConsistencyCheckbox)"
+            >
+                {{ "digital-services.save-settings" | translate }}
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>

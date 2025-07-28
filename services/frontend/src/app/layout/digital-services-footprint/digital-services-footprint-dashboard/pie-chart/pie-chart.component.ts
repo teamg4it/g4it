@@ -27,6 +27,7 @@ import { Constants } from "src/constants";
 export class PieChartComponent extends AbstractDashboard {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
     @Input() selectedCriteria: string = "acidification";
+    @Input() enableDataInconsistency: boolean = false;
     @Output() selectedParamChange: EventEmitter<any> = new EventEmitter();
     @Output() chartTypeChange: EventEmitter<any> = new EventEmitter();
 
@@ -98,9 +99,11 @@ export class PieChartComponent extends AbstractDashboard {
                 unitValue: selectedImpactUnit?.unitValue,
                 unit: selectedImpactUnit?.unit,
                 label: {
-                    color: !dsTierOkmap[nameValue]?.status.error
-                        ? Constants.GRAPH_GREY
-                        : Constants.GRAPH_RED,
+                    color:
+                        !dsTierOkmap[nameValue]?.status.error ||
+                        !this.enableDataInconsistency
+                            ? Constants.GRAPH_GREY
+                            : Constants.GRAPH_RED,
                 },
             };
         });
@@ -156,7 +159,8 @@ export class PieChartComponent extends AbstractDashboard {
             ],
             label: {
                 formatter: (value: any) => {
-                    return !dsTierOkmap[value.name]?.status?.error
+                    return !dsTierOkmap[value.name]?.status?.error ||
+                        !this.enableDataInconsistency
                         ? `{grey| ${value.name}}`
                         : `{redBold| \u24d8} {red| ${value.name}}`;
                 },
