@@ -30,7 +30,7 @@ import { Constants } from "src/constants";
 export class RadialChartComponent extends AbstractDashboard {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
     @Output() selectedCriteriaChange: EventEmitter<string> = new EventEmitter();
-
+    @Input() enableDataInconsistency: boolean = false;
     showInconsitency = input<boolean>();
     selectedCriteria = input<string>();
     options: EChartsOption = {};
@@ -147,15 +147,18 @@ export class RadialChartComponent extends AbstractDashboard {
                     return {
                         value: wordsValue,
                         textStyle: {
-                            color: !this.criteriaMap[wordsValue].status.error
-                                ? Constants.GRAPH_GREY
-                                : Constants.GRAPH_RED,
+                            color:
+                                this.criteriaMap[wordsValue].status.error &&
+                                this.enableDataInconsistency
+                                    ? Constants.GRAPH_RED
+                                    : Constants.GRAPH_GREY,
                         },
                     };
                 }),
                 axisLabel: {
                     formatter: (value: string) => {
-                        return this.criteriaMap[value].status.error
+                        return this.criteriaMap[value].status.error &&
+                            this.enableDataInconsistency
                             ? `{redBold| \u24d8} {red| ${value}}`
                             : `{grey| ${value}}`;
                     },

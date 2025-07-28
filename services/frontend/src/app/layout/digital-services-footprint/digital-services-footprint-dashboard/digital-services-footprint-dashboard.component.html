@@ -118,6 +118,7 @@
                 [selectedCriteria]="selectedCriteria"
                 [showInconsitency]="showInconsitency"
                 (selectedCriteriaChange)="handleChartChange($event)"
+                [enableDataInconsistency]="digitalService.enableDataInconsistency"
             ></app-radial-chart>
             <app-pie-chart
                 *ngIf="chartType() == 'pie'"
@@ -126,6 +127,7 @@
                 [showInconsitency]="showInconsitency"
                 (selectedParamChange)="selectedParam = $event"
                 (chartTypeChange)="chartType.set($event)"
+                [enableDataInconsistency]="digitalService.enableDataInconsistency"
             ></app-pie-chart>
             <app-bar-chart
                 *ngIf="chartType() == 'bar'"
@@ -138,6 +140,7 @@
                 [serverData]="serverData()"
                 [cloudData]="cloudData()"
                 [terminalData]="terminalData()"
+                [enableDataInconsistency]="digitalService.enableDataInconsistency"
                 [showInconsitency]="showInconsitency"
                 (barChartChildChange)="barChartChild = $event"
                 (selectedDetailParamChange)="selectedDetailParam = $event"
@@ -167,20 +170,18 @@
             />
         }
 
-        @if (false) {
-            <p-button
-                (onClick)="displayPopupFct()"
-                styleClass="cancel-creation-button uppercase font-bold px-3 py-2 ml-0 sm:ml-3 mb-3 sm:mb-0"
-                [label]="'digital-services.set-view' | translate"
-                icon="pi pi-cog"
-                [ariaLabel]="
-                    'digital-services.choose-criteria'
-                        | translate: { digitalServiceName: digitalService.name }
-                "
-            />
-        }
+        <p-button
+            (onClick)="displaySetViewPopup = !displaySetViewPopup"
+            styleClass="cancel-creation-button uppercase font-bold px-3 py-2 ml-0 sm:ml-3 mb-3 sm:mb-0"
+            [label]="'digital-services.set-view' | translate"
+            icon="pi pi-cog"
+            [ariaLabel]="
+                'digital-services.choose-criteria'
+                    | translate: { digitalServiceName: digitalService.name }
+            "
+        />
 
-        @if (showInconsitencyBtn) {
+        @if (showInconsitencyBtn && digitalService.enableDataInconsistency) {
             <p-button
                 (onClick)="showInconsitency = !showInconsitency"
                 [rounded]="true"
@@ -204,4 +205,12 @@
         (onSaveDs)="handleSaveDs($event)"
         (onClose)="displayCriteriaPopup = false"
     ></app-criteria-popup>
+}
+
+@if (displaySetViewPopup) {
+    <app-set-view-popup
+        [displayPopup]="displaySetViewPopup"
+        (onClose)="displaySetViewPopup = false; updateDataConsistencyInDS($event)"
+        [digitalService]="digitalService"
+    ></app-set-view-popup>
 }

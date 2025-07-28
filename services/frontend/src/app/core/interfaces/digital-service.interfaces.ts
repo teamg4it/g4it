@@ -25,6 +25,7 @@ export interface DigitalService {
     creator?: DigitalServiceUserInfo;
     isAi?: boolean;
     tasks?: TaskRest[];
+    enableDataInconsistency: boolean;
 }
 
 export interface DigitalServiceUserInfo {
