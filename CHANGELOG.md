@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.5.0
+
+### Major Changes
+
+- 1345 | Improve tracability of the calculation
+
+### Minor Changes
+
 ## 3.4.0
 
 ### Major Changes
