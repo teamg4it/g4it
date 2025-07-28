@@ -4,11 +4,10 @@
 
 ### Major Changes
 
-- 1345 | Improve tracability of the calculation
-
 ### Minor Changes
 
 - 1245 | Facilitate the criteria selection
+- 1345 | Improve tracability of the calculation
 
 ## 3.4.0
 
