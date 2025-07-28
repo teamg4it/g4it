@@ -3,10 +3,7 @@
 ## 3.5.0
 
 ### Major Changes
-
 - 1103 | Give the possibility to disable the data consistency
-
-### Minor Changes
 
 ### Minor Changes
 
