@@ -198,7 +198,9 @@
         "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",
         "delete-criteria": "Delete digital service {{digitalServiceName}}",
         "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}",
-        "import": "Import"
+        "import": "Import",
+        "edit-criteria": "Edit Criteria",
+        "set-view": "Set the view"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

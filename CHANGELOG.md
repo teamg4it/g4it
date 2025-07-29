@@ -1,5 +1,14 @@
 # G4IT
 
+## 3.5.0
+
+### Major Changes
+
+### Minor Changes
+
+- 1245 | Facilitate the criteria selection
+- 1430 | Consistency for the import file on the virtual equipment
+
 ## 3.4.0
 
 ### Major Changes
