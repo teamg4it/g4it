@@ -48,7 +48,7 @@ public class EvaluateNumEcoEvalService {
     InternalToNumEcoEvalCalculs internalToNumEcoEvalCalculs;
 
     @Autowired
-    ReferentialService referentialNumEcoEvalService;
+    ReferentialService referentialService;
 
     @Autowired
     CalculImpactEquipementPhysiqueService calculImpactEquipementPhysiqueService;
@@ -82,10 +82,10 @@ public class EvaluateNumEcoEvalService {
         boolean isModelMatched = true;
 
         if (physicalEquipment.getModel() != null) {
-            matchingItem = referentialNumEcoEvalService.getMatchingItem(physicalEquipment.getModel(), subscriber);
+            matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), subscriber);
         }
 
-        ItemTypeRest itemTypeRest = referentialNumEcoEvalService.getItemType(physicalEquipment.getType(), subscriber);
+        ItemTypeRest itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), subscriber);
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
@@ -106,7 +106,7 @@ public class EvaluateNumEcoEvalService {
                     itemImpactName = matchingItem.getRefItemTarget();
                 }
 
-                List<ItemImpactRest> itemImpacts = referentialNumEcoEvalService.getItemImpacts(
+                List<ItemImpactRest> itemImpacts = referentialService.getItemImpacts(
                         criterion.getCode(), lifecycleStep, itemImpactName,
                         physicalEquipment.getLocation(), subscriber);
 
