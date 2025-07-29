@@ -159,10 +159,10 @@ export class PieChartComponent extends AbstractDashboard {
             ],
             label: {
                 formatter: (value: any) => {
-                    return !dsTierOkmap[value.name]?.status?.error ||
-                        !this.enableDataInconsistency
-                        ? `{grey| ${value.name}}`
-                        : `{redBold| \u24d8} {red| ${value.name}}`;
+                    return dsTierOkmap[value.name]?.status?.error &&
+                        this.enableDataInconsistency
+                        ? `{redBold| \u24d8} {red| ${value.name}}`
+                        : `{grey| ${value.name}}`;
                 },
                 rich: Constants.CHART_RICH as any,
             },

@@ -202,16 +202,12 @@ export class BarChartComponent extends AbstractDashboard {
                     axisLabel: {
                         rotate: 30, // Rotate labels if they overlap
                         color: (value: any) => {
-                            return !networkMap[value].status.error ||
-                                !this.enableDataInconsistency
-                                ? Constants.GRAPH_GREY
-                                : Constants.GRAPH_RED;
+                            const hasError = !!networkMap[value]?.status?.error;
+                            return this.getColorFormatter(hasError);
                         },
                         formatter: (value: any) => {
-                            return !networkMap[value].status.error ||
-                                !this.enableDataInconsistency
-                                ? `{grey| ${value}}`
-                                : `{redBold| \u24d8} {red|${value}}`;
+                            const hasError = !!networkMap[value]?.status?.error;
+                            return this.getLabelFormatter(hasError, value);
                         },
                         rich: Constants.CHART_RICH as any,
                     },
@@ -276,16 +272,12 @@ export class BarChartComponent extends AbstractDashboard {
                     axisLabel: {
                         rotate: 30, // Rotate labels if they overlap
                         color: (value: any) => {
-                            return !okMap[value].status.error ||
-                                !this.enableDataInconsistency
-                                ? Constants.GRAPH_GREY
-                                : Constants.GRAPH_RED;
+                            const hasError = !!okMap[value].status.error;
+                            return this.getColorFormatter(hasError);
                         },
                         formatter: (value: any) => {
-                            return !okMap[value].status.error ||
-                                !this.enableDataInconsistency
-                                ? `{grey| ${value}}`
-                                : `{redBold| \u24d8} {red|${value}}`;
+                            const hasError = !!okMap[value].status.error;
+                            return this.getLabelFormatter(hasError, value);
                         },
                         rich: Constants.CHART_RICH as any,
                     },
@@ -661,16 +653,14 @@ export class BarChartComponent extends AbstractDashboard {
                 data: xAxisData,
                 axisLabel: {
                     rotate: 30, // Rotate labels if they overlap
-                    formatter: (value) =>
-                        !serverOkmap[value].status.error || !this.enableDataInconsistency
-                            ? `{grey| ${this.translate.instant(value) || value}}`
-                            : `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`,
+                    formatter: (value) => {
+                        const hasError = !!serverOkmap[value].status.error;
+                        return this.getLabelFormatter(hasError, value);
+                    },
                     interval: 0, // Display all labels
                     color: (value: any) => {
-                        return !serverOkmap[value].status.error ||
-                            !this.enableDataInconsistency
-                            ? Constants.GRAPH_GREY
-                            : Constants.GRAPH_RED;
+                        const hasError = !!serverOkmap[value].status.error;
+                        return this.getColorFormatter(hasError);
                     },
                     rich: Constants.CHART_RICH as any,
                 },
@@ -814,17 +804,14 @@ export class BarChartComponent extends AbstractDashboard {
                     data: xAxis,
                     axisLabel: {
                         rotate: 30, // Rotate labels if they overlap
-                        formatter: (value) =>
-                            !serverChildOkmap[value].status.error ||
-                            !this.enableDataInconsistency
-                                ? this.noError(value)
-                                : this.errorDetected(value),
+                        formatter: (value) => {
+                            const hasError = !!serverChildOkmap[value].status.error;
+                            return this.getLabelFormatter(hasError, value);
+                        },
                         interval: 0, // Display all labels
                         color: (value: any) => {
-                            return !serverChildOkmap[value].status.error ||
-                                !this.enableDataInconsistency
-                                ? Constants.GRAPH_GREY
-                                : Constants.GRAPH_RED;
+                            const hasError = !!serverChildOkmap[value].status.error;
+                            return this.getColorFormatter(hasError);
                         },
                         rich: Constants.CHART_RICH as any,
                     },
@@ -844,14 +831,6 @@ export class BarChartComponent extends AbstractDashboard {
             ],
             color: Constants.BLUE_COLOR,
         };
-    }
-
-    noError(value: string) {
-        return `{grey| ${this.translate.instant(value) || value}}`;
-    }
-
-    errorDetected(value: string) {
-        return `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`;
     }
 
     changeTerminalsRadioButtonSelected() {
@@ -883,5 +862,27 @@ export class BarChartComponent extends AbstractDashboard {
         const g = Math.round((1 - t) * startG + t * endG);
         const b = Math.round((1 - t) * startB + t * endB);
         return `rgb(${r},${g},${b})`;
+    }
+
+    private getErrorLabel(value: string): string {
+        return `{redBold| \u24d8} {red|${this.translate.instant(value) || value}}`;
+    }
+
+    private getGreyLabel(value: string): string {
+        return `{grey| ${this.translate.instant(value) || value}}`;
+    }
+
+    private getLabelFormatter(hasError: boolean, value: string): string {
+        if (hasError && this.enableDataInconsistency) {
+            return this.getErrorLabel(value);
+        }
+        return this.getGreyLabel(value);
+    }
+
+    private getColorFormatter(hasError: boolean): string {
+        if (hasError || this.enableDataInconsistency) {
+            return Constants.GRAPH_RED;
+        }
+        return Constants.GRAPH_GREY;
     }
 }
