@@ -222,4 +222,14 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         expect(component.digitalService.enableDataInconsistency).toBeFalse();
         expect(component.showInconsitency).toBeFalse();
     });
+
+    it("should set enableDataInconsistency to true, set showInconsitency to true, and update digitalService when event is true", async () => {
+        component.showInconsitency = true;
+        digitalServicesDataServiceMock.update.and.returnValue(
+            of({ uid: "test-uid", enableDataInconsistency: true }),
+        );
+        await component.updateDataConsistencyInDS(true);
+        expect(component.digitalService.enableDataInconsistency).toBeTrue();
+        expect(component.showInconsitency).toBeTrue();
+    });
 });
