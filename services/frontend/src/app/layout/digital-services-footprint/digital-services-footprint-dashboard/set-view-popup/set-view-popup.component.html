@@ -26,6 +26,9 @@
                 formControlName="dataConsistencyCheckbox"
                 [binary]="true"
                 inputId="ny"
+                [ariaLabel]="
+                    'digital-services.data-consistency-checkbox-text' | translate
+                "
             ></p-checkbox>
             <label for="ny" class="ml-2">{{
                 "digital-services.data-consistency-checkbox-text" | translate
@@ -38,7 +41,7 @@
                 <p-button
                     styleClass="cancel-creation-button font-bold uppercase"
                     (onClick)="closePopup()"
-                    aria-label="Cancel"
+                    [aria-label]="'common.cancel' | translate"
                     id="criteria-cancel"
                 >
                     {{ "common.cancel" | translate }}
@@ -46,7 +49,7 @@
             </div>
             <p-button
                 styleClass="p-button-secondary-blue uppercase"
-                aria-label="Reset"
+                [aria-label]="'digital-services.reset-settings' | translate"
                 class="m-0"
                 (onClick)="resetForm()"
             >
@@ -54,13 +57,13 @@
             </p-button>
 
             <p-button
-                styleClass=""
-                aria-label="Save"
+                [aria-label]="'digital-services.save-settings' | translate"
                 [disabled]="
                     !formGroup.valid ||
                     intitalDataState === formGroup.value.dataConsistencyCheckbox
                 "
                 (onClick)="onClose.emit(formGroup.value.dataConsistencyCheckbox)"
+                styleClass="uppercase"
             >
                 {{ "digital-services.save-settings" | translate }}
             </p-button>
