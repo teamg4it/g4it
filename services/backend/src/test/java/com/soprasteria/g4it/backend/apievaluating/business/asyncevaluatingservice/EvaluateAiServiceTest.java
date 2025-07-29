@@ -8,6 +8,8 @@ import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
+import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
+import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalCalculs;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -86,6 +88,10 @@ class EvaluateAiServiceTest {
     private AiService aiService;
     @Mock
     private AiConfigurationMapper aiConfigurationMapper;
+    @Mock
+    private InputToCsvRecord inputToCsvRecord;
+    @Mock
+    private ImpactToCsvRecord impactToCsvRecord;
     @Mock
     private AggregationToOutput aggregationToOutput;
     @Mock
@@ -271,7 +277,7 @@ class EvaluateAiServiceTest {
     }
 
     @Test
-    void updateTraceForImpact_withConsoElecAnMoyenne_shouldUpdateImpactSourceNEW() throws Exception {
+    void updateTraceForImpact_withConsoElecAnMoyenne_shouldUpdateImpactSource() throws Exception {
         // Given
         InPhysicalEquipment inPhysicalEquipment = mock(InPhysicalEquipment.class);
         when(inPhysicalEquipment.getModel()).thenReturn("model");
@@ -291,8 +297,6 @@ class EvaluateAiServiceTest {
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of(new ItemImpactRest()));
 
-
-        // Mapping mocks for domain conversions
         EquipementPhysique eqPhysique =
                 new EquipementPhysique();
         when(internalToNumEcoEvalCalculs.map(isA(InPhysicalEquipment.class))).thenReturn(eqPhysique);
@@ -302,8 +306,6 @@ class EvaluateAiServiceTest {
         when(internalToNumEcoEvalCalculs.map(isA(MatchingItemRest.class))).thenReturn(ReferentielCorrespondanceRefEquipement.builder().build());
         when(internalToNumEcoEvalCalculs.map(isA(HypothesisRest.class))).thenReturn(ReferentielHypothese.builder().build());
 
-
-        // Setup ImpactEquipementPhysique with a trace containing "consoElecAnMoyenne"
         Map<String, Object> consoElecAn = new HashMap<>();
         consoElecAn.put("valeur", 123);
         consoElecAn.put("impact source", "REELLE");
@@ -326,7 +328,6 @@ class EvaluateAiServiceTest {
 
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any()))
                 .thenReturn(List.of(impact));
-        // When
         List<ImpactEquipementPhysique> result = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                 inPhysicalEquipment,
                 null,
@@ -335,9 +336,8 @@ class EvaluateAiServiceTest {
                 List.of("USING"),
                 Collections.emptyList());
 
-        // Then
         assertEquals(1, result.size());
-        String updatedTrace = result.get(0).getTrace();
+        String updatedTrace = result.getFirst().getTrace();
         Map<String, Object> resultMap = objectMapper.readValue(updatedTrace, new TypeReference<Map<String, Object>>() {});
 
         assertTrue(resultMap.containsKey("consoElecAnMoyenne"), "Trace should contain 'consoElecAnMoyenne' key");
@@ -348,13 +348,12 @@ class EvaluateAiServiceTest {
         assertEquals("REELLE", updatedConso.get("impact source"), "impact source should be updated to 'REELLE'");
     }
     @Test
-    void updateTraceForImpact_withReferentielFacteurKeys_shouldTransformToNestedMap() throws Exception {
+    void updateTraceForImpact_withReferentielFacteurKeys_shouldTransform() throws Exception {
         InPhysicalEquipment inPhysicalEquipment = mock(InPhysicalEquipment.class);
         when(inPhysicalEquipment.getModel()).thenReturn("model");
         when(inPhysicalEquipment.getType()).thenReturn("type");
         when(inPhysicalEquipment.getLocation()).thenReturn("location");
 
-        // MatchingItem and ItemType mocks
         MatchingItemRest matchingItem = new MatchingItemRest();
         matchingItem.setRefItemTarget("target");
         when(referentialService.getMatchingItem(any(), any())).thenReturn(matchingItem);
@@ -363,12 +362,9 @@ class EvaluateAiServiceTest {
         itemTypeRest.setRefDefaultItem("defaultItem");
         when(referentialService.getItemType(any(), any())).thenReturn(itemTypeRest);
 
-        // ItemImpacts - return empty list as default
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of(new ItemImpactRest()));
 
-
-        // Mapping mocks for domain conversions
         EquipementPhysique eqPhysique =
                 new EquipementPhysique();
         when(internalToNumEcoEvalCalculs.map(isA(InPhysicalEquipment.class))).thenReturn(eqPhysique);
@@ -396,7 +392,6 @@ class EvaluateAiServiceTest {
         traceMap.put("ReferentielFacteurCaracterisation", referentielFacteurCaracterisation);
 
         String traceJson = objectMapper.writeValueAsString(traceMap);
-        // Prepare the ImpactEquipementPhysique object with the untransformed trace
         ImpactEquipementPhysique impact = ImpactEquipementPhysique.builder().build();
         impact.setStatutIndicateur("OK");
         impact.setTrace(oldtraceJson);
