@@ -7,6 +7,7 @@
 
 ### Minor Changes
 
+- 1346 | Rename / delete workspace for non subscriber admin
 - 1245 | Facilitate the criteria selection
 
 ## 3.4.0

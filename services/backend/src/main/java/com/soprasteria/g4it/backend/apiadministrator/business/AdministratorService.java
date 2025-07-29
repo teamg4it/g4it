@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apiadministrator.business;
 import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
 import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
+import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserSearchBO;
@@ -77,11 +78,22 @@ public class AdministratorService {
      * @return the List<SubscriberBO>.
      */
     public List<SubscriberBO> getSubscribers(final UserBO user) {
-        administratorRoleService.hasAdminRightsOnAnySubscriber(user);
+        administratorRoleService.hasAdminRightsOnAnySubscriberOrAnyOrganization(user);
 
-        return user.getSubscribers().stream()
-                .filter(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
-                .toList();
+        List<SubscriberBO> resultSubscriberAdmin = user.getSubscribers().stream()
+                .filter(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)).toList();
+
+        List<SubscriberBO> checkOrgAdmin = user.getSubscribers().stream()
+                .filter(subscriberBO -> subscriberBO.getRoles().isEmpty()).toList();
+        List<SubscriberBO> result = new ArrayList<>(resultSubscriberAdmin);
+        for (SubscriberBO subBO : checkOrgAdmin) {
+            List<OrganizationBO> organization = subBO.getOrganizations().stream().filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
+            if (!organization.isEmpty()) {
+                subBO.setOrganizations(organization);
+                result.add(subBO);
+            }
+        }
+        return result;
     }
 
     /**
