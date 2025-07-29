@@ -36,6 +36,7 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
             networks: [],
         }),
         get: jasmine.createSpy("get").and.returnValue(of({})),
+        update: jasmine.createSpy("update"),
     };
 
     const digitalServiceBusinessServiceMock = {
@@ -210,5 +211,15 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         expect(setEnableCalculSpy).toHaveBeenCalledWith(true);
         expect(triggerLaunchCalculSpy).toHaveBeenCalled();
         expect(component.displayCriteriaPopup).toBeFalse();
+    });
+
+    it("should set enableDataInconsistency to false, set showInconsitency to false, and update digitalService when event is false", async () => {
+        component.showInconsitency = true;
+        digitalServicesDataServiceMock.update.and.returnValue(
+            of({ uid: "test-uid", enableDataInconsistency: false }),
+        );
+        await component.updateDataConsistencyInDS(false);
+        expect(component.digitalService.enableDataInconsistency).toBeFalse();
+        expect(component.showInconsitency).toBeFalse();
     });
 });
