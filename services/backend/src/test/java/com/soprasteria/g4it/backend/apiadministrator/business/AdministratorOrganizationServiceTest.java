@@ -277,12 +277,12 @@ class AdministratorOrganizationServiceTest {
     }
 
     @Test
-    void getUsersOfOrg() {
+    void getAllUsersOfOrg() {
         Organization org = TestUtils.createOrganization();
 
         when(organizationRepository.findById(org.getId())).thenReturn(Optional.of(org));
         doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), eq(org.getSubscriber().getId()), eq(org.getId()));
-
+        when(roleService.hasAdminRightsOnSubscriber(any(), eq(org.getSubscriber().getId()))).thenReturn(true);
         User adminUser = User.builder().id(1L).build();
         Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
 
@@ -300,6 +300,32 @@ class AdministratorOrganizationServiceTest {
 
         assertEquals(2, result.size());
         assertTrue(result.stream().anyMatch(user -> user.getId() == 1L));
+        assertTrue(result.stream().anyMatch(user -> user.getId() == 2L));
+
+    }    @Test
+    void getNonSubscriberAdminUsersOfOrg() {
+        Organization org = TestUtils.createOrganization();
+
+        when(organizationRepository.findById(org.getId())).thenReturn(Optional.of(org));
+        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), eq(org.getSubscriber().getId()), eq(org.getId()));
+        when(roleService.hasAdminRightsOnSubscriber(any(), eq(org.getSubscriber().getId()))).thenReturn(false);
+
+        User adminUser = User.builder().id(1L).build();
+        Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
+
+        UserSubscriber userSubscriber = UserSubscriber.builder().user(adminUser).roles(List.of(adminRole)).build();
+        when(userSubscriberRepository.findBySubscriber(org.getSubscriber())).thenReturn(List.of(userSubscriber));
+
+        User orgUser = User.builder().id(2L).build();
+        Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
+
+        UserOrganization userOrganization = UserOrganization.builder().user(orgUser).roles(List.of(orgRole)).build();
+        when(userOrganizationRepository.findByOrganization(org)).thenReturn(List.of(userOrganization));
+
+        UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
+        List<UserInfoBO> result = administratorOrganizationService.getUsersOfOrg(org.getId(), userBO);
+
+        assertEquals(1, result.size());
         assertTrue(result.stream().anyMatch(user -> user.getId() == 2L));
 
     }
