@@ -1,72 +1,77 @@
-<p-dialog
-    [modal]="true"
-    [(visible)]="displayPopup"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-    [style]="{ width: '50vw' }"
-    [draggable]="false"
-    [dismissableMask]="true"
-    (onHide)="closePopup()"
-    id="criteria"
-    appendTo="body"
->
-    <ng-template pTemplate="header">
-        <h3 class="font-semibold ml-0 text-2xl">
-            {{ "digital-services.set-view" | translate }}
-        </h3>
-    </ng-template>
-    <h4 class="mt-0 mb-3 text-xl font-semibold">
-        {{ "digital-services.enable-data-consistency" | translate }}
-    </h4>
-    <p class="text-base">
-        {{ "digital-services.data-consistency-description" | translate }}
-    </p>
-    <div class="card mt-3">
-        <form class="flex items-center gap-1" [formGroup]="formGroup">
-            <p-checkbox
-                formControlName="dataConsistencyCheckbox"
-                [binary]="true"
-                inputId="ny"
-                [ariaLabel]="
-                    'digital-services.data-consistency-checkbox-text' | translate
-                "
-            ></p-checkbox>
-            <label for="ny" class="ml-2">{{
-                "digital-services.data-consistency-checkbox-text" | translate
-            }}</label>
-        </form>
-    </div>
-    <ng-template pTemplate="footer">
-        <div class="flex align-items-center justify-content-between">
-            <div class="flex justify-content-start mr-auto">
+<div class="set-view-popup">
+    <p-dialog
+        [modal]="true"
+        [(visible)]="displayPopup"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        [style]="{ width: '50vw' }"
+        [draggable]="false"
+        [dismissableMask]="true"
+        (onHide)="closePopup()"
+        id="criteria"
+        styleClass="set-view-popup"
+    >
+        <ng-template pTemplate="header">
+            <h3 class="font-semibold ml-0 text-2xl">
+                {{ "digital-services.set-view" | translate }}
+            </h3>
+        </ng-template>
+        <h4 class="mt-0 mb-3 text-xl font-semibold">
+            {{ "digital-services.enable-data-consistency" | translate }}
+        </h4>
+        <p class="text-base">
+            {{ "digital-services.data-consistency-description" | translate }}
+        </p>
+        <div class="card mt-3">
+            <form class="flex items-center gap-1" [formGroup]="formGroup">
+                <p-checkbox
+                    formControlName="dataConsistencyCheckbox"
+                    [binary]="true"
+                    inputId="ny"
+                    [ariaLabel]="
+                        'digital-services.data-consistency-checkbox-text' | translate
+                    "
+                ></p-checkbox>
+                <label for="ny" class="ml-2">{{
+                    "digital-services.data-consistency-checkbox-text" | translate
+                }}</label>
+            </form>
+        </div>
+        <ng-template pTemplate="footer">
+            <div
+                class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
+            >
+                <div class="flex justify-content-start mr-auto">
+                    <p-button
+                        styleClass="cancel-creation-button font-bold uppercase mb-2 sm:mb-0"
+                        (onClick)="closePopup()"
+                        [aria-label]="'common.cancel' | translate"
+                        id="criteria-cancel"
+                    >
+                        {{ "common.cancel" | translate }}
+                    </p-button>
+                </div>
                 <p-button
-                    styleClass="cancel-creation-button font-bold uppercase"
-                    (onClick)="closePopup()"
-                    [aria-label]="'common.cancel' | translate"
-                    id="criteria-cancel"
+                    styleClass="p-button-secondary-blue uppercase mb-2 sm:mb-0"
+                    [aria-label]="'digital-services.reset-settings' | translate"
+                    class="m-0"
+                    (onClick)="resetForm()"
                 >
-                    {{ "common.cancel" | translate }}
+                    {{ "digital-services.reset-settings" | translate }}
+                </p-button>
+
+                <p-button
+                    [aria-label]="'digital-services.save-settings' | translate"
+                    [disabled]="
+                        !formGroup.valid ||
+                        intitalDataState === formGroup.value.dataConsistencyCheckbox
+                    "
+                    (onClick)="onClose.emit(formGroup.value.dataConsistencyCheckbox)"
+                    styleClass="uppercase mb-2 sm:mb-0"
+                >
+                    {{ "digital-services.save-settings" | translate }}
                 </p-button>
             </div>
-            <p-button
-                styleClass="p-button-secondary-blue uppercase"
-                [aria-label]="'digital-services.reset-settings' | translate"
-                class="m-0"
-                (onClick)="resetForm()"
-            >
-                {{ "digital-services.reset-settings" | translate }}
-            </p-button>
-
-            <p-button
-                [aria-label]="'digital-services.save-settings' | translate"
-                [disabled]="
-                    !formGroup.valid ||
-                    intitalDataState === formGroup.value.dataConsistencyCheckbox
-                "
-                (onClick)="onClose.emit(formGroup.value.dataConsistencyCheckbox)"
-                styleClass="uppercase"
-            >
-                {{ "digital-services.save-settings" | translate }}
-            </p-button>
-        </div>
-    </ng-template>
-</p-dialog>
+        </ng-template>
+    </p-dialog>
+    <div></div>
+</div>

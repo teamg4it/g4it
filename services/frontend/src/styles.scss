@@ -1296,3 +1296,10 @@ app-useful-information {
         color: white !important;
     }
 }
+
+.set-view-popup,
+.criteria-popup {
+    .p-dialog .p-dialog-header .p-dialog-header-icon:focus {
+        outline: 2px solid #28a745;
+    }
+}
