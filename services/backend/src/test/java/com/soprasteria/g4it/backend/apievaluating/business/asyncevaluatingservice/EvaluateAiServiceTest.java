@@ -140,6 +140,7 @@ class EvaluateAiServiceTest {
 
         InPhysicalEquipment physicalEquipment = mock(InPhysicalEquipment.class);
         when(physicalEquipment.getDatacenterName()).thenReturn("DC1");
+        when(physicalEquipment.getModel()).thenReturn("Model-X");
         when(inPhysicalEquipmentRepository.findByDigitalServiceUid("uid")).thenReturn(new ArrayList<>(List.of(physicalEquipment)));
 
         InVirtualEquipment virtualEquipment = mock(InVirtualEquipment.class);
@@ -178,7 +179,7 @@ class EvaluateAiServiceTest {
         when(impact.getConsoElecMoyenne()).thenReturn(10.0);
         when(impact.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(),  eq(datacenter), any(), any(), any(), any()))
                 .thenReturn(List.of(impact));
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
                 .thenReturn(List.of("PHYSICAL_KEY"));
