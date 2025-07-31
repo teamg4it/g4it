@@ -4,6 +4,8 @@
 
 ### Major Changes
 
+- 585 | Display only users that can be managed in the administration panel
+
 ### Minor Changes
 
 - 1391 | Update spring boot verion
