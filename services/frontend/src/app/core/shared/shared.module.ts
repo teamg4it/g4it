@@ -137,6 +137,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         StackBarChartComponent,
         WorkspaceComponent,
         FormNavComponent,
+        DialogModule,
     ],
     providers: [DecimalsPipe, IntegerPipe],
 })
