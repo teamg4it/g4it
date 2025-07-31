@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Pipe, PipeTransform } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -12,7 +12,7 @@ import { TranslateService } from "@ngx-translate/core";
     name: "monthYear",
 })
 export class MonthYearPipe implements PipeTransform {
-    constructor(private translate: TranslateService) {}
+    constructor(private readonly translate: TranslateService) {}
 
     transform(value: string | undefined): string {
         let translatedDate;
@@ -20,7 +20,7 @@ export class MonthYearPipe implements PipeTransform {
             return "";
         }
 
-        if(!value.match(/\d{2}-\d{4}/)) {
+        if (!value.match(/\d{2}-\d{4}/)) {
             return value;
         }
         const [month, year] = value.split("-");

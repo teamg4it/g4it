@@ -62,10 +62,10 @@ import { environment } from "src/environments/environment";
 export class TopHeaderComponent implements OnInit {
     private readonly translate = inject(TranslateService);
     private readonly router = inject(Router);
-    private keycloak = inject(KeycloakService);
-    private userService = inject(UserService);
-    private destroyRef = inject(DestroyRef);
-    private globalStore = inject(GlobalStoreService);
+    private readonly keycloak = inject(KeycloakService);
+    private readonly userService = inject(UserService);
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly globalStore = inject(GlobalStoreService);
     ecoDesignPercent = this.userService.ecoDesignPercent;
     maxLength = 30;
     ingredient: string = "english";
@@ -91,7 +91,7 @@ export class TopHeaderComponent implements OnInit {
     dialogVisible: boolean = false;
     mobileMenuItems: MenuItem[] | undefined;
 
-    constructor(private workspaceService: WorkspaceService) {}
+    constructor(private readonly workspaceService: WorkspaceService) {}
 
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;

@@ -18,7 +18,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     providers: [MessageService],
 })
 export default class PanelDatacenterComponent {
-    private digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() addSidebarVisible: boolean = false;
     @Output() addSidebarVisibleChange: EventEmitter<boolean> = new EventEmitter();
@@ -52,7 +52,7 @@ export default class PanelDatacenterComponent {
     }
 
     constructor(
-        private _formBuilder: FormBuilder,
+        private readonly _formBuilder: FormBuilder,
         public userService: UserService,
     ) {}
 

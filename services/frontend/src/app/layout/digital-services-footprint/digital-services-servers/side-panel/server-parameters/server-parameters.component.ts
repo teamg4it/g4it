@@ -31,7 +31,7 @@ import PanelDatacenterComponent from "../add-datacenter/datacenter.component";
 export class PanelServerParametersComponent {
     public translate = inject(TranslateService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
-    private inDatacentersService = inject(InDatacentersService);
+    private readonly inDatacentersService = inject(InDatacentersService);
 
     @ViewChild("childSidePanel", { static: false })
     childSidePanel!: PanelDatacenterComponent;
@@ -148,10 +148,10 @@ export class PanelServerParametersComponent {
     });
 
     constructor(
-        private digitalServiceBusiness: DigitalServiceBusinessService,
-        private _formBuilder: FormBuilder,
-        private router: Router,
-        private route: ActivatedRoute,
+        private readonly digitalServiceBusiness: DigitalServiceBusinessService,
+        private readonly _formBuilder: FormBuilder,
+        private readonly router: Router,
+        private readonly route: ActivatedRoute,
         public userService: UserService,
     ) {}
 

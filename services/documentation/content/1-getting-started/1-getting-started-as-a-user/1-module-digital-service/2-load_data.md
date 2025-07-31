@@ -20,14 +20,16 @@ weight: 20
         -   [**Step 7:** Complete Network Information](#step-7-complete-network-information)
     -   [**Servers**](#servers)
         -   [If You Know the Details About Your Infrastructure Configuration](#if-you-know-the-details-about-your-infrastructure-configuration)
-            -   [**Step 8:** Create a Server](#step-8-create-a-server)
+            -   [**Step 8:** Create a Server via form](#step-8-create-a-server-via-form)
             -   [**Step 9:** Choose the Type of Server](#step-9-choose-the-type-of-server)
             -   [**Step 10:** Complete Server Information](#step-10-complete-server-information)
             -   [**Step 11:** Create a New Datacenter](#step-11-create-a-new-datacenter)
             -   [**Step 12:** Create a Virtual Machine (VM)](#step-12-create-a-virtual-machine-vm)
+            -   [**Step 8:** Import server file](#step-8-import-server-file)
         -   [**Cloud Hosting (IaaS - Infrastructure as a Service)**](#cloud-hosting-iaas---infrastructure-as-a-service)
-            -   [**Step 13:** Create a Cloud Service](#step-13-create-a-cloud-service)
-            -   [**Step 14:** Complete Cloud Services Information](#step-14-complete-cloud-services-information)
+            -   [**Step 13:** Create a Cloud Service via form](#step-13)
+                **OR**
+            -   [**Step 13:** Import Cloud Services file](#step-13-import-cloud-services-file)
 -   [Scenario Used as an Example](#scenario-used-as-an-example)
 -   [Functional Documentation](#functional-documentation)
 <!-- TOC -->
@@ -111,7 +113,7 @@ weight: 20
 
 #### If You Know the Details About Your Infrastructure Configuration
 
-##### **Step 8:** Create a Server
+##### **Step 8:** Create a Server via form
 
 -   **Action**: Click the "Add Server" button to begin adding your server.
 
@@ -160,17 +162,33 @@ weight: 20
 
 ![Screenshot showing the form to add virtual machine characteristics, including size, quantity, and operating time.](../media/12_add_server_step_3.png "Screenshot showing the form to add virtual machine characteristics, including size, quantity, and operating time.")
 
+**OR**
+
+##### **Step 8:** Import server file
+1. **Action:** Action: Click the "Import" button to open the import form.
+   ![Import button](../media/8_import-button.png "Import button")
+                 
+2. **Action:** Navigate to the "Non-Cloud Servers" tab to begin the import process.
+3. **Action:** Click the "Browse File" buttons to select and attach the file.
+4. **Action:** Click "Start Upload" to initiate the file upload.
+5. **Action:** Click "Finish Import" to proceed to the digital service view.
+6. **Action:** Go to the "Cloud Services" tab to view the imported data.
+
+![Screenshot showing the form to upload non-cloud servers file.](../media/8_import-non-cloud-server.png "Screenshot showing the form to upload non-cloud servers file.")
+
 ---
 
 #### **Cloud Hosting (IaaS - Infrastructure as a Service)**
 
-##### **Step 13:** Create a Cloud Service
+##### **Step 13:** 
+   ***Step1.*** ***Create a Cloud Service via form***
 
 -   **Action**: Click the "Add Cloud Service" button to start adding your cloud infrastructure.
 
 ![Screenshot showing the "Add Cloud Service" button to create a new cloud instance.](../media/13_add_cloud_instance.png "Screenshot showing the 'Add Cloud Service' button to create a new cloud instance.")
 
-##### **Step 14:** Complete Cloud Services Information
+
+  ***Step2.*** ***Complete Cloud Services Information in the form***
 
 1. **Action:** Configure the parameters for the cloud services:
     - **Name**
@@ -182,9 +200,22 @@ weight: 20
     - **Operating Time**: The total uptime of cloud services throughout the year, measured in hours.
     - **Average Workload**: As a percentage of CPU usage.
 3. **Action:** Click **Add** to save your input.
-
+                          
 ![Screenshot showing the form to configure a cloud service, with fields for provider, instance type, location, and operating time.](../media/14_create_cloud_instance.png "Screenshot showing the form to configure a cloud service, with fields for provider, instance type, location, and operating time.")
+                                                      
+  **OR**
 
+##### **Step 13:** ***Import Cloud Services file***
+1. **Action:** Action: Click the "Import" button to open the import form.
+   ![Import button](../media/8_import-button.png "Import button")
+
+2. **Action:** Navigate to the "Cloud Service" tab to begin the import process.
+3. **Action:** Click the "Browse File" button to select and attach the file.
+4. **Action:** Click "Start Upload" to initiate the file upload.
+5. **Action:** Click "Finish Import" to proceed to the digital service view.
+6. **Action:** Go to the "Cloud Services" tab to view the imported data.
+
+![Screenshot showing the form to upload cloud service file.](../media/13_B_import_cloud_instance.png "Screenshot showing the form to upload cloud service file.")
 ---
 
 ## Scenario Used as an Example

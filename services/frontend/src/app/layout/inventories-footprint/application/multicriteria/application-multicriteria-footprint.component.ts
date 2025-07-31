@@ -37,7 +37,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
     protected footprintStore = inject(FootprintStoreService);
-    private filterService = inject(FilterService);
+    private readonly filterService = inject(FilterService);
 
     selectedInventoryDate: string = "";
     domainFilter: string[] = [];
@@ -59,9 +59,9 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     });
 
     constructor(
-        private router: Router,
-        private route: ActivatedRoute,
-        private appComponent: InventoriesApplicationFootprintComponent,
+        private readonly router: Router,
+        private readonly route: ActivatedRoute,
+        private readonly appComponent: InventoriesApplicationFootprintComponent,
         override translate: TranslateService,
         override globalStore: GlobalStoreService,
         override integerPipe: IntegerPipe,

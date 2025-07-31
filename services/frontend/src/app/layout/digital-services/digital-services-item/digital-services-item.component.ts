@@ -25,13 +25,13 @@ export class DigitalServicesItemComponent {
     firstFootprintTab = "terminals";
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
-        private router: Router,
-        private confirmationService: ConfirmationService,
-        private translate: TranslateService,
-        private route: ActivatedRoute,
+        private readonly digitalServicesData: DigitalServicesDataService,
+        private readonly router: Router,
+        private readonly confirmationService: ConfirmationService,
+        private readonly translate: TranslateService,
+        private readonly route: ActivatedRoute,
         public userService: UserService,
-        private clipboardService: ClipboardService,
+        private readonly clipboardService: ClipboardService,
     ) {
         this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
     }

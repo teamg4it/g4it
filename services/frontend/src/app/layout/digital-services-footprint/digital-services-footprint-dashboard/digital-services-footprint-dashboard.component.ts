@@ -8,15 +8,18 @@
 import {
     Component,
     computed,
+    DestroyRef,
     inject,
     OnDestroy,
     OnInit,
     Signal,
     signal,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, lastValueFrom } from "rxjs";
+import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     AiRecommendation,
     DigitalService,
@@ -24,14 +27,17 @@ import {
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
+    DSCriteriaRest,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     OutPhysicalEquipmentRest,
     OutVirtualEquipmentRest,
 } from "src/app/core/interfaces/output.interface";
+import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { OutPhysicalEquipmentsService } from "src/app/core/service/data/in-out/out-physical-equipments.service";
@@ -56,17 +62,18 @@ export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard
     implements OnInit, OnDestroy
 {
-    private digitalServiceStore = inject(DigitalServiceStoreService);
-    private outPhysicalEquipmentsService = inject(OutPhysicalEquipmentsService);
-    private outVirtualEquipmentsService = inject(OutVirtualEquipmentsService);
-    private digitalServicesAiData = inject(DigitalServicesAiDataService);
-
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly outPhysicalEquipmentsService = inject(OutPhysicalEquipmentsService);
+    private readonly outVirtualEquipmentsService = inject(OutVirtualEquipmentsService);
+    private readonly digitalServicesAiData = inject(DigitalServicesAiDataService);
+    private readonly destroyRef = inject(DestroyRef);
     chartType = signal("radial");
     showInconsitencyBtn = false;
     constants = Constants;
     noData = true;
     selectedUnit: string = "Raw";
     selectedCriteria: string = "Global Vision";
+    selectedCriteriaPopup: string[] = [];
     selectedParam: string = "";
     selectedDetailName: string = "";
     selectedDetailParam: string = "";
@@ -76,7 +83,8 @@ export class DigitalServicesFootprintDashboardComponent
     options: EChartsOption = {};
     digitalService: DigitalService = {} as DigitalService;
     aiRecommendation: AiRecommendation = {} as AiRecommendation;
-
+    showDataButton = false;
+    displaySetViewPopup = false;
     title = "";
     content = "";
 
@@ -87,6 +95,9 @@ export class DigitalServicesFootprintDashboardComponent
     outPhysicalEquipments: OutPhysicalEquipmentRest[] = [];
     outVirtualEquipments: OutVirtualEquipmentRest[] = [];
     onlyOneCriteria = false;
+    displayCriteriaPopup = false;
+    organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
+    subscriber!: Subscriber;
 
     cloudData = computed(() => {
         if (this.outVirtualEquipments === undefined) return [];
@@ -121,8 +132,9 @@ export class DigitalServicesFootprintDashboardComponent
     calculatedCriteriaList: string[] = [];
 
     constructor(
-        private digitalServicesDataService: DigitalServicesDataService,
-        private digitalServicesService: DigitalServiceBusinessService,
+        private readonly digitalServicesDataService: DigitalServicesDataService,
+        private readonly digitalServiceBusinessService: DigitalServiceBusinessService,
+        public userService: UserService,
         override globalStore: GlobalStoreService,
         override translate: TranslateService,
         override integerPipe: IntegerPipe,
@@ -135,6 +147,25 @@ export class DigitalServicesFootprintDashboardComponent
         this.digitalService = await firstValueFrom(
             this.digitalServicesDataService.digitalService$,
         );
+
+        this.userService.currentSubscriber$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((subscriber: Subscriber) => {
+                this.subscriber = subscriber;
+            });
+        this.userService.currentOrganization$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((organization: Organization) => {
+                this.organization.subscriberName = this.subscriber.name;
+                this.organization.subscriberId = this.subscriber.id;
+                this.organization.organizationName = organization.name;
+                this.organization.organizationId = organization.id;
+                this.organization.status = organization.status;
+                this.organization.dataRetentionDays = organization.dataRetentionDays!;
+                this.organization.displayLabel = `${organization.name} - (${this.subscriber.name})`;
+                this.organization.criteriaDs = organization.criteriaDs!;
+                this.organization.criteriaIs = organization.criteriaIs!;
+            });
 
         if (this.digitalService.isAi) {
             try {
@@ -351,6 +382,43 @@ export class DigitalServicesFootprintDashboardComponent
 
     updateInconsistent(event: any): void {
         this.showInconsitencyBtn = event;
+    }
+
+    displayPopupFct() {
+        const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
+        this.selectedCriteriaPopup =
+            this.digitalService.criteria ??
+            this.organization.criteriaDs ??
+            this.subscriber.criteria ??
+            defaultCriteria;
+        this.displayCriteriaPopup = true;
+    }
+    handleSaveDs(DSCriteria: DSCriteriaRest) {
+        this.digitalServiceBusinessService
+            .updateDsCriteria(this.digitalService.uid, DSCriteria)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => {
+                this.digitalServicesDataService
+                    .get(this.digitalService.uid)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe();
+                this.displayCriteriaPopup = false;
+                this.digitalServiceStore.setEnableCalcul(true);
+                // Launch Calculation after Saving Criteria
+                this.digitalServiceBusinessService.triggerLaunchCalcul();
+            });
+    }
+
+    async updateDataConsistencyInDS(event: any): Promise<void> {
+        if (event === false || event === true) {
+            this.digitalService.enableDataInconsistency = event;
+            if (event === false) {
+                this.showInconsitency = false;
+            }
+            this.digitalService = await lastValueFrom(
+                this.digitalServicesDataService.update(this.digitalService),
+            );
+        }
     }
 
     ngOnDestroy() {
