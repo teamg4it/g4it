@@ -196,7 +196,15 @@
         "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",
         "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
         "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}",
-        "import": "Importer"
+        "import": "Importer",
+        "edit-criteria": "Modifier critères",
+        "set-view": "Paramétrer la vue",
+        "enable-data-consistency": "Activer la cohérence des données",
+        "data-consistency-checkbox-text": "Je souhaite activer la cohérence des données",
+        "data-consistency-description": "La cohérence des données indique où l'évaluation n'a pas été en mesure de produire des indicateurs. Cela ne signifie pas qu'il n'y a pas d'impact, mais seulement qu'une partie de l'impact n'a pas pu être évaluée. Les causes d'incohérence sont principalement des données manquantes dans le référentiel comme par exemple, pour BoaviztAPI, les facteurs d'impacts pour les phases de distribution et de fin de vie ne sont pas disponibles.",
+        "reset-settings": "Réinitialiser le paramétrage",
+        "save-settings": "Enregistrer les paramètres",
+        "configure-criteria": "Configurer la vue pour le service numérique {{digitalServiceName}}"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",

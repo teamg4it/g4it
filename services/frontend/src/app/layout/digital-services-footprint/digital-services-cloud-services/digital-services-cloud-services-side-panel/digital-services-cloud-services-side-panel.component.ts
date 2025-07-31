@@ -46,11 +46,11 @@ export class DigitalServicesCloudServicesSidePanelComponent {
     selectedLocation: DropdownValue = {} as DropdownValue;
 
     constructor(
-        private digitalDataService: DigitalServicesDataService,
-        private digitalServiceBusiness: DigitalServiceBusinessService,
-        private _formBuilder: FormBuilder,
+        private readonly digitalDataService: DigitalServicesDataService,
+        private readonly digitalServiceBusiness: DigitalServiceBusinessService,
+        private readonly _formBuilder: FormBuilder,
         public userService: UserService,
-        private router: Router,
+        private readonly router: Router,
     ) {}
 
     async ngOnInit() {

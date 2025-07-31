@@ -31,10 +31,10 @@ export class CommonEditorComponent {
     editorTextValueUnmodified = "";
 
     constructor(
-        private sanitizer: DomSanitizer,
-        private translate: TranslateService,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService,
+        private readonly sanitizer: DomSanitizer,
+        private readonly translate: TranslateService,
+        private readonly messageService: MessageService,
+        private readonly confirmationService: ConfirmationService,
     ) {}
 
     ngOnChanges(changes: SimpleChanges) {

@@ -53,7 +53,7 @@ export class DigitalServicesCloudServicesComponent {
 
     constructor(
         public userService: UserService,
-        private router: Router,
+        private readonly router: Router,
     ) {}
 
     async ngOnInit() {

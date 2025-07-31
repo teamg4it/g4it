@@ -5,7 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
     name: "businessHoursRenderer",
 })
 export class BusinessHoursRendererPipe implements PipeTransform {
-    constructor(private translate: TranslateService) {}
+    constructor(private readonly translate: TranslateService) {}
 
     transform(value: string): string {
         if (!value) return "";

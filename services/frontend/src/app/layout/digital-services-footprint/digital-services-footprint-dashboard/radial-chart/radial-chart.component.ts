@@ -19,6 +19,10 @@ import {
     DigitalServiceFootprint,
     StatusCountMap,
 } from "src/app/core/interfaces/digital-service.interfaces";
+import {
+    getColorFormatter,
+    getLabelFormatter,
+} from "src/app/core/service/mapper/graphs-mapper";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
@@ -30,13 +34,13 @@ import { Constants } from "src/constants";
 export class RadialChartComponent extends AbstractDashboard {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
     @Output() selectedCriteriaChange: EventEmitter<string> = new EventEmitter();
-
+    @Input() enableDataInconsistency: boolean = false;
     showInconsitency = input<boolean>();
     selectedCriteria = input<string>();
     options: EChartsOption = {};
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
-    private global = inject(GlobalStoreService);
+    private readonly global = inject(GlobalStoreService);
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes) {
@@ -147,17 +151,21 @@ export class RadialChartComponent extends AbstractDashboard {
                     return {
                         value: wordsValue,
                         textStyle: {
-                            color: !this.criteriaMap[wordsValue].status.error
-                                ? Constants.GRAPH_GREY
-                                : Constants.GRAPH_RED,
+                            color: getColorFormatter(
+                                !!this.criteriaMap[wordsValue].status.error,
+                                this.enableDataInconsistency,
+                            ),
                         },
                     };
                 }),
                 axisLabel: {
                     formatter: (value: string) => {
-                        return this.criteriaMap[value].status.error
-                            ? `{redBold| \u24d8} {red| ${value}}`
-                            : `{grey| ${value}}`;
+                        const hasError = !!this.criteriaMap[value].status.error;
+                        return getLabelFormatter(
+                            hasError,
+                            this.enableDataInconsistency,
+                            value,
+                        );
                     },
                     rich: Constants.CHART_RICH as any,
                     margin: 15,

@@ -32,8 +32,8 @@ import { transformCriterion } from "../mapper/array";
 })
 export class FootprintService {
     constructor(
-        private footprintDataService: FootprintDataService,
-        private translate: TranslateService,
+        private readonly footprintDataService: FootprintDataService,
+        private readonly translate: TranslateService,
     ) {}
 
     deleteIndicators(inventoryId: number) {

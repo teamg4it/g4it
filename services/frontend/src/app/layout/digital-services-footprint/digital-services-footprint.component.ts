@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, inject, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -24,10 +24,9 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     templateUrl: "./digital-services-footprint.component.html",
 })
 export class DigitalServicesFootprintComponent implements OnInit {
-    private global = inject(GlobalStoreService);
-    private digitalServiceStore = inject(DigitalServiceStoreService);
-    private inDatacentersService = inject(InDatacentersService);
-    private router = inject(Router);
+    private readonly global = inject(GlobalStoreService);
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly inDatacentersService = inject(InDatacentersService);
 
     digitalService: DigitalService = {} as DigitalService;
     inPhysicalEquipments: InPhysicalEquipmentRest[] = [];
@@ -35,10 +34,10 @@ export class DigitalServicesFootprintComponent implements OnInit {
     tabItems: MenuItem[] | undefined;
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
-        private digitalBusinessService: DigitalServiceBusinessService,
-        private route: ActivatedRoute,
-        private translate: TranslateService,
+        private readonly digitalServicesData: DigitalServicesDataService,
+        private readonly digitalBusinessService: DigitalServiceBusinessService,
+        private readonly route: ActivatedRoute,
+        private readonly translate: TranslateService,
     ) {}
 
     async ngOnInit(): Promise<void> {

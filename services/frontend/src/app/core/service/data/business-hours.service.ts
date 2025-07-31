@@ -8,7 +8,7 @@ import { BusinessHours } from "../../interfaces/business-hours.interface";
     providedIn: "root",
 })
 export class BusinessHoursService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getBusinessHours(): Observable<BusinessHours[]> {
         return this.http.get<BusinessHours[]>(Constants.ENDPOINTS.businessHours);

@@ -24,7 +24,7 @@ export class SelectFileComponent {
     file: File | undefined;
     fileUploadText: string = this.translate.instant("common.choose-file");
 
-    constructor(private translate: TranslateService) {}
+    constructor(private readonly translate: TranslateService) {}
 
     onFileChange(selectedFile: any) {
         if (selectedFile.currentFiles && selectedFile.currentFiles.length > 0) {

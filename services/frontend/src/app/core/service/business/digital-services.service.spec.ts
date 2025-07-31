@@ -106,4 +106,12 @@ describe("DigitalServiceBusinessService", () => {
         );
         expect(nextAvailableName).toBe(expectedName);
     });
+
+    it("should trigger launchCalculSubject when triggerLaunchCalcul is called", (done) => {
+        digitalServiceService.launchCalcul$.subscribe(() => {
+            expect(true).toBeTrue();
+            done();
+        });
+        digitalServiceService.triggerLaunchCalcul();
+    });
 });
