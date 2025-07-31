@@ -5,6 +5,8 @@
 ### Major Changes
 - 1103 | Give the possibility to disable the data consistency
 
+- 585 | Display only users that can be managed in the administration panel
+
 ### Minor Changes
 
 - 1391 | Update spring boot verion
