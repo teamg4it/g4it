@@ -264,9 +264,8 @@ class AzureGreenItFileSystemApplicationTests {
 
             // we are able to read contents
             Arrays.stream(files).forEach(file -> {
-                try (BufferedReader reader =
-                             new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-                    Assertions.assertThat(reader.lines().collect(Collectors.joining("\n"))).isEqualTo("Content");
+                try {
+                    Assertions.assertThat(FileCopyUtils.copyToString(new InputStreamReader(file.getInputStream()))).isEqualTo("Content");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
