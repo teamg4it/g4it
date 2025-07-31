@@ -18,7 +18,7 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, lastValueFrom } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     AiRecommendation,
@@ -83,7 +83,8 @@ export class DigitalServicesFootprintDashboardComponent
     options: EChartsOption = {};
     digitalService: DigitalService = {} as DigitalService;
     aiRecommendation: AiRecommendation = {} as AiRecommendation;
-
+    showDataButton = false;
+    displaySetViewPopup = false;
     title = "";
     content = "";
 
@@ -406,6 +407,18 @@ export class DigitalServicesFootprintDashboardComponent
                 // Launch Calculation after Saving Criteria
                 this.digitalServiceBusinessService.triggerLaunchCalcul();
             });
+    }
+
+    async updateDataConsistencyInDS(event: any): Promise<void> {
+        if (event === false || event === true) {
+            this.digitalService.enableDataInconsistency = event;
+            if (event === false) {
+                this.showInconsitency = false;
+            }
+            this.digitalService = await lastValueFrom(
+                this.digitalServicesDataService.update(this.digitalService),
+            );
+        }
     }
 
     ngOnDestroy() {
