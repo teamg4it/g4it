@@ -12,6 +12,7 @@
 - 1391 | Update spring boot verion
 - 1346 | Rename / delete workspace for non subscriber admin
 - 1245 | Facilitate the criteria selection
+- 1430 | Consistency for the import file on the virtual equipment
 
 ## 3.4.0
 
