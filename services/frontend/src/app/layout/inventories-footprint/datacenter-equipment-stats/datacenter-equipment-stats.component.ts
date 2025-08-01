@@ -29,8 +29,8 @@ import { AbstractDashboard } from "../abstract-dashboard";
     templateUrl: "./datacenter-equipment-stats.component.html",
 })
 export class DataCenterEquipmentStatsComponent extends AbstractDashboard {
-    private store = inject(FootprintStoreService);
-    private inventoryUtilService = inject(InventoryUtilService);
+    private readonly store = inject(FootprintStoreService);
+    private readonly inventoryUtilService = inject(InventoryUtilService);
     @Input() footprint: Criterias = {} as Criterias;
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];

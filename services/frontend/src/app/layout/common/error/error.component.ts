@@ -28,8 +28,8 @@ export class ErrorComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
 
     constructor(
-        private activatedRoute: ActivatedRoute,
-        private translate: TranslateService,
+        private readonly activatedRoute: ActivatedRoute,
+        private readonly translate: TranslateService,
     ) {}
 
     ngOnInit(): void {

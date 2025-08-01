@@ -31,8 +31,8 @@ import { FilePanelComponent } from "./file-panel/file-panel.component";
     providers: [ConfirmationService, MessageService],
 })
 export class InventoriesComponent implements OnInit {
-    private destroyRef = inject(DestroyRef);
-    private global = inject(GlobalStoreService);
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly global = inject(GlobalStoreService);
 
     @ViewChild(FilePanelComponent) filePanelComponent: FilePanelComponent | undefined;
     sidebarVisible: boolean = false;
@@ -57,10 +57,10 @@ export class InventoriesComponent implements OnInit {
     isAllowedInventory: boolean = false;
 
     constructor(
-        private inventoryService: InventoryService,
+        private readonly inventoryService: InventoryService,
         public router: Router,
-        private messageService: MessageService,
-        private translate: TranslateService,
+        private readonly messageService: MessageService,
+        private readonly translate: TranslateService,
         public userService: UserService,
     ) {}
 

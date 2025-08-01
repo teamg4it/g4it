@@ -37,24 +37,6 @@ describe("Digital Service", () => {
         cy.get("p-editor").type("test");
         cy.get('[id="save-note"]').click();
 
-        // test criteria button
-        cy.then(() => setPage("Criteria component"));
-        cy.log("### Criteria ###");
-        cy.get('[id="criteria-button"]').click();
-        cy.get('[id="criteria"]').then((el) => {
-            cy.checkA11y(
-                el.get(0),
-                {
-                    rules: {
-                        "heading-order": { enabled: false },
-                    },
-                },
-                reportA11yViolations,
-                true,
-            );
-        });
-        cy.get('[id="criteria-cancel"]').click();
-
         // add a terminal
         cy.log("### Terminals ###");
         cy.get('[id="terminals"]').click();
@@ -123,6 +105,24 @@ describe("Digital Service", () => {
         cy.get('[ng-reflect-impact="climate-change"]').click();
         cy.then(() => setPage("visualize page"));
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+
+        // test criteria button
+        cy.then(() => setPage("Criteria component"));
+        cy.log("### Criteria ###");
+        cy.get('[id="criteria-button"]').click();
+        cy.get('[id="criteria"]').then((el) => {
+            cy.checkA11y(
+                el.get(0),
+                {
+                    rules: {
+                        "heading-order": { enabled: false },
+                    },
+                },
+                reportA11yViolations,
+                true,
+            );
+        });
+        cy.get('[id="criteria-cancel"]').click();
         // delete the digital service
         cy.get('[id="delete-service"]').click();
         cy.get('[aria-label="Yes"]').click();

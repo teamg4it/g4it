@@ -40,7 +40,7 @@ export class CriteriaPopupComponent implements OnChanges {
     @Output() onSaveDs = new EventEmitter<DSCriteriaRest>();
     @Output() onClose = new EventEmitter<void>();
 
-    constructor(private globalStore: GlobalStoreService) {}
+    constructor(private readonly globalStore: GlobalStoreService) {}
 
     criteriaList: string[] = Object.keys(this.globalStore.criteriaList());
     tempSelectedCriteriaIS: string[] = [];
@@ -175,6 +175,7 @@ export class CriteriaPopupComponent implements OnChanges {
                     servers: this.ds.servers,
                     networks: this.ds.networks,
                     note: this.ds.note,
+                    enableDataInconsistency: this.ds.enableDataInconsistency,
                 };
                 this.onSaveDs.emit(dsCriteria);
                 break;

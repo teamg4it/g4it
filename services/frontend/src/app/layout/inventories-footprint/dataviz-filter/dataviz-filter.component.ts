@@ -19,8 +19,8 @@ import { Constants } from "src/constants";
 })
 export class DatavizFilterComponent {
     protected footprintStore = inject(FootprintStoreService);
-    private filterService = inject(FilterService);
-    private translate = inject(TranslateService);
+    private readonly filterService = inject(FilterService);
+    private readonly translate = inject(TranslateService);
 
     overlayVisible: boolean = false;
 

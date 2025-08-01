@@ -15,7 +15,7 @@ const endpoint = Constants.ENDPOINTS.actions;
     providedIn: "root",
 })
 export class SuperAdminDataService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     launchReleaseScript(): Observable<void> {
         return this.http.post<void>(`${endpoint}/do-admin-actions`, {});

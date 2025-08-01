@@ -22,8 +22,8 @@ export class LoadingDataService {
     data: LoadingBody | undefined;
 
     constructor(
-        private http: HttpClient,
-        private translate: TranslateService,
+        private readonly http: HttpClient,
+        private readonly translate: TranslateService,
     ) {}
 
     launchLoadInputFiles(

@@ -46,7 +46,7 @@ export class ApplicationCriteriaPieChartComponent {
         );
     });
 
-    constructor(private translate: TranslateService) {}
+    constructor(private readonly translate: TranslateService) {}
 
     pushData(lifecyles: string[], impact: any, data: any[]) {
         if (!lifecyles.includes(impact.lifeCycle)) {
