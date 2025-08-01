@@ -13,6 +13,7 @@
 - 1391 | Update spring boot verion
 - 1346 | Rename / delete workspace for non subscriber admin
 - 1245 | Facilitate the criteria selection
+- 1345 | Improve tracability of the calculation
 
 ## 3.4.0
 
