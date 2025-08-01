@@ -20,7 +20,7 @@ import { TranslateService } from "@ngx-translate/core";
     templateUrl: "./impact-aggregate-infos.component.html",
 })
 export class ImpactAggregateInfosComponent {
-    private translate = inject(TranslateService);
+    private readonly translate = inject(TranslateService);
 
     @Input() displayValue = 0;
     @Input() criteria = "";

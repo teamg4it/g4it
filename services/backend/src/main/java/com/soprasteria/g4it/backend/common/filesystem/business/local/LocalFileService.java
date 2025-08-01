@@ -40,14 +40,15 @@ public class LocalFileService {
      * @return zip file
      */
     public File createZipFile(final Path directory, final Path outputFile) {
+        File file = outputFile.toFile();
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(directory)) {
             final List<ZipEntrySource> entries = new ArrayList<>();
             paths.forEach(path -> Try.run(() -> entries.add(new FileSource(path.getFileName().toString(), path.toFile()))));
-            ZipUtil.pack(entries.toArray(new ZipEntrySource[0]), outputFile.toFile());
+            ZipUtil.pack(entries.toArray(new ZipEntrySource[0]), file);
         } catch (Exception exc) {
             log.warn("error in creating zip file from csv files");
         }
-        return outputFile.toFile();
+        return file;
     }
 
     /**

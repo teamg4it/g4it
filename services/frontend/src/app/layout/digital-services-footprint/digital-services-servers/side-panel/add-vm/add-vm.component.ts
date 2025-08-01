@@ -18,7 +18,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     providers: [MessageService],
 })
 export class PanelAddVmComponent {
-    private digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() index: number | undefined;
     @Input() addVMPanelVisible: boolean = false;
@@ -44,7 +44,7 @@ export class PanelAddVmComponent {
     isValueTooHigh: boolean = false;
 
     constructor(
-        private _formBuilder: FormBuilder,
+        private readonly _formBuilder: FormBuilder,
         public userService: UserService,
     ) {}
 

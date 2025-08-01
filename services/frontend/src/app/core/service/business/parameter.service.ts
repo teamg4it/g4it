@@ -7,7 +7,7 @@ import { DigitalServiceParameterIa } from "../../interfaces/digital-service.inte
 export class ParameterService {
     private baseUrl = "/api/parameter";
 
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getModels(): Observable<string[]> {
         return this.http.get<string[]>(`${this.baseUrl}/models`);

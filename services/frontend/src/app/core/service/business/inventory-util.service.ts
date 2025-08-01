@@ -29,9 +29,9 @@ import { transformEquipmentType } from "../mapper/array";
     providedIn: "root",
 })
 export class InventoryUtilService {
-    private translate = inject(TranslateService);
-    private integerPipe = inject(IntegerPipe);
-    private decimalsPipe = inject(DecimalsPipe);
+    private readonly translate = inject(TranslateService);
+    private readonly integerPipe = inject(IntegerPipe);
+    private readonly decimalsPipe = inject(DecimalsPipe);
 
     maxCriteriaAndStep(footprint: Criterias): string[] {
         let maxCriteriaLength = -1;

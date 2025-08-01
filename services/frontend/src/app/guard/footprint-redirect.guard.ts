@@ -13,8 +13,8 @@ import { GlobalStoreService } from "../core/store/global.store";
 })
 export class FootprintRedirectGuard implements CanActivate {
     constructor(
-        private router: Router,
-        private globalStore: GlobalStoreService,
+        private readonly router: Router,
+        private readonly globalStore: GlobalStoreService,
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

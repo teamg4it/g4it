@@ -66,7 +66,7 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     });
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
+        private readonly digitalServicesData: DigitalServicesDataService,
         public userService: UserService,
     ) {}
 
@@ -152,5 +152,4 @@ export class DigitalServicesTerminalsComponent implements OnInit {
             this.digitalServicesData.get(this.digitalService.uid),
         );
     }
-    
 }

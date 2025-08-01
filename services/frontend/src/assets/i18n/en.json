@@ -198,7 +198,15 @@
         "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",
         "delete-criteria": "Delete digital service {{digitalServiceName}}",
         "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}",
-        "import": "Import"
+        "import": "Import",
+        "edit-criteria": "Edit Criteria",
+        "set-view": "Configure the view",
+        "enable-data-consistency": "Enable data consistency",
+        "data-consistency-checkbox-text": "I want to enable data consistency",
+        "data-consistency-description": "Data consistency indicates where the evaluation was unable to produce indicators. This does not mean that there is no impact, but only that part of the impact could not be assessed. The causes of inconsistency are mainly missing data in the repository. For example, for BoaviztAPI, the impact factors for the distribution and end-of-life phases are not available.",
+        "reset-settings": "Reset settings",
+        "save-settings": "Save settings",
+        "configure-criteria": "Configure the view for digital service {{digitalServiceName}}"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

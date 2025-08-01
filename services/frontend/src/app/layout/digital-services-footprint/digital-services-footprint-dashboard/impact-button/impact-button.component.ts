@@ -26,8 +26,8 @@ export class ImpactButtonComponent implements OnInit {
     selectedLang: string = "en";
 
     constructor(
-        private sanitizer: DomSanitizer,
-        private translate: TranslateService,
+        private readonly sanitizer: DomSanitizer,
+        private readonly translate: TranslateService,
     ) {}
 
     renderHTML(html: string): SafeHtml {

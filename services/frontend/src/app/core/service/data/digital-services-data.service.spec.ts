@@ -43,6 +43,7 @@ describe("DigitalServicesDataService", () => {
                 servers: [],
                 terminals: [],
                 isAi: false,
+                enableDataInconsistency: false,
             },
         ];
 
@@ -70,6 +71,7 @@ describe("DigitalServicesDataService", () => {
             servers: [],
             terminals: [],
             isAi: false,
+            enableDataInconsistency: false,
         };
 
         service.create().subscribe((res) => {
@@ -95,6 +97,7 @@ describe("DigitalServicesDataService", () => {
             servers: [],
             terminals: [],
             isAi: false,
+            enableDataInconsistency: false,
         };
 
         service.update(updatedDigitalService).subscribe((res) => {
@@ -120,6 +123,7 @@ describe("DigitalServicesDataService", () => {
             servers: [],
             terminals: [],
             isAi: false,
+            enableDataInconsistency: false,
         };
 
         service.get(digitalService.uid).subscribe((res) => {
@@ -145,6 +149,7 @@ describe("DigitalServicesDataService", () => {
             servers: [],
             terminals: [],
             isAi: false,
+            enableDataInconsistency: false,
         };
 
         service.getDsTasks(digitalService.uid).subscribe((res) => {
@@ -170,6 +175,7 @@ describe("DigitalServicesDataService", () => {
             servers: [],
             terminals: [],
             isAi: false,
+            enableDataInconsistency: false,
         };
 
         service.delete(digitalService.uid).subscribe();

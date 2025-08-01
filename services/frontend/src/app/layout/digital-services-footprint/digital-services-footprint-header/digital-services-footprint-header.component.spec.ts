@@ -35,6 +35,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             lastCalculationDate: null,
             terminals: [],
             servers: [],
+            enableDataInconsistency: false,
             networks: [],
         } as DigitalService),
     };
@@ -91,6 +92,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             lastCalculationDate: null,
             networks: [],
             servers: [],
+            enableDataInconsistency: false,
             terminals: [
                 {
                     uid: "randomUID",
@@ -119,6 +121,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             lastCalculationDate: parseFloat("2023-09-04T09:56:34.658656Z"),
             networks: [],
             servers: [],
+            enableDataInconsistency: false,
             terminals: [
                 {
                     uid: "randomUID",
@@ -136,5 +139,59 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             ],
         };
         expect(component.canLaunchCompute(false)).toBeFalse();
+    });
+
+    it("ngOnInit should subscribe to digitalService$ and set digitalService and call setDigitalService", () => {
+        const digitalServiceStoreSpy = spyOn(
+            component.digitalServiceStore,
+            "setDigitalService",
+        );
+        const testDigitalService = {
+            name: "Test Digital Service",
+            uid: "test-uid",
+            creationDate: Date.now(),
+            lastUpdateDate: Date.now(),
+            lastCalculationDate: null,
+            terminals: [],
+            servers: [],
+            networks: [],
+            enableDataInconsistency: false,
+        } as DigitalService;
+
+        // Patch the observable to emit a new value
+        (component as any).digitalServicesData.digitalService$ = of(testDigitalService);
+
+        component.ngOnInit();
+
+        expect(component.digitalService).toEqual(testDigitalService);
+        expect(digitalServiceStoreSpy).toHaveBeenCalledWith(testDigitalService);
+    });
+
+    it("ngOnInit should subscribe to currentSubscriber$ and set selectedSubscriberName, subscriber, and isEcoMindEnabledForCurrentSubscriber", () => {
+        const testSubscriber = { name: "SubName", ecomindai: true };
+        (component as any).userService.currentSubscriber$ = of(testSubscriber);
+
+        component.ngOnInit();
+
+        expect(component.selectedSubscriberName).toBe("SubName");
+        expect(component.isEcoMindEnabledForCurrentSubscriber).toBeTrue();
+    });
+
+    it("ngOnInit should subscribe to currentOrganization$ and set selectedOrganizationName", () => {
+        const testOrganization = { name: "OrgName" };
+        (component as any).userService.currentOrganization$ = of(testOrganization);
+
+        component.ngOnInit();
+
+        expect(component.selectedOrganizationName).toBe("OrgName");
+    });
+
+    it("ngOnInit should subscribe to launchCalcul$ and call launchCalcul", () => {
+        const launchCalculSpy = spyOn(component, "launchCalcul");
+        (component as any).digitalServiceBusinessService.launchCalcul$ = of(true);
+
+        component.ngOnInit();
+
+        expect(launchCalculSpy).toHaveBeenCalled();
     });
 });

@@ -5,9 +5,8 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { DatePipe } from "@angular/common";
+import { APP_BASE_HREF, DatePipe } from "@angular/common";
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from "@angular/common/http";
-import { APP_BASE_HREF } from '@angular/common';
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -16,7 +15,7 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
 import { MessageService } from "primeng/api";
 import { ProgressBarModule } from "primeng/progressbar";
-import { TableModule } from 'primeng/table';
+import { TableModule } from "primeng/table";
 import { ToastModule } from "primeng/toast";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
@@ -69,7 +68,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
         ToastModule,
         ProgressBarModule,
         KeycloakAngularModule,
-        TableModule
+        TableModule,
     ],
     providers: [
         environment.keycloak.enabled === "true"
@@ -86,7 +85,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
             useClass: ApiInterceptor,
             multi: true,
         },
-        {provide: APP_BASE_HREF, useFactory: baseHRefFactory},
+        { provide: APP_BASE_HREF, useFactory: baseHRefFactory },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,
@@ -97,7 +96,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     bootstrap: [AppComponent],
 })
 export class AppModule {
-    constructor(private translate: TranslateService) {
+    constructor(private readonly translate: TranslateService) {
         // Set the default language
         let lang = localStorage.getItem("lang") || translate.getBrowserLang() || "en";
         if (!Constants.LANGUAGES.includes(lang)) lang = "en";
