@@ -206,7 +206,9 @@
         "data-consistency-description": "Data consistency indicates where the evaluation was unable to produce indicators. This does not mean that there is no impact, but only that part of the impact could not be assessed. The causes of inconsistency are mainly missing data in the repository. For example, for BoaviztAPI, the impact factors for the distribution and end-of-life phases are not available.",
         "reset-settings": "Reset settings",
         "save-settings": "Save settings",
-        "configure-criteria": "Configure the view for digital service {{digitalServiceName}}"
+        "configure-criteria": "Configure the view for digital service {{digitalServiceName}}",
+        "view-resources": "View resources",
+        "visualize-impact": "Visualize impacts"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

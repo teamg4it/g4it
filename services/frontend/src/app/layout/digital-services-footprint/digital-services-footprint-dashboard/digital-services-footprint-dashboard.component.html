@@ -160,7 +160,7 @@
         @if (userService.isAllowedDigitalServiceWrite$ | async) {
             <p-button
                 (onClick)="displayPopupFct()"
-                styleClass="cancel-creation-button uppercase font-bold px-3 py-2 mb-3 sm:mb-0"
+                styleClass="cancel-creation-button uppercase px-3 py-2 mb-3 sm:mb-0"
                 [label]="'digital-services.edit-criteria' | translate"
                 icon="pi pi-filter"
                 id="criteria-button"
@@ -173,7 +173,7 @@
 
         <p-button
             (onClick)="displaySetViewPopup = !displaySetViewPopup"
-            styleClass="cancel-creation-button uppercase font-bold px-3 py-2 ml-0 sm:ml-3 mb-3 sm:mb-0"
+            styleClass="cancel-creation-button uppercase px-3 py-2 ml-0 sm:ml-3 mb-3 sm:mb-0"
             [label]="'digital-services.set-view' | translate"
             icon="pi pi-cog"
             [ariaLabel]="

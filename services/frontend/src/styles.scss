@@ -1097,6 +1097,7 @@ app-top-header {
     border: 1px solid #cacbca;
     background-color: #f4f4f4;
     color: var(--black-color);
+    font-weight: 800;
 }
 .app-workspace {
     .p-button {
@@ -1302,4 +1303,11 @@ app-useful-information {
     .p-dialog .p-dialog-header .p-dialog-header-icon:focus {
         outline: 2px solid #28a745;
     }
+}
+
+.header-delete-btn {
+    padding: 12px;
+    background-color: #ffffff;
+    color: var(--red-color);
+    border: 2px solid var(--red-color);
 }
