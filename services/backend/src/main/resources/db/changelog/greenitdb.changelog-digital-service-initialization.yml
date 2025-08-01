@@ -993,3 +993,15 @@ databaseChangeLog:
                   value: 1
             tableName: ref_ecomind_type_ai
             where: description='Laptop' and reference='laptop-3'
+
+  - changeSet:
+      id: add-column-enableDataInconsistency-digital_service
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: enable_data_inconsistency
+                  type: boolean
+                  defaultValue: false

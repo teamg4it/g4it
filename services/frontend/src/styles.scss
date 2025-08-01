@@ -739,9 +739,9 @@ main {
     cursor: pointer;
 }
 
-.digital-service-chart-container div h3 {
+.digital-service-chart-heading-container h3 {
     margin: 10px;
-    font-size: 26px;
+    font-size: 24px;
 }
 
 /* Critere buttons */
@@ -1294,5 +1294,12 @@ app-useful-information {
 
     .p-menuitem-link {
         color: white !important;
+    }
+}
+
+.set-view-popup,
+.criteria-popup {
+    .p-dialog .p-dialog-header .p-dialog-header-icon:focus {
+        outline: 2px solid #28a745;
     }
 }

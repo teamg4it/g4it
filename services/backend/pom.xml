@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.5</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
+        <version>3.5.4</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -58,8 +58,6 @@
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <shedlock.version>6.0.2</shedlock.version>
-
-        <postgresql.version>42.7.7</postgresql.version>
 
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
@@ -185,7 +183,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>

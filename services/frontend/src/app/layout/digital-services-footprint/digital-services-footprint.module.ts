@@ -36,6 +36,7 @@ import { DigitalServicesFootprintDashboardComponent } from "./digital-services-f
 import { ImpactButtonComponent } from "./digital-services-footprint-dashboard/impact-button/impact-button.component";
 import { PieChartComponent } from "./digital-services-footprint-dashboard/pie-chart/pie-chart.component";
 import { RadialChartComponent } from "./digital-services-footprint-dashboard/radial-chart/radial-chart.component";
+import { SetViewPopupComponent } from "./digital-services-footprint-dashboard/set-view-popup/set-view-popup.component";
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header/digital-services-footprint-header.component";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
 import { digitalServicesFootprintRouter } from "./digital-services-footprint.router";
@@ -61,6 +62,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesNetworksComponent,
         DigitalServicesServersComponent,
         DigitalServicesCloudServicesComponent,
+        SetViewPopupComponent,
         DigitalServiceTableComponent,
         ImpactButtonComponent,
         RadialChartComponent,

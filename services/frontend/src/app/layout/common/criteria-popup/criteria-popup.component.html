@@ -1,69 +1,40 @@
 @if (criteriaList.length > 0) {
-    <p-dialog
-        [modal]="true"
-        [(visible)]="displayPopup"
-        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-        [style]="{ width: '50vw' }"
-        [draggable]="false"
-        (onHide)="closePopup()"
-        [dismissableMask]="true"
-        id="criteria"
-        appendTo="body"
-    >
-        <ng-template pTemplate="header">
-            <h4 class="font-bold">
-                {{
-                    type === "subscriber"
-                        ? ("administration.user.choose-criteria"
-                          | translate: { subscriber: subscriberDetails.name })
-                        : type === "organization"
-                          ? ("administration.organization.choose-criteria"
-                            | translate
-                                : {
-                                      organizationName:
-                                          organizationDetails.organizationName,
-                                  })
-                          : type === "inventory"
-                            ? ("inventories.choose-criteria"
-                              | translate
-                                  : { inventoryName: (inventory.name | monthYear) })
-                            : ("digital-services.choose-criteria"
-                              | translate: { digitalServiceName: ds.name })
-                }}
-            </h4>
-        </ng-template>
+    <div class="criteria-popup">
+        <p-dialog
+            [modal]="true"
+            [(visible)]="displayPopup"
+            [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+            [style]="{ width: '50vw' }"
+            [draggable]="false"
+            (onHide)="closePopup()"
+            [dismissableMask]="true"
+            id="criteria"
+        >
+            <ng-template pTemplate="header">
+                <h4 class="font-bold">
+                    {{
+                        type === "subscriber"
+                            ? ("administration.user.choose-criteria"
+                              | translate: { subscriber: subscriberDetails.name })
+                            : type === "organization"
+                              ? ("administration.organization.choose-criteria"
+                                | translate
+                                    : {
+                                          organizationName:
+                                              organizationDetails.organizationName,
+                                      })
+                              : type === "inventory"
+                                ? ("inventories.choose-criteria"
+                                  | translate
+                                      : { inventoryName: (inventory.name | monthYear) })
+                                : ("digital-services.choose-criteria"
+                                  | translate: { digitalServiceName: ds.name })
+                    }}
+                </h4>
+            </ng-template>
 
-        @if (type !== "organization") {
-            <div class="ml-3 pb-2 pt-3">
-                <div class="field-checkbox">
-                    <p-checkbox
-                        [ngModel]="
-                            selectedCriteriaIS.length === criteriaList.length
-                                ? ['All']
-                                : []
-                        "
-                        (ngModelChange)="onAllSelectedChange($event, true)"
-                        value="All"
-                        [label]="'common.all' | translate"
-                        [ariaLabel]="'common.all' | translate"
-                    />
-                </div>
-            </div>
-            <div class="flex gap-2 flex-wrap mx-3">
-                <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                    <p-checkbox
-                        [(ngModel)]="selectedCriteriaIS"
-                        [value]="criteria"
-                        (onChange)="onCriteriaChange()"
-                        [label]="'criteria.' + criteria + '.title' | translate"
-                        [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                    ></p-checkbox>
-                </div>
-            </div>
-        } @else {
-            <div>
-                <h5>{{ "administration.user.is-header" | translate }}</h5>
-                <div class="ml-5">
+            @if (type !== "organization") {
+                <div class="ml-3 pb-2 pt-3">
                     <div class="field-checkbox">
                         <p-checkbox
                             [ngModel]="
@@ -78,97 +49,129 @@
                         />
                     </div>
                 </div>
-            </div>
-
-            <div class="flex gap-2 flex-wrap m-5">
-                <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                    <p-checkbox
-                        [(ngModel)]="selectedCriteriaIS"
-                        [value]="criteria"
-                        (onChange)="onCriteriaChange()"
-                        [label]="'criteria.' + criteria + '.title' | translate"
-                        [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                    ></p-checkbox>
-                </div>
-            </div>
-            <div>
-                <h5>{{ "administration.user.ds-header" | translate }}</h5>
-                <div class="ml-5">
-                    <div class="field-checkbox">
+                <div class="flex gap-2 flex-wrap mx-3">
+                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
                         <p-checkbox
-                            [ngModel]="
-                                selectedCriteriaDS.length === criteriaList.length
-                                    ? ['All']
-                                    : []
-                            "
-                            (ngModelChange)="onAllSelectedChange($event, false)"
-                            value="All"
-                            [label]="'common.all' | translate"
-                            [ariaLabel]="'common.all' | translate"
-                        />
+                            [(ngModel)]="selectedCriteriaIS"
+                            [value]="criteria"
+                            (onChange)="onCriteriaChange()"
+                            [label]="'criteria.' + criteria + '.title' | translate"
+                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
+                        ></p-checkbox>
                     </div>
                 </div>
-            </div>
-
-            <div class="flex gap-2 flex-wrap m-5">
-                <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                    <p-checkbox
-                        [(ngModel)]="selectedCriteriaDS"
-                        [value]="criteria"
-                        (onChange)="onCriteriaChange()"
-                        [label]="'criteria.' + criteria + '.title' | translate"
-                        [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                    ></p-checkbox>
+            } @else {
+                <div>
+                    <h5>{{ "administration.user.is-header" | translate }}</h5>
+                    <div class="ml-5">
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [ngModel]="
+                                    selectedCriteriaIS.length === criteriaList.length
+                                        ? ['All']
+                                        : []
+                                "
+                                (ngModelChange)="onAllSelectedChange($event, true)"
+                                value="All"
+                                [label]="'common.all' | translate"
+                                [ariaLabel]="'common.all' | translate"
+                            />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        }
 
-        @if (
-            (type === "organization" &&
-                (selectedCriteriaIS.length === 0 || selectedCriteriaDS.length === 0)) ||
-            (type !== "organization" && selectedCriteriaIS.length === 0)
-        ) {
-            <p class="error-text">
-                {{ "administration.organization.error" | translate }}
-            </p>
-        }
+                <div class="flex gap-2 flex-wrap m-5">
+                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
+                        <p-checkbox
+                            [(ngModel)]="selectedCriteriaIS"
+                            [value]="criteria"
+                            (onChange)="onCriteriaChange()"
+                            [label]="'criteria.' + criteria + '.title' | translate"
+                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
+                        ></p-checkbox>
+                    </div>
+                </div>
+                <div>
+                    <h5>{{ "administration.user.ds-header" | translate }}</h5>
+                    <div class="ml-5">
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [ngModel]="
+                                    selectedCriteriaDS.length === criteriaList.length
+                                        ? ['All']
+                                        : []
+                                "
+                                (ngModelChange)="onAllSelectedChange($event, false)"
+                                value="All"
+                                [label]="'common.all' | translate"
+                                [ariaLabel]="'common.all' | translate"
+                            />
+                        </div>
+                    </div>
+                </div>
 
-        <ng-template pTemplate="footer">
-            <div class="flex align-items-center justify-content-between">
-                <div class="flex justify-content-start mr-auto">
+                <div class="flex gap-2 flex-wrap m-5">
+                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
+                        <p-checkbox
+                            [(ngModel)]="selectedCriteriaDS"
+                            [value]="criteria"
+                            (onChange)="onCriteriaChange()"
+                            [label]="'criteria.' + criteria + '.title' | translate"
+                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
+                        ></p-checkbox>
+                    </div>
+                </div>
+            }
+
+            @if (
+                (type === "organization" &&
+                    (selectedCriteriaIS.length === 0 ||
+                        selectedCriteriaDS.length === 0)) ||
+                (type !== "organization" && selectedCriteriaIS.length === 0)
+            ) {
+                <p class="error-text">
+                    {{ "administration.organization.error" | translate }}
+                </p>
+            }
+
+            <ng-template pTemplate="footer">
+                <div class="flex align-items-center justify-content-between">
+                    <div class="flex justify-content-start mr-auto">
+                        <p-button
+                            styleClass="reset-button"
+                            (click)="resetToDefault()"
+                            aria-label="Reset"
+                            class="m-0"
+                        >
+                            <i class="pi pi-refresh icon mr-2"></i>
+                            {{ "common.reset" | translate }}
+                        </p-button>
+                    </div>
                     <p-button
-                        styleClass="reset-button"
-                        (click)="resetToDefault()"
-                        aria-label="Reset"
-                        class="m-0"
+                        styleClass="white-button"
+                        (click)="closePopup()"
+                        aria-label="Cancel"
+                        id="criteria-cancel"
                     >
-                        <i class="pi pi-refresh icon mr-2"></i>
-                        {{ "common.reset" | translate }}
+                        {{ "common.cancel" | translate }}
+                    </p-button>
+                    <p-button
+                        styleClass="black-button"
+                        (click)="saveChanges()"
+                        [disabled]="
+                            (type === 'organization' &&
+                                (selectedCriteriaIS.length === 0 ||
+                                    selectedCriteriaDS.length === 0)) ||
+                            (type !== 'organization' &&
+                                selectedCriteriaIS.length === 0) ||
+                            !hasChanged
+                        "
+                        aria-label="Save"
+                    >
+                        {{ "common.save" | translate }}
                     </p-button>
                 </div>
-                <p-button
-                    styleClass="white-button"
-                    (click)="closePopup()"
-                    aria-label="Cancel"
-                    id="criteria-cancel"
-                >
-                    {{ "common.cancel" | translate }}
-                </p-button>
-                <p-button
-                    styleClass="black-button"
-                    (click)="saveChanges()"
-                    [disabled]="
-                        (type === 'organization' &&
-                            (selectedCriteriaIS.length === 0 ||
-                                selectedCriteriaDS.length === 0)) ||
-                        (type !== 'organization' && selectedCriteriaIS.length === 0) ||
-                        !hasChanged
-                    "
-                    aria-label="Save"
-                >
-                    {{ "common.save" | translate }}
-                </p-button>
-            </div>
-        </ng-template>
-    </p-dialog>
+            </ng-template>
+        </p-dialog>
+    </div>
 }
