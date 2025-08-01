@@ -16,7 +16,7 @@ const endpoint = Constants.ENDPOINTS.inventories;
     providedIn: "root",
 })
 export class EvaluationDataService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     launchEvaluating(inventoryId: number): Observable<number> {
         return this.http.post<number>(`${endpoint}/${inventoryId}/evaluating`, null);

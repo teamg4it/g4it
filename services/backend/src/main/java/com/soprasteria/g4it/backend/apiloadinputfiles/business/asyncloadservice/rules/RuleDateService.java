@@ -24,7 +24,22 @@ public class RuleDateService {
     @Autowired
     MessageSource messageSource;
 
-    public Optional<LineError> checkDatesPurcaseRetrieval(Locale locale,String filename, int line, LocalDate datePurchase, LocalDate dateRetrieval) {
+    public Optional<LineError> checkDatesPurchaseRetrieval(Locale locale,String filename, int line, LocalDate datePurchase, LocalDate dateRetrieval, boolean isDigitalService) {
+
+        if(isDigitalService){
+            if (datePurchase == null) {
+                return Optional.of(new LineError(filename, line, messageSource.getMessage(
+                        "date.purchase.blank",
+                        new String[]{},
+                        locale)));
+            }
+            if (dateRetrieval == null) {
+                return Optional.of(new LineError(filename, line, messageSource.getMessage(
+                        "date.withdrawal.blank",
+                        new String[]{},
+                        locale)));
+            }
+        }
 
         if (datePurchase == null) return Optional.empty();
 

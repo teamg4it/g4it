@@ -1,6 +1,6 @@
 ---
 title: "2.5. Visualize digital service's footprint"
-description: "This use case describes how to visualize the impact of a digital service"
+description: 'This use case describes how to visualize the impact of a digital service'
 weight: 50
 mermaid: true
 ---
@@ -10,14 +10,23 @@ mermaid: true
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
 -   [State Diagram](#state-diagram)
+-   [Mockup](#mockup)
+-   [Global view](#global-view)
+-   [View by criteria](#view-by-criteria)
+-   [Data consistency view](#data-consistency-view)
 -   [Sequence Diagram](#sequence-diagram)
 
 ## Description
 
 The use case allows a project team to visualize the impacts of terminals, networks and servers of a digital service.
 The key indicators displayed on the radar graph are terminal, network and server equipment.
-The results can be filtered by the type of equipment.
-It is also possible to display results for a single criteria only.
+
+**Navigation Path**
+
+-   My Digital Services / My Digital Service view / Visualize button
+
+- **Access Conditions**
+  The connected user must have the read access for that module on the selected organization.
 
 ## State Diagram
 
@@ -33,6 +42,14 @@ Step8-->|Click on 'Global Vision' button|Step4
 
 ## Mockup
 
+[2.5.1. Visualize digital service's terminal footprint](visualize_terminal_footprint.md)
+
+[2.5.2. Visualize digital service's network footprint](visualize_network_footprint.md)
+
+[2.5.3. Visualize digital service's non-cloud server footprint](visualize_non-cloud-server_footprint.md)
+
+[2.5.4. Visualize digital service's cloud service footprint](visualize_cloud-service_footprint.md)
+
 ### Global view
 
 ![uc5_visualize_footprint_visualize_Footprint.png](../images/uc5_visualize_footprint_visualizeFootprint.png)
@@ -40,7 +57,7 @@ Step8-->|Click on 'Global Vision' button|Step4
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group                      | Elements                                      | Sub-Elements     | Type   | Description                                                                                                                                                                                        |
-| --------- | -------------------------- | --------------------------------------------- | ---------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-----------|----------------------------| --------------------------------------------- | ---------------- | ------ |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |           | Page Header                |                                               |                  | group  |                                                                                                                                                                                                    |
 | 1         |                            | My Digital Services - (selected organization) |                  | title  | <li><u>_initialization rules_</u>: The title is concatenated with the current organization selected.                                                                                               |
 | 2         |                            | The digital service name                      |                  | label  | <li><u>_initialization rules_</u>: Name of the selected digital service for which the user want to visualize footprints. The type of visualization (Equipment) is also shown.                      |
@@ -57,29 +74,13 @@ Step8-->|Click on 'Global Vision' button|Step4
 | 12        |                            |                                               | Graph            | radar  | <li><u>_action rules_</u>: By overflowing, the user can collect data corresponding to certain terminals, networks and servers. A click on a specific criteria redirects to view by criteria. </li> |
 | 13        |                            |                                               | Data Consistency | button | <li><u>_action rules_</u>: Click to view graph of data consistency for all criteria. See [Global concepts/ Data consistency](../../global_concepts/uc1_dataconsistency.md) </li>                   |
 | 14        | Information card           |                                               |                  | group  | Quick description of what the graph represents.                                                                                                                                                    |
+| 15        |                            | Import                                        |                  | button  | <li><u>_action rules_</u>: Click to Upload files to create cloud services or non-cloud services </li>                                                                                              |
 
 {{% /expand %}}
 
 ### View by criteria
 
 ![uc5_visualize_footprint_criteria_view.png](../images/uc5_visualize_footprint_criteria_view.png)
-
-### View by equipment
-
-![uc5_visualize_footprint_view_byEquipment.png](../images/uc5_visualize_footprint_view_byEquipment.png)
-
-### View by equipment and criteria
-
-![uc5_visualize_footprint_equipment_and_criteria_view.png](../images/uc5_visualize_footprint_equipment_and_criteria_view.png)
-
-{{% expand title="Show the behavior detail" expanded="false" center="true"%}}
-
-| Reference | Group                          | Elements      | Sub-Elements | Type         | Description                                                                 |
-| --------- | ------------------------------ | ------------- | ------------ | ------------ | --------------------------------------------------------------------------- |
-| 1         | View by criteria and equipment |               |              | group        |                                                                             |
-| 2         |                                | Graph by type |              | radio button | <li><u>_action rules_</u>: Click the radio button to see the filtered view. |
-
-{{% /expand %}}
 
 ### Data consistency view
 
@@ -111,3 +112,8 @@ back-->> front: Send the virtual equipment indicators for the multi-criteria vie
 front->> RND : Display the indicators by equipment type to display on my view related to my view
 
 {{< /mermaid >}}
+
+
+
+
+

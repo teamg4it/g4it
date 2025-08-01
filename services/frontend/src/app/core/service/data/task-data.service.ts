@@ -17,7 +17,7 @@ const endpoint = Constants.ENDPOINTS.task;
     providedIn: "root",
 })
 export class TaskDataService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getTask(taskId: number): Observable<TaskRest> {
         return this.http.get<TaskRest>(`${endpoint}/${taskId}`);

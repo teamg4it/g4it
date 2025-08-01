@@ -77,8 +77,7 @@ main {
     height: calc(100vh - 70px);
     width: calc(100vw - 80px);
     margin-top: 70px;
-    background-image:
-        url("assets/images/background/blue-elipse.svg"),
+    background-image: url("assets/images/background/blue-elipse.svg"),
         url("assets/images/background/yellow-elipse.svg"),
         url("assets/images/background/fingerprint-background.svg");
     background-repeat: no-repeat;
@@ -217,8 +216,7 @@ main {
     flex-shrink: 0;
     background-color: var(--header-color);
     width: 100%;
-    background-image:
-        url("assets/images/background/fingerprint.svg"),
+    background-image: url("assets/images/background/fingerprint.svg"),
         url("assets/images/background/fingerprint.svg");
     background-repeat: no-repeat;
     background-position:
@@ -741,9 +739,9 @@ main {
     cursor: pointer;
 }
 
-.digital-service-chart-container div h3 {
+.digital-service-chart-heading-container h3 {
     margin: 10px;
-    font-size: 26px;
+    font-size: 24px;
 }
 
 /* Critere buttons */
@@ -1141,6 +1139,13 @@ app-top-header {
                 contain;
         }
 
+        .custom-at-ecomind-icon {
+            mask: url("assets/images/icons/icon_ecomind_ai.svg") no-repeat center /
+                contain;
+            -webkit-mask: url("assets/images/icons/icon_ecomind_ai.svg") no-repeat
+                center / contain;
+        }
+
         .navigation-button.disabled {
             color: var(--tints-black-80);
             border: 2px solid var(--gray-300);
@@ -1289,5 +1294,12 @@ app-useful-information {
 
     .p-menuitem-link {
         color: white !important;
+    }
+}
+
+.set-view-popup,
+.criteria-popup {
+    .p-dialog .p-dialog-header .p-dialog-header-icon:focus {
+        outline: 2px solid #28a745;
     }
 }

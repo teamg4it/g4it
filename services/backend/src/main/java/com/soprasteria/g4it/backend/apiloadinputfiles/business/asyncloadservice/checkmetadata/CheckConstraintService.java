@@ -43,11 +43,17 @@ public class CheckConstraintService {
      * @return Map of filename, Map of line number, List of LineError : filename -> [ line number -> LineError ]
      * The duplicated LineErrors of the filename line
      */
-    public Map<String, Map<Integer, List<LineError>>> checkUnicity(Long taskId) {
+    public Map<String, Map<Integer, List<LineError>>> checkUnicity(Long taskId, boolean isDigitalService) {
         Map<String, Map<Integer, List<LineError>>> duplicatesMap = new HashMap<>();
 
         // Check Virtual Equipments
-        List<DuplicateEquipmentDTO> duplicateVirtualEqp = checkVirtualEqpRepository.findDuplicateVirtualEquipments(taskId);
+        List<DuplicateEquipmentDTO> duplicateVirtualEqp;
+        if(isDigitalService){
+             duplicateVirtualEqp =  checkVirtualEqpRepository.findDuplicateNonCloudVirtualEquipments(taskId);
+        }
+        else {
+           duplicateVirtualEqp = checkVirtualEqpRepository.findDuplicateVirtualEquipments(taskId);
+        }
         processDuplicates(duplicateVirtualEqp, duplicatesMap, "virtual equipment");
 
         // Check Physical Equipments
@@ -127,6 +133,10 @@ public class CheckConstraintService {
     public Map<String, Map<Integer, List<LineError>>> checkCoherence(Long taskId, Long inventoryId, String digitalServiceUid, Map<String, Map<Integer, List<LineError>>> unicityMap) {
         Map<String, Map<Integer, List<LineError>>> coherenceMap = new HashMap<>();
 
+        // Check physical equipment references to datacenter for digital service
+        if(digitalServiceUid != null) {
+            checkPhysicalEquipmentCoherence(taskId, digitalServiceUid, unicityMap, coherenceMap);
+        }
         // Check virtual equipment references to physical equipment
         checkVirtualEquipmentCoherence(taskId, inventoryId, digitalServiceUid, unicityMap, coherenceMap);
 
@@ -137,6 +147,49 @@ public class CheckConstraintService {
     }
 
     /**
+     * Check the metadata equipment equipment files for digital service
+     *
+     * @param taskId the task id
+     */
+    private void checkPhysicalEquipmentCoherence(Long taskId, String digitalServiceUid,
+                                                Map<String, Map<Integer, List<LineError>>> unicityMap,
+                                                Map<String, Map<Integer, List<LineError>>> coherenceMap) {
+
+        //Refactor in order to request digital service non-cloud equipement which don't have parent in checkCoherence table (the parent must not be in the list of duplicated parents)
+        // and does not have parent in the digital service for this given digitalServiceUid
+
+        List<String> errorenousDatacenter = unicityMap.entrySet()
+                .stream()
+                .map(Map.Entry::getValue)
+                .flatMap(map -> map.entrySet().stream())
+                .map(Map.Entry::getValue)
+                .flatMap(List::stream)
+                .map(LineError::equipementName)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        List<CoherenceParentDTO> incoherentPhysicalEquipement = new ArrayList<>();
+
+        if (errorenousDatacenter.isEmpty()) {
+            incoherentPhysicalEquipement = checkPhysicalEqpRepository.findIncoherentPhysicalEquipments(taskId, digitalServiceUid);
+        } else {
+            incoherentPhysicalEquipement = checkPhysicalEqpRepository.findIncoherentPhysicalEquipments(taskId, digitalServiceUid, errorenousDatacenter);
+        }
+
+
+        for (CoherenceParentDTO coherenceParentDTO : incoherentPhysicalEquipement) {
+
+            String errorMessage = messageSource.getMessage(
+                    "nomCourtDatacenter.should.exist",
+                    new String[]{coherenceParentDTO.getParentEquipmentName()},
+                    LocaleContextHolder.getLocale()
+            );
+
+            addError(coherenceMap, coherenceParentDTO.getFilename(), coherenceParentDTO.getLineNb(), errorMessage);
+
+        }
+    }    /**
      * Check the metadata virtual equipment files
      *
      * @param taskId the task id

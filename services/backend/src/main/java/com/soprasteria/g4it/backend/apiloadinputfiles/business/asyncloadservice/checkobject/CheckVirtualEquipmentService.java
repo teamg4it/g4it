@@ -48,10 +48,19 @@ public class CheckVirtualEquipmentService {
                 .ifPresent(errors::add);
 
         boolean isCloudService = Objects.equals(InfrastructureType.CLOUD_SERVICES.name(), virtualEquipment.getInfrastructureType());
+        final boolean isDigitalService = context.getDigitalServiceUid() != null;
+
         //  check equipment name is not empty
         ruleVirtualEquipmentService.checkVirtualEquipmentName(context.getLocale(), filename, line,
-                        virtualEquipment.getName(), virtualEquipmentNames, isCloudService)
+                        virtualEquipment.getName(), virtualEquipmentNames, isCloudService, isDigitalService)
                 .ifPresent(errors::add);
+
+        if(isCloudService || isDigitalService) {
+            // check annual usage duration is not empty
+            ruleVirtualEquipmentService.checkUsageDuration(context.getLocale(), filename, line,
+                            virtualEquipment.getDurationHour())
+                    .ifPresent(errors::add);
+        }
 
         // check for cloud services
         if (isCloudService) {
@@ -80,19 +89,14 @@ public class CheckVirtualEquipmentService {
                             virtualEquipment.getWorkload())
                     .ifPresent(errors::add);
 
-            // check annual usage duration is not empty
-            ruleVirtualEquipmentService.checkCloudUsageDuration(context.getLocale(), filename, line,
-                            virtualEquipment.getDurationHour())
-                    .ifPresent(errors::add);
         } else {
 
             ruleVirtualEquipmentService.checkPhysicalEquipmentLinked(context.getLocale(), filename, line,
                             virtualEquipment.getInfrastructureType(), virtualEquipment.getPhysicalEquipmentName())
                     .ifPresent(errors::add);
             ruleVirtualEquipmentService.checkType(context.getLocale(), filename, line,
-                            virtualEquipment.getType())
+                            virtualEquipment.getType(),virtualEquipment.getSizeDiskGb(), virtualEquipment.getVcpuCoreNumber(), isDigitalService)
                     .ifPresent(errors::add);
-
         }
         return errors;
     }

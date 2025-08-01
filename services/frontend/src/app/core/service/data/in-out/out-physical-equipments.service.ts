@@ -17,9 +17,9 @@ const endpoint = Constants.ENDPOINTS.digitalServices;
     providedIn: "root",
 })
 export class OutPhysicalEquipmentsService {
-    private API = "physical-equipments";
+    private readonly API = "physical-equipments";
 
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     get(digitalServiceUid: string): Observable<OutPhysicalEquipmentRest[]> {
         return this.http.get<OutPhysicalEquipmentRest[]>(

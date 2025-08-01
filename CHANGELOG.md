@@ -1,18 +1,33 @@
 # G4IT
 
+## 3.5.0
+
+### Major Changes
+
+- 796  |  Add new criteria based on the one available in BoaviztAPI
+- 1103 | Give the possibility to disable the data consistency
+- 585 | Display only users that can be managed in the administration panel
+
+### Minor Changes
+
+- 1391 | Update spring boot verion
+- 1346 | Rename / delete workspace for non subscriber admin
+- 1245 | Facilitate the criteria selection
+
 ## 3.4.0
 
 ### Major Changes
 
-- 994  | Update changelog file
+- 994 | User Deletion procedure
 - 1357 | Integrate EcoMindAI in G4IT
 - 1204 | Import csv files for digital services
 - 1263 | Naming network entries in the Digital Service module – Network input
 - 1261 | Naming user groups in the Digital Service module – Terminales input
-- 740  | Visualize different cloud instances for the same type
+- 740 | Visualize different cloud instances for the same type
 
 ### Minor Changes
 
+- 1373 | Sonar fixes
 - 950 | Accessibility Corrections
 - 1320 | Mobile Screen Responsiveness for Top Header, Left side nav and Welcome page
 - 1255 | Add BoaviztAPI link to github

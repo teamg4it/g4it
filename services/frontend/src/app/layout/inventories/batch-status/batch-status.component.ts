@@ -39,10 +39,10 @@ export class BatchStatusComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
 
     constructor(
-        private messageService: MessageService,
-        private translate: TranslateService,
+        private readonly messageService: MessageService,
+        private readonly translate: TranslateService,
         protected userService: UserService,
-        private taskDataService: TaskDataService,
+        private readonly taskDataService: TaskDataService,
     ) {}
 
     ngOnInit(): void {

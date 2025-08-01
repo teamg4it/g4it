@@ -171,10 +171,11 @@ class AzureGreenItFileSystemApplicationTests {
             //**********
             // given there is a file
             // when we read it
-            String readFileContent = new BufferedReader(
-                    new InputStreamReader(fs.readFile(FileFolder.OUTPUT, FILE_NEW_NAME2), StandardCharsets.UTF_8))
-                    .lines()
-                    .collect(Collectors.joining("\n"));
+            String readFileContent;
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(fs.readFile(FileFolder.OUTPUT, FILE_NEW_NAME2), StandardCharsets.UTF_8))) {
+                readFileContent = reader.lines().collect(Collectors.joining("\n"));
+            }
             // then content should be available
             assertEquals(FILE_CONTENT, readFileContent);
 
@@ -185,10 +186,10 @@ class AzureGreenItFileSystemApplicationTests {
             // when we write to the same file
             fs.writeFile(FileFolder.OUTPUT, FILE_NEW_NAME2, new ByteArrayInputStream(FILE_CONTENT.toUpperCase().getBytes()));
             // then content should be overridden
-            readFileContent = new BufferedReader(
-                    new InputStreamReader(fs.readFile(FileFolder.OUTPUT, FILE_NEW_NAME2), StandardCharsets.UTF_8))
-                    .lines()
-                    .collect(Collectors.joining("\n"));
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(fs.readFile(FileFolder.OUTPUT, FILE_NEW_NAME2), StandardCharsets.UTF_8))) {
+                readFileContent = reader.lines().collect(Collectors.joining("\n"));
+            }
             assertEquals(FILE_CONTENT.toUpperCase(), readFileContent);
 
             //************

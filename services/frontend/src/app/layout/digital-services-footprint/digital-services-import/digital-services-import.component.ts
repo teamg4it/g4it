@@ -134,9 +134,23 @@ export class DigitalServicesImportComponent {
                         `digital-services-import.templates.${file.csvFileType}-template-file`,
                     );
                 });
+                this.templateFilesDescription.sort((a, b) => {
+                    if (a.csvFileType === "virtual" && b.csvFileType === "virtual") {
+                        return (
+                            (b.name.includes("non_cloud") ? 1 : 0) -
+                                (a.name.includes("non_cloud") ? 1 : 0) ||
+                            a.name.localeCompare(b.name)
+                        );
+                    }
+                    return (
+                        Constants.FILE_TYPES.indexOf(a.csvFileType ?? "") -
+                        Constants.FILE_TYPES.indexOf(b.csvFileType ?? "")
+                    );
+                });
+
                 setTimeout(() => {
                     this.focusFirstTemplate();
-                }, 0);
+                }, 100);
             });
     }
 
@@ -168,13 +182,15 @@ export class DigitalServicesImportComponent {
 
         const lastTaskStatus = this.tasks[0]?.status;
         this.toReloadDigitalService =
-            Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(lastTaskStatus);
+            !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
+                lastTaskStatus,
+            );
         if (!this.toReloadDigitalService) {
             this.callInputApis();
         }
     }
 
-    async loopLoadInventories() {
+    async loopLoadDigitalServices() {
         this.digitalServiceInterval = setInterval(async () => {
             if (!this.toReloadDigitalService) {
                 clearInterval(this.digitalServiceInterval);
@@ -223,7 +239,7 @@ export class DigitalServicesImportComponent {
         if (event === "submit") {
             clearInterval(this.digitalServiceInterval);
             await this.getDigitalServiceStatus();
-            this.loopLoadInventories();
+            this.loopLoadDigitalServices();
         }
     }
 

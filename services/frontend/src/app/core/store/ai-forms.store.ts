@@ -29,8 +29,8 @@ export interface AIParametersForm {
     providedIn: "root",
 })
 export class AIFormsStore {
-    private infrastructureFormData = signal<AIInfrastructureForm | null>(null);
-    private parametersFormData = signal<AIParametersForm | null>(null);
+    private readonly infrastructureFormData = signal<AIInfrastructureForm | null>(null);
+    private readonly parametersFormData = signal<AIParametersForm | null>(null);
     private infrastructureChange = false;
     private parameterChange = false;
 

@@ -70,7 +70,8 @@ public interface ImpactToCsvRecord {
                 taskId.toString(),
                 context.getOrganizationId().toString(), // organizationName (actually organizationId)
                 "", // dataSourceName
-                print(peopleEqImpact) // peopleEqImpact
+                print(peopleEqImpact), // peopleEqImpact
+                print(physicalEquipment.getDurationHour())
         );
     }
 
@@ -98,6 +99,7 @@ public interface ImpactToCsvRecord {
                 "", // source
                 impact.getStatutIndicateur(),
                 evaluateReportBO.isVerbose() ? print(impact.getTrace()) : "",
+                print(virtualEquipment.getType()),
                 "1.1", // calculationVersion
                 print(impact.getImpactUnitaire()),
                 print(impact.getUnite()),
