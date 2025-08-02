@@ -99,7 +99,7 @@ describe("DigitalServicesComponent", () => {
     it("should navigate to digital service footprint", () => {
         const uid = "123";
         component.goToDigitalServiceFootprint(uid);
-        expect(mockRouter.navigate).toHaveBeenCalledWith([`${uid}/footprint/terminals`], {
+        expect(mockRouter.navigate).toHaveBeenCalledWith([`${uid}/footprint/resources`], {
             relativeTo: mockRoute,
         });
     });
@@ -111,7 +111,7 @@ describe("DigitalServicesComponent", () => {
         component.isAllowedDigitalService = true;
         await component.createNewDigitalService();
         expect(mockDigitalServicesData.create).toHaveBeenCalled();
-        expect(mockRouter.navigate).toHaveBeenCalledWith(["2/footprint/terminals"], {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(["2/footprint/resources"], {
             relativeTo: mockRoute,
         });
     });
