@@ -91,15 +91,13 @@
     <div class="mr-3 block align-items-center lg:flex">
         <p-button
             (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button ml-1 mb-3 lg:mb-0"
+            styleClass="cancel-creation-button ml-1 mb-3 lg:mb-0"
             [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
                 !isEcoMindAi &&
                 !digitalService.note &&
                 (userService.isAllowedDigitalServiceWrite$ | async)
             "
-            [text]="true"
-            [plain]="true"
             icon="pi pi-plus-circle"
             [label]="'common.note.add' | translate"
             id="add-note"
@@ -107,11 +105,9 @@
 
         <p-button
             (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button mb-3 lg:mb-0"
+            styleClass="cancel-creation-button mb-3 lg:mb-0"
             [ariaLabel]="'common.accessibility.attachedNote' | translate"
             *ngIf="!isEcoMindAi && digitalService.note"
-            [text]="true"
-            [plain]="true"
             icon="pi pi-clipboard"
             [label]="'common.note.attached' | translate"
         />
@@ -119,7 +115,7 @@
         @if (!isEcoMindAi) {
             <p-button
                 [ariaLabel]="'common.accessibility.import' | translate"
-                styleClass="bg-black text-white header-button mb-3 lg:mb-0"
+                styleClass="p-button-secondary-blue mx-2 mb-3 lg:mb-0"
                 (onClick)="importData()"
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 icon="pi pi-upload"
@@ -129,7 +125,7 @@
 
         <p-button
             [ariaLabel]="'common.accessibility.download' | translate"
-            styleClass="bg-black text-white header-button mb-3 lg:mb-0"
+            styleClass="p-button-secondary-blue mx-2 mb-3 lg:mb-0"
             (onClick)="exportData()"
             *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi"
             [disabled]="digitalService.lastCalculationDate === undefined"
@@ -150,14 +146,9 @@
         />
         <p-button
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            styleClass="ml-2 mb-3 lg:mb-0"
-            [rounded]="true"
-            [text]="true"
-            [raised]="true"
-            [plain]="true"
+            styleClass="header-delete-btn ml-2 mb-3 lg:mb-0"
             (onClick)="confirmDelete($event)"
             icon="pi pi-trash"
-            size="large"
             [ariaLabel]="
                 'digital-services.delete-criteria'
                     | translate: { digitalServiceName: digitalService.name }

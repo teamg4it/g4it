@@ -44,6 +44,7 @@ import { DigitalServicesImportComponent } from "./digital-services-import/digita
 import { MultiFileImportComponent } from "./digital-services-import/multi-file-import/multi-file-import.component";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
+import { DigitalServicesResourcesComponent } from "./digital-services-resources/digital-services-resources.component";
 import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
 import PanelDatacenterComponent from "./digital-services-servers/side-panel/add-datacenter/datacenter.component";
 import { PanelAddVmComponent } from "./digital-services-servers/side-panel/add-vm/add-vm.component";
@@ -71,6 +72,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesTerminalsSidePanelComponent,
         DigitalServicesNetworksSidePanelComponent,
         DigitalServicesCloudServicesSidePanelComponent,
+        DigitalServicesResourcesComponent,
         PanelCreateServerComponent,
         PanelDatacenterComponent,
         PanelServerParametersComponent,

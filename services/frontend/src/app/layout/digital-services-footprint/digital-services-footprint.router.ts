@@ -9,15 +9,12 @@ import { RouterModule, Routes } from "@angular/router";
 import { TitleResolver } from "../common/title-resolver.service";
 import { DigitalServicesAiInfrastructureComponent } from "./digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
 import { DigitalServicesAiParametersComponent } from "./digital-services-ai-parameters/digital-services-ai-parameters.component";
-import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
-import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
-import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
+import { DigitalServicesResourcesComponent } from "./digital-services-resources/digital-services-resources.component";
 import { PanelCreateServerComponent } from "./digital-services-servers/side-panel/create-server/create-server.component";
 import { PanelListVmComponent } from "./digital-services-servers/side-panel/list-vm/list-vm.component";
 import { PanelServerParametersComponent } from "./digital-services-servers/side-panel/server-parameters/server-parameters.component";
-import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/digital-services-terminals.component";
 
 const titleResolveObject = {
     resolve: {
@@ -39,24 +36,10 @@ const routes: Routes = [
                 ...titleResolveObject,
             },
             {
-                path: "terminals",
-                component: DigitalServicesTerminalsComponent,
+                path: "resources",
+                component: DigitalServicesResourcesComponent,
                 ...titleResolveObject,
-            },
-            {
-                path: "networks",
-                component: DigitalServicesNetworksComponent,
-                ...titleResolveObject,
-            },
-            {
-                path: "servers",
-                component: DigitalServicesServersComponent,
                 children: [
-                    {
-                        path: "",
-                        redirectTo: "panel-create",
-                        pathMatch: "full",
-                    },
                     {
                         path: "panel-create",
                         component: PanelCreateServerComponent,
@@ -74,11 +57,7 @@ const routes: Routes = [
                     },
                 ],
             },
-            {
-                path: "cloudServices",
-                component: DigitalServicesCloudServicesComponent,
-                ...titleResolveObject,
-            },
+
             {
                 path: "infrastructure",
                 component: DigitalServicesAiInfrastructureComponent,

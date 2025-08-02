@@ -142,7 +142,7 @@ export class DigitalServicesComponent {
                 relativeTo: this.route,
             });
         } else {
-            this.router.navigate([`${uid}/footprint/terminals`], {
+            this.router.navigate([`${uid}/footprint/resources`], {
                 relativeTo: this.route,
             });
         }

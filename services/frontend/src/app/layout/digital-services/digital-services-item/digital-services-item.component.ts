@@ -22,7 +22,7 @@ export class DigitalServicesItemComponent {
 
     isLinkCopied = false;
     sidebarVisible = false;
-    firstFootprintTab = "terminals";
+    firstFootprintTab = "resources";
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
@@ -33,11 +33,11 @@ export class DigitalServicesItemComponent {
         public userService: UserService,
         private readonly clipboardService: ClipboardService,
     ) {
-        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
+        this.firstFootprintTab = this.isAi ? "infrastructure" : "resources";
     }
 
     async ngOnInit(): Promise<void> {
-        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
+        this.firstFootprintTab = this.isAi ? "infrastructure" : "resources";
     }
 
     goToDigitalServiceFootprint(uid: string) {
