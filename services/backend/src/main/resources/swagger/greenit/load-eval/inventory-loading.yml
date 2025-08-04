@@ -9,7 +9,7 @@ tags:
     description: All endpoint for the organization's inventory and digital service loading
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/load-input-files:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -69,7 +69,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/load-input-files:
+  /organizations/{subscriber}/workspaces/{organization}/digital-services/{digitalServiceUid}/load-input-files:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

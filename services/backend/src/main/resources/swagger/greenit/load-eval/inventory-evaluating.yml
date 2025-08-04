@@ -9,7 +9,7 @@ tags:
     description: All endpoint for the organization's inventory or digital service evaluating
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/evaluating:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/evaluating:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -37,7 +37,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluating:
+  /organizations/{subscriber}/workspaces/{organization}/digital-services/{digitalServiceUid}/evaluating:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

@@ -9,7 +9,7 @@ tags:
     description: All endpoint to interact with TemplateFileSystem
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/template-files:
+  /organizations/{subscriber}/workspaces/{organization}/template-files:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -37,7 +37,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
 
 
-  /subscribers/{subscriber}/organizations/{organization}/template-files/{name}:
+  /organizations/{subscriber}/workspaces/{organization}/template-files/{name}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

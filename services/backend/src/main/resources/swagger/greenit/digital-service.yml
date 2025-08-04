@@ -10,7 +10,7 @@ tags:
   - name: digital-service referential
     description: All endpoint for digital service referential
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/digital-services:
+  /organizations/{subscriber}/workspaces/{organization}/digital-services:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -51,7 +51,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}:
+  /organizations/{subscriber}/workspaces/{organization}/digital-services/{digitalServiceUid}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

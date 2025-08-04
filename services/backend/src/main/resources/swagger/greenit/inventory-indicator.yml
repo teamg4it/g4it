@@ -9,7 +9,7 @@ tags:
     description: All endpoint for the organization's inventory dataviz
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/indicators:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -31,7 +31,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/equipments:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/indicators/equipments:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -56,7 +56,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/applications:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/indicators/applications:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -83,7 +83,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/datacenters:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/indicators/datacenters:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -109,7 +109,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsAvgAge:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsAvgAge:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -137,7 +137,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsLowImpact:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsLowImpact:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -165,7 +165,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsElecConsumption:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsElecConsumption:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -193,7 +193,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/export/download:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/indicators/export/download:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

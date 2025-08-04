@@ -9,7 +9,7 @@ tags:
     description: All endpoint to interact with filesystem
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/files:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/files:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -37,7 +37,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/download-reject/{taskId}:
+  /organizations/{subscriber}/workspaces/{organization}/download-reject/{taskId}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
