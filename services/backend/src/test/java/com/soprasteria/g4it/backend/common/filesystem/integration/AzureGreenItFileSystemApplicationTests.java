@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,129 +104,132 @@ class AzureGreenItFileSystemApplicationTests {
 
         List<FileDescription> inputFiles, workFiles, outputFiles;
         final String FILE_CONTENT = "Content for test";
-        try {
-            //***********
-            // Write test
-            //***********
-            // when we write a file in a folder
-            fs.writeFile(FileFolder.INPUT, FILE_TEST_NAME, FILE_CONTENT);
 
-            // then it should be listed
-            inputFiles = fs.listFiles(FileFolder.INPUT);
-            assertTrue(inputFiles.stream().anyMatch(file -> file.getName().contains(FILE_TEST_NAME)));
+        //***************
+        // Write test
+        //***************
+        // when we write a file in a folder
+        fs.writeFile(FileFolder.INPUT, FILE_TEST_NAME, FILE_CONTENT);
 
-            //************
-            // Rename test
-            //************
-            // given there is an existing file
-            // when we rename it
-            fs.rename(FileFolder.INPUT, FILE_TEST_NAME, FILE_NEW_NAME1);
-            // then it should not exist anymore
-            inputFiles = fs.listFiles(FileFolder.INPUT);
-            assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(FILE_TEST_NAME)));
-            // and a new file should exist
-            assertTrue(inputFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME1)));
+        // then it should be listed
+        inputFiles = fs.listFiles(FileFolder.INPUT);
+        assertTrue(inputFiles.stream().anyMatch(file -> file.getName().contains(FILE_TEST_NAME)));
 
-            //**********
-            // Move test
-            //**********
-            // given there is an existing file
-            // when we move it
-            fs.move(FileFolder.INPUT, FileFolder.WORK, FILE_NEW_NAME1);
-            // then it should be absent of source folder
-            inputFiles = fs.listFiles(FileFolder.INPUT);
-            assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME1)));
-            // and should be present in dest folder
-            workFiles = fs.listFiles(FileFolder.WORK);
-            assertTrue(workFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME1)));
+        //***************
+        // Rename test
+        //***************
+        // given there is an existing file
+        // when we rename it
+        fs.rename(FileFolder.INPUT, FILE_TEST_NAME, FILE_NEW_NAME1);
+        // then it should not exist anymore
+        inputFiles = fs.listFiles(FileFolder.INPUT);
+        assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(FILE_TEST_NAME)));
+        // and a new file should exist
+        assertTrue(inputFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME1)));
 
-            //************
-            // upload test
-            //************
-            // given there is no test-upload file
-            outputFiles = fs.listFiles(FileFolder.OUTPUT);
-            assertFalse(outputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_FILE_TEST_NAME)));
-            // when we upload one
-            String pathToLocalFile = resourceLoader.getResource("classpath:common/filesystem/azure/" + UPLOAD_FILE_TEST_NAME).getFile().getPath();
-            fs.upload(pathToLocalFile, FileFolder.OUTPUT, UPLOAD_FILE_TEST_NAME);
-            //when we upload one with MultipartFile
-            // then there should be one
-            outputFiles = fs.listFiles(FileFolder.OUTPUT);
-            assertTrue(outputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_FILE_TEST_NAME)));
+        //***************
+        // Move test
+        //***************
+        // given there is an existing file
+        // when we move it
+        fs.move(FileFolder.INPUT, FileFolder.WORK, FILE_NEW_NAME1);
+        // then it should be absent of source folder
+        inputFiles = fs.listFiles(FileFolder.INPUT);
+        assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME1)));
+        // and should be present in dest folder
+        workFiles = fs.listFiles(FileFolder.WORK);
+        assertTrue(workFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME1)));
 
-            //*********************
-            // Move and rename test
-            //*********************
-            // given there is a file in work folder
-            // when we move and rename this file
-            fs.moveAndRename(FileFolder.WORK, FileFolder.OUTPUT, FILE_NEW_NAME1, FILE_NEW_NAME2);
-            // then it should not be listed in source folder,
-            workFiles = fs.listFiles(FileFolder.WORK);
-            assertFalse(workFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME1)));
-            // and new file should be in dest folder
-            outputFiles = fs.listFiles(FileFolder.OUTPUT);
-            assertTrue(outputFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME2)));
+        //***************
+        // upload test
+        //***************
+        // given there is no test-upload file
+        outputFiles = fs.listFiles(FileFolder.OUTPUT);
+        assertFalse(outputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_FILE_TEST_NAME)));
+        // when we upload one
+        String pathToLocalFile = resourceLoader.getResource("classpath:common/filesystem/azure/" + UPLOAD_FILE_TEST_NAME)
+                .getFile().getPath();
+        fs.upload(pathToLocalFile, FileFolder.OUTPUT, UPLOAD_FILE_TEST_NAME);
 
-            //**********
-            // Read test
-            //**********
-            // given there is a file
-            // when we read it
-            String readFileContent;
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(fs.readFile(FileFolder.OUTPUT, FILE_NEW_NAME2), StandardCharsets.UTF_8))) {
-                readFileContent = reader.lines().collect(Collectors.joining("\n"));
-            }
-            // then content should be available
-            assertEquals(FILE_CONTENT, readFileContent);
+        // then there should be one
+        outputFiles = fs.listFiles(FileFolder.OUTPUT);
+        assertTrue(outputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_FILE_TEST_NAME)));
 
-            //***********************
-            // Write with InputStream
-            //***********************
-            // given there is an existing file
-            // when we write to the same file
-            fs.writeFile(FileFolder.OUTPUT, FILE_NEW_NAME2, new ByteArrayInputStream(FILE_CONTENT.toUpperCase().getBytes()));
-            // then content should be overridden
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(fs.readFile(FileFolder.OUTPUT, FILE_NEW_NAME2), StandardCharsets.UTF_8))) {
-                readFileContent = reader.lines().collect(Collectors.joining("\n"));
-            }
-            assertEquals(FILE_CONTENT.toUpperCase(), readFileContent);
+        //*********************
+        // Move and rename test
+        //*********************
+        // given there is a file in work folder
+        // when we move and rename this file
+        fs.moveAndRename(FileFolder.WORK, FileFolder.OUTPUT, FILE_NEW_NAME1, FILE_NEW_NAME2);
+        // then it should not be listed in source folder,
+        workFiles = fs.listFiles(FileFolder.WORK);
+        assertFalse(workFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME1)));
+        // and new file should be in dest folder
+        outputFiles = fs.listFiles(FileFolder.OUTPUT);
+        assertTrue(outputFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME2)));
 
-            //************
-            // Multipart upload test
-            //************
-            // given there is no test-multipart-upload file
-            inputFiles = fs.listFiles(FileFolder.INPUT);
-            assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));
-            //then we upload the file
-            MultipartFile fileInput = new MockMultipartFile("DATACENTER", UPLOAD_MULTIPART_FILE_TEST_NAME, String.valueOf(MediaType.TEXT_PLAIN), FILE_CONTENT.getBytes());
-            fs.upload(FileFolder.INPUT, fileInput.getOriginalFilename(), fileInput.getName(), fileInput.getInputStream());
-            //now there should be a file
-            inputFiles = fs.listFiles(FileFolder.INPUT);
-            assertTrue(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));
-
-        } catch (Exception e) {
-            log.error("Exception occured during lifecycle", e);
-            fail(e);
-        } finally {
-            fs.delete(FileFolder.INPUT, FILE_TEST_NAME);
-            fs.delete(FileFolder.INPUT, FILE_NEW_NAME1);
-            fs.delete(FileFolder.WORK, FILE_NEW_NAME1);
-            fs.delete(FileFolder.WORK, FILE_NEW_NAME2);
-
-            fs.delete(FileFolder.OUTPUT, FILE_NEW_NAME2);
-            fs.delete(FileFolder.OUTPUT, UPLOAD_FILE_TEST_NAME);
-            outputFiles = fs.listFiles(FileFolder.OUTPUT);
-            assertFalse(outputFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME2)));
-            assertFalse(outputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_FILE_TEST_NAME)));
-
-            fs.delete(FileFolder.INPUT, UPLOAD_MULTIPART_FILE_TEST_NAME);
-            inputFiles = fs.listFiles(FileFolder.INPUT);
-            assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));
+        //***********
+        // Read test
+        //***********
+        // given there is a file
+        // when we read it
+        String readFileContent;
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(fs.readFile(FileFolder.OUTPUT, FILE_NEW_NAME2), StandardCharsets.UTF_8))) {
+            readFileContent = reader.lines().collect(Collectors.joining("\n"));
         }
+        // then content should be available
+        assertEquals(FILE_CONTENT, readFileContent);
 
+        //***********************
+        // Write with InputStream
+        //***********************
+        // given there is an existing file
+        // when we write to the same file
+        fs.writeFile(FileFolder.OUTPUT, FILE_NEW_NAME2, new ByteArrayInputStream(FILE_CONTENT.toUpperCase().getBytes()));
+        // then content should be overridden
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(fs.readFile(FileFolder.OUTPUT, FILE_NEW_NAME2), StandardCharsets.UTF_8))) {
+            readFileContent = reader.lines().collect(Collectors.joining("\n"));
+        }
+        assertEquals(FILE_CONTENT.toUpperCase(), readFileContent);
+
+        //***********************
+        // Multipart upload test
+        //***********************
+        // given there is no test-multipart-upload file
+        inputFiles = fs.listFiles(FileFolder.INPUT);
+        assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));
+        // then we upload the file
+        MultipartFile fileInput = new MockMultipartFile("DATACENTER", UPLOAD_MULTIPART_FILE_TEST_NAME, String.valueOf(MediaType.TEXT_PLAIN), FILE_CONTENT.getBytes());
+        fs.upload(FileFolder.INPUT, fileInput.getOriginalFilename(), fileInput.getName(), fileInput.getInputStream());
+        // now there should be a file
+        inputFiles = fs.listFiles(FileFolder.INPUT);
+        assertTrue(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));
     }
+
+    // Test cleanup method
+    @AfterEach
+    void cleanUp() throws IOException {
+        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        List<FileDescription> inputFiles, outputFiles;
+
+        fs.delete(FileFolder.INPUT, FILE_TEST_NAME);
+        fs.delete(FileFolder.INPUT, FILE_NEW_NAME1);
+        fs.delete(FileFolder.WORK, FILE_NEW_NAME1);
+        fs.delete(FileFolder.WORK, FILE_NEW_NAME2);
+
+        fs.delete(FileFolder.OUTPUT, FILE_NEW_NAME2);
+        fs.delete(FileFolder.OUTPUT, UPLOAD_FILE_TEST_NAME);
+        outputFiles = fs.listFiles(FileFolder.OUTPUT);
+        assertFalse(outputFiles.stream().anyMatch(file -> file.getName().contains(FILE_NEW_NAME2)));
+        assertFalse(outputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_FILE_TEST_NAME)));
+
+        fs.delete(FileFolder.INPUT, UPLOAD_MULTIPART_FILE_TEST_NAME);
+        inputFiles = fs.listFiles(FileFolder.INPUT);
+        assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));
+    }
+
 
     @Test
     void listFilesOfFolderShouldReturnInputStream() throws IOException {
