@@ -9,7 +9,7 @@ tags:
     description: Endpoint for subscriber administration
 
 paths:
-  /administrator/subscribers:
+  /administrator/organizations:
     get:
       tags:
         - administrator
@@ -58,7 +58,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
   
-  /administrator/organizations:
+  /administrator/workspaces:
     get:
       tags:
         - administrator
@@ -140,7 +140,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /administrator/organizations/users:
+  /administrator/workspaces/users:
     get:
       tags:
         - administrator
@@ -245,7 +245,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /administrator/subscribers/users:
+  /administrator/organizations/users:
     get:
       tags:
         - administrator
@@ -292,7 +292,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-  /administrator/subscriber:
+  /administrator/organization:
     get:
       tags:
         - administrator

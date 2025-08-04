@@ -7,7 +7,7 @@ tags:
   - name: ai-recommendations
     description: Endpoint for AI Recommendations outputs
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/ai-recomandation:
+  /organizations/{subscriber}/workspaces/{organization}/digital-services/{digitalServiceUid}/outputs/ai-recomandation:
     get:
       parameters:
         - $ref: '#/components/parameters/subscriberPathParam'
