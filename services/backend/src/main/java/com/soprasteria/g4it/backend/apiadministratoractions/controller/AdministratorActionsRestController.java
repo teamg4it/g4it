@@ -11,20 +11,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class AdministratorActionsRestController implements AdministratorActionsApiDelegate {
-    @Autowired
-    AdministratorActionsService administratorActionsService;
-
     /**
      * {@inheritDoc}
      */
     @Override
     public ResponseEntity<AllEvaluationStatusRest> doAdminActions() {
-
-        //  Rename the randomly generated terminals
-        administratorActionsService.renameTerminals();
-
-        //  Rename the randomly generated networks
-        return ResponseEntity.ok(administratorActionsService.renameNetworks());
+     // Implement Admin API
+        return ResponseEntity.ok(AllEvaluationStatusRest.builder().response("success").build());
 
     }
 
