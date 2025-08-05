@@ -1,4 +1,4 @@
-nomEquipementVirtuel;nomEquipementPhysique;nomSourceDonneeEquipementPhysique;cleRepartition;vCPU;cluster;consoElecAnnuelle;typeEqv;capaciteStockage;nomEntite;nomSourceDonnee;;inputFileName;lineNumber;message
+nomEquipementVirtuel;nomEquipementPhysique;nomSourceDonneeEquipementPhysique;cleRepartition;vCPU;cluster;consoElecAn;typeEqv;capaciteStockage;nomEntite;nomSourceDonnee;;inputFileName;lineNumber;message
 virtual-eq-2-1;;;;2;Cluster 2;;calcul;;Entity 1;;;nominal.csv;4;Virtual Equipment must have a physical equipment name linked to it., Physical equipment null does not exist.
 virtual-eq-2-2;;;;1;Cluster 2;;calcul;;Entity 1;;;nominal.csv;5;Virtual Equipment must have a physical equipment name linked to it., Physical equipment null does not exist.
 virt-rejected-phys-not-exsist;DONTEXIST;;;4;Cluster 1;;calcul;;Entity 1;;;nominal.csv;6;Physical equipment DONTEXIST does not exist.
