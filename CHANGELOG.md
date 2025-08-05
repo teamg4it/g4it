@@ -14,6 +14,7 @@
 - 1346 | Rename / delete workspace for non subscriber admin
 - 1245 | Facilitate the criteria selection
 - 1345 | Improve tracability of the calculation
+- 1430 | Consistency for the import file on the virtual equipment
 - 1373 | BE Sonar fixes
 
 ## 3.4.0
