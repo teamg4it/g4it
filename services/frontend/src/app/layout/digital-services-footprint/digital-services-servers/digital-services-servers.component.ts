@@ -144,7 +144,6 @@ export class DigitalServicesServersComponent {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
                 this.sidebarVisible = res;
-                console.log(res);
                 if (res === false && !this.router.url.endsWith("/resources")) {
                     this.router.navigate(["../resources"], { relativeTo: this.route });
                 }

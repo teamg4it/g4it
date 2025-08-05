@@ -210,7 +210,9 @@ export class DigitalServicesFootprintComponent implements OnInit {
     }
 
     updateEnableCalculation(event: boolean) {
-        this.updateHeights();
+        setTimeout(() => {
+            this.updateHeights();
+        }, 0);
     }
 
     async updateDigitalService() {

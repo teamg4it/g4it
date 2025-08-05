@@ -8,7 +8,7 @@
 <p-scrollPanel
     [style]="{
         width: '100%',
-        height: 'calc(100vh - (100px - {{headerHeight}}px - {{footerHeight}}px))',
+        height: 'calc(100vh - (100px + ' + headerHeight + 'px + ' + footerHeight + 'px))',
     }"
 >
     <p-tabMenu
