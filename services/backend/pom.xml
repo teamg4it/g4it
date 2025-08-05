@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.0</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
+        <version>3.5.4</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -41,23 +41,23 @@
         <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version>
         <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version>
 
-        <spring-cloud-azure-starter-storage-blob.version>5.18.0</spring-cloud-azure-starter-storage-blob.version>
-        <spring-cloud-azure-starter-keyvault.version>5.18.0</spring-cloud-azure-starter-keyvault.version>
+        <spring-cloud-azure-starter-storage-blob.version>5.22.0</spring-cloud-azure-starter-storage-blob.version>
+        <spring-cloud-azure-starter-keyvault.version>5.22.0</spring-cloud-azure-starter-keyvault.version>
 
         <!-- springdoc 2.7.0 is not working -->
         <springdoc-openapi-starter-webmvc-ui.version>2.8.8</springdoc-openapi-starter-webmvc-ui.version>
 
-        <guava.version>33.3.1-jre</guava.version>
-        <commons-csv.version>1.12.0</commons-csv.version>
-        <poi-ooxml.version>5.4.0</poi-ooxml.version>
+        <guava.version>33.4.8-jre</guava.version>
+        <commons-csv.version>1.14.1</commons-csv.version>
+        <poi-ooxml.version>5.4.1</poi-ooxml.version>
         <jOpenDocument.version>1.3</jOpenDocument.version>
         <zt-zip.version>1.17</zt-zip.version>
-        <vavr.version>0.10.5</vavr.version>
+        <vavr.version>0.10.7</vavr.version>
 
         <maven-openapi-generator-plugin.version>7.13.0</maven-openapi-generator-plugin.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-        <shedlock.version>6.0.2</shedlock.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
+        <shedlock.version>6.9.2</shedlock.version>
 
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
@@ -235,6 +235,7 @@
         </dependency>
         <dependency>
             <groupId>net.javacrumbs.shedlock</groupId>
+
             <artifactId>shedlock-spring</artifactId>
             <version>${shedlock.version}</version>
         </dependency>

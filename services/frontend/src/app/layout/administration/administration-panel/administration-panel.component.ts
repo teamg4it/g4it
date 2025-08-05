@@ -33,7 +33,7 @@ export class AdministrationPanelComponent {
                 });
             }
 
-            if (this.userService.hasAnySubscriberAdminRole(user)) {
+            if (this.userService.hasAnyAdminRole(user)) {
                 this.tabMenuList.push({
                     label: this.translate.instant("administration.manage-workspaces"),
                     routerLink: "organizations",

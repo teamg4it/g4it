@@ -24,10 +24,11 @@ After confirmation of deletion, data are kept for 7 days, and during this period
 at any time.
 
 **Navigation Path**  
-Administration panel / Manage organizations / Edit mode
+Administration panel / Manage workspaces / Edit mode
 
 **Access Conditions**  
-The connected user must have the subscriber administrator role for at least one subscriber.
+The connected user must have the subscriber administrator role for at least one subscriber
+or organization administrator role for at least one organization.
 
 ## State Diagram
 

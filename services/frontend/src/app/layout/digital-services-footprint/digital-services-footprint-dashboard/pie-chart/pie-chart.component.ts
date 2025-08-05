@@ -18,6 +18,10 @@ import {
     DigitalServiceFootprint,
     StatusCountMap,
 } from "src/app/core/interfaces/digital-service.interfaces";
+import {
+    getColorFormatter,
+    getLabelFormatter,
+} from "src/app/core/service/mapper/graphs-mapper";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
 @Component({
@@ -27,6 +31,7 @@ import { Constants } from "src/constants";
 export class PieChartComponent extends AbstractDashboard {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
     @Input() selectedCriteria: string = "acidification";
+    @Input() enableDataInconsistency: boolean = false;
     @Output() selectedParamChange: EventEmitter<any> = new EventEmitter();
     @Output() chartTypeChange: EventEmitter<any> = new EventEmitter();
 
@@ -98,9 +103,10 @@ export class PieChartComponent extends AbstractDashboard {
                 unitValue: selectedImpactUnit?.unitValue,
                 unit: selectedImpactUnit?.unit,
                 label: {
-                    color: !dsTierOkmap[nameValue]?.status.error
-                        ? Constants.GRAPH_GREY
-                        : Constants.GRAPH_RED,
+                    color: getColorFormatter(
+                        !!dsTierOkmap[nameValue]?.status.error,
+                        this.enableDataInconsistency,
+                    ),
                 },
             };
         });
@@ -156,9 +162,12 @@ export class PieChartComponent extends AbstractDashboard {
             ],
             label: {
                 formatter: (value: any) => {
-                    return !dsTierOkmap[value.name]?.status?.error
-                        ? `{grey| ${value.name}}`
-                        : `{redBold| \u24d8} {red| ${value.name}}`;
+                    const hasError = !!dsTierOkmap[value.name]?.status?.error;
+                    return getLabelFormatter(
+                        hasError,
+                        this.enableDataInconsistency,
+                        value.name,
+                    );
                 },
                 rich: Constants.CHART_RICH as any,
             },
