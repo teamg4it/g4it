@@ -82,7 +82,7 @@ public class FileLoadingUtils {
      */
     public Path computeRejectedFolderPath(String pathId) {
 
-         return Path.of(localWorkingFolder).resolve("rejected").resolve(pathId);
+        return Path.of(localWorkingFolder).resolve("rejected").resolve(pathId);
 
     }
 
@@ -92,7 +92,7 @@ public class FileLoadingUtils {
      * @param fileStorage the file storage
      * @param filenames   the filename list
      */
-    private void cleanFromLocalAndFileStorage(String inputPath, FileStorage fileStorage,   List<String> filenames) {
+    private void cleanFromLocalAndFileStorage(String inputPath, FileStorage fileStorage, List<String> filenames) {
         try {
             for (String filename : filenames) {
                 Files.delete(Path.of(localWorkingFolder).resolve(inputPath).resolve(filename));
@@ -109,8 +109,8 @@ public class FileLoadingUtils {
     public boolean handelRejectedFiles(String subscriber, Long organizationId, Long inventoryId, String digitalServiceUid,
                                        Long taskId, List<String> filenames) {
 
-        String pathId = null!= inventoryId ? String.valueOf(inventoryId) : digitalServiceUid;
-        String inputPath =null!= inventoryId ? "input/inventory" : "input/digital-service";
+        String pathId = null != inventoryId ? String.valueOf(inventoryId) : digitalServiceUid;
+        String inputPath = null != inventoryId ? "input/inventory" : "input/digital-service";
 
         FileStorage fileStorage = fileSystem.mount(subscriber, organizationId.toString());
         boolean hasRejectedFile = uploadRejectedZip(pathId, taskId, fileStorage);
@@ -121,7 +121,7 @@ public class FileLoadingUtils {
     /**
      * Upload rejected zip file
      *
-     * @param pathId the pathId
+     * @param pathId      the pathId
      * @param taskId      the task id
      * @param fileStorage the file storage
      * @return true if has any zip uploaded
@@ -131,7 +131,7 @@ public class FileLoadingUtils {
             final Path rejectedFolderPath = computeRejectedFolderPath(pathId);
             if (Files.exists(rejectedFolderPath) && !localFileService.isEmpty(rejectedFolderPath)) {
                 // create rejected zip file
-                final File rejectedZipFile = localFileService.createZipFile(rejectedFolderPath, rejectedFolderPath.resolve(Constants.REJECTED_FILES_ZIP));
+                final File rejectedZipFile = localFileService.createZipFile(rejectedFolderPath, rejectedFolderPath.resolve(Constants.REJECTED_FILES_ZIP).toString());
 
                 // send zip to file storage
                 fileStorage.upload(rejectedZipFile.getAbsolutePath(), FileFolder.OUTPUT, taskId + "/" + rejectedZipFile.getName());

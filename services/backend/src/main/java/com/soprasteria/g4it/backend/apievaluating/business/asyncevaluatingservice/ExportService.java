@@ -67,7 +67,7 @@ public class ExportService {
             final Path exportPath = Path.of(localWorkingFolder).resolve("export").resolve(String.valueOf(taskId));
             if (Files.exists(exportPath) && !localFileService.isEmpty(exportPath)) {
                 // create rejected zip file
-                final File exportZipFile = localFileService.createZipFile(exportPath, exportPath.resolve(taskId + Constants.ZIP));
+                final File exportZipFile = localFileService.createZipFile(exportPath, exportPath.resolve(taskId + Constants.ZIP).toString());
 
                 // send zip to file storage
                 fileStorage.upload(exportZipFile.getAbsolutePath(), FileFolder.EXPORT, taskId + Constants.ZIP);
