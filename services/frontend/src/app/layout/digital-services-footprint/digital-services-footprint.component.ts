@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, ElementRef, inject, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
@@ -32,6 +32,11 @@ export class DigitalServicesFootprintComponent implements OnInit {
     inPhysicalEquipments: InPhysicalEquipmentRest[] = [];
     isEcoMindAi: boolean = false;
     tabItems: MenuItem[] | undefined;
+
+    @ViewChild("footprintHeader", { read: ElementRef }) headerRef!: ElementRef;
+    @ViewChild("footprintFooter", { read: ElementRef }) footerRef!: ElementRef;
+    headerHeight = 0;
+    footerHeight = 0;
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
@@ -113,6 +118,20 @@ export class DigitalServicesFootprintComponent implements OnInit {
         this.digitalBusinessService.initCountryMap();
     }
 
+    ngAfterViewInit() {
+        this.updateHeights();
+        window.addEventListener("resize", () => this.updateHeights());
+    }
+
+    ngOnDestroy() {
+        window.removeEventListener("resize", () => this.updateHeights());
+    }
+
+    updateHeights = () => {
+        this.headerHeight = this.headerRef?.nativeElement.offsetHeight;
+        this.footerHeight = this.footerRef?.nativeElement.offsetHeight;
+    };
+
     updateTabItems() {
         if (this.isEcoMindAi) {
             this.tabItems = [
@@ -147,7 +166,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
                     id: "resources",
                 },
                 {
-                    label: this.translate.instant("digital-services.visualize-impact"),
+                    label: this.translate.instant("digital-services.visualize-results"),
                     routerLink: "dashboard",
                     visible: this.digitalService.lastCalculationDate !== undefined,
                     id: "visualize",
@@ -188,6 +207,10 @@ export class DigitalServicesFootprintComponent implements OnInit {
             //     },
             // ];
         }
+    }
+
+    updateEnableCalculation(event: boolean) {
+        this.updateHeights();
     }
 
     async updateDigitalService() {

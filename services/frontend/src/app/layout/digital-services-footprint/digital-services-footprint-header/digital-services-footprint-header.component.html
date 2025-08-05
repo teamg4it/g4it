@@ -39,21 +39,14 @@
 }
 
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
-<div class="flex justify-content-between align-items-center flex-wrap mb-2">
-    <div>
+<div class="flex justify-content-between align-items-center flex-wrap">
+    <div class="flex align-items-center">
         <p-button
-            styleClass="color-tertiary text-lg lg:text-2xl font-semibold p-2 "
             [routerLink]="changePageToDigitalServices()"
-            [text]="true"
+            styleClass="cancel-creation-button mr-2 mb-3 lg:mb-0"
             [ariaLabel]="'digital-services.return' | translate"
             icon="pi pi-arrow-left"
-            [label]="
-                isEcoMindAi
-                    ? ('eco-mind-ai.title'
-                      | translate: { OrganizationName: selectedOrganizationName })
-                    : ('digital-services.title'
-                      | translate: { OrganizationName: selectedOrganizationName })
-            "
+            [label]="'digital-services.back' | translate"
             id="return-button"
         />
 
@@ -91,7 +84,7 @@
     <div class="mr-3 block align-items-center lg:flex">
         <p-button
             (onClick)="sidebarVisible = true"
-            styleClass="cancel-creation-button ml-1 mb-3 lg:mb-0"
+            styleClass="cancel-creation-button uppercase ml-1 mb-3 lg:mb-0"
             [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
                 !isEcoMindAi &&
@@ -105,7 +98,7 @@
 
         <p-button
             (onClick)="sidebarVisible = true"
-            styleClass="cancel-creation-button mb-3 lg:mb-0"
+            styleClass="cancel-creation-button uppercase mb-3 lg:mb-0"
             [ariaLabel]="'common.accessibility.attachedNote' | translate"
             *ngIf="!isEcoMindAi && digitalService.note"
             icon="pi pi-clipboard"
@@ -115,7 +108,7 @@
         @if (!isEcoMindAi) {
             <p-button
                 [ariaLabel]="'common.accessibility.import' | translate"
-                styleClass="p-button-secondary-blue mx-2 mb-3 lg:mb-0"
+                styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
                 (onClick)="importData()"
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 icon="pi pi-upload"
@@ -125,7 +118,7 @@
 
         <p-button
             [ariaLabel]="'common.accessibility.download' | translate"
-            styleClass="p-button-secondary-blue mx-2 mb-3 lg:mb-0"
+            styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
             (onClick)="exportData()"
             *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi"
             [disabled]="digitalService.lastCalculationDate === undefined"
@@ -133,17 +126,6 @@
             [label]="'inventories-footprint.header.export' | translate"
         />
 
-        <p-button
-            *ngIf="
-                ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
-                ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
-            "
-            styleClass="bg-black text-white header-button mb-3 lg:mb-0"
-            [disabled]="!enableCalcul()"
-            (onClick)="launchCalcul()"
-            [label]="'common.calculate' | translate"
-            id="calculate"
-        />
         <p-button
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             styleClass="header-delete-btn ml-2 mb-3 lg:mb-0"

@@ -26,7 +26,7 @@
         "previous": "Previous",
         "mandatory": "is mandatory",
         "optional": "Optional",
-        "calculate": "CALCULATE",
+        "calculate": "Calculate my impact",
         "duplicate": "DUPLICATE",
         "add": "Add",
         "attention": "Attention",
@@ -87,7 +87,8 @@
             "note": "Note",
             "accordion-open": "Click to show sub domains",
             "accordion-close": "Click to hide sub domains",
-            "import": "Click to import digital service data"
+            "import": "Click to import digital service data",
+            "calculate": "Click here to calculate your impact"
         },
         "note": {
             "add": "Add a note",
@@ -158,7 +159,8 @@
             "space-name-maxlength": "The workspace name must be no longer than 20 characters.",
             "space-name-pattern": "Special characters @ / ; ? are not allowed."
         },
-        "plus-menu": "Plus"
+        "plus-menu": "Plus",
+        "add-button": "Add"
     },
     "errors": {
         "error-occurred": "An error occurred"
@@ -207,8 +209,9 @@
         "reset-settings": "Reset settings",
         "save-settings": "Save settings",
         "configure-criteria": "Configure the view for digital service {{digitalServiceName}}",
-        "view-resources": "View resources",
-        "visualize-impact": "Visualize impacts"
+        "view-resources": "Visualize my resources",
+        "visualize-results": "Visualize my results",
+        "back": "Back"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

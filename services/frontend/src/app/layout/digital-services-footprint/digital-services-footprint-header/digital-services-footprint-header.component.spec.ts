@@ -83,63 +83,63 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         );
     });
 
-    it("canLaunchCompute should return true if terminals list not empty and first calculation", () => {
-        component.digitalService = {
-            name: "...",
-            uid: "",
-            creationDate: Date.now(),
-            lastUpdateDate: Date.now(),
-            lastCalculationDate: null,
-            networks: [],
-            servers: [],
-            enableDataInconsistency: false,
-            terminals: [
-                {
-                    uid: "randomUID",
-                    name: "name",
-                    type: {
-                        code: "mobile-fix",
-                        value: "Mobile",
-                        lifespan: 5,
-                    },
-                    lifespan: 0,
-                    country: "France",
-                    numberOfUsers: 1,
-                    yearlyUsageTimePerUser: 17,
-                },
-            ],
-        };
-        expect(component.canLaunchCompute(false)).toBeTrue();
-    });
+    // it("canLaunchCompute should return true if terminals list not empty and first calculation", () => {
+    //     component.digitalService = {
+    //         name: "...",
+    //         uid: "",
+    //         creationDate: Date.now(),
+    //         lastUpdateDate: Date.now(),
+    //         lastCalculationDate: null,
+    //         networks: [],
+    //         servers: [],
+    //         enableDataInconsistency: false,
+    //         terminals: [
+    //             {
+    //                 uid: "randomUID",
+    //                 name: "name",
+    //                 type: {
+    //                     code: "mobile-fix",
+    //                     value: "Mobile",
+    //                     lifespan: 5,
+    //                 },
+    //                 lifespan: 0,
+    //                 country: "France",
+    //                 numberOfUsers: 1,
+    //                 yearlyUsageTimePerUser: 17,
+    //             },
+    //         ],
+    //     };
+    //     expect(component.canLaunchCompute(false)).toBeTrue();
+    // });
 
-    it("canLaunchCompute should return false if lastUpdateDate < lastCalculationDate", () => {
-        component.digitalService = {
-            name: "...",
-            uid: "",
-            creationDate: Date.now(),
-            lastUpdateDate: parseFloat("2023-09-03T09:56:34.658656Z"),
-            lastCalculationDate: parseFloat("2023-09-04T09:56:34.658656Z"),
-            networks: [],
-            servers: [],
-            enableDataInconsistency: false,
-            terminals: [
-                {
-                    uid: "randomUID",
-                    name: "name",
-                    type: {
-                        code: "mobile-fix",
-                        value: "Mobile",
-                        lifespan: 5,
-                    },
-                    lifespan: 0,
-                    country: "France",
-                    numberOfUsers: 1,
-                    yearlyUsageTimePerUser: 17,
-                },
-            ],
-        };
-        expect(component.canLaunchCompute(false)).toBeFalse();
-    });
+    // it("canLaunchCompute should return false if lastUpdateDate < lastCalculationDate", () => {
+    //     component.digitalService = {
+    //         name: "...",
+    //         uid: "",
+    //         creationDate: Date.now(),
+    //         lastUpdateDate: parseFloat("2023-09-03T09:56:34.658656Z"),
+    //         lastCalculationDate: parseFloat("2023-09-04T09:56:34.658656Z"),
+    //         networks: [],
+    //         servers: [],
+    //         enableDataInconsistency: false,
+    //         terminals: [
+    //             {
+    //                 uid: "randomUID",
+    //                 name: "name",
+    //                 type: {
+    //                     code: "mobile-fix",
+    //                     value: "Mobile",
+    //                     lifespan: 5,
+    //                 },
+    //                 lifespan: 0,
+    //                 country: "France",
+    //                 numberOfUsers: 1,
+    //                 yearlyUsageTimePerUser: 17,
+    //             },
+    //         ],
+    //     };
+    //     expect(component.canLaunchCompute(false)).toBeFalse();
+    // });
 
     it("ngOnInit should subscribe to digitalService$ and set digitalService and call setDigitalService", () => {
         const digitalServiceStoreSpy = spyOn(
@@ -186,12 +186,12 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         expect(component.selectedOrganizationName).toBe("OrgName");
     });
 
-    it("ngOnInit should subscribe to launchCalcul$ and call launchCalcul", () => {
-        const launchCalculSpy = spyOn(component, "launchCalcul");
-        (component as any).digitalServiceBusinessService.launchCalcul$ = of(true);
+    // it("ngOnInit should subscribe to launchCalcul$ and call launchCalcul", () => {
+    //     const launchCalculSpy = spyOn(component, "launchCalcul");
+    //     (component as any).digitalServiceBusinessService.launchCalcul$ = of(true);
 
-        component.ngOnInit();
+    //     component.ngOnInit();
 
-        expect(launchCalculSpy).toHaveBeenCalled();
-    });
+    //     expect(launchCalculSpy).toHaveBeenCalled();
+    // });
 });

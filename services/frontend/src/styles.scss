@@ -170,6 +170,14 @@ main {
     @include styleclass("uppercase py-3 px-4 letter-spacing-2 mx-2");
 }
 
+.footer-calculate-button {
+    box-shadow:
+        0 4px 4px 0 rgba(28, 33, 29, 0.16),
+        4px 4px 24px 4px rgba(28, 33, 29, 0.4);
+    background: var(--light-green-color);
+    border: 12px solid #323733;
+}
+
 .error-text {
     color: #b00020;
     font-size: 15px;

@@ -26,7 +26,7 @@
         "previous": "Précédent",
         "mandatory": "est obligatoire",
         "optional": "Optionnel",
-        "calculate": "CALCULER",
+        "calculate": "Calculer mon impact",
         "duplicate": "DUPLIQUER",
         "add": "Ajouter",
         "attention": "Attention",
@@ -86,7 +86,8 @@
             "note": "Note",
             "accordion-open": "Cliquez pour afficher les sous-domaines",
             "accordion-close": "Cliquez pour masquer les sous-domaines",
-            "import": "Cliquez pour importer les données de service numériques"
+            "import": "Cliquez pour importer les données de service numériques",
+            "calculate": "Cliquer ici pour calculer votre impact"
         },
         "note": {
             "add": "Ajouter note",
@@ -157,7 +158,8 @@
             "space-name-maxlength": "Le nom de l'espace de travail ne doit pas dépasser 20 caractères.",
             "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés."
         },
-        "plus-menu": "Plus"
+        "plus-menu": "Plus",
+        "add-button": "Ajouter"
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"
@@ -206,7 +208,8 @@
         "save-settings": "Enregistrer les paramètres",
         "configure-criteria": "Configurer la vue pour le service numérique {{digitalServiceName}}",
         "view-resources": "Voir les ressources",
-        "visualize-impact": "Visualiser les impact"
+        "visualize-results": "Visualiser mes resultats",
+        "back": "Retour"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
