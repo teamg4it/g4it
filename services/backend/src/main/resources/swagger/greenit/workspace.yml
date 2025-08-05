@@ -9,7 +9,7 @@ tags:
     description: All endpoint for a workspace
 
 paths:
-  /workspace/organizations:
+  /workspace/workspaces:
     post:
       tags:
         - workspace
@@ -40,7 +40,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /workspace/domain-subscribers:
+  /workspace/domain-organizations:
     post:
       tags:
         - workspace
