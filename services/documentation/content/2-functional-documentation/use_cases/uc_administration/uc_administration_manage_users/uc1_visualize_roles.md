@@ -26,7 +26,8 @@ As an Organization Administrator, user can view organization’s administrators 
 Administration panel / Manage users
 
 **Access Conditions**  
-The connected user must have the subscriber or organization administrator role for at least one organization(workspace).
+The connected user must have the subscriber administrator role for at least one subscriber or organization administrator role for at least one organization(workspace).
+
 
 ## State Diagram
 
