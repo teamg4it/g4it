@@ -17,21 +17,23 @@ mermaid: true
 
 ## Description
 
+As a Subscriber Administrator, user can view the list of Subscriber Administrators, Organization Aministrators,
+and all users who have access to the workspace.
 
-This use case allows a user with Organization’s administrator role rights to visualize the list of users with right
-access to an organization.
+As an Organization Administrator, user can view organization’s administrators and the users who have workspace access.
 
 **Navigation Path**  
 Administration panel / Manage users
 
 **Access Conditions**  
-The connected user must have the organization administrator role for at least one organization.
+The connected user must have the subscriber administrator role for at least one subscriber or organization administrator role for at least one organization(workspace).
+
 
 ## State Diagram
 
 {{< mermaid >}}
 graph TD;
-Step1[Admin Panel] -->|Choose an organization|Step2[View of page 1 of the list with 5 users per default] --> |Enter an
+Step1[Admin Panel] -->|Choose a workspace|Step2[View of page 1 of the list with 5 users per default] --> |Enter an
 email and click on Search Button|Step3[View of the specific user]
 Step2 --> |Click on Pages Button|Step4[View of page X of the list of users]
 Step2 --> |Choose number of users per page|Step5[View of page 1 of the list with X users]
