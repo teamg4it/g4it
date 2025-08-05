@@ -14,6 +14,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 
+import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
@@ -47,12 +48,13 @@ public class FileConversionService {
      * Converts a supported file (*.csv, *.xlsx or *.ods)
      * to CSV (separated by {@link CsvUtils#DELIMITER}.
      *
-     * @param file             the file to convert
-     * @param originalFilename the original name of the file to convert
+     * @param fileToLoad uploaded file informaation
      * @return the converted file (should be deleted after it is used)
      * @throws IOException if an I/O error occurs during the conversion
      */
-    public File convertFileToCsv(File file, String originalFilename) throws IOException, RuntimeException {
+    public File convertFileToCsv(FileToLoad fileToLoad) throws IOException, RuntimeException {
+        File file = fileToLoad.getFilePath().toFile();
+        String originalFilename = fileToLoad.getOriginalFileName();
         String extension = StringUtils.getFilenameExtension(originalFilename == null ? "" : originalFilename).toLowerCase();
 
         String convertedFileName = "converted_" + file.getName() + Constants.CSV;
