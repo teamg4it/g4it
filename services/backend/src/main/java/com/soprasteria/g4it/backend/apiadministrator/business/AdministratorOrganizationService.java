@@ -139,14 +139,13 @@ public class AdministratorOrganizationService {
      * @param user           the current user
      */
     public List<UserInfoBO> getUsersOfOrg(Long organizationId, final UserBO user) {
-
         final Organization organization = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Organization %d not found.", organizationId)));
+        long subscriberId = organization.getSubscriber().getId();
+        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, subscriberId, organizationId);
 
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organization.getSubscriber().getId(), organizationId);
-
-
-        List<UserInfoBO> users = new ArrayList<>(userSubscriberRepository.findBySubscriber(organization.getSubscriber())).stream()
+        // fetch subscriber admins
+        List<UserInfoBO> subscriberAdmins = new ArrayList<>(userSubscriberRepository.findBySubscriber(organization.getSubscriber())).stream()
                 .<UserInfoBO>map(userSubscriber -> {
                     List<Role> roles = userSubscriber.getRoles();
                     if (roles.stream().noneMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))) {
@@ -168,12 +167,13 @@ public class AdministratorOrganizationService {
                 .filter(Objects::nonNull)
                 .toList();
 
-        List<Long> adminIds = users.stream()
+        List<Long> subAdminIds = subscriberAdmins.stream()
                 .map(UserInfoBO::getId)
                 .toList();
 
         List<UserInfoBO> usersByOrganization = userOrganizationRepository.findByOrganization(organization).stream()
-                .filter(userOrganization -> !adminIds.contains(userOrganization.getUser().getId()))
+                .filter(userOrganization -> !subAdminIds.contains(userOrganization.getUser().getId()))
+                .filter(userOrganization -> !Constants.SUPER_ADMIN_EMAIL.equalsIgnoreCase(userOrganization.getUser().getEmail()))
                 .<UserInfoBO>map(userOrganization -> {
                     User u = userOrganization.getUser();
                     return UserInfoBO.builder()
@@ -186,8 +186,16 @@ public class AdministratorOrganizationService {
                 })
                 .toList();
 
-        return Stream.concat(users.stream(), usersByOrganization.stream()).toList();
+       // Retrieve all users, including subscriber admins, when the logged-in user is a subscriber admin
+        if (roleService.hasAdminRightsOnSubscriber(user, subscriberId)) {
+            return Stream.concat(subscriberAdmins.stream(), usersByOrganization.stream()).toList();
+        }
+       //  Return the users except for subscriber admins when the logged-in user is an organization admin.
+        else {
+            return usersByOrganization;
+        }
     }
+
 
 
     /**

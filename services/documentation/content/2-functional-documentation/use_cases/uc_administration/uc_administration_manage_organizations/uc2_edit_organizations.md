@@ -16,16 +16,17 @@ mermaid: true
 
 ## Description
 
-This use case allows an administrator to edit organizations in an administration.
+This use case allows an administrator to edit organizations(workspaces) in an administration.
 In the admin panel, when a subscriber is chosen, administrator can edit the list with pencil button at the top right.
 Then, each organization can be renamed.
 Administrator can save changes with tick button or cancel with cross-button.
 
 **Navigation Path**  
-Administration panel / Manage organizations
+Administration panel / Manage workspaces
 
 **Access Conditions**  
-The connected user must have the subscriber administrator role for at least one subscriber.
+The connected user must have the subscriber administrator role for at least one subscriber or 
+organization administrator role for at least one organization.
 
 ## State Diagram
 {{< mermaid >}}
