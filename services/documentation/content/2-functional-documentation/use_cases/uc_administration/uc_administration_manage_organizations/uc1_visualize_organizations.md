@@ -1,5 +1,5 @@
 ---
-title: '3.2.1 Visualize organizations'
+title: "3.2.1 Visualize organizations"
 description: "This use case describes how to visualize the organizations in the administration module"
 weight: 10
 mermaid: true
@@ -14,22 +14,21 @@ mermaid: true
 - [Behavior Rules](#behavior-rules)
 - [Sequence Diagram](#sequence-diagram)
 
-
 ## Description
 
-This use case allows an administrator to visualize organizations related to a subscriber
+This use case allows an administrator to visualize organizations(workspaces) related to a subscriber
 
 **Navigation Path**  
-Administration panel / Manage organizations
+Administration panel / Manage workspaces
 
 **Access Conditions**  
-The connected user must have the administrator role for at least one subscriber.
+The connected user must have the administrator role for at least one subscriber or organization.
 
 ## State Diagram
 
 {{< mermaid >}}
 graph TD;
-Step1[Admin Panel] --> |Open Organization Tab|Step2[Organization Panel] --> |Choose a subscriber|Step3[List of organizations]
+Step1[Admin Panel] --> |Open workspace Tab|Step2[Workspace Panel] --> |Choose a subscriber|Step3[List of workspaces]
 
 {{< /mermaid >}}
 

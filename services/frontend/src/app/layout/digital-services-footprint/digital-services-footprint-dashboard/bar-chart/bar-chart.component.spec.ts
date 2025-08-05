@@ -23,7 +23,12 @@ import {
     transformOutPhysicalEquipmentsToTerminalData,
     transformOutVirtualEquipmentsToCloudData,
 } from "src/app/core/service/mapper/digital-service";
+import {
+    getColorFormatter,
+    getLabelFormatter,
+} from "src/app/core/service/mapper/graphs-mapper";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { Constants } from "src/constants";
 import { BarChartComponent } from "./bar-chart.component";
 declare var require: any;
 
@@ -31,8 +36,14 @@ describe("BarChartComponent", () => {
     let component: BarChartComponent;
     let fixture: ComponentFixture<BarChartComponent>;
     let digitalServicesService: DigitalServiceBusinessService;
-
+    let enableDataInconsistency: boolean;
+    let networkMap: any;
     beforeEach(async () => {
+        enableDataInconsistency = false;
+        networkMap = {
+            A: { status: { error: false } },
+            B: { status: { error: true } },
+        };
         await TestBed.configureTestingModule({
             declarations: [BarChartComponent],
             imports: [
@@ -374,5 +385,269 @@ describe("BarChartComponent", () => {
 
         expect(echartsOption).toBeTruthy();
         expect(echartsOption.series).toBeTruthy();
+    });
+
+    it("should call formatter and color functions for axisLabel", () => {
+        // Mock networkMap and data
+        const networkData = [
+            {
+                networkType: "A",
+                status: { ok: 1, error: 0, total: 1 },
+                items: [{ name: "item1", sipValue: 0.5, rawValue: 10, unit: "u" }],
+            },
+            {
+                networkType: "B",
+                status: { ok: 0, error: 1, total: 1 },
+                items: [{ name: "item2", sipValue: 0.7, rawValue: 20, unit: "u" }],
+            },
+        ];
+
+        // Call the chart option method
+        const option = component.loadStackBarOptionNetwork(networkData as any);
+
+        // Access axisLabel formatter and color
+        expect(option.xAxis).toBeTruthy();
+        const xAxisArray = Array.isArray(option.xAxis) ? option.xAxis : [option.xAxis];
+        const axisLabel = xAxisArray[0]!.axisLabel!;
+        expect(axisLabel).toBeTruthy();
+
+        // Test for a value with no error
+        // Type assertion to ensure axisLabel is of the expected type
+        const axisLabelTyped = axisLabel as {
+            color?: ((value?: string | number, index?: number) => string) | string;
+            formatter?: (value?: string | number, index?: number) => string;
+        };
+
+        let colorA: string | undefined;
+        if (typeof axisLabelTyped.color === "function") {
+            colorA = axisLabelTyped.color("A");
+        }
+        let formatterA: string | undefined;
+        if (typeof axisLabelTyped.formatter === "function") {
+            formatterA = axisLabelTyped.formatter("A");
+        }
+        expect(colorA).toBe(getColorFormatter(false, component.enableDataInconsistency));
+        expect(formatterA).toBe(
+            getLabelFormatter(false, component.enableDataInconsistency, "A"),
+        );
+
+        // Test for a value with error
+        let colorB: string | undefined;
+        if (typeof axisLabelTyped.color === "function") {
+            colorB = axisLabelTyped.color("B");
+        }
+        let formatterB: string | undefined;
+        if (typeof axisLabelTyped.formatter === "function") {
+            formatterB = axisLabelTyped.formatter("B");
+        }
+        expect(colorB).toBe(getColorFormatter(false, component.enableDataInconsistency));
+        expect(formatterB).toBe(
+            getLabelFormatter(false, component.enableDataInconsistency, "B"),
+        );
+    });
+
+    it("should call color and formatter functions in axisLabel", () => {
+        // Mock okMap and xAxis
+        const okMap = {
+            A: { status: { error: false } },
+            B: { status: { error: true } },
+        };
+        const xAxis = ["A", "B"];
+        const yAxis = [1];
+
+        // Call createChartOption
+        const option = (component as any).createChartOption(xAxis, yAxis, okMap, false);
+
+        // Access axisLabel
+        const axisLabel = option.xAxis[0].axisLabel;
+
+        // Test color and formatter for 'A' (no error)
+        expect(axisLabel.color("A")).toBe(
+            getColorFormatter(false, component.enableDataInconsistency),
+        );
+        expect(axisLabel.formatter("A")).toBe(
+            getLabelFormatter(false, component.enableDataInconsistency, "A"),
+        );
+
+        // Test color and formatter for 'B' (error)
+        expect(axisLabel.color("B")).toBe(
+            getColorFormatter(true, component.enableDataInconsistency),
+        );
+        expect(axisLabel.formatter("B")).toBe(
+            getLabelFormatter(true, component.enableDataInconsistency, "B"),
+        );
+    });
+
+    it("should return correct color/label when enableDataInconsistency is true", () => {
+        component.enableDataInconsistency = true;
+        const okMap = {
+            C: { status: { error: false } },
+            D: { status: { error: true } },
+        };
+        const xAxis = ["C", "D"];
+        const yAxis = [1];
+
+        const option = (component as any).createChartOption(xAxis, yAxis, okMap, false);
+        const axisLabel = option.xAxis[0].axisLabel;
+
+        expect(axisLabel.color("C")).toBe(getColorFormatter(false, true));
+        expect(axisLabel.formatter("C")).toBe(getLabelFormatter(false, true, "C"));
+        expect(axisLabel.color("D")).toBe(getColorFormatter(true, true));
+        expect(axisLabel.formatter("D")).toBe(getLabelFormatter(true, true, "D"));
+    });
+
+    it("should call formatter and color functions in axisLabel", () => {
+        // Mock barChartData for one server type with and without error
+
+        const barChartData = [
+            {
+                criteria: "acidification",
+                impactsServer: [
+                    {
+                        mutualizationType: "Dedicated",
+                        serverType: "Compute",
+                        servers: [
+                            {
+                                name: "Server1",
+                                totalSipValue: 0.5,
+                                impactVmDisk: [
+                                    {
+                                        status: Constants.DATA_QUALITY_STATUS.ok,
+                                        countValue: 2,
+                                        rawValue: 10,
+                                        unit: "u",
+                                        name: "VM1",
+                                        quantity: 1,
+                                    },
+                                    {
+                                        status: Constants.DATA_QUALITY_STATUS.error,
+                                        countValue: 1,
+                                        rawValue: 5,
+                                        unit: "u",
+                                        name: "VM2",
+                                        quantity: 2,
+                                    },
+                                ],
+                                hostingEfficiency: "high",
+                            },
+                        ],
+                    },
+                    {
+                        mutualizationType: "Shared",
+                        serverType: "Compute",
+                        servers: [
+                            {
+                                name: "Server2",
+                                totalSipValue: 2,
+                                impactVmDisk: [
+                                    {
+                                        status: Constants.DATA_QUALITY_STATUS.error,
+                                        countValue: 3,
+                                        rawValue: 15,
+                                        unit: "u",
+                                        name: "VM3",
+                                        quantity: 3,
+                                    },
+                                ],
+                                hostingEfficiency: "low",
+                            },
+                        ],
+                    },
+                ],
+            },
+        ];
+
+        // Call the method
+        const option = component.loadStackBarOptionServer(barChartData);
+
+        // Get server types as keys
+        const serverTypes = [
+            "digital-services-servers.server-type.Dedicated-Compute",
+            "digital-services-servers.server-type.Shared-Compute",
+        ];
+
+        // Access axisLabel
+        let axisLabel;
+        if (option.xAxis) {
+            if (Array.isArray(option.xAxis)) {
+                axisLabel = option.xAxis[0]?.axisLabel;
+            } else {
+                axisLabel = (option.xAxis as any).axisLabel;
+            }
+        }
+
+        // For first serverType (has ok and error)
+        const hasErrorA = true; // because there is at least one error in impactVmDisk
+        expect(axisLabel.color(serverTypes[0])).toBe(
+            getColorFormatter(hasErrorA, component.enableDataInconsistency),
+        );
+        expect(axisLabel.formatter(serverTypes[0])).toBe(
+            getLabelFormatter(
+                hasErrorA,
+                component.enableDataInconsistency,
+                serverTypes[0],
+            ),
+        );
+
+        // For second serverType (only error)
+        const hasErrorB = true;
+        expect(axisLabel.color(serverTypes[1])).toBe(
+            getColorFormatter(hasErrorB, component.enableDataInconsistency),
+        );
+        expect(axisLabel.formatter(serverTypes[1])).toBe(
+            getLabelFormatter(
+                hasErrorB,
+                component.enableDataInconsistency,
+                serverTypes[1],
+            ),
+        );
+    });
+
+    it("should return correct color/label when enableDataInconsistency is true", () => {
+        component.enableDataInconsistency = true;
+        const barChartData: any[] = [
+            {
+                criteria: "acidification",
+                impactsServer: [
+                    {
+                        mutualizationType: "Shared",
+                        serverType: "Storage",
+                        servers: [
+                            {
+                                name: "Server1",
+                                totalSipValue: 0.5,
+                                impactVmDisk: [
+                                    {
+                                        status: Constants.DATA_QUALITY_STATUS.ok,
+                                        countValue: 2,
+                                        rawValue: 10,
+                                        unit: "u",
+                                        name: "VM1",
+                                        quantity: 1,
+                                    },
+                                ],
+                                hostingEfficiency: "high",
+                            },
+                        ],
+                    },
+                ],
+            },
+        ];
+        const option = component.loadStackBarOptionServer(barChartData);
+        const serverType = "digital-services-servers.server-type.Shared-Storage";
+        let axisLabel;
+        if (option.xAxis) {
+            if (Array.isArray(option.xAxis)) {
+                axisLabel = option.xAxis[0]?.axisLabel;
+            } else {
+                axisLabel = (option.xAxis as any).axisLabel;
+            }
+        }
+
+        const hasError = false;
+        expect(axisLabel.color(serverType)).toBe(getColorFormatter(hasError, true));
+        expect(axisLabel.formatter(serverType)).toBe(
+            getLabelFormatter(hasError, true, serverType),
+        );
     });
 });

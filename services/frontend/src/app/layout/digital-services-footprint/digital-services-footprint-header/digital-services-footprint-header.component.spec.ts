@@ -35,6 +35,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             lastCalculationDate: null,
             terminals: [],
             servers: [],
+            enableDataInconsistency: false,
             networks: [],
         } as DigitalService),
     };
@@ -91,6 +92,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             lastCalculationDate: null,
             networks: [],
             servers: [],
+            enableDataInconsistency: false,
             terminals: [
                 {
                     uid: "randomUID",
@@ -119,6 +121,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             lastCalculationDate: parseFloat("2023-09-04T09:56:34.658656Z"),
             networks: [],
             servers: [],
+            enableDataInconsistency: false,
             terminals: [
                 {
                     uid: "randomUID",
@@ -152,6 +155,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             terminals: [],
             servers: [],
             networks: [],
+            enableDataInconsistency: false,
         } as DigitalService;
 
         // Patch the observable to emit a new value
