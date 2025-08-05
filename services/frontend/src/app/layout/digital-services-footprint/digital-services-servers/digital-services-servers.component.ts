@@ -151,7 +151,6 @@ export class DigitalServicesServersComponent {
     }
 
     changeSidebar(event: boolean) {
-        console.log("changeSidebar", event);
         this.sidebarVisible = event;
     }
 
