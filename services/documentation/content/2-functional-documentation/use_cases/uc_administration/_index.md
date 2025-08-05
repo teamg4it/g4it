@@ -14,7 +14,7 @@ mermaid: true
 Here is the concept to understand on the G4IT administration.
 
 - **Subscriber** : Customer of the platform, the one who signed a contract
-- **Organization** : Subscriber-defined structuring element that allows the creation of a compartmentalized space within the subscription.
+- **Organization(Workspace)** : Subscriber-defined structuring element that allows the creation of a compartmentalized space within the subscription.
 - **Subscriber’s administrator** : “Super-user” with the right to manage all organizations associated with the subscriber to whom he/she is associated.
 - **Organization’s administrator** : “Super-user” authorized by the subscriber administrator to grant users access to this organization.
 - **G4IT User** : Person authorized by an Administrator who accesses G4IT’s modules (information system and/or digital services) for all or part of the Administrator’s organisations. A user can be authorised by different administrators: in this case, he has access to the Organisations of the different Subscriptions for which he is authorised with read/write privileges.
