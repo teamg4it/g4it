@@ -7,6 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiinout.controller;
 
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceInputsDatacenterApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
@@ -32,12 +33,14 @@ public class InDatacenterDigitalServiceController implements DigitalServiceInput
      * Service to access datacenter input data.
      */
     private InDatacenterService inDatacenterService;
+    private DigitalServiceService digitalServiceService;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public ResponseEntity<InDatacenterRest> postDigitalServiceInputsDatacentersRest(final String subscriber, final Long organization, final String digitalServiceUid, final InDatacenterRest inDatacenterRest) {
+        digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inDatacenterService.createInDatacenterDigitalService(digitalServiceUid, inDatacenterRest), HttpStatus.CREATED);
     }
 
@@ -67,6 +70,7 @@ public class InDatacenterDigitalServiceController implements DigitalServiceInput
      */
     @Override
     public ResponseEntity<Void> deleteDigitalServiceInputsDatacenterRest(final String subscriber, final Long organization, final String digitalServiceUid, final Long id) {
+        digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         inDatacenterService.deleteInDatacenter(id);
         return ResponseEntity.noContent().build();
     }
@@ -78,6 +82,7 @@ public class InDatacenterDigitalServiceController implements DigitalServiceInput
     public ResponseEntity<InDatacenterRest> putDigitalServiceInputsDatacenterRest(final String subscriber,
                                                                                   final Long organization, final String digitalServiceUid, final Long id,
                                                                                   final InDatacenterRest inDatacenterRest) {
+        digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inDatacenterService.updateInDatacenter(digitalServiceUid, id, inDatacenterRest), HttpStatus.OK);
     }
 
