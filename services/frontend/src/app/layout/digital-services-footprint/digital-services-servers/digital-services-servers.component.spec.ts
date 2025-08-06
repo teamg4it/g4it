@@ -13,7 +13,7 @@ import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { DigitalServicesServersComponent } from "./digital-services-servers.component";
 
-fdescribe("DigitalServicesServersComponent", () => {
+describe("DigitalServicesServersComponent", () => {
     let component: DigitalServicesServersComponent;
     let fixture: ComponentFixture<DigitalServicesServersComponent>;
 

@@ -9,7 +9,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { DigitalServicesItemComponent } from "./digital-services-item.component";
 
-fdescribe("DigitalServicesItemComponent", () => {
+describe("DigitalServicesItemComponent", () => {
     let component: DigitalServicesItemComponent;
     let fixture: ComponentFixture<DigitalServicesItemComponent>;
 
@@ -84,7 +84,6 @@ fdescribe("DigitalServicesItemComponent", () => {
     });
 
     it("should set firstFootprintTab to 'infrastructure' in constructor when isAi is false", () => {
-        
         // Recreate component to trigger constructor logic
         fixture = TestBed.createComponent(DigitalServicesItemComponent);
         component = fixture.componentInstance;
