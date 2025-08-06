@@ -1,5 +1,5 @@
 <app-digital-services-footprint-header
-    [isAi]="isEcoMindAi"
+    [isEcoMindAi]="isEcoMindAi"
     [(digitalService)]="digitalService"
     (digitalServiceChange)="updateDigitalService()"
     #footprintHeader
@@ -21,7 +21,7 @@
 </p-scrollPanel>
 
 <app-digital-services-footprint-footer
-    [isAi]="isEcoMindAi"
+    [isEcoMindAi]="isEcoMindAi"
     [digitalService]="digitalService"
     (updateEnableCalculation)="updateEnableCalculation($event)"
     #footprintFooter

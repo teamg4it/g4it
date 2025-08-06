@@ -1,6 +1,6 @@
 @if (
-    (((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
-        ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)) &&
+    (((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi()) ||
+        ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi())) &&
     enableCalcul()
 ) {
     <div class="flex justify-content-center">

@@ -87,7 +87,7 @@
             styleClass="cancel-creation-button uppercase ml-1 mb-3 lg:mb-0"
             [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
-                !isEcoMindAi &&
+                !isEcoMindAi() &&
                 !digitalService.note &&
                 (userService.isAllowedDigitalServiceWrite$ | async)
             "
@@ -100,12 +100,12 @@
             (onClick)="sidebarVisible = true"
             styleClass="cancel-creation-button uppercase mb-3 lg:mb-0"
             [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            *ngIf="!isEcoMindAi && digitalService.note"
+            *ngIf="!isEcoMindAi() && digitalService.note"
             icon="pi pi-clipboard"
             [label]="'common.note.attached' | translate"
         />
 
-        @if (!isEcoMindAi) {
+        @if (!isEcoMindAi()) {
             <p-button
                 [ariaLabel]="'common.accessibility.import' | translate"
                 styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
@@ -120,7 +120,7 @@
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
             (onClick)="exportData()"
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi"
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi()"
             [disabled]="digitalService.lastCalculationDate === undefined"
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"

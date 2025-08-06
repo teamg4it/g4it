@@ -5,6 +5,7 @@ import {
     effect,
     EventEmitter,
     inject,
+    input,
     Input,
     Output,
 } from "@angular/core";
@@ -27,10 +28,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     templateUrl: "./digital-services-footprint-footer.component.html",
 })
 export class DigitalServicesFootprintFooterComponent {
-    isEcoMindAi: boolean = false;
-    @Input() set isAi(value: boolean) {
-        this.isEcoMindAi = value;
-    }
+    isEcoMindAi = input<boolean>(false);
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() updateEnableCalculation = new EventEmitter<boolean>();
     protected readonly userService = inject(UserService);
@@ -63,7 +61,7 @@ export class DigitalServicesFootprintFooterComponent {
 
         if (
             (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) ||
-            this.isEcoMindAi
+            this.isEcoMindAi()
         ) {
             return true;
         }
@@ -90,7 +88,7 @@ export class DigitalServicesFootprintFooterComponent {
     }
 
     async launchCalcul() {
-        if (this.isEcoMindAi) {
+        if (this.isEcoMindAi()) {
             await this.handleSave();
             if (
                 !this.aiFormsStore.getInfrastructureFormData() ||
@@ -117,7 +115,7 @@ export class DigitalServicesFootprintFooterComponent {
             const digitalServiceId = this.digitalService?.uid;
 
             if (digitalServiceId) {
-                if (this.isEcoMindAi) {
+                if (this.isEcoMindAi()) {
                     this.router
                         .navigateByUrl("/", { skipLocationChange: true })
                         .then(() => {

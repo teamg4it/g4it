@@ -74,4 +74,20 @@ describe("DigitalServicesItemComponent", () => {
         component.openNote();
         expect(component.noteOpened.emit).toHaveBeenCalledWith(component.digitalService);
     });
+
+    it("should set firstFootprintTab to 'resources' in constructor when isAi is false", () => {
+        component.isAi = false;
+        // Recreate component to trigger constructor logic
+        fixture = TestBed.createComponent(DigitalServicesItemComponent);
+        component = fixture.componentInstance;
+        expect(component.firstFootprintTab).toBe("resources");
+    });
+
+    it("should set firstFootprintTab to 'infrastructure' in constructor when isAi is false", () => {
+        component.isAi = true;
+        // Recreate component to trigger constructor logic
+        fixture = TestBed.createComponent(DigitalServicesItemComponent);
+        component = fixture.componentInstance;
+        expect(component.firstFootprintTab).toBe("infrastructure");
+    });
 });

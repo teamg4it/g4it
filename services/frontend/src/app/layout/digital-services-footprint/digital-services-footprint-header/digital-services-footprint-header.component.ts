@@ -11,6 +11,7 @@ import {
     DestroyRef,
     EventEmitter,
     inject,
+    input,
     Input,
     OnInit,
     Output,
@@ -52,10 +53,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedOrganizationName = "";
     subscriber!: Subscriber;
     isEcoMindEnabledForCurrentSubscriber: boolean = false;
-    isEcoMindAi: boolean = false;
-    @Input() set isAi(value: boolean) {
-        this.isEcoMindAi = value;
-    }
+    isEcoMindAi = input<boolean>(false);
 
     @ViewChild(DigitalServicesAiParametersComponent) aiParametersComponent:
         | DigitalServicesAiParametersComponent

@@ -172,40 +172,6 @@ export class DigitalServicesFootprintComponent implements OnInit {
                     id: "visualize",
                 },
             ];
-            // this.tabItems = [
-            //     {
-            //         label: this.translate.instant("digital-services.Terminal"),
-            //         routerLink: "terminals",
-            //         id: "terminals",
-            //     },
-            //     {
-            //         label: this.translate.instant("digital-services.Network"),
-            //         routerLink: "networks",
-            //         id: "networks",
-            //     },
-            //     {
-            //         label: this.translate.instant("digital-services.Server"),
-            //         routerLink: "servers",
-            //         id: "servers",
-            //     },
-            //     {
-            //         label: this.translate.instant("digital-services.CloudService"),
-            //         routerLink: "cloudServices",
-            //         id: "cloudServices",
-            //     },
-            //     {
-            //         label: "Filler",
-            //         separator: true,
-            //         style: { flex: 1 },
-            //         id: "separator",
-            //     },
-            //     {
-            //         label: this.translate.instant("digital-services.visualize"),
-            //         routerLink: "dashboard",
-            //         visible: this.digitalService.lastCalculationDate !== undefined,
-            //         id: "visualize",
-            //     },
-            // ];
         }
     }
 
