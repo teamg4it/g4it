@@ -43,6 +43,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     isZoom125 = computed(() => this.global.zoomLevel() >= 125);
+    isMobile = computed(() => this.global.mobileView());
     sidebarVisible: boolean = false;
     importSidebarVisible = false;
     selectedSubscriberName = "";
@@ -51,6 +52,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     subscriber!: Subscriber;
     isEcoMindEnabledForCurrentSubscriber: boolean = false;
     isEcoMindAi = input<boolean>(false);
+    showKebabMenu = false;
 
     private readonly destroyRef = inject(DestroyRef);
 

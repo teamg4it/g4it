@@ -40,15 +40,20 @@
 
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
 <div class="flex justify-content-between align-items-center flex-wrap">
-    <div class="flex align-items-center">
+    <div class="block relative w-full lg:w-auto lg:flex align-items-center">
         <p-button
             [routerLink]="changePageToDigitalServices()"
-            styleClass="cancel-creation-button mr-2 mb-3 lg:mb-0"
+            styleClass="cancel-creation-button uppercase mr-2 mb-2 lg:mb-0"
             [ariaLabel]="'digital-services.return' | translate"
             icon="pi pi-arrow-left"
             [label]="'digital-services.back' | translate"
             id="return-button"
         />
+        @if (isMobile()) {
+            <button class="kebab-div" (click)="showKebabMenu = !showKebabMenu">
+                <div class="kebab-menu-icon mb-2 lg:mb-0"></div>
+            </button>
+        }
 
         <div class="input-title flex align-items-center">
             <h2
@@ -84,61 +89,65 @@
             </p-inplace>
         </div>
     </div>
-    <div class="mr-3 block align-items-center lg:flex">
-        <p-button
-            (onClick)="sidebarVisible = true"
-            styleClass="cancel-creation-button uppercase ml-1 mb-3 lg:mb-0"
-            [ariaLabel]="'common.accessibility.addNote' | translate"
-            *ngIf="
-                !isEcoMindAi() &&
-                !digitalService.note &&
-                (userService.isAllowedDigitalServiceWrite$ | async)
-            "
-            icon="pi pi-plus-circle"
-            [label]="'common.note.add' | translate"
-            id="add-note"
-        />
-
-        <p-button
-            (onClick)="sidebarVisible = true"
-            styleClass="cancel-creation-button uppercase mb-3 lg:mb-0"
-            [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            *ngIf="!isEcoMindAi() && digitalService.note"
-            icon="pi pi-clipboard"
-            [label]="'common.note.attached' | translate"
-        />
-
-        @if (!isEcoMindAi()) {
+    @if (showKebabMenu || !isMobile()) {
+        <div class="mr-3 block align-items-center lg:flex">
             <p-button
-                [ariaLabel]="'common.accessibility.import' | translate"
-                styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
-                (onClick)="importData()"
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                icon="pi pi-upload"
-                [label]="'digital-services.import' | translate"
+                (onClick)="sidebarVisible = true"
+                styleClass="cancel-creation-button uppercase ml-1 mb-3 lg:mb-0"
+                [ariaLabel]="'common.accessibility.addNote' | translate"
+                *ngIf="
+                    !isEcoMindAi() &&
+                    !digitalService.note &&
+                    (userService.isAllowedDigitalServiceWrite$ | async)
+                "
+                icon="pi pi-plus-circle"
+                [label]="'common.note.add' | translate"
+                id="add-note"
             />
-        }
 
-        <p-button
-            [ariaLabel]="'common.accessibility.download' | translate"
-            styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
-            (onClick)="exportData()"
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi()"
-            [disabled]="digitalService.lastCalculationDate === undefined"
-            icon="pi pi-download"
-            [label]="'inventories-footprint.header.export' | translate"
-        />
+            <p-button
+                (onClick)="sidebarVisible = true"
+                styleClass="cancel-creation-button uppercase mb-3 lg:mb-0"
+                [ariaLabel]="'common.accessibility.attachedNote' | translate"
+                *ngIf="!isEcoMindAi() && digitalService.note"
+                icon="pi pi-clipboard"
+                [label]="'common.note.attached' | translate"
+            />
 
-        <p-button
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            styleClass="header-delete-btn ml-2 mb-3 lg:mb-0"
-            (onClick)="confirmDelete($event)"
-            icon="pi pi-trash"
-            [ariaLabel]="
-                'digital-services.delete-criteria'
-                    | translate: { digitalServiceName: digitalService.name }
-            "
-            id="delete-service"
-        />
-    </div>
+            @if (!isEcoMindAi()) {
+                <p-button
+                    [ariaLabel]="'common.accessibility.import' | translate"
+                    styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
+                    (onClick)="importData()"
+                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                    icon="pi pi-upload"
+                    [label]="'digital-services.import' | translate"
+                />
+            }
+
+            <p-button
+                [ariaLabel]="'common.accessibility.download' | translate"
+                styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
+                (onClick)="exportData()"
+                *ngIf="
+                    (userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi()
+                "
+                [disabled]="digitalService.lastCalculationDate === undefined"
+                icon="pi pi-download"
+                [label]="'inventories-footprint.header.export' | translate"
+            />
+
+            <p-button
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                styleClass="header-delete-btn ml-2 mb-3 lg:mb-0"
+                (onClick)="confirmDelete($event)"
+                icon="pi pi-trash"
+                [ariaLabel]="
+                    'digital-services.delete-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
+                id="delete-service"
+            />
+        </div>
+    }
 </div>
