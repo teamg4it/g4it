@@ -9,7 +9,7 @@ import { DigitalServiceBusinessService } from 'src/app/core/service/business/dig
 import { GlobalStoreService } from 'src/app/core/store/global.store';
 import { InDatacentersService } from 'src/app/core/service/data/in-out/in-datacenters.service';
 
-fdescribe('DigitalServicesFootprintComponent', () => {
+describe('DigitalServicesFootprintComponent', () => {
   let component: DigitalServicesFootprintComponent;
   let fixture: ComponentFixture<DigitalServicesFootprintComponent>;
 
