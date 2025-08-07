@@ -59,7 +59,7 @@ describe("DigitalServicesItemComponent", () => {
     it("should set firstFootprintTab based on isAi flag (true)", async () => {
         component.isAi = true;
         await component.ngOnInit();
-        expect(component.firstFootprintTab).toBe("infrastructure");
+        expect(component.firstFootprintTab).toBe("ecomind-parameters");
     });
 
     it("should navigate to footprint page", () => {

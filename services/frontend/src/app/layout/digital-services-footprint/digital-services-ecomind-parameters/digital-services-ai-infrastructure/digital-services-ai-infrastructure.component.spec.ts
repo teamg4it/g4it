@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { of, throwError } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -54,7 +54,11 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
 
         await TestBed.configureTestingModule({
             declarations: [DigitalServicesAiInfrastructureComponent],
-            imports: [ReactiveFormsModule, HttpClientTestingModule],
+            imports: [
+                ReactiveFormsModule,
+                HttpClientTestingModule,
+                TranslateModule.forRoot(),
+            ],
             providers: [
                 FormBuilder,
                 { provide: DigitalServicesAiDataService, useValue: mockAiDataService },
