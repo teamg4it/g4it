@@ -15,7 +15,6 @@ import {
     Input,
     OnInit,
     Output,
-    ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
@@ -31,8 +30,6 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { DigitalServicesAiInfrastructureComponent } from "../digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
-import { DigitalServicesAiParametersComponent } from "../digital-services-ai-parameters/digital-services-ai-parameters.component";
 
 @Component({
     selector: "app-digital-services-footprint-header",
@@ -54,13 +51,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     subscriber!: Subscriber;
     isEcoMindEnabledForCurrentSubscriber: boolean = false;
     isEcoMindAi = input<boolean>(false);
-
-    @ViewChild(DigitalServicesAiParametersComponent) aiParametersComponent:
-        | DigitalServicesAiParametersComponent
-        | undefined;
-    @ViewChild(DigitalServicesAiInfrastructureComponent) aiInfrastructureComponent:
-        | DigitalServicesAiInfrastructureComponent
-        | undefined;
 
     private readonly destroyRef = inject(DestroyRef);
 

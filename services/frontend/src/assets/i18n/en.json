@@ -211,6 +211,7 @@
         "configure-criteria": "Configure the view for digital service {{digitalServiceName}}",
         "view-resources": "Visualize my resources",
         "visualize-results": "Visualize my results",
+        "visualize-parameters": "Visualize the parameters",
         "back": "Back"
     },
     "eco-mind-ai": {

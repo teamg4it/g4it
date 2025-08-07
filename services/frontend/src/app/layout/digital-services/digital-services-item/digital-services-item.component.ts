@@ -29,11 +29,11 @@ export class DigitalServicesItemComponent {
         private readonly route: ActivatedRoute,
         public userService: UserService,
     ) {
-        this.firstFootprintTab = this.isAi ? "infrastructure" : "resources";
+        this.firstFootprintTab = this.isAi ? "ecomind-parameters" : "resources";
     }
 
     async ngOnInit(): Promise<void> {
-        this.firstFootprintTab = this.isAi ? "infrastructure" : "resources";
+        this.firstFootprintTab = this.isAi ? "ecomind-parameters" : "resources";
     }
 
     goToDigitalServiceFootprint(uid: string) {

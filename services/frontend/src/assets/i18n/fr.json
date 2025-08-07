@@ -209,6 +209,7 @@
         "configure-criteria": "Configurer la vue pour le service numérique {{digitalServiceName}}",
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
+        "visualize-parameters": "Voir les paramètres",
         "back": "Retour"
     },
     "eco-mind-ai": {
