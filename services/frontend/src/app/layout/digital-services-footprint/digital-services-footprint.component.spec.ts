@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DigitalServicesFootprintComponent } from './digital-services-footprint.component';
 import { ActivatedRoute } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of } from 'rxjs';
 import { DigitalServicesDataService } from 'src/app/core/service/data/digital-services-data.service';
 import { DigitalServiceStoreService } from 'src/app/core/store/digital-service.store';
@@ -65,6 +65,7 @@ describe('DigitalServicesFootprintComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [DigitalServicesFootprintComponent],
+      imports:[TranslateModule.forRoot()],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: DigitalServicesDataService, useValue: mockDigitalServicesDataService },
