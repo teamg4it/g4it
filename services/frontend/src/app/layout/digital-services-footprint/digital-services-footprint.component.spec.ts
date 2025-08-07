@@ -85,15 +85,64 @@ describe('DigitalServicesFootprintComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    // it('should load digital service and initialize data on init', async () => {
-    //     await component.ngOnInit();
-    //     expect(component.digitalService.uid).toBe('test-uid');
-    //     expect(mockDigitalServiceStoreService.setDigitalService).toHaveBeenCalled();
-    //     expect(mockDigitalServiceStoreService.initInPhysicalEquipments).toHaveBeenCalledWith('test-uid');
-    //     expect(mockDigitalServiceStoreService.initInVirtualEquipments).toHaveBeenCalledWith('test-uid');
-    //     expect(mockDigitalServiceBusinessService.initCountryMap).toHaveBeenCalled();
-    //     expect(mockGlobal.setLoading).toHaveBeenCalledTimes(2); // true & false
-    // });
+   it('should set tabItems for EcoMind AI', () => {
+        component.isEcoMindAi = true;
+        component.digitalService = { lastCalculationDate: new Date() } as any;
+        component.updateTabItems();
+        expect(component.tabItems?.length).toBe(4);
+        expect(component.tabItems?.find(item => item.id === 'AiParameters')).toBeDefined();
+    });
+
+    it('should set tabItems for normal service', () => {
+        component.isEcoMindAi = false;
+        component.digitalService = { lastCalculationDate: new Date() } as any;
+        component.updateTabItems();
+        expect(component.tabItems?.length).toBe(2);
+        expect(component.tabItems?.find(item => item.id === 'resources')).toBeDefined();
+    });
+
+    it('should update header and footer heights', () => {
+        const mockHeader = { nativeElement: { offsetHeight: 100 } };
+        const mockFooter = { nativeElement: { offsetHeight: 50 } };
+        component.headerRef = mockHeader as any;
+        component.footerRef = mockFooter as any;
+
+        component.updateHeights();
+        expect(component.headerHeight).toBe(100);
+        expect(component.footerHeight).toBe(50);
+    });
+
+    it('should update header and footer heights', () => {
+        const mockHeader = { nativeElement: { offsetHeight: 100 } };
+        const mockFooter = { nativeElement: { offsetHeight: 50 } };
+        component.headerRef = mockHeader as any;
+        component.footerRef = mockFooter as any;
+
+        component.updateHeights();
+        expect(component.headerHeight).toBe(100);
+        expect(component.footerHeight).toBe(50);
+    });
+
+    it('should call updateHeights in updateEnableCalculation', (done) => {
+        const spy = spyOn(component, 'updateHeights');
+        component.updateEnableCalculation(true);
+        setTimeout(() => {
+        expect(spy).toHaveBeenCalled();
+        done();
+        }, 10);
+    });
+
+    it('should attach and detach resize event listener', () => {
+        const addSpy = spyOn(window, 'addEventListener');
+        const removeSpy = spyOn(window, 'removeEventListener');
+
+        component.ngAfterViewInit();
+        expect(addSpy).toHaveBeenCalledWith('resize', jasmine.any(Function));
+
+        component.ngOnDestroy();
+        expect(removeSpy).toHaveBeenCalledWith('resize', jasmine.any(Function));
+    });
+
 
 
 
