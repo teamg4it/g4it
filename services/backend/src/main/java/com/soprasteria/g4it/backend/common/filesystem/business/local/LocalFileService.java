@@ -16,15 +16,16 @@ import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipEntrySource;
 import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Class used for local file management, regarding any deployed environment
@@ -39,8 +40,8 @@ public class LocalFileService {
      * @param directory directory path to create zip file
      * @return zip file
      */
-    public File createZipFile(final Path directory, final Path outputFile) {
-        File file = outputFile.toFile();
+    public File createZipFile(final Path directory, final String outputFilepath) {
+        File file = new File(outputFilepath);
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(directory)) {
             final List<ZipEntrySource> entries = new ArrayList<>();
             paths.forEach(path -> Try.run(() -> entries.add(new FileSource(path.getFileName().toString(), path.toFile()))));
@@ -78,40 +79,7 @@ public class LocalFileService {
                 return entries.findFirst().isEmpty();
             }
         }
-
         return false;
-    }
-
-
-    /**
-     * Extract the zip file in temporary directory
-     *
-     * @param zipInputStream the inputStream
-     * @param tempDir        the temporary directory
-     */
-    public void unzipFile(InputStream zipInputStream, Path tempDir) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(zipInputStream)) {
-            ZipEntry zipEntry;
-            byte[] buffer = new byte[1024];
-
-            while ((zipEntry = zis.getNextEntry()) != null) {
-                Path newPath = tempDir.resolve(zipEntry.getName());
-
-                // Create parent directories if they don't exist
-                Files.createDirectories(newPath.getParent());
-
-                // Extract file
-                if (!zipEntry.isDirectory()) {
-                    try (FileOutputStream fos = new FileOutputStream(newPath.toFile())) {
-                        int len;
-                        while ((len = zis.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
-                    }
-                }
-                zis.closeEntry();
-            }
-        }
     }
 
 }
