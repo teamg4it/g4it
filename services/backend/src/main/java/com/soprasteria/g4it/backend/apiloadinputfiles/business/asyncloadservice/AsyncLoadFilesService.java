@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice;
 
 
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkmetadata.CheckMetadataInventoryFileService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadmetadata.AsyncLoadMetadataService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.util.FileLoadingUtils;
@@ -40,6 +41,8 @@ public class AsyncLoadFilesService implements ITaskExecute {
     private TaskRepository taskRepository;
     @Autowired
     private LoadFileService loadFileService;
+    @Autowired
+    private DigitalServiceService digitalServiceService;
     @Autowired
     private AsyncLoadMetadataService asyncLoadMetadataService;
     @Autowired
@@ -168,10 +171,12 @@ public class AsyncLoadFilesService implements ITaskExecute {
         }
 
         taskRepository.save(task);
-
         if (isInventory) {
             loadFileService.setInventoryCounts(context.getInventoryId());
+        } else {
+            digitalServiceService.updateLastUpdateDate(context.getDigitalServiceUid());
         }
+
 
         long end = System.currentTimeMillis();
         log.info("End load input files for {}. Time taken: {}s", context.log(), (end - start) / 1000);

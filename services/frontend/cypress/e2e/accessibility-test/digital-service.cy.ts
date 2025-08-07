@@ -20,13 +20,6 @@ describe("Digital Service", () => {
         cy.log("### Test without change ###");
         cy.get('[id="add-digital"]').click();
 
-        // test navigation with tabs
-        cy.then(() => setPage("Digital service page"));
-        cy.log("### Navigate ###");
-        cy.get('[id="networks"]').click();
-        cy.get('[id="servers"]').click();
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
-
         // add a note
         cy.then(() => setPage("Note component"));
         cy.log("### Note ###");
@@ -39,7 +32,6 @@ describe("Digital Service", () => {
 
         // add a terminal
         cy.log("### Terminals ###");
-        cy.get('[id="terminals"]').click();
         cy.get('[id="add-terminals"]').click();
         // test the sidebar
         cy.then(() => setPage("Add terminal component"));
@@ -51,7 +43,6 @@ describe("Digital Service", () => {
 
         // add a networks
         cy.log("### Networks ###");
-        cy.get('[id="networks"]').click();
         cy.get('[id="add-networks"]').click();
         // test the sidebar
         cy.then(() => setPage("Add network component"));
@@ -63,7 +54,6 @@ describe("Digital Service", () => {
 
         // add a servers
         cy.log("### Servers ###");
-        cy.get('[id="servers"]').click();
         cy.get('[id="add-servers"]').click();
         // test the sidebar
         cy.then(() => setPage("Add server previous component"));
@@ -89,7 +79,6 @@ describe("Digital Service", () => {
 
         // cloud
         cy.log("### Cloud Servers ###");
-        cy.get('[id="cloudServices"]').click();
         cy.get('[id="add-cloud"]').click();
         // test the sidebar
         cy.then(() => setPage("Add cloud component"));
