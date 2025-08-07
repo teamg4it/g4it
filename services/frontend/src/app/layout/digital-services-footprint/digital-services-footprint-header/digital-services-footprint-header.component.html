@@ -51,9 +51,12 @@
         />
 
         <div class="input-title flex align-items-center">
-            <h1 *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)" class="px-2">
+            <h2
+                *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
+                class="text-4xl px-2"
+            >
                 {{ digitalService.name }}
-            </h1>
+            </h2>
             <p-inplace
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 [closable]="true"
@@ -62,14 +65,14 @@
                 styleClass="inline-block w-auto lg:w-30rem"
             >
                 <ng-template pTemplate="display">
-                    <h1 class="px-2">
+                    <h2 class="text-4xl px-2">
                         {{ digitalService.name }}
-                    </h1>
+                    </h2>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <input
                         type="text"
-                        class="text-5xl font-semibold px-2 mr-2 w-11"
+                        class="text-4xl font-semibold px-2 mr-2 w-11"
                         pInputText
                         [(ngModel)]="digitalService.name"
                         [required]="true"
