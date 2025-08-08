@@ -37,7 +37,6 @@ describe("Ecomind", () => {
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
 
         // fill ai parameters fields
-        cy.get('[id="AiParameters"').click();
         cy.then(() => setPage("AI Parameters page"));
         cy.log("### Fill AI Parameters Fields ###");
         cy.get('[inputId="finetuning"]').click();
