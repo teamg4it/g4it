@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,14 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
      * @return DigitalService list.
      */
     List<DigitalService> findByOrganization(final Organization organization);
+
+    /**
+     *
+     * @param organization the linked organization.
+     * @param isAi is DS an Ai or not
+     * @return DigitalService list.
+     */
+    List<DigitalService> findByOrganizationAndIsAi(Organization organization, Boolean isAi);
 
     /**
      * Find by organization and the digitalServiceUid and return the matching digitalService
