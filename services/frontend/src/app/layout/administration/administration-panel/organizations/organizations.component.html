@@ -51,22 +51,24 @@
                         [ariaLabel]="'common.cancel' | translate"
                     />
                 }
-                <p-button
-                    [ariaLabel]="
-                        'administration.accessibility.select-criteria' | translate
-                    "
-                    styleClass="ml-1 mr-2"
-                    (onClick)="displayPopupFct()"
-                    icon="pi pi-cog"
-                    [text]="true"
-                    [plain]="true"
-                    [rounded]="true"
-                    [ariaLabel]="
-                        'administration.user.choose-criteria'
-                            | translate: { subscriber: subscriber.name }
-                    "
-                >
-                </p-button>
+                @if (subscriber?.roles?.includes(Role.SubscriberAdmin)) {
+                    <p-button
+                        [ariaLabel]="
+                            'administration.accessibility.select-criteria' | translate
+                        "
+                        styleClass="ml-1 mr-2"
+                        (onClick)="displayPopupFct()"
+                        icon="pi pi-cog"
+                        [text]="true"
+                        [plain]="true"
+                        [rounded]="true"
+                        [ariaLabel]="
+                            'administration.user.choose-criteria'
+                                | translate: { subscriber: subscriber.name }
+                        "
+                    >
+                    </p-button>
+                }
             </div>
         }
 

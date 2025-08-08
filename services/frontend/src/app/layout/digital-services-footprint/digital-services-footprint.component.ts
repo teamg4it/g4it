@@ -125,6 +125,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
 
     ngOnDestroy() {
         window.removeEventListener("resize", () => this.updateHeights());
+        this.digitalServiceStore.setEnableCalcul(false);
     }
 
     updateHeights = () => {
@@ -169,7 +170,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
     updateEnableCalculation(event: boolean) {
         setTimeout(() => {
             this.updateHeights();
-        }, 0);
+        }, 100);
     }
 
     async updateDigitalService() {
