@@ -1,4 +1,5 @@
-import { Component, inject, OnDestroy } from "@angular/core";
+import { Component, DestroyRef, inject, OnDestroy } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -13,6 +14,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIInfrastructureForm } from "src/app/core/store/ai-forms.store";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 
 @Component({
     selector: "app-digital-services-ai-infrastructure",
@@ -26,7 +28,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     public userService = inject(UserService);
     typesOptions: EcomindType[] = [];
     writeRight: boolean = false;
-
+    private readonly destroyRef = inject(DestroyRef);
     constructor(
         private readonly fb: FormBuilder,
         private readonly messageService: MessageService,
@@ -35,6 +37,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
         private readonly translate: TranslateService,
         private readonly digitalServicesDataService: DigitalServicesDataService,
         private readonly route: ActivatedRoute,
+        private readonly digitalServiceStore: DigitalServiceStoreService,
     ) {}
 
     async ngOnInit() {
@@ -151,6 +154,11 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
             // Get all values from the form including disabled ones
             const formData = this.infrastructureForm.getRawValue();
             this.aiFormsStore.setInfrastructureFormData(formData as AIInfrastructureForm);
+            if (this.infrastructureForm.valid && this.infrastructureForm.dirty) {
+                this.digitalServiceStore.setEcoMindEnableCalcul(true);
+            } else {
+                this.digitalServiceStore.setEcoMindEnableCalcul(false);
+            }
         });
 
         this.userService.isAllowedEcoMindAiWrite$.pipe(take(1)).subscribe((isAllowed) => {
@@ -161,21 +169,26 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
     }
 
     async loadCountries() {
-        this.digitalServicesAiData.getBoaviztapiCountryMap().subscribe({
-            next: (countries: MapString) => {
-                this.locationOptions = Object.entries(countries).map(([name, code]) => ({
-                    label: name,
-                    value: name,
-                }));
-            },
-            error: (err) => {
-                this.messageService.add({
-                    severity: "error",
-                    summary: this.translate.instant("common.error"),
-                    detail: "Unable to load country list",
-                });
-            },
-        });
+        this.digitalServicesAiData
+            .getBoaviztapiCountryMap()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (countries: MapString) => {
+                    this.locationOptions = Object.entries(countries).map(
+                        ([name, code]) => ({
+                            label: name,
+                            value: name,
+                        }),
+                    );
+                },
+                error: (err) => {
+                    this.messageService.add({
+                        severity: "error",
+                        summary: this.translate.instant("common.error"),
+                        detail: "Unable to load country list",
+                    });
+                },
+            });
         const referentials = await lastValueFrom(
             this.digitalServicesAiData.getEcomindReferential(),
         );

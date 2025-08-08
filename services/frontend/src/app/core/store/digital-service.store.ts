@@ -18,6 +18,7 @@ import { InVirtualEquipmentsService } from "../service/data/in-out/in-virtual-eq
 
 interface DigitalServiceState {
     enableCalcul: boolean;
+    ecomindEnableCalcul: boolean;
     digitalService: DigitalService;
     countryMap: MapString;
     networkTypes: NetworkType[];
@@ -32,6 +33,7 @@ interface DigitalServiceState {
 
 const initialState: DigitalServiceState = {
     enableCalcul: false,
+    ecomindEnableCalcul: false,
     digitalService: {} as DigitalService,
     countryMap: {} as MapString,
     networkTypes: [] as NetworkType[],
@@ -55,6 +57,11 @@ export class DigitalServiceStoreService {
     readonly enableCalcul = computed(() => this._store().enableCalcul);
     setEnableCalcul(enableCalcul: boolean) {
         this._store.update((s) => ({ ...s, enableCalcul }));
+    }
+
+    readonly ecomindEnableCalcul = computed(() => this._store().ecomindEnableCalcul);
+    setEcoMindEnableCalcul(ecomindEnableCalcul: boolean) {
+        this._store.update((s) => ({ ...s, ecomindEnableCalcul }));
     }
 
     readonly digitalService = computed(() => this._store().digitalService);

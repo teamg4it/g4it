@@ -16,6 +16,7 @@ import {
     Subscriber,
     SubscriberCriteriaRest,
 } from "src/app/core/interfaces/administration.interfaces";
+import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -27,7 +28,7 @@ import { Constants } from "src/constants";
     providers: [ConfirmationService, MessageService],
 })
 export class OrganizationsComponent {
-    private destroyRef = inject(DestroyRef);
+    private readonly destroyRef = inject(DestroyRef);
 
     editable = false;
     subscribersDetails!: Subscriber[];
@@ -39,7 +40,7 @@ export class OrganizationsComponent {
 
     displayPopup = false;
     selectedCriteria: string[] = [];
-
+    Role = Role;
     constructor(
         private readonly confirmationService: ConfirmationService,
         public administrationService: AdministrationService,
