@@ -4,9 +4,10 @@
 
 ### Major Changes
 
-- 796  | Add new criteria based on the one available in BoaviztAPI
+- 796 | Add new criteria based on the one available in BoaviztAPI
 - 1103 | Give the possibility to disable the data consistency
-- 585  | Display only users that can be managed in the administration panel
+- 585 | Display only users that can be managed in the administration panel
+- 1349 | Design changes required for the Maturity pannel
 
 ### Minor Changes
 

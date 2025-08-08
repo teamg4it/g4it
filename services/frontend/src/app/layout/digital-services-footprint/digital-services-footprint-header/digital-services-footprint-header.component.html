@@ -39,28 +39,24 @@
 }
 
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
-<div class="flex justify-content-between align-items-center flex-wrap mb-2">
-    <div>
+<div class="flex justify-content-between align-items-center flex-wrap">
+    <div class="flex align-items-center">
         <p-button
-            styleClass="color-tertiary text-lg lg:text-2xl font-semibold p-2 "
             [routerLink]="changePageToDigitalServices()"
-            [text]="true"
+            styleClass="cancel-creation-button mr-2 mb-3 lg:mb-0"
             [ariaLabel]="'digital-services.return' | translate"
             icon="pi pi-arrow-left"
-            [label]="
-                isEcoMindAi
-                    ? ('eco-mind-ai.title'
-                      | translate: { OrganizationName: selectedOrganizationName })
-                    : ('digital-services.title'
-                      | translate: { OrganizationName: selectedOrganizationName })
-            "
+            [label]="'digital-services.back' | translate"
             id="return-button"
         />
 
         <div class="input-title flex align-items-center">
-            <h1 *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)" class="px-2">
+            <h2
+                *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
+                class="text-4xl px-2"
+            >
                 {{ digitalService.name }}
-            </h1>
+            </h2>
             <p-inplace
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 [closable]="true"
@@ -69,14 +65,14 @@
                 styleClass="inline-block w-auto lg:w-30rem"
             >
                 <ng-template pTemplate="display">
-                    <h1 class="px-2">
+                    <h2 class="text-4xl px-2">
                         {{ digitalService.name }}
-                    </h1>
+                    </h2>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <input
                         type="text"
-                        class="text-5xl font-semibold px-2 mr-2 w-11"
+                        class="text-4xl font-semibold px-2 mr-2 w-11"
                         pInputText
                         [(ngModel)]="digitalService.name"
                         [required]="true"
@@ -91,15 +87,13 @@
     <div class="mr-3 block align-items-center lg:flex">
         <p-button
             (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button ml-1 mb-3 lg:mb-0"
+            styleClass="cancel-creation-button uppercase ml-1 mb-3 lg:mb-0"
             [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
-                !isEcoMindAi &&
+                !isEcoMindAi() &&
                 !digitalService.note &&
                 (userService.isAllowedDigitalServiceWrite$ | async)
             "
-            [text]="true"
-            [plain]="true"
             icon="pi pi-plus-circle"
             [label]="'common.note.add' | translate"
             id="add-note"
@@ -107,19 +101,17 @@
 
         <p-button
             (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button mb-3 lg:mb-0"
+            styleClass="cancel-creation-button uppercase mb-3 lg:mb-0"
             [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            *ngIf="!isEcoMindAi && digitalService.note"
-            [text]="true"
-            [plain]="true"
+            *ngIf="!isEcoMindAi() && digitalService.note"
             icon="pi pi-clipboard"
             [label]="'common.note.attached' | translate"
         />
 
-        @if (!isEcoMindAi) {
+        @if (!isEcoMindAi()) {
             <p-button
                 [ariaLabel]="'common.accessibility.import' | translate"
-                styleClass="bg-black text-white header-button mb-3 lg:mb-0"
+                styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
                 (onClick)="importData()"
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 icon="pi pi-upload"
@@ -129,35 +121,19 @@
 
         <p-button
             [ariaLabel]="'common.accessibility.download' | translate"
-            styleClass="bg-black text-white header-button mb-3 lg:mb-0"
+            styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
             (onClick)="exportData()"
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi"
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi()"
             [disabled]="digitalService.lastCalculationDate === undefined"
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"
         />
 
         <p-button
-            *ngIf="
-                ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
-                ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
-            "
-            styleClass="bg-black text-white header-button mb-3 lg:mb-0"
-            [disabled]="!enableCalcul()"
-            (onClick)="launchCalcul()"
-            [label]="'common.calculate' | translate"
-            id="calculate"
-        />
-        <p-button
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            styleClass="ml-2 mb-3 lg:mb-0"
-            [rounded]="true"
-            [text]="true"
-            [raised]="true"
-            [plain]="true"
+            styleClass="header-delete-btn ml-2 mb-3 lg:mb-0"
             (onClick)="confirmDelete($event)"
             icon="pi pi-trash"
-            size="large"
             [ariaLabel]="
                 'digital-services.delete-criteria'
                     | translate: { digitalServiceName: digitalService.name }
