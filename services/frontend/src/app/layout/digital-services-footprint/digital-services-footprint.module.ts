@@ -27,10 +27,11 @@ import { FileUploadModule } from "primeng/fileupload";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
-import { DigitalServicesAiInfrastructureComponent } from "./digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
-import { DigitalServicesAiParametersComponent } from "./digital-services-ai-parameters/digital-services-ai-parameters.component";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
+import { DigitalServicesAiInfrastructureComponent } from "./digital-services-ecomind-parameters/digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
+import { DigitalServicesAiParametersComponent } from "./digital-services-ecomind-parameters/digital-services-ai-parameters/digital-services-ai-parameters.component";
+import { DigitalServicesEcomindParametersComponent } from "./digital-services-ecomind-parameters/digital-services-ecomind-parameters.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
 import { ImpactButtonComponent } from "./digital-services-footprint-dashboard/impact-button/impact-button.component";
@@ -83,6 +84,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesAiInfrastructureComponent,
         DigitalServicesImportComponent,
         DigitalServicesFootprintFooterComponent,
+        DigitalServicesEcomindParametersComponent,
         MultiFileImportComponent,
     ],
     imports: [

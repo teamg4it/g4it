@@ -98,10 +98,7 @@ describe("DigitalServicesFootprintComponent", () => {
         component.isEcoMindAi = true;
         component.digitalService = { lastCalculationDate: new Date() } as any;
         component.updateTabItems();
-        expect(component.tabItems?.length).toBe(4);
-        expect(
-            component.tabItems?.find((item) => item.id === "AiParameters"),
-        ).toBeDefined();
+        expect(component.tabItems?.length).toBe(2);
     });
 
     it("should set tabItems for normal service", () => {

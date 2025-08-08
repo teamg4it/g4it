@@ -7,8 +7,7 @@
  */
 import { RouterModule, Routes } from "@angular/router";
 import { TitleResolver } from "../common/title-resolver.service";
-import { DigitalServicesAiInfrastructureComponent } from "./digital-services-ai-infrastructure/digital-services-ai-infrastructure.component";
-import { DigitalServicesAiParametersComponent } from "./digital-services-ai-parameters/digital-services-ai-parameters.component";
+import { DigitalServicesEcomindParametersComponent } from "./digital-services-ecomind-parameters/digital-services-ecomind-parameters.component";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
 import { DigitalServicesResourcesComponent } from "./digital-services-resources/digital-services-resources.component";
@@ -59,14 +58,8 @@ const routes: Routes = [
             },
 
             {
-                path: "infrastructure",
-                component: DigitalServicesAiInfrastructureComponent,
-                ...titleResolveObject,
-            },
-
-            {
-                path: "AiParameters",
-                component: DigitalServicesAiParametersComponent,
+                path: "ecomind-parameters",
+                component: DigitalServicesEcomindParametersComponent,
                 ...titleResolveObject,
             },
 
