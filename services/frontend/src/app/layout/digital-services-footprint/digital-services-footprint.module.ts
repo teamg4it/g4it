@@ -37,6 +37,7 @@ import { ImpactButtonComponent } from "./digital-services-footprint-dashboard/im
 import { PieChartComponent } from "./digital-services-footprint-dashboard/pie-chart/pie-chart.component";
 import { RadialChartComponent } from "./digital-services-footprint-dashboard/radial-chart/radial-chart.component";
 import { SetViewPopupComponent } from "./digital-services-footprint-dashboard/set-view-popup/set-view-popup.component";
+import { DigitalServicesFootprintFooterComponent } from "./digital-services-footprint-footer/digital-services-footprint-footer.component";
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header/digital-services-footprint-header.component";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
 import { digitalServicesFootprintRouter } from "./digital-services-footprint.router";
@@ -44,6 +45,7 @@ import { DigitalServicesImportComponent } from "./digital-services-import/digita
 import { MultiFileImportComponent } from "./digital-services-import/multi-file-import/multi-file-import.component";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
+import { DigitalServicesResourcesComponent } from "./digital-services-resources/digital-services-resources.component";
 import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
 import PanelDatacenterComponent from "./digital-services-servers/side-panel/add-datacenter/datacenter.component";
 import { PanelAddVmComponent } from "./digital-services-servers/side-panel/add-vm/add-vm.component";
@@ -71,6 +73,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesTerminalsSidePanelComponent,
         DigitalServicesNetworksSidePanelComponent,
         DigitalServicesCloudServicesSidePanelComponent,
+        DigitalServicesResourcesComponent,
         PanelCreateServerComponent,
         PanelDatacenterComponent,
         PanelServerParametersComponent,
@@ -79,6 +82,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesAiParametersComponent,
         DigitalServicesAiInfrastructureComponent,
         DigitalServicesImportComponent,
+        DigitalServicesFootprintFooterComponent,
         MultiFileImportComponent,
     ],
     imports: [
