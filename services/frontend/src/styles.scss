@@ -1281,6 +1281,26 @@ app-useful-information {
     -webkit-mask: url("assets/images/icons/icon-mini-menu.svg") no-repeat center / contain;
 }
 
+.kebab-menu-icon {
+    width: 24px;
+    height: 24px;
+    background-color: #000000;
+    mask: url("assets/images/icons/icon-ellipsis-vertical.svg") no-repeat center / contain;
+    -webkit-mask: url("assets/images/icons/icon-ellipsis-vertical.svg") no-repeat center /
+        contain;
+}
+.kebab-div {
+    padding: 8px 16px;
+    width: 56px;
+    height: 40px;
+    border-radius: 4px;
+    border: 1px solid var(--tints-black-20, #cacbca);
+    background: var(--tints-black-05, #f4f4f4);
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
 .plus-menu-icon {
     width: 40px;
     height: 40px;

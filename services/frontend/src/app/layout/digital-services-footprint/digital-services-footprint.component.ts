@@ -136,23 +136,14 @@ export class DigitalServicesFootprintComponent implements OnInit {
         if (this.isEcoMindAi) {
             this.tabItems = [
                 {
-                    label: this.translate.instant("digital-services.infrastructure"),
-                    routerLink: "infrastructure",
-                    id: "infrastructure",
+                    label: this.translate.instant(
+                        "digital-services.visualize-parameters",
+                    ),
+                    routerLink: "ecomind-parameters",
+                    id: "ecomind-parameters",
                 },
                 {
-                    label: this.translate.instant("digital-services.AiParameters"),
-                    routerLink: "AiParameters",
-                    id: "AiParameters",
-                },
-                {
-                    label: "Filler",
-                    separator: true,
-                    style: { flex: 1 },
-                    id: "separator",
-                },
-                {
-                    label: this.translate.instant("digital-services.visualize"),
+                    label: this.translate.instant("digital-services.visualize-results"),
                     routerLink: "dashboard",
                     visible: this.digitalService.lastCalculationDate !== undefined,
                     id: "visualize",

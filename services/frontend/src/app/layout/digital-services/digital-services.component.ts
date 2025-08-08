@@ -138,7 +138,7 @@ export class DigitalServicesComponent {
 
     goToDigitalServiceFootprint(uid: string) {
         if (this.isEcoMindAi) {
-            this.router.navigate([`${uid}/footprint/infrastructure`], {
+            this.router.navigate([`${uid}/footprint/ecomind-parameters`], {
                 relativeTo: this.route,
             });
         } else {

@@ -47,8 +47,8 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             quantization: ["", Validators.required],
             isInference: [true],
             isFinetuning: [{ value: false, disabled: true }],
-            numberUserYear: [0, [Validators.required, Validators.min(0)]],
-            averageNumberRequest: [0, [Validators.required, Validators.min(0)]],
+            numberUserYear: [10000, [Validators.required, Validators.min(0)]],
+            averageNumberRequest: [200, [Validators.required, Validators.min(0)]],
         });
 
         this.digitalServicesDataService.getModels(this.model).subscribe({

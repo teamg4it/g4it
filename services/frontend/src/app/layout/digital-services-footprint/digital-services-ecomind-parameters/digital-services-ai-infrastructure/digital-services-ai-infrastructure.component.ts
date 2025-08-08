@@ -53,10 +53,19 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
         //set default value
         this.infrastructureForm = this.fb.group({
             infrastructureType: [null, Validators.required],
-            nbCpuCores: [null, Validators.min(0)],
-            nbGpu: [null, [Validators.required, Validators.min(0)]],
-            gpuMemory: [null, [Validators.required, Validators.min(0)]],
-            ramSize: [null, [Validators.required, Validators.min(0)]],
+            nbCpuCores: [{ value: null, disabled: true }, Validators.min(0)],
+            nbGpu: [
+                { value: null, disabled: true },
+                [Validators.required, Validators.min(0)],
+            ],
+            gpuMemory: [
+                { value: null, disabled: true },
+                [Validators.required, Validators.min(0)],
+            ],
+            ramSize: [
+                { value: null, disabled: true },
+                [Validators.required, Validators.min(0)],
+            ],
             pue: [null, [Validators.required, Validators.min(1)]],
             complementaryPue: [null, [Validators.required, Validators.min(1)]],
             location: [null, Validators.required],
