@@ -1007,7 +1007,7 @@ databaseChangeLog:
                   defaultValue: false
 
   - changeSet:
-      id: update-in_ai_infrastructure-and-default-value-in-ref-ecomind-type-ai
+      id: update-default-values-in-ref-ecomind-type-ai-table
       author: G4IT Dev Team
       changes:
         - update:
@@ -1061,5 +1061,3 @@ databaseChangeLog:
                   value: 16
             tableName: ref_ecomind_type_ai
             where: description='Laptop' and reference='laptop-3'
-        - sql: update in_ai_infrastructure set infrastructure_type = 'blade-server--48'
-                 where infrastructure_type = 'blade-server-28';
