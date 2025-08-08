@@ -124,7 +124,7 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
 
         await component.ngOnInit();
 
-        expect(component.infrastructureForm.value.nbCpuCores).toBe(30);
+        expect(component.infrastructureForm.value.complementaryPue).toBe(1.1);
         expect(mockAiDataService.getAiInfrastructure).not.toHaveBeenCalled();
     });
 
@@ -160,7 +160,7 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         await component.ngOnInit();
         await fixture.whenStable();
 
-        expect(component.infrastructureForm.value.nbCpuCores).toBe(30);
+        expect(component.infrastructureForm.value.complementaryPue).toBe(1.1);
     });
 
     it("should handle error during infrastructure load", async () => {
