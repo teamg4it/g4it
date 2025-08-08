@@ -28,10 +28,6 @@ describe("Ecomind", () => {
 
         // fill infrastructure fields
         cy.log("### Fill Infrastructure Fields ###");
-        cy.get("#cpu-cores").type("4");
-        cy.get("#gpu-count").type("4");
-        cy.get("#gpu-memory").type("4");
-        cy.get("#ram-size").type("4");
         cy.get('[id="pue"]').type("1.5");
         cy.get('[id="complementary-pue"]').type("1.3");
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
