@@ -1005,3 +1005,59 @@ databaseChangeLog:
                   name: enable_data_inconsistency
                   type: boolean
                   defaultValue: false
+
+  - changeSet:
+      id: update-default-value-in-ref-ecomind-type-ai
+      author: G4IT Dev Team
+      changes:
+        - update:
+            columns:
+              - column:
+                  name: reference
+                  value: blade-server--48
+              - column:
+                  name: default_cpu_cores
+                  value: 2
+              - column:
+                  name: default_gpu_count
+                  value: 1
+              - column:
+                  name: default_gpu_memory
+                  value: 32
+              - column:
+                  name: default_ram_size
+                  value: 128
+            tableName: ref_ecomind_type_ai
+            where: description='Server' and reference='blade-server-28'
+        - update:
+            columns:
+              - column:
+                  name: default_cpu_cores
+                  value: 1
+              - column:
+                  name: default_gpu_count
+                  value: 0
+              - column:
+                  name: default_gpu_memory
+                  value: 0
+              - column:
+                  name: default_ram_size
+                  value: 16
+            tableName: ref_ecomind_type_ai
+            where: description='Desktop' and reference='desktop-4'
+        - update:
+            columns:
+              - column:
+                  name: default_cpu_cores
+                  value: 1
+              - column:
+                  name: default_gpu_count
+                  value: 0
+              - column:
+                  name: default_gpu_memory
+                  value: 0
+              - column:
+                  name: default_ram_size
+                  value: 16
+            tableName: ref_ecomind_type_ai
+            where: description='Laptop' and reference='laptop-3'
