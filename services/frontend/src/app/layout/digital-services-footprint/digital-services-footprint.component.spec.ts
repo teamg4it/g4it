@@ -37,6 +37,7 @@ describe("DigitalServicesFootprintComponent", () => {
 
     const mockDigitalServiceStoreService = {
         setDigitalService: jasmine.createSpy(),
+        setEnableCalcul: jasmine.createSpy(),
         initInPhysicalEquipments: jasmine.createSpy(),
         initInVirtualEquipments: jasmine.createSpy(),
         setInDatacenters: jasmine.createSpy(),
