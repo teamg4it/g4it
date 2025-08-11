@@ -17,8 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -89,6 +91,30 @@ public class RoleService {
                         .filter(organizationBO -> Objects.equals(organizationBO.getId(), organizationId))
                         .anyMatch(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)));
     }
+
+    /** Check if logged in 'ORGANIZATION_ADMINISTRATOR' user's domain
+     *  belongs to the subscriber's authorized domain
+     *
+     * @param user  the user.
+     * @param subscriberId the organization's id
+     * @return boolean
+     */
+    public boolean isUserDomainAuthorized(UserBO user, Long subscriberId) {
+        String userDomain = user.getDomain();
+        return user.getSubscribers().stream()
+                .filter(subscriberBO -> Objects.equals(subscriberBO.getId(), subscriberId))
+                .anyMatch(subscriberBO ->
+                        Arrays.stream(
+                                        Optional.ofNullable(subscriberBO.getAuthorizedDomains())
+                                                .orElse("")
+                                                .split(",")
+                                )
+                                .map(String::trim)
+                                .anyMatch(domain -> domain.equals(userDomain))
+                );
+    }
+
+
 
     public List<RoleBO> getAllRolesBO() {
         return roleMapper.toDto(roleRepository.findAll());

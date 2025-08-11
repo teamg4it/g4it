@@ -11,8 +11,6 @@
 
 ### Minor Changes
 
-- 1478 | Choose criteria for organization must not appear if i am not subsciber admin
-- 1477 | Error when i create a workspace for admin module if i am a workpace admin
 - 1391 | Update spring boot verion
 - 1346 | Rename / delete workspace for non subscriber admin
 - 1245 | Facilitate the criteria selection
