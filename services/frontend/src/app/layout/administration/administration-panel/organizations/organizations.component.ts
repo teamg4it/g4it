@@ -41,6 +41,7 @@ export class OrganizationsComponent {
     displayPopup = false;
     selectedCriteria: string[] = [];
     Role = Role;
+    myDomain!: string;
     constructor(
         private readonly confirmationService: ConfirmationService,
         public administrationService: AdministrationService,
@@ -63,6 +64,12 @@ export class OrganizationsComponent {
                 );
             }
         });
+
+        this.userDataService.userSubject.subscribe((user) => {
+            this.myDomain = user.email.split('@')[1];
+        });
+
+
     }
 
     checkOrganization(event: any, organization: Organization, subscriber: Subscriber) {
