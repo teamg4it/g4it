@@ -47,7 +47,11 @@ export class DigitalServicesFootprintFooterComponent {
     enableCalcul = computed(() => {
         const digitalService = this.digitalServiceStore.digitalService();
 
-        if (this.digitalServiceStore.enableCalcul()) return true;
+        const enableCalcul = this.isEcoMindAi()
+            ? this.digitalServiceStore.ecomindEnableCalcul()
+            : this.digitalServiceStore.enableCalcul();
+
+        if (enableCalcul) return true;
 
         const hasInPhysicalEquipments =
             this.digitalServiceStore.inPhysicalEquipments().length > 0;
@@ -59,10 +63,7 @@ export class DigitalServicesFootprintFooterComponent {
                 ? true
                 : digitalService.lastUpdateDate > digitalService.lastCalculationDate;
 
-        if (
-            (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) ||
-            this.isEcoMindAi()
-        ) {
+        if (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) {
             return true;
         }
         return false;
@@ -84,11 +85,11 @@ export class DigitalServicesFootprintFooterComponent {
 
         this.digitalServiceBusinessService.launchCalcul$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() => this.launchCalcul());
+            .subscribe(() => this.launchCalcul(true));
     }
 
-    async launchCalcul() {
-        if (this.isEcoMindAi()) {
+    async launchCalcul(editCriteria: boolean = false) {
+        if (this.isEcoMindAi() && !editCriteria) {
             await this.handleSave();
             if (
                 !this.aiFormsStore.getInfrastructureFormData() ||
@@ -107,6 +108,7 @@ export class DigitalServicesFootprintFooterComponent {
         );
         this.global.setLoading(false);
         this.digitalServiceStore.setEnableCalcul(false);
+        this.digitalServiceStore.setEcoMindEnableCalcul(false);
         const urlSegments = this.router.url.split("/").slice(1);
         if (urlSegments.length > 3) {
             const subscriber = urlSegments[1];

@@ -53,6 +53,7 @@ describe("DigitalServicesFootprintFooterComponent", () => {
         mockDigitalServiceStore = jasmine.createSpyObj("DigitalServiceStoreService", [
             "digitalService",
             "enableCalcul",
+            "ecomindEnableCalcul",
             "inPhysicalEquipments",
             "inVirtualEquipments",
             "setEnableCalcul",
@@ -102,6 +103,7 @@ describe("DigitalServicesFootprintFooterComponent", () => {
             uid: "123",
         } as DigitalService);
         mockDigitalServiceStore.enableCalcul.and.returnValue(false);
+        mockDigitalServiceStore.ecomindEnableCalcul.and.returnValue(false);
         mockDigitalServiceStore.inPhysicalEquipments.and.returnValue([]);
         mockDigitalServiceStore.inVirtualEquipments.and.returnValue([]);
         mockTranslate.instant.and.callFake((key: string) => key);
@@ -110,9 +112,9 @@ describe("DigitalServicesFootprintFooterComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should enable calculation when isEcoMindAi is true", () => {
+    it("should enable calculation when isEcoMindAi is false", () => {
         (component as any).isEcoMindAi = () => ({ value: true }); // mock as function returning signal-like object
-        expect(component.enableCalcul()).toBeTrue();
+        expect(component.enableCalcul()).toBeFalse();
     });
 
     it("should subscribe to digitalService$ and launchCalcul$", () => {
