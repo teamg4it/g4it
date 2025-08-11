@@ -164,6 +164,15 @@ public class TestUtils {
                                 .build()))
                 .build();
     }
+    public static UserBO createAuthorizedUserAdminSub() {
+        return UserBO.builder().email(EMAIL).domain("unitaire")
+                .subscribers(List.of(
+                        SubscriberBO.builder()
+                                .id(1L)
+                                .authorizedDomains("unitaire")
+                                .build()))
+                .build();
+    }
 
     public static UserBO createUserBONoRole() {
         return UserBO.builder().email(EMAIL)

@@ -42,4 +42,9 @@ class RoleServiceTest {
         // the user is subscriber admin on subscriber 2, not on 1
         assertFalse(roleService.hasAdminRightsOnSubscriber(TestUtils.createUserBOAdminSub(), 1L));
     }
+    @Test
+    void UserDomainAuthorized_NoAdminRole() {
+        // the user is subscriber admin on subscriber 2, not on 1
+        assertTrue(roleService.isUserDomainAuthorized(TestUtils.createAuthorizedUserAdminSub(), 1L));
+    }
 }
