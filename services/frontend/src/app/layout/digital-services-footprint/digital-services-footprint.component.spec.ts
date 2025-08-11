@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
-import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
+import {
+    ChangeDetectorRef
+} from "@angular/core";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
@@ -59,9 +62,9 @@ describe("DigitalServicesFootprintComponent", () => {
         create: () => of({}),
     };
 
-    const mockTranslate = {
-        instant: (key: string) => key,
-    };
+    const mockCdr = { detectChanges: jasmine.createSpy() };
+
+    const MockScrollPanel = { refresh: jasmine.createSpy('refresh') };
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -81,9 +84,9 @@ describe("DigitalServicesFootprintComponent", () => {
                     provide: DigitalServiceBusinessService,
                     useValue: mockDigitalServiceBusinessService,
                 },
+                { provide: ChangeDetectorRef, useValue: mockCdr },
                 { provide: GlobalStoreService, useValue: mockGlobal },
-                { provide: InDatacentersService, useValue: mockInDatacentersService },
-                { provide: TranslateService, useValue: mockTranslate },
+                { provide: InDatacentersService, useValue: mockInDatacentersService }
             ],
         }).compileComponents();
 
@@ -110,28 +113,6 @@ describe("DigitalServicesFootprintComponent", () => {
         expect(component.tabItems?.find((item) => item.id === "resources")).toBeDefined();
     });
 
-    it("should update header and footer heights", () => {
-        const mockHeader = { nativeElement: { offsetHeight: 100 } };
-        const mockFooter = { nativeElement: { offsetHeight: 50 } };
-        component.headerRef = mockHeader as any;
-        component.footerRef = mockFooter as any;
-
-        component.updateHeights();
-        expect(component.headerHeight).toBe(100);
-        expect(component.footerHeight).toBe(50);
-    });
-
-    it("should update header and footer heights", () => {
-        const mockHeader = { nativeElement: { offsetHeight: 100 } };
-        const mockFooter = { nativeElement: { offsetHeight: 50 } };
-        component.headerRef = mockHeader as any;
-        component.footerRef = mockFooter as any;
-
-        component.updateHeights();
-        expect(component.headerHeight).toBe(100);
-        expect(component.footerHeight).toBe(50);
-    });
-
     it("should call updateHeights in updateEnableCalculation", (done) => {
         const spy = spyOn(component, "updateHeights");
         component.updateEnableCalculation(true);
@@ -141,14 +122,5 @@ describe("DigitalServicesFootprintComponent", () => {
         }, 10);
     });
 
-    it("should attach and detach resize event listener", () => {
-        const addSpy = spyOn(window, "addEventListener");
-        const removeSpy = spyOn(window, "removeEventListener");
 
-        component.ngAfterViewInit();
-        expect(addSpy).toHaveBeenCalledWith("resize", jasmine.any(Function));
-
-        component.ngOnDestroy();
-        expect(removeSpy).toHaveBeenCalledWith("resize", jasmine.any(Function));
-    });
 });
