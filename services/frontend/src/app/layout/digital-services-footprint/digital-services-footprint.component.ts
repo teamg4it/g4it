@@ -5,7 +5,14 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, ElementRef, inject, OnInit, ViewChild } from "@angular/core";
+import {
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    inject,
+    OnInit,
+    ViewChild,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
@@ -18,7 +25,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-
+import { ScrollPanel } from 'primeng/scrollpanel';
 @Component({
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
@@ -37,12 +44,14 @@ export class DigitalServicesFootprintComponent implements OnInit {
     @ViewChild("footprintFooter", { read: ElementRef }) footerRef!: ElementRef;
     headerHeight = 0;
     footerHeight = 0;
+    @ViewChild('scrollPanel') scrollPanel!: ScrollPanel;
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
         private readonly digitalBusinessService: DigitalServiceBusinessService,
         private readonly route: ActivatedRoute,
         private readonly translate: TranslateService,
+        private readonly cdr: ChangeDetectorRef,
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -131,6 +140,8 @@ export class DigitalServicesFootprintComponent implements OnInit {
     updateHeights = () => {
         this.headerHeight = this.headerRef?.nativeElement.offsetHeight;
         this.footerHeight = this.footerRef?.nativeElement.offsetHeight;
+        this.cdr.detectChanges();
+        this.scrollPanel?.refresh();
     };
 
     updateTabItems() {
@@ -170,7 +181,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
     updateEnableCalculation(event: boolean) {
         setTimeout(() => {
             this.updateHeights();
-        }, 100);
+        }, 0);
     }
 
     async updateDigitalService() {
