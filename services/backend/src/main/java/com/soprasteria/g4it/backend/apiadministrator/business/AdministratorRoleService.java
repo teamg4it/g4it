@@ -69,7 +69,7 @@ public class AdministratorRoleService {
        if (!(hasSubscriberAdminRights || hasDomainAuthorization)) {
            throw new AuthorizationException(
                    HttpServletResponse.SC_FORBIDDEN,
-                   String.format("User with id '%d' does not have admin role on subscriber '%d' or authorized domain.",
+                   String.format("User with id '%d' has no admin role on subscriber '%d' or has domain not authorized.",
                            user.getId(), subscriberId)
            );
        }
