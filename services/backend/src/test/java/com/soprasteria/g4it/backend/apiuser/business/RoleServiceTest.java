@@ -44,7 +44,7 @@ class RoleServiceTest {
     }
     @Test
     void UserDomainAuthorized_NoAdminRole() {
-        // the user is subscriber admin on subscriber 2, not on 1
+        // the user domain is present in subscriber's authorized domain
         assertTrue(roleService.isUserDomainAuthorized(TestUtils.createAuthorizedUserAdminSub(), 1L));
     }
 }

@@ -235,10 +235,10 @@ class AdministratorOrganizationServiceTest {
         OrganizationBO expectedOrg = OrganizationBO.builder().id(33L).build();
 
         when(organizationService.createOrganization(organizationUpsertRest, userBO, subscriberId)).thenReturn(expectedOrg);
-
+        when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
         OrganizationBO result = administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, true);
 
-        verify(administratorRoleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
+        verify(administratorRoleService).hasAdminRightsOnSubscriber(userBO, subscriberId, true);
         verify(organizationService).createOrganization(organizationUpsertRest, userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
 
@@ -264,10 +264,13 @@ class AdministratorOrganizationServiceTest {
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
         when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
         when(userOrganizationRepository.findByOrganizationIdAndUserId(org.getId(), userBO.getId())).thenReturn(Optional.empty());
+        when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
+        when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(false);
 
         OrganizationBO result = administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, false);
 
         verify(organizationService).createOrganization(organizationUpsertRest, userBO, subscriberId);
+        verify(roleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
         verify(userRepository).findById(1L);
         verify(userOrganizationRepository).save(any());

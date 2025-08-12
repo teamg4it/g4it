@@ -56,8 +56,8 @@ public class AdministratorRoleService {
         }
     }
 
-    public void hasAdminRightsOnSubscriber(UserBO user, Long subscriberId) {
-        if (!(roleService.hasAdminRightsOnSubscriber(user, subscriberId) || roleService.isUserDomainAuthorized(user, subscriberId))) {
+    public void hasAdminRightsOnSubscriber(UserBO user, Long subscriberId, Boolean isOrgAdminAuthorized) {
+        if (!(roleService.hasAdminRightsOnSubscriber(user, subscriberId) || isOrgAdminAuthorized)) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("User with id '%d' do not have admin role on subscriber with id :" +
                     " '%d' or doesn't have authorized domain", user.getId(), subscriberId));
         }

@@ -100,7 +100,7 @@ public class RoleService {
      * @return boolean
      */
     public boolean isUserDomainAuthorized(UserBO user, Long subscriberId) {
-        String userDomain = user.getDomain();
+        String userDomain = user.getEmail().split("@")[1];
         return user.getSubscribers().stream()
                 .filter(subscriberBO -> Objects.equals(subscriberBO.getId(), subscriberId))
                 .anyMatch(subscriberBO ->

@@ -115,15 +115,16 @@ public class AdministratorOrganizationService {
      */
     public OrganizationBO createOrganization(OrganizationUpsertRest organizationUpsertRest, UserBO user, boolean checkAdminRole) {
         Long subscriberId = organizationUpsertRest.getSubscriberId();
-
-        // Check Admin Role on this subscriber.
+        boolean isOrgAdminAuthorized = roleService.isUserDomainAuthorized(user, subscriberId);
+        // Check Admin Role on this subscriber or the logged-in org admin user's domain is authorized
         if (checkAdminRole) {
-            administratorRoleService.hasAdminRightsOnSubscriber(user, subscriberId);
+            administratorRoleService.hasAdminRightsOnSubscriber(user, subscriberId, isOrgAdminAuthorized);
         }
 
         final OrganizationBO result = organizationService.createOrganization(organizationUpsertRest, user, subscriberId);
         userService.clearUserCache(user);
-        if (!checkAdminRole) {
+        // Link user to the organization and assign with org admin role
+        if (!(checkAdminRole || roleService.hasAdminRightsOnSubscriber(user, subscriberId))) {
             UserRoleRest userRoleRest = UserRoleRest.builder().userId(user.getId()).roles(List.of("ROLE_ORGANIZATION_ADMINISTRATOR")).build();
             LinkUserRoleRest linkUserRoleRest = LinkUserRoleRest.builder().organizationId(result.getId()).users(Collections.singletonList(userRoleRest)).build();
             linkUserToOrg(linkUserRoleRest, authService.getUser(), false);
