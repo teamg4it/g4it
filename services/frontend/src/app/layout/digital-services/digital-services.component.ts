@@ -45,6 +45,7 @@ export class DigitalServicesComponent {
     rowsPerPage: number = 10;
     currentPage = 0;
     isEcoMindAi = false;
+    firstCall = true;
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -68,16 +69,23 @@ export class DigitalServicesComponent {
         this.userService.currentSubscriber$.subscribe((subscriber: any) => {
             this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
         });
-        this.userService.roles$.subscribe((roles: Role[]) => {
-            this.isAllowedDigitalService =
-                roles.includes(Role.DigitalServiceRead) ||
-                roles.includes(Role.DigitalServiceWrite);
-            this.isAllowedEcoMindAiService =
-                roles.includes(Role.EcoMindAiRead) || roles.includes(Role.EcoMindAiWrite);
-        });
-        this.global.setLoading(true);
-        await this.retrieveDigitalServices();
-        this.global.setLoading(false);
+        this.userService.roles$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(async (roles: Role[]) => {
+                this.isAllowedDigitalService =
+                    roles.includes(Role.DigitalServiceRead) ||
+                    roles.includes(Role.DigitalServiceWrite);
+                this.isAllowedEcoMindAiService =
+                    roles.includes(Role.EcoMindAiRead) ||
+                    roles.includes(Role.EcoMindAiWrite);
+                if (this.firstCall) {
+                    this.global.setLoading(true);
+                    await this.retrieveDigitalServices();
+                    this.global.setLoading(false);
+                    this.firstCall = false;
+                }
+            });
+
         this.router.events
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((event) => {
