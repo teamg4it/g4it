@@ -236,9 +236,10 @@ class AdministratorOrganizationServiceTest {
 
         when(organizationService.createOrganization(organizationUpsertRest, userBO, subscriberId)).thenReturn(expectedOrg);
         when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
+        when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(true);
         OrganizationBO result = administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, true);
 
-        verify(administratorRoleService).hasAdminRightsOnSubscriber(userBO, subscriberId, true);
+        verify(administratorRoleService).hasSubscriberAdminOrDomainAccess(userBO, subscriberId, true,true);
         verify(organizationService).createOrganization(organizationUpsertRest, userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
 
