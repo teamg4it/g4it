@@ -102,7 +102,7 @@
             <p-button
                 class="mx-2"
                 styleClass="black-button-sidebar"
-                (click)="addOrganization(newOrganization)"
+                (onClick)="addOrganization(newOrganization)"
                 [disabled]="newOrganization.uiStatus !== 'OK'"
                 id="add-organization-button"
                 [ariaLabel]="
@@ -144,7 +144,7 @@
                 [ariaLabel]="'administration.accessibility.on-deletion' | translate"
                 class="mx-1"
                 *ngIf="editable && organization.status === status.ACTIVE"
-                (click)="confirmDelete($event, organization)"
+                (onClick)="confirmDelete($event, organization)"
                 id="delete-organization-button"
             >
                 <img
@@ -160,7 +160,7 @@
                 class="mx-2"
                 styleClass="black-button-sidebar"
                 *ngIf="organization.status === status.TO_BE_DELETED"
-                (click)="confirmToActive(organization)"
+                (onClick)="confirmToActive(organization)"
                 >{{ "administration.cancel-deletion" | translate }}</p-button
             >
             <small class="mx-1" *ngIf="organization.status === status.TO_BE_DELETED">
