@@ -53,12 +53,11 @@ public class FileConversionService {
      * @throws IOException if an I/O error occurs during the conversion
      */
     public File convertFileToCsv(FileToLoad fileToLoad) throws IOException, RuntimeException {
-        File file = fileToLoad.getFilePath().toFile();
         String originalFilename = fileToLoad.getOriginalFileName();
         String extension = StringUtils.getFilenameExtension(originalFilename == null ? "" : originalFilename).toLowerCase();
 
-        String convertedFileName = "converted_" + file.getName() + Constants.CSV;
-        Path convertedFilePath = file.toPath().resolveSibling(convertedFileName);
+        String convertedFileName = "converted_" + fileToLoad.getFilename() + Constants.CSV;
+        Path convertedFilePath = fileToLoad.getFilePath().resolveSibling(convertedFileName);
         File convertedFile = convertedFilePath.toFile();
 
         log.info("Converting '{}' to '{}' separated csv format", originalFilename, CsvUtils.DELIMITER);
@@ -70,13 +69,13 @@ public class FileConversionService {
                      .build())) {
             switch (extension) {
                 case "csv":
-                    convertCsvFileToCsv(file, csvPrinter);
+                    convertCsvFileToCsv(fileToLoad, csvPrinter);
                     break;
                 case "xlsx":
-                    convertXlsxFileToCsv(file, csvPrinter);
+                    convertXlsxFileToCsv(fileToLoad, csvPrinter);
                     break;
                 case "ods":
-                    convertOdsFileToCsv(file, csvPrinter);
+                    convertOdsFileToCsv(fileToLoad, csvPrinter);
                     break;
                 default:
                     throw new IllegalArgumentException(String.format("Unknown file extension '%s' for file '%s'", extension, originalFilename));
@@ -91,13 +90,13 @@ public class FileConversionService {
      * Given a valid CSV file, formats its content as CSV separated by {@link CsvUtils#DELIMITER} and outputs the result
      * into a CSVPrinter. If the input file is already properly formatted, its content is copied into the CSVPrinter.
      *
-     * @param file       the input CSV file
+     * @param fileToLoad the input CSV file
      * @param csvPrinter the output CSVPrinter
      * @throws IOException if an I/O error occurs
      */
-    private void convertCsvFileToCsv(File file, CSVPrinter csvPrinter) throws IOException {
+    private void convertCsvFileToCsv(FileToLoad fileToLoad, CSVPrinter csvPrinter) throws IOException {
         String separator = CsvUtils.DELIMITER;
-
+        File file = fileToLoad.getFilePath().toFile();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             handleBomEncoding(bufferedReader);
             String headerRow = bufferedReader.readLine();
@@ -125,11 +124,12 @@ public class FileConversionService {
     /**
      * Given a valid XLSX file, formats its content as CSV and outputs the result into a CSVPrinter
      *
-     * @param file       the input XLSX file
+     * @param fileToLoad the input XLSX file
      * @param csvPrinter the output CSVPrinter
      * @throws IOException if an I/O error occurs during the conversion
      */
-    private void convertXlsxFileToCsv(File file, CSVPrinter csvPrinter) throws IOException {
+    private void convertXlsxFileToCsv(FileToLoad fileToLoad, CSVPrinter csvPrinter) throws IOException {
+        File file = fileToLoad.getFilePath().toFile();
         try (Workbook workbook = WorkbookFactory.create(new FileInputStream(file))) {
             BaseFormulaEvaluator.evaluateAllFormulaCells(workbook);
             DataFormatter formatter = new DataFormatter();
@@ -159,11 +159,12 @@ public class FileConversionService {
     /**
      * Given a valid ODS file, formats its content as CSV and outputs the result into a CSVPrinter
      *
-     * @param file       the input ODS file
+     * @param fileToLoad the input ODS file
      * @param csvPrinter the output CSVPrinter
      * @throws IOException if an I/O error occurs during the conversion
      */
-    private void convertOdsFileToCsv(File file, CSVPrinter csvPrinter) throws IOException {
+    private void convertOdsFileToCsv(FileToLoad fileToLoad, CSVPrinter csvPrinter) throws IOException {
+        File file = fileToLoad.getFilePath().toFile();
         SpreadSheet spreadSheet = SpreadSheet.createFromFile(file);
         org.jopendocument.dom.spreadsheet.Sheet sheet = spreadSheet.getSheet(0);
 
