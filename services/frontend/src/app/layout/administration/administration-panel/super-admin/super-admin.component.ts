@@ -22,7 +22,6 @@ export class SuperAdminComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly destroyRef = inject(DestroyRef);
     isMigrateDataButtonDisabled = false;
-    isMigrateDemoDsButtonDisabled = false;
 
     constructor(private readonly superAdminDataService: SuperAdminDataService) {}
 

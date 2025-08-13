@@ -89,30 +89,37 @@
 
     <div *ngIf="subscriber" class="my-2">
         <div *ngIf="editable">
-            <input
-                class="label-input-div-medium input-width inline-block p-2 mx-1"
-                pInputText
-                [(ngModel)]="newOrganization.name"
-                [placeholder]="'administration.organization.new' | translate"
-                name="newOrg"
-                ngDefaultControl
-                (ngModelChange)="checkOrganization($event, newOrganization, subscriber)"
-                id="new-organization-input"
-            />
-            <p-button
-                class="mx-2"
-                styleClass="black-button-sidebar"
-                (onClick)="addOrganization(newOrganization)"
-                [disabled]="newOrganization.uiStatus !== 'OK'"
-                id="add-organization-button"
-                [ariaLabel]="
-                    'administration.organization.accessibility.addAnOrganization'
-                        | translate
-                "
-                >{{
-                    "administration.organization.addAnOrganization" | translate
-                }}</p-button
-            >
+            @if (
+                subscriber?.roles?.includes(Role.SubscriberAdmin) ||
+                subscriber.authorizedDomains.includes(myDomain)
+            ) {
+                <input
+                    class="label-input-div-medium input-width inline-block p-2 mx-1"
+                    pInputText
+                    [(ngModel)]="newOrganization.name"
+                    [placeholder]="'administration.organization.new' | translate"
+                    name="newOrg"
+                    ngDefaultControl
+                    (ngModelChange)="
+                        checkOrganization($event, newOrganization, subscriber)
+                    "
+                    id="new-organization-input"
+                />
+                <p-button
+                    class="mx-2"
+                    styleClass="black-button-sidebar"
+                    (onClick)="addOrganization(newOrganization)"
+                    [disabled]="newOrganization.uiStatus !== 'OK'"
+                    id="add-organization-button"
+                    [ariaLabel]="
+                        'administration.organization.accessibility.addAnOrganization'
+                            | translate
+                    "
+                    >{{
+                        "administration.organization.addAnOrganization" | translate
+                    }}</p-button
+                >
+            }
         </div>
         <p class="error-text" *ngIf="newOrganization.uiStatus === 'DUPLICATE'">
             {{
