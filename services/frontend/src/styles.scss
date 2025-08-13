@@ -1192,6 +1192,14 @@ app-top-header {
     }
 }
 
+@media screen and (min-width: 1200px) and (max-width: 1350px) {
+    .welcome-page-container {
+        .selection-card {
+            flex-direction: column !important;
+        }
+    }
+}
+
 app-declarations,
 app-useful-information {
     .breadcrumb {
