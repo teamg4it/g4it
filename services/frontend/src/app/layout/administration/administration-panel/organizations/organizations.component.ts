@@ -9,8 +9,9 @@ import { Component, DestroyRef, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { take } from "rxjs";
+import { firstValueFrom, take } from "rxjs";
 import {
+    DomainSubscribers,
     Organization,
     OrganizationUpsertRest,
     Subscriber,
@@ -18,6 +19,8 @@ import {
 } from "src/app/core/interfaces/administration.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
+import { UserService } from "src/app/core/service/business/user.service";
+import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -41,12 +44,17 @@ export class OrganizationsComponent {
     displayPopup = false;
     selectedCriteria: string[] = [];
     Role = Role;
+    myDomain!: string;
+    notSubscriberAdminInSome = false;
+    domainSubscribers: DomainSubscribers[] = [];
     constructor(
         private readonly confirmationService: ConfirmationService,
         public administrationService: AdministrationService,
         private readonly translate: TranslateService,
         private readonly userDataService: UserDataService,
         private readonly globalStore: GlobalStoreService,
+        private readonly userService: UserService,
+        private readonly workspaceService: WorkspaceService,
     ) {}
 
     ngOnInit() {
@@ -62,14 +70,47 @@ export class OrganizationsComponent {
                     (s) => s.name === subscriber,
                 );
             }
+            this.notSubscriberAdminInSome = this.subscribersDetails.some(
+                (s) => !s.roles?.includes(Role.SubscriberAdmin),
+            );
+
+            if (this.notSubscriberAdminInSome) {
+                this.getDomainSubscribersList();
+            }
+        });
+
+        this.userDataService.userSubject.subscribe((user) => {
+            this.myDomain = user.email.split("@")[1];
         });
     }
 
+    async getDomainSubscribersList() {
+        const userEmail = (await firstValueFrom(this.userService.user$)).email;
+
+        if (userEmail) {
+            const body = {
+                email: userEmail,
+            };
+            this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
+                this.domainSubscribers = res;
+            });
+        }
+    }
+
     checkOrganization(event: any, organization: Organization, subscriber: Subscriber) {
-        const organizations =
-            this.unmodifiedSubscribersDetails.find((s) => s.name === subscriber.name)
-                ?.organizations || [];
-        organization.uiStatus = undefined;
+        const isSubscriberAdmin = subscriber.roles?.includes(Role.SubscriberAdmin);
+        let organizations: Organization[] = [];
+        if (isSubscriberAdmin) {
+            organizations =
+                this.unmodifiedSubscribersDetails.find((s) => s.name === subscriber.name)
+                    ?.organizations || [];
+            organization.uiStatus = undefined;
+        } else {
+            organizations = (this.domainSubscribers.find(
+                (s) => s.name === subscriber.name,
+            )?.organizations || []) as Organization[];
+            organization.uiStatus = undefined;
+        }
 
         if (event.trim().includes(" ")) {
             organization.uiStatus = "SPACE";
@@ -152,6 +193,9 @@ export class OrganizationsComponent {
             .subscribe((_) => {
                 this.init(this.subscriber.name);
                 this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
+                if (this.notSubscriberAdminInSome) {
+                    this.getDomainSubscribersList();
+                }
             });
     }
 
