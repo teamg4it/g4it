@@ -58,7 +58,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<SubscriberRest>> getSubscribers() {
+    public ResponseEntity<List<SubscriberRest>> getOrganizations() {
         return ResponseEntity.ok(
                 subscriberRestMapper.toDto(this.administratorService.getSubscribers(authService.getAdminUser())));
     }
@@ -67,7 +67,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<SubscriberRest> getSubscriberById(final Long subscriberId) {
+    public ResponseEntity<SubscriberRest> getOrganizationById(final Long subscriberId) {
         return ResponseEntity.ok(
                 subscriberRestMapper.toDto(this.administratorService.getSubscriberById(subscriberId)));
     }
@@ -77,7 +77,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<SubscriberRest> updateSubscriber(final Long subscriberId, final CriteriaRest criteriaRest) {
+    public ResponseEntity<SubscriberRest> updateOrganization(final Long subscriberId, final CriteriaRest criteriaRest) {
         return ResponseEntity.ok(subscriberRestMapper.toDto(this.administratorService.updateSubscriberCriteria(subscriberId, criteriaRest, authService.getUser()))
         );
     }
@@ -86,7 +86,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<SubscriberRest>> getOrganizations(final Long organizationId, final Long subscriberId) {
+    public ResponseEntity<List<SubscriberRest>> getWorkspaces(final Long organizationId, final Long subscriberId) {
         return new ResponseEntity<>(subscriberRestMapper.toDto(administratorOrganizationService.getOrganizations(subscriberId, organizationId, authService.getUser())),
                 HttpStatus.OK);
     }
@@ -95,7 +95,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<OrganizationRest> createOrganization(final OrganizationUpsertRest organizationUpsertRest) {
+    public ResponseEntity<OrganizationRest> createWorkspaceAsAdmin(final OrganizationUpsertRest organizationUpsertRest) {
         return new ResponseEntity<>(organizationRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser(), true)),
                 HttpStatus.OK);
     }
@@ -104,7 +104,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<OrganizationRest> updateOrganization(final OrganizationUpsertRest organizationUpsertRest, final Long organizationId) {
+    public ResponseEntity<OrganizationRest> updateWorkspace(final OrganizationUpsertRest organizationUpsertRest, final Long organizationId) {
         return new ResponseEntity<>(organizationRestMapper.toDto(administratorOrganizationService.updateOrganization(organizationId, organizationUpsertRest, authService.getUser())),
                 HttpStatus.OK);
     }
@@ -122,7 +122,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<UserInfoRest>> getUsersOfOrg(Long organizationId) {
+    public ResponseEntity<List<UserInfoRest>> getUsersOfWorkspace(Long organizationId) {
         return new ResponseEntity<>
                 (userRestMapper.toListRest(administratorOrganizationService.getUsersOfOrg(organizationId, authService.getUser())), HttpStatus.OK);
     }
@@ -131,7 +131,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<UserInfoRest>> linkUserToOrg(final LinkUserRoleRest linkUserRoleRest) {
+    public ResponseEntity<List<UserInfoRest>> linkUserToWorkspace(final LinkUserRoleRest linkUserRoleRest) {
         return new ResponseEntity<>
                 (userRestMapper.toListRest(administratorOrganizationService.linkUserToOrg(linkUserRoleRest, authService.getUser(), true)), HttpStatus.OK);
     }
@@ -159,7 +159,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteUserOrgLink(final LinkUserRoleRest linkUserRoleRest) {
+    public ResponseEntity<Void> deleteUserWorkspaceLink(final LinkUserRoleRest linkUserRoleRest) {
         administratorOrganizationService.deleteUserOrgLink(linkUserRoleRest, authService.getUser());
         return ResponseEntity.noContent().<Void>build();
     }
