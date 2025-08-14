@@ -9,7 +9,7 @@ tags:
     description: All endpoint for task
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/task/{taskId}:
+  /organizations/{subscriber}/workspaces/{organization}/task/{taskId}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

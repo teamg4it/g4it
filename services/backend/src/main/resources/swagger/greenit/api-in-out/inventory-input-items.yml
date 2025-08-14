@@ -15,7 +15,7 @@ tags:
     description: Endpoint for inventory inputs - application
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/datacenters:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/inputs/datacenters:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -65,7 +65,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/datacenters/{id}:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/inputs/datacenters/{id}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -128,7 +128,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/physical-equipments:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/inputs/physical-equipments:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -178,7 +178,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/physical-equipments/{id}:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/inputs/physical-equipments/{id}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -241,7 +241,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/virtual-equipments:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/inputs/virtual-equipments:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -291,7 +291,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/virtual-equipments/{id}:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/inputs/virtual-equipments/{id}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -354,7 +354,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/applications:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/inputs/applications:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -404,7 +404,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/applications/{id}:
+  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/inputs/applications/{id}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

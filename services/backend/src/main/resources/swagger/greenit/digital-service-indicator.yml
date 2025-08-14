@@ -9,7 +9,7 @@ tags:
     description: All endpoint for digital service indicators
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/export:
+  /organizations/{subscriber}/workspaces/{organization}/digital-services/{digitalServiceUid}/export:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
