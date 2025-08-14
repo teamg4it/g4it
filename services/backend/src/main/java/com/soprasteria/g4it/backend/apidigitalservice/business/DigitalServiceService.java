@@ -87,7 +87,7 @@ public class DigitalServiceService {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
         // Get last index to create digital service.
-        final List<DigitalService> orgDigitalServices = digitalServiceRepository.findByOrganization(linkedOrganization);
+        final List<DigitalService> orgDigitalServices = digitalServiceRepository.findByOrganizationAndIsAi(linkedOrganization, isAi);
         final Integer lastDigitalServiceDefaultNumber = orgDigitalServices
                 .stream()
                 .map(DigitalService::getName)

@@ -56,10 +56,23 @@ public class AdministratorRoleService {
         }
     }
 
-    public void hasAdminRightsOnSubscriber(UserBO user, Long subscriberId) {
-        if (!roleService.hasAdminRightsOnSubscriber(user, subscriberId)) {
-            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("User with id '%d' do not have admin role on subscriber with id : '%d'", user.getId(), subscriberId));
-        }
+    /**
+     *
+     * @param user user BO
+     * @param subscriberId subscriber's id
+     * @param hasSubscriberAdminRights has subscriber admin role
+     * @param hasDomainAuthorization has valid domain
+     */
+   public void hasSubscriberAdminOrDomainAccess(UserBO user, Long subscriberId,
+                                       boolean hasSubscriberAdminRights,
+                                       boolean hasDomainAuthorization) {
+       if (!(hasSubscriberAdminRights || hasDomainAuthorization)) {
+           throw new AuthorizationException(
+                   HttpServletResponse.SC_FORBIDDEN,
+                   String.format("User with id '%d' has no admin role on subscriber '%d' or has domain not authorized.",
+                           user.getId(), subscriberId)
+           );
+       }
     }
 
 }

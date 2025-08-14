@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
-import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 
 @Component({
     selector: "app-digital-services-item",
@@ -22,22 +20,20 @@ export class DigitalServicesItemComponent {
 
     isLinkCopied = false;
     sidebarVisible = false;
-    firstFootprintTab = "terminals";
+    firstFootprintTab = "resources";
 
     constructor(
-        private readonly digitalServicesData: DigitalServicesDataService,
         private readonly router: Router,
         private readonly confirmationService: ConfirmationService,
         private readonly translate: TranslateService,
         private readonly route: ActivatedRoute,
         public userService: UserService,
-        private readonly clipboardService: ClipboardService,
     ) {
-        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
+        this.firstFootprintTab = this.isAi ? "ecomind-parameters" : "resources";
     }
 
     async ngOnInit(): Promise<void> {
-        this.firstFootprintTab = this.isAi ? "infrastructure" : "terminals";
+        this.firstFootprintTab = this.isAi ? "ecomind-parameters" : "resources";
     }
 
     goToDigitalServiceFootprint(uid: string) {

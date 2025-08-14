@@ -1,4 +1,5 @@
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnDestroy, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -8,6 +9,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore, AIParametersForm } from "src/app/core/store/ai-forms.store";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 
 @Component({
     selector: "app-digital-services-ai-parameters",
@@ -26,7 +28,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     quantizationOptions: any[] = [];
     dataParameter: any;
     public userService = inject(UserService);
-
+    private readonly destroyRef = inject(DestroyRef);
     constructor(
         private readonly fb: FormBuilder,
         private readonly digitalServicesDataService: DigitalServicesDataService,
@@ -35,6 +37,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         private readonly translate: TranslateService,
         private readonly route: ActivatedRoute,
         private readonly digitalServicesAiData: DigitalServicesAiDataService,
+        private readonly digitalServiceStore: DigitalServiceStoreService,
     ) {}
 
     ngOnInit(): void {
@@ -47,8 +50,8 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             quantization: ["", Validators.required],
             isInference: [true],
             isFinetuning: [{ value: false, disabled: true }],
-            numberUserYear: [0, [Validators.required, Validators.min(0)]],
-            averageNumberRequest: [0, [Validators.required, Validators.min(0)]],
+            numberUserYear: [10000, [Validators.required, Validators.min(0)]],
+            averageNumberRequest: [200, [Validators.required, Validators.min(0)]],
         });
 
         this.digitalServicesDataService.getModels(this.model).subscribe({
@@ -213,12 +216,19 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             value.totalGeneratedTokens = totalTokens;
 
             this.aiFormsStore.setParametersFormData(value as AIParametersForm);
-        });
-        this.userService.isAllowedEcoMindAiWrite$.subscribe((isAllowed) => {
-            if (!isAllowed) {
-                this.terminalsForm.disable();
+            if (this.terminalsForm.valid && this.terminalsForm.dirty) {
+                this.digitalServiceStore.setEcoMindEnableCalcul(true);
+            } else {
+                this.digitalServiceStore.setEcoMindEnableCalcul(false);
             }
         });
+        this.userService.isAllowedEcoMindAiWrite$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((isAllowed) => {
+                if (!isAllowed) {
+                    this.terminalsForm.disable();
+                }
+            });
     }
 
     ngOnDestroy(): void {
