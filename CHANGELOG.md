@@ -11,6 +11,7 @@
 
 ### Minor Changes
 
+- 1446 | Fix medium priority checkmarks issues
 - 1391 | Update spring boot verion
 - 1346 | Rename / delete workspace for non subscriber admin
 - 1245 | Facilitate the criteria selection
