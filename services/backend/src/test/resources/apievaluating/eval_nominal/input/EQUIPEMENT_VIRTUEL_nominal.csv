@@ -1,3 +1,3 @@
-nomEquipementVirtuel;nomEquipementPhysique;nomSourceDonneeEquipementPhysique;cleRepartition;vCPU;cluster;consoElecAnnuelle;typeEqv;capaciteStockage;nomEntite;nomSourceDonnee;
+nomEquipementVirtuel;nomEquipementPhysique;nomSourceDonneeEquipementPhysique;cleRepartition;vCPU;cluster;consoElecAn;typeEqv;capaciteStockage;nomEntite;nomSourceDonnee;
 virtual-eq-1-1;physical-eq-1;;;4;Cluster 1;;calcul;;Entity 1;;
 virtual-eq-2-1;physical-eq-2;;;2;Cluster 2;;calcul;;Entity 1;;

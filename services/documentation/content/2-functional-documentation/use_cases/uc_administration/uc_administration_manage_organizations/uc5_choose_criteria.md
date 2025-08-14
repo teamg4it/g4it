@@ -25,7 +25,8 @@ This use case allows to configure the impact criteria to perform an estimation.
 - Information System panel / My IS inventory / My Information System / configure criteria for my information system
 
 **Access Conditions**  
-
+The connected user must have the subscriber administrator role for at least one subscriber
+or organization administrator role for at least one organization.
 
 ## State Diagram
 {{< mermaid >}}

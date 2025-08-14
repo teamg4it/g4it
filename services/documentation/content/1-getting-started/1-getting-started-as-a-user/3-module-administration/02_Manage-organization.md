@@ -33,7 +33,7 @@ Before proceeding, ensure the following:
 
 - The user has logged in to G4IT at least once.  
   See the [First Login Guide](../../01_First-Login) for instructions.
-- You are an administrator for the relevant **subscriber**.
+- You are an administrator for the relevant **subscriber** or the **organization**.
 
 ---
 

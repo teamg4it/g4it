@@ -38,12 +38,13 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public InputStream readFile(final FileFolder folder, final String fileName) throws IOException {
-        return new FileInputStream(toFile(folder, fileName));
+        File file = new File(localPath + File.separator + folder.getFolderName() + File.separator + fileName);
+        return new FileInputStream(file);
     }
 
     @Override
     public void writeFile(final FileFolder folder, final String fileName, final String content) throws IOException {
-        File fileWithPath = toFile(folder, fileName);
+        File fileWithPath = new File(localPath + File.separator + folder.getFolderName() + File.separator + fileName);
         createNecessaryFolders(fileWithPath);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileWithPath))) {
             writer.write(content);
@@ -52,7 +53,7 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public void writeFile(final FileFolder folder, final String fileName, final InputStream content) throws IOException {
-        File fileWithPath = toFile(folder, fileName);
+        File fileWithPath = new File(localPath + File.separator + folder.getFolderName() + File.separator + fileName);
         createNecessaryFolders(fileWithPath);
         try (OutputStream os = new FileOutputStream(fileWithPath.toString())) {
             content.transferTo(os);
@@ -175,7 +176,7 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public long getFileSize(final FileFolder folder, final String fileName) {
-        return toFile(folder, fileName).length();
+        return new File(localPath + File.separator + folder.getFolderName() + File.separator + fileName).length();
     }
 
     @Override
@@ -193,10 +194,6 @@ public class LocalFileStorage implements FileStorage {
 
     private String toStrPath(final FileFolder folder, final String... subpath) {
         return toPath(folder, subpath).toString();
-    }
-
-    private File toFile(final FileFolder folder, final String... subpath) {
-        return toPath(folder, subpath).toFile();
     }
 
     private String resourcePath(final FileFolder folder, final String subfolder, final FileType fileType) {

@@ -13,11 +13,13 @@
             </div>
             <p-button
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                (click)="doResetItem(); sidebarVisible(true)"
-                styleClass="inventory-button-small"
+                (onClick)="doResetItem(); sidebarVisible(true)"
+                styleClass="p-button-secondary-blue uppercase"
                 [id]="addButtonId"
-                >{{ translationPrefix + "." + addButton | translate }}</p-button
-            >
+                icon="pi pi-plus-circle"
+                [label]="'common.add-button' | translate"
+                [ariaLabel]="'common.accessibility.add' | translate"
+            ></p-button>
         </div>
     </ng-template>
     <ng-template pTemplate="header">

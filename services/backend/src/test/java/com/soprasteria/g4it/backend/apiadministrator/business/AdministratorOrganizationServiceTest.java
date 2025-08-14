@@ -235,10 +235,11 @@ class AdministratorOrganizationServiceTest {
         OrganizationBO expectedOrg = OrganizationBO.builder().id(33L).build();
 
         when(organizationService.createOrganization(organizationUpsertRest, userBO, subscriberId)).thenReturn(expectedOrg);
-
+        when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
+        when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(true);
         OrganizationBO result = administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, true);
 
-        verify(administratorRoleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
+        verify(administratorRoleService).hasSubscriberAdminOrDomainAccess(userBO, subscriberId, true,true);
         verify(organizationService).createOrganization(organizationUpsertRest, userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
 
@@ -264,10 +265,13 @@ class AdministratorOrganizationServiceTest {
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
         when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
         when(userOrganizationRepository.findByOrganizationIdAndUserId(org.getId(), userBO.getId())).thenReturn(Optional.empty());
+        when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
+        when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(false);
 
         OrganizationBO result = administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, false);
 
         verify(organizationService).createOrganization(organizationUpsertRest, userBO, subscriberId);
+        verify(roleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
         verify(userRepository).findById(1L);
         verify(userOrganizationRepository).save(any());
@@ -275,6 +279,33 @@ class AdministratorOrganizationServiceTest {
 
         assertEquals(expectedOrg, result);
     }
+    @Test
+    void createOrganization_NoAdminRightsAnd_NoDomainAuthorization_ThrowException() {
+        UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
+        Long subscriberId = 1L;
+        String organizationName = "ORGANIZATION";
+        String updatedStatus = OrganizationStatus.TO_BE_DELETED.name();
+        long dataRetentionDay = 7L;
+
+        OrganizationUpsertRest organizationUpsertRest =
+                TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
+
+        when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(false);
+        when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(false);
+
+        doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
+                "User with id 1 has no admin role on subscriber 1 or has domain not authorized."))
+                .when(administratorRoleService).hasSubscriberAdminOrDomainAccess(userBO,
+                        subscriberId, false, false);
+
+        assertThrows(AuthorizationException.class, () -> {
+            administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, true);
+        });
+
+        verify(roleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
+        verify(roleService).isUserDomainAuthorized(userBO, subscriberId);
+    }
+
     @Test
     void getUsersOfOrgNotFound() {
         Long orgId = 12L;

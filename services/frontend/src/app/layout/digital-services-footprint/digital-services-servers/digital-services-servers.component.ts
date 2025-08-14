@@ -5,11 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject } from "@angular/core";
+import { Component, computed, DestroyRef, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { differenceInDays } from "date-fns";
 import { MessageService } from "primeng/api";
-import { firstValueFrom, lastValueFrom, Subject, takeUntil } from "rxjs";
+import { firstValueFrom, lastValueFrom } from "rxjs";
 import {
     DigitalService,
     DigitalServiceServerConfig,
@@ -34,8 +35,7 @@ export class DigitalServicesServersComponent {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
     private readonly inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
-
-    ngUnsubscribe = new Subject<void>();
+    private readonly destroyRef = inject(DestroyRef);
 
     digitalService: DigitalService = {} as DigitalService;
     sidebarVisible: boolean = false;
@@ -136,14 +136,17 @@ export class DigitalServicesServersComponent {
 
     async ngOnInit() {
         this.digitalServicesData.digitalService$
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
                 this.digitalService = res;
             });
         this.digitalServicesBusiness.panelSubject$
-            .pipe(takeUntil(this.ngUnsubscribe))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
                 this.sidebarVisible = res;
+                if (res === false && !this.router.url.endsWith("/resources")) {
+                    this.router.navigate(["../resources"], { relativeTo: this.route });
+                }
             });
     }
 
@@ -232,10 +235,8 @@ export class DigitalServicesServersComponent {
         this.digitalServicesBusiness.closePanel();
     }
     ngOnDestroy() {
-        if (!this.router.url.includes("servers")) {
+        if (!this.router.url.includes("resources") && this.sidebarVisible) {
             this.digitalServicesBusiness.closePanel();
         }
-        this.ngUnsubscribe.next();
-        this.ngUnsubscribe.complete();
     }
 }

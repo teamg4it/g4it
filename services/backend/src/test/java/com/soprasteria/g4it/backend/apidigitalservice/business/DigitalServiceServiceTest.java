@@ -93,7 +93,7 @@ class DigitalServiceServiceTest {
         final List<DigitalService> existingDigitalService = new ArrayList<>();
 
         final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).build();
-        when(digitalServiceRepository.findByOrganization(linkedOrganization)).thenReturn(existingDigitalService);
+        when(digitalServiceRepository.findByOrganizationAndIsAi(linkedOrganization, false)).thenReturn(existingDigitalService);
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
@@ -104,7 +104,7 @@ class DigitalServiceServiceTest {
         assertThat(result).isEqualTo(expectedBo);
 
         verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
-        verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);
+        verify(digitalServiceRepository, times(1)).findByOrganizationAndIsAi(linkedOrganization, false);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
         verify(userRepository, times(1)).findById(USER_ID);
@@ -120,7 +120,7 @@ class DigitalServiceServiceTest {
         final List<DigitalService> existingDigitalService = List.of(DigitalService.builder().name("Digital Service 1").build(), DigitalService.builder().name("My Digital Service").build());
 
         final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).build();
-        when(digitalServiceRepository.findByOrganization(linkedOrganization)).thenReturn(existingDigitalService);
+        when(digitalServiceRepository.findByOrganizationAndIsAi(linkedOrganization, false)).thenReturn(existingDigitalService);
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
@@ -131,7 +131,7 @@ class DigitalServiceServiceTest {
         assertThat(result).isEqualTo(expectedBo);
 
         verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
-        verify(digitalServiceRepository, times(1)).findByOrganization(linkedOrganization);
+        verify(digitalServiceRepository, times(1)).findByOrganizationAndIsAi(linkedOrganization, false);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
         verify(userRepository, times(1)).findById(USER_ID);

@@ -17,16 +17,17 @@ mermaid: true
 
 ## Description
 
-This use case allows an administrator to create organizations in an administration.
+This use case allows an administrator to create organizations(workspaces) in an administration.
 In admin panel, when a subscriber is chosen, administrator can edit the list with pencil button at the top right.
 At the top of the list, administrator can name a new organization then add it to subscriber.
 If name already exists, a warning appears while typing.
 
 **Navigation Path**  
-Administration panel / Manage organizations / Edit mode 
+Administration panel / Manage workspaces / Edit mode 
 
 **Access Conditions**  
-The connected user must have the subscriber administrator role for at least one subscriber.
+The connected user must have the subscriber administrator role for at least one subscriber 
+or organization administrator role for at least one organization.
 
 ## State Diagram
 

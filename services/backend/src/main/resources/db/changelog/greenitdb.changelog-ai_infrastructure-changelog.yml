@@ -69,3 +69,10 @@ databaseChangeLog:
             referencedTableName: digital_service
             referencedColumnNames: uid
             onDelete: CASCADE
+
+  - changeSet:
+      id: update-table-in_ai_infrastructure-column-infrastructure_type
+      author: G4IT Dev Team
+      changes:
+        - sql: update in_ai_infrastructure set infrastructure_type = 'blade-server--48'
+            where infrastructure_type = 'blade-server-28';

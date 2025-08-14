@@ -95,6 +95,7 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
     public ResponseEntity<List<InVirtualEquipmentRest>> updateDigitalServiceInputsVirtualEquipmentRest(String subscriber, Long organization,
                                                                                                        String digitalServiceUid, Long physicalEqpId,
                                                                                                        List<InVirtualEquipmentRest> inVirtualEquipmentRest) {
+        digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return ResponseEntity.ok().body(inVirtualEquipmentService.updateOrDeleteInVirtualEquipments(digitalServiceUid, physicalEqpId, inVirtualEquipmentRest));
     }
 }
