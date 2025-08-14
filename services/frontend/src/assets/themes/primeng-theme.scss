@@ -2556,6 +2556,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: var(--blue-color);
     border: 2px solid var(--blue-color);
     background: var(--surface-0);
+    font-weight: 800;
 }
 
 .p-button:not([disabled]).p-button-secondary-blue:hover,
@@ -9076,4 +9077,13 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
 
 .surface-overlay {
     background-color: var(--surface-overlay) !important;
+}
+
+app-digital-services-ecomind-parameters {
+    p-inputnumber {
+        input:disabled {
+            background-color: #f2eff6;
+            color: #282829;
+        }
+    }
 }

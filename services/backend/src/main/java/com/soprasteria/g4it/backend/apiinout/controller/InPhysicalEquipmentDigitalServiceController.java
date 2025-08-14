@@ -7,6 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiinout.controller;
 
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceInputsPhysicalEquipmentApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -32,12 +33,14 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
      * Service to access physical equipment input data.
      */
     private InPhysicalEquipmentService inPhysicalEquipmentService;
+    private DigitalServiceService digitalServiceService;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsPhysicalEquipmentsRest(final String subscriber, final Long organization, final String digitalServiceUid, final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
+        digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inPhysicalEquipmentService.createInPhysicalEquipmentDigitalService(digitalServiceUid, inPhysicalEquipmentRest), HttpStatus.CREATED);
     }
 
@@ -67,6 +70,7 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
      */
     @Override
     public ResponseEntity<Void> deleteDigitalServiceInputsPhysicalEquipmentRest(final String subscriber, final Long organization, final String digitalServiceUid, final Long id) {
+        digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         inPhysicalEquipmentService.deleteInPhysicalEquipment(digitalServiceUid, id);
         return ResponseEntity.noContent().build();
     }
@@ -78,6 +82,7 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
     public ResponseEntity<InPhysicalEquipmentRest> putDigitalServiceInputsPhysicalEquipmentRest(final String subscriber,
                                                                                                 final Long organization, final String digitalServiceUid, final Long id,
                                                                                                 final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
+        digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceUid, id, inPhysicalEquipmentRest), HttpStatus.OK);
     }
 }

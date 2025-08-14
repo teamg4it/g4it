@@ -5,7 +5,14 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, inject, OnInit } from "@angular/core";
+import {
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    inject,
+    OnInit,
+    ViewChild,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
@@ -18,7 +25,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-
+import { ScrollPanel } from 'primeng/scrollpanel';
 @Component({
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
@@ -33,11 +40,18 @@ export class DigitalServicesFootprintComponent implements OnInit {
     isEcoMindAi: boolean = false;
     tabItems: MenuItem[] | undefined;
 
+    @ViewChild("footprintHeader", { read: ElementRef }) headerRef!: ElementRef;
+    @ViewChild("footprintFooter", { read: ElementRef }) footerRef!: ElementRef;
+    headerHeight = 0;
+    footerHeight = 0;
+    @ViewChild('scrollPanel') scrollPanel!: ScrollPanel;
+
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
         private readonly digitalBusinessService: DigitalServiceBusinessService,
         private readonly route: ActivatedRoute,
         private readonly translate: TranslateService,
+        private readonly cdr: ChangeDetectorRef,
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -113,27 +127,35 @@ export class DigitalServicesFootprintComponent implements OnInit {
         this.digitalBusinessService.initCountryMap();
     }
 
+    ngAfterViewInit() {
+        this.updateHeights();
+        window.addEventListener("resize", () => this.updateHeights());
+    }
+
+    ngOnDestroy() {
+        window.removeEventListener("resize", () => this.updateHeights());
+        this.digitalServiceStore.setEnableCalcul(false);
+    }
+
+    updateHeights = () => {
+        this.headerHeight = this.headerRef?.nativeElement.offsetHeight;
+        this.footerHeight = this.footerRef?.nativeElement.offsetHeight;
+        this.cdr.detectChanges();
+        this.scrollPanel?.refresh();
+    };
+
     updateTabItems() {
         if (this.isEcoMindAi) {
             this.tabItems = [
                 {
-                    label: this.translate.instant("digital-services.infrastructure"),
-                    routerLink: "infrastructure",
-                    id: "infrastructure",
+                    label: this.translate.instant(
+                        "digital-services.visualize-parameters",
+                    ),
+                    routerLink: "ecomind-parameters",
+                    id: "ecomind-parameters",
                 },
                 {
-                    label: this.translate.instant("digital-services.AiParameters"),
-                    routerLink: "AiParameters",
-                    id: "AiParameters",
-                },
-                {
-                    label: "Filler",
-                    separator: true,
-                    style: { flex: 1 },
-                    id: "separator",
-                },
-                {
-                    label: this.translate.instant("digital-services.visualize"),
+                    label: this.translate.instant("digital-services.visualize-results"),
                     routerLink: "dashboard",
                     visible: this.digitalService.lastCalculationDate !== undefined,
                     id: "visualize",
@@ -142,39 +164,24 @@ export class DigitalServicesFootprintComponent implements OnInit {
         } else {
             this.tabItems = [
                 {
-                    label: this.translate.instant("digital-services.Terminal"),
-                    routerLink: "terminals",
-                    id: "terminals",
+                    label: this.translate.instant("digital-services.view-resources"),
+                    routerLink: "resources",
+                    id: "resources",
                 },
                 {
-                    label: this.translate.instant("digital-services.Network"),
-                    routerLink: "networks",
-                    id: "networks",
-                },
-                {
-                    label: this.translate.instant("digital-services.Server"),
-                    routerLink: "servers",
-                    id: "servers",
-                },
-                {
-                    label: this.translate.instant("digital-services.CloudService"),
-                    routerLink: "cloudServices",
-                    id: "cloudServices",
-                },
-                {
-                    label: "Filler",
-                    separator: true,
-                    style: { flex: 1 },
-                    id: "separator",
-                },
-                {
-                    label: this.translate.instant("digital-services.visualize"),
+                    label: this.translate.instant("digital-services.visualize-results"),
                     routerLink: "dashboard",
                     visible: this.digitalService.lastCalculationDate !== undefined,
                     id: "visualize",
                 },
             ];
         }
+    }
+
+    updateEnableCalculation(event: boolean) {
+        setTimeout(() => {
+            this.updateHeights();
+        }, 0);
     }
 
     async updateDigitalService() {

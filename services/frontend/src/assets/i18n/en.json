@@ -26,7 +26,7 @@
         "previous": "Previous",
         "mandatory": "is mandatory",
         "optional": "Optional",
-        "calculate": "CALCULATE",
+        "calculate": "Calculate my impact",
         "duplicate": "DUPLICATE",
         "add": "Add",
         "attention": "Attention",
@@ -87,7 +87,8 @@
             "note": "Note",
             "accordion-open": "Click to show sub domains",
             "accordion-close": "Click to hide sub domains",
-            "import": "Click to import digital service data"
+            "import": "Click to import digital service data",
+            "calculate": "Click here to calculate your impact"
         },
         "note": {
             "add": "Add a note",
@@ -158,7 +159,8 @@
             "space-name-maxlength": "The workspace name must be no longer than 20 characters.",
             "space-name-pattern": "Special characters @ / ; ? are not allowed."
         },
-        "plus-menu": "Plus"
+        "plus-menu": "Plus",
+        "add-button": "Add"
     },
     "errors": {
         "error-occurred": "An error occurred"
@@ -206,7 +208,11 @@
         "data-consistency-description": "Data consistency indicates where the evaluation was unable to produce indicators. This does not mean that there is no impact, but only that part of the impact could not be assessed. The causes of inconsistency are mainly missing data in the repository. For example, for BoaviztAPI, the impact factors for the distribution and end-of-life phases are not available.",
         "reset-settings": "Reset settings",
         "save-settings": "Save settings",
-        "configure-criteria": "Configure the view for digital service {{digitalServiceName}}"
+        "configure-criteria": "Configure the view for digital service {{digitalServiceName}}",
+        "view-resources": "Visualize my resources",
+        "visualize-results": "Visualize my results",
+        "visualize-parameters": "Visualize the parameters",
+        "back": "Back"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

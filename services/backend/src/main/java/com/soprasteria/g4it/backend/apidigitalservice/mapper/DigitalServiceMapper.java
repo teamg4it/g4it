@@ -84,7 +84,6 @@ public abstract class DigitalServiceMapper {
         }
 
         target.setName(source.getName());
-        target.setLastUpdateDate(LocalDateTime.now());
         target.setEnableDataInconsistency(source.getEnableDataInconsistency());
 
         List<String> sourceCriteria = source.getCriteria();
@@ -92,6 +91,7 @@ public abstract class DigitalServiceMapper {
         if (!Objects.equals(sourceCriteria, targetCriteria)) {
             //set criteria
             target.setCriteria(sourceCriteria);
+            target.setLastUpdateDate(LocalDateTime.now());
         }
 
         // Merge note
