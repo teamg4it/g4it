@@ -19,7 +19,7 @@ The use case allows a project team to launch the calculation for the estimation 
 
 More information about the production of indicators can be found here: [MoteurDeCalculG4IT_V1.1.adoc](https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval/-/blob/develop/docs/MoteurDeCalculG4IT_V1.1.adoc)
 
-##Launch Estimation via 'Calculate My Impact' button
+## Launch Estimation via 'Calculate My Impact' button
 ### State Diagram
 
 {{< mermaid align="center">}}
@@ -35,13 +35,14 @@ Decision1 -->|No|Step3['Calculate' button disabled] --> |add terminal, network, 
 
 | Management rules | Title                | Rule description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ---------------- |----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1                | Calculate My impact  | <li><u>_initialization rules_</u>: The button is displayed only for users with “write” role access and if the digital service has terminal, network or server equipments (cloud or non cloud).The button _disappears_ once the calculation is completed and reappears only when any equipment is added/modified.<br> <li><u>_action rules_</u>: Launch/ Update digital service footprint estimate. [Environmental Footprint Assessment methodology](../../global_concepts/environmental_footprint_assessment_methodology/_index.md). |
-| 2                | Visualize My Results | <li><u>_initialization rules_</u>: The tab is displayed only of the calculation have been performed. On click of this tab 'Footprint' view is displayed.                                                                                                                                                                                                                                                                                                                                                                             |
+| 1                | Calculate my impact  | <li><u>_initialization rules_</u>: The button is displayed only for users with “write” role access and if the digital service has terminal, network or server equipments (cloud or non cloud).The button _disappears_ once the calculation is completed and reappears only when any equipment is added/modified.<br> <li><u>_action rules_</u>: Launch/ Update digital service footprint estimate. [Environmental Footprint Assessment methodology](../../global_concepts/environmental_footprint_assessment_methodology/_index.md). |
+| 2                | Visualize my results | <li><u>_initialization rules_</u>: The tab is displayed only of the calculation have been performed. On click of this tab 'Footprint' view is displayed.                                                                                                                                                                                                                                                                                                                                                                             |
 
-### Footprint view
-[Visualize Footprint](../c5_visualize_footprint/_index.md).
 
-##Launch Estimation via 'Edit criteria' button
+## Launch Estimation via 'Edit criteria' button
+In the digital service 'Footprint' view calculation can be relaunched via 'Edit Criteria' button. Details
+[2.5. Visualize digital service's footprint](uc5_visualize_footprint/_index.md).
+
 ### State Diagram
 
 {{< mermaid align="center">}}
@@ -49,10 +50,9 @@ graph TD;
 Step1[Digital Service view] --> Decision1{First Calculation is done?}
 Decision1-->|Yes|Step2[Tab'Visualize My Results' is enabled]
 Decision1-->|No|Step3[Tab'Visualize My Results' is not enabled]
-Step2-->|Click on 'Visualize My Results' tab|Step4[Multi criteria footprint view is displayed]-->|Click on one of the 'Edit Criteria button' select criteria and click 'Save' button|Step5[Calculations relaunched and updated footprints are displayed]
+Step2-->|Click on 'Visualize My Results' tab|Step4[Multi criteria footprint view is displayed]-->|Click on 'Edit Criteria button' select criteria and click 'Save' button|Step5[Calculations relaunched and updated footprints are displayed]
 {{< /mermaid >}}
 
-In the digital service 'Footprint' view calculation can be relaunched via 'Edit Criteria' button
 ![uc4_launch_criteria_estimation](../images/uc4_launch_criteria_estimation.png)
 | Management rules | Title                | Rule description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ---------------- |----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

@@ -34,16 +34,17 @@ weight: 30
 
 - **Action:**
     - Click the "Calculate" button to start the evaluation.
-    - Use the "Settings" button to choose the criteria on which you want to evaluate the impact (11 criteria are
-      available).
+    - The first estimation is done for the default criteria chosen by your organization's administrator.
 
 ![Screenshot showing the "Calculate" and "Settings" buttons for starting the evaluation process.](../media/15_evaluate_the_impact.png)
 
-### **Step 2:** Select Evaluation Criteria
+### **Step 2:** Select Evaluation Criteria in the footprint view
 
 - **Action:**
+    - Click the 'Edit Criteria' button
     - From the list of criteria, select the one you want to evaluate for the impact of your digital service.
     - If you reset to default, it will select the criteria chosen by your organization's administrator.
+    - Click 'Save' button. Re-evaluation launches for the selected criteria.
 
 ![Screenshot showing the criteria selection interface with a list of evaluation criteria.](../media/16_choose_criteria.png)
 
