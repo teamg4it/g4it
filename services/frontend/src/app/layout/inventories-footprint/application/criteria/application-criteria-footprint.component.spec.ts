@@ -234,6 +234,47 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             footprintStore.appSubDomain.and.returnValue("");
             expect(component.showSubDomainLabel()).toBeTrue();
         });
+
+        it("should return false when domain filters length is 2 or less", () => {
+            (component.allUnmodifiedFilters as any) = () => ({
+                domain: [
+                    { label: "ALL" },
+                    { label: "Domain1", children: [{ label: "Sub1" }] },
+                ],
+            });
+            expect(component.showDomainLabel()).toBeFalse();
+        });
+
+        it("should return false when showSubDomainLabel  filters length is 2 or less", () => {
+            (component.allUnmodifiedFilters as any) = () => ({
+                domain: [
+                    { label: "ALL" },
+                    { label: "Domain1", children: [{ label: "Sub1" }] },
+                ],
+            });
+            expect(component.showSubDomainLabel()).toBeFalse();
+        });
+
+        it("should return false when showBackButton appGraphType is subdomain", () => {
+            (component.allUnmodifiedFilters as any) = () => ({
+                domain: [
+                    { label: "ALL" },
+                    { label: "Domain1", children: [{ label: "Sub1" }] },
+                ],
+            });
+            (component["footprintStore"].appGraphType as any) = () => "subdomain";
+            expect(component.showBackButton()).toBeFalse();
+        });
+        it("should return false when showBackButton appGraphType is domain", () => {
+            (component.allUnmodifiedFilters as any) = () => ({
+                domain: [
+                    { label: "ALL" },
+                    { label: "Domain1", children: [{ label: "Sub1" }] },
+                ],
+            });
+            (component["footprintStore"].appGraphType as any) = () => "domain";
+            expect(component.showBackButton()).toBeFalse();
+        });
     });
 
     describe("domainSelected handling", () => {
