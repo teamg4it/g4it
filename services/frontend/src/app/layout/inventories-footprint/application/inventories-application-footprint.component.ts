@@ -130,6 +130,7 @@ export class InventoriesApplicationFootprintComponent {
                 this.footprintStore.setDomain(
                     (this.allUnmodifiedFilters() as any).domain[1].label,
                 );
+                this.footprintStore.setSubDomain("");
                 this.footprintStore.setGraphType("domain");
             }
         } else {
