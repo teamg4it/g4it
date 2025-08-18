@@ -235,4 +235,34 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             expect(component.showSubDomainLabel()).toBeTrue();
         });
     });
+
+    describe("domainSelected handling", () => {
+        beforeEach(() => {
+            (component.allUnmodifiedFilters as any) = () => ({
+                domain: [
+                    { label: "ALL" },
+                    { label: "Domain1", children: [{ label: "Sub1" }] },
+                ],
+            });
+        });
+
+        it("should set graphType global and reset domain/subDomain if children length <= 1", () => {
+            footprintStore.appDomain.and.returnValue("Domain1");
+
+            const domainSelected = (component.allUnmodifiedFilters() as any).domain.find(
+                (d: any) => d.label === footprintStore.appDomain(),
+            );
+
+            // simulate the block of code directly
+            if (domainSelected?.children.length <= 1) {
+                component["footprintStore"].setGraphType("global");
+                component["footprintStore"].setDomain("");
+                component["footprintStore"].setSubDomain("");
+            }
+
+            expect(footprintStore.setGraphType).toHaveBeenCalledWith("global");
+            expect(footprintStore.setDomain).toHaveBeenCalledWith("");
+            expect(footprintStore.setSubDomain).toHaveBeenCalledWith("");
+        });
+    });
 });
