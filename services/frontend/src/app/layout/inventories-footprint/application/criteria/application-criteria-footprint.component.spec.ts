@@ -141,6 +141,21 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             expect(footprintStore.setGraphType).toHaveBeenCalledWith("global");
             expect(footprintStore.setDomain).toHaveBeenCalledWith("");
         });
+
+        it("should go back from subdomain -> global", () => {
+            footprintStore.appGraphType.and.returnValue("subdomain");
+
+            (component.allUnmodifiedFilters as any) = () => ({
+                domain: [
+                    { label: "ALL" },
+                    { label: "Domain1", children: [{ label: "Sub1" }] },
+                ],
+            });
+            (component["footprintStore"].appDomain as any) = () => "Domain1";
+            component.onArrowClick();
+            expect(footprintStore.setGraphType).toHaveBeenCalledWith("global");
+            expect(footprintStore.setDomain).toHaveBeenCalledWith("");
+        });
     });
 
     it("checkIfNoData should return false if filter includes impact", () => {
