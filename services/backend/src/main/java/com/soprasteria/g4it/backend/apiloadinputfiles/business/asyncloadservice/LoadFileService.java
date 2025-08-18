@@ -135,7 +135,7 @@ public class LoadFileService {
         }
 
         if (!readErrors.isEmpty()) {
-            writeRejected(context, readErrors, fileToLoad.getFileType(), fileToLoad.getConvertedFile().toPath(), fileToLoad.getOriginalFileName());
+            writeRejected(context, readErrors, fileToLoad.getFileType(), fileToLoad.getConvertedFile(), fileToLoad.getOriginalFileName());
         }
 
         return errors;
@@ -148,25 +148,25 @@ public class LoadFileService {
      * @param context          the context
      * @param readErrors       the read errors
      * @param fileType         the file type
-     * @param filePath         the filePath
+     * @param file             the file
      * @param originalFileName the original file name
      */
-    private void writeRejected(final Context context, final List<LineError> readErrors, final FileType fileType, final Path filePath, final String originalFileName) {
+    private void writeRejected(final Context context, final List<LineError> readErrors, final FileType fileType, final File file, final String originalFileName) {
         Map<Integer, List<String>> errorsByLine = readErrors.stream()
                 .collect(groupingBy(LineError::line, mapping(LineError::error, toList())));
 
         String rejectedFileName = String.join("_", REJECTED, fileType.getFileName(), context.getDatetime().format(Constants.FILE_DATE_TIME_FORMATTER)) + Constants.CSV;
         String pathId = context.getInventoryId() != null ? String.valueOf(context.getInventoryId()) : context.getDigitalServiceUid();
-        final Path path = Path.of(localWorkingFolder).resolve(REJECTED).resolve(pathId).resolve(rejectedFileName);
+
+        String path = localWorkingFolder + File.separator + REJECTED + File.separator + pathId + File.separator + rejectedFileName;
 
         try {
             Files.createDirectories(Path.of(localWorkingFolder).resolve(REJECTED).resolve(pathId));
         } catch (IOException e) {
             throw new AsyncTaskException(String.format("%s - Cannot create local rejected folder", context.log()), e);
         }
-
-        try (Reader reader = new FileReader(filePath.toFile());
-             BufferedWriter writer = new BufferedWriter(new FileWriter(path.toFile(), true))
+        try (Reader reader = new FileReader(file);
+             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path), true))
         ) {
 
             int lineNumber = 2;
@@ -339,6 +339,7 @@ public class LoadFileService {
 
     /**
      * Check mandatory headers
+     *
      * @param context the context
      * @return list of missing mandatory headers
      */
@@ -349,31 +350,33 @@ public class LoadFileService {
             for (FileToLoad fileToLoad : context.getFilesToLoad()) {
                 if (fileType.equals(fileToLoad.getFileType())) {
 
-                try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad.getConvertedFile()))) {
-                    CSVParser records = CSVFormat.RFC4180.builder()
-                            .setHeader()
-                            .setDelimiter(CsvUtils.DELIMITER)
-                            .setAllowMissingColumnNames(true)
-                            .setSkipHeaderRecord(false)
-                            .build()
-                            .parse(reader);
+                    try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad.getConvertedFile()))) {
+                        CSVParser records = CSVFormat.RFC4180.builder()
+                                .setHeader()
+                                .setDelimiter(CsvUtils.DELIMITER)
+                                .setAllowMissingColumnNames(true)
+                                .setSkipHeaderRecord(false)
+                                .build()
+                                .parse(reader);
 
-                    Set<String> mandatoryHeaderFields = csvFileMapperInfo.getHeaderFields(fileToLoad.getFileType(), true);
-                    records.getHeaderNames().forEach(mandatoryHeaderFields::remove);
+                        Set<String> mandatoryHeaderFields = csvFileMapperInfo.getHeaderFields(fileToLoad.getFileType(), true);
+                        records.getHeaderNames().forEach(mandatoryHeaderFields::remove);
 
-                    if (!mandatoryHeaderFields.isEmpty()) {
-                        errors.add(messageSource.getMessage(
-                                "header.mandatory",
-                                new String[]{fileToLoad.getOriginalFileName(), String.join(", ", mandatoryHeaderFields)},
-                                context.getLocale())
-                        );
+                        if (!mandatoryHeaderFields.isEmpty()) {
+                            errors.add(messageSource.getMessage(
+                                    "header.mandatory",
+                                    new String[]{fileToLoad.getOriginalFileName(), String.join(", ", mandatoryHeaderFields)},
+                                    context.getLocale())
+                            );
+                        }
+
+                    } catch (IOException e) {
+                        throw new AsyncTaskException(String.format("%s - Error while managing converted file '%s'", context.log(),
+                                fileToLoad.getConvertedFile().getName()), e);
                     }
-
-                } catch (IOException e) {
-                    throw new AsyncTaskException(String.format("%s - Error while managing converted file '%s'", context.log(),
-                            fileToLoad.getConvertedFile().getName()), e);
                 }
-            }}}
+            }
+        }
 
         return errors;
     }

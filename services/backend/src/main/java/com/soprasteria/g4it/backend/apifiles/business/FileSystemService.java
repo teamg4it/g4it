@@ -115,13 +115,12 @@ public class FileSystemService {
     @Cacheable("listTemplatesFiles")
     public List<FileDescriptionRest> listTemplatesFiles(String module) throws IOException {
 
-      if(FileFolder.DS_TEMPLATE.getFolderName().equals(module)){
-      return fileDescriptionRestMapper.toDto(
-            fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
-                    .listFiles(FileFolder.DS_TEMPLATE)
-       );
-      }
-       else return fileDescriptionRestMapper.toDto(
+        if (FileFolder.DS_TEMPLATE.getFolderName().equals(module)) {
+            return fileDescriptionRestMapper.toDto(
+                    fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
+                            .listFiles(FileFolder.DS_TEMPLATE)
+            );
+        } else return fileDescriptionRestMapper.toDto(
                 fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
                         .listFiles(FileFolder.IS_TEMPLATE)
         );
@@ -210,9 +209,9 @@ public class FileSystemService {
      * @return the file path.
      */
     private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename, Boolean isInventory) {
-        final Path tempPath = Boolean.TRUE.equals(isInventory) ? Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString())
-                : Path.of(localWorkingFolder, "input", "digital-service", UUID.randomUUID().toString());
-        File outputFile = tempPath.toFile();
+        final StringBuilder tempPath = Boolean.TRUE.equals(isInventory) ? new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("inventory").append(File.separator).append(UUID.randomUUID())
+                : new StringBuilder(localWorkingFolder).append(File.separator).append("input").append(File.separator).append("digital-service").append(File.separator).append(UUID.randomUUID());
+        File outputFile = new File(tempPath.toString());
 
         // Detect file type by extension
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
@@ -247,7 +246,7 @@ public class FileSystemService {
             var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
             var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
             tmpInputStream.close();
-            Files.delete(tempPath);
+            Files.delete(Path.of(tempPath.toString()));
             return result;
         } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while uploading file: " + e.getMessage());
