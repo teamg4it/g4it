@@ -48,6 +48,7 @@ weight: 30
 
 ![Screenshot showing the criteria selection interface with a list of evaluation criteria.](../media/16_choose_criteria.png)
 
+
 ### **Step 3:** Visualize the Overall Impact
 
 After starting the evaluation by clicking the appropriate button, you will be automatically redirected to the page to
@@ -60,11 +61,15 @@ visualize the impact of your digital service.
        graph by clicking on different components.
     3. **Guidance:** Based on your current view, this section provides an explanation of the impact and key advice for
        reducing it.
-    4. **Action:** Access this view by clicking the "Visualize" tab.
-    5. **Action:** In some cases, G4IT may not have been able to evaluate the impact on all criteria. This button allows
-       you to see inconsistencies in the graph. You can learn more about this in
+    4. **Action:** In some cases, G4IT may not have been able to evaluate the impact on all criteria. This button enables
+       the data consistency view which is disabled by default. You can learn more about this in
        the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md)
        documentation.
+    5. **Action:** This button allows you to see inconsistencies in the graph. If you cannot see this button in the view, 
+  you can enable it from the 'Configure the view' button  You can learn more about this in
+     the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md)
+  
+   **Action:** Access this view by clicking the "Visualize my results in the" tab in the digital service view.
 
 ![Screenshot showing the overall impact of the digital service, divided into different components with the main graph and evaluation criteria list.](../media/17_visualize_impact.png)
 
@@ -73,15 +78,15 @@ visualize the impact of your digital service.
 ## Navigating the Graph
 
 ### **Step 4:** View a Specific Evaluation Criterion
-
-1. **Action:** Click on the generic graph or select a specific criterion to access a new graph showing the impact
+1. **Selected Criteria**
+2. **Action:** Click on the generic graph or select a specific criterion to access a new graph showing the impact
    distribution according to key elements of the digital service:
     - End-user devices
     - Data exchange
     - Infrastructure:
            - Servers
            - Cloud services
-2. **Guidance:** This view provides explanations about the impact and advice on how to reduce it.
+3. **Guidance:** This view provides explanations about the impact and advice on how to reduce it.
 
 ![Screenshot of a graph showing the impact distribution based on selected evaluation criteria. Each section is clickable for further exploration.](../media/18_visualize_impact_criteria.png)
 

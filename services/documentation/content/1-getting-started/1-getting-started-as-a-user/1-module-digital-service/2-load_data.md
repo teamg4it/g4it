@@ -63,10 +63,10 @@ weight: 20
 #### **Step 3:** Add a New Device
 
 -   **Action**: Click the "Digital service name" button to rename the digital service.
--   **Action**: Click the "Add Device" button to create a new device entry.
+-   **Action**: Under the tab 'Visualize my resources', in the 'Devices' table, click the "Add" button to create a new device entry.
 
 
-![Screenshot showing the "Add Device" button for adding new device information.](../media/03_edit_name_create_device.png "Screenshot showing the 'Add Device' button for adding new device information.")
+![Screenshot showing the "Add" button for adding new device information.](../media/03_edit_name_create_device.png "Screenshot showing the 'Add' button for adding new device information.")
 
 #### **Step 4:** Complete Device Information
 
@@ -93,9 +93,9 @@ weight: 20
 
 #### **Step 6:** Add a Network
 
--   **Action**: Click the "Add Network" button to create a new network.
+-   **Action**: Under the tab ‘Visualize my resources’, in the ‘Networks’ table, click the "Add" button to create a new network.
 
-![Screenshot showing the "Add Network" button to create a new network entry.](../media/06_add_network.png "Screenshot showing the 'Add Network' button to create a new network entry.")
+![Screenshot showing the "Add" button to create a new network entry.](../media/06_add_network.png "Screenshot showing the 'Add' button to create a new network entry.")
 
 #### **Step 7:** Complete Network Information
 
@@ -115,9 +115,9 @@ weight: 20
 
 ##### **Step 8:** Create a Server via form
 
--   **Action**: Click the "Add Server" button to begin adding your server.
+-   **Action**: Under the tab ‘Visualize my resources’, in the ‘Non-Cloud Servers’ table, Click the "Add" button to begin adding your server.
 
-![Screenshot showing the "Add Server" button for creating a new server entry.](../media/08_create_server.png "Screenshot showing the 'Add Server' button for creating a new server entry.")
+![Screenshot showing the "Add" button for creating a new server entry.](../media/08_create_server.png "Screenshot showing the 'Add' button for creating a new server entry.")
 
 ##### **Step 9:** Choose the Type of Server
 
@@ -172,7 +172,7 @@ weight: 20
 3. **Action:** Click the "Browse File" buttons to select and attach the file.
 4. **Action:** Click "Start Upload" to initiate the file upload.
 5. **Action:** Click "Finish Import" to proceed to the digital service view.
-6. **Action:** Go to the "Cloud Services" tab to view the imported data.
+6. **Action:** Go to the "Non-Cloud Servers" tab to view the imported data.
 
 ![Screenshot showing the form to upload non-cloud servers file.](../media/8_import-non-cloud-server.png "Screenshot showing the form to upload non-cloud servers file.")
 
@@ -183,9 +183,9 @@ weight: 20
 ##### **Step 13:** 
    ***Step1.*** ***Create a Cloud Service via form***
 
--   **Action**: Click the "Add Cloud Service" button to start adding your cloud infrastructure.
+-   **Action**: In the ‘Cloud Services’ table under the ‘Visualize my resources’ tab, click the "Add" button to start adding your cloud infrastructure.
 
-![Screenshot showing the "Add Cloud Service" button to create a new cloud instance.](../media/13_add_cloud_instance.png "Screenshot showing the 'Add Cloud Service' button to create a new cloud instance.")
+![Screenshot showing the "Add" button to create a new cloud instance.](../media/13_add_cloud_instance.png "Screenshot showing the 'Add' button to create a new cloud instance.")
 
 
   ***Step2.*** ***Complete Cloud Services Information in the form***

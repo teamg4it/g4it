@@ -17,16 +17,8 @@ This use case allows a project team to add Non-Cloud Server equipment directly v
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Cloud Services / Add Cloud Service
-
-## Description
-
-This use case allows a project team to add Non-Cloud Server equipment into a digital service previously created.
-
-**Navigation Path**
-
--   My Digital Services / My Digital Service / Non-Cloud Servers / Add Server
--   My Digital Services / My Digital Service / Non-Cloud Servers / Modify Server
+-   My Digital Services / My Digital Service / Visualize my resources tab /Non-Cloud Servers / Add Server
+-   My Digital Services / My Digital Service / Visualize my resources tab / Non-Cloud Servers / Edit Server
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected organization.
@@ -38,10 +30,10 @@ The connected user must have the write access for that module on the selected or
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group      | Elements          | Type   | Description                                                                                                                                                                           |     |     |     |
-| --------- | ---------- | ----------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | --- | --- |
+| --------- | ---------- | ----------------- |--------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | --- | --- |
 |           | Tab Header |                   | group  |                                                                                                                                                                                       |     |     |     |
-| 1         |            | Non-Cloud Servers | title  |                                                                                                                                                                                       |     |     |     |
-| 2         |            | + Add Server      | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><li><u>_action rules_</u>: That button open the window Add Server details. |     |     |     |
+| 1         |            | Non-Cloud Servers | table  |                                                                                                                                                                                       |     |     |     |
+| 2         |            | + Add    | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><li><u>_action rules_</u>: That button open the window Add Server details. |     |     |     |
 |           | Tab        |                   |        |                                                                                                                                                                                       |     |     |     |
 | 3         |            | Name              | column |                                                                                                                                                                                       |     |     |     |
 | 4         |            | Allocation        | column |                                                                                                                                                                                       |     |     |     |
@@ -174,7 +166,7 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service Non-Cloud Server view
+RND ->> front: Click on "Add" button in the digital service's Non-Cloud Servers table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 back--> DataBase: Create non-cloud server record in the in_physical_equipment table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters
