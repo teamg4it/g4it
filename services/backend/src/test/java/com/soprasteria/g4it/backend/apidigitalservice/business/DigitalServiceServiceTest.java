@@ -160,7 +160,7 @@ class DigitalServiceServiceTest {
         final Organization linkedOrganization = Organization.builder().name(organizationName).build();
         User creator = User.builder().id(1L).firstName("first").lastName("last").build();
 
-        DigitalService digitalService = DigitalService.builder().name("name").user(creator).build();
+        DigitalService digitalService = DigitalService.builder().name("name").isAi(IS_AI).user(creator).build();
         final DigitalServiceBO digitalServiceBo = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
 
         when(digitalServiceMapper.toBusinessObject(anyList())).thenReturn(List.of(digitalServiceBo));
