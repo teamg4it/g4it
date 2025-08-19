@@ -35,7 +35,7 @@ graph TD;
 Step1[Digital Service view] --> Decision1{First Calculation is done?}
 Decision1-->|Yes|Step2[Tab 'Visualize my results' is enabled]
 Decision1-->|No|Step3[Tab 'Visualize my results' is not enabled]
-Step2-->|Click on 'Visualize' button|Step4[Multi criteria view about the impacts of my DS is displayed]-->|Click on one of the criteria impacts in the bar menu, or on the graph|Step5[Specific view for this criteria is displayed]-->|New filters selected|Step8
+Step2-->|Click on 'Visualize my results' button|Step4[Multi criteria view about the impacts of my DS is displayed]-->|Click on one of the criteria impacts in the bar menu, or on the graph|Step5[Specific view for this criteria is displayed]-->|New filters selected|Step8
 Step8[View is updated according to the filters]
 Step8-->|Click on 'Global Vision' button|Step4
 {{< /mermaid >}}
@@ -101,7 +101,7 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Visualize" button in the digital service view
+RND ->> front: Click on "Visualize my results" button in the digital service view
 front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/physical-equipments
 DataBase-->> back: Get indicators from out_physical_equipment table
 back-->> front: Send the physical equipment indicators for the multi-criteria view
