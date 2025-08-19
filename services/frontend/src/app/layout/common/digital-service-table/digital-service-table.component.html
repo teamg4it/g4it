@@ -29,10 +29,13 @@
             }}
         </caption>
         <tr>
-            @if (showId) {
+            @if (showId && !isMobileView()) {
                 <th scope="col" id="id">
                     {{ "digital-services-terminals.id" | translate }}
                 </th>
+            }
+            @if (isMobileView()) {
+                <th scope="col" id="button">{{ "common.actions" | translate }}</th>
             }
             @for (header of headerFields; track $index) {
                 <th scope="col" [pSortableColumn]="header" [id]="header">
@@ -40,21 +43,38 @@
                     <p-sortIcon [field]="header"></p-sortIcon>
                 </th>
             }
-            <th class="text-hidden" id="button">
-                {{ "common.button" | translate }}
-            </th>
+            @if (!isMobileView()) {
+                <th class="text-hidden" id="button">
+                    {{ "common.button" | translate }}
+                </th>
+            }
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
         <tr>
-            @if (showId) {
+            @if (showId && !isMobileView()) {
                 <td class="grey-text">{{ rowIndex + 1 }}</td>
+            }
+            @if (isMobileView()) {
+                <ng-template
+                    [ngTemplateOutlet]="dataConsistencyRef"
+                    [ngTemplateOutletContext]="{ data: data, rowIndex: rowIndex }"
+                ></ng-template>
             }
             @for (header of headerFields; track $index) {
                 <td>{{ data[header] | decimals }}</td>
             }
-
-            <td style="text-align: right">
+            @if (!isMobileView()) {
+                <ng-template
+                    [ngTemplateOutlet]="dataConsistencyRef"
+                    [ngTemplateOutletContext]="{ data: data, rowIndex: rowIndex }"
+                ></ng-template>
+            }
+        </tr>
+    </ng-template>
+    <ng-template #dataConsistencyRef let-data="data" let-rowIndex="rowIndex">
+        <td [ngStyle]="{ 'text-align': isMobileView() ? 'left' : 'right' }">
+            <div class="flex">
                 <p-button
                     *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                     (click)="doSetItem(data, rowIndex + 1); sidebarVisible(true)"
@@ -83,7 +103,7 @@
                             'digital-services-terminals.device' | translate
                         }} {{ rowIndex + 1 }}"
                 /></p-button>
-            </td>
-        </tr>
+            </div>
+        </td>
     </ng-template>
 </p-table>
