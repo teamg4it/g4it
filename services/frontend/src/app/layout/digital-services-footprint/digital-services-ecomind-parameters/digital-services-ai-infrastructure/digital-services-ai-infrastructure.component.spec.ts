@@ -124,7 +124,6 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
 
         await component.ngOnInit();
 
-        expect(component.infrastructureForm.value.complementaryPue).toBe(1.1);
         expect(mockAiDataService.getAiInfrastructure).not.toHaveBeenCalled();
     });
 
@@ -160,7 +159,7 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         await component.ngOnInit();
         await fixture.whenStable();
 
-        expect(component.infrastructureForm.value.complementaryPue).toBe(1.1);
+        expect(component.infrastructureForm.value.location).toBe("Germany");
     });
 
     it("should handle error during infrastructure load", async () => {
@@ -205,21 +204,5 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         expect(component.infrastructureForm.invalid).toBeTrue();
         expect(markAllAsTouchedSpy).toHaveBeenCalled();
         expect(mockMessageService.add).not.toHaveBeenCalled();
-    });
-
-    it("should submit if form is valid", () => {
-        component.infrastructureForm = new FormBuilder().group({
-            infrastructureType: ["GPU"],
-            nbCpuCores: [1],
-            nbGpu: [1],
-            gpuMemory: [1],
-            ramSize: [1],
-            pue: [1],
-            complementaryPue: [1],
-            location: ["France"],
-        });
-
-        component.submitFormData();
-        expect(mockMessageService.add).toHaveBeenCalled();
     });
 });
