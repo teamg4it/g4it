@@ -17,7 +17,7 @@ This usecase allows a project team to add Cloud Services equipment directly via 
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Cloud Services / Add Cloud Service
+-   My Digital Services / My Digital Service / Visualize my resources tab / Cloud Services / Add Cloud Service
 
 ## Cloud Services add
 
@@ -52,7 +52,7 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service Cloud Server view
+RND ->> front: Click on "Add" button in the digital service's Cloud Servers table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
 back--> DataBase: Create cloud record in the in_virtual_equipment table
 front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments

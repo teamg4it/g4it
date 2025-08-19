@@ -51,12 +51,42 @@ $$
 Warning: some differences can happen about the percentage between raw indicators and aggregated indicators
 
 
-## Global view
+
+## Inventory
+### Global view
+For every graph view in G4IT, a button is displayed when G4IT wasn't able to produce a part of the indicators associated with the perimeter the user analyzes.
+![uc1_inventory_data_consistency_disabled.png](../images/uc1_inventory_data_consistency_disabled.png)
+
+A click on the button 'Data Consistency' will change the visualization to display a graph representing for the different items the percentage of the perimeter that wasn't possible to evaluate for different reasons.
+![uc1_inventory_data_consistency_on.png](../images/uc1_inventory_data_consistency_on.png)
+{{% expand title="Behavior rules" expanded="false" center="true"%}}
+
+| Reference | Section                | Elements                         | Type          | Description                                                                                                                                                                                                                                                                                                                                                                |
+|-----------|------------------------|----------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1         | Impact graph           | Data consistency                 | Switch button | <li><u>*initialization rules*</u>: By default, the button is not visible if all the data is consistent. The button is visible only when a inconsistency exists for one of the element on which the impact has been evaluated.<br><li><u>*action rules*</u>: A click on the button switches the view to visualize the percentage of inconsistency associated to the impact. |
+| 2         | Impact graph           | Indicators on a graph element    | Icon + color  | <li><u>*initialization rules*</u>: By default, the button is not visible if all the data is consistent. The icon and label is visible only when a inconsistency exists for this specific element.<br>                                                                                                                                                                      |
+| 3         | Data consistency graph | Data consistency for one element | Bar graph     | <li><u>*initialization rules*</u>: The bar represents a percentage between 0 and 1 representing the potential impact that should have been calculated. In the example we couldn't evaluate 41.7% of the impact associated to the cloud services.                                                                                                                           |
+
+{{% /expand %}}
+
+## Digital service 
+
+By default, data consistency view is disable in the Digital service footprint view.
+![uc1_data_consistency_off.png](../images/uc1_data_consistency_off.png)
+
+To activate the data consistency view: click on the 'Configure the view' button.
+
+_Action:_
+A pop-up window will appear with an option labeled 'I want to enable data consistency.'
+
+_Action:_
+Check this box, then click 'Save settings' to enable the data consistency view.
+![uc1_enable_data_consistency.png](../images/uc1_enable_data_consistency.png)
 
 For every graph view in G4IT, a button is displayed when G4IT wasn't able to produce a part of the indicators associated with the perimeter the user analyzes.
+![uc1_data_consistency_disabled.png](../images/uc1_data_consistency_disabled.png)
 
-![uc1_data_consistency_off.png](../images/uc1_data_consistency_off.png)
-A click on the button will change the visualization to display a graph representing for the different items the percentage of the perimeter that wasn't possible to evaluate for different reasons.
+A click on the button 'Data Consistency' will change the visualization to display a graph representing for the different items the percentage of the perimeter that wasn't possible to evaluate for different reasons.
 
 ![uc1_data_consistency_on.png](../images/uc1_data_consistency_on.png)
 
@@ -66,6 +96,6 @@ A click on the button will change the visualization to display a graph represent
 |-----------|------------------------|----------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 1         | Impact graph           | Data consistency                 | Switch button | <li><u>*initialization rules*</u>: By default, the button is not visible if all the data is consistent. The button is visible only when a inconsistency exists for one of the element on which the impact has been evaluated.<br><li><u>*action rules*</u>: A click on the button switches the view to visualize the percentage of inconsistency associated to the impact. |
 | 2         | Impact graph           | Indicators on a graph element    | Icon + color  | <li><u>*initialization rules*</u>: By default, the button is not visible if all the data is consistent. The icon and label is visible only when a inconsistency exists for this specific element.<br>                                                                                                                                                                      |
-| 3         | Data consistency graph | Data consistency for one element | Bar graph     | <li><u>*initialization rules*</u>: The bar represents a percentage between 0 and 1 representing the potential impact that should have been calculated. In the example we couldn't evaluate 50% of the impact associated to the cloud services.                                                                                                                             |
+| 3         | Data consistency graph | Data consistency for one element | Bar graph     | <li><u>*initialization rules*</u>: The bar represents a percentage between 0 and 1 representing the potential impact that should have been calculated. In the example we couldn't evaluate 75% of the impact associated to the cloud services.                                                                                                                             |
 
 {{% /expand %}}
