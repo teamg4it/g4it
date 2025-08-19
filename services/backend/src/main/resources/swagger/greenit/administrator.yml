@@ -34,7 +34,7 @@ paths:
       summary: Update criteria for an organizations
       operationId: updateOrganization
       parameters:
-        - $ref: '#/components/parameters/reqSubscriberIdQueryParam'
+        - $ref: '#/components/parameters/reqOrganizationIdQueryParam'
       requestBody:
         description: Mandatory criteria details to update.
         required: true
@@ -65,8 +65,8 @@ paths:
       summary: Get workspaces information
       operationId: getWorkspaces
       parameters:
+        - $ref: '#/components/parameters/workspaceIdQueryParam'
         - $ref: '#/components/parameters/organizationIdQueryParam'
-        - $ref: '#/components/parameters/subscriberIdQueryParam'
       responses:
         '200':
           description: Return Workspaces information
@@ -87,7 +87,7 @@ paths:
       summary: Update a workspace
       operationId: updateWorkspace
       parameters:
-        - $ref: '#/components/parameters/organizationIdQueryParam'
+        - $ref: '#/components/parameters/workspaceIdQueryParam'
       requestBody:
         description: Mandatory workspace details to update.
         required: true
@@ -147,7 +147,7 @@ paths:
       summary: Get users related to the workspace
       operationId: getUsersOfWorkspace
       parameters:
-        - $ref: '#/components/parameters/reqOrganizationIdQueryParam'
+        - $ref: '#/components/parameters/reqWorkspaceIdQueryParam'
       responses:
         '200':
           description: Return users linked to the Workspace.
@@ -253,8 +253,8 @@ paths:
       operationId: searchUserByName
       parameters:
         - $ref: '#/components/parameters/nameSearchQueryParam'
-        - $ref: '#/components/parameters/reqSubscriberIdQueryParam'
-        - $ref: '#/components/parameters/organizationIdQueryParam'
+        - $ref: '#/components/parameters/reqOrganizationIdQueryParam'
+        - $ref: '#/components/parameters/workspaceIdQueryParam'
       responses:
         '200':
           description: Return Workspaces information
@@ -299,7 +299,7 @@ paths:
       summary: Get organization by id
       operationId: getOrganizationById
       parameters:
-        - $ref: '#/components/parameters/reqSubscriberIdQueryParam'
+        - $ref: '#/components/parameters/reqOrganizationIdQueryParam'
       responses:
         '200':
           description: Return organization
