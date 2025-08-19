@@ -26,8 +26,8 @@ More information about the production of indicators can be found here: [MoteurDe
 graph TD;
 
 Step1[Digital service view]--> Decision1{Has terminal, network, non-cloud server or cloud service equipment?}
-Decision1 -->|Yes|Step2['Calculate' button enabled]
-Decision1 -->|No|Step3['Calculate' button disabled] --> |add terminal, network, non-cloud server or cloud service|Step2-->|Click on 'Calculate' button|Step4[Footprints evaluated]-->Step5[User redirected to footprint view] -->Step6['Calculate' button disabled]-->|Update digital service|Step2
+Decision1 -->|Yes|Step2['Calculate my impact' button visible]
+Decision1 -->|No|Step3['Calculate my impact' button invisible] --> |add terminal, network, non-cloud server or cloud service|Step2-->|Click on 'Calculate my impact' button|Step4[Footprints evaluated]-->Step5[User redirected to footprint view] -->Step6['Calculate my impact' button diappears]-->|Update digital service|Step2
 
 {{< /mermaid >}}
 

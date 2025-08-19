@@ -77,7 +77,7 @@ weight: 20
     4. **Number of Users**
     5. **Average Usage Per Year**
     6. **Device Lifespan**
-    7. Click **Add Device** to save your input.
+    7. Click **Add** to save your input.
 
 ![Screenshot showing the form to fill in device information, with fields such as device type, country, and usage.](../media/04_add_device.png "Screenshot showing the form to fill in device information, including device type, country, and usage.")
 
@@ -103,7 +103,7 @@ weight: 20
     1. **Name**: Assign a unique name to your network.
     2. **Network Type and Location**
     3. **Annual Data Exchange Volume**
-    4. Click **Add Network** to save.
+    4. Click **Add** to save.
 
 ![Screenshot showing the form to fill in network details, including network type, location, and data volume.](../media/07_add_network.png "Screenshot showing a form to fill in network details, including network type, location, and data volume.")
 
@@ -172,7 +172,7 @@ weight: 20
 3. **Action:** Click the "Browse File" buttons to select and attach the file.
 4. **Action:** Click "Start Upload" to initiate the file upload.
 5. **Action:** Click "Finish Import" to proceed to the digital service view.
-6. **Action:** Go to the "Non-Cloud Servers" tab to view the imported data.
+6. **Action:** Go to the "Non-Cloud Servers" table to view the imported data.
 
 ![Screenshot showing the form to upload non-cloud servers file.](../media/8_import-non-cloud-server.png "Screenshot showing the form to upload non-cloud servers file.")
 
@@ -213,7 +213,7 @@ weight: 20
 3. **Action:** Click the "Browse File" button to select and attach the file.
 4. **Action:** Click "Start Upload" to initiate the file upload.
 5. **Action:** Click "Finish Import" to proceed to the digital service view.
-6. **Action:** Go to the "Cloud Services" tab to view the imported data.
+6. **Action:** Go to the "Cloud Services" table to view the imported data.
 
 ![Screenshot showing the form to upload cloud service file.](../media/13_B_import_cloud_instance.png "Screenshot showing the form to upload cloud service file.")
 ---
