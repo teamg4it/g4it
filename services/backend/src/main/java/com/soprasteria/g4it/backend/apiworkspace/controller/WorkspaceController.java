@@ -10,15 +10,15 @@ package com.soprasteria.g4it.backend.apiworkspace.controller;
 
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrganizationService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
+import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceRestMapper;
 import com.soprasteria.g4it.backend.apiworkspace.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiworkspace.mapper.SubscriberDetailsRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.WorkspaceApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.SubscriberDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserDetailsRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +47,7 @@ public class WorkspaceController implements WorkspaceApiDelegate {
     AdministratorOrganizationService administratorOrganizationService;
 
     @Autowired
-    private OrganizationRestMapper organizationRestMapper;
+    private WorkspaceRestMapper workspaceRestMapper;
 
     @Autowired
     SubscriberDetailsRestMapper subscriberDetailsRestMapper;
@@ -59,8 +59,8 @@ public class WorkspaceController implements WorkspaceApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<OrganizationRest> createWorkspace(OrganizationUpsertRest organizationUpsertRest) {
-        return new ResponseEntity<>(organizationRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser(), false)),
+    public ResponseEntity<WorkspaceRest> createWorkspace(WorkspaceUpdateRest organizationUpsertRest) {
+        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser(), false)),
                 HttpStatus.OK);
     }
 
