@@ -116,7 +116,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
             gpuMemory: defaultInfrastructureType.defaultGpuMemory,
             ramSize: defaultInfrastructureType.defaultRamSize,
             pue: defaultInfrastructureType.defaultDatacenterPue,
-            complementaryPue: 1.3,
+            complementaryPue: 1,
             location: "France",
         };
         //to get it only one time
