@@ -125,7 +125,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
                 .getAiInfrastructure(uid)
                 .pipe(
                     finalize(() => {
-                        this.runFormChange();
+                        this.handlingValueChangesForCalculateButton();
                     }),
                 )
                 .subscribe({
@@ -159,7 +159,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
         } else {
             const data = this.aiFormsStore.getInfrastructureFormData();
             this.infrastructureForm.patchValue(data ?? defaultData);
-            this.runFormChange();
+            this.handlingValueChangesForCalculateButton();
         }
 
         // Save data whenever changes are made
@@ -177,7 +177,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
         });
     }
 
-    async runFormChange() {
+    async handlingValueChangesForCalculateButton() {
         this.formSubscription = this.infrastructureForm.valueChanges.subscribe(() => {
             if (this.infrastructureForm.valid && this.infrastructureForm.dirty) {
                 this.digitalServiceStore.setEcoMindEnableCalcul(true);

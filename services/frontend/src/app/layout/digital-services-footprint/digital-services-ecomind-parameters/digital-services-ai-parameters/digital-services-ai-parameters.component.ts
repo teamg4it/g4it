@@ -170,7 +170,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 .getAiParameter(uid)
                 .pipe(
                     finalize(() => {
-                        this.runFormChange();
+                        this.handlingValueChangesForCalculateButton();
                     }),
                 )
                 .subscribe({
@@ -205,7 +205,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 this.isFinetuning = data.isFinetuning;
                 this.terminalsForm.patchValue(data);
             }
-            this.runFormChange();
+            this.handlingValueChangesForCalculateButton();
         }
 
         // Save data whenever changes are made
@@ -236,7 +236,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             });
     }
 
-    async runFormChange() {
+    async handlingValueChangesForCalculateButton() {
         // for new ecomind form calculate button to be enabled
         const ds = await firstValueFrom(this.digitalServicesDataService.digitalService$);
         if (this.terminalsForm.valid && ds.lastCalculationDate === undefined) {
