@@ -10,7 +10,7 @@ package com.soprasteria.g4it.backend.apiadministrator.business;
 
 import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
-import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
+import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
@@ -53,7 +53,7 @@ public class AdministratorService {
      * Subscriber Mapper.
      */
     @Autowired
-    SubscriberRestMapper subscriberRestMapper;
+    OrganizationRestMapper organizationRestMapper;
     /**
      * The Administrator Role Service
      */
@@ -108,7 +108,7 @@ public class AdministratorService {
         subscriberToUpdate.setCriteria(criteriaRest.getCriteria());
         subscriberRepository.save(subscriberToUpdate);
         userService.clearUserAllCache();
-        return subscriberRestMapper.toBusinessObject(subscriberToUpdate);
+        return organizationRestMapper.toBusinessObject(subscriberToUpdate);
     }
 
     /**
@@ -184,7 +184,7 @@ public class AdministratorService {
     }
 
     public SubscriberBO getSubscriberById(Long id) {
-        return subscriberRestMapper.toBusinessObject(subscriberRepository.findById(id).orElse(null));
+        return organizationRestMapper.toBusinessObject(subscriberRepository.findById(id).orElse(null));
     }
 
 }

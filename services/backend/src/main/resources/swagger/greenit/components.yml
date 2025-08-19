@@ -222,7 +222,7 @@ components:
         subscribers:
           type: array
           items:
-            $ref: "#/components/schemas/SubscriberRest"
+            $ref: "#/components/schemas/OrganizationRest"
     UserInfoRest:
       description: Users' information
       type: object
@@ -297,7 +297,7 @@ components:
         name:
           type: string
 
-    SubscriberRest:
+    OrganizationRest:
       description: Subscriber information
       type: object
       properties:
@@ -320,13 +320,13 @@ components:
           type: array
           items:
             type: string
-        organizations:
+        workspaces:
           type: array
           items:
-            $ref: "#/components/schemas/OrganizationRest"
+            $ref: "#/components/schemas/WorkspaceRest"
         ecomindai:
           type: boolean
-    OrganizationRest:
+    WorkspaceRest:
       description: Organization information
       type: object
       properties:
@@ -925,30 +925,30 @@ components:
         impactStep:
           type: array
           items:
-            $ref: "#/components/schemas/OrganizationRest"
+            $ref: "#/components/schemas/WorkspaceRest"
 
-    OrganizationUpsertRest:
-      description: Organization update
+    WorkspaceUpdateRest:
+      description: Workspace update
       type: object
       required:
-        - subscriberId
+        - organizationId
         - name
       properties:
-        subscriberId:
-          description: Subscriber id
+        organizationId:
+          description: Organization id
           type: integer
           format: int64
         name:
-          description: Organization name
+          description: workpspace name
           type: string
           pattern: "^[a-zA-Z0-9\\-\\_]+$"
         status:
-          description: Organization status
+          description: workpspace status
           type: string
           $ref: "#/components/schemas/OrganizationStatus"
           default: ACTIVE
         dataRetentionDays:
-          description: Organization date retention days
+          description: workpspace date retention days
           type: integer
           format: int64
         criteriaIs:

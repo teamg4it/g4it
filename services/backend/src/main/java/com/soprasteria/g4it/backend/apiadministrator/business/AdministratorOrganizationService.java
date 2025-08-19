@@ -22,8 +22,8 @@ import com.soprasteria.g4it.backend.apiuser.repository.*;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.LinkUserRoleRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRoleRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,9 +98,9 @@ public class AdministratorOrganizationService {
      * @param user                   the user.
      * @return OrganizationBO
      */
-    public OrganizationBO updateOrganization(final Long organizationId, final OrganizationUpsertRest organizationUpsertRest, UserBO user) {
+    public OrganizationBO updateOrganization(final Long organizationId, final WorkspaceUpdateRest organizationUpsertRest, UserBO user) {
         // Check Admin Role on this subscriber or organization.
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organizationUpsertRest.getSubscriberId(), organizationId);
+        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organizationUpsertRest.getOrganizationId(), organizationId);
         OrganizationBO organizationBO = organizationService.updateOrganization(organizationId, organizationUpsertRest, user.getId());
         userService.clearUserAllCache();
         return organizationBO;
@@ -109,12 +109,12 @@ public class AdministratorOrganizationService {
     /**
      * Create an Organization.
      *
-     * @param organizationUpsertRest the organizationUpsertRest.
-     * @param user                   the user.
+     * @param workspaceUpdateRest the WorkspaceUpdateRest.
+     * @param user                the user.
      * @return organization BO.
      */
-    public OrganizationBO createOrganization(OrganizationUpsertRest organizationUpsertRest, UserBO user, boolean checkAdminRole) {
-        Long subscriberId = organizationUpsertRest.getSubscriberId();
+    public OrganizationBO createOrganization(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, boolean checkAdminRole) {
+        Long subscriberId = workspaceUpdateRest.getOrganizationId();
         boolean hasSubscriberAdminRights = roleService.hasAdminRightsOnSubscriber(user, subscriberId);
         boolean hasDomainAuthorization = roleService.isUserDomainAuthorized(user, subscriberId);
 
@@ -124,14 +124,14 @@ public class AdministratorOrganizationService {
                     hasDomainAuthorization);
         }
 
-        final OrganizationBO result = organizationService.createOrganization(organizationUpsertRest, user, subscriberId);
+        final OrganizationBO result = organizationService.createOrganization(workspaceUpdateRest, user, subscriberId);
         userService.clearUserCache(user);
 
         if (hasSubscriberAdminRights)
             return result;
 
         // Link user to the organization and assign with org admin role
-        if (!(checkAdminRole)|| hasDomainAuthorization) {
+        if (!(checkAdminRole) || hasDomainAuthorization) {
             UserRoleRest userRoleRest = UserRoleRest.builder().userId(user.getId()).roles(List.of("ROLE_ORGANIZATION_ADMINISTRATOR")).build();
             LinkUserRoleRest linkUserRoleRest = LinkUserRoleRest.builder().organizationId(result.getId()).users(Collections.singletonList(userRoleRest)).build();
             linkUserToOrg(linkUserRoleRest, authService.getUser(), false);
@@ -194,16 +194,15 @@ public class AdministratorOrganizationService {
                 })
                 .toList();
 
-       // Retrieve all users, including subscriber admins, when the logged-in user is a subscriber admin
+        // Retrieve all users, including subscriber admins, when the logged-in user is a subscriber admin
         if (roleService.hasAdminRightsOnSubscriber(user, subscriberId)) {
             return Stream.concat(subscriberAdmins.stream(), usersByOrganization.stream()).toList();
         }
-       //  Return the users except for subscriber admins when the logged-in user is an organization admin.
+        //  Return the users except for subscriber admins when the logged-in user is an organization admin.
         else {
             return usersByOrganization;
         }
     }
-
 
 
     /**

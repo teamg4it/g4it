@@ -13,8 +13,6 @@ import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
-import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
-import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapperImpl;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
@@ -26,14 +24,13 @@ import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.LinkUserRoleRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRoleRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -78,9 +75,7 @@ class AdministratorOrganizationServiceTest {
 
     @Mock
     UserSubscriberRepository userSubscriberRepository;
-    @Spy
-    UserRestMapper userRestMapper = new UserRestMapperImpl();
-
+    
     @Mock
     UserService userService;
 
@@ -185,17 +180,17 @@ class AdministratorOrganizationServiceTest {
         String organizationName = "ORGANIZATION";
         String updatedStatus = OrganizationStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
-        OrganizationUpsertRest organizationUpsertRest =
+        WorkspaceUpdateRest workspaceUpdateRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
         OrganizationBO updatedOrganization = OrganizationBO.builder().id(orgId).name("UpdatedName").build();
 
         doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
-        when(organizationService.updateOrganization(orgId, organizationUpsertRest, userBO.getId())).thenReturn(updatedOrganization);
+        when(organizationService.updateOrganization(orgId, workspaceUpdateRest, userBO.getId())).thenReturn(updatedOrganization);
 
-        OrganizationBO result = administratorOrganizationService.updateOrganization(orgId, organizationUpsertRest, userBO);
+        OrganizationBO result = administratorOrganizationService.updateOrganization(orgId, workspaceUpdateRest, userBO);
 
         verify(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
-        verify(organizationService).updateOrganization(orgId, organizationUpsertRest, userBO.getId());
+        verify(organizationService).updateOrganization(orgId, workspaceUpdateRest, userBO.getId());
         verify(userService).clearUserAllCache();
 
         assertEquals(orgId, result.getId());
@@ -210,13 +205,13 @@ class AdministratorOrganizationServiceTest {
         String organizationName = "ORGANIZATION";
         String updatedStatus = OrganizationStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
-        OrganizationUpsertRest organizationUpsertRest =
+        WorkspaceUpdateRest workspaceUpdateRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
 
         doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "User with id '1' do not have admin role on subscriber '1' or organization '1'")).when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
 
         assertThrows(AuthorizationException.class, () -> {
-            administratorOrganizationService.updateOrganization(orgId, organizationUpsertRest, userBO);
+            administratorOrganizationService.updateOrganization(orgId, workspaceUpdateRest, userBO);
         });
 
         verify(organizationService, never()).updateOrganization(any(), any(), any());
@@ -230,17 +225,17 @@ class AdministratorOrganizationServiceTest {
         String organizationName = "ORGANIZATION";
         String updatedStatus = OrganizationStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
-        OrganizationUpsertRest organizationUpsertRest =
+        WorkspaceUpdateRest workspaceUpdateRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
         OrganizationBO expectedOrg = OrganizationBO.builder().id(33L).build();
 
-        when(organizationService.createOrganization(organizationUpsertRest, userBO, subscriberId)).thenReturn(expectedOrg);
+        when(organizationService.createOrganization(workspaceUpdateRest, userBO, subscriberId)).thenReturn(expectedOrg);
         when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
         when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(true);
-        OrganizationBO result = administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, true);
+        OrganizationBO result = administratorOrganizationService.createOrganization(workspaceUpdateRest, userBO, true);
 
-        verify(administratorRoleService).hasSubscriberAdminOrDomainAccess(userBO, subscriberId, true,true);
-        verify(organizationService).createOrganization(organizationUpsertRest, userBO, subscriberId);
+        verify(administratorRoleService).hasSubscriberAdminOrDomainAccess(userBO, subscriberId, true, true);
+        verify(organizationService).createOrganization(workspaceUpdateRest, userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
 
         assertEquals(expectedOrg, result);
@@ -253,14 +248,14 @@ class AdministratorOrganizationServiceTest {
         String organizationName = "ORGANIZATION";
         String updatedStatus = OrganizationStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
-        OrganizationUpsertRest organizationUpsertRest =
+        WorkspaceUpdateRest workspaceUpdateRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
         OrganizationBO expectedOrg = OrganizationBO.builder().id(1L).name(organizationName).build();
 
         Organization org = TestUtils.createOrganization();
         User userEntity = User.builder().id(1L).build();
 
-        when(organizationService.createOrganization(organizationUpsertRest, userBO, subscriberId)).thenReturn(expectedOrg);
+        when(organizationService.createOrganization(workspaceUpdateRest, userBO, subscriberId)).thenReturn(expectedOrg);
         when(organizationRepository.findById(1L)).thenReturn(Optional.of(org));
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
         when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
@@ -268,9 +263,9 @@ class AdministratorOrganizationServiceTest {
         when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
         when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(false);
 
-        OrganizationBO result = administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, false);
+        OrganizationBO result = administratorOrganizationService.createOrganization(workspaceUpdateRest, userBO, false);
 
-        verify(organizationService).createOrganization(organizationUpsertRest, userBO, subscriberId);
+        verify(organizationService).createOrganization(workspaceUpdateRest, userBO, subscriberId);
         verify(roleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
         verify(userRepository).findById(1L);
@@ -279,6 +274,7 @@ class AdministratorOrganizationServiceTest {
 
         assertEquals(expectedOrg, result);
     }
+
     @Test
     void createOrganization_NoAdminRightsAnd_NoDomainAuthorization_ThrowException() {
         UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
@@ -287,7 +283,7 @@ class AdministratorOrganizationServiceTest {
         String updatedStatus = OrganizationStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
 
-        OrganizationUpsertRest organizationUpsertRest =
+        WorkspaceUpdateRest workspaceUpdateRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
 
         when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(false);
@@ -299,7 +295,7 @@ class AdministratorOrganizationServiceTest {
                         subscriberId, false, false);
 
         assertThrows(AuthorizationException.class, () -> {
-            administratorOrganizationService.createOrganization(organizationUpsertRest, userBO, true);
+            administratorOrganizationService.createOrganization(workspaceUpdateRest, userBO, true);
         });
 
         verify(roleService).hasAdminRightsOnSubscriber(userBO, subscriberId);

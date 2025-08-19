@@ -21,14 +21,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrganizationUpsertRest"
+              $ref: "#/components/schemas/WorkspaceUpdateRest"
       responses:
         "201":
           description: workspace has been created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrganizationRest"
+                $ref: "#/components/schemas/WorkspaceRest"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
         "409":

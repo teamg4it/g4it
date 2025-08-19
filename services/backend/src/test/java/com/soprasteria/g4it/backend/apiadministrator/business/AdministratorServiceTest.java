@@ -10,7 +10,7 @@ package com.soprasteria.g4it.backend.apiadministrator.business;
 import com.soprasteria.g4it.backend.TestUtils;
 import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
-import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
+import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserSearchBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
@@ -57,7 +57,7 @@ class AdministratorServiceTest {
     @Mock
     private SubscriberService subscriberService;
     @Mock
-    private SubscriberRestMapper subscriberRestMapper;
+    private OrganizationRestMapper organizationRestMapper;
     @Mock
     private UserService userService;
 
@@ -131,14 +131,14 @@ class AdministratorServiceTest {
 
         when(subscriberService.getSubscriptionById(subscriberId)).thenReturn(subscriber);
         when(subscriberRepository.save(any())).thenReturn(updatedSubscriber);
-        when(subscriberRestMapper.toBusinessObject(updatedSubscriber)).thenReturn(subscriberBO);
+        when(organizationRestMapper.toBusinessObject(updatedSubscriber)).thenReturn(subscriberBO);
 
         SubscriberBO result = administratorService.updateSubscriberCriteria(subscriberId, criteriaRest, createUserBOAdminSub());
 
         assertThat(result.getCriteria()).isEqualTo(List.of("New Criteria"));
 
         verify(subscriberRepository).save(updatedSubscriber);
-        verify(subscriberRestMapper, times(1)).toBusinessObject(updatedSubscriber);
+        verify(organizationRestMapper, times(1)).toBusinessObject(updatedSubscriber);
         verify(userService).clearUserAllCache();
     }
 

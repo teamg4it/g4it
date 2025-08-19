@@ -19,7 +19,7 @@ import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,23 +114,23 @@ public class OrganizationService {
     /**
      * Create an Organization.
      *
-     * @param organizationUpsertRest the organizationUpsertRest.
-     * @param user                   the user.
-     * @param subscriberId           the subscriber id.
+     * @param workspaceUpdateRest the organizationUpsertRest.
+     * @param user                the user.
+     * @param subscriberId        the subscriber id.
      * @return organization BO.
      */
     @Transactional
-    public OrganizationBO createOrganization(OrganizationUpsertRest organizationUpsertRest, UserBO user, Long subscriberId) {
+    public OrganizationBO createOrganization(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, Long subscriberId) {
 
         // Check if organization with same name already exist on this subscriber.
-        organizationRepository.findBySubscriberIdAndName(organizationUpsertRest.getSubscriberId(), organizationUpsertRest.getName())
+        organizationRepository.findBySubscriberIdAndName(workspaceUpdateRest.getOrganizationId(), workspaceUpdateRest.getName())
                 .ifPresent(organization -> {
-                    throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", organizationUpsertRest.getName(), subscriberId));
+                    throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", workspaceUpdateRest.getName(), subscriberId));
                 });
 
         // Create organization
         final Organization organizationToCreate = organizationMapper.toEntity(
-                organizationUpsertRest.getName(),
+                workspaceUpdateRest.getName(),
                 subscriberService.getSubscriptionById(subscriberId),
                 User.builder().id(user.getId()).build(),
                 OrganizationStatus.ACTIVE.name()
@@ -144,20 +144,20 @@ public class OrganizationService {
     /**
      * Update the organization.
      *
-     * @param organizationUpsertRest the organizationUpsertRest.
-     * @param userId                 the user id.
+     * @param workspaceUpdateRest the WorkspaceUpdateRest.
+     * @param userId              the user id.
      * @return OrganizationBO
      */
     @Transactional
-    public OrganizationBO updateOrganization(final Long organizationId, final OrganizationUpsertRest organizationUpsertRest, Long userId) {
+    public OrganizationBO updateOrganization(final Long organizationId, final WorkspaceUpdateRest workspaceUpdateRest, Long userId) {
 
-        final Organization organizationToSave = getOrganizationByStatus(organizationUpsertRest.getSubscriberId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
+        final Organization organizationToSave = getOrganizationByStatus(workspaceUpdateRest.getOrganizationId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
 
         final String currentStatus = organizationToSave.getStatus();
-        final String newStatus = organizationUpsertRest.getStatus().name();
+        final String newStatus = workspaceUpdateRest.getStatus().name();
 
         if (currentStatus.equals(OrganizationStatus.ACTIVE.name()) && newStatus.equals(OrganizationStatus.ACTIVE.name())) {
-            updateNameOrCriteria(organizationUpsertRest, organizationToSave);
+            updateNameOrCriteria(workspaceUpdateRest, organizationToSave);
 
         } else {
             Integer dataDeletionDays = null;
@@ -166,9 +166,9 @@ public class OrganizationService {
             // Case current organization is ACTIVE and update it to TO_BE_DELETED
             if (currentStatus.equals(OrganizationStatus.ACTIVE.name()) && newStatus.equals(OrganizationStatus.TO_BE_DELETED.name())) {
                 // Get data retention days
-                dataDeletionDays = organizationUpsertRest.getDataRetentionDays() == null ?
+                dataDeletionDays = workspaceUpdateRest.getDataRetentionDays() == null ?
                         organizationDataDeletionDays :
-                        organizationUpsertRest.getDataRetentionDays().intValue();
+                        workspaceUpdateRest.getDataRetentionDays().intValue();
 
                 deletionDate = LocalDateTime.now().plusDays(dataDeletionDays.longValue());
             }
@@ -177,7 +177,7 @@ public class OrganizationService {
             organizationToSave.setDataRetentionDay(dataDeletionDays);
             organizationToSave.setStorageRetentionDayExport(dataDeletionDays);
             organizationToSave.setStorageRetentionDayOutput(dataDeletionDays);
-            organizationToSave.setStatus(organizationUpsertRest.getStatus().name());
+            organizationToSave.setStatus(workspaceUpdateRest.getStatus().name());
         }
         organizationToSave.setLastUpdatedBy(User.builder()
                 .id(userId)
@@ -191,18 +191,18 @@ public class OrganizationService {
     /**
      * Update the organization's name or criteria
      *
-     * @param organizationUpsertRest the organizationUpsertRest
-     * @param organizationToSave     the updated organization
+     * @param workspaceUpdateRest the organizationUpsertRest
+     * @param organizationToSave  the updated organization
      */
-    private void updateNameOrCriteria(OrganizationUpsertRest organizationUpsertRest, Organization organizationToSave) {
+    private void updateNameOrCriteria(WorkspaceUpdateRest workspaceUpdateRest, Organization organizationToSave) {
         final String currentOrganization = organizationToSave.getName();
-        final String newOrganization = organizationUpsertRest.getName();
+        final String newOrganization = workspaceUpdateRest.getName();
 
         final List<String> currentCriteriaDs = organizationToSave.getCriteriaDs();
-        final List<String> newCriteriaDs = organizationUpsertRest.getCriteriaDs();
+        final List<String> newCriteriaDs = workspaceUpdateRest.getCriteriaDs();
 
         final List<String> currentCriteriaIs = organizationToSave.getCriteriaIs();
-        final List<String> newCriteriaIs = organizationUpsertRest.getCriteriaIs();
+        final List<String> newCriteriaIs = workspaceUpdateRest.getCriteriaIs();
         boolean isCriteriaChange = !Objects.equals(newCriteriaDs, currentCriteriaDs) || !Objects.equals(newCriteriaIs, currentCriteriaIs);
         boolean isNameChange = !currentOrganization.equals(newOrganization);
         if (!(isCriteriaChange || isNameChange)) {
@@ -217,9 +217,9 @@ public class OrganizationService {
         if (isNameChange) {
             // Handle update in organization's name
             // Check if organization with same name already exist on this subscriber.
-            organizationRepository.findBySubscriberIdAndName(organizationUpsertRest.getSubscriberId(), newOrganization)
+            organizationRepository.findBySubscriberIdAndName(workspaceUpdateRest.getOrganizationId(), newOrganization)
                     .ifPresent(org -> {
-                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newOrganization, organizationUpsertRest.getSubscriberId()));
+                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newOrganization, workspaceUpdateRest.getOrganizationId()));
                     });
 
             log.info("Update Organization name in file system from '{}' to '{}'", currentOrganization, newOrganization);
