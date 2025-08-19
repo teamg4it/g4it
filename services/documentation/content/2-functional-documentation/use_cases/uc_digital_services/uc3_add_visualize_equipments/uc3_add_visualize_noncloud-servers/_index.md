@@ -17,7 +17,7 @@ This use case allows a project team to add Non-Cloud Servers equipment directly 
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service view / Non-Cloud Servers
+-   My Digital Services / My Digital Service view / Visualize my resources tab / Non-Cloud Servers
 
 
 **Access Conditions**
@@ -30,10 +30,10 @@ The connected user must have the write access for that module on the selected or
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group      | Elements          | Type   | Description                                                                                                                                                                           |
-| --------- | ---------- | ----------------- | ------ |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|           | Tab Header |                   | group  |                                                                                                                                                                                       |
-| 1         |            | Non-Cloud Servers | title  |                                                                                                                                                                                       |
-| 2         |            | + Add Server      | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><li><u>_action rules_</u>: That button open the window Add Server details. |
+|-----------| ---------- | ----------------- |--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|           | Tab Header | Visualize my resources | tab    |                                                                                                                                                                                       |
+| 1         |Non-Cloud Servers   |  | table  |                                                                                                                                                                                       |
+| 2         |            | + Add    | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><li><u>_action rules_</u>: That button open the window Add Server details. |
 |           | Tab        |                   |        |                                                                                                                                                                                       |
 | 3         |            | Name              | column |                                                                                                                                                                                       |
 | 4         |            | Allocation        | column |                                                                                                                                                                                       |
@@ -43,6 +43,7 @@ The connected user must have the write access for that module on the selected or
 | 8         |            | Datacenter        | column |                                                                                                                                                                                       |
 | 9         |            | Edit              | button | <li><u>_action rules_</u>: That button open the window non-cloud servers details.                                                                                                     |
 | 10        |            | Delete            | button | <li><u>_action rules_</u>: Delete the non cloud servers from the current Digital Service.<br>Note : The user must click on Calculate to update the footprint estimation.              |
+| 11        |            | Import              | button | <li><u>_action rules_</u>: Upload files to create cloud services or non-cloud services<br> Note : The user must click on Calculate to update the footprint estimation.                    |
 
 {{% /expand %}}
 
@@ -55,7 +56,7 @@ The connected user must have the write access for that module on the selected or
 ## Non-Cloud Server edit
 
 Navigation Path
-My Digital Services / My Digital Service / Non-Cloud Server / Modify Non-Cloud Server
+My Digital Services / My Digital Service / Visualize my resources tab /Non-Cloud Server / Modify Non-Cloud Server
 ![uc3_add_visualize_equipments_NonCloudServer.png](../../images/uc3_add_visualize_equipments_NonCloudServer.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 

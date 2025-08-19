@@ -17,7 +17,7 @@ This usecase allows a project team to add Cloud Services equipment directly via 
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service view
+-   My Digital Services / My Digital Service view / Visualize my resources tab / Cloud Services
 
 
 **Access Conditions**
@@ -28,13 +28,13 @@ The connected user must have the write access for that module on the selected or
 ![uc3_add_visualize_equipments_CloudServiceTab.png](../../images/uc3_add_visualize_equipments_CloudServiceTab.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
-| Reference | Group      | Elements            | Type   | Description                                                                                                                                                                               |
-|-----------| ---------- |---------------------| ------ |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|           | Tab Header |                     | group  |                                                                                                                                                                                           |
-| 1         |            | Cloud Services      | title  |                                                                                                                                                                                           |
-| 2         |            | + Add Cloud Service | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Device details.<br> |
-|           | Tab        |                     |        |                                                                                                                                                                                           |
-| 3         |            | Name                | column |                                                                                                                                                                                           |
+| Reference | Group      | Elements            | Type                           | Description                                                                                                                                                                               |
+|-----------| ---------- |---------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|           | Tab Header | Visualize my resources| Tab                            |                                                                                                                                                                                           |
+| 1         |Cloud Services            |       | table                          |                                                                                                                                                                                           |
+| 2         |            | + Add| button                         | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Device details.<br> |
+|           | Tab        |                     |                                |                                                                                                                                                                                           |
+| 3         |            | Name                | column                         |                                                                                                                                                                                           |
 | 4         |              |                     | Cloud provider                 | dropdown                                                                                                                                                                                  |                                                                                                                   |
 | 5         |              |                     | Instance type                  | dropdown                                                                                                                                                                                  |                                                                                                                   |
 |           |              | Instance usage      |                                | section                                                                                                                                                                                   |                                                                                                                   |
@@ -42,9 +42,9 @@ The connected user must have the write access for that module on the selected or
 | 7         |              |                     | Location                       | dropdown                                                                                                                                                                                  |                                                                                                                   |
 | 8         |              |                     | Annual usage duration (hour)   | Entire number input                                                                                                                                                                       |                                                                                                                   |
 | 9         |              |                     | Average workload (% CPU usage) | Entire number input                                                                                                                                                                       |                                                                                                                   |
-| 10        |            | Edit                | button | <li><u>_action rules_</u>: That button open the window Device details.<br>                                                                                                                |
-| 11        |            | Delete              | button | <li><u>_action rules_</u>: Delete the device from the current Digital Service.<br> Note : The user must click on Calculate to update the footprint estimation.                            |
-| 12        |            | Import              | button | <li><u>_action rules_</u>: Upload files to create cloud services or non-cloud services<br> Note : The user must click on Calculate to update the footprint estimation.                    |
+| 10        |            | Edit                | button                         | <li><u>_action rules_</u>: That button open the window Device details.<br>                                                                                                                |
+| 11        |            | Delete              | button                         | <li><u>_action rules_</u>: Delete the device from the current Digital Service.<br> Note : The user must click on Calculate to update the footprint estimation.                            |
+| 12        |            | Import              | button                         | <li><u>_action rules_</u>: Upload files to create cloud services or non-cloud services<br> Note : The user must click on Calculate to update the footprint estimation.                    |
 
 {{% /expand %}}
 
@@ -56,7 +56,7 @@ The connected user must have the write access for that module on the selected or
 ## Cloud Services edit
 
 **Navigation Path**
--   My Digital Services / My Digital Service / Cloud Services / Modify Cloud Service
+-   My Digital Services / My Digital Service / Visualize my resources tab / Cloud Services / Edit Cloud Service
 ![uc3_add_visualize_equipments_CloudServiceAdd.png](../../images/uc3_add_visualize_equipments_CloudServiceAdd.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}

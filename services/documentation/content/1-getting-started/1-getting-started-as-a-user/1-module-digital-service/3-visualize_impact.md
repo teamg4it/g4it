@@ -34,18 +34,20 @@ weight: 30
 
 - **Action:**
     - Click the "Calculate" button to start the evaluation.
-    - Use the "Settings" button to choose the criteria on which you want to evaluate the impact (11 criteria are
-      available).
+    - The first estimation is done for the default criteria chosen by your organization's administrator.
 
 ![Screenshot showing the "Calculate" and "Settings" buttons for starting the evaluation process.](../media/15_evaluate_the_impact.png)
 
-### **Step 2:** Select Evaluation Criteria
+### **Step 2:** Select Evaluation Criteria in the footprint view
 
 - **Action:**
+    - Click the 'Edit Criteria' button
     - From the list of criteria, select the one you want to evaluate for the impact of your digital service.
     - If you reset to default, it will select the criteria chosen by your organization's administrator.
+    - Click 'Save' button. Re-evaluation launches for the selected criteria.
 
 ![Screenshot showing the criteria selection interface with a list of evaluation criteria.](../media/16_choose_criteria.png)
+
 
 ### **Step 3:** Visualize the Overall Impact
 
@@ -59,11 +61,15 @@ visualize the impact of your digital service.
        graph by clicking on different components.
     3. **Guidance:** Based on your current view, this section provides an explanation of the impact and key advice for
        reducing it.
-    4. **Action:** Access this view by clicking the "Visualize" tab.
-    5. **Action:** In some cases, G4IT may not have been able to evaluate the impact on all criteria. This button allows
-       you to see inconsistencies in the graph. You can learn more about this in
+    4. **Action:** In some cases, G4IT may not have been able to evaluate the impact on all criteria. This button enables
+       the data consistency view which is disabled by default. You can learn more about this in
        the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md)
        documentation.
+    5. **Action:** This button allows you to see inconsistencies in the graph. If you cannot see this button in the view, 
+  you can enable it from the 'Configure the view' button  You can learn more about this in
+     the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md)
+  
+   **Action:** Access this view by clicking the "Visualize my results in the" tab in the digital service view.
 
 ![Screenshot showing the overall impact of the digital service, divided into different components with the main graph and evaluation criteria list.](../media/17_visualize_impact.png)
 
@@ -72,15 +78,15 @@ visualize the impact of your digital service.
 ## Navigating the Graph
 
 ### **Step 4:** View a Specific Evaluation Criterion
-
-1. **Action:** Click on the generic graph or select a specific criterion to access a new graph showing the impact
+1. **Selected Criteria**
+2. **Action:** Click on the generic graph or select a specific criterion to access a new graph showing the impact
    distribution according to key elements of the digital service:
     - End-user devices
     - Data exchange
     - Infrastructure:
            - Servers
            - Cloud services
-2. **Guidance:** This view provides explanations about the impact and advice on how to reduce it.
+3. **Guidance:** This view provides explanations about the impact and advice on how to reduce it.
 
 ![Screenshot of a graph showing the impact distribution based on selected evaluation criteria. Each section is clickable for further exploration.](../media/18_visualize_impact_criteria.png)
 
