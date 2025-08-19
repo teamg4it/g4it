@@ -88,7 +88,7 @@ export class InventoriesApplicationFootprintComponent {
         this.mapCriteres(footprint);
 
         this.footprintStore.setApplicationCriteria(criteria || Constants.MUTLI_CRITERIA);
-        this.footprintStore.setGraphType("global");
+
         this.footprint = footprint;
         this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
         this.footprint = this.footprint.map((footprintData) => ({
@@ -117,7 +117,25 @@ export class InventoriesApplicationFootprintComponent {
             ];
         });
         this.allUnmodifiedFilters.set(unmodifyFilter);
-
+        if ((this.allUnmodifiedFilters() as any).domain.length <= 2) {
+            if ((this.allUnmodifiedFilters() as any).domain[1].children.length <= 1) {
+                this.footprintStore.setDomain(
+                    (this.allUnmodifiedFilters() as any).domain[1].label,
+                );
+                this.footprintStore.setSubDomain(
+                    (this.allUnmodifiedFilters() as any).domain[1].children[0].label,
+                );
+                this.footprintStore.setGraphType("subdomain");
+            } else {
+                this.footprintStore.setDomain(
+                    (this.allUnmodifiedFilters() as any).domain[1].label,
+                );
+                this.footprintStore.setSubDomain("");
+                this.footprintStore.setGraphType("domain");
+            }
+        } else {
+            this.footprintStore.setGraphType("global");
+        }
         this.globalStore.setLoading(false);
 
         // React on criteria url param change
