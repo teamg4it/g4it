@@ -67,14 +67,14 @@ components:
         format: int64
       required: true
       description: The user id.
-    organizationIdQueryParam:
+    workspaceIdQueryParam:
       in: query
-      name: organizationId
+      name: workspaceId
       schema:
         type: integer
         format: int64
       required: false
-      description: The organization id.
+      description: The workspace id.
     isAiPathParam:
       in: query
       name: isAi
@@ -83,14 +83,14 @@ components:
         default: false
       required: false
       description: AI service if true.
-    subscriberIdQueryParam:
+    organizationIdQueryParam:
       in: query
-      name: subscriberId
+      name: organizationId
       schema:
         type: integer
         format: int64
       required: false
-      description: The subscriber id.
+      description: The organization id.
     subscriberQueryParam:
       in: query
       name: subscriber
@@ -98,14 +98,6 @@ components:
         type: string
       required: false
       description: The subscriber.
-    reqSubscriberIdQueryParam:
-      in: query
-      name: subscriberId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: The mandatory subscriber id.
     reqOrganizationIdQueryParam:
       in: query
       name: organizationId
@@ -114,6 +106,14 @@ components:
         format: int64
       required: true
       description: The mandatory organization id.
+    reqWorkspaceIdQueryParam:
+      in: query
+      name: workspaceId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The mandatory workspace id.
     nameSearchQueryParam:
       in: query
       name: searchedName
