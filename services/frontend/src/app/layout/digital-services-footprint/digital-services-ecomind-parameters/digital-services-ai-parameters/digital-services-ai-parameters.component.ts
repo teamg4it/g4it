@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { Subscription } from "rxjs";
+import { finalize, firstValueFrom, Subscription } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -166,29 +166,38 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
             .find((v) => v !== null);
         if (!this.aiFormsStore.getParameterChange() && uid) {
-            this.digitalServicesAiData.getAiParameter(uid).subscribe({
-                next: (data) => {
-                    if (data) {
-                        this.terminalsForm.patchValue(data);
-                        this.isInference = data.isInference;
-                        this.isFinetuning = data.isFinetuning;
-                        this.updateDependentFields(
-                            data.modelName,
-                            data.nbParameters,
-                            data.framework,
-                            data.quantization,
-                        );
-                        this.dataParameter = data;
-                    }
-                },
-                error: (err: any) => {
-                    this.messageService.add({
-                        severity: "error",
-                        summary: this.translate.instant("common.error"),
-                        detail: this.translate.instant("eco-mind-ai.ai-parameters.error"),
-                    });
-                },
-            });
+            this.digitalServicesAiData
+                .getAiParameter(uid)
+                .pipe(
+                    finalize(() => {
+                        this.runFormChange();
+                    }),
+                )
+                .subscribe({
+                    next: (data) => {
+                        if (data) {
+                            this.terminalsForm.patchValue(data);
+                            this.isInference = data.isInference;
+                            this.isFinetuning = data.isFinetuning;
+                            this.updateDependentFields(
+                                data.modelName,
+                                data.nbParameters,
+                                data.framework,
+                                data.quantization,
+                            );
+                            this.dataParameter = data;
+                        }
+                    },
+                    error: (err: any) => {
+                        this.messageService.add({
+                            severity: "error",
+                            summary: this.translate.instant("common.error"),
+                            detail: this.translate.instant(
+                                "eco-mind-ai.ai-parameters.error",
+                            ),
+                        });
+                    },
+                });
         } else {
             const data = this.aiFormsStore.getParametersFormData();
             if (data) {
@@ -196,6 +205,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 this.isFinetuning = data.isFinetuning;
                 this.terminalsForm.patchValue(data);
             }
+            this.runFormChange();
         }
 
         // Save data whenever changes are made
@@ -216,11 +226,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             value.totalGeneratedTokens = totalTokens;
 
             this.aiFormsStore.setParametersFormData(value as AIParametersForm);
-            if (this.terminalsForm.valid && this.terminalsForm.dirty) {
-                this.digitalServiceStore.setEcoMindEnableCalcul(true);
-            } else {
-                this.digitalServiceStore.setEcoMindEnableCalcul(false);
-            }
         });
         this.userService.isAllowedEcoMindAiWrite$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -229,6 +234,21 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     this.terminalsForm.disable();
                 }
             });
+    }
+
+    async runFormChange() {
+        // for new ecomind form calculate button to be enabled
+        const ds = await firstValueFrom(this.digitalServicesDataService.digitalService$);
+        if (this.terminalsForm.valid && ds.lastCalculationDate === undefined) {
+            this.digitalServiceStore.setEcoMindEnableCalcul(true);
+        }
+        this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
+            if (this.terminalsForm.valid && this.terminalsForm.dirty) {
+                this.digitalServiceStore.setEcoMindEnableCalcul(true);
+            } else {
+                this.digitalServiceStore.setEcoMindEnableCalcul(false);
+            }
+        });
     }
 
     ngOnDestroy(): void {

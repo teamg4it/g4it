@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { lastValueFrom, Subscription, take } from "rxjs";
+import { finalize, lastValueFrom, Subscription, take } from "rxjs";
 import {
     DigitalService,
     EcomindType,
@@ -70,7 +70,10 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
                 [Validators.required, Validators.min(0)],
             ],
             pue: [null, [Validators.required, Validators.min(1)]],
-            complementaryPue: [null, [Validators.required, Validators.min(1)]],
+            complementaryPue: [
+                { value: 1, disabled: true },
+                [Validators.required, Validators.min(1)],
+            ],
             location: [null, Validators.required],
         });
 
@@ -118,34 +121,45 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
         };
         //to get it only one time
         if (!this.aiFormsStore.getInfrastructureChange() && uid) {
-            this.digitalServicesAiData.getAiInfrastructure(uid).subscribe({
-                next: (data) => {
-                    if (data) {
-                        const selectedType = this.typesOptions.find(
-                            (t) => t.value === data.infrastructureType.value,
-                        );
-                        this.infrastructureForm.patchValue({
-                            ...data,
-                            infrastructureType: selectedType ?? defaultInfrastructureType,
+            this.digitalServicesAiData
+                .getAiInfrastructure(uid)
+                .pipe(
+                    finalize(() => {
+                        this.runFormChange();
+                    }),
+                )
+                .subscribe({
+                    next: (data) => {
+                        if (data) {
+                            const selectedType = this.typesOptions.find(
+                                (t) => t.value === data.infrastructureType.value,
+                            );
+                            this.infrastructureForm.patchValue({
+                                ...data,
+                                infrastructureType:
+                                    selectedType ?? defaultInfrastructureType,
+                            });
+                        } else {
+                            //set the value
+                            this.infrastructureForm.patchValue(defaultData);
+                            //save the value
+                            this.aiFormsStore.setInfrastructureFormData(defaultData);
+                        }
+                    },
+                    error: (err: any) => {
+                        this.messageService.add({
+                            severity: "error",
+                            summary: this.translate.instant("common.error"),
+                            detail: this.translate.instant(
+                                "eco-mind-ai.ai-parameters.error",
+                            ),
                         });
-                    } else {
-                        //set the value
-                        this.infrastructureForm.patchValue(defaultData);
-                        //save the value
-                        this.aiFormsStore.setInfrastructureFormData(defaultData);
-                    }
-                },
-                error: (err: any) => {
-                    this.messageService.add({
-                        severity: "error",
-                        summary: this.translate.instant("common.error"),
-                        detail: this.translate.instant("eco-mind-ai.ai-parameters.error"),
-                    });
-                },
-            });
+                    },
+                });
         } else {
             const data = this.aiFormsStore.getInfrastructureFormData();
             this.infrastructureForm.patchValue(data ?? defaultData);
+            this.runFormChange();
         }
 
         // Save data whenever changes are made
@@ -154,16 +168,21 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
             // Get all values from the form including disabled ones
             const formData = this.infrastructureForm.getRawValue();
             this.aiFormsStore.setInfrastructureFormData(formData as AIInfrastructureForm);
-            if (this.infrastructureForm.valid && this.infrastructureForm.dirty) {
-                this.digitalServiceStore.setEcoMindEnableCalcul(true);
-            } else {
-                this.digitalServiceStore.setEcoMindEnableCalcul(false);
-            }
         });
 
         this.userService.isAllowedEcoMindAiWrite$.pipe(take(1)).subscribe((isAllowed) => {
             if (!isAllowed) {
                 this.infrastructureForm.disable({ emitEvent: false });
+            }
+        });
+    }
+
+    async runFormChange() {
+        this.formSubscription = this.infrastructureForm.valueChanges.subscribe(() => {
+            if (this.infrastructureForm.valid && this.infrastructureForm.dirty) {
+                this.digitalServiceStore.setEcoMindEnableCalcul(true);
+            } else {
+                this.digitalServiceStore.setEcoMindEnableCalcul(false);
             }
         });
     }
