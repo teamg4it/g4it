@@ -221,6 +221,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
         if (this.formSubscription) {
             this.formSubscription.unsubscribe();
         }
+        this.digitalServiceStore.setEcoMindEnableCalcul(false);
     }
 
     submitFormData(): void {
