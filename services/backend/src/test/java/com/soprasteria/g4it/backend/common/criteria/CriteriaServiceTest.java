@@ -141,7 +141,7 @@ class CriteriaServiceTest {
         List<String> subscriberCriteria = List.of("criteria1", "criteria2");
 
         Organization mockOrg = new Organization();
-        mockOrg.setCriteriaIs(orgCriteria);
+        mockOrg.setCriteriaDs(orgCriteria);
 
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(subscriberCriteria);
@@ -162,7 +162,7 @@ class CriteriaServiceTest {
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(subscriberCriteria);
 
-        when(mockOrganization.getCriteriaIs()).thenReturn(null);
+        when(mockOrganization.getCriteriaDs()).thenReturn(null);
         when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrganization);
 
