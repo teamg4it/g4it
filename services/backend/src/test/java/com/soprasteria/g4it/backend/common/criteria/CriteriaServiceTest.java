@@ -28,6 +28,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CriteriaServiceTest {
 
+    private static final String SUBSCRIBER = "SUBSCRIBER";
+    private static final Long ORGANIZATION_ID = 1L;
     @Mock
     private SubscriberRepository subscriberRepository;
 
@@ -39,14 +41,13 @@ class CriteriaServiceTest {
 
     @Test
     void getSelectedCriteriaReturnsCriteriaByTypeWhenSubscriberExists() {
-        String subscriber = "testSubscriber";
         List<String> mockCriteria = List.of("criteria1", "criteria2");
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(mockCriteria);
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
 
-        CriteriaByType result = criteriaService.getSelectedCriteria(subscriber);
+        CriteriaByType result = criteriaService.getSelectedCriteria(SUBSCRIBER);
         assertNotNull(result);
     }
 
@@ -66,59 +67,108 @@ class CriteriaServiceTest {
 
     @Test
     void getSelectedCriteriaForInventoryReturnsInventoryCriteriaWhenInventoryCriteriaProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
-        List<String> inventoryCriterias = List.of("inventory1", "inventory2");
-        List<String> subscriberCriterias = List.of("criteria1", "criteria2");
+        List<String> inventoryCriteria = List.of("inventory1", "inventory2");
+        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
         Organization mockOrganization = new Organization();
         mockOrganization.setCriteriaIs(List.of("orgCriteria1"));
 
         Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriterias);
+        mockSubscriber.setCriteria(subscriberCriteria);
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
-        when(organizationService.getOrganizationById(organizationId)).thenReturn(mockOrganization);
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrganization);
 
-        CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, inventoryCriterias);
+        CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCriteria);
+
+        assertNotNull(result);
+    }
+    @Test
+    void getSelectedCriteriaForInventoryReturnsOrganizationCriteriaWhenNoInventoryCriteriaProvided() {
+        List<String> orgCriteria = List.of("orgCriteria1", "orgCriteria2");
+        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
+
+        Organization mockOrg = new Organization();
+        mockOrg.setCriteriaIs(orgCriteria);
+
+        Subscriber mockSubscriber = new Subscriber();
+        mockSubscriber.setCriteria(subscriberCriteria);
+        
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrg);
+
+        CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(SUBSCRIBER, ORGANIZATION_ID, null);
+
+        assertNotNull(result);
+    }   
+    
+    @Test
+    void getSelectedCriteriaForInventoryReturnsSubscriberCriteriaWhenNoInventoryOrOrganizationCriteriaProvided() {
+        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
+        Organization mockOrganization = new Organization();
+
+        Subscriber mockSubscriber = new Subscriber();
+        mockSubscriber.setCriteria(subscriberCriteria);
+
+        when(mockOrganization.getCriteriaIs()).thenReturn(null);
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrganization);
+
+        CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(SUBSCRIBER, ORGANIZATION_ID, null);
 
         assertNotNull(result);
     }
 
     @Test
     void getSelectedCriteriaForDigitalServiceReturnsDigitalServiceCriteriaWhenDigitalServiceCriteriaProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
-        List<String> digitalServiceCriterias = List.of("digital1", "digital2");
-        List<String> subscriberCriterias = List.of("criteria1", "criteria2");
+        List<String> digitalServiceCriteria = List.of("digital1", "digital2");
+        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
         Organization mockOrganization = new Organization();
         mockOrganization.setCriteriaDs(List.of("orgCriteriaDs1"));
 
         Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriterias);
+        mockSubscriber.setCriteria(subscriberCriteria);
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
-        when(organizationService.getOrganizationById(organizationId)).thenReturn(mockOrganization);
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrganization);
 
-        CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalServiceCriterias);
+        CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, digitalServiceCriteria);
+
+        assertNotNull(result);
+    }
+    @Test
+    void getSelectedCriteriaForDigitalServiceReturnsOrganizationCriteriaWhenNoDigitalServiceCriteriaProvided() {
+        List<String> orgCriteria = List.of("orgCriteria1", "orgCriteria2");
+        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
+
+        Organization mockOrg = new Organization();
+        mockOrg.setCriteriaDs(orgCriteria);
+
+        Subscriber mockSubscriber = new Subscriber();
+        mockSubscriber.setCriteria(subscriberCriteria);
+
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrg);
+
+        CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, null);
 
         assertNotNull(result);
     }
 
     @Test
-    void getSelectedCriteriaForInventoryReturnsSubscriberCriteriaWhenNoInventoryOrOrganizationCriteriaProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
-        List<String> subscriberCriterias = List.of("criteria1", "criteria2");
+    void getSelectedCriteriaForDigitalServiceReturnsSubscriberCriteriaWhenNoDigitalServiceOrOrganizationCriteriaProvided() {
+        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
         Organization mockOrganization = new Organization();
 
         Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriterias);
+        mockSubscriber.setCriteria(subscriberCriteria);
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
-        when(organizationService.getOrganizationById(organizationId)).thenReturn(mockOrganization);
+        when(mockOrganization.getCriteriaDs()).thenReturn(null);
+        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrganization);
 
-        CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, null);
+        CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, null);
 
         assertNotNull(result);
     }
+
 }
