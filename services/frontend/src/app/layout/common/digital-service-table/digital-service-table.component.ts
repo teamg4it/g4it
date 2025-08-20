@@ -1,6 +1,7 @@
-import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Component, computed, EventEmitter, inject, Input, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UserService } from "src/app/core/service/business/user.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-digital-service-table",
@@ -9,6 +10,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 export class DigitalServiceTableComponent {
     protected userService = inject(UserService);
     protected translate = inject(TranslateService);
+    private readonly globalStoreService = inject(GlobalStoreService);
 
     @Input() data: any[] = [];
 
@@ -23,6 +25,8 @@ export class DigitalServiceTableComponent {
     @Output() resetItem: EventEmitter<boolean> = new EventEmitter();
     @Output() setItem: EventEmitter<any> = new EventEmitter();
     @Output() deleteItem: EventEmitter<any> = new EventEmitter();
+
+    isMobileView = computed(() => this.globalStoreService.mobileView());
 
     doResetItem() {
         this.resetItem.emit(true);
