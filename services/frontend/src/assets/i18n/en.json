@@ -160,7 +160,8 @@
             "space-name-pattern": "Special characters @ / ; ? are not allowed."
         },
         "plus-menu": "Plus",
-        "add-button": "Add"
+        "add-button": "Add",
+        "actions": "Actions"
     },
     "errors": {
         "error-occurred": "An error occurred"
