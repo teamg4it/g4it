@@ -123,7 +123,7 @@ public class OrganizationService {
     public OrganizationBO createOrganization(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, Long subscriberId) {
 
         // Check if organization with same name already exist on this subscriber.
-        organizationRepository.findBySubscriberIdAndName(workspaceUpdateRest.getOrganizationId(), workspaceUpdateRest.getName())
+        organizationRepository.findBySubscriberIdAndName(workspaceUpdateRest.getWorkspaceId(), workspaceUpdateRest.getName())
                 .ifPresent(organization -> {
                     throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", workspaceUpdateRest.getName(), subscriberId));
                 });
@@ -151,7 +151,7 @@ public class OrganizationService {
     @Transactional
     public OrganizationBO updateOrganization(final Long organizationId, final WorkspaceUpdateRest workspaceUpdateRest, Long userId) {
 
-        final Organization organizationToSave = getOrganizationByStatus(workspaceUpdateRest.getOrganizationId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
+        final Organization organizationToSave = getOrganizationByStatus(workspaceUpdateRest.getWorkspaceId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
 
         final String currentStatus = organizationToSave.getStatus();
         final String newStatus = workspaceUpdateRest.getStatus().name();
@@ -217,9 +217,9 @@ public class OrganizationService {
         if (isNameChange) {
             // Handle update in organization's name
             // Check if organization with same name already exist on this subscriber.
-            organizationRepository.findBySubscriberIdAndName(workspaceUpdateRest.getOrganizationId(), newOrganization)
+            organizationRepository.findBySubscriberIdAndName(workspaceUpdateRest.getWorkspaceId(), newOrganization)
                     .ifPresent(org -> {
-                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newOrganization, workspaceUpdateRest.getOrganizationId()));
+                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newOrganization, workspaceUpdateRest.getWorkspaceId()));
                     });
 
             log.info("Update Organization name in file system from '{}' to '{}'", currentOrganization, newOrganization);

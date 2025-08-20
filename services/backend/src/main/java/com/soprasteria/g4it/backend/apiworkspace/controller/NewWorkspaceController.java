@@ -12,9 +12,9 @@ import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrgan
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceRestMapper;
-import com.soprasteria.g4it.backend.apiworkspace.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiworkspace.business.NewWorkspaceService;
 import com.soprasteria.g4it.backend.apiworkspace.mapper.SubscriberDetailsRestMapper;
-import com.soprasteria.g4it.backend.server.gen.api.WorkspaceApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.NewWorkspaceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.SubscriberDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceRest;
@@ -30,7 +30,7 @@ import java.util.List;
  * Workspace Rest Service.
  */
 @Service
-public class WorkspaceController implements WorkspaceApiDelegate {
+public class NewWorkspaceController implements NewWorkspaceApiDelegate {
     /**
      * Auth Service.
      */
@@ -53,7 +53,7 @@ public class WorkspaceController implements WorkspaceApiDelegate {
     SubscriberDetailsRestMapper subscriberDetailsRestMapper;
 
     @Autowired
-    WorkspaceService workspaceService;
+    NewWorkspaceService newWorkspaceService;
 
     /**
      * {@inheritDoc}
@@ -70,6 +70,6 @@ public class WorkspaceController implements WorkspaceApiDelegate {
     @Override
     public ResponseEntity<List<SubscriberDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
         return new ResponseEntity<>(
-                subscriberDetailsRestMapper.toDto(this.workspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
+                subscriberDetailsRestMapper.toDto(this.newWorkspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
     }
 }

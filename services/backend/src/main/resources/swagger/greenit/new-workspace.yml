@@ -5,18 +5,18 @@ info:
   version: "1.0.0"
 
 tags:
-  - name: workspace
+  - name: new-workspace
     description: All endpoint for a workspace
 
 paths:
   /workspace/workspaces:
     post:
       tags:
-        - workspace
+        - new-workspace
       summary: Create workspace
       operationId: createWorkspace
       requestBody:
-        description: Mandatory organization details to create.
+        description: Mandatory workspace details to create.
         required: true
         content:
           application/json:
@@ -43,7 +43,7 @@ paths:
   /workspace/domain-organizations:
     post:
       tags:
-        - workspace
+        - new-workspace
       summary: get subscribers for domain
       operationId: getDomainSubscribers
       requestBody:

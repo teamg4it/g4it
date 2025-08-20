@@ -245,7 +245,7 @@ components:
       description: User's roles to add
       type: object
       properties:
-        organizationId:
+        workspaceId:
           type: integer
           format: int64
         users:
@@ -298,7 +298,7 @@ components:
           type: string
 
     OrganizationRest:
-      description: Subscriber information
+      description: Organization information
       type: object
       properties:
         id:
@@ -931,11 +931,11 @@ components:
       description: Workspace update
       type: object
       required:
-        - organizationId
+        - workspaceId
         - name
       properties:
-        organizationId:
-          description: Organization id
+        workspaceId:
+          description: Workspace id
           type: integer
           format: int64
         name:
