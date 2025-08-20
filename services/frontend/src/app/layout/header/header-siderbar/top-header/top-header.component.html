@@ -259,44 +259,49 @@
                             <span class="pi pi-chevron-down mr-1"></span>
                         </button>
                     </div>
-
-                    <!-- About us & Help center -->
-                    <p-menu
-                        [model]="mobileMenuItems"
-                        [styleClass]="'mobile-top-header-menu'"
-                    >
-                        <ng-template pTemplate="submenuheader" let-item>
-                            @if (item.label) {
-                                <span
-                                    class="pl-2 flex align-items-center"
-                                    [ngClass]="
-                                        isZoomedIn()
-                                            ? 'text-xl p-0 mt-1'
-                                            : 'text-2xl mt-3'
-                                    "
-                                >
-                                    {{ item.label | translate }}</span
-                                >
-                            }
-                        </ng-template>
-                        <ng-template pTemplate="item" let-item>
-                            <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
-                                <a
-                                    target="_blank"
-                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link"
-                                    [ngClass]="isZoomedIn() ? 'text-sm' : 'text-base'"
-                                    ><span
-                                        ><u>{{ item.label | translate }}</u></span
+                    <div class="sidebar-with-menu overflow-x-hidden overflow-y-auto">
+                        <!-- Left Sidebar Modules Menu In mobile view comes in hamberger menu button -->
+                        <app-left-sidebar></app-left-sidebar>
+                        <!-- About us & Help center -->
+                        <p-menu
+                            [model]="mobileMenuItems"
+                            [styleClass]="'mobile-top-header-menu'"
+                        >
+                            <ng-template pTemplate="submenuheader" let-item>
+                                @if (item.label) {
+                                    <span
+                                        class="pl-2 flex align-items-center"
+                                        [ngClass]="
+                                            isZoomedIn()
+                                                ? 'text-xl p-0 mt-1'
+                                                : 'text-2xl mt-3'
+                                        "
                                     >
-                                    @if (item.outsideLink) {
-                                        <span class="pi pi-sign-out ml-auto"></span>
-                                    } @else {
-                                        <span class="pi pi-arrow-right ml-auto"></span>
-                                    }
-                                </a>
-                            </div>
-                        </ng-template>
-                    </p-menu>
+                                        {{ item.label | translate }}</span
+                                    >
+                                }
+                            </ng-template>
+                            <ng-template pTemplate="item" let-item>
+                                <div [ngClass]="isZoomedIn() ? 'p-1' : 'p-2'">
+                                    <a
+                                        target="_blank"
+                                        class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link"
+                                        [ngClass]="isZoomedIn() ? 'text-sm' : 'text-base'"
+                                        ><span
+                                            ><u>{{ item.label | translate }}</u></span
+                                        >
+                                        @if (item.outsideLink) {
+                                            <span class="pi pi-sign-out ml-auto"></span>
+                                        } @else {
+                                            <span
+                                                class="pi pi-arrow-right ml-auto"
+                                            ></span>
+                                        }
+                                    </a>
+                                </div>
+                            </ng-template>
+                        </p-menu>
+                    </div>
                 </ng-template>
             </p-dialog>
         </div>

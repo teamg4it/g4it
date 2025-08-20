@@ -50,8 +50,15 @@
             id="return-button"
         />
         @if (isMobile()) {
-            <button class="kebab-div" (click)="showKebabMenu = !showKebabMenu">
-                <div class="kebab-menu-icon mb-2 lg:mb-0"></div>
+            <button
+                class="kebab-div"
+                (click)="showKebabMenu = !showKebabMenu"
+                [ngClass]="{ 'kebab-div-green': showKebabMenu }"
+            >
+                <div
+                    class="kebab-menu-icon mb-2 lg:mb-0"
+                    [ngClass]="{ 'bg-white': showKebabMenu }"
+                ></div>
             </button>
         }
 

@@ -40,6 +40,7 @@ export class LandingPageComponent {
     private workspaceService = inject(WorkspaceService);
     protected spaceSidebarVisible: boolean = false;
     isZoom125 = computed(() => this.globalStore.zoomLevel() >= 125);
+    isMobile = computed(() => this.globalStore.mobileView());
 
     @ViewChild("mainContent") mainContent!: ElementRef;
 

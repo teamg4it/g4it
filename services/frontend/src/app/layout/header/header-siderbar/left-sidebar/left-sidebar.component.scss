@@ -48,6 +48,14 @@ nav a {
     padding: 8px 15px;
 }
 
+.ecomind-padding {
+    padding: 14px 7px;
+}
+
+.ecomind-padding-zoomin {
+    padding: 7px;
+}
+
 .admin-padding {
     padding: 20px 7px;
 }
@@ -57,31 +65,13 @@ nav a {
 }
 
 nav.left-sidebar-nav {
-    background-color: var(--black-color);
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-@media screen and (max-width: 992px) {
-    nav.open-menu-full {
-        height: auto !important;
-        padding-top: 40px;
-        border-radius: 24px 24px 0px 0px;
-
-        .plus-menu-option {
-            display: none !important;
-        }
-
-        &:before {
-            content: "";
-            position: absolute;
-            width: 30%;
-            right: 35%;
-            top: 18px;
-            border: 3px solid white;
-            border-radius: 5px;
-        }
+@media screen and (max-width: 450px) {
+    nav.left-sidebar-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
