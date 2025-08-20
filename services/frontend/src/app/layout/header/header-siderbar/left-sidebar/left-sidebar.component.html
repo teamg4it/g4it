@@ -1,5 +1,5 @@
 <nav
-    class="left-sidebar-nav lg:flex flex-row lg:flex-column align-items-stretch h-5rem lg:h-screen w-screen lg:w-auto bottom-0 lg:bottom-auto fixed lg:static add-z-index lg:z-auto justify-content-between"
+    class="left-sidebar-nav lg:flex flex-row lg:flex-column align-items-stretch lg:h-screen w-screen lg:w-auto lg:bottom-auto relative lg:static add-z-index lg:z-auto justify-content-between"
     role="navigation"
     [attr.aria-label]="'common.left-navigation' | translate"
 >
@@ -13,16 +13,14 @@
         </div>
         <div class="flex align-items-center justify-content-center extra-div"></div>
     }
-    <div
-        class="flex align-items-center justify-content-center my-1"
-        [ngClass]="{ 'bg-light-green': selectedPage() === constants.WELCOME_PAGE }"
-    >
+    <div class="flex align-items-center justify-content-center my-1">
         <a
             [routerLink]="constants.WELCOME_PAGE"
             id="home"
             [ngClass]="{
                 'home-padding-zoomin': isZoomedIn(),
                 'home-padding': !isZoomedIn(),
+                'bg-light-green': selectedPage() === constants.WELCOME_PAGE,
             }"
         >
             <div class="flex justify-content-center">
@@ -37,10 +35,7 @@
             }}</span>
         </a>
     </div>
-    <div
-        class="flex align-items-center justify-content-center my-1"
-        [ngClass]="{ 'bg-light-green': selectedPage() === 'inventories' }"
-    >
+    <div class="flex align-items-center justify-content-center my-1">
         <a
             *ngIf="userService.isAllowedInventoryRead$ | async"
             [routerLink]="selectedPath + '/inventories'"
@@ -48,6 +43,7 @@
             [ngClass]="{
                 'inventory-padding-zoomin': isZoomedIn(),
                 'inventory-padding': !isZoomedIn(),
+                'bg-light-green': selectedPage() === 'inventories',
             }"
         >
             <div class="flex justify-content-center">
@@ -68,7 +64,6 @@
     <div
         class="flex align-items-center justify-content-center my-1"
         [attr.aria-label]="'header.menu' | translate"
-        [ngClass]="{ 'bg-light-green': selectedPage() === 'digital-services' }"
     >
         <a
             *ngIf="userService.isAllowedDigitalServiceRead$ | async"
@@ -77,6 +72,7 @@
             [ngClass]="{
                 'digital-padding-zoomin': isZoomedIn(),
                 'digital-padding': !isZoomedIn(),
+                'bg-light-green': selectedPage() === 'digital-services',
             }"
         >
             <div class="flex justify-content-center">
@@ -96,31 +92,7 @@
             }}</span>
         </a>
     </div>
-    @if (isMobile() && isPlusMenuEnabled) {
-        <div class="flex align-items-center justify-content-center my-1 plus-menu-option">
-            <a
-                [ngClass]="{
-                    'digital-padding-zoomin': isZoomedIn(),
-                    'digital-padding': !isZoomedIn(),
-                }"
-                (click)="togglePlusMenu()"
-            >
-                <div class="flex justify-content-center">
-                    <img
-                        src="assets/images/icons/icon-outline.svg"
-                        alt="{{
-                            'common.plus-menu'
-                                | translate
-                                    : { OrganizationName: selectedOrganization.name }
-                        }}"
-                    />
-                </div>
-                <span class="text-white span-font nav-span-text ds-text">
-                    {{ "common.plus-menu" | translate }}
-                </span>
-            </a>
-        </div>
-    }
+
     @if (
         (userService.isAllowedEcoMindAiRead$ | async) &&
         isEcoMindEnabledForCurrentSubscriber &&
@@ -129,14 +101,14 @@
         <div
             class="flex align-items-center justify-content-center my-1"
             [attr.aria-label]="'header.menu' | translate"
-            [ngClass]="{ 'bg-light-green': selectedPage() === 'eco-mind-ai' }"
         >
             <a
                 [routerLink]="selectedPath + '/eco-mind-ai'"
                 id="eco-mind-ai"
                 [ngClass]="{
-                    'digital-padding-zoomin': isZoomedIn(),
-                    'digital-padding': !isZoomedIn(),
+                    'ecomind-padding-zoomin': isZoomedIn(),
+                    'ecomind-padding': !isZoomedIn(),
+                    'bg-light-green': selectedPage() === 'eco-mind-ai',
                 }"
             >
                 <div class="flex justify-content-center">
@@ -162,8 +134,7 @@
         <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
     }
     <div
-        class="flex align-items-center justify-content-center my-1 lg:mt-2 lg:mb-5 mr-2 lg:mr-auto"
-        [ngClass]="{ 'bg-light-green': selectedPage() === 'administration' }"
+        class="flex align-items-center justify-content-center my-1 lg:mt-2 xl:mb-5 mr-2 lg:mr-auto"
     >
         <a
             routerLink="/administration/users"
@@ -172,6 +143,7 @@
             [ngClass]="{
                 'admin-padding-zoomin': isZoomedIn(),
                 'admin-padding': !isZoomedIn(),
+                'bg-light-green': selectedPage() === 'administration',
             }"
         >
             <div class="flex justify-content-center">
