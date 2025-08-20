@@ -211,7 +211,9 @@
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
         "visualize-parameters": "Voir les paramètres",
-        "back": "Retour"
+        "back": "Retour",
+        "hide-menu-buttons": "Cacher les options du service numérique",
+        "show-menu-buttons": "Montrer les options du service numérique"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",

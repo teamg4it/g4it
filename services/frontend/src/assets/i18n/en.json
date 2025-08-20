@@ -213,7 +213,8 @@
         "view-resources": "Visualize my resources",
         "visualize-results": "Visualize my results",
         "visualize-parameters": "Visualize the parameters",
-        "back": "Back"
+        "hide-menu-buttons": "Hide option for the digital service",
+        "show-menu-buttons": "Show option for the digital service"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",
