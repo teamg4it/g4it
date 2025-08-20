@@ -24,7 +24,7 @@ import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileSystem;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -98,7 +98,7 @@ class OrganizationServiceTest {
                 .deletionDate(now.plusDays(dataRetentionDay))
                 .subscriber(Subscriber.builder().id(SUBSCRIBER_ID).build())
                 .build());
-        OrganizationUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
+        WorkspaceUpdateRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
                 , updatedStatus, dataRetentionDay);
 
         when(organizationRepository.findByIdAndSubscriberIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
@@ -125,7 +125,7 @@ class OrganizationServiceTest {
                 .deletionDate(null)
                 .subscriber(Subscriber.builder().id(SUBSCRIBER_ID).build())
                 .build());
-        OrganizationUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
+        WorkspaceUpdateRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
                 , updatedStatus, dataRetentionDay);
 
         when(organizationRepository.findByIdAndSubscriberIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
@@ -148,7 +148,7 @@ class OrganizationServiceTest {
         List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build());
         User user = TestUtils.createUserWithRoleOnSub(subscriberId, subscriberAdminRole);
 
-        OrganizationUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationUpdatedName
+        WorkspaceUpdateRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationUpdatedName
                 , OrganizationStatus.ACTIVE.name(), dataRetentionDay);
 
         Optional<Organization> organizationEntity = Optional.of(Organization.builder().name(organizationName).id(organizationId).status(OrganizationStatus.ACTIVE.name())
@@ -179,7 +179,7 @@ class OrganizationServiceTest {
         List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build());
         User user = TestUtils.createUserWithRoleOnSub(subscriberId, subscriberAdminRole);
 
-        OrganizationUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
+        WorkspaceUpdateRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
                 , OrganizationStatus.ACTIVE.name(), "criteriaDs", "criteriaIs");
 
         Optional<Organization> organizationEntity = Optional.of(Organization.builder().name(organizationName).id(organizationId).status(OrganizationStatus.ACTIVE.name())
@@ -203,7 +203,7 @@ class OrganizationServiceTest {
         UserBO user = TestUtils.createUserBOAdminSub();
         Subscriber subscriber = Subscriber.builder().name("SUBSCRIBER").id(1L).build();
 
-        OrganizationUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
+        WorkspaceUpdateRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
                 , null, 0L);
 
 
@@ -223,7 +223,7 @@ class OrganizationServiceTest {
         String status = OrganizationStatus.ACTIVE.name();
         UserBO user = TestUtils.createUserBOAdminSub();
 
-        OrganizationUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
+        WorkspaceUpdateRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
                 , null, 0L);
         Optional<Organization> organizationEntity = Optional.of(Organization.builder().name(organizationName).id(organizationId).status(status)
                 .deletionDate(null)

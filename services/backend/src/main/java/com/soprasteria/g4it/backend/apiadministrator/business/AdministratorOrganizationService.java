@@ -100,7 +100,7 @@ public class AdministratorOrganizationService {
      */
     public OrganizationBO updateOrganization(final Long organizationId, final WorkspaceUpdateRest organizationUpsertRest, UserBO user) {
         // Check Admin Role on this subscriber or organization.
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organizationUpsertRest.getOrganizationId(), organizationId);
+        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organizationUpsertRest.getWorkspaceId(), organizationId);
         OrganizationBO organizationBO = organizationService.updateOrganization(organizationId, organizationUpsertRest, user.getId());
         userService.clearUserAllCache();
         return organizationBO;
@@ -114,7 +114,7 @@ public class AdministratorOrganizationService {
      * @return organization BO.
      */
     public OrganizationBO createOrganization(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, boolean checkAdminRole) {
-        Long subscriberId = workspaceUpdateRest.getOrganizationId();
+        Long subscriberId = workspaceUpdateRest.getWorkspaceId();
         boolean hasSubscriberAdminRights = roleService.hasAdminRightsOnSubscriber(user, subscriberId);
         boolean hasDomainAuthorization = roleService.isUserDomainAuthorized(user, subscriberId);
 
@@ -133,7 +133,7 @@ public class AdministratorOrganizationService {
         // Link user to the organization and assign with org admin role
         if (!(checkAdminRole) || hasDomainAuthorization) {
             UserRoleRest userRoleRest = UserRoleRest.builder().userId(user.getId()).roles(List.of("ROLE_ORGANIZATION_ADMINISTRATOR")).build();
-            LinkUserRoleRest linkUserRoleRest = LinkUserRoleRest.builder().organizationId(result.getId()).users(Collections.singletonList(userRoleRest)).build();
+            LinkUserRoleRest linkUserRoleRest = LinkUserRoleRest.builder().workspaceId(result.getId()).users(Collections.singletonList(userRoleRest)).build();
             linkUserToOrg(linkUserRoleRest, authService.getUser(), false);
         }
 
@@ -213,7 +213,7 @@ public class AdministratorOrganizationService {
      */
     public List<UserInfoBO> linkUserToOrg(final LinkUserRoleRest linkUserRoleRest, final UserBO user, boolean checkAdminRole) {
 
-        Long organizationId = linkUserRoleRest.getOrganizationId();
+        Long organizationId = linkUserRoleRest.getWorkspaceId();
 
         final Organization organization = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new G4itRestException("404", String.format("OrganizationId %s is not found in database", organizationId)));
@@ -288,7 +288,7 @@ public class AdministratorOrganizationService {
      */
     public void deleteUserOrgLink(final LinkUserRoleRest linkUserRoleRest, final UserBO user) {
 
-        Long organizationId = linkUserRoleRest.getOrganizationId();
+        Long organizationId = linkUserRoleRest.getWorkspaceId();
         Subscriber subscriber = organizationRepository.findById(organizationId).orElseThrow().getSubscriber();
 
         administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, subscriber.getId(), organizationId);
