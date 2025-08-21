@@ -12,12 +12,26 @@
         height: 'calc(100vh - (100px + ' + headerHeight + 'px + ' + footerHeight + 'px))',
     }"
 >
-    <p-tabMenu
-        [model]="tabItems"
-        role="heading"
-        [ariaLevel]="2"
-        [attr.aria-label]="'common.ds-menu' | translate"
-    ></p-tabMenu>
+    @if (!isMobile()) {
+        <p-tabMenu
+            [model]="tabItems"
+            [activeItem]="selectedTab"
+            (activeItemChange)="onMenuTabChange($event)"
+            role="heading"
+            [ariaLevel]="2"
+            [attr.aria-label]="'common.ds-menu' | translate"
+        ></p-tabMenu>
+    } @else {
+        <p-dropdown
+            styleClass="w-full my-2"
+            [options]="tabItems"
+            optionLabel="label"
+            [(ngModel)]="selectedTab"
+            (onChange)="onTabChange($event.value)"
+            [placeholder]="'common.ds-menu' | translate"
+        ></p-dropdown>
+    }
+
     <router-outlet></router-outlet>
 </p-scrollPanel>
 

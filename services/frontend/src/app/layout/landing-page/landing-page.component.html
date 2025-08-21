@@ -21,13 +21,7 @@
             </aside>
         }
         <!-- Main content area -->
-        <main
-            class="flex-1"
-            #mainContent
-            [ngClass]="{
-                'overflow-auto': globalStore.zoomLevel() >= 150,
-            }"
-        >
+        <main class="flex-1" #mainContent>
             <router-outlet></router-outlet>
         </main>
         @if (spaceSidebarVisible) {
