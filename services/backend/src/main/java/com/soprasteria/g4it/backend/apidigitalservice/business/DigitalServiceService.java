@@ -101,9 +101,12 @@ public class DigitalServiceService {
 
         // Save the digital service with +1 on index name.
         final LocalDateTime now = LocalDateTime.now();
+
+        String dsName = DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1) + (isAi ? " IA" : "");
+
         final DigitalService digitalServiceToSave = DigitalService
                 .builder()
-                .name(DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1))
+                .name(dsName)
                 .user(user)
                 .organization(linkedOrganization)
                 .isAi(isAi)
