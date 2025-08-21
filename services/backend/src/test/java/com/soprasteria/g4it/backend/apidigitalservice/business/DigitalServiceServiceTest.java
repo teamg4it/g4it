@@ -50,6 +50,7 @@ class DigitalServiceServiceTest {
     private static final Long SUBSCRIBER_ID = 1L;
     private static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
     private static final String SUBSCRIBER = "subscriber";
+    private static final String ORG_NAME = "organization";
     private static final long USER_ID = 1;
     private static final Boolean IS_AI = false;
 
@@ -85,8 +86,7 @@ class DigitalServiceServiceTest {
     @Test
     void shouldCreateNewDigitalService_first() {
 
-        final String organizationName = "test";
-        final Organization linkedOrganization = Organization.builder().name(organizationName).build();
+        final Organization linkedOrganization = Organization.builder().name(ORG_NAME).build();
         final User user = User.builder().id(USER_ID).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
         final String expectedName = "Digital Service 1";
@@ -112,9 +112,9 @@ class DigitalServiceServiceTest {
 
     @Test
     void shouldCreateNewDigitalService_withExistingDigitalService() {
-        final String organizationName = "test";
+
         final User user = User.builder().id(USER_ID).build();
-        final Organization linkedOrganization = Organization.builder().name(organizationName).build();
+        final Organization linkedOrganization = Organization.builder().name(ORG_NAME).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
         final String expectedName = "Digital Service 2";
         final List<DigitalService> existingDigitalService = List.of(DigitalService.builder().name("Digital Service 1").build(), DigitalService.builder().name("My Digital Service").build());
@@ -132,6 +132,33 @@ class DigitalServiceServiceTest {
 
         verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
         verify(digitalServiceRepository, times(1)).findByOrganizationAndIsAi(linkedOrganization, false);
+        verify(digitalServiceRepository, times(1)).save(any());
+        verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
+        verify(userRepository, times(1)).findById(USER_ID);
+    }
+
+    @Test
+    void shouldCreateNewDigitalService_withAI() {
+
+        final User user = User.builder().id(USER_ID).build();
+        final Organization linkedOrganization = Organization.builder().name(ORG_NAME).build();
+        final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
+        final String expectedName = "Digital Service 1 IA";
+        final List<DigitalService> existingDigitalService = new ArrayList<>();
+
+        final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).isAi(true).build();
+        when(digitalServiceRepository.findByOrganizationAndIsAi(linkedOrganization, true)).thenReturn(existingDigitalService);
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
+        when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
+        when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, USER_ID, true);
+
+        assertThat(result).isEqualTo(expectedBo);
+
+        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
+        verify(digitalServiceRepository, times(1)).findByOrganizationAndIsAi(linkedOrganization, true);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
         verify(userRepository, times(1)).findById(USER_ID);
@@ -156,8 +183,8 @@ class DigitalServiceServiceTest {
 
     @Test
     void shouldListDigitalService() {
-        final String organizationName = "test";
-        final Organization linkedOrganization = Organization.builder().name(organizationName).build();
+
+        final Organization linkedOrganization = Organization.builder().name(ORG_NAME).build();
         User creator = User.builder().id(1L).firstName("first").lastName("last").build();
 
         DigitalService digitalService = DigitalService.builder().name("name").isAi(IS_AI).user(creator).build();
@@ -454,7 +481,7 @@ class DigitalServiceServiceTest {
     @Test
     void digitalServiceExists_WhenSubscriberMatchesAndServiceExists_ReturnsTrue() {
 
-        final Organization organization = Organization.builder().name("test")
+        final Organization organization = Organization.builder().name(ORG_NAME)
                 .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
 
@@ -472,7 +499,7 @@ class DigitalServiceServiceTest {
     @Test
     void digitalServiceExists_WhenSubscriberMismatch_ReturnsFalse() {
 
-        final Organization organization = Organization.builder().name("test")
+        final Organization organization = Organization.builder().name(ORG_NAME)
                 .subscriber(Subscriber.builder().name("Subscriber2").build()).build();
 
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(organization);
@@ -487,7 +514,7 @@ class DigitalServiceServiceTest {
     @Test
     void digitalServiceExists_WhenSubscriberMatchesAndServiceNotExist_ReturnsFalse() {
 
-        final Organization organization = Organization.builder().name("test")
+        final Organization organization = Organization.builder().name(ORG_NAME)
                 .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build();
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(organization);
         when(digitalServiceRepository.findByOrganizationAndUid(organization, DIGITAL_SERVICE_UID))
