@@ -35,9 +35,9 @@ import { TopHeaderComponent } from "../header/header-siderbar/top-header/top-hea
     ],
 })
 export class LandingPageComponent {
-    public globalStore = inject(GlobalStoreService);
+    private readonly globalStore = inject(GlobalStoreService);
     private readonly destroyRef = inject(DestroyRef);
-    private workspaceService = inject(WorkspaceService);
+    private readonly workspaceService = inject(WorkspaceService);
     protected spaceSidebarVisible: boolean = false;
     isZoom125 = computed(() => this.globalStore.zoomLevel() >= 125);
     isMobile = computed(() => this.globalStore.mobileView());

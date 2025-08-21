@@ -8,10 +8,10 @@
 import {
     ChangeDetectorRef,
     Component,
-    computed,
     ElementRef,
     inject,
     OnInit,
+    signal,
     ViewChild,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -48,7 +48,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
     headerHeight = 0;
     footerHeight = 0;
     @ViewChild("scrollPanel") scrollPanel!: ScrollPanel;
-    isMobile = computed(() => this.global.mobileView());
+    isMobile = signal(false);
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
         private readonly digitalBusinessService: DigitalServiceBusinessService,
@@ -58,6 +58,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
     ) {}
 
     async ngOnInit(): Promise<void> {
+        this.setMobileView();
         this.global.setLoading(true);
 
         const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
@@ -156,6 +157,13 @@ export class DigitalServicesFootprintComponent implements OnInit {
         this.cdr.detectChanges();
         this.scrollPanel?.refresh();
     };
+
+    private setMobileView(): void {
+        this.isMobile.set(window.innerWidth < 560);
+        window.addEventListener("resize", () => {
+            this.isMobile.set(window.innerWidth < 560);
+        });
+    }
 
     onMenuTabChange(event: any) {
         this.selectedTab = event;
