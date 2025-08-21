@@ -5,7 +5,7 @@ import { DigitalServiceParameterIa } from "../../interfaces/digital-service.inte
 
 @Injectable({ providedIn: "root" })
 export class ParameterService {
-    private baseUrl = "/api/parameter";
+    private readonly baseUrl = "/api/parameter";
 
     constructor(private readonly http: HttpClient) {}
 
