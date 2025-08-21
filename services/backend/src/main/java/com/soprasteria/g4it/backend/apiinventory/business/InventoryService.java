@@ -11,10 +11,10 @@ import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapper;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -49,7 +49,7 @@ public class InventoryService {
      * The organization service.
      */
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
     /**
      * Mapper for inventory data.
      */
@@ -82,11 +82,11 @@ public class InventoryService {
      * @return inventories BO.
      */
     public List<InventoryBO> getInventories(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
 
         var inventories = inventoryId == null ?
-                inventoryRepository.findByOrganization(linkedOrganization) :
-                inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId).stream().toList();
+                inventoryRepository.findByWorkspace(linkedWorkspace) :
+                inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId).stream().toList();
 
         return inventoryMapper.toBusinessObject(inventories);
     }
@@ -100,8 +100,8 @@ public class InventoryService {
      * @return InventoryBO
      */
     public InventoryBO getInventory(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        final Optional<Inventory> inventory = inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId);
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        final Optional<Inventory> inventory = inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId);
 
         if (inventory.isEmpty())
             throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryId, subscriberName, organizationId));
@@ -119,12 +119,12 @@ public class InventoryService {
      */
     @Cacheable("inventoryExists")
     public boolean inventoryExists(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        if (!Objects.equals(subscriberName, linkedOrganization.getSubscriber().getName())) {
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        if (!Objects.equals(subscriberName, linkedWorkspace.getSubscriber().getName())) {
             return false;
         }
 
-        return inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId).isPresent();
+        return inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId).isPresent();
     }
 
     /**
@@ -137,14 +137,14 @@ public class InventoryService {
      * @return inventory BO.
      */
     public InventoryBO createInventory(final String subscriberName, final Long organizationId, final InventoryCreateRest inventoryCreateRest, final UserBO user) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
 
-        if (inventoryRepository.findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName()).isPresent()) {
+        if (inventoryRepository.findByWorkspaceAndName(linkedWorkspace, inventoryCreateRest.getName()).isPresent()) {
             throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), subscriberName, organizationId));
         }
 
         final User userEntity = User.builder().id(user.getId()).build();
-        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest, userEntity);
+        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedWorkspace, inventoryCreateRest, userEntity);
 
         // Deprecated inventoryDate, used to better revert if needed
         if (InventoryType.INFORMATION_SYSTEM.name().equals(inventoryCreateRest.getType().name())) {
@@ -165,8 +165,8 @@ public class InventoryService {
      * @return InventoryBO
      */
     public InventoryBO updateInventory(final String subscriberName, final Long organizationId, final InventoryUpdateRest inventoryUpdateRest, UserBO user) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        final Optional<Inventory> inventory = inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryUpdateRest.getId());
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        final Optional<Inventory> inventory = inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryUpdateRest.getId());
         if (inventory.isEmpty())
             throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryUpdateRest.getId(), subscriberName, organizationId));
 

@@ -42,7 +42,7 @@ public class UserOrganization implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "organization_id", referencedColumnName = "id")
-    private Organization organization;
+    private Workspace workspace;
 
     /**
      * The user.

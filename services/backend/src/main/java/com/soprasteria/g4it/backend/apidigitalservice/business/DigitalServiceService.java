@@ -16,12 +16,12 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
@@ -56,7 +56,7 @@ public class DigitalServiceService {
     @Autowired
     private RoleService roleService;
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
     @Autowired
     private UserOrganizationRepository userOrganizationRepository;
     @Autowired
@@ -79,17 +79,18 @@ public class DigitalServiceService {
      *
      * @param organizationId the linked organization's id.
      * @param userId         the userId.
-     * @param isAi AI service if true
+     * @param isAi           AI service if true
      * @return the business object corresponding on the digital service created.
      */
     public DigitalServiceBO createDigitalService(final Long organizationId, final long userId, final Boolean isAi) {
         // Get the linked organization.
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
 
         // Get last index to create digital service.
-        final List<DigitalService> orgDigitalServices = digitalServiceRepository.findByOrganizationAndIsAi(linkedOrganization, isAi);
 
         String regex = "^" + DEFAULT_NAME_PREFIX + " (\\d+)" + (isAi ? " AI" : "") + "$";
+
+        final List<DigitalService> orgDigitalServices = digitalServiceRepository.findByWorkspaceAndIsAi(linkedWorkspace, isAi);
         final Integer lastDigitalServiceDefaultNumber = orgDigitalServices
                 .stream()
                 .map(DigitalService::getName)
@@ -112,7 +113,7 @@ public class DigitalServiceService {
                 .builder()
                 .name(dsName)
                 .user(user)
-                .organization(linkedOrganization)
+                .workspace(linkedWorkspace)
                 .isAi(isAi)
                 .creationDate(now)
                 .lastUpdateDate(now)
@@ -127,12 +128,12 @@ public class DigitalServiceService {
      * Get the digital service list linked to a user.
      *
      * @param organizationId the organization's id.
-     * @param isAi  AI service if true
+     * @param isAi           AI service if true
      * @return the digital service list.
      */
     public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final Boolean isAi) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        List<DigitalService> filterDigitalService = digitalServiceRepository.findByOrganization(linkedOrganization).stream().filter(ds -> ds.isAi() == isAi)
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        List<DigitalService> filterDigitalService = digitalServiceRepository.findByWorkspace(linkedWorkspace).stream().filter(ds -> ds.isAi() == isAi)
                 .toList();
         return digitalServiceMapper.toBusinessObject(filterDigitalService);
     }
@@ -181,7 +182,7 @@ public class DigitalServiceService {
         boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization
                 (user, subscriberRepository.findByName(subscriber).get().getId(), organizationId);
         if (!isAdmin) {
-            UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organizationId, userId).orElseThrow();
+            UserOrganization userOrganization = userOrganizationRepository.findByWorkspaceIdAndUserId(organizationId, userId).orElseThrow();
 
             boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_DIGITAL_SERVICE_WRITE".equals(role.getName()));
 
@@ -210,19 +211,20 @@ public class DigitalServiceService {
         return digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
     }
+
     /**
      * Returns true if the inventory exists and linked to subscriber, organizationId and inventoryId
      *
-     * @param subscriberName subscriberName
-     * @param organizationId organizationId
-     * @param digitalServiceUid    digitalServiceUid
+     * @param subscriberName    subscriberName
+     * @param organizationId    organizationId
+     * @param digitalServiceUid digitalServiceUid
      */
     @Cacheable("digitalServiceExists")
     public boolean digitalServiceExists(final String subscriberName, final Long organizationId, final String digitalServiceUid) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        if (!Objects.equals(subscriberName, linkedOrganization.getSubscriber().getName())) {
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        if (!Objects.equals(subscriberName, linkedWorkspace.getSubscriber().getName())) {
             return false;
         }
-        return digitalServiceRepository.findByOrganizationAndUid(linkedOrganization, digitalServiceUid).isPresent();
+        return digitalServiceRepository.findByWorkspaceAndUid(linkedWorkspace, digitalServiceUid).isPresent();
     }
 }

@@ -15,7 +15,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class IndicatorService {
     private ApplicationIndicatorMapper applicationIndicatorMapper;
 
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     @Autowired
     private OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;

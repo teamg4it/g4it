@@ -14,8 +14,8 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class InventoryDeleteService {
      * The organization service.
      */
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     /**
      * Inventory Indicator Service
@@ -58,8 +58,8 @@ public class InventoryDeleteService {
      * @param organizationId the linked organization's id.
      */
     public void deleteInventories(final String subscriberName, final Long organizationId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        inventoryRepository.findByOrganization(linkedOrganization)
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        inventoryRepository.findByWorkspace(linkedWorkspace)
                 .forEach(inventory -> deleteInventory(subscriberName, organizationId, inventory));
     }
 
@@ -72,8 +72,8 @@ public class InventoryDeleteService {
      * @param inventoryId    the inventory id.
      */
     public void deleteInventory(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId)
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId)
                 .ifPresent(inventory -> deleteInventory(subscriberName, organizationId, inventory));
     }
 

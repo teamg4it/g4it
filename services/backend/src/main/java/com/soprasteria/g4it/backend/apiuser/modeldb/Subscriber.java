@@ -42,7 +42,7 @@ public class Subscriber extends AbstractBaseEntity implements Serializable {
      */
     @ToString.Exclude
     @OneToMany(mappedBy = "subscriber")
-    private List<Organization> organizations;
+    private List<Workspace> workspaces;
 
     /**
      * The authorized organizations to subscriber

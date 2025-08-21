@@ -8,8 +8,8 @@
 
 package com.soprasteria.g4it.backend.common.criteria;
 
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class CriteriaService {
     SubscriberRepository subscriberRepository;
 
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     private static final String ERROR_MESSAGE = "Subscriber %s not found";
 
@@ -60,9 +60,9 @@ public class CriteriaService {
         List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
                 .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
-        final Organization organization = organizationService.getOrganizationById(organizationId);
+        final Workspace workspace = workspaceService.getOrganizationById(organizationId);
 
-        List<String> organizationCriteriaIs = organization.getCriteriaIs();
+        List<String> organizationCriteriaIs = workspace.getCriteriaIs();
 
         List<String> activeCriterias = null;
         if (inventoryCriterias != null) {
@@ -90,9 +90,9 @@ public class CriteriaService {
         List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
                 .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
-        final Organization organization = organizationService.getOrganizationById(organizationId);
+        final Workspace workspace = workspaceService.getOrganizationById(organizationId);
 
-        List<String> organizationCriteriaDs = organization.getCriteriaDs();
+        List<String> organizationCriteriaDs = workspace.getCriteriaDs();
 
         List<String> activeCriterias = null;
         if (digitalServiceCriterias != null) {

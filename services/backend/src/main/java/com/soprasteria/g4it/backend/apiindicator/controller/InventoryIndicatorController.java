@@ -157,9 +157,9 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         Long userId = authService.getUser().getId();
         boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization(authService.getUser(), subscriberRepository.findByName(subscriber).get().getId(), organization);
         if (!isAdmin) {
-            UserOrganization userOrganization = userOrganizationRepository.findByOrganizationIdAndUserId(organization, userId).orElseThrow();
+            UserOrganization userOrganization = userOrganizationRepository.findByWorkspaceIdAndUserId(organization, userId).orElseThrow();
 
-            boolean isDefaultOrganization = userOrganization.getOrganization().getName().equalsIgnoreCase("DEMO");
+            boolean isDefaultOrganization = userOrganization.getWorkspace().getName().equalsIgnoreCase("DEMO");
             boolean hasAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));
 
             if (!(isDefaultOrganization || hasAccess)) {

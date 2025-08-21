@@ -8,7 +8,7 @@
 package com.soprasteria.g4it.backend.apifiles.business;
 
 import com.azure.storage.blob.models.BlobStorageException;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
@@ -61,7 +61,7 @@ public class FileSystemService {
     private FileDescriptionRestMapper fileDescriptionRestMapper;
 
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 

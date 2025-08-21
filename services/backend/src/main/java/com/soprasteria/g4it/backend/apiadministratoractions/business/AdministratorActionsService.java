@@ -13,8 +13,8 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceR
 import com.soprasteria.g4it.backend.apievaluating.business.EvaluatingService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AllEvaluationStatusRest;
@@ -37,7 +37,7 @@ public class AdministratorActionsService {
     DigitalServiceRepository digitalServiceRepository;
 
     @Autowired
-    OrganizationRepository organizationRepository;
+    WorkspaceRepository workspaceRepository;
 
     @Autowired
     InPhysicalEquipmentRepository physicalEquipmentRepository;
@@ -56,9 +56,9 @@ public class AdministratorActionsService {
         for (DigitalService digitalService : digitalServices) {
             //evaluating
             String digitalServiceUid = digitalService.getUid();
-            Organization organization = organizationRepository.findById(digitalService.getOrganization().getId()).orElseThrow();
-            Long organizationId = organization.getId();
-            String subscriber = organization.getSubscriber().getName();
+            Workspace workspace = workspaceRepository.findById(digitalService.getWorkspace().getId()).orElseThrow();
+            Long organizationId = workspace.getId();
+            String subscriber = workspace.getSubscriber().getName();
 
             List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
             if (!physicalEquipments.isEmpty()) {

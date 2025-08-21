@@ -8,7 +8,7 @@
 
 package com.soprasteria.g4it.backend.apiworkspace.controller;
 
-import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrganizationService;
+import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorWorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceRestMapper;
@@ -44,7 +44,7 @@ public class NewWorkspaceController implements NewWorkspaceApiDelegate {
     private UserRestMapper userRestMapper;
 
     @Autowired
-    AdministratorOrganizationService administratorOrganizationService;
+    AdministratorWorkspaceService administratorWorkspaceService;
 
     @Autowired
     private WorkspaceRestMapper workspaceRestMapper;
@@ -60,7 +60,7 @@ public class NewWorkspaceController implements NewWorkspaceApiDelegate {
      */
     @Override
     public ResponseEntity<WorkspaceRest> createWorkspace(WorkspaceUpdateRest organizationUpsertRest) {
-        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser(), false)),
+        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.createWorkspace(organizationUpsertRest, authService.getAdminUser(), false)),
                 HttpStatus.OK);
     }
 
