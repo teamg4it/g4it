@@ -114,7 +114,7 @@ describe("DigitalServicesFootprintComponent", () => {
 
     it("should call updateHeights in updateEnableCalculation", (done) => {
         const spy = spyOn(component, "updateHeights");
-        component.updateEnableCalculation(true);
+        component.updateEnableCalculation();
         setTimeout(() => {
             expect(spy).toHaveBeenCalled();
             done();
