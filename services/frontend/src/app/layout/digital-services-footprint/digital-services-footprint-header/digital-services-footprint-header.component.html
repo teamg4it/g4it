@@ -52,7 +52,9 @@
         @if (isMobile()) {
             <button
                 class="kebab-div"
-                (click)="showKebabMenu = !showKebabMenu"
+                (click)="
+                    showKebabMenu = !showKebabMenu; digitalMobileOptionsChange.emit(true)
+                "
                 [ngClass]="{ 'kebab-div-green': showKebabMenu }"
                 [attr.aria-label]="
                     (showKebabMenu

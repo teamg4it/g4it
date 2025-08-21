@@ -2,6 +2,7 @@
     [isEcoMindAi]="isEcoMindAi"
     [(digitalService)]="digitalService"
     (digitalServiceChange)="updateDigitalService()"
+    (digitalMobileOptionsChange)="updateEnableCalculation()"
     #footprintHeader
 >
 </app-digital-services-footprint-header>
@@ -38,7 +39,7 @@
 <app-digital-services-footprint-footer
     [isEcoMindAi]="isEcoMindAi"
     [digitalService]="digitalService"
-    (updateEnableCalculation)="updateEnableCalculation($event)"
+    (updateEnableCalculation)="updateEnableCalculation()"
     #footprintFooter
 >
 </app-digital-services-footprint-footer>
