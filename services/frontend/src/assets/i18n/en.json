@@ -88,7 +88,8 @@
             "accordion-open": "Click to show sub domains",
             "accordion-close": "Click to hide sub domains",
             "import": "Click to import digital service data",
-            "calculate": "Click here to calculate your impact"
+            "calculate": "Click here to calculate your impact",
+            "add": "Click here to add {{type}}"
         },
         "note": {
             "add": "Add a note",
@@ -590,10 +591,10 @@
         "global": {
             "global-vision": "Global Vision",
             "global-vision-by": "Global Vision by {{variable}}",
-            "impact-domain-by-subdomain": "Impact of the <<{{domain}}>> domain by sub-domain",
-            "impact-subdomain-by-application": "Impact of the <<{{subdomain}}>> sub-domain by application",
-            "impact-application-by-equipment": "Impact of the <<{{application}}>> application by equipment",
-            "impact-domain-by-application": "Impact of the <<{{domain}}>> domain by application",
+            "impact-domain-by-subdomain": "Impact of the {{domain}} domain by sub-domain",
+            "impact-subdomain-by-application": "Impact of the {{subdomain}} sub-domain by application",
+            "impact-application-by-equipment": "Impact of the {{application}} application by equipment",
+            "impact-domain-by-application": "Impact of the {{domain}} domain by application",
             "criteria": "criteria",
             "type_global": "domain",
             "type_subdomain": "application",

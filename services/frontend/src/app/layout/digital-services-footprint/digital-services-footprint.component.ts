@@ -16,6 +16,7 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
+import { ScrollPanel } from "primeng/scrollpanel";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
@@ -25,7 +26,6 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { ScrollPanel } from 'primeng/scrollpanel';
 @Component({
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
@@ -44,7 +44,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
     @ViewChild("footprintFooter", { read: ElementRef }) footerRef!: ElementRef;
     headerHeight = 0;
     footerHeight = 0;
-    @ViewChild('scrollPanel') scrollPanel!: ScrollPanel;
+    @ViewChild("scrollPanel") scrollPanel!: ScrollPanel;
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
@@ -135,6 +135,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
     ngOnDestroy() {
         window.removeEventListener("resize", () => this.updateHeights());
         this.digitalServiceStore.setEnableCalcul(false);
+        this.digitalServiceStore.setEcoMindEnableCalcul(false);
     }
 
     updateHeights = () => {

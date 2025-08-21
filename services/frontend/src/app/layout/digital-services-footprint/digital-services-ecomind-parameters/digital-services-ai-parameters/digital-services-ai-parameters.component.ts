@@ -255,7 +255,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         if (this.formSubscription) {
             this.formSubscription.unsubscribe();
         }
-        this.digitalServiceStore.setEcoMindEnableCalcul(false);
     }
 
     onCheckboxChange(selected: "isFinetuning" | "isInference") {

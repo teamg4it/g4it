@@ -87,7 +87,8 @@
             "accordion-open": "Cliquez pour afficher les sous-domaines",
             "accordion-close": "Cliquez pour masquer les sous-domaines",
             "import": "Cliquez pour importer les données de service numériques",
-            "calculate": "Cliquer ici pour calculer votre impact"
+            "calculate": "Cliquer ici pour calculer votre impact",
+            "add": "Cliquer ici pour ajouter {{type}}"
         },
         "note": {
             "add": "Ajouter note",
@@ -587,10 +588,10 @@
         "global": {
             "global-vision": "Vision Globale",
             "global-vision-by": "Vision globale par {{variable}}",
-            "impact-domain-by-subdomain": "Impact du domaine <<{{domain}}>> par sous-domaine",
-            "impact-subdomain-by-application": "Impact du sous-domaine <<{{subdomain}}>> par application",
-            "impact-application-by-equipment": "Impact de l'application <<{{application}}>> par équipement",
-            "impact-domain-by-application": "Impact du domaine <<{{domain}}>> par application",
+            "impact-domain-by-subdomain": "Impact du domaine {{domain}} par sous-domaine",
+            "impact-subdomain-by-application": "Impact du sous-domaine {{subdomain}} par application",
+            "impact-application-by-equipment": "Impact de l'application {{application}} par équipement",
+            "impact-domain-by-application": "Impact du domaine {{domain}} par application",
             "criteria": "critères",
             "type_global": "domaine",
             "type_domain": "sous-domaine",

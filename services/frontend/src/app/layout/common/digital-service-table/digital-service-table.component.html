@@ -18,7 +18,11 @@
                 [id]="addButtonId"
                 icon="pi pi-plus-circle"
                 [label]="'common.add-button' | translate"
-                [ariaLabel]="'common.accessibility.add' | translate"
+                [ariaLabel]="
+                    'common.accessibility.add'
+                        | translate
+                            : { type: translationPrefix + '.' + titleText | translate }
+                "
             ></p-button>
         </div>
     </ng-template>
@@ -73,11 +77,14 @@
         </tr>
     </ng-template>
     <ng-template #dataConsistencyRef let-data="data" let-rowIndex="rowIndex">
-        <td [ngStyle]="{ 'text-align': isMobileView() ? 'left' : 'right' }">
+        <td
+            class="w-4rem"
+            [ngStyle]="{ 'text-align': isMobileView() ? 'left' : 'right' }"
+        >
             <div class="flex">
                 <p-button
                     *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    (click)="doSetItem(data, rowIndex + 1); sidebarVisible(true)"
+                    (onClick)="doSetItem(data, rowIndex + 1); sidebarVisible(true)"
                     styleClass="p-button-text mx-1 p-1 pt-2"
                     ariaLabel="{{ 'common.edit' | translate }} {{
                         'digital-services-terminals.device' | translate
@@ -91,7 +98,7 @@
                 /></p-button>
                 <p-button
                     *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    (click)="doDeleteItem(data, rowIndex + 1)"
+                    (onClick)="doDeleteItem(data, rowIndex + 1)"
                     styleClass="p-button-text p-1"
                     ariaLabel="{{ 'common.delete' | translate }} {{
                         'digital-services-terminals.device' | translate
