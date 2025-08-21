@@ -366,6 +366,7 @@
         "edit": "Edit Cloud Instance",
         "cloud-services": "Public Clouds - IaaS",
         "cloud-service": "Public Cloud - IaaS",
+        "accessibility.cloud-service": "Public Cloud",
         "id": "#",
         "name": "Name",
         "location": "Location",

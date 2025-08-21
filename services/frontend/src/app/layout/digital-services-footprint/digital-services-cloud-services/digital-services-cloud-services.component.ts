@@ -22,7 +22,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     providers: [MessageService],
 })
 export class DigitalServicesCloudServicesComponent {
-    private inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
+    private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
     protected digitalServiceStore = inject(DigitalServiceStoreService);
 
     sidebarVisible: boolean = false;

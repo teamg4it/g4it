@@ -25,7 +25,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     providers: [MessageService],
 })
 export class DigitalServicesCloudServicesSidePanelComponent {
-    private digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() sidebarVisible: boolean = true;
     @Input() cloud: DigitalServiceCloudServiceConfig =

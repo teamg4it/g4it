@@ -364,6 +364,7 @@
         "edit": "Édition instance Cloud",
         "cloud-services": "Clouds Publics - IaaS",
         "cloud-service": "Cloud Public - IaaS",
+        "accessibility.cloud-service": "Cloud Public",
         "id": "#",
         "name": "Nom",
         "location": "Localisation",
