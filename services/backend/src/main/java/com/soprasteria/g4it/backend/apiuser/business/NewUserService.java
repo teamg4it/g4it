@@ -29,7 +29,7 @@ public class NewUserService {
     private UserRepository userRepository;
 
     @Autowired
-    private OrganizationRepository organizationRepository;
+    private WorkspaceRepository workspaceRepository;
 
     @Autowired
     private UserSubscriberRepository userSubscriberRepository;
@@ -44,21 +44,21 @@ public class NewUserService {
      * Create the user and its related objects
      *
      * @param subscriber       the subscriber
-     * @param demoOrganization the demo organization
+     * @param demoWorkspace the demo organization
      * @param newUser          the new user
      * @param userInfo         the userInfo (email, firstName, lastname and subject)
      * @param accessRoles      the list of roles
      * @return the user created
      */
     public User createUser(final Subscriber subscriber,
-                           final Organization demoOrganization,
+                           final Workspace demoWorkspace,
                            User newUser, final UserBO userInfo,
                            final List<Role> accessRoles
     ) {
 
         if (newUser == null) {
             //add new user in g4it_user
-            newUser = createNewUser(userInfo, subscriber, demoOrganization, accessRoles);
+            newUser = createNewUser(userInfo, subscriber, demoWorkspace, accessRoles);
         }
 
         if (accessRoles == null) return newUser;
@@ -73,7 +73,7 @@ public class NewUserService {
         //Link user with organization
         final UserOrganization userOrganization = userOrganizationRepository.save(UserOrganization.builder()
                 .user(newUser)
-                .organization(demoOrganization)
+                .workspace(demoWorkspace)
                 .defaultFlag(true)
                 .build());
 
@@ -107,7 +107,7 @@ public class NewUserService {
      * @param accessRoles the access Roles
      * @return the user.
      */
-    private User createNewUser(final UserBO userInfo, final Subscriber subscriber, final Organization demoOrg, final List<Role> accessRoles) {
+    private User createNewUser(final UserBO userInfo, final Subscriber subscriber, final Workspace demoOrg, final List<Role> accessRoles) {
         User userToCreate = User.builder()
                 .email(userInfo.getEmail())
                 .firstName(userInfo.getFirstName())
@@ -125,7 +125,7 @@ public class NewUserService {
                             .build()));
 
             userToCreate.setUserOrganizations(List.of(UserOrganization.builder()
-                    .organization(demoOrg)
+                    .workspace(demoOrg)
                     .defaultFlag(true)
                     .roles(accessRoles)
                     .build()));

@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiuser.controller;
 
-import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrganizationService;
+import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorWorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
@@ -38,7 +38,7 @@ public class UserRestController implements UserApiDelegate {
     private UserRestMapper userRestMapper;
 
     @Autowired
-    AdministratorOrganizationService administratorOrganizationService;
+    AdministratorWorkspaceService administratorWorkspaceService;
 
     @Autowired
     private WorkspaceRestMapper workspaceRestMapper;

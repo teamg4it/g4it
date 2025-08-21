@@ -149,7 +149,7 @@ public class AdministratorService {
 
                     List<String> userRoles = new ArrayList<>();
                     if (searchedUser.getUserOrganizations() != null) {
-                        userRoles.addAll(searchedUser.getUserOrganizations().stream().filter(org -> org.getOrganization().getId() == organizationId)
+                        userRoles.addAll(searchedUser.getUserOrganizations().stream().filter(org -> org.getWorkspace().getId() == organizationId)
                                 .findFirst()
                                 .orElse(UserOrganization.builder().roles(List.of()).build())
                                 .getRoles().stream().map(Role::getName).toList());
@@ -168,7 +168,7 @@ public class AdministratorService {
 
                     List<Long> linkedOrgIds = searchedUser.getUserOrganizations() == null ? List.of() :
                             searchedUser.getUserOrganizations().stream()
-                                    .map(userOrg -> userOrg.getOrganization().getId())
+                                    .map(userOrg -> userOrg.getWorkspace().getId())
                                     .toList();
 
                     return UserSearchBO.builder()

@@ -7,9 +7,9 @@
  */
 package com.soprasteria.g4it.backend.scheduler;
 
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileDeletionService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
@@ -31,11 +31,11 @@ public class StorageDeletionService {
     @Value("${g4it.storage.retention.day.output}")
     private Integer storageRetentionDayOutput;
     @Autowired
-    private OrganizationRepository organizationRepository;
+    private WorkspaceRepository workspaceRepository;
     @Autowired
     private FileDeletionService fileDeletionService;
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     /**
      * Execute the deletion
@@ -46,24 +46,24 @@ public class StorageDeletionService {
 
         final long start = System.currentTimeMillis();
         // Fetch Organization with 'ACTIVE' status only.
-        List<Organization> organizations = organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()));
+        List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()));
 
         List<String> deletedFilePaths = new ArrayList<>();
-        for (Organization organizationEntity : organizations) {
-            final String subscriber = organizationEntity.getSubscriber().getName();
-            final Long organizationId = organizationEntity.getId();
+        for (Workspace workspaceEntity : workspaces) {
+            final String subscriber = workspaceEntity.getSubscriber().getName();
+            final Long organizationId = workspaceEntity.getId();
 
             // organization > subscriber > default
-            final Integer retentionExport = Optional.ofNullable(organizationEntity.getStorageRetentionDayExport())
-                    .orElse(Optional.ofNullable(organizationEntity.getSubscriber().getStorageRetentionDayExport())
+            final Integer retentionExport = Optional.ofNullable(workspaceEntity.getStorageRetentionDayExport())
+                    .orElse(Optional.ofNullable(workspaceEntity.getSubscriber().getStorageRetentionDayExport())
                             .orElse(storageRetentionDayExport));
 
             List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.EXPORT, retentionExport);
 
             deletedFilePaths.addAll(deletedExportFilePaths);
             // organization > subscriber > default
-            final Integer retentionOutput = Optional.ofNullable(organizationEntity.getStorageRetentionDayOutput())
-                    .orElse(Optional.ofNullable(organizationEntity.getSubscriber().getStorageRetentionDayOutput())
+            final Integer retentionOutput = Optional.ofNullable(workspaceEntity.getStorageRetentionDayOutput())
+                    .orElse(Optional.ofNullable(workspaceEntity.getSubscriber().getStorageRetentionDayOutput())
                             .orElse(storageRetentionDayOutput));
 
             List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.OUTPUT, retentionOutput);

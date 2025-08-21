@@ -33,11 +33,11 @@ public class InventoryBO {
 
     private LocalDateTime lastUpdateDate;
 
-    private String organization;
+    private String workspace;
 
-    private Long organizationId;
+    private Long workspaceId;
 
-    private String organizationStatus;
+    private String workspaceStatus;
 
     private Long dataCenterCount;
 

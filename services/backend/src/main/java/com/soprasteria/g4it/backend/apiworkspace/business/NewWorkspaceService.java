@@ -8,9 +8,9 @@
 
 package com.soprasteria.g4it.backend.apiworkspace.business;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiworkspace.model.OrganizationDetailsBO;
 import com.soprasteria.g4it.backend.apiworkspace.model.SubscriberDetailsBO;
@@ -37,17 +37,17 @@ public class NewWorkspaceService {
      * The Repository to access Organization data.
      */
     @Autowired
-    OrganizationRepository organizationRepository;
+    WorkspaceRepository workspaceRepository;
 
     public List<SubscriberDetailsBO> searchSubscribersByDomainName(final String userEmail) {
         String domainName = userEmail.substring(userEmail.indexOf("@") + 1);
         List<Subscriber> subscribers = subscriberRepository.findByAuthorizedDomainsContaining(domainName);
         List<SubscriberDetailsBO> lstSubscriber = new ArrayList<>();
         for (Subscriber subscriber : subscribers) {
-            List<Organization> organizations = organizationRepository.findBySubscriberId(subscriber.getId());
+            List<Workspace> workspaces = workspaceRepository.findBySubscriberId(subscriber.getId());
             List<OrganizationDetailsBO> lstOrganizations = new ArrayList<>();
-            for (Organization organization : organizations) {
-                lstOrganizations.add(OrganizationDetailsBO.builder().id(organization.getId()).name(organization.getName()).status(organization.getStatus()).build());
+            for (Workspace workspace : workspaces) {
+                lstOrganizations.add(OrganizationDetailsBO.builder().id(workspace.getId()).name(workspace.getName()).status(workspace.getStatus()).build());
             }
             SubscriberDetailsBO subscriberDetailsBO = SubscriberDetailsBO.builder().id(subscriber.getId()).name(subscriber.getName()).organizations(lstOrganizations).build();
             lstSubscriber.add(subscriberDetailsBO);
