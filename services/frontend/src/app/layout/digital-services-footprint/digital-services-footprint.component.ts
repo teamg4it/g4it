@@ -11,11 +11,13 @@ import {
     ElementRef,
     inject,
     OnInit,
+    signal,
     ViewChild,
 } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
+import { ScrollPanel } from "primeng/scrollpanel";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
@@ -25,7 +27,6 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { ScrollPanel } from 'primeng/scrollpanel';
 @Component({
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
@@ -34,6 +35,8 @@ export class DigitalServicesFootprintComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
     private readonly inDatacentersService = inject(InDatacentersService);
+    private readonly router = inject(Router);
+    selectedTab: any;
 
     digitalService: DigitalService = {} as DigitalService;
     inPhysicalEquipments: InPhysicalEquipmentRest[] = [];
@@ -44,8 +47,8 @@ export class DigitalServicesFootprintComponent implements OnInit {
     @ViewChild("footprintFooter", { read: ElementRef }) footerRef!: ElementRef;
     headerHeight = 0;
     footerHeight = 0;
-    @ViewChild('scrollPanel') scrollPanel!: ScrollPanel;
-
+    @ViewChild("scrollPanel") scrollPanel!: ScrollPanel;
+    isMobile = signal(false);
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
         private readonly digitalBusinessService: DigitalServiceBusinessService,
@@ -55,6 +58,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
     ) {}
 
     async ngOnInit(): Promise<void> {
+        this.setMobileView();
         this.global.setLoading(true);
 
         const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
@@ -67,6 +71,9 @@ export class DigitalServicesFootprintComponent implements OnInit {
 
         this.isEcoMindAi = this.digitalService.isAi ?? false;
         this.updateTabItems();
+        if (this.isMobile()) {
+            this.setSelectedTabFromRoute();
+        }
 
         this.digitalServiceStore.setDigitalService(this.digitalService);
         if (!this.isEcoMindAi) {
@@ -135,6 +142,13 @@ export class DigitalServicesFootprintComponent implements OnInit {
     ngOnDestroy() {
         window.removeEventListener("resize", () => this.updateHeights());
         this.digitalServiceStore.setEnableCalcul(false);
+        this.digitalServiceStore.setEcoMindEnableCalcul(false);
+    }
+
+    onTabChange(tab: any) {
+        if (tab?.routerLink) {
+            this.router.navigate([tab.routerLink], { relativeTo: this.route });
+        }
     }
 
     updateHeights = () => {
@@ -143,6 +157,26 @@ export class DigitalServicesFootprintComponent implements OnInit {
         this.cdr.detectChanges();
         this.scrollPanel?.refresh();
     };
+
+    private setMobileView(): void {
+        this.isMobile.set(window.innerWidth < 560);
+        window.addEventListener("resize", () => {
+            this.isMobile.set(window.innerWidth < 560);
+        });
+    }
+
+    onMenuTabChange(event: any) {
+        this.selectedTab = event;
+    }
+
+    private setSelectedTabFromRoute() {
+        if (!this.tabItems) return;
+        // Find the tab whose routerLink matches the last segment of the current route
+        const currentSegment = this.route.snapshot.firstChild?.routeConfig?.path;
+        this.selectedTab =
+            this.tabItems.find((tab) => tab.routerLink === currentSegment) ||
+            this.tabItems[0];
+    }
 
     updateTabItems() {
         if (this.isEcoMindAi) {
@@ -178,7 +212,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
         }
     }
 
-    updateEnableCalculation(event: boolean) {
+    updateEnableCalculation() {
         setTimeout(() => {
             this.updateHeights();
         }, 0);

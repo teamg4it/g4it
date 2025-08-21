@@ -2,6 +2,7 @@
     [isEcoMindAi]="isEcoMindAi"
     [(digitalService)]="digitalService"
     (digitalServiceChange)="updateDigitalService()"
+    (digitalMobileOptionsChange)="updateEnableCalculation()"
     #footprintHeader
 >
 </app-digital-services-footprint-header>
@@ -12,19 +13,33 @@
         height: 'calc(100vh - (100px + ' + headerHeight + 'px + ' + footerHeight + 'px))',
     }"
 >
-    <p-tabMenu
-        [model]="tabItems"
-        role="heading"
-        [ariaLevel]="2"
-        [attr.aria-label]="'common.ds-menu' | translate"
-    ></p-tabMenu>
+    @if (!isMobile()) {
+        <p-tabMenu
+            [model]="tabItems"
+            [activeItem]="selectedTab"
+            (activeItemChange)="onMenuTabChange($event)"
+            role="heading"
+            [ariaLevel]="2"
+            [attr.aria-label]="'common.ds-menu' | translate"
+        ></p-tabMenu>
+    } @else {
+        <p-dropdown
+            styleClass="w-full my-2"
+            [options]="tabItems"
+            optionLabel="label"
+            [(ngModel)]="selectedTab"
+            (onChange)="onTabChange($event.value)"
+            [placeholder]="'common.ds-menu' | translate"
+        ></p-dropdown>
+    }
+
     <router-outlet></router-outlet>
 </p-scrollPanel>
 
 <app-digital-services-footprint-footer
     [isEcoMindAi]="isEcoMindAi"
     [digitalService]="digitalService"
-    (updateEnableCalculation)="updateEnableCalculation($event)"
+    (updateEnableCalculation)="updateEnableCalculation()"
     #footprintFooter
 >
 </app-digital-services-footprint-footer>

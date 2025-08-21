@@ -7,7 +7,7 @@
     </div>
     <app-digital-service-table
         titleText="vm"
-        addButton="add.vm"
+        accessibilityText="accessibility.vm"
         translationPrefix="digital-services-servers"
         [headerFields]="headerFields()"
         [data]="vmData()"
@@ -17,12 +17,12 @@
         (deleteItem)="deleteVm($event.index - 1)"
     ></app-digital-service-table>
     <div class="button-bottom-right">
-        <p-button styleClass="white-button" (click)="close()">{{
+        <p-button styleClass="white-button" (onClick)="close()">{{
             "common.cancel" | translate
         }}</p-button>
         <p-button
             styleClass="black-button"
-            (click)="previousStep()"
+            (onClick)="previousStep()"
             icon="pi pi-arrow-left"
             [label]="'common.previous' | translate"
         >
@@ -30,7 +30,7 @@
         <p-button
             styleClass="yellow-button"
             type="submit"
-            (click)="submitServer()"
+            (onClick)="submitServer()"
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             ><span *ngIf="server().uid === ''">
                 {{ "common.create" | translate }}

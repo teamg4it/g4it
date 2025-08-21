@@ -1186,8 +1186,8 @@ app-top-header {
     }
 
     main {
-        margin: 70px 0px;
-        height: calc(100vh - 140px);
+        margin-top: 70px;
+        height: calc(100vh - 70px);
         width: calc(100vw);
     }
 }
@@ -1307,6 +1307,10 @@ app-useful-information {
     position: absolute;
     right: 0;
     top: 0;
+}
+
+.kebab-div-green {
+    background: var(--tertiary-color);
 }
 
 .plus-menu-icon {

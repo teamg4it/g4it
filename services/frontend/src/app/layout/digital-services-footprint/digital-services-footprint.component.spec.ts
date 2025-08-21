@@ -1,10 +1,8 @@
+import { ChangeDetectorRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
-import {
-    ChangeDetectorRef
-} from "@angular/core";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
@@ -41,6 +39,7 @@ describe("DigitalServicesFootprintComponent", () => {
     const mockDigitalServiceStoreService = {
         setDigitalService: jasmine.createSpy(),
         setEnableCalcul: jasmine.createSpy(),
+        setEcoMindEnableCalcul: jasmine.createSpy(),
         initInPhysicalEquipments: jasmine.createSpy(),
         initInVirtualEquipments: jasmine.createSpy(),
         setInDatacenters: jasmine.createSpy(),
@@ -64,7 +63,7 @@ describe("DigitalServicesFootprintComponent", () => {
 
     const mockCdr = { detectChanges: jasmine.createSpy() };
 
-    const MockScrollPanel = { refresh: jasmine.createSpy('refresh') };
+    const MockScrollPanel = { refresh: jasmine.createSpy("refresh") };
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -86,7 +85,7 @@ describe("DigitalServicesFootprintComponent", () => {
                 },
                 { provide: ChangeDetectorRef, useValue: mockCdr },
                 { provide: GlobalStoreService, useValue: mockGlobal },
-                { provide: InDatacentersService, useValue: mockInDatacentersService }
+                { provide: InDatacentersService, useValue: mockInDatacentersService },
             ],
         }).compileComponents();
 
@@ -115,12 +114,10 @@ describe("DigitalServicesFootprintComponent", () => {
 
     it("should call updateHeights in updateEnableCalculation", (done) => {
         const spy = spyOn(component, "updateHeights");
-        component.updateEnableCalculation(true);
+        component.updateEnableCalculation();
         setTimeout(() => {
             expect(spy).toHaveBeenCalled();
             done();
         }, 10);
     });
-
-
 });
