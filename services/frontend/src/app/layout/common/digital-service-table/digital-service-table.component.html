@@ -21,7 +21,11 @@
                 [ariaLabel]="
                     'common.accessibility.add'
                         | translate
-                            : { type: translationPrefix + '.' + titleText | translate }
+                            : {
+                                  type:
+                                      translationPrefix + '.' + accessibilityText
+                                      | translate,
+                              }
                 "
             ></p-button>
         </div>

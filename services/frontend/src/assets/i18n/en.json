@@ -89,7 +89,7 @@
             "accordion-close": "Click to hide sub domains",
             "import": "Click to import digital service data",
             "calculate": "Click here to calculate your impact",
-            "add": "Click here to add {{type}}"
+            "add": "Click here to add a {{type}}"
         },
         "note": {
             "add": "Add a note",
@@ -353,6 +353,7 @@
             "vm": "Add VM"
         },
         "vm": "Virtual Machines",
+        "accessibility.vm": "Virtual Machine",
         "vcpu": "vCPU",
         "vCpu": "vCPU",
         "disk": "Disk",

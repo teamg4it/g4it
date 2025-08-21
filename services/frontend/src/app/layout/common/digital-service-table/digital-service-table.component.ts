@@ -15,7 +15,7 @@ export class DigitalServiceTableComponent {
     @Input() data: any[] = [];
 
     @Input() titleText = "";
-    @Input() addButton = "";
+    @Input() accessibilityText = "";
     @Input() translationPrefix = "";
     @Input() headerFields: string[] = [];
     @Input() showId = true;
