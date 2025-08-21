@@ -161,7 +161,8 @@
         },
         "plus-menu": "Plus",
         "add-button": "Ajouter",
-        "actions": "Actions"
+        "actions": "Actions",
+        "nav-panel": "Ouvrir le menu de navigation"
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"
@@ -214,7 +215,8 @@
         "visualize-parameters": "Voir les paramètres",
         "back": "Retour",
         "hide-menu-buttons": "Cacher les options du service numérique",
-        "show-menu-buttons": "Montrer les options du service numérique"
+        "show-menu-buttons": "Montrer les options du service numérique",
+        "save-inplace": "Sauvegarder le nom du service numérique"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
