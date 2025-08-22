@@ -1,6 +1,6 @@
 ---
-title: "2.3.3.2. Add Non-Cloud Server by importing files"
-description: "This use case describes how to upload files to add Cloud Service equipments to a digital service"
+title: "2.3.3.2. Add Private Infrastructure by importing files"
+description: "This use case describes how to upload files to add Private Infrastructure equipments to a digital service"
 weight: 30
 mermaid: true
 ---
@@ -9,11 +9,11 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Import Non-Cloud Server](#import-non-cloud-server)
+-   [Import Private Infrastructure](#import-private-infrastructure)
 
 ## Description
 
-This use case allows a **project team** to upload Non-Cloud Server equipments by importing the files, into a digital service previously created.
+This use case allows a **project team** to upload Private Infrastructure equipments by importing the files, into a digital service previously created.
 The file types are **datacenter**, **physical equipment** and **virtual equipment**.
 
 The files should be in `.csv` or `.xlsx` format. For **CSV files** specifically, both commas and semicolons are
@@ -22,10 +22,10 @@ other encoding formats, while untested, may also work.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Import button  / Import Non-Cloud Server
--   My Digital Services / My Digital Service / Non-Cloud Servers / Modify Non-Cloud Server
+-   My Digital Services / My Digital Service / Import button  / Import Private Infrastructure
+-   My Digital Services / My Digital Service / Private Infrastructures / Modify Private Infrastructure
 
-## Import Non-Cloud Server
+## Import Private Infrastructure
 ![uc3_add_visualize_equipments_nonCloudServerImport.png](../../../images/uc3_add_visualize_equipments_nonCloudServerImport.png)
 
 
@@ -33,7 +33,7 @@ other encoding formats, while untested, may also work.
 
 | Reference | Group      | Elements                                            | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                               |
 |-----------|------------|-----------------------------------------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1         | Non-Cloud Server form            |                                                     | Form   | <li><u>_initialization rules_</u>: That form enables the import of files.                                                                                                                                                                                                                                                                                                                                                 |
+| 1         | Private Infrastructure form            |                                                     | Form   | <li><u>_initialization rules_</u>: That form enables the import of files.                                                                                                                                                                                                                                                                                                                                                 |
 | 2         |            | Datacenter, physical and virtual equipment template | button | action rules: To help you start, template files are available to be downloaded.                                                                                                                                                                                                                                                                                                                                           |
 | 3         |            | Browse file                                         | button                 | action rules: Click on it to open a window to select one file on the user computer.                                                                                                                                                                                                                                                                                                                                       |
 | 4         |            | Start Upload                                        | button                 | action rules: Click the upload button to start the loading of attached file.                                                                                                                                                                                                                                                                                                                                              |

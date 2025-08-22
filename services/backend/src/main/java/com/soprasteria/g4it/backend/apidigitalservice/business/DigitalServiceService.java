@@ -88,13 +88,17 @@ public class DigitalServiceService {
 
         // Get last index to create digital service.
         final List<DigitalService> orgDigitalServices = digitalServiceRepository.findByOrganizationAndIsAi(linkedOrganization, isAi);
+
+        String regex = "^" + DEFAULT_NAME_PREFIX + " (\\d+)" + (isAi ? " AI" : "") + "$";
         final Integer lastDigitalServiceDefaultNumber = orgDigitalServices
                 .stream()
                 .map(DigitalService::getName)
-                .filter(name -> name.matches("^" + DEFAULT_NAME_PREFIX + " \\d+$"))
-                .map(name -> name.replace(DEFAULT_NAME_PREFIX + " ", ""))
+                .filter(name -> name.matches(regex))
+                .map(name -> name.replace(DEFAULT_NAME_PREFIX + " ", "")
+                        .replace(isAi ? " AI" : "", "").trim())
                 .map(Integer::valueOf)
-                .max(Comparator.naturalOrder()).orElse(0);
+                .max(Comparator.naturalOrder())
+                .orElse(0);
 
         // Get the linked user.
         final User user = userRepository.findById(userId).orElseThrow();
@@ -102,7 +106,7 @@ public class DigitalServiceService {
         // Save the digital service with +1 on index name.
         final LocalDateTime now = LocalDateTime.now();
 
-        String dsName = DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1) + (isAi ? " IA" : "");
+        String dsName = DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1) + (isAi ? " AI" : "");
 
         final DigitalService digitalServiceToSave = DigitalService
                 .builder()
