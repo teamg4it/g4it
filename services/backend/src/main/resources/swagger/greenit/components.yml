@@ -7,21 +7,21 @@ info:
 components:
   # Define Common Parameters.
   parameters:
-    subscriberPathParam:
-      in: path
-      name: subscriber
-      schema:
-        type: string
-      required: true
-      description: The subscriber name.
     organizationPathParam:
       in: path
       name: organization
       schema:
+        type: string
+      required: true
+      description: The organization name.
+    workspacePathParam:
+      in: path
+      name: workspace
+      schema:
         type: integer
         format: int64
       required: true
-      description: The organization id.
+      description: The workspace id.
     inventoryIdPathParam:
       in: path
       name: inventoryId

@@ -9,10 +9,10 @@ tags:
     description: Endpoint for ai infra inputs - datacenter
 
 paths:
-  /organizations/{subscriber}/workspaces/{organization}/digital-services/{digitalServiceUid}/ai-infra-input:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/ai-infra-input:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
 
     post:

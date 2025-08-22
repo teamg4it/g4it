@@ -263,7 +263,7 @@ public class UserService {
      */
     public List<SubscriberBO> buildSubscribers(final User user, final boolean adminMode) {
 
-        if (user.getUserSubscribers() == null || user.getUserOrganizations() == null) return List.of();
+        if (user.getUserSubscribers() == null || user.getUserWorkspaces() == null) return List.of();
 
         // Get the subscribers and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
         List<SubscriberBO> results = new ArrayList<>(user.getUserSubscribers().stream()
@@ -275,10 +275,10 @@ public class UserService {
 
         Set<String> adminSubscribers = results.stream().map(SubscriberBO::getName).collect(Collectors.toSet());
 
-        if (user.getUserOrganizations() == null) return results;
+        if (user.getUserWorkspaces() == null) return results;
 
         // (subscriber, [userOrganization])
-        final Map<Subscriber, List<UserOrganization>> organizationBySubscriber = user.getUserOrganizations().stream()
+        final Map<Subscriber, List<UserWorkspace>> organizationBySubscriber = user.getUserWorkspaces().stream()
                 .collect(Collectors.groupingBy(e -> e.getWorkspace().getSubscriber()));
 
         // Get the subscribers and subObjects on which the user has not ROLE_SUBSCRIBER_ADMINISTRATOR but other roles on organizations
@@ -334,16 +334,16 @@ public class UserService {
     /**
      * Build the subscriber if any organization has at least one user role
      *
-     * @param subscriber        the user subscriber.
-     * @param userOrganizations the user's organization list.
-     * @param adminMode         the adminMode
+     * @param subscriber     the user subscriber.
+     * @param userWorkspaces the user's organization list.
+     * @param adminMode      the adminMode
      * @return the user's subscriber.
      */
-    public SubscriberBO buildSubscriberWithUserOrganizations(final Subscriber subscriber, final List<UserOrganization> userOrganizations, final boolean adminMode) {
+    public SubscriberBO buildSubscriberWithUserOrganizations(final Subscriber subscriber, final List<UserWorkspace> userWorkspaces, final boolean adminMode) {
 
         final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(OrganizationStatus.ACTIVE.name());
 
-        List<OrganizationBO> organizations = userOrganizations.stream()
+        List<OrganizationBO> organizations = userWorkspaces.stream()
                 .filter(userOrganization -> status.contains(userOrganization.getWorkspace().getStatus()))
                 .map(this::buildOrganization)
                 .filter(Objects::nonNull)
@@ -366,21 +366,21 @@ public class UserService {
     /**
      * Build organization.
      *
-     * @param userOrganization the user's organization.
+     * @param userWorkspace the user's organization.
      * @return the user's organization.
      */
-    public OrganizationBO buildOrganization(final UserOrganization userOrganization) {
-        if (userOrganization.getRoles() == null || userOrganization.getRoles().isEmpty()) return null;
+    public OrganizationBO buildOrganization(final UserWorkspace userWorkspace) {
+        if (userWorkspace.getRoles() == null || userWorkspace.getRoles().isEmpty()) return null;
 
         return OrganizationBO.builder()
-                .roles(userOrganization.getRoles().stream().map(Role::getName).toList())
-                .defaultFlag(userOrganization.getDefaultFlag())
-                .name(userOrganization.getWorkspace().getName())
-                .id(userOrganization.getWorkspace().getId())
-                .status(userOrganization.getWorkspace().getStatus())
-                .deletionDate(userOrganization.getWorkspace().getDeletionDate())
-                .criteriaIs(userOrganization.getWorkspace().getCriteriaIs())
-                .criteriaDs(userOrganization.getWorkspace().getCriteriaDs())
+                .roles(userWorkspace.getRoles().stream().map(Role::getName).toList())
+                .defaultFlag(userWorkspace.getDefaultFlag())
+                .name(userWorkspace.getWorkspace().getName())
+                .id(userWorkspace.getWorkspace().getId())
+                .status(userWorkspace.getWorkspace().getStatus())
+                .deletionDate(userWorkspace.getWorkspace().getDeletionDate())
+                .criteriaIs(userWorkspace.getWorkspace().getCriteriaIs())
+                .criteriaDs(userWorkspace.getWorkspace().getCriteriaDs())
                 .build();
     }
 

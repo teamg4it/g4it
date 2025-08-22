@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiuser.repository;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserOrganizationRepository extends JpaRepository<UserOrganization, Long> {
+public interface UserOrganizationRepository extends JpaRepository<UserWorkspace, Long> {
 
     /**
      * Find by organization and return  a list of matching UserOrganizations
@@ -24,7 +24,7 @@ public interface UserOrganizationRepository extends JpaRepository<UserOrganizati
      * @param workspace the linked organization
      * @return UserOrganization
      */
-    List<UserOrganization> findByWorkspace(final Workspace workspace);
+    List<UserWorkspace> findByWorkspace(final Workspace workspace);
 
     /**
      * Find by linked organizationId and userId  and return  a list of matching UserOrganizations
@@ -33,6 +33,6 @@ public interface UserOrganizationRepository extends JpaRepository<UserOrganizati
      * @param userId      the linked user's id
      * @return UserOrganization
      */
-    Optional<UserOrganization> findByWorkspaceIdAndUserId(final Long workspaceId, final Long userId);
+    Optional<UserWorkspace> findByWorkspaceIdAndUserId(final Long workspaceId, final Long userId);
 
 }

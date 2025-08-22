@@ -13,7 +13,7 @@ import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.UserRoleOrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRoleWorkspaceRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.utils.Constants;
@@ -55,7 +55,7 @@ public class WorkspaceService {
      * Repository to manage user role.
      */
     @Autowired
-    UserRoleOrganizationRepository userRoleOrganizationRepository;
+    UserRoleWorkspaceRepository userRoleWorkspaceRepository;
     /**
      * The Role Service
      */

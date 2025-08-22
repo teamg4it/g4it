@@ -38,16 +38,16 @@ public class NewUserService {
     private UserOrganizationRepository userOrganizationRepository;
 
     @Autowired
-    private UserRoleOrganizationRepository userRoleOrganizationRepository;
+    private UserRoleWorkspaceRepository userRoleWorkspaceRepository;
 
     /**
      * Create the user and its related objects
      *
-     * @param subscriber       the subscriber
+     * @param subscriber    the subscriber
      * @param demoWorkspace the demo organization
-     * @param newUser          the new user
-     * @param userInfo         the userInfo (email, firstName, lastname and subject)
-     * @param accessRoles      the list of roles
+     * @param newUser       the new user
+     * @param userInfo      the userInfo (email, firstName, lastname and subject)
+     * @param accessRoles   the list of roles
      * @return the user created
      */
     public User createUser(final Subscriber subscriber,
@@ -62,7 +62,7 @@ public class NewUserService {
         }
 
         if (accessRoles == null) return newUser;
-        
+
         // Link user with subscriber
         userSubscriberRepository.save(UserSubscriber.builder()
                 .user(newUser)
@@ -71,16 +71,16 @@ public class NewUserService {
                 .build());
 
         //Link user with organization
-        final UserOrganization userOrganization = userOrganizationRepository.save(UserOrganization.builder()
+        final UserWorkspace userWorkspace = userOrganizationRepository.save(UserWorkspace.builder()
                 .user(newUser)
                 .workspace(demoWorkspace)
                 .defaultFlag(true)
                 .build());
 
         //give role access to the user
-        userRoleOrganizationRepository.saveAll(accessRoles.stream()
-                .map(role -> UserRoleOrganization.builder()
-                        .userOrganizations(userOrganization)
+        userRoleWorkspaceRepository.saveAll(accessRoles.stream()
+                .map(role -> UserRoleWorkspace.builder()
+                        .userWorkspaces(userWorkspace)
                         .roles(role)
                         .build())
                 .toList());
@@ -124,7 +124,7 @@ public class NewUserService {
                             .defaultFlag(true)
                             .build()));
 
-            userToCreate.setUserOrganizations(List.of(UserOrganization.builder()
+            userToCreate.setUserWorkspaces(List.of(UserWorkspace.builder()
                     .workspace(demoOrg)
                     .defaultFlag(true)
                     .roles(accessRoles)

@@ -52,7 +52,7 @@ public class AdministratorWorkspaceService {
     @Autowired
     UserSubscriberRepository userSubscriberRepository;
     @Autowired
-    UserRoleOrganizationRepository userRoleOrganizationRepository;
+    UserRoleWorkspaceRepository userRoleWorkspaceRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -228,23 +228,23 @@ public class AdministratorWorkspaceService {
         for (UserRoleRest userRoleRest : linkUserRoleRest.getUsers()) {
             User userEntity = userRepository.findById(userRoleRest.getUserId()).orElseThrow();
 
-            Optional<UserOrganization> userOrganizationOptional = userOrganizationRepository.findByWorkspaceIdAndUserId(organizationId, userRoleRest.getUserId());
+            Optional<UserWorkspace> userOrganizationOptional = userOrganizationRepository.findByWorkspaceIdAndUserId(organizationId, userRoleRest.getUserId());
 
-            UserOrganization userOrganization;
+            UserWorkspace userWorkspace;
 
             if (userOrganizationOptional.isEmpty()) {
-                userOrganization = UserOrganization.builder().
+                userWorkspace = UserWorkspace.builder().
                         workspace(workspace)
                         .user(userEntity)
                         .defaultFlag(true)
                         .build();
 
-                userOrganizationRepository.save(userOrganization);
+                userOrganizationRepository.save(userWorkspace);
             } else {
-                userOrganization = userOrganizationOptional.get();
+                userWorkspace = userOrganizationOptional.get();
 
                 // delete linked roles from table g4it_user_role_organization if exist
-                userRoleOrganizationRepository.deleteByUserOrganizations(userOrganization);
+                userRoleWorkspaceRepository.deleteByUserWorkspaces(userWorkspace);
             }
 
             final List<Role> userRolesToAdd = userRoleRest.getRoles() == null ?
@@ -253,16 +253,16 @@ public class AdministratorWorkspaceService {
                             .filter(role -> userRoleRest.getRoles().contains(role.getName()))
                             .toList();
 
-            List<UserRoleOrganization> userRoleOrganizations = userRolesToAdd.stream()
-                    .<UserRoleOrganization>map(role ->
-                            UserRoleOrganization.builder()
-                                    .userOrganizations(userOrganization)
+            List<UserRoleWorkspace> userRoleWorkspaces = userRolesToAdd.stream()
+                    .<UserRoleWorkspace>map(role ->
+                            UserRoleWorkspace.builder()
+                                    .userWorkspaces(userWorkspace)
                                     .roles(role)
                                     .build()
                     )
                     .toList();
 
-            userRoleOrganizationRepository.saveAll(userRoleOrganizations);
+            userRoleWorkspaceRepository.saveAll(userRoleWorkspaces);
 
             // Create and add UserInfoBO to the list
             userInfoList.add(UserInfoBO.builder()
@@ -294,11 +294,11 @@ public class AdministratorWorkspaceService {
         administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, subscriber.getId(), organizationId);
 
         for (UserRoleRest userRoleRest : linkUserRoleRest.getUsers()) {
-            UserOrganization userOrgEntity = userOrganizationRepository
+            UserWorkspace userOrgEntity = userOrganizationRepository
                     .findByWorkspaceIdAndUserId(organizationId, userRoleRest.getUserId()).orElseThrow();
 
             // delete linked roles from table g4it_user_role_organization if exist
-            userRoleOrganizationRepository.deleteByUserOrganizations(userOrgEntity);
+            userRoleWorkspaceRepository.deleteByUserWorkspaces(userOrgEntity);
 
             // delete user-organization link
             userOrganizationRepository.deleteById(userOrgEntity.getId());

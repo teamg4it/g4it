@@ -18,7 +18,7 @@ import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
@@ -157,10 +157,10 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         Long userId = authService.getUser().getId();
         boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization(authService.getUser(), subscriberRepository.findByName(subscriber).get().getId(), organization);
         if (!isAdmin) {
-            UserOrganization userOrganization = userOrganizationRepository.findByWorkspaceIdAndUserId(organization, userId).orElseThrow();
+            UserWorkspace userWorkspace = userOrganizationRepository.findByWorkspaceIdAndUserId(organization, userId).orElseThrow();
 
-            boolean isDefaultOrganization = userOrganization.getWorkspace().getName().equalsIgnoreCase("DEMO");
-            boolean hasAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));
+            boolean isDefaultOrganization = userWorkspace.getWorkspace().getName().equalsIgnoreCase("DEMO");
+            boolean hasAccess = userWorkspace.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));
 
             if (!(isDefaultOrganization || hasAccess)) {
                 throw new G4itRestException("403", "Not authorized");
