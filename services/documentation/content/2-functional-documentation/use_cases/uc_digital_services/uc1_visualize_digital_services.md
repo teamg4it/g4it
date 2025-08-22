@@ -31,12 +31,12 @@ graph TD;
 Step1[List of digital services view] -->|Click on 'Evaluate new service' button| Step2[New service view] -->Decision1{Which type of equipments?}
 Decision1 -->|Terminals| Step3[Terminals list view]
 Decision1 -->|Network| Step4[Networks list view]
-Decision1 -->|Non-Cloud Server| Step5[Non-Cloud Servers list view]
-Decision1 -->|Cloud Services| Step9[Cloud Services list view]
-Step3 -->|Click on Add Device|Step6[Add terminal view]
-Step4 -->|Click on Add Network|Step7[Add network view]
-Step5 -->|Click on Add Non-Cloud Server|Step8[Add non-cloud server view]
-Step9 -->|Click on Add Cloud Services|Step81[Add Cloud Services view]
+Decision1 -->|Private Infrastructures| Step5[Private Infrastructure list view]
+Decision1 -->|Public Clouds - IaaS| Step9[Public Clouds - IaaS list view]
+Step3 -->|Click on Add|Step6[Add terminal view]
+Step4 -->|Click on Add|Step7[Add network view]
+Step5 -->|Click on Add|Step8[Add non-cloud server view]
+Step9 -->|Click on Add|Step81[Add cloud server view]
 {{< /mermaid >}}
 
 ## Mockup

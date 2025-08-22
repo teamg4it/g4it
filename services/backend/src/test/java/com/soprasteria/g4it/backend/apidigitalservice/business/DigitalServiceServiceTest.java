@@ -143,7 +143,7 @@ class DigitalServiceServiceTest {
         final User user = User.builder().id(USER_ID).build();
         final Organization linkedOrganization = Organization.builder().name(ORG_NAME).build();
         final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
-        final String expectedName = "Digital Service 1 IA";
+        final String expectedName = "Digital Service 1 AI";
         final List<DigitalService> existingDigitalService = new ArrayList<>();
 
         final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).isAi(true).build();
