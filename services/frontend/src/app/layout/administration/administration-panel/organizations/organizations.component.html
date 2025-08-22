@@ -175,6 +175,16 @@
                 [disabled]="!subscriber.roles?.includes(Role.SubscriberAdmin)"
                 >{{ "administration.cancel-deletion" | translate }}</p-button
             >
+
+            <small class="mx-1" *ngIf="organization.status === status.TO_BE_DELETED">
+                {{
+                    "administration.cancel-deletion-message"
+                        | translate
+                            : {
+                                  date: organization.deletionDate | date: "dd/MM/yyyy",
+                              }
+                }}</small
+            >
             @if (
                 !subscriber.roles?.includes(Role.SubscriberAdmin) &&
                 organization.status === status.TO_BE_DELETED
@@ -186,15 +196,6 @@
                     }}
                 </small>
             }
-            <small class="mx-1" *ngIf="organization.status === status.TO_BE_DELETED">
-                {{
-                    "administration.cancel-deletion-message"
-                        | translate
-                            : {
-                                  date: organization.deletionDate | date: "dd/MM/yyyy",
-                              }
-                }}</small
-            >
             <p class="error-text" *ngIf="organization.uiStatus === 'DUPLICATE'">
                 {{
                     "administration.organization.duplicateOrganizationValidation"
