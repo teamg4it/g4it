@@ -887,6 +887,7 @@
         "cancel-deletion": "Annuler la suppression",
         "cancel-deletion-accessibility": "Annuler la suppresion de l'organisation {{organizationName}}",
         "cancel-deletion-message": "Les données de votre espace de travail seront supprimées le {{date}}",
+        "cancel-deletion-non-SubscriberAdmin": "Veuillez contacter votre administrateur pour annuler la suppression",
         "delete-confirmation": "Confirmation de la suppresion",
         "delete-message": "Après 7 jours, toutes les données de votre espace de travail seront supprimées. Voulez-vous vraiment supprimer cet espace de travail ?",
         "user": {
