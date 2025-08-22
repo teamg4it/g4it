@@ -172,6 +172,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     finalize(() => {
                         this.handlingValueChangesForCalculateButton();
                     }),
+                    takeUntilDestroyed(this.destroyRef),
                 )
                 .subscribe({
                     next: (data) => {
