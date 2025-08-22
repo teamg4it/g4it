@@ -891,6 +891,7 @@
         "cancel-deletion": "Cancel delete",
         "cancel-deletion-accessibility": "Cancel deletion of {{organizationName}} organization",
         "cancel-deletion-message": "Your workspace's data will be deleted on {{date}}",
+        "cancel-deletion-non-SubscriberAdmin": "Please contact your admin to cancel the deletion.",
         "delete-confirmation": "Deletion confirmation",
         "delete-message": "After 7 days, all your workspace's data will be deleted. Are you sure you want to delete this workspace ?",
         "user": {

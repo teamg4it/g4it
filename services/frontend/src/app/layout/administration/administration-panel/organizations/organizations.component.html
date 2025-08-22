@@ -143,7 +143,11 @@
                 name="name"
                 placeholder="Name"
                 pInputText
-                [disabled]="!editable"
+                [disabled]="
+                    !editable ||
+                    (!subscriber.roles?.includes(Role.SubscriberAdmin) &&
+                        organization.status === status.TO_BE_DELETED)
+                "
                 (ngModelChange)="checkOrganization($event, organization, subscriber)"
             />
             <p-button
@@ -168,8 +172,10 @@
                 styleClass="black-button-sidebar"
                 *ngIf="organization.status === status.TO_BE_DELETED"
                 (onClick)="confirmToActive(organization)"
+                [disabled]="!subscriber.roles?.includes(Role.SubscriberAdmin)"
                 >{{ "administration.cancel-deletion" | translate }}</p-button
             >
+
             <small class="mx-1" *ngIf="organization.status === status.TO_BE_DELETED">
                 {{
                     "administration.cancel-deletion-message"
@@ -179,6 +185,17 @@
                               }
                 }}</small
             >
+            @if (
+                !subscriber.roles?.includes(Role.SubscriberAdmin) &&
+                organization.status === status.TO_BE_DELETED
+            ) {
+                <small class="mx-1"
+                    >{{
+                        "administration.cancel-deletion-non-SubscriberAdmin"
+                            | translate: { organizationName: organization.name }
+                    }}
+                </small>
+            }
             <p class="error-text" *ngIf="organization.uiStatus === 'DUPLICATE'">
                 {{
                     "administration.organization.duplicateOrganizationValidation"
