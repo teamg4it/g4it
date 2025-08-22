@@ -5,27 +5,26 @@ weight: 30
 ---
 
 <!-- TOC -->
-
--   [Evaluating the Impact of Your Digital Service](#evaluating-the-impact-of-your-digital-service)
-    -   [**Step 1:** Begin the Evaluation](#step-1-begin-the-evaluation)
-    -   [**Step 2:** Select Evaluation Criteria](#step-2-select-evaluation-criteria)
-    -   [**Step 3:** Visualize the Overall Impact](#step-3-visualize-the-overall-impact)
--   [Navigating the Graph](#navigating-the-graph)
-    -   [**Step 4:** View a Specific Evaluation Criterion](#step-4-view-a-specific-evaluation-criterion)
-    -   [End-user Devices](#end-user-devices)
-        -   [**Step 5:** View the Impact of End-user Devices](#step-5-view-the-impact-of-end-user-devices)
-        -   [**Step 6:** View Lifecycle Steps for End-user Devices](#step-6-view-lifecycle-steps-for-end-user-devices)
-    -   [Data Exchange](#data-exchange)
-        -   [**Step 7:** View the Impact of Data Exchange](#step-7-view-the-impact-of-data-exchange)
-    -   [Servers](#servers)
-        -   [If You Know Your Infrastructure Configuration](#if-you-know-your-infrastructure-configuration)
-            -   [**Step 8:** View the Impact of Non-cloud Servers (Infrastructure Known)](#step-8-view-the-impact-of-non-cloud-servers-infrastructure-known)
-            -   [**Step 9:** View Impact for a Specific Server](#step-9-view-impact-for-a-specific-server)
-        -   [Cloud Hosting (IaaS - Infrastructure as a Service)](#cloud-hosting-iaas---infrastructure-as-a-service)
-        -   [**Step 10:** View the Impact of Cloud Services](#step-10-view-the-impact-of-cloud-services)
-        -   [**Step 11:** View Lifecycle Stages for Cloud Services](#step-11-view-lifecycle-stages-for-cloud-services)
--   [Example Scenario Used](#example-scenario-used)
--   [Functional Documentation](#functional-documentation)
+  * [Evaluating the Impact of Your Digital Service](#evaluating-the-impact-of-your-digital-service)
+    * [**Step 1:** Begin the Evaluation](#step-1-begin-the-evaluation)
+    * [**Step 2:** Select Evaluation Criteria in the footprint view](#step-2-select-evaluation-criteria-in-the-footprint-view)
+    * [**Step 3:** Visualize the Overall Impact](#step-3-visualize-the-overall-impact)
+  * [Navigating the Graph](#navigating-the-graph)
+    * [**Step 4:** View a Specific Evaluation Criterion](#step-4-view-a-specific-evaluation-criterion)
+    * [End-user Devices](#end-user-devices)
+      * [**Step 5:** View the Impact of End-user Devices](#step-5-view-the-impact-of-end-user-devices)
+      * [**Step 6:** View Lifecycle Steps for End-user Devices](#step-6-view-lifecycle-steps-for-end-user-devices)
+    * [Data Exchange](#data-exchange)
+      * [**Step 7:** View the Impact of Data Exchange](#step-7-view-the-impact-of-data-exchange)
+    * [Private Infrastructures](#private-infrastructures)
+      * [If You Know Your Infrastructure Configuration](#if-you-know-your-infrastructure-configuration)
+        * [**Step 8:** View the Impact of Non-cloud Servers (Infrastructure Known)](#step-8-view-the-impact-of-non-cloud-servers-infrastructure-known)
+        * [**Step 9:** View Impact for a Specific Server](#step-9-view-impact-for-a-specific-server)
+      * [Cloud Hosting (IaaS - Infrastructure as a Service)](#cloud-hosting-iaas---infrastructure-as-a-service)
+      * [**Step 10:** View the Impact of Cloud Services](#step-10-view-the-impact-of-cloud-services)
+      * [**Step 11:** View Lifecycle Stages for Cloud Services](#step-11-view-lifecycle-stages-for-cloud-services)
+  * [Example Scenario Used](#example-scenario-used)
+  * [Functional Documentation](#functional-documentation)
 <!-- TOC -->
 
 ---
@@ -130,7 +129,7 @@ visualize the impact of your digital service.
 
 ---
 
-### Servers
+### Private Infrastructures
 
 #### If You Know Your Infrastructure Configuration
 

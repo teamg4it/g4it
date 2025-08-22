@@ -1,6 +1,6 @@
 ---
-title: "2.3.4.1. Add Cloud Services using the form"
-description: "This use case describes how to add Cloud Services equipments to a digital service using a form"
+title: "2.3.4.1. Add Public Cloud - IaaS using the form"
+description: "This use case describes how to add Public Cloud - IaaS equipments to a digital service using a form"
 weight: 20
 mermaid: true
 ---
@@ -9,17 +9,17 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Cloud Services add / edit](#cloud-services-add--edit)
+-   [Public Cloud - IaaS add / edit](#public-cloud---iaas-addedit)
 
 ## Description
 
-This usecase allows a project team to add Cloud Services equipment directly via form, into a digital service previously created.
+This usecase allows a project team to add Public Cloud - IaaS equipment directly via form, into a digital service previously created.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Visualize my resources tab / Cloud Services / Add Cloud Service
+-   My Digital Services / My Digital Service / Visualize my resources tab / Public Cloud - IaaS / Add Cloud Service
 
-## Cloud Services add
+## Public Cloud - IaaS add/edit
 
 ![uc3_add_visualize_equipments_CloudServiceAdd.png](../../../images/uc3_add_visualize_equipments_CloudServiceAdd.png)
 
@@ -28,7 +28,7 @@ This usecase allows a project team to add Cloud Services equipment directly via 
 
 | Reference | Group        | Elements               | sub-Elements                   | Type                | Description                                                                                                       |
 | --------- | ------------ | ---------------------- | ------------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| 1         | Title        |                        |                                |                     | <li><u>_initialization rules_</u>: Coming from "Add Cloud Service", the title is "New Cloud Instance" else "xxx". |
+| 1         | Title        |                        |                                |                     | <li><u>_initialization rules_</u>: Coming from "Add", the title is "New Cloud Instance" else "xxx". |
 | 2         |              | Name                   |                                | label input         |                                                                                                                   |
 |           |              | Instance configuration |                                | section             |                                                                                                                   |
 | 3         |              |                        | Cloud provider                 | dropdown            |                                                                                                                   |
@@ -52,7 +52,7 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service's Cloud Servers table
+RND ->> front: Click on "Add" button in the digital service's Public Clouds - IaaS table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
 back--> DataBase: Create cloud record in the in_virtual_equipment table
 front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments

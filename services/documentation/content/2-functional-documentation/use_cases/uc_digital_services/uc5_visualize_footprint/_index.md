@@ -46,9 +46,9 @@ Step8-->|Click on 'Global Vision' button|Step4
 
 [2.5.2. Visualize digital service's network footprint](visualize_network_footprint.md)
 
-[2.5.3. Visualize digital service's non-cloud server footprint](visualize_non-cloud-server_footprint.md)
+[2.5.3. Visualize digital service's Private Infrastructure footprint](visualize_non-cloud-server_footprint.md)
 
-[2.5.4. Visualize digital service's cloud service footprint](visualize_cloud-service_footprint.md)
+[2.5.4. Visualize digital service's Public Cloud - IaaS footprint](visualize_cloud-service_footprint.md)
 
 ### Global view
 
