@@ -50,7 +50,6 @@ export class DigitalServicesFootprintFooterComponent {
         const enableCalcul = this.isEcoMindAi()
             ? this.digitalServiceStore.ecomindEnableCalcul()
             : this.digitalServiceStore.enableCalcul();
-        console.log("enableCalcul" + "" + enableCalcul);
         if (enableCalcul) return true;
 
         const hasInPhysicalEquipments =
@@ -71,7 +70,6 @@ export class DigitalServicesFootprintFooterComponent {
 
     constructor() {
         effect(() => {
-            console.log("updateEnableCalculationEffect" + " " + this.enableCalcul());
             this.updateEnableCalculation.emit(this.enableCalcul());
         });
     }

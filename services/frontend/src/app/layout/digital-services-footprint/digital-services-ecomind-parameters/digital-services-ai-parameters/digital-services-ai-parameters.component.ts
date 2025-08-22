@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { firstValueFrom, lastValueFrom, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -41,7 +41,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        console.log("in ai Params");
         this.terminalsForm = this.fb.group({
             modelName: ["", Validators.required],
             averageNumberToken: [500, [Validators.required, Validators.min(0)]],
@@ -244,26 +243,19 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     async handlingValueChangesForCalculateButton() {
         this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
             if (this.terminalsForm.valid && this.terminalsForm.dirty) {
-                console.log("setEcoMindEnableCalcul1" + " " + true);
                 this.digitalServiceStore.setEcoMindEnableCalcul(true);
             } else {
-                console.log("setEcoMindEnableCalcul2" + " " + false);
                 this.digitalServiceStore.setEcoMindEnableCalcul(false);
             }
         });
         // for new ecomind form calculate button to be enabled
-        //const ds = this.digitalServiceStore.digitalService();
         this.digitalServicesDataService.digitalService$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((ds) => {
                 if (this.terminalsForm.valid && ds.lastCalculationDate === undefined) {
-                    console.log("setEcoMindEnableCalcul3" + " " + true);
                     this.digitalServiceStore.setEcoMindEnableCalcul(true);
                 }
             });
-
-        const ds = await firstValueFrom(this.digitalServicesDataService.digitalService$);
-        const ds2 = await lastValueFrom(this.digitalServicesDataService.digitalService$);
     }
 
     ngOnDestroy(): void {

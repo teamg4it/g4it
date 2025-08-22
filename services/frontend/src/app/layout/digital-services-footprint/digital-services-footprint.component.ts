@@ -61,13 +61,11 @@ export class DigitalServicesFootprintComponent implements OnInit {
         this.setMobileView();
         this.global.setLoading(true);
 
-        console.log("in Footprint");
         const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
         const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
         // If the digital service is not found, 404 is catched by the interceptor.
         // Therefore we can continue without those verifications.
         this.digitalService = digitalService;
-        console.log(this.digitalService);
         // Retrieving the isAi parameter from the URL
 
         this.isEcoMindAi = this.digitalService.isAi ?? false;
@@ -215,9 +213,8 @@ export class DigitalServicesFootprintComponent implements OnInit {
 
     updateEnableCalculation() {
         setTimeout(() => {
-            console.log("setTimeout");
             this.updateHeights();
-        }, 10);
+        }, 0);
     }
 
     async updateDigitalService() {
