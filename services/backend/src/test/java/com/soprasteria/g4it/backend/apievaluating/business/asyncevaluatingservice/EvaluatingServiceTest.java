@@ -14,9 +14,9 @@ import com.soprasteria.g4it.backend.apievaluating.business.EvaluatingService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
@@ -57,7 +57,7 @@ class EvaluatingServiceTest {
     private EvaluatingService evaluatingService;
 
     @Mock
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
     @Mock
     private TaskRepository taskRepository;
     @Mock
@@ -79,7 +79,7 @@ class EvaluatingServiceTest {
     void evaluating_shouldCreateAndReturnTask() {
 
         final Inventory inventory = mock(Inventory.class);
-        final Organization org = mock(Organization.class);
+        final Workspace org = mock(Workspace.class);
         final CriteriaByType criteriaByType = mock(CriteriaByType.class);
 
         when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
@@ -100,7 +100,7 @@ class EvaluatingServiceTest {
 
         // Stub repository and service methods
         when(inventoryRepository.findById(INVENTORY_ID)).thenReturn(Optional.of(inventory));
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
+        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
         when(criteriaService.getSelectedCriteriaForInventory(any(), any(), any())).thenReturn(criteriaByType);
         when(criteriaByType.active()).thenReturn(CRITERIA);
 
@@ -118,7 +118,7 @@ class EvaluatingServiceTest {
     @Test
     void evaluatingDigitalService_shouldCreateAndReturnTask() {
 
-        Organization org = mock(Organization.class);
+        Workspace org = mock(Workspace.class);
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(USER_ID).firstName("fname").build();
         User user = User.builder().id(USER_ID).build();
         DigitalService digitalService = mock(DigitalService.class);
@@ -127,7 +127,7 @@ class EvaluatingServiceTest {
         when(criteriaByType.active()).thenReturn(CRITERIA);
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
         when(digitalService.getName()).thenReturn("digitalService");
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
+        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
         when(org.getName()).thenReturn(ORGANIZATION);
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any())).thenReturn(criteriaByType);
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
@@ -146,7 +146,7 @@ class EvaluatingServiceTest {
     @Test
     void evaluatingDigitalServiceAi_shouldCreateAndReturnTask() {
 
-        Organization org = mock(Organization.class);
+        Workspace org = mock(Workspace.class);
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(USER_ID).firstName("fname").build();
         User user = User.builder().id(USER_ID).build();
         DigitalService digitalService = mock(DigitalService.class);
@@ -156,7 +156,7 @@ class EvaluatingServiceTest {
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
         when(digitalService.getName()).thenReturn("digitalService");
         when(digitalService.isAi()).thenReturn(true);
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
+        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
         when(org.getName()).thenReturn(ORGANIZATION);
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any())).thenReturn(criteriaByType);
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
@@ -191,14 +191,14 @@ class EvaluatingServiceTest {
         // Arrange
         Task task = mock(Task.class);
         final Inventory inventory = mock(Inventory.class);
-        final Organization org = mock(Organization.class);
+        final Workspace org = mock(Workspace.class);
         final Subscriber subscriber = mock(Subscriber.class);
 
         when(taskRepository.findByStatusAndType(any(), any()))
                 .thenReturn(Collections.singletonList(task));
         when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
         when(task.getInventory()).thenReturn(inventory);
-        when(inventory.getOrganization()).thenReturn(org);
+        when(inventory.getWorkspace()).thenReturn(org);
         when(org.getSubscriber()).thenReturn(subscriber);
         when(org.getSubscriber().getName()).thenReturn(SUBSCRIBER);
         when(org.getId()).thenReturn(ORGANIZATION_ID);

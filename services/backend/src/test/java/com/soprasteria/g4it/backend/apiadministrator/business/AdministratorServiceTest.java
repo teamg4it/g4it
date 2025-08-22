@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AdministratorServiceTest {
 
-    private final Organization organization = TestUtils.createOrganization();
+    private final Workspace workspace = TestUtils.createOrganization();
     @Mock
     CacheManager cacheManager;
     private long organizationId;
@@ -63,8 +63,8 @@ class AdministratorServiceTest {
 
     @BeforeEach
     void init() {
-        subscriberId = organization.getSubscriber().getId();
-        organizationId = organization.getId();
+        subscriberId = workspace.getSubscriber().getId();
+        organizationId = workspace.getId();
         Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(Mockito.mock(Cache.class));
     }
 
@@ -82,7 +82,7 @@ class AdministratorServiceTest {
         when(userRepository.findBySearchedName(eq(searchedUser), any())).thenReturn(
                 List.of(User.builder().email("testName@soprasteria.com").firstName("test").lastName("Name").build()));
 
-        List<UserSearchBO> searchedUsers = administratorService.searchUserByName(searchedUser, subscriberId, organization.getId(),
+        List<UserSearchBO> searchedUsers = administratorService.searchUserByName(searchedUser, subscriberId, workspace.getId(),
                 TestUtils.createUserBOAdminSub());
 
         assertEquals(1, searchedUsers.size());
@@ -99,9 +99,9 @@ class AdministratorServiceTest {
         when(subscriberRepository.findById(any())).thenReturn(Optional.of(subscriber));
         when(userRepository.findBySearchedName(eq(searchedUser), any())).thenReturn(Collections.singletonList(User
                 .builder().email("test@soprasteria.com")
-                .userOrganizations(List.of(UserOrganization
+                .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true).roles(List.of(Role.builder().name(ROLE).build()))
-                        .organization(Organization.builder().id(organizationId).name(ORGANIZATION)
+                        .workspace(Workspace.builder().id(organizationId).name(ORGANIZATION)
                                 .status(OrganizationStatus.ACTIVE.name())
                                 .subscriber(Subscriber.builder().id(2L).name(SUBSCRIBER).build()).build())
                         .build()))

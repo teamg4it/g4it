@@ -8,8 +8,8 @@
 
 package com.soprasteria.g4it.backend.common.criteria;
 
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -34,7 +34,7 @@ class CriteriaServiceTest {
     private SubscriberRepository subscriberRepository;
 
     @Mock
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     @InjectMocks
     private CriteriaService criteriaService;
@@ -67,16 +67,18 @@ class CriteriaServiceTest {
 
     @Test
     void getSelectedCriteriaForInventoryReturnsInventoryCriteriaWhenInventoryCriteriaProvided() {
-        List<String> inventoryCriteria = List.of("inventory1", "inventory2");
-        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
-        Organization mockOrganization = new Organization();
-        mockOrganization.setCriteriaIs(List.of("orgCriteria1"));
+        String subscriber = "testSubscriber";
+        Long organizationId = 1L;
+        List<String> inventoryCriterias = List.of("inventory1", "inventory2");
+        List<String> subscriberCriterias = List.of("criteria1", "criteria2");
+        Workspace mockWorkspace = new Workspace();
+        mockWorkspace.setCriteriaIs(List.of("orgCriteria1"));
 
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(subscriberCriteria);
 
-        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrganization);
+        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCriteria);
 
@@ -120,16 +122,18 @@ class CriteriaServiceTest {
 
     @Test
     void getSelectedCriteriaForDigitalServiceReturnsDigitalServiceCriteriaWhenDigitalServiceCriteriaProvided() {
-        List<String> digitalServiceCriteria = List.of("digital1", "digital2");
-        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
-        Organization mockOrganization = new Organization();
-        mockOrganization.setCriteriaDs(List.of("orgCriteriaDs1"));
+        String subscriber = "testSubscriber";
+        Long organizationId = 1L;
+        List<String> digitalServiceCriterias = List.of("digital1", "digital2");
+        List<String> subscriberCriterias = List.of("criteria1", "criteria2");
+        Workspace mockWorkspace = new Workspace();
+        mockWorkspace.setCriteriaDs(List.of("orgCriteriaDs1"));
 
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(subscriberCriteria);
 
-        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrganization);
+        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, digitalServiceCriteria);
 
@@ -155,16 +159,17 @@ class CriteriaServiceTest {
     }
 
     @Test
-    void getSelectedCriteriaForDigitalServiceReturnsSubscriberCriteriaWhenNoDigitalServiceOrOrganizationCriteriaProvided() {
-        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
-        Organization mockOrganization = new Organization();
+    void getSelectedCriteriaForInventoryReturnsSubscriberCriteriaWhenNoInventoryOrOrganizationCriteriaProvided() {
+        String subscriber = "testSubscriber";
+        Long organizationId = 1L;
+        List<String> subscriberCriterias = List.of("criteria1", "criteria2");
+        Workspace mockWorkspace = new Workspace();
 
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(subscriberCriteria);
 
-        when(mockOrganization.getCriteriaDs()).thenReturn(null);
-        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(mockOrganization);
+        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, null);
 
