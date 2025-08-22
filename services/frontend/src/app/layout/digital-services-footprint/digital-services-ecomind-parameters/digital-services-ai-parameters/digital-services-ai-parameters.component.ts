@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { finalize, firstValueFrom, Subscription } from "rxjs";
+import { firstValueFrom, Subscription } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -166,38 +166,31 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
             .find((v) => v !== null);
         if (!this.aiFormsStore.getParameterChange() && uid) {
-            this.digitalServicesAiData
-                .getAiParameter(uid)
-                .pipe(
-                    finalize(() => {
-                        this.handlingValueChangesForCalculateButton();
-                    }),
-                )
-                .subscribe({
-                    next: (data) => {
-                        if (data) {
-                            this.terminalsForm.patchValue(data);
-                            this.isInference = data.isInference;
-                            this.isFinetuning = data.isFinetuning;
-                            this.updateDependentFields(
-                                data.modelName,
-                                data.nbParameters,
-                                data.framework,
-                                data.quantization,
-                            );
-                            this.dataParameter = data;
-                        }
-                    },
-                    error: (err: any) => {
-                        this.messageService.add({
-                            severity: "error",
-                            summary: this.translate.instant("common.error"),
-                            detail: this.translate.instant(
-                                "eco-mind-ai.ai-parameters.error",
-                            ),
-                        });
-                    },
-                });
+            this.digitalServicesAiData.getAiParameter(uid).subscribe({
+                next: (data) => {
+                    if (data) {
+                        this.terminalsForm.patchValue(data);
+                        this.isInference = data.isInference;
+                        this.isFinetuning = data.isFinetuning;
+                        this.updateDependentFields(
+                            data.modelName,
+                            data.nbParameters,
+                            data.framework,
+                            data.quantization,
+                        );
+                        this.dataParameter = data;
+                    }
+                    this.handlingValueChangesForCalculateButton();
+                },
+                error: (err: any) => {
+                    this.messageService.add({
+                        severity: "error",
+                        summary: this.translate.instant("common.error"),
+                        detail: this.translate.instant("eco-mind-ai.ai-parameters.error"),
+                    });
+                    this.handlingValueChangesForCalculateButton();
+                },
+            });
         } else {
             const data = this.aiFormsStore.getParametersFormData();
             if (data) {
