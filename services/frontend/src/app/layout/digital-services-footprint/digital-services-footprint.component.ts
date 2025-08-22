@@ -214,6 +214,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
 
     updateEnableCalculation() {
         setTimeout(() => {
+            console.log("setTimeout");
             this.updateHeights();
         }, 10);
     }

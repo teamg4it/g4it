@@ -239,14 +239,17 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     async handlingValueChangesForCalculateButton() {
         this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
             if (this.terminalsForm.valid && this.terminalsForm.dirty) {
+                console.log("setEcoMindEnableCalcul1" + " " + true);
                 this.digitalServiceStore.setEcoMindEnableCalcul(true);
             } else {
+                console.log("setEcoMindEnableCalcul2" + " " + false);
                 this.digitalServiceStore.setEcoMindEnableCalcul(false);
             }
         });
         // for new ecomind form calculate button to be enabled
         const ds = await firstValueFrom(this.digitalServicesDataService.digitalService$);
         if (this.terminalsForm.valid && ds.lastCalculationDate === undefined) {
+            console.log("setEcoMindEnableCalcul3" + " " + true);
             this.digitalServiceStore.setEcoMindEnableCalcul(true);
         }
     }
