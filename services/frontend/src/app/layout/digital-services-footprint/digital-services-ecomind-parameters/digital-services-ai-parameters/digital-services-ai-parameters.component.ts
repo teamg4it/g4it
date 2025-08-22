@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { finalize, firstValueFrom, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -54,112 +54,118 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
             averageNumberRequest: [200, [Validators.required, Validators.min(0)]],
         });
 
-        this.digitalServicesDataService.getModels(this.model).subscribe({
-            next: (data) => {
-                this.models = data;
-                this.modelOptions = Array.from(
-                    new Set(this.models.map((m) => m.modelName)),
-                ).map((name) => ({ label: name, value: name }));
-                // Restore backed-up data if available
-                // If no data saved, set default values
-                if (
-                    this.modelOptions.length > 0 &&
-                    !this.dataParameter &&
-                    !this.aiFormsStore.getParameterChange()
-                ) {
-                    const defaultModel = this.modelOptions[0].value;
+        this.digitalServicesDataService
+            .getModels(this.model)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (data) => {
+                    this.models = data;
+                    this.modelOptions = Array.from(
+                        new Set(this.models.map((m) => m.modelName)),
+                    ).map((name) => ({ label: name, value: name }));
+                    // Restore backed-up data if available
+                    // If no data saved, set default values
+                    if (
+                        this.modelOptions.length > 0 &&
+                        !this.dataParameter &&
+                        !this.aiFormsStore.getParameterChange()
+                    ) {
+                        const defaultModel = this.modelOptions[0].value;
 
-                    this.terminalsForm.patchValue({ modelName: defaultModel });
-                    this.updateDependentFields(defaultModel);
+                        this.terminalsForm.patchValue({ modelName: defaultModel });
+                        this.updateDependentFields(defaultModel);
 
-                    // Save default values in the store
-                    const defaultData = {
-                        modelName: defaultModel,
-                        nbParameters: this.parameterOptions[0]?.value ?? "",
-                        framework: this.frameworkOptions[0]?.value ?? "",
-                        quantization: this.quantizationOptions[0]?.value ?? "",
-                        isInference: true,
-                        isFinetuning: false,
-                        numberUserYear: 10000,
-                        averageNumberRequest: 200,
-                        averageNumberToken: 500,
-                        totalGeneratedTokens: 1000000000,
-                    };
-                    this.aiFormsStore.setParametersFormData(defaultData);
-                } else {
-                    const savedData = this.aiFormsStore.getParametersFormData();
-                    this.updateDependentFields(
-                        savedData?.modelName,
-                        savedData?.nbParameters,
-                        savedData?.framework,
-                        savedData?.quantization,
-                    );
-                }
-
-                this.terminalsForm
-                    .get("modelName")
-                    ?.valueChanges.subscribe((selectedModel) => {
-                        if (!selectedModel) {
-                            this.resetDependentFields("parameters");
-                            return;
-                        }
-                        this.updateDependentFields(selectedModel);
-                    });
-
-                this.terminalsForm
-                    .get("nbParameters")
-                    ?.valueChanges.subscribe((selectedParameter) => {
-                        if (!selectedParameter) {
-                            this.resetDependentFields("framework");
-                            return;
-                        }
-                        const selectedModel = this.terminalsForm.get("modelName")?.value;
-                        this.updateDependentFields(selectedModel, selectedParameter);
-                    });
-
-                this.terminalsForm
-                    .get("framework")
-                    ?.valueChanges.subscribe((selectedFramework) => {
-                        if (!selectedFramework) {
-                            this.resetDependentFields("quantization");
-                            return;
-                        }
-                        const selectedModel = this.terminalsForm.get("modelName")?.value;
-                        const selectedParameter =
-                            this.terminalsForm.get("nbParameters")?.value;
+                        // Save default values in the store
+                        const defaultData = {
+                            modelName: defaultModel,
+                            nbParameters: this.parameterOptions[0]?.value ?? "",
+                            framework: this.frameworkOptions[0]?.value ?? "",
+                            quantization: this.quantizationOptions[0]?.value ?? "",
+                            isInference: true,
+                            isFinetuning: false,
+                            numberUserYear: 10000,
+                            averageNumberRequest: 200,
+                            averageNumberToken: 500,
+                            totalGeneratedTokens: 1000000000,
+                        };
+                        this.aiFormsStore.setParametersFormData(defaultData);
+                    } else {
+                        const savedData = this.aiFormsStore.getParametersFormData();
                         this.updateDependentFields(
-                            selectedModel,
-                            selectedParameter,
-                            selectedFramework,
+                            savedData?.modelName,
+                            savedData?.nbParameters,
+                            savedData?.framework,
+                            savedData?.quantization,
                         );
+                    }
+
+                    this.terminalsForm
+                        .get("modelName")
+                        ?.valueChanges.subscribe((selectedModel) => {
+                            if (!selectedModel) {
+                                this.resetDependentFields("parameters");
+                                return;
+                            }
+                            this.updateDependentFields(selectedModel);
+                        });
+
+                    this.terminalsForm
+                        .get("nbParameters")
+                        ?.valueChanges.subscribe((selectedParameter) => {
+                            if (!selectedParameter) {
+                                this.resetDependentFields("framework");
+                                return;
+                            }
+                            const selectedModel =
+                                this.terminalsForm.get("modelName")?.value;
+                            this.updateDependentFields(selectedModel, selectedParameter);
+                        });
+
+                    this.terminalsForm
+                        .get("framework")
+                        ?.valueChanges.subscribe((selectedFramework) => {
+                            if (!selectedFramework) {
+                                this.resetDependentFields("quantization");
+                                return;
+                            }
+                            const selectedModel =
+                                this.terminalsForm.get("modelName")?.value;
+                            const selectedParameter =
+                                this.terminalsForm.get("nbParameters")?.value;
+                            this.updateDependentFields(
+                                selectedModel,
+                                selectedParameter,
+                                selectedFramework,
+                            );
+                        });
+                    this.terminalsForm
+                        .get("quantization")
+                        ?.valueChanges.subscribe((selectedQuantization) => {
+                            if (!selectedQuantization) {
+                                return;
+                            }
+                            const selectedModel =
+                                this.terminalsForm.get("modelName")?.value;
+                            const selectedParameter =
+                                this.terminalsForm.get("nbParameters")?.value;
+                            const selectedFramework =
+                                this.terminalsForm.get("framework")?.value;
+                            this.updateDependentFields(
+                                selectedModel,
+                                selectedParameter,
+                                selectedFramework,
+                                selectedQuantization,
+                            );
+                        });
+                },
+                error: (err: any) => {
+                    this.messageService.add({
+                        severity: "error",
+                        summary: this.translate.instant("common.error"),
+                        detail: this.translate.instant("eco-mind-ai.ai-parameters.error"),
                     });
-                this.terminalsForm
-                    .get("quantization")
-                    ?.valueChanges.subscribe((selectedQuantization) => {
-                        if (!selectedQuantization) {
-                            return;
-                        }
-                        const selectedModel = this.terminalsForm.get("modelName")?.value;
-                        const selectedParameter =
-                            this.terminalsForm.get("nbParameters")?.value;
-                        const selectedFramework =
-                            this.terminalsForm.get("framework")?.value;
-                        this.updateDependentFields(
-                            selectedModel,
-                            selectedParameter,
-                            selectedFramework,
-                            selectedQuantization,
-                        );
-                    });
-            },
-            error: (err: any) => {
-                this.messageService.add({
-                    severity: "error",
-                    summary: this.translate.instant("common.error"),
-                    detail: this.translate.instant("eco-mind-ai.ai-parameters.error"),
-                });
-            },
-        });
+                },
+            });
 
         // get the digital service uid with the activatedRoute
         const uid = this.route.pathFromRoot
@@ -168,11 +174,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
         if (!this.aiFormsStore.getParameterChange() && uid) {
             this.digitalServicesAiData
                 .getAiParameter(uid)
-                .pipe(
-                    finalize(() => {
-                        this.handlingValueChangesForCalculateButton();
-                    }),
-                )
+                .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                     next: (data) => {
                         if (data) {
@@ -187,6 +189,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                             );
                             this.dataParameter = data;
                         }
+                        this.handlingValueChangesForCalculateButton();
                     },
                     error: (err: any) => {
                         this.messageService.add({
@@ -196,6 +199,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                                 "eco-mind-ai.ai-parameters.error",
                             ),
                         });
+                        this.handlingValueChangesForCalculateButton();
                     },
                 });
         } else {
@@ -237,11 +241,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     }
 
     async handlingValueChangesForCalculateButton() {
-        // for new ecomind form calculate button to be enabled
-        const ds = await firstValueFrom(this.digitalServicesDataService.digitalService$);
-        if (this.terminalsForm.valid && ds.lastCalculationDate === undefined) {
-            this.digitalServiceStore.setEcoMindEnableCalcul(true);
-        }
         this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
             if (this.terminalsForm.valid && this.terminalsForm.dirty) {
                 this.digitalServiceStore.setEcoMindEnableCalcul(true);
@@ -249,6 +248,14 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 this.digitalServiceStore.setEcoMindEnableCalcul(false);
             }
         });
+        // for new ecomind form calculate button to be enabled
+        this.digitalServicesDataService.digitalService$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((ds) => {
+                if (this.terminalsForm.valid && ds.lastCalculationDate === undefined) {
+                    this.digitalServiceStore.setEcoMindEnableCalcul(true);
+                }
+            });
     }
 
     ngOnDestroy(): void {

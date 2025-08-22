@@ -66,7 +66,6 @@ export class DigitalServicesFootprintComponent implements OnInit {
         // If the digital service is not found, 404 is catched by the interceptor.
         // Therefore we can continue without those verifications.
         this.digitalService = digitalService;
-
         // Retrieving the isAi parameter from the URL
 
         this.isEcoMindAi = this.digitalService.isAi ?? false;

@@ -127,6 +127,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
                     finalize(() => {
                         this.handlingValueChangesForCalculateButton();
                     }),
+                    takeUntilDestroyed(this.destroyRef),
                 )
                 .subscribe({
                     next: (data) => {
