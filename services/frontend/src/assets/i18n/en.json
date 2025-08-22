@@ -89,7 +89,8 @@
             "accordion-close": "Click to hide sub domains",
             "import": "Click to import digital service data",
             "calculate": "Click here to calculate your impact",
-            "add": "Click here to add a {{type}}"
+            "add": "Click here to add a {{type}}",
+            "close-criteria-dialog": "Click here to Close"
         },
         "note": {
             "add": "Add a note",

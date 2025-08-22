@@ -88,7 +88,8 @@
             "accordion-close": "Cliquez pour masquer les sous-domaines",
             "import": "Cliquez pour importer les données de service numériques",
             "calculate": "Cliquer ici pour calculer votre impact",
-            "add": "Cliquez ici pour ajouter un {{type}}"
+            "add": "Cliquez ici pour ajouter un {{type}}",
+            "close-criteria-dialog": "Cliquez ici pour fermer"
         },
         "note": {
             "add": "Ajouter note",
