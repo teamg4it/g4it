@@ -15,9 +15,9 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.LoadInputFilesService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.*;
 class LoadInputFilesServiceTest {
 
     @Mock
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     @Mock
     private TaskRepository taskRepository;
@@ -89,7 +89,7 @@ class LoadInputFilesServiceTest {
                 .createdBy(User.builder().id(1L).firstName("test").lastName("user").email("test.user@gmail.com").build())
                 .build();
 
-        Organization organization = Organization.builder()
+        Workspace workspace = Workspace.builder()
                 .id(organizationId)
                 .name("Test Organization")
                 .build();
@@ -98,7 +98,7 @@ class LoadInputFilesServiceTest {
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
-        when(organizationService.getOrganizationById(organizationId)).thenReturn(organization);
+        when(workspaceService.getOrganizationById(organizationId)).thenReturn(workspace);
         when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
@@ -109,6 +109,7 @@ class LoadInputFilesServiceTest {
         verify(taskRepository).save(any(Task.class));
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
+
     @Test
     void digitalServiceLoadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
         String subscriber = "testSubscriber";
@@ -122,7 +123,7 @@ class LoadInputFilesServiceTest {
                 .uid(digitalServiceUid)
                 .build();
 
-        Organization organization = Organization.builder()
+        Workspace workspace = Workspace.builder()
                 .id(organizationId)
                 .name("Test Organization")
                 .build();
@@ -131,7 +132,7 @@ class LoadInputFilesServiceTest {
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
-        when(organizationService.getOrganizationById(organizationId)).thenReturn(organization);
+        when(workspaceService.getOrganizationById(organizationId)).thenReturn(workspace);
         when(taskRepository.findByDigitalServiceAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
@@ -165,7 +166,7 @@ class LoadInputFilesServiceTest {
                 .type(TaskType.LOADING.toString())
                 .inventory(Inventory.builder()
                         .id(1L)
-                        .organization(Organization.builder()
+                        .workspace(Workspace.builder()
                                 .id(1L)
                                 .name("Test Organization")
                                 .subscriber(Subscriber.builder().name("testSubscriber").build())
@@ -183,6 +184,7 @@ class LoadInputFilesServiceTest {
         verify(taskRepository).save(any(Task.class));
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
+
     @Test
     void restartDigitalService_LoadingFiles_restartsTasks_whenTasksAreStale() {
         Task staleTask = Task.builder()
@@ -192,7 +194,7 @@ class LoadInputFilesServiceTest {
                 .type(TaskType.LOADING.toString())
                 .digitalService(DigitalService.builder()
                         .uid("uid")
-                        .organization(Organization.builder()
+                        .workspace(Workspace.builder()
                                 .id(1L)
                                 .name("Test Organization")
                                 .subscriber(Subscriber.builder().name("testSubscriber").build())

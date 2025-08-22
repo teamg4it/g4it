@@ -14,7 +14,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
@@ -109,14 +109,14 @@ class InApplicationServiceTest {
         existingApplication.setInventoryId(3L);
         existingApplication.setId(5L);
         InApplicationRest inApplicationRest = new InApplicationRest();
-        var organization = Organization.builder()
+        var organization = Workspace.builder()
                 .name("DEMO")
                 .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
                 .build();
         var inventory = Inventory.builder()
                 .name("Inventory Name")
                 .id(1L)
-                .organization(organization)
+                .workspace(organization)
                 .doExportVerbose(true)
                 .build();
         when(inventoryRepository.findById(inventory.getId())).thenReturn(Optional.of(inventory));

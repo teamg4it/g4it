@@ -12,7 +12,7 @@ import com.soprasteria.g4it.backend.apiindicator.mapper.DataCenterIndicatorMappe
 import com.soprasteria.g4it.backend.apiindicator.model.DataCentersInformationBO;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.InDatacenterIndicatorView;
 import com.soprasteria.g4it.backend.apiindicator.repository.InDatacenterViewRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,7 +36,7 @@ class DataCenterIndicatorServiceTest {
     private DataCenterIndicatorMapper dataCenterIndicatorMapper;
 
     @Mock
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     @InjectMocks
     private DataCenterIndicatorService dataCenterIndicatorService;

@@ -13,9 +13,9 @@ import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapperImpl;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
@@ -46,7 +46,7 @@ class InventoryServiceTest {
     private InventoryService inventoryService;
 
     @Mock
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     @Mock
     private InventoryRepository inventoryRepo;
@@ -58,7 +58,7 @@ class InventoryServiceTest {
 
     @Test
     void canRetrieveAllInventories() {
-        final Organization linkedOrganization = TestUtils.createOrganization();
+        final Workspace linkedWorkspace = TestUtils.createOrganization();
 
         final InventoryBO inventory1 = InventoryBO.builder().build();
         final InventoryBO inventory2 = InventoryBO.builder().build();
@@ -68,21 +68,21 @@ class InventoryServiceTest {
         final Inventory inventoryEntity2 = Inventory.builder().id(2L).name("04-2023").build();
         final List<Inventory> inventorysEntitiesList = List.of(inventoryEntity1, inventoryEntity2);
 
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
-        when(inventoryRepo.findByOrganization(linkedOrganization)).thenReturn(inventorysEntitiesList);
+        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
+        when(inventoryRepo.findByWorkspace(linkedWorkspace)).thenReturn(inventorysEntitiesList);
 
         final List<InventoryBO> result = inventoryService.getInventories(SUBSCRIBER, ORGANIZATION_ID, null);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
-        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
-        verify(inventoryRepo, times(1)).findByOrganization(linkedOrganization);
+        verify(workspaceService, times(1)).getOrganizationById(ORGANIZATION_ID);
+        verify(inventoryRepo, times(1)).findByWorkspace(linkedWorkspace);
 
     }
 
     @Test
     void canRetrieveInventoriesFilteredByInventoryId() {
-        final Organization linkedOrganization = TestUtils.createOrganization();
+        final Workspace linkedWorkspace = TestUtils.createOrganization();
         final Long inventoryId = 2L;
 
         final InventoryBO inventory1 = InventoryBO.builder().build();
@@ -91,15 +91,15 @@ class InventoryServiceTest {
         final Inventory inventoryEntity1 = Inventory.builder().id(1L).name("03-2023").lastUpdateDate(LocalDateTime.now()).build();
         var inventoryOptional = Optional.of(inventoryEntity1);
 
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
-        when(this.inventoryRepo.findByOrganizationAndId(linkedOrganization, inventoryId)).thenReturn(inventoryOptional);
+        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
+        when(this.inventoryRepo.findByWorkspaceAndId(linkedWorkspace, inventoryId)).thenReturn(inventoryOptional);
 
         final List<InventoryBO> result = this.inventoryService.getInventories(SUBSCRIBER, ORGANIZATION_ID, inventoryId);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
-        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
-        verify(inventoryRepo, times(1)).findByOrganizationAndId(linkedOrganization, inventoryId);
+        verify(workspaceService, times(1)).getOrganizationById(ORGANIZATION_ID);
+        verify(inventoryRepo, times(1)).findByWorkspaceAndId(linkedWorkspace, inventoryId);
     }
 
     @Test
@@ -120,19 +120,19 @@ class InventoryServiceTest {
                 .tasks(List.of())
                 .build();
 
-        when(inventoryRepo.findByOrganizationAndId(any(), eq(inventoryId))).thenReturn(Optional.of(inventory));
+        when(inventoryRepo.findByWorkspaceAndId(any(), eq(inventoryId))).thenReturn(Optional.of(inventory));
 
         final InventoryBO result = inventoryService.getInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryId);
 
         assertThat(result).isEqualTo(expected);
 
-        verify(inventoryRepo, times(1)).findByOrganizationAndId(any(), eq(inventoryId));
+        verify(inventoryRepo, times(1)).findByWorkspaceAndId(any(), eq(inventoryId));
     }
 
 
     @Test
     void shouldCreateAnInventory() {
-        final Organization linkedOrganization = TestUtils.createOrganization();
+        final Workspace linkedWorkspace = TestUtils.createOrganization();
         final String inventoryName = "03-2023";
         final InventoryCreateRest inventoryCreateRest = InventoryCreateRest.builder()
                 .name(inventoryName)
@@ -142,20 +142,20 @@ class InventoryServiceTest {
         final Inventory inventory = Inventory
                 .builder()
                 .name("03-2023")
-                .organization(linkedOrganization).build();
+                .workspace(linkedWorkspace).build();
 
         final UserBO userBo = TestUtils.createUserBONoRole();
 
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
-        when(inventoryRepo.findByOrganizationAndName(linkedOrganization, inventoryName))
+        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
+        when(inventoryRepo.findByWorkspaceAndName(linkedWorkspace, inventoryName))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(inventory));
         when(inventoryRepo.save(any())).thenReturn(inventory);
 
         InventoryBO actual = inventoryService.createInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCreateRest, userBo);
 
-        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
-        verify(inventoryRepo, times(1)).findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName());
+        verify(workspaceService, times(1)).getOrganizationById(ORGANIZATION_ID);
+        verify(inventoryRepo, times(1)).findByWorkspaceAndName(linkedWorkspace, inventoryCreateRest.getName());
         verify(inventoryRepo, times(1)).save(any());
 
         assertThat(actual.getName()).isEqualTo("03-2023");
@@ -164,7 +164,7 @@ class InventoryServiceTest {
     @Test
     void shouldUpdateInventory_UpdateCriteria() {
         Long organizationId = 1L;
-        final Organization linkedOrganization = TestUtils.createOrganization();
+        final Workspace linkedWorkspace = TestUtils.createOrganization();
         UserBO userBo = TestUtils.createUserBONoRole();
         final String inventoryName = "03-2023";
         String subscriberName = "SUBSCRIBER";
@@ -177,10 +177,10 @@ class InventoryServiceTest {
         final Inventory inventory = Inventory
                 .builder()
                 .id(1L)
-                .organization(linkedOrganization).build();
+                .workspace(linkedWorkspace).build();
 
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
-        when(inventoryRepo.findByOrganizationAndId(linkedOrganization, 1L)).thenReturn(Optional.of(inventory));
+        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
+        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L)).thenReturn(Optional.of(inventory));
 
         InventoryBO result = inventoryService.updateInventory(subscriberName, organizationId, inventoryUpdateRest, userBo);
 
@@ -192,7 +192,7 @@ class InventoryServiceTest {
     @Test
     void shouldUpdateInventory_UpdateNote() {
         Long organizationId = 1L;
-        final Organization linkedOrganization = TestUtils.createOrganization();
+        final Workspace linkedWorkspace = TestUtils.createOrganization();
         UserBO userBo = TestUtils.createUserBONoRole();
         final String inventoryName = "03-2023";
         String subscriberName = "SUBSCRIBER";
@@ -206,11 +206,11 @@ class InventoryServiceTest {
                 .builder()
                 .id(1L)
                 .note(Note.builder().content("note").build())
-                .organization(linkedOrganization).build();
+                .workspace(linkedWorkspace).build();
 
 
-        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
-        when(inventoryRepo.findByOrganizationAndId(linkedOrganization, 1L)).thenReturn(Optional.of(inventory));
+        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
+        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L)).thenReturn(Optional.of(inventory));
 
         InventoryBO result = inventoryService.updateInventory(subscriberName, organizationId, inventoryUpdateRest, userBo);
 

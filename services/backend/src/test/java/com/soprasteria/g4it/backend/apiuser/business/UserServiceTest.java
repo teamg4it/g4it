@@ -42,16 +42,16 @@ class UserServiceTest {
                         .defaultFlag(true)
                         .roles(List.of(Role.builder().name("ROLE_SUBSCRIBER_ADMINISTRATOR").build()))
                         .subscriber(Subscriber.builder()
-                                .organizations(List.of(Organization.builder()
+                                .workspaces(List.of(Workspace.builder()
                                         .status(OrganizationStatus.ACTIVE.name())
                                         .build()))
                                 .name(SUBSCRIBER)
                                 .build())
                         .build()))
-                .userOrganizations(List.of(UserOrganization
+                .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
                         .roles(List.of(Role.builder().name("ROLE_INVENTORY_READ").build()))
-                        .organization(Organization.builder().name(ORGANIZATION).status(OrganizationStatus.ACTIVE.name())
+                        .workspace(Workspace.builder().name(ORGANIZATION).status(OrganizationStatus.ACTIVE.name())
                                 .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build())
                         .build()))
                 .build()));
@@ -72,17 +72,17 @@ class UserServiceTest {
                         .defaultFlag(true)
                         .roles(List.of())
                         .subscriber(Subscriber.builder()
-                                .organizations(List.of(Organization.builder()
+                                .workspaces(List.of(Workspace.builder()
                                         .status(OrganizationStatus.ACTIVE.name())
                                         .build()))
                                 .name(SUBSCRIBER)
                                 .criteria(List.of("criteria"))
                                 .build())
                         .build()))
-                .userOrganizations(List.of(UserOrganization
+                .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
                         .roles(List.of())
-                        .organization(Organization.builder().name(ORGANIZATION).status(OrganizationStatus.ACTIVE.name())
+                        .workspace(Workspace.builder().name(ORGANIZATION).status(OrganizationStatus.ACTIVE.name())
                                 .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build())
                         .build()))
                 .build()));

@@ -7,9 +7,9 @@
  */
 package com.soprasteria.g4it.backend.scheduler;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileDeletionService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
@@ -35,16 +35,16 @@ class StorageDeletionServiceTest {
     StorageDeletionService storageDeletionService;
 
     @Mock
-    OrganizationRepository organizationRepository;
+    WorkspaceRepository workspaceRepository;
 
     @Mock
     FileDeletionService fileDeletionService;
 
     @Test
     void testStorageDeletionService_zeroOrganization() {
-        Mockito.when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(List.of());
+        Mockito.when(workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(List.of());
         storageDeletionService.executeDeletion();
-        Mockito.verify(organizationRepository).findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()));
+        Mockito.verify(workspaceRepository).findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()));
     }
 
     @Test
@@ -53,7 +53,7 @@ class StorageDeletionServiceTest {
         ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayExport", 100);
         ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayOutput", 300);
 
-        List<Organization> organizations = List.of(Organization.builder()
+        List<Workspace> workspaces = List.of(Workspace.builder()
                 .storageRetentionDayExport(10) // value chosen
                 .subscriber(Subscriber.builder()
                         .name("sub")
@@ -64,7 +64,7 @@ class StorageDeletionServiceTest {
                 .status(OrganizationStatus.ACTIVE.name())
                 .build());
 
-        Mockito.when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(organizations);
+        Mockito.when(workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(workspaces);
         Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
@@ -80,7 +80,7 @@ class StorageDeletionServiceTest {
         ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayExport", 100);
         ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayOutput", 300); // value chosen
 
-        List<Organization> organizations = List.of(Organization.builder()
+        List<Workspace> workspaces = List.of(Workspace.builder()
                 .storageRetentionDayExport(10) // value chosen
                 .subscriber(Subscriber.builder()
                         .name("sub")
@@ -89,7 +89,7 @@ class StorageDeletionServiceTest {
                 .status(OrganizationStatus.ACTIVE.name())
                 .build());
 
-        Mockito.when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(organizations);
+        Mockito.when(workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(workspaces);
         Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
