@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { finalize, Subscription } from "rxjs";
+import { finalize, firstValueFrom, Subscription } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -172,7 +172,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                     finalize(() => {
                         this.handlingValueChangesForCalculateButton();
                     }),
-                    takeUntilDestroyed(this.destroyRef),
                 )
                 .subscribe({
                     next: (data) => {
@@ -238,15 +237,6 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     }
 
     async handlingValueChangesForCalculateButton() {
-        // for new ecomind form calculate button to be enabled
-
-        this.digitalServicesDataService.digitalService$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((ds) => {
-                if (this.terminalsForm.valid && ds.lastCalculationDate === undefined) {
-                    this.digitalServiceStore.setEcoMindEnableCalcul(true);
-                }
-            });
         this.formSubscription = this.terminalsForm.valueChanges.subscribe(() => {
             if (this.terminalsForm.valid && this.terminalsForm.dirty) {
                 this.digitalServiceStore.setEcoMindEnableCalcul(true);
@@ -254,6 +244,11 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
                 this.digitalServiceStore.setEcoMindEnableCalcul(false);
             }
         });
+        // for new ecomind form calculate button to be enabled
+        const ds = await firstValueFrom(this.digitalServicesDataService.digitalService$);
+        if (this.terminalsForm.valid && ds.lastCalculationDate === undefined) {
+            this.digitalServiceStore.setEcoMindEnableCalcul(true);
+        }
     }
 
     ngOnDestroy(): void {
