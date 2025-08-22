@@ -9,10 +9,10 @@ tags:
     description: All endpoint for the organization's inventory or digital service evaluating
 
 paths:
-  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/evaluating:
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/evaluating:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/inventoryIdPathParam'
       - in: header
         name: Accept-Language
@@ -39,8 +39,8 @@ paths:
           $ref: "#/components/responses/InternalServerError"
   /organizations/{subscriber}/workspaces/{organization}/digital-services/{digitalServiceUid}/evaluating:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - in: path
         name: digitalServiceUid
         schema:

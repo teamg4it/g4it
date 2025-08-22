@@ -9,10 +9,10 @@ tags:
     description: Endpoint for inventory outputs
 
 paths:
-  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/outputs/physical-equipments:
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/outputs/physical-equipments:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/inventoryIdPathParam'
     get:
       tags:
@@ -34,10 +34,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/outputs/virtual-equipments:
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/outputs/virtual-equipments:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/inventoryIdPathParam'
     get:
       tags:
@@ -59,10 +59,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /organizations/{subscriber}/workspaces/{organization}/inventories/{inventoryId}/outputs/applications:
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/outputs/applications:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/inventoryIdPathParam'
     get:
       tags:

@@ -27,7 +27,7 @@ import java.util.List;
 @Entity
 @SuperBuilder
 @Table(name = "g4it_user_organization")
-public class UserOrganization implements Serializable {
+public class UserWorkspace implements Serializable {
 
     /**
      * Auto generated id
@@ -70,7 +70,7 @@ public class UserOrganization implements Serializable {
 
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "userOrganizations", fetch = FetchType.LAZY)
-    private List<UserRoleOrganization> userRoleOrganization;
+    @OneToMany(mappedBy = "userWorkspaces", fetch = FetchType.LAZY)
+    private List<UserRoleWorkspace> userRoleWorkspace;
 
 }

@@ -20,7 +20,7 @@ import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
@@ -182,9 +182,9 @@ public class DigitalServiceService {
         boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization
                 (user, subscriberRepository.findByName(subscriber).get().getId(), organizationId);
         if (!isAdmin) {
-            UserOrganization userOrganization = userOrganizationRepository.findByWorkspaceIdAndUserId(organizationId, userId).orElseThrow();
+            UserWorkspace userWorkspace = userOrganizationRepository.findByWorkspaceIdAndUserId(organizationId, userId).orElseThrow();
 
-            boolean hasWriteAccess = userOrganization.getRoles().stream().anyMatch(role -> "ROLE_DIGITAL_SERVICE_WRITE".equals(role.getName()));
+            boolean hasWriteAccess = userWorkspace.getRoles().stream().anyMatch(role -> "ROLE_DIGITAL_SERVICE_WRITE".equals(role.getName()));
 
             if (!(changeDataInconsistency || hasWriteAccess)) {
                 throw new G4itRestException("403", "Not authorized");
