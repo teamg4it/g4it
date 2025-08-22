@@ -8,17 +8,17 @@
 
 package com.soprasteria.g4it.backend.apiworkspace.controller;
 
-import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrganizationService;
+import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorWorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
-import com.soprasteria.g4it.backend.apiworkspace.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceRestMapper;
+import com.soprasteria.g4it.backend.apiworkspace.business.NewWorkspaceService;
 import com.soprasteria.g4it.backend.apiworkspace.mapper.SubscriberDetailsRestMapper;
-import com.soprasteria.g4it.backend.server.gen.api.WorkspaceApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
+import com.soprasteria.g4it.backend.server.gen.api.NewWorkspaceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.SubscriberDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserDetailsRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ import java.util.List;
  * Workspace Rest Service.
  */
 @Service
-public class WorkspaceController implements WorkspaceApiDelegate {
+public class NewWorkspaceController implements NewWorkspaceApiDelegate {
     /**
      * Auth Service.
      */
@@ -44,23 +44,23 @@ public class WorkspaceController implements WorkspaceApiDelegate {
     private UserRestMapper userRestMapper;
 
     @Autowired
-    AdministratorOrganizationService administratorOrganizationService;
+    AdministratorWorkspaceService administratorWorkspaceService;
 
     @Autowired
-    private OrganizationRestMapper organizationRestMapper;
+    private WorkspaceRestMapper workspaceRestMapper;
 
     @Autowired
     SubscriberDetailsRestMapper subscriberDetailsRestMapper;
 
     @Autowired
-    WorkspaceService workspaceService;
+    NewWorkspaceService newWorkspaceService;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<OrganizationRest> createWorkspace(OrganizationUpsertRest organizationUpsertRest) {
-        return new ResponseEntity<>(organizationRestMapper.toDto(administratorOrganizationService.createOrganization(organizationUpsertRest, authService.getAdminUser(), false)),
+    public ResponseEntity<WorkspaceRest> createWorkspace(WorkspaceUpdateRest organizationUpsertRest) {
+        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.createWorkspace(organizationUpsertRest, authService.getAdminUser(), false)),
                 HttpStatus.OK);
     }
 
@@ -70,6 +70,6 @@ public class WorkspaceController implements WorkspaceApiDelegate {
     @Override
     public ResponseEntity<List<SubscriberDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
         return new ResponseEntity<>(
-                subscriberDetailsRestMapper.toDto(this.workspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
+                subscriberDetailsRestMapper.toDto(this.newWorkspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
     }
 }

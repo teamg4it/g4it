@@ -33,6 +33,7 @@ import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import com.soprasteria.g4it.backend.server.gen.api.dto.LinkUserRoleRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRoleRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -164,6 +165,7 @@ public class TestUtils {
                                 .build()))
                 .build();
     }
+
     public static UserBO createAuthorizedUserAdminSub() {
         return UserBO.builder().email(EMAIL)
                 .subscribers(List.of(
@@ -199,18 +201,18 @@ public class TestUtils {
                 .builder().defaultFlag(true).roles(roles).subscriber(createSubscriber(subscriberId)).userRoleSubscriber(userRoleSubscriberList).build();
     }
 
-    public static OrganizationUpsertRest createOrganizationUpsert(Long subscriberId, String orgName
+    public static WorkspaceUpdateRest createOrganizationUpsert(Long subscriberId, String orgName
             , String orgStatus, Long dataRetentionDays) {
 
         com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus status = null;
         if (orgStatus != null)
             status = com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus.valueOf(orgStatus);
 
-        return OrganizationUpsertRest.builder().subscriberId(subscriberId).name(orgName).status(status)
+        return WorkspaceUpdateRest.builder().workspaceId(subscriberId).name(orgName).status(status)
                 .dataRetentionDays(dataRetentionDays).build();
     }
 
-    public static OrganizationUpsertRest createOrganizationUpsert(Long subscriberId, String orgName
+    public static WorkspaceUpdateRest createOrganizationUpsert(Long subscriberId, String orgName
             , String orgStatus, String criteriaDs, String criteriaIs) {
 
         com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus status = null;

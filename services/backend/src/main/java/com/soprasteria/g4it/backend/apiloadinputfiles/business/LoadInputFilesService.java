@@ -16,8 +16,8 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 public class LoadInputFilesService {
 
     @Autowired
-    OrganizationService organizationService;
+    WorkspaceService workspaceService;
 
     @Autowired
     TaskRepository taskRepository;
@@ -111,7 +111,7 @@ public class LoadInputFilesService {
         Context context = Context.builder()
                 .subscriber(subscriber)
                 .organizationId(organizationId)
-                .organizationName(organizationService.getOrganizationById(organizationId).getName())
+                .organizationName(workspaceService.getOrganizationById(organizationId).getName())
                 .inventoryId(inventoryId)
                 .datetime(LocalDateTime.now())
                 .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
@@ -124,7 +124,7 @@ public class LoadInputFilesService {
                 .map(fileType -> {
                     List<MultipartFile> files = allFiles.get(fileType);
                     List<String> typeFileNames = newFilenames(files, fileType);
-                    fileSystemService.manageFilesAndRename(context.getSubscriber(), context.getOrganizationId(), files, typeFileNames, context.getInventoryId()!=null);
+                    fileSystemService.manageFilesAndRename(context.getSubscriber(), context.getOrganizationId(), files, typeFileNames, context.getInventoryId() != null);
                     return typeFileNames;
                 })
                 .flatMap(Collection::stream)
@@ -154,23 +154,21 @@ public class LoadInputFilesService {
     }
 
 
-
     /**
-     *
      * @param subscriber         the subscriber
      * @param organizationId     the organization id
-     * @param digitalServiceUid the dig
+     * @param digitalServiceUid  the dig
      * @param datacenters        the datacenter files
      * @param physicalEquipments the physical equipment files
      * @param virtualEquipments  the virtual equipment files
      * @return the Task created
-     * */
+     */
     public Task loadDigitalServiceFiles(final String subscriber,
-                          final Long organizationId,
-                          final String digitalServiceUid,
-                          final List<MultipartFile> datacenters,
-                          final List<MultipartFile> physicalEquipments,
-                          final List<MultipartFile> virtualEquipments) {
+                                        final Long organizationId,
+                                        final String digitalServiceUid,
+                                        final List<MultipartFile> datacenters,
+                                        final List<MultipartFile> physicalEquipments,
+                                        final List<MultipartFile> virtualEquipments) {
 
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
@@ -189,7 +187,7 @@ public class LoadInputFilesService {
         Context context = Context.builder()
                 .subscriber(subscriber)
                 .organizationId(organizationId)
-                .organizationName(organizationService.getOrganizationById(organizationId).getName())
+                .organizationName(workspaceService.getOrganizationById(organizationId).getName())
                 .digitalServiceUid(digitalServiceUid)
                 .datetime(LocalDateTime.now())
                 .build();
@@ -199,7 +197,7 @@ public class LoadInputFilesService {
                 .map(fileType -> {
                     List<MultipartFile> files = allFiles.get(fileType);
                     List<String> typeFileNames = newFilenames(files, fileType);
-                    fileSystemService.manageFilesAndRename(context.getSubscriber(), context.getOrganizationId(), files, typeFileNames, context.getInventoryId()!=null);
+                    fileSystemService.manageFilesAndRename(context.getSubscriber(), context.getOrganizationId(), files, typeFileNames, context.getInventoryId() != null);
                     return typeFileNames;
                 })
                 .flatMap(Collection::stream)
@@ -252,30 +250,29 @@ public class LoadInputFilesService {
                     Context context;
 
                     final Inventory inventory = task.getInventory();
-                    if(inventory != null) {
-                        final Organization organization = inventory.getOrganization();
+                    if (inventory != null) {
+                        final Workspace workspace = inventory.getWorkspace();
                         context = Context.builder()
-                                .subscriber(organization.getSubscriber().getName())
-                                .organizationId(organization.getId())
-                                .organizationName(organization.getName())
+                                .subscriber(workspace.getSubscriber().getName())
+                                .organizationId(workspace.getId())
+                                .organizationName(workspace.getName())
                                 .inventoryId(task.getInventory().getId())
                                 .locale(Locale.getDefault())
                                 .datetime(now)
                                 .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
                                 .hasApplications(inventory.getApplicationCount() > 0)
                                 .build();
-                    }
-                    else{
-                        DigitalService digitalService =  task.getDigitalService();
-                        Organization organization = digitalService.getOrganization();
+                    } else {
+                        DigitalService digitalService = task.getDigitalService();
+                        Workspace workspace = digitalService.getWorkspace();
                         context = Context.builder()
-                                .subscriber(organization.getSubscriber().getName())
-                                .organizationId(organization.getId())
-                                .organizationName(organization.getName())
+                                .subscriber(workspace.getSubscriber().getName())
+                                .organizationId(workspace.getId())
+                                .organizationName(workspace.getName())
                                 .digitalServiceUid(task.getDigitalService().getUid())
                                 .locale(Locale.getDefault())
                                 .datetime(now)
-                                .build(); 
+                                .build();
                     }
 
                     log.warn("Restart task {} with taskId={}", TaskType.LOADING, task.getId());

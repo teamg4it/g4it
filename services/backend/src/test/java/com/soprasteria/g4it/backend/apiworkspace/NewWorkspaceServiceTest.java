@@ -12,7 +12,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
-import com.soprasteria.g4it.backend.apiworkspace.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiworkspace.business.NewWorkspaceService;
 import com.soprasteria.g4it.backend.apiworkspace.model.SubscriberDetailsBO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class WorkspaceServiceTest {
+class NewWorkspaceServiceTest {
 
     @Mock
     private SubscriberRepository subscriberRepository;
@@ -36,7 +36,7 @@ class WorkspaceServiceTest {
     private OrganizationRepository organizationRepository;
 
     @InjectMocks
-    private WorkspaceService workspaceService;
+    private NewWorkspaceService newWorkspaceService;
 
     @Test
     void searchSubscribersByDomainName_returnsSubscribersWithOrganizations_whenDomainMatches() {
@@ -51,7 +51,7 @@ class WorkspaceServiceTest {
         when(organizationRepository.findBySubscriberId(1L))
                 .thenReturn(List.of(organization));
 
-        List<SubscriberDetailsBO> result = workspaceService.searchSubscribersByDomainName(userEmail);
+        List<SubscriberDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
 
         assertEquals(1, result.size());
         assertEquals("Subscriber1", result.getFirst().getName());
@@ -67,7 +67,7 @@ class WorkspaceServiceTest {
         when(subscriberRepository.findByAuthorizedDomainsContaining(domainName))
                 .thenReturn(List.of());
 
-        List<SubscriberDetailsBO> result = workspaceService.searchSubscribersByDomainName(userEmail);
+        List<SubscriberDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
 
         assertTrue(result.isEmpty());
     }
@@ -84,7 +84,7 @@ class WorkspaceServiceTest {
         when(organizationRepository.findBySubscriberId(1L))
                 .thenReturn(List.of());
 
-        List<SubscriberDetailsBO> result = workspaceService.searchSubscribersByDomainName(userEmail);
+        List<SubscriberDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
 
         assertEquals(1, result.size());
         assertEquals("Subscriber1", result.getFirst().getName());

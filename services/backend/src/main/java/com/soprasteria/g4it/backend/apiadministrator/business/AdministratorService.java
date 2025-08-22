@@ -10,7 +10,7 @@ package com.soprasteria.g4it.backend.apiadministrator.business;
 
 import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
-import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
+import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
@@ -18,7 +18,7 @@ import com.soprasteria.g4it.backend.apiuser.model.UserSearchBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Role;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
@@ -53,7 +53,7 @@ public class AdministratorService {
      * Subscriber Mapper.
      */
     @Autowired
-    SubscriberRestMapper subscriberRestMapper;
+    OrganizationRestMapper organizationRestMapper;
     /**
      * The Administrator Role Service
      */
@@ -108,7 +108,7 @@ public class AdministratorService {
         subscriberToUpdate.setCriteria(criteriaRest.getCriteria());
         subscriberRepository.save(subscriberToUpdate);
         userService.clearUserAllCache();
-        return subscriberRestMapper.toBusinessObject(subscriberToUpdate);
+        return organizationRestMapper.toBusinessObject(subscriberToUpdate);
     }
 
     /**
@@ -148,10 +148,10 @@ public class AdministratorService {
                 .<UserSearchBO>map(searchedUser -> {
 
                     List<String> userRoles = new ArrayList<>();
-                    if (searchedUser.getUserOrganizations() != null) {
-                        userRoles.addAll(searchedUser.getUserOrganizations().stream().filter(org -> org.getOrganization().getId() == organizationId)
+                    if (searchedUser.getUserWorkspaces() != null) {
+                        userRoles.addAll(searchedUser.getUserWorkspaces().stream().filter(org -> org.getWorkspace().getId() == organizationId)
                                 .findFirst()
-                                .orElse(UserOrganization.builder().roles(List.of()).build())
+                                .orElse(UserWorkspace.builder().roles(List.of()).build())
                                 .getRoles().stream().map(Role::getName).toList());
                     }
 
@@ -166,9 +166,9 @@ public class AdministratorService {
                                 .toList());
                     }
 
-                    List<Long> linkedOrgIds = searchedUser.getUserOrganizations() == null ? List.of() :
-                            searchedUser.getUserOrganizations().stream()
-                                    .map(userOrg -> userOrg.getOrganization().getId())
+                    List<Long> linkedOrgIds = searchedUser.getUserWorkspaces() == null ? List.of() :
+                            searchedUser.getUserWorkspaces().stream()
+                                    .map(userOrg -> userOrg.getWorkspace().getId())
                                     .toList();
 
                     return UserSearchBO.builder()
@@ -184,7 +184,7 @@ public class AdministratorService {
     }
 
     public SubscriberBO getSubscriberById(Long id) {
-        return subscriberRestMapper.toBusinessObject(subscriberRepository.findById(id).orElse(null));
+        return organizationRestMapper.toBusinessObject(subscriberRepository.findById(id).orElse(null));
     }
 
 }

@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiuser.repository;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +21,7 @@ import java.util.Optional;
  * Organization repository to access organization data in database.
  */
 @Repository
-public interface OrganizationRepository extends JpaRepository<Organization, Long> {
+public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
 
     /**
      * Find an organization by subscriber and organization name.
@@ -30,7 +30,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      * @param organizationName the organization name.
      * @return the organization.
      */
-    Optional<Organization> findBySubscriberNameAndName(final String subscriberName, final String organizationName);
+    Optional<Workspace> findBySubscriberNameAndName(final String subscriberName, final String organizationName);
 
     /**
      * Find active organization by id.
@@ -39,7 +39,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      * @param status the status.
      * @return the organization.
      */
-    Optional<Organization> findByIdAndStatusIn(final Long id, List<String> status);
+    Optional<Workspace> findByIdAndStatusIn(final Long id, List<String> status);
 
     /**
      * Find all organizations by status.
@@ -47,7 +47,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      * @param status the status.
      * @return the organization.
      */
-    List<Organization> findAllByStatusIn(List<String> status);
+    List<Workspace> findAllByStatusIn(List<String> status);
 
     /**
      * Find all organizations by isMigrated.
@@ -55,7 +55,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      * @param isMigrated the status isMigrated.
      * @return the organization.
      */
-    List<Organization> findAllByIsMigrated(Boolean isMigrated);
+    List<Workspace> findAllByIsMigrated(Boolean isMigrated);
 
     /**
      * Find organization by organization's name and subscriber's id.
@@ -64,7 +64,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      * @param organizationName the organization's name
      * @return Organization
      */
-    Optional<Organization> findBySubscriberIdAndName(final Long subscriberId, final String organizationName);
+    Optional<Workspace> findBySubscriberIdAndName(final Long subscriberId, final String organizationName);
 
     /**
      * Find organization by organization's id and subscriber's id and organization's statuses.
@@ -74,7 +74,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      * @param status         the status.
      * @return Organization
      */
-    Optional<Organization> findByIdAndSubscriberIdAndStatusIn(final Long organizationId, final Long subscriberId, final List<String> status);
+    Optional<Workspace> findByIdAndSubscriberIdAndStatusIn(final Long organizationId, final Long subscriberId, final List<String> status);
 
     /**
      * Update the status of organization
@@ -84,8 +84,8 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      */
     @Transactional
     @Modifying
-    @Query("UPDATE Organization org SET org.status = ?2 WHERE org.id = ?1")
-    void setStatusForOrganization(Long id, String status);
+    @Query("UPDATE Workspace org SET org.status = ?2 WHERE org.id = ?1")
+    void setStatusForWorkspace(Long id, String status);
 
     /**
      * Find organization by subscriber's id.
@@ -93,6 +93,6 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      * @param subscriberId the subscriber's id
      * @return Organization
      */
-    List<Organization> findBySubscriberId(final Long subscriberId);
+    List<Workspace> findBySubscriberId(final Long subscriberId);
 
 }

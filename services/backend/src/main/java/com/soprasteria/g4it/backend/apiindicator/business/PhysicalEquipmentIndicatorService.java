@@ -17,8 +17,8 @@ import com.soprasteria.g4it.backend.apiindicator.repository.InPhysicalEquipmentE
 import com.soprasteria.g4it.backend.apiindicator.repository.InPhysicalEquipmentLowImpactViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import lombok.AllArgsConstructor;
@@ -55,7 +55,7 @@ public class PhysicalEquipmentIndicatorService {
      * The Organization Service
      */
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     /**
      * The LowImpact Service
@@ -90,11 +90,11 @@ public class PhysicalEquipmentIndicatorService {
      */
     public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber, final Long organizationId, final Long inventoryId) {
 
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
 
         final List<InPhysicalEquipmentLowImpactView> indicators = inPhysicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         indicators.forEach(indicator -> {
-                    indicator.setType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getType()));
+                    indicator.setType(TypeUtils.getShortType(subscriber, linkedWorkspace.getName(), indicator.getType()));
                     indicator.setLowImpact(lowImpactService.isLowImpact(indicator.getCountry()));
                 }
         );

@@ -16,8 +16,8 @@ import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
@@ -47,7 +47,7 @@ import java.util.Optional;
 public class EvaluatingService {
 
     @Autowired
-    OrganizationService organizationService;
+    WorkspaceService workspaceService;
 
     @Autowired
     TaskRepository taskRepository;
@@ -96,7 +96,7 @@ public class EvaluatingService {
         Context context = Context.builder()
                 .subscriber(subscriber)
                 .organizationId(organizationId)
-                .organizationName(organizationService.getOrganizationById(organizationId).getName())
+                .organizationName(workspaceService.getOrganizationById(organizationId).getName())
                 .inventoryId(inventoryId)
                 .locale(LocaleContextHolder.getLocale())
                 .datetime(LocalDateTime.now())
@@ -155,7 +155,7 @@ public class EvaluatingService {
         Context context = Context.builder()
                 .subscriber(subscriber)
                 .organizationId(organizationId)
-                .organizationName(organizationService.getOrganizationById(organizationId).getName())
+                .organizationName(workspaceService.getOrganizationById(organizationId).getName())
                 .digitalServiceUid(digitalServiceUid)
                 .digitalServiceName(digitalService.getName())
                 .locale(LocaleContextHolder.getLocale())
@@ -222,14 +222,14 @@ public class EvaluatingService {
                     taskRepository.save(task);
 
                     final Inventory inventory = task.getInventory();
-                    final Organization organization = inventory.getOrganization();
-                    final String subscriber = organization.getSubscriber().getName();
-                    manageInventoryTasks(subscriber, organization.getId(), inventory);
+                    final Workspace workspace = inventory.getWorkspace();
+                    final String subscriber = workspace.getSubscriber().getName();
+                    manageInventoryTasks(subscriber, workspace.getId(), inventory);
 
                     final Context context = Context.builder()
                             .subscriber(subscriber)
-                            .organizationId(organization.getId())
-                            .organizationName(organization.getName())
+                            .organizationId(workspace.getId())
+                            .organizationName(workspace.getName())
                             .inventoryId(task.getInventory().getId())
                             .locale(LocaleContextHolder.getLocale())
                             .datetime(now)
@@ -290,8 +290,6 @@ public class EvaluatingService {
                     exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
                 });
     }
-
-
 
 
 }

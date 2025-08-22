@@ -29,7 +29,7 @@ public class NewUserService {
     private UserRepository userRepository;
 
     @Autowired
-    private OrganizationRepository organizationRepository;
+    private WorkspaceRepository workspaceRepository;
 
     @Autowired
     private UserSubscriberRepository userSubscriberRepository;
@@ -38,31 +38,31 @@ public class NewUserService {
     private UserOrganizationRepository userOrganizationRepository;
 
     @Autowired
-    private UserRoleOrganizationRepository userRoleOrganizationRepository;
+    private UserRoleWorkspaceRepository userRoleWorkspaceRepository;
 
     /**
      * Create the user and its related objects
      *
-     * @param subscriber       the subscriber
-     * @param demoOrganization the demo organization
-     * @param newUser          the new user
-     * @param userInfo         the userInfo (email, firstName, lastname and subject)
-     * @param accessRoles      the list of roles
+     * @param subscriber    the subscriber
+     * @param demoWorkspace the demo organization
+     * @param newUser       the new user
+     * @param userInfo      the userInfo (email, firstName, lastname and subject)
+     * @param accessRoles   the list of roles
      * @return the user created
      */
     public User createUser(final Subscriber subscriber,
-                           final Organization demoOrganization,
+                           final Workspace demoWorkspace,
                            User newUser, final UserBO userInfo,
                            final List<Role> accessRoles
     ) {
 
         if (newUser == null) {
             //add new user in g4it_user
-            newUser = createNewUser(userInfo, subscriber, demoOrganization, accessRoles);
+            newUser = createNewUser(userInfo, subscriber, demoWorkspace, accessRoles);
         }
 
         if (accessRoles == null) return newUser;
-        
+
         // Link user with subscriber
         userSubscriberRepository.save(UserSubscriber.builder()
                 .user(newUser)
@@ -71,16 +71,16 @@ public class NewUserService {
                 .build());
 
         //Link user with organization
-        final UserOrganization userOrganization = userOrganizationRepository.save(UserOrganization.builder()
+        final UserWorkspace userWorkspace = userOrganizationRepository.save(UserWorkspace.builder()
                 .user(newUser)
-                .organization(demoOrganization)
+                .workspace(demoWorkspace)
                 .defaultFlag(true)
                 .build());
 
         //give role access to the user
-        userRoleOrganizationRepository.saveAll(accessRoles.stream()
-                .map(role -> UserRoleOrganization.builder()
-                        .userOrganizations(userOrganization)
+        userRoleWorkspaceRepository.saveAll(accessRoles.stream()
+                .map(role -> UserRoleWorkspace.builder()
+                        .userWorkspaces(userWorkspace)
                         .roles(role)
                         .build())
                 .toList());
@@ -107,7 +107,7 @@ public class NewUserService {
      * @param accessRoles the access Roles
      * @return the user.
      */
-    private User createNewUser(final UserBO userInfo, final Subscriber subscriber, final Organization demoOrg, final List<Role> accessRoles) {
+    private User createNewUser(final UserBO userInfo, final Subscriber subscriber, final Workspace demoOrg, final List<Role> accessRoles) {
         User userToCreate = User.builder()
                 .email(userInfo.getEmail())
                 .firstName(userInfo.getFirstName())
@@ -124,8 +124,8 @@ public class NewUserService {
                             .defaultFlag(true)
                             .build()));
 
-            userToCreate.setUserOrganizations(List.of(UserOrganization.builder()
-                    .organization(demoOrg)
+            userToCreate.setUserWorkspaces(List.of(UserWorkspace.builder()
+                    .workspace(demoOrg)
                     .defaultFlag(true)
                     .roles(accessRoles)
                     .build()));

@@ -10,7 +10,7 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DataCenterIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.DataCentersInformationBO;
 import com.soprasteria.g4it.backend.apiindicator.repository.InDatacenterViewRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import java.util.List;
 public class DataCenterIndicatorService {
 
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
     /**
      * DataCenter indicators mapper.
      */

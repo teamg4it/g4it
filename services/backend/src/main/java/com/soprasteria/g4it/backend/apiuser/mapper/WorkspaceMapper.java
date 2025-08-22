@@ -9,7 +9,7 @@ package com.soprasteria.g4it.backend.apiuser.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DateMapper;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import org.mapstruct.Mapper;
@@ -19,15 +19,15 @@ import org.mapstruct.Mapping;
  * Organization Mapper.
  */
 @Mapper(componentModel = "spring", uses = {DateMapper.class})
-public interface OrganizationMapper {
+public interface WorkspaceMapper {
 
     /**
      * Map an entity to business object.
      *
-     * @param organization the Organization
+     * @param workspace the Organization
      * @return the Organization.
      */
-    OrganizationBO toBusinessObject(final Organization organization);
+    OrganizationBO toBusinessObject(final Workspace workspace);
 
 
     /**
@@ -46,6 +46,6 @@ public interface OrganizationMapper {
     @Mapping(target = "lastUpdateDate", ignore = true)
     @Mapping(target = "lastUpdatedBy", source = "user")
     @Mapping(target = "createdBy", source = "user")
-    Organization toEntity(final String name, final Subscriber subscriber, final User user, final String status);
+    Workspace toEntity(final String name, final Subscriber subscriber, final User user, final String status);
 
 }

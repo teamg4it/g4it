@@ -32,7 +32,7 @@ import java.util.List;
 @Entity
 @SuperBuilder
 @Table(name = "g4it_organization")
-public class Organization extends AbstractBaseEntity implements Serializable {
+public class Workspace extends AbstractBaseEntity implements Serializable {
 
     /**
      * Auto generated id
@@ -109,7 +109,7 @@ public class Organization extends AbstractBaseEntity implements Serializable {
      * Identifier of the inventory related to the export request
      */
     @ToString.Exclude
-    @OneToMany(mappedBy = "organization")
+    @OneToMany(mappedBy = "workspace")
     private List<Inventory> inventory;
 
     /**
