@@ -203,7 +203,11 @@
     </div>
     @if (isMobile()) {
         <div class="flex align-items-center gap-2 ml-2 mobile-menu">
-            <button class="mini-menu-icon" (click)="showDialog()"></button>
+            <button
+                class="mini-menu-icon"
+                (click)="showDialog()"
+                [attr.aria-label]="'common.nav-panel' | translate"
+            ></button>
             <p-dialog
                 [modal]="true"
                 [(visible)]="dialogVisible"

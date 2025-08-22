@@ -162,7 +162,8 @@
         },
         "plus-menu": "Plus",
         "add-button": "Add",
-        "actions": "Actions"
+        "actions": "Actions",
+        "nav-panel": "Show the navigation panel"
     },
     "errors": {
         "error-occurred": "An error occurred"
@@ -216,7 +217,8 @@
         "visualize-parameters": "Visualize the parameters",
         "back": "Back",
         "hide-menu-buttons": "Hide option for the digital service",
-        "show-menu-buttons": "Show option for the digital service"
+        "show-menu-buttons": "Show option for the digital service",
+        "save-inplace": "Save the digital service name"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

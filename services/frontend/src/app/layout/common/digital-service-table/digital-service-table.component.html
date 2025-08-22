@@ -86,34 +86,34 @@
             [ngStyle]="{ 'text-align': isMobileView() ? 'left' : 'right' }"
         >
             <div class="flex">
-                <p-button
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    (onClick)="doSetItem(data, rowIndex + 1); sidebarVisible(true)"
-                    styleClass="p-button-text mx-1 p-1 pt-2"
-                    ariaLabel="{{ 'common.edit' | translate }} {{
-                        'digital-services-terminals.device' | translate
-                    }} {{ rowIndex + 1 }}"
-                >
-                    <img
-                        src="assets/images/icons/icon-edit.svg"
-                        alt="{{ 'common.edit' | translate }} {{
-                            'digital-services-terminals.device' | translate
+                @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                    <p-button
+                        (onClick)="doSetItem(data, rowIndex + 1); sidebarVisible(true)"
+                        styleClass="p-button-text mx-1 p-1 pt-2"
+                        ariaLabel="{{ 'common.edit' | translate }} {{
+                            translationPrefix + '.' + accessibilityText | translate
                         }} {{ rowIndex + 1 }}"
-                /></p-button>
-                <p-button
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    (onClick)="doDeleteItem(data, rowIndex + 1)"
-                    styleClass="p-button-text p-1"
-                    ariaLabel="{{ 'common.delete' | translate }} {{
-                        'digital-services-terminals.device' | translate
-                    }} {{ rowIndex + 1 }}"
-                >
-                    <img
-                        src="assets/images/icons/icon-bin.svg"
-                        alt="{{ 'common.delete' | translate }} {{
-                            'digital-services-terminals.device' | translate
+                    >
+                        <img
+                            src="assets/images/icons/icon-edit.svg"
+                            alt="{{ 'common.edit' | translate }} {{
+                                translationPrefix + '.' + accessibilityText | translate
+                            }} {{ rowIndex + 1 }}"
+                    /></p-button>
+                    <p-button
+                        (onClick)="doDeleteItem(data, rowIndex + 1)"
+                        styleClass="p-button-text p-1"
+                        ariaLabel="{{ 'common.delete' | translate }} {{
+                            translationPrefix + '.' + accessibilityText | translate
                         }} {{ rowIndex + 1 }}"
-                /></p-button>
+                    >
+                        <img
+                            src="assets/images/icons/icon-bin.svg"
+                            alt="{{ 'common.delete' | translate }} {{
+                                translationPrefix + '.' + accessibilityText | translate
+                            }} {{ rowIndex + 1 }}"
+                    /></p-button>
+                }
             </div>
         </td>
     </ng-template>

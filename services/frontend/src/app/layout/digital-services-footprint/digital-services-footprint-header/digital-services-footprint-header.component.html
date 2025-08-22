@@ -80,6 +80,7 @@
             <p-inplace
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 [closable]="true"
+                [closeAriaLabel]="'digital-services.save-inplace' | translate"
                 [preventClick]="digitalService.name === ''"
                 (onDeactivate)="onNameUpdate(digitalService.name)"
                 styleClass="inline-block w-auto lg:w-30rem"
