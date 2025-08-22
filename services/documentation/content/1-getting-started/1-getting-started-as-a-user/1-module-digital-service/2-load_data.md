@@ -5,33 +5,31 @@ weight: 20
 ---
 
 <!-- TOC -->
-
--   [Accessing the Digital Service Module in G4IT](#accessing-the-digital-service-module-in-g4it)
-    -   [**Step 1:** Access the Digital Service Module](#step-1-access-the-digital-service-module)
--   [Creating a New Digital Service](#creating-a-new-digital-service)
-    -   [**Step 2:** Start the Evaluation](#step-2-start-the-evaluation)
--   [Adding the Collected Data](#adding-the-collected-data)
-    -   [**End-user Devices**](#end-user-devices)
-        -   [**Step 3:** Add a New Device](#step-3-add-a-new-device)
-        -   [**Step 4:** Complete Device Information](#step-4-complete-device-information)
-        -   [**Step 5:** Edit or Delete Devices](#step-5-edit-or-delete-devices)
-    -   [**Data Exchange**](#data-exchange)
-        -   [**Step 6:** Add a Network](#step-6-add-a-network)
-        -   [**Step 7:** Complete Network Information](#step-7-complete-network-information)
-    -   [**Servers**](#servers)
-        -   [If You Know the Details About Your Infrastructure Configuration](#if-you-know-the-details-about-your-infrastructure-configuration)
-            -   [**Step 8:** Create a Server via form](#step-8-create-a-server-via-form)
-            -   [**Step 9:** Choose the Type of Server](#step-9-choose-the-type-of-server)
-            -   [**Step 10:** Complete Server Information](#step-10-complete-server-information)
-            -   [**Step 11:** Create a New Datacenter](#step-11-create-a-new-datacenter)
-            -   [**Step 12:** Create a Virtual Machine (VM)](#step-12-create-a-virtual-machine-vm)
-            -   [**Step 8:** Import server file](#step-8-import-server-file)
-        -   [**Cloud Hosting (IaaS - Infrastructure as a Service)**](#cloud-hosting-iaas---infrastructure-as-a-service)
-            -   [**Step 13:** Create a Cloud Service via form](#step-13)
-                **OR**
-            -   [**Step 13:** Import Cloud Services file](#step-13-import-cloud-services-file)
--   [Scenario Used as an Example](#scenario-used-as-an-example)
--   [Functional Documentation](#functional-documentation)
+  * [Accessing the Digital Service Module in G4IT](#accessing-the-digital-service-module-in-g4it)
+    * [**Step 1:** Access the Digital Service Module](#step-1-access-the-digital-service-module)
+  * [Creating a New Digital Service](#creating-a-new-digital-service)
+    * [**Step 2:** Start the Evaluation](#step-2-start-the-evaluation)
+  * [Adding the Collected Data](#adding-the-collected-data)
+    * [**End-user Devices**](#end-user-devices)
+      * [**Step 3:** Add a New Device](#step-3-add-a-new-device)
+      * [**Step 4:** Complete Device Information](#step-4-complete-device-information)
+      * [**Step 5:** Edit or Delete Devices](#step-5-edit-or-delete-devices)
+    * [**Data Exchange**](#data-exchange)
+      * [**Step 6:** Add a Network](#step-6-add-a-network)
+      * [**Step 7:** Complete Network Information](#step-7-complete-network-information)
+    * [**Private Infrastructures**](#private-infrastructures)
+      * [If You Know the Details About Your Infrastructure Configuration](#if-you-know-the-details-about-your-infrastructure-configuration)
+        * [**Step 8:** Create a Server via form](#step-8-create-a-server-via-form)
+        * [**Step 9:** Choose the Type of Server](#step-9-choose-the-type-of-server)
+        * [**Step 10:** Complete Server Information](#step-10-complete-server-information)
+        * [**Step 11:** Create a New Datacenter](#step-11-create-a-new-datacenter)
+        * [**Step 12:** Create a Virtual Machine (VM)](#step-12-create-a-virtual-machine-vm)
+        * [**Step 8:** Import private infrastructure file](#step-8-import-private-infrastructure-file)
+      * [**Cloud Hosting (IaaS - Infrastructure as a Service)**](#cloud-hosting-iaas---infrastructure-as-a-service)
+        * [**Step 13:** Create a Public Cloud - IaaS via form](#step-13-create-a-public-cloud---iaas-via-form)
+        * [**Step 13:** Import Public Cloud - IaaS file](#step-13-import-public-cloud---iaas-file)
+  * [Scenario Used as an Example](#scenario-used-as-an-example)
+  * [Functional Documentation](#functional-documentation)
 <!-- TOC -->
 
 ---
@@ -109,7 +107,7 @@ weight: 20
 
 ---
 
-### **Servers**
+### **Private Infrastructures**
 
 #### If You Know the Details About Your Infrastructure Configuration
 
@@ -164,7 +162,7 @@ weight: 20
 
 **OR**
 
-##### **Step 8:** Import server file
+##### **Step 8:** Import private infrastructure file
 1. **Action:** Action: Click the "Import" button to open the import form.
    ![Import button](../media/8_import-button.png "Import button")
                  
@@ -180,8 +178,8 @@ weight: 20
 
 #### **Cloud Hosting (IaaS - Infrastructure as a Service)**
 
-##### **Step 13:** 
-   ***Step1.*** ***Create a Cloud Service via form***
+##### **Step 13:** Create a Public Cloud - IaaS via form
+   ***Step1.*** ***Create a Public Cloud - IaaS via form***
 
 -   **Action**: In the ‘Cloud Services’ table under the ‘Visualize my resources’ tab, click the "Add" button to start adding your cloud infrastructure.
 
@@ -205,7 +203,7 @@ weight: 20
                                                       
   **OR**
 
-##### **Step 13:** ***Import Cloud Services file***
+##### **Step 13:** Import Public Cloud - IaaS file
 1. **Action:** Action: Click the "Import" button to open the import form.
    ![Import button](../media/8_import-button.png "Import button")
 
@@ -215,7 +213,7 @@ weight: 20
 5. **Action:** Click "Finish Import" to proceed to the digital service view.
 6. **Action:** Go to the "Cloud Services" table to view the imported data.
 
-![Screenshot showing the form to upload cloud service file.](../media/13_B_import_cloud_instance.png "Screenshot showing the form to upload cloud service file.")
+   ![Screenshot showing the form to upload Public Cloud - IaaS file.](../media/13_B_import_cloud_instance.png "Screenshot showing the form to upload cloud service file.")
 ---
 
 ## Scenario Used as an Example

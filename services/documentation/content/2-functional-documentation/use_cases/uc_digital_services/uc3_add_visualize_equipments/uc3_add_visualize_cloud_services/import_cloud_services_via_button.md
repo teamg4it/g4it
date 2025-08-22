@@ -1,6 +1,6 @@
 ---
-title: "2.3.4.2. Add Cloud Services by importing files"
-description: "This use case describes how to upload files to add Cloud Service equipments to a digital service"
+title: "2.3.4.2. Add Public Cloud - IaaS by importing files"
+description: "This use case describes how to upload files to add Public Cloud - IaaS equipments to a digital service"
 weight: 30
 mermaid: true
 ---
@@ -9,11 +9,11 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Import Cloud Services import](#import-cloud-services)
+-   [Import Public Cloud - IaaS](#import-public-cloud---iaas)
 
 ## Description
 
-This use case allows a **project team** to upload Cloud Services equipments by importing the files, into a digital service previously created.
+This use case allows a **project team** to upload Public Cloud - IaaS equipments by importing the files, into a digital service previously created.
 The file types are **datacenter**, **physical equipment** and **virtual equipment**.
 
 The files should be in `.csv` or `.xlsx` format. For **CSV files** specifically, both commas and semicolons are
@@ -24,7 +24,7 @@ other encoding formats, while untested, may also work.
 
 -   My Digital Services / My Digital Service / Import button  / Import Cloud Servers
 
-## Import Cloud Services
+## Import Public Cloud - IaaS
 ![uc3_add_visualize_equipments_CloudServiceImport.png](../../../images/uc3_add_visualize_equipments_CloudServiceImport.png)
 
 
@@ -32,7 +32,7 @@ other encoding formats, while untested, may also work.
 
 | Reference | Group              | Elements                   | Type   | Description                                                               |
 |-----------|--------------------|----------------------------|--------|---------------------------------------------------------------------------|
-| 1         | Cloud service form |         | Form   | <li><u>_initialization rules_</u>: That form enables the import of files. |
+| 1         | Public Cloud - IaaS form |         | Form   | <li><u>_initialization rules_</u>: That form enables the import of files. |
 | 2         |                    | Virtual equipment template | button | action rules: To help you start, template file is available to be downloaded.     |
 | 3         |                    | Browse file                | button                 | action rules: Click on it to open a window to select one file on the user computer.                                                                                                                                                                                                                                                                                                                                       |
 | 4         |                    | Start Upload               | button                 | action rules: Click the upload button to start the loading of attached file.                                                                                                                                                                                                                                                                                                                                              |

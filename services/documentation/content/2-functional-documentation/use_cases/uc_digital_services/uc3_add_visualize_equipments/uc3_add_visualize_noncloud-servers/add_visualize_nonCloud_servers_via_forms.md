@@ -1,6 +1,6 @@
 ---
-title: "2.3.3.1. Add Non-Cloud Servers using the form"
-description: "This use case describes how to add Non-Cloud Server equipments to a digital service using the form"
+title: "2.3.3.1. Add Private Infrastructures using the form"
+description: "This use case describes how to add Private Infrastructures equipments to a digital service using the form"
 weight: 20
 mermaid: true
 ---
@@ -9,21 +9,21 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Non-Cloud Server add](#non-cloud-server-add)
+-   [Private Infrastructure add](#private-infrastructure-add)
 
 ## Description
 
-This use case allows a project team to add Non-Cloud Server equipment directly via form, into a digital service previously created.
+This use case allows a project team to add NPrivate Infrastructure equipment directly via form, into a digital service previously created.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Visualize my resources tab /Non-Cloud Servers / Add Server
--   My Digital Services / My Digital Service / Visualize my resources tab / Non-Cloud Servers / Edit Server
+-   My Digital Services / My Digital Service / Visualize my resources tab /Private Infrastructures / Add Server
+-   My Digital Services / My Digital Service / Visualize my resources tab / Private Infrastructures / Edit Server
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected organization.
 
-## Non-Cloud Server visualization
+## Private Infrastructure visualization
 
 ![uc3_add_visualize_equipments_NCServersList.png](../../../images/uc3_add_visualize_equipments_NCServersList.png)
 
@@ -32,7 +32,7 @@ The connected user must have the write access for that module on the selected or
 | Reference | Group      | Elements          | Type   | Description                                                                                                                                                                           |     |     |     |
 | --------- | ---------- | ----------------- |--------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | --- | --- |
 |           | Tab Header |                   | group  |                                                                                                                                                                                       |     |     |     |
-| 1         |            | Non-Cloud Servers | table  |                                                                                                                                                                                       |     |     |     |
+| 1         |            | Private Infrastructures | table  |                                                                                                                                                                                       |     |     |     |
 | 2         |            | + Add    | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><li><u>_action rules_</u>: That button open the window Add Server details. |     |     |     |
 |           | Tab        |                   |        |                                                                                                                                                                                       |     |     |     |
 | 3         |            | Name              | column |                                                                                                                                                                                       |     |     |     |
@@ -46,7 +46,7 @@ The connected user must have the write access for that module on the selected or
 
 {{% /expand %}}
 
-## Non-Cloud Server add
+## Private Infrastructure add
 
 ![uc3_add_visualize_equipments_NonCloudServer.png](../../../images/uc3_add_visualize_equipments_NonCloudServer.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
@@ -166,7 +166,7 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service's Non-Cloud Servers table
+RND ->> front: Click on "Add" button in the digital service's Private Infrastructures table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 back--> DataBase: Create non-cloud server record in the in_physical_equipment table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters
@@ -180,6 +180,6 @@ DataBase-->> back: Get non-cloud servers' vms from the in_virtual_equipment tabl
 front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters
 DataBase-->> back: Get non-cloud servers' datacenter from the in_datacenter table
 back-->> front: Send the physical and virtual equipments for the non-cloud server view
-front->> RND : Display the non-cloud server list view
+front->> RND : Display the Private Infrastructure list view
 
 {{< /mermaid >}}
