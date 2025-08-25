@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { firstValueFrom, lastValueFrom, Subscription, take } from "rxjs";
+import { lastValueFrom, Subscription, take } from "rxjs";
 import {
     DigitalService,
     EcomindType,
@@ -147,7 +147,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
             };
             //to get it only one time
             if (!this.aiFormsStore.getInfrastructureChange() && uid) {
-                const data = await firstValueFrom(
+                const data = await lastValueFrom(
                     this.digitalServicesAiData.getAiInfrastructure(uid),
                 );
                 if (data) {
