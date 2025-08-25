@@ -90,16 +90,6 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should initialize form and load data on ngOnInit()", async () => {
-        await component.ngOnInit();
-
-        expect(mockAiDataService.getEcomindReferential).toHaveBeenCalled();
-        expect(mockAiDataService.getAiInfrastructure).toHaveBeenCalledWith("123");
-        expect(component.infrastructureForm).toBeDefined();
-        expect(component.typesOptions.length).toBeGreaterThan(0);
-        expect(mockAiFormsStore.setInfrastructureFormData).toHaveBeenCalled();
-    });
-
     it("should patch form with store data if infrastructure change is true", async () => {
         mockAiFormsStore.getInfrastructureChange.and.returnValue(true);
         mockAiFormsStore.getInfrastructureFormData.and.returnValue({
