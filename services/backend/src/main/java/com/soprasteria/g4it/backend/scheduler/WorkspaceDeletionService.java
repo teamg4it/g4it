@@ -15,7 +15,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileDeletionService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class OrganizationDeletionService {
+public class WorkspaceDeletionService {
 
     @Autowired
     private WorkspaceRepository workspaceRepository;
@@ -54,14 +54,14 @@ public class OrganizationDeletionService {
         int nbDigitalServicesDeleted = 0;
         List<String> deletedFilePaths = new ArrayList<>();
 
-        List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()));
+        List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()));
 
         for (Workspace workspaceEntity : workspaces) {
-            final String subscriber = workspaceEntity.getSubscriber().getName();
+            final String subscriber = workspaceEntity.getOrganization().getName();
             final Long organizationId = workspaceEntity.getId();
 
             if (workspaceEntity.getDeletionDate() == null) {
-                log.error("Organization {} has {} status and deletion date NULL", organizationId, OrganizationStatus.TO_BE_DELETED);
+                log.error("Organization {} has {} status and deletion date NULL", organizationId, WorkspaceStatus.TO_BE_DELETED);
                 continue;
             }
 
@@ -94,9 +94,9 @@ public class OrganizationDeletionService {
                 deletedFilePaths.addAll(deletedOutputFilePaths);
 
                 // update organization status to "INACTIVE" if status is "TO_BE_DELETED"
-                if (workspaceEntity.getStatus().equals(OrganizationStatus.TO_BE_DELETED.name())) {
-                    workspaceRepository.setStatusForWorkspace(workspaceEntity.getId(), OrganizationStatus.INACTIVE.name());
-                    log.info("Update status of {}/{} to {} ", subscriber, workspaceEntity.getName(), OrganizationStatus.INACTIVE.name());
+                if (workspaceEntity.getStatus().equals(WorkspaceStatus.TO_BE_DELETED.name())) {
+                    workspaceRepository.setStatusForWorkspace(workspaceEntity.getId(), WorkspaceStatus.INACTIVE.name());
+                    log.info("Update status of {}/{} to {} ", subscriber, workspaceEntity.getName(), WorkspaceStatus.INACTIVE.name());
                 }
             }
         }
@@ -106,7 +106,7 @@ public class OrganizationDeletionService {
                 deletedFilePaths.size(),
                 deletedFilePaths,
                 System.currentTimeMillis() - start,
-                OrganizationStatus.TO_BE_DELETED.name()
+                WorkspaceStatus.TO_BE_DELETED.name()
         );
     }
 

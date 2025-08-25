@@ -8,10 +8,10 @@
 package com.soprasteria.g4it.backend.apiuser.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DateMapper;
-import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -27,25 +27,25 @@ public interface WorkspaceMapper {
      * @param workspace the Organization
      * @return the Organization.
      */
-    OrganizationBO toBusinessObject(final Workspace workspace);
+    WorkspaceBO toBusinessObject(final Workspace workspace);
 
 
     /**
      * Map object to entity.
      *
-     * @param name       the organization name.
-     * @param subscriber the subscriber.
-     * @param user       the user.
-     * @param status     the status.
+     * @param name         the organization name.
+     * @param organization the subscriber.
+     * @param user         the user.
+     * @param status       the status.
      * @return the organization entity.
      */
-    @Mapping(target = "subscriber", source = "subscriber")
+    @Mapping(target = "organization", source = "organization")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "lastUpdateDate", ignore = true)
     @Mapping(target = "lastUpdatedBy", source = "user")
     @Mapping(target = "createdBy", source = "user")
-    Workspace toEntity(final String name, final Subscriber subscriber, final User user, final String status);
+    Workspace toEntity(final String name, final Organization organization, final User user, final String status);
 
 }

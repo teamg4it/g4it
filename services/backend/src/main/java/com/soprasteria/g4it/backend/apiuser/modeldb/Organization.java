@@ -28,7 +28,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "g4it_subscriber")
-public class Subscriber extends AbstractBaseEntity implements Serializable {
+public class Organization extends AbstractBaseEntity implements Serializable {
 
     /**
      * Auto generated id
@@ -41,7 +41,7 @@ public class Subscriber extends AbstractBaseEntity implements Serializable {
      * The subscriber organization.
      */
     @ToString.Exclude
-    @OneToMany(mappedBy = "subscriber")
+    @OneToMany(mappedBy = "organization")
     private List<Workspace> workspaces;
 
     /**

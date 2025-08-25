@@ -8,26 +8,24 @@
 package com.soprasteria.g4it.backend.apiuser.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Organization Business Object.
+ * Subscriber Business Object.
  */
 @Data
 @SuperBuilder
 public class OrganizationBO {
 
     /**
-     * The Organization's id.
+     * The subscriber's id.
      */
     private Long id;
 
     /**
-     * The Organization's name.
+     * The subscriber's name.
      */
     private String name;
 
@@ -37,32 +35,27 @@ public class OrganizationBO {
     private boolean defaultFlag;
 
     /**
-     * The 'status'.
+     * Subscriber's organization.
      */
-    private String status;
+    private List<WorkspaceBO> organizations;
 
     /**
-     * The 'deletionDate'.
+     * The authorized organizations to subscriber
      */
-    private LocalDateTime deletionDate;
+    private String authorizedDomains;
 
     /**
-     * The inventory criteria
+     * The criteria
      */
-    private List<String> criteriaIs;
+    private List<String> criteria;
 
     /**
-     * The digital service criteria
-     */
-    private List<String> criteriaDs;
-
-    /**
-     * User roles on organization.
+     * User roles on subscriber.
      */
     private List<String> roles;
+    /**
+     * Is EcomindAi enabled or not for this subscriber
+     */
+    private boolean ecomindai;
 
-    private Long subscriberId;
-
-    @EqualsAndHashCode.Exclude
-    private LocalDateTime creationDate;
 }

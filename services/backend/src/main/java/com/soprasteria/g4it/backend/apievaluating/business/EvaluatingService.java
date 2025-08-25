@@ -223,7 +223,7 @@ public class EvaluatingService {
 
                     final Inventory inventory = task.getInventory();
                     final Workspace workspace = inventory.getWorkspace();
-                    final String subscriber = workspace.getSubscriber().getName();
+                    final String subscriber = workspace.getOrganization().getName();
                     manageInventoryTasks(subscriber, workspace.getId(), inventory);
 
                     final Context context = Context.builder()

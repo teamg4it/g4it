@@ -10,7 +10,7 @@ package com.soprasteria.g4it.backend.common.criteria;
 
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.util.List;
 public class CriteriaService {
 
     @Autowired
-    SubscriberRepository subscriberRepository;
+    OrganizationRepository organizationRepository;
 
     @Autowired
     private WorkspaceService workspaceService;
@@ -40,7 +40,7 @@ public class CriteriaService {
      */
     public CriteriaByType getSelectedCriteria(String subscriber) {
 
-        List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
+        List<String> subscriberCriterias = organizationRepository.findByName(subscriber)
                 .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
         return new CriteriaByType(subscriberCriterias, subscriberCriterias, null, null, null, null);
@@ -57,7 +57,7 @@ public class CriteriaService {
      */
     public CriteriaByType getSelectedCriteriaForInventory(String subscriber, Long organizationId, List<String> inventoryCriterias) {
 
-        List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
+        List<String> subscriberCriterias = organizationRepository.findByName(subscriber)
                 .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
         final Workspace workspace = workspaceService.getOrganizationById(organizationId);
@@ -87,7 +87,7 @@ public class CriteriaService {
      */
     public CriteriaByType getSelectedCriteriaForDigitalService(String subscriber, Long organizationId, List<String> digitalServiceCriterias) {
 
-        List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
+        List<String> subscriberCriterias = organizationRepository.findByName(subscriber)
                 .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
         final Workspace workspace = workspaceService.getOrganizationById(organizationId);

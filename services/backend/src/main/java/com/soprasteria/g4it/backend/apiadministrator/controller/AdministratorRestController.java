@@ -60,7 +60,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
     @Override
     public ResponseEntity<List<OrganizationRest>> getOrganizations() {
         return ResponseEntity.ok(
-                organizationRestMapper.toDto(this.administratorService.getSubscribers(authService.getAdminUser())));
+                organizationRestMapper.toDto(this.administratorService.getOrganizations(authService.getAdminUser())));
     }
 
     /**
@@ -78,7 +78,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      */
     @Override
     public ResponseEntity<OrganizationRest> updateOrganization(final Long subscriberId, final CriteriaRest criteriaRest) {
-        return ResponseEntity.ok(organizationRestMapper.toDto(this.administratorService.updateSubscriberCriteria(subscriberId, criteriaRest, authService.getUser()))
+        return ResponseEntity.ok(organizationRestMapper.toDto(this.administratorService.updateOrganizationCriteria(subscriberId, criteriaRest, authService.getUser()))
         );
     }
 

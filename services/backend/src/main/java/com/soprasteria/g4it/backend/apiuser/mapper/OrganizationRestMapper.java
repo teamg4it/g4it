@@ -7,8 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiuser.mapper;
 
-import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationRest;
 import org.mapstruct.Mapper;
 
@@ -26,7 +26,7 @@ public interface OrganizationRestMapper {
      * @param businessObject the source.
      * @return the SubscriberRest.
      */
-    OrganizationRest toDto(final SubscriberBO businessObject);
+    OrganizationRest toDto(final OrganizationBO businessObject);
 
     /**
      * Map a comma-separated string of authorized domains to a list of strings.
@@ -45,14 +45,14 @@ public interface OrganizationRestMapper {
      * @param businessObject the source.
      * @return the SubscriberRest list.
      */
-    List<OrganizationRest> toDto(final List<SubscriberBO> businessObject);
+    List<OrganizationRest> toDto(final List<OrganizationBO> businessObject);
 
     /**
      * Map an entity to business object.
      *
-     * @param subscriber the SubscriberBO
+     * @param organization the SubscriberBO
      * @return the SubscriberBO.
      */
-    SubscriberBO toBusinessObject(final Subscriber subscriber);
+    OrganizationBO toBusinessObject(final Organization organization);
 
 }

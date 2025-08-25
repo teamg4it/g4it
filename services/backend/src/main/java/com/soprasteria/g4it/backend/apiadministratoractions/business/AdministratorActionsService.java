@@ -58,7 +58,7 @@ public class AdministratorActionsService {
             String digitalServiceUid = digitalService.getUid();
             Workspace workspace = workspaceRepository.findById(digitalService.getWorkspace().getId()).orElseThrow();
             Long organizationId = workspace.getId();
-            String subscriber = workspace.getSubscriber().getName();
+            String subscriber = workspace.getOrganization().getName();
 
             List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
             if (!physicalEquipments.isEmpty()) {

@@ -7,8 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiuser.business;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class SubscriberService {
+public class OrganizationService {
 
     /**
      * The Repository to access Subscriber data.
      */
     @Autowired
-    SubscriberRepository subscriberRepository;
+    OrganizationRepository organizationRepository;
 
 
     /**
@@ -34,8 +34,8 @@ public class SubscriberService {
      * @param subscriptionId the subscriber's id
      * @return the Subscriber.
      */
-    public Subscriber getSubscriptionById(final Long subscriptionId) {
-        return subscriberRepository.findById(subscriptionId)
+    public Organization getSubscriptionById(final Long subscriptionId) {
+        return organizationRepository.findById(subscriptionId)
                 .orElseThrow(
                         () -> new G4itRestException("404", String.format("subscription with id '%d' not found", subscriptionId))
                 );

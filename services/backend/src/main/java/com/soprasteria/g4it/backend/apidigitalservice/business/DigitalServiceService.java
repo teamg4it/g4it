@@ -22,9 +22,9 @@ import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +58,9 @@ public class DigitalServiceService {
     @Autowired
     private WorkspaceService workspaceService;
     @Autowired
-    private UserOrganizationRepository userOrganizationRepository;
+    private UserWorkspaceRepository userWorkspaceRepository;
     @Autowired
-    private SubscriberRepository subscriberRepository;
+    private OrganizationRepository organizationRepository;
     @Autowired
     private InDatacenterRepository inDatacenterRepository;
     @Autowired
@@ -180,9 +180,9 @@ public class DigitalServiceService {
         );
         Long userId = user.getId();
         boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization
-                (user, subscriberRepository.findByName(subscriber).get().getId(), organizationId);
+                (user, organizationRepository.findByName(subscriber).get().getId(), organizationId);
         if (!isAdmin) {
-            UserWorkspace userWorkspace = userOrganizationRepository.findByWorkspaceIdAndUserId(organizationId, userId).orElseThrow();
+            UserWorkspace userWorkspace = userWorkspaceRepository.findByWorkspaceIdAndUserId(organizationId, userId).orElseThrow();
 
             boolean hasWriteAccess = userWorkspace.getRoles().stream().anyMatch(role -> "ROLE_DIGITAL_SERVICE_WRITE".equals(role.getName()));
 
@@ -222,7 +222,7 @@ public class DigitalServiceService {
     @Cacheable("digitalServiceExists")
     public boolean digitalServiceExists(final String subscriberName, final Long organizationId, final String digitalServiceUid) {
         final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
-        if (!Objects.equals(subscriberName, linkedWorkspace.getSubscriber().getName())) {
+        if (!Objects.equals(subscriberName, linkedWorkspace.getOrganization().getName())) {
             return false;
         }
         return digitalServiceRepository.findByWorkspaceAndUid(linkedWorkspace, digitalServiceUid).isPresent();

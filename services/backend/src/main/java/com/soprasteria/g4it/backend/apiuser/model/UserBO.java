@@ -61,7 +61,7 @@ public class UserBO {
      * User's subscriber.
      */
     @EqualsAndHashCode.Exclude
-    private List<SubscriberBO> subscribers;
+    private List<OrganizationBO> subscribers;
 
     @EqualsAndHashCode.Exclude
     private LocalDateTime creationDate;

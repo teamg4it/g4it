@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiuser.repository;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
+public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
     /**
      * Find Subscribers with authorizedDomains not null
      *
      * @return the subscribers with authorizedDomains.
      */
-    List<Subscriber> findByAuthorizedDomainsNotNull();
+    List<Organization> findByAuthorizedDomainsNotNull();
 
 
     /**
@@ -30,13 +30,13 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
      *
      * @return the subscriber.
      */
-    Optional<Subscriber> findByName(String subscriberName);
+    Optional<Organization> findByName(String organizationName);
 
     /**
      * Find Subscribers for given domain name
      *
      * @return the subscribers with authorizedDomains.
      */
-    List<Subscriber> findByAuthorizedDomainsContaining(String domainName);
+    List<Organization> findByAuthorizedDomainsContaining(String domainName);
 
 }

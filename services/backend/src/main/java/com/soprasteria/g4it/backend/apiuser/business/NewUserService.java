@@ -32,10 +32,10 @@ public class NewUserService {
     private WorkspaceRepository workspaceRepository;
 
     @Autowired
-    private UserSubscriberRepository userSubscriberRepository;
+    private UserOrganizationRepository userOrganizationRepository;
 
     @Autowired
-    private UserOrganizationRepository userOrganizationRepository;
+    private UserWorkspaceRepository userWorkspaceRepository;
 
     @Autowired
     private UserRoleWorkspaceRepository userRoleWorkspaceRepository;
@@ -43,14 +43,14 @@ public class NewUserService {
     /**
      * Create the user and its related objects
      *
-     * @param subscriber    the subscriber
+     * @param organization  the subscriber
      * @param demoWorkspace the demo organization
      * @param newUser       the new user
      * @param userInfo      the userInfo (email, firstName, lastname and subject)
      * @param accessRoles   the list of roles
      * @return the user created
      */
-    public User createUser(final Subscriber subscriber,
+    public User createUser(final Organization organization,
                            final Workspace demoWorkspace,
                            User newUser, final UserBO userInfo,
                            final List<Role> accessRoles
@@ -58,20 +58,20 @@ public class NewUserService {
 
         if (newUser == null) {
             //add new user in g4it_user
-            newUser = createNewUser(userInfo, subscriber, demoWorkspace, accessRoles);
+            newUser = createNewUser(userInfo, organization, demoWorkspace, accessRoles);
         }
 
         if (accessRoles == null) return newUser;
 
         // Link user with subscriber
-        userSubscriberRepository.save(UserSubscriber.builder()
+        userOrganizationRepository.save(UserOrganization.builder()
                 .user(newUser)
-                .subscriber(subscriber)
+                .organization(organization)
                 .defaultFlag(true)
                 .build());
 
         //Link user with organization
-        final UserWorkspace userWorkspace = userOrganizationRepository.save(UserWorkspace.builder()
+        final UserWorkspace userWorkspace = userWorkspaceRepository.save(UserWorkspace.builder()
                 .user(newUser)
                 .workspace(demoWorkspace)
                 .defaultFlag(true)
@@ -101,13 +101,13 @@ public class NewUserService {
     /**
      * add new user in g4it_user
      *
-     * @param userInfo    the userInfo
-     * @param subscriber  the subscriber
-     * @param demoOrg     the organization
-     * @param accessRoles the access Roles
+     * @param userInfo     the userInfo
+     * @param organization the subscriber
+     * @param demoOrg      the organization
+     * @param accessRoles  the access Roles
      * @return the user.
      */
-    private User createNewUser(final UserBO userInfo, final Subscriber subscriber, final Workspace demoOrg, final List<Role> accessRoles) {
+    private User createNewUser(final UserBO userInfo, final Organization organization, final Workspace demoOrg, final List<Role> accessRoles) {
         User userToCreate = User.builder()
                 .email(userInfo.getEmail())
                 .firstName(userInfo.getFirstName())
@@ -117,10 +117,10 @@ public class NewUserService {
                 .creationDate(LocalDateTime.now())
                 .build();
 
-        if (subscriber != null && accessRoles != null) {
-            userToCreate.setUserSubscribers(List.of(
-                    UserSubscriber.builder()
-                            .subscriber(subscriber)
+        if (organization != null && accessRoles != null) {
+            userToCreate.setUserOrganizations(List.of(
+                    UserOrganization.builder()
+                            .organization(organization)
                             .defaultFlag(true)
                             .build()));
 

@@ -103,7 +103,7 @@ public class Workspace extends AbstractBaseEntity implements Serializable {
      */
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
-    private Subscriber subscriber;
+    private Organization organization;
 
     /**
      * Identifier of the inventory related to the export request

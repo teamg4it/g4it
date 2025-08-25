@@ -8,12 +8,12 @@
 package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
-import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.*;
 import com.soprasteria.g4it.backend.common.utils.Constants;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -38,7 +38,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private SubscriberRepository subscriberRepository;
+    private OrganizationRepository organizationRepository;
     @Autowired
     private WorkspaceRepository workspaceRepository;
     @Autowired
@@ -48,7 +48,7 @@ public class UserService {
     @Autowired
     private CacheManager cacheManager;
     @Autowired
-    private UserSubscriberRepository userSubscriberRepository;
+    private UserOrganizationRepository userOrganizationRepository;
 
     private static final String USER = "getUserByName";
     private static final String TOKEN = "getJwtToken";
@@ -104,7 +104,7 @@ public class UserService {
             return null;
         }
 
-        List<SubscriberBO> subscriberBOList = Constants.SUPER_ADMIN_EMAIL.equals(email) ?
+        List<OrganizationBO> organizationBOList = Constants.SUPER_ADMIN_EMAIL.equals(email) ?
                 buildSubscribersForSuperAdmin() :
                 buildSubscribers(userReturned, userInfo.isAdminMode());
 
@@ -114,7 +114,7 @@ public class UserService {
                 .lastName(userReturned.getLastName())
                 .email(userReturned.getEmail())
                 .isSuperAdmin(Constants.SUPER_ADMIN_EMAIL.equals(userReturned.getEmail()))
-                .subscribers(subscriberBOList)
+                .subscribers(organizationBOList)
                 .adminMode(userInfo.isAdminMode())
                 .build();
     }
@@ -159,16 +159,16 @@ public class UserService {
      */
     private User createNewUserWithDomain(List<Role> accessRoles, UserBO userInfo) {
         User newUser = null;
-        for (Subscriber subscriber : subscriberRepository.findByAuthorizedDomainsNotNull()) {
-            if (Arrays.asList(subscriber.getAuthorizedDomains().split(",")).contains(userInfo.getDomain())) {
-                Workspace demoOrg = workspaceRepository.findBySubscriberNameAndName(subscriber.getName(), Constants.DEMO)
+        for (Organization organization : organizationRepository.findByAuthorizedDomainsNotNull()) {
+            if (Arrays.asList(organization.getAuthorizedDomains().split(",")).contains(userInfo.getDomain())) {
+                Workspace demoOrg = workspaceRepository.findBySubscriberNameAndName(organization.getName(), Constants.DEMO)
                         .orElseGet(() -> workspaceRepository.save(Workspace.builder()
                                 .name(Constants.DEMO)
-                                .status(OrganizationStatus.ACTIVE.name())
+                                .status(WorkspaceStatus.ACTIVE.name())
                                 .creationDate(LocalDateTime.now())
-                                .subscriber(subscriber)
+                                .organization(organization)
                                 .build()));
-                newUser = newUserService.createUser(subscriber, demoOrg, newUser, userInfo, accessRoles);
+                newUser = newUserService.createUser(organization, demoOrg, newUser, userInfo, accessRoles);
                 clearUserCache(userInfo);
             }
         }
@@ -219,17 +219,17 @@ public class UserService {
      *
      * @return the user's subscriber list.
      */
-    public List<SubscriberBO> buildSubscribersForSuperAdmin() {
+    public List<OrganizationBO> buildSubscribersForSuperAdmin() {
 
         // Get the subscribers and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
-        return subscriberRepository.findAll().stream()
+        return organizationRepository.findAll().stream()
                 .map(subscriber -> {
-                    var subscriberBO = SubscriberBO.builder()
+                    var subscriberBO = OrganizationBO.builder()
                             .defaultFlag(false)
                             .name(subscriber.getName())
                             .organizations(subscriber.getWorkspaces().stream()
                                     .map(organization -> {
-                                        OrganizationBO organizationBO = OrganizationBO.builder()
+                                        WorkspaceBO workspaceBO = WorkspaceBO.builder()
                                                 .roles(List.of())
                                                 .defaultFlag(false)
                                                 .name(organization.getName())
@@ -239,9 +239,9 @@ public class UserService {
                                                 .criteriaIs(organization.getCriteriaIs())
                                                 .criteriaDs(organization.getCriteriaDs())
                                                 .build();
-                                        return organizationBO;
+                                        return workspaceBO;
                                     })
-                                    .sorted(Comparator.comparing(OrganizationBO::getName))
+                                    .sorted(Comparator.comparing(WorkspaceBO::getName))
                                     .toList())
                             .roles(List.of(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
                             .criteria(subscriber.getCriteria())
@@ -251,7 +251,7 @@ public class UserService {
                             .build();
                     return subscriberBO;
                 })
-                .sorted(Comparator.comparing(SubscriberBO::getName))
+                .sorted(Comparator.comparing(OrganizationBO::getName))
                 .toList();
     }
 
@@ -261,32 +261,32 @@ public class UserService {
      * @param user the user.
      * @return the user's subscriber list.
      */
-    public List<SubscriberBO> buildSubscribers(final User user, final boolean adminMode) {
+    public List<OrganizationBO> buildSubscribers(final User user, final boolean adminMode) {
 
-        if (user.getUserSubscribers() == null || user.getUserWorkspaces() == null) return List.of();
+        if (user.getUserOrganizations() == null || user.getUserWorkspaces() == null) return List.of();
 
         // Get the subscribers and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
-        List<SubscriberBO> results = new ArrayList<>(user.getUserSubscribers().stream()
+        List<OrganizationBO> results = new ArrayList<>(user.getUserOrganizations().stream()
                 .filter(userSubscriber -> userSubscriber.getRoles() != null &&
                         userSubscriber.getRoles().stream().anyMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)))
                 .map(userSubscriber -> buildSubscriber(userSubscriber, adminMode))
-                .sorted(Comparator.comparing(SubscriberBO::getName))
+                .sorted(Comparator.comparing(OrganizationBO::getName))
                 .toList());
 
-        Set<String> adminSubscribers = results.stream().map(SubscriberBO::getName).collect(Collectors.toSet());
+        Set<String> adminSubscribers = results.stream().map(OrganizationBO::getName).collect(Collectors.toSet());
 
         if (user.getUserWorkspaces() == null) return results;
 
         // (subscriber, [userOrganization])
-        final Map<Subscriber, List<UserWorkspace>> organizationBySubscriber = user.getUserWorkspaces().stream()
-                .collect(Collectors.groupingBy(e -> e.getWorkspace().getSubscriber()));
+        final Map<Organization, List<UserWorkspace>> organizationBySubscriber = user.getUserWorkspaces().stream()
+                .collect(Collectors.groupingBy(e -> e.getWorkspace().getOrganization()));
 
         // Get the subscribers and subObjects on which the user has not ROLE_SUBSCRIBER_ADMINISTRATOR but other roles on organizations
         results.addAll(organizationBySubscriber.entrySet().stream()
                 .filter(entry -> !adminSubscribers.contains(entry.getKey().getName()))
                 .map(userOrgsBySub -> buildSubscriberWithUserOrganizations(userOrgsBySub.getKey(), userOrgsBySub.getValue(), adminMode))
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(SubscriberBO::getName))
+                .sorted(Comparator.comparing(OrganizationBO::getName))
                 .toList());
 
         return results;
@@ -295,22 +295,22 @@ public class UserService {
     /**
      * Build subscriber.
      *
-     * @param userSubscriber the user subscriber.
-     * @param adminMode      the adminMode
+     * @param userOrganization the user subscriber.
+     * @param adminMode        the adminMode
      * @return the user's subscriber.
      */
-    public SubscriberBO buildSubscriber(final UserSubscriber userSubscriber, final boolean adminMode) {
+    public OrganizationBO buildSubscriber(final UserOrganization userOrganization, final boolean adminMode) {
 
-        final List<Role> roles = userSubscriber.getRoles() == null ? List.of() : userSubscriber.getRoles();
-        final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(OrganizationStatus.ACTIVE.name());
+        final List<Role> roles = userOrganization.getRoles() == null ? List.of() : userOrganization.getRoles();
+        final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
 
-        return SubscriberBO.builder()
-                .defaultFlag(userSubscriber.getDefaultFlag())
-                .name(userSubscriber.getSubscriber().getName())
-                .organizations(userSubscriber.getSubscriber().getWorkspaces().stream()
+        return OrganizationBO.builder()
+                .defaultFlag(userOrganization.getDefaultFlag())
+                .name(userOrganization.getOrganization().getName())
+                .organizations(userOrganization.getOrganization().getWorkspaces().stream()
                         .filter(organization -> status.contains(organization.getStatus()))
-                        .<OrganizationBO>map(organization ->
-                                OrganizationBO.builder()
+                        .<WorkspaceBO>map(organization ->
+                                WorkspaceBO.builder()
                                         .roles(List.of())
                                         .defaultFlag(false)
                                         .name(organization.getName())
@@ -321,29 +321,29 @@ public class UserService {
                                         .criteriaDs(organization.getCriteriaDs())
                                         .build()
                         )
-                        .sorted(Comparator.comparing(OrganizationBO::getName))
+                        .sorted(Comparator.comparing(WorkspaceBO::getName))
                         .toList())
                 .roles(roles.stream().map(Role::getName).toList())
-                .criteria(userSubscriber.getSubscriber().getCriteria())
-                .authorizedDomains(userSubscriber.getSubscriber().getAuthorizedDomains())
-                .id(userSubscriber.getSubscriber().getId())
-                .ecomindai(userSubscriber.getSubscriber().isEcomindai())
+                .criteria(userOrganization.getOrganization().getCriteria())
+                .authorizedDomains(userOrganization.getOrganization().getAuthorizedDomains())
+                .id(userOrganization.getOrganization().getId())
+                .ecomindai(userOrganization.getOrganization().isEcomindai())
                 .build();
     }
 
     /**
      * Build the subscriber if any organization has at least one user role
      *
-     * @param subscriber     the user subscriber.
+     * @param organization   the user subscriber.
      * @param userWorkspaces the user's organization list.
      * @param adminMode      the adminMode
      * @return the user's subscriber.
      */
-    public SubscriberBO buildSubscriberWithUserOrganizations(final Subscriber subscriber, final List<UserWorkspace> userWorkspaces, final boolean adminMode) {
+    public OrganizationBO buildSubscriberWithUserOrganizations(final Organization organization, final List<UserWorkspace> userWorkspaces, final boolean adminMode) {
 
-        final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(OrganizationStatus.ACTIVE.name());
+        final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
 
-        List<OrganizationBO> organizations = userWorkspaces.stream()
+        List<WorkspaceBO> organizations = userWorkspaces.stream()
                 .filter(userOrganization -> status.contains(userOrganization.getWorkspace().getStatus()))
                 .map(this::buildOrganization)
                 .filter(Objects::nonNull)
@@ -351,15 +351,15 @@ public class UserService {
 
         if (organizations.isEmpty()) return null;
 
-        return SubscriberBO.builder()
+        return OrganizationBO.builder()
                 .defaultFlag(false)
-                .name(subscriber.getName())
+                .name(organization.getName())
                 .organizations(organizations)
                 .roles(List.of())
-                .id(subscriber.getId())
-                .criteria(subscriber.getCriteria())
-                .authorizedDomains(subscriber.getAuthorizedDomains())
-                .ecomindai(subscriber.isEcomindai())
+                .id(organization.getId())
+                .criteria(organization.getCriteria())
+                .authorizedDomains(organization.getAuthorizedDomains())
+                .ecomindai(organization.isEcomindai())
                 .build();
     }
 
@@ -369,10 +369,10 @@ public class UserService {
      * @param userWorkspace the user's organization.
      * @return the user's organization.
      */
-    public OrganizationBO buildOrganization(final UserWorkspace userWorkspace) {
+    public WorkspaceBO buildOrganization(final UserWorkspace userWorkspace) {
         if (userWorkspace.getRoles() == null || userWorkspace.getRoles().isEmpty()) return null;
 
-        return OrganizationBO.builder()
+        return WorkspaceBO.builder()
                 .roles(userWorkspace.getRoles().stream().map(Role::getName).toList())
                 .defaultFlag(userWorkspace.getDefaultFlag())
                 .name(userWorkspace.getWorkspace().getName())
