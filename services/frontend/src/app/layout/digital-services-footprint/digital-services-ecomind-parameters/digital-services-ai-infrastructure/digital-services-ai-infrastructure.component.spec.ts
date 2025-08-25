@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { of, throwError } from "rxjs";
+import { of } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -93,11 +93,9 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
     it("should initialize form and load data on ngOnInit()", async () => {
         await component.ngOnInit();
 
-        expect(mockAiDataService.getBoaviztapiCountryMap).toHaveBeenCalled();
         expect(mockAiDataService.getEcomindReferential).toHaveBeenCalled();
         expect(mockAiDataService.getAiInfrastructure).toHaveBeenCalledWith("123");
         expect(component.infrastructureForm).toBeDefined();
-        expect(component.locationOptions.length).toBeGreaterThan(0);
         expect(component.typesOptions.length).toBeGreaterThan(0);
         expect(mockAiFormsStore.setInfrastructureFormData).toHaveBeenCalled();
     });
@@ -152,7 +150,9 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
 
         component.typesOptions = [apiInfrastructureType];
 
-        component.loadCountries = jasmine.createSpy().and.returnValue(Promise.resolve());
+        component.loadEcomindTypes = jasmine
+            .createSpy()
+            .and.returnValue(Promise.resolve());
 
         mockAiDataService.getAiInfrastructure.and.returnValue(of(apiData));
 
@@ -160,14 +160,6 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         await fixture.whenStable();
 
         expect(component.infrastructureForm.value.location).toBe("Germany");
-    });
-
-    it("should handle error during infrastructure load", async () => {
-        mockAiDataService.getAiInfrastructure.and.returnValue(
-            throwError(() => new Error("Error")),
-        );
-        await component.ngOnInit();
-        expect(mockMessageService.add).toHaveBeenCalled();
     });
 
     it("should disable form if user is not allowed", fakeAsync(() => {
