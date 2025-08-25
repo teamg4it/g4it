@@ -13,7 +13,7 @@ import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,15 +56,15 @@ public class DataDeletionService {
         int nbDigitalServicesDeleted = 0;
         final long start = System.currentTimeMillis();
 
-        List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()));
+        List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()));
 
         for (Workspace workspaceEntity : workspaces) {
-            final String subscriber = workspaceEntity.getSubscriber().getName();
+            final String subscriber = workspaceEntity.getOrganization().getName();
             final Long organizationId = workspaceEntity.getId();
 
             // organization > subscriber > default
             final Integer retentionDay = Optional.ofNullable(workspaceEntity.getDataRetentionDay())
-                    .orElse(Optional.ofNullable(workspaceEntity.getSubscriber().getDataRetentionDay())
+                    .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getDataRetentionDay())
                             .orElse(dataRetentiondDay));
 
             // Inventories

@@ -253,7 +253,7 @@ public class LoadInputFilesService {
                     if (inventory != null) {
                         final Workspace workspace = inventory.getWorkspace();
                         context = Context.builder()
-                                .subscriber(workspace.getSubscriber().getName())
+                                .subscriber(workspace.getOrganization().getName())
                                 .organizationId(workspace.getId())
                                 .organizationName(workspace.getName())
                                 .inventoryId(task.getInventory().getId())
@@ -266,7 +266,7 @@ public class LoadInputFilesService {
                         DigitalService digitalService = task.getDigitalService();
                         Workspace workspace = digitalService.getWorkspace();
                         context = Context.builder()
-                                .subscriber(workspace.getSubscriber().getName())
+                                .subscriber(workspace.getOrganization().getName())
                                 .organizationId(workspace.getId())
                                 .organizationName(workspace.getName())
                                 .digitalServiceUid(task.getDigitalService().getUid())

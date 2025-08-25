@@ -8,16 +8,16 @@
 package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceMapper;
-import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRoleWorkspaceRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.utils.Constants;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class WorkspaceService {
      * Repository to manage user organization.
      */
     @Autowired
-    UserOrganizationRepository userOrganizationRepository;
+    UserWorkspaceRepository userWorkspaceRepository;
 
     /**
      * Repository to manage user role.
@@ -66,7 +66,7 @@ public class WorkspaceService {
      * The Subscriber Service
      */
     @Autowired
-    SubscriberService subscriberService;
+    OrganizationService organizationService;
 
     @Autowired
     private CacheManager cacheManager;
@@ -116,24 +116,24 @@ public class WorkspaceService {
      *
      * @param workspaceUpdateRest the organizationUpsertRest.
      * @param user                the user.
-     * @param subscriberId        the subscriber id.
+     * @param organizationId      the subscriber id.
      * @return organization BO.
      */
     @Transactional
-    public OrganizationBO createWorkspace(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, Long subscriberId) {
+    public WorkspaceBO createWorkspace(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, Long organizationId) {
 
         // Check if organization with same name already exist on this subscriber.
-        workspaceRepository.findBySubscriberIdAndName(workspaceUpdateRest.getWorkspaceId(), workspaceUpdateRest.getName())
+        workspaceRepository.findBySubscriberIdAndName(workspaceUpdateRest.getOrganizationId(), workspaceUpdateRest.getName())
                 .ifPresent(organization -> {
-                    throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", workspaceUpdateRest.getName(), subscriberId));
+                    throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", workspaceUpdateRest.getName(), organizationId));
                 });
 
         // Create organization
         final Workspace workspaceToCreate = workspaceMapper.toEntity(
                 workspaceUpdateRest.getName(),
-                subscriberService.getSubscriptionById(subscriberId),
+                organizationService.getSubscriptionById(organizationId),
                 User.builder().id(user.getId()).build(),
-                OrganizationStatus.ACTIVE.name()
+                WorkspaceStatus.ACTIVE.name()
         );
         workspaceToCreate.setIsMigrated(true);
         workspaceRepository.save(workspaceToCreate);
@@ -149,14 +149,14 @@ public class WorkspaceService {
      * @return OrganizationBO
      */
     @Transactional
-    public OrganizationBO updateWorkspace(final Long organizationId, final WorkspaceUpdateRest workspaceUpdateRest, Long userId) {
+    public WorkspaceBO updateWorkspace(final Long organizationId, final WorkspaceUpdateRest workspaceUpdateRest, Long userId) {
 
-        final Workspace workspaceToSave = getOrganizationByStatus(workspaceUpdateRest.getWorkspaceId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
+        final Workspace workspaceToSave = getOrganizationByStatus(workspaceUpdateRest.getOrganizationId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
 
         final String currentStatus = workspaceToSave.getStatus();
         final String newStatus = workspaceUpdateRest.getStatus().name();
 
-        if (currentStatus.equals(OrganizationStatus.ACTIVE.name()) && newStatus.equals(OrganizationStatus.ACTIVE.name())) {
+        if (currentStatus.equals(WorkspaceStatus.ACTIVE.name()) && newStatus.equals(WorkspaceStatus.ACTIVE.name())) {
             updateNameOrCriteria(workspaceUpdateRest, workspaceToSave);
 
         } else {
@@ -164,7 +164,7 @@ public class WorkspaceService {
             LocalDateTime deletionDate = null;
 
             // Case current organization is ACTIVE and update it to TO_BE_DELETED
-            if (currentStatus.equals(OrganizationStatus.ACTIVE.name()) && newStatus.equals(OrganizationStatus.TO_BE_DELETED.name())) {
+            if (currentStatus.equals(WorkspaceStatus.ACTIVE.name()) && newStatus.equals(WorkspaceStatus.TO_BE_DELETED.name())) {
                 // Get data retention days
                 dataDeletionDays = workspaceUpdateRest.getDataRetentionDays() == null ?
                         organizationDataDeletionDays :
@@ -217,9 +217,9 @@ public class WorkspaceService {
         if (isNameChange) {
             // Handle update in organization's name
             // Check if organization with same name already exist on this subscriber.
-            workspaceRepository.findBySubscriberIdAndName(workspaceUpdateRest.getWorkspaceId(), newWorkspace)
+            workspaceRepository.findBySubscriberIdAndName(workspaceUpdateRest.getOrganizationId(), newWorkspace)
                     .ifPresent(org -> {
-                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newWorkspace, workspaceUpdateRest.getWorkspaceId()));
+                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newWorkspace, workspaceUpdateRest.getOrganizationId()));
                     });
 
             log.info("Update Organization name in file system from '{}' to '{}'", currentWorkspace, newWorkspace);

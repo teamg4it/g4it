@@ -8,7 +8,7 @@
 package com.soprasteria.g4it.backend.apiuser.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DateMapper;
-import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
+import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
 import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceRest;
 import org.mapstruct.Mapper;
 
@@ -26,7 +26,7 @@ public interface WorkspaceRestMapper {
      * @param businessObject the source.
      * @return the OrganizationRest.
      */
-    WorkspaceRest toDto(final OrganizationBO businessObject);
+    WorkspaceRest toDto(final WorkspaceBO businessObject);
 
     /**
      * Map a business object list to dto object list.
@@ -34,7 +34,7 @@ public interface WorkspaceRestMapper {
      * @param businessObject the source.
      * @return the OrganizationRest list.
      */
-    List<WorkspaceRest> toDto(final List<OrganizationBO> businessObject);
+    List<WorkspaceRest> toDto(final List<WorkspaceBO> businessObject);
 
 
 }

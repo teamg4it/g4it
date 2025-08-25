@@ -120,7 +120,7 @@ public class InventoryService {
     @Cacheable("inventoryExists")
     public boolean inventoryExists(final String subscriberName, final Long organizationId, final Long inventoryId) {
         final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
-        if (!Objects.equals(subscriberName, linkedWorkspace.getSubscriber().getName())) {
+        if (!Objects.equals(subscriberName, linkedWorkspace.getOrganization().getName())) {
             return false;
         }
 

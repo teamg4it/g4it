@@ -8,8 +8,8 @@
 
 package com.soprasteria.g4it.backend.common.utils;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class AuthorizationUtils {
     private boolean isEcomindModuleEnabled;
 
     @Autowired
-    private SubscriberRepository subscriberRepository;
+    private OrganizationRepository organizationRepository;
 
     private static final String ECOMINDAI_DISABLED = "The EcoMindAI module is currently disabled";
 
@@ -39,7 +39,7 @@ public class AuthorizationUtils {
     }
 
     public void checkEcomindEnabledForSubscriber(String subscriber) {
-        Optional<Subscriber> subsc = subscriberRepository.findByName(subscriber);
+        Optional<Organization> subsc = organizationRepository.findByName(subscriber);
         if (subsc.isPresent() && !subsc.get().isEcomindai()) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
                     ECOMINDAI_DISABLED_FOR_SUBSCRIBER);

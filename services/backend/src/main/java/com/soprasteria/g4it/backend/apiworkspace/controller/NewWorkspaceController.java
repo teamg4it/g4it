@@ -13,9 +13,8 @@ import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
 import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceRestMapper;
 import com.soprasteria.g4it.backend.apiworkspace.business.NewWorkspaceService;
-import com.soprasteria.g4it.backend.apiworkspace.mapper.SubscriberDetailsRestMapper;
+import com.soprasteria.g4it.backend.apiworkspace.mapper.OrganizationDetailsRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.NewWorkspaceApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.SubscriberDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
@@ -50,7 +49,7 @@ public class NewWorkspaceController implements NewWorkspaceApiDelegate {
     private WorkspaceRestMapper workspaceRestMapper;
 
     @Autowired
-    SubscriberDetailsRestMapper subscriberDetailsRestMapper;
+    OrganizationDetailsRestMapper organizationDetailsRestMapper;
 
     @Autowired
     NewWorkspaceService newWorkspaceService;
@@ -68,8 +67,8 @@ public class NewWorkspaceController implements NewWorkspaceApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<SubscriberDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
+    public ResponseEntity<List<OrganizationDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
         return new ResponseEntity<>(
-                subscriberDetailsRestMapper.toDto(this.newWorkspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
+                organizationDetailsRestMapper.toDto(this.newWorkspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
     }
 }

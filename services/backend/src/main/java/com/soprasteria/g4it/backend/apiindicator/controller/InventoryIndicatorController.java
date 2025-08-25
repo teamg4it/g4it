@@ -19,8 +19,8 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -62,9 +62,9 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     @Autowired
     private AuthService authService;
     @Autowired
-    private UserOrganizationRepository userOrganizationRepository;
+    private UserWorkspaceRepository userWorkspaceRepository;
     @Autowired
-    private SubscriberRepository subscriberRepository;
+    private OrganizationRepository organizationRepository;
     @Autowired
     private RoleService roleService;
 
@@ -155,9 +155,9 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                 .orElseThrow(() -> new G4itRestException("404", String.format("task of inventoryId '%d' is not found", inventoryId)));
 
         Long userId = authService.getUser().getId();
-        boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization(authService.getUser(), subscriberRepository.findByName(subscriber).get().getId(), organization);
+        boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization(authService.getUser(), organizationRepository.findByName(subscriber).get().getId(), organization);
         if (!isAdmin) {
-            UserWorkspace userWorkspace = userOrganizationRepository.findByWorkspaceIdAndUserId(organization, userId).orElseThrow();
+            UserWorkspace userWorkspace = userWorkspaceRepository.findByWorkspaceIdAndUserId(organization, userId).orElseThrow();
 
             boolean isDefaultOrganization = userWorkspace.getWorkspace().getName().equalsIgnoreCase("DEMO");
             boolean hasAccess = userWorkspace.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));

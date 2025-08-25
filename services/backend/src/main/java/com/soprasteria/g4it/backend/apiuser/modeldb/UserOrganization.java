@@ -27,7 +27,7 @@ import java.util.List;
 @Entity
 @SuperBuilder
 @Table(name = "g4it_user_subscriber")
-public class UserSubscriber implements Serializable {
+public class UserOrganization implements Serializable {
 
     /**
      * Auto generated id
@@ -42,7 +42,7 @@ public class UserSubscriber implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
-    private Subscriber subscriber;
+    private Organization organization;
 
     /**
      * The user.
@@ -70,6 +70,6 @@ public class UserSubscriber implements Serializable {
 
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "userSubscribers", fetch = FetchType.LAZY)
-    private List<UserRoleSubscriber> userRoleSubscriber;
+    @OneToMany(mappedBy = "userOrganizations", fetch = FetchType.LAZY)
+    private List<UserRoleOrganization> userRoleOrganization;
 }
