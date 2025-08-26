@@ -17,8 +17,8 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.business.LoadInputFilesSer
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
@@ -169,7 +169,7 @@ class LoadInputFilesServiceTest {
                         .workspace(Workspace.builder()
                                 .id(1L)
                                 .name("Test Organization")
-                                .subscriber(Subscriber.builder().name("testSubscriber").build())
+                                .organization(Organization.builder().name("testSubscriber").build())
                                 .build())
                         .virtualEquipmentCount(1L)
                         .applicationCount(1L)
@@ -197,7 +197,7 @@ class LoadInputFilesServiceTest {
                         .workspace(Workspace.builder()
                                 .id(1L)
                                 .name("Test Organization")
-                                .subscriber(Subscriber.builder().name("testSubscriber").build())
+                                .organization(Organization.builder().name("testSubscriber").build())
                                 .build())
                         .build())
                 .build();

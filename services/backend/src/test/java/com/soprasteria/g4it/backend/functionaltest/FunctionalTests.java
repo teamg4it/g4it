@@ -26,10 +26,10 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenter
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialImportService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -69,7 +69,7 @@ class FunctionalTests {
     private static final String SUBSCRIBER = "SUBSCRIBER";
     private static final Path API_LOAD_INPUT_FILES = Path.of("src/test/resources/apiloadinputfiles");
     private static final Path API_EVALUATING = Path.of("src/test/resources/apievaluating");
-    
+
     private static final boolean SHOW_ASSERTION = false;
     @Autowired
     LoadInputFilesController loadInputFilesController;
@@ -78,7 +78,7 @@ class FunctionalTests {
     @Autowired
     AsyncEvaluatingService asyncEvaluatingService;
     @Autowired
-    SubscriberRepository subscriberRepository;
+    OrganizationRepository organizationRepository;
     @Autowired
     WorkspaceRepository workspaceRepository;
     @Autowired
@@ -131,7 +131,7 @@ class FunctionalTests {
 
         var organization = workspaceRepository.save(Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name(SUBSCRIBER).build())
+                .organization(Organization.builder().name(SUBSCRIBER).build())
                 .build());
 
         taskRepository.deleteAll();

@@ -9,9 +9,9 @@
 package com.soprasteria.g4it.backend.common.criteria;
 
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ class CriteriaServiceTest {
     private static final String SUBSCRIBER = "SUBSCRIBER";
     private static final Long ORGANIZATION_ID = 1L;
     @Mock
-    private SubscriberRepository subscriberRepository;
+    private OrganizationRepository organizationRepository;
 
     @Mock
     private WorkspaceService workspaceService;
@@ -42,10 +42,14 @@ class CriteriaServiceTest {
     @Test
     void getSelectedCriteriaReturnsCriteriaByTypeWhenSubscriberExists() {
         List<String> mockCriteria = List.of("criteria1", "criteria2");
-        Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(mockCriteria);
+        Organization mockOrganization = new Organization();
+        mockOrganization.setCriteria(mockCriteria);
 
+<<<<<<< HEAD
         when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
+=======
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
+>>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
         CriteriaByType result = criteriaService.getSelectedCriteria(SUBSCRIBER);
         assertNotNull(result);
@@ -55,7 +59,7 @@ class CriteriaServiceTest {
     void getSelectedCriteriaThrowsExceptionWhenSubscriberNotFound() {
         String subscriber = "nonExistentSubscriber";
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.empty());
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class, () -> {
             criteriaService.getSelectedCriteria(subscriber);
@@ -74,10 +78,15 @@ class CriteriaServiceTest {
         Workspace mockWorkspace = new Workspace();
         mockWorkspace.setCriteriaIs(List.of("orgCriteria1"));
 
+<<<<<<< HEAD
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(subscriberCriteria);
+=======
+        Organization mockOrganization = new Organization();
+        mockOrganization.setCriteria(subscriberCriterias);
+>>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
         when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCriteria);
@@ -129,10 +138,15 @@ class CriteriaServiceTest {
         Workspace mockWorkspace = new Workspace();
         mockWorkspace.setCriteriaDs(List.of("orgCriteriaDs1"));
 
+<<<<<<< HEAD
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(subscriberCriteria);
+=======
+        Organization mockOrganization = new Organization();
+        mockOrganization.setCriteria(subscriberCriterias);
+>>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
         when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, digitalServiceCriteria);
@@ -165,10 +179,15 @@ class CriteriaServiceTest {
         List<String> subscriberCriterias = List.of("criteria1", "criteria2");
         Workspace mockWorkspace = new Workspace();
 
+<<<<<<< HEAD
         Subscriber mockSubscriber = new Subscriber();
         mockSubscriber.setCriteria(subscriberCriteria);
+=======
+        Organization mockOrganization = new Organization();
+        mockOrganization.setCriteria(subscriberCriterias);
+>>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
         when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, null);

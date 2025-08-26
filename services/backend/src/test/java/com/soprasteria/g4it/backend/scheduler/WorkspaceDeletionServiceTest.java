@@ -18,7 +18,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileDeletionService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class WorkspaceDeletionServiceTest {
     @InjectMocks
-    OrganizationDeletionService organizationDeletionService;
+    WorkspaceDeletionService workspaceDeletionService;
     @Mock
     WorkspaceRepository workspaceRepository;
     @Mock
@@ -58,11 +58,11 @@ class WorkspaceDeletionServiceTest {
 
         when(inventoryRepo.findByWorkspace(linkedWorkspace)).thenReturn(List.of(inventoryEntity1.get()));
         when(digitalServiceRepo.findByWorkspace(linkedWorkspace)).thenReturn(List.of(digitalServiceEntity.get()));
-        when(workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
+        when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
         lenient().when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
-        organizationDeletionService.executeDeletion();
+        workspaceDeletionService.executeDeletion();
 
         verify(fileDeletionService, times(1)).deleteFiles(any(), any(), eq(FileFolder.EXPORT), eq(0));
         verify(fileDeletionService, times(1)).deleteFiles(any(), any(), eq(FileFolder.OUTPUT), eq(0));
@@ -71,10 +71,10 @@ class WorkspaceDeletionServiceTest {
     @Test
     void testOrganizationDeletionService_toBeDeletedStatusWithFutureDate() {
         final Workspace linkedWorkspace = TestUtils.createToBeDeletedOrganization(LocalDateTime.now().plusDays(1));
-        when(workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
+        when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
 
         // EXECUTE
-        organizationDeletionService.executeDeletion();
+        workspaceDeletionService.executeDeletion();
         verify(inventoryDeleteService, times(0)).deleteInventory(any(), any(), anyLong());
         verify(digitalServiceService, times(0)).deleteDigitalService(any());
         verify(fileDeletionService, times(0)).deleteFiles(any(), any(), eq(FileFolder.EXPORT), eq(0));
@@ -83,11 +83,11 @@ class WorkspaceDeletionServiceTest {
 
     @Test
     void testStorageDeletionService_inActiveStatus() {
-        final Workspace linkedWorkspace = TestUtils.createOrganizationWithStatus(OrganizationStatus.INACTIVE.name());
+        final Workspace linkedWorkspace = TestUtils.createOrganizationWithStatus(WorkspaceStatus.INACTIVE.name());
 
-        when(workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
+        when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
         // EXECUTE
-        organizationDeletionService.executeDeletion();
+        workspaceDeletionService.executeDeletion();
         verify(inventoryDeleteService, times(0)).deleteInventory(any(), any(), anyLong());
         verify(digitalServiceService, times(0)).deleteDigitalService(any());
 
@@ -95,12 +95,12 @@ class WorkspaceDeletionServiceTest {
 
     @Test
     void testStorageDeletionService_deletionDateNull() {
-        final Workspace linkedWorkspace = TestUtils.createOrganizationWithStatus(OrganizationStatus.INACTIVE.name());
+        final Workspace linkedWorkspace = TestUtils.createOrganizationWithStatus(WorkspaceStatus.INACTIVE.name());
         linkedWorkspace.setDeletionDate(null);
 
-        when(workspaceRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
+        when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
         // EXECUTE
-        organizationDeletionService.executeDeletion();
+        workspaceDeletionService.executeDeletion();
         verify(inventoryDeleteService, times(0)).deleteInventory(any(), any(), anyLong());
         verify(digitalServiceService, times(0)).deleteDigitalService(any());
 

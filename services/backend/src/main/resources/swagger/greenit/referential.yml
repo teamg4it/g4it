@@ -22,7 +22,7 @@ paths:
         schema:
           type: string
           description: Referential type
-      - $ref: "#/components/parameters/subscriberQueryParam"
+      - $ref: "#/components/parameters/organizationQueryParam"
     get:
       tags:
         - referential import export
@@ -149,7 +149,7 @@ paths:
           schema:
             type: string
             description: type
-        - $ref: "#/components/parameters/subscriberQueryParam"
+        - $ref: "#/components/parameters/organizationQueryParam"
       responses:
         "200":
           description: Item Types found
@@ -177,7 +177,7 @@ paths:
       operationId: getHypotheses
       x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
       parameters:
-        - $ref: "#/components/parameters/subscriberQueryParam"
+        - $ref: "#/components/parameters/organizationQueryParam"
       responses:
         "200":
           description: Hypotheses found
@@ -247,7 +247,7 @@ paths:
           schema:
             type: string
             description: Name of the category
-        - $ref: "#/components/parameters/subscriberQueryParam"
+        - $ref: "#/components/parameters/organizationQueryParam"
       responses:
         "200":
           description: List of item impacts found
@@ -278,7 +278,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: "#/components/parameters/subscriberQueryParam"
+        - $ref: "#/components/parameters/organizationQueryParam"
       responses:
         "200":
           description: Match found

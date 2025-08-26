@@ -11,7 +11,7 @@ import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,12 +38,12 @@ class UserServiceTest {
     void givenEmail_thenReturnUser() {
 
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(User.builder().email(EMAIL)
-                .userSubscribers(List.of(UserSubscriber.builder()
+                .userOrganizations(List.of(UserOrganization.builder()
                         .defaultFlag(true)
                         .roles(List.of(Role.builder().name("ROLE_SUBSCRIBER_ADMINISTRATOR").build()))
-                        .subscriber(Subscriber.builder()
+                        .organization(Organization.builder()
                                 .workspaces(List.of(Workspace.builder()
-                                        .status(OrganizationStatus.ACTIVE.name())
+                                        .status(WorkspaceStatus.ACTIVE.name())
                                         .build()))
                                 .name(SUBSCRIBER)
                                 .build())
@@ -51,8 +51,8 @@ class UserServiceTest {
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
                         .roles(List.of(Role.builder().name("ROLE_INVENTORY_READ").build()))
-                        .workspace(Workspace.builder().name(ORGANIZATION).status(OrganizationStatus.ACTIVE.name())
-                                .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build())
+                        .workspace(Workspace.builder().name(ORGANIZATION).status(WorkspaceStatus.ACTIVE.name())
+                                .organization(Organization.builder().name(SUBSCRIBER).build()).build())
                         .build()))
                 .build()));
 
@@ -68,12 +68,12 @@ class UserServiceTest {
     void givenEmailAndUserWithoutRole_thenReturnUserWithoutSubscriber() {
 
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(User.builder().email(EMAIL)
-                .userSubscribers(List.of(UserSubscriber.builder()
+                .userOrganizations(List.of(UserOrganization.builder()
                         .defaultFlag(true)
                         .roles(List.of())
-                        .subscriber(Subscriber.builder()
+                        .organization(Organization.builder()
                                 .workspaces(List.of(Workspace.builder()
-                                        .status(OrganizationStatus.ACTIVE.name())
+                                        .status(WorkspaceStatus.ACTIVE.name())
                                         .build()))
                                 .name(SUBSCRIBER)
                                 .criteria(List.of("criteria"))
@@ -82,8 +82,8 @@ class UserServiceTest {
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
                         .roles(List.of())
-                        .workspace(Workspace.builder().name(ORGANIZATION).status(OrganizationStatus.ACTIVE.name())
-                                .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build())
+                        .workspace(Workspace.builder().name(ORGANIZATION).status(WorkspaceStatus.ACTIVE.name())
+                                .organization(Organization.builder().name(SUBSCRIBER).build()).build())
                         .build()))
                 .build()));
 

@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceRestMapper;
 import com.soprasteria.g4it.backend.apiworkspace.business.NewWorkspaceService;
 import com.soprasteria.g4it.backend.apiworkspace.mapper.OrganizationDetailsRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.NewWorkspaceApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
@@ -67,7 +68,7 @@ public class NewWorkspaceController implements NewWorkspaceApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OrganizationDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
+    public ResponseEntity<List<OrganizationDetailsRest>> getDomainOrganization(UserDetailsRest userDetailsRest) {
         return new ResponseEntity<>(
                 organizationDetailsRestMapper.toDto(this.newWorkspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
     }

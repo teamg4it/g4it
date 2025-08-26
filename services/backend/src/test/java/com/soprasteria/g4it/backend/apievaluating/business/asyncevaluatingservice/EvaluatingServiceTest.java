@@ -16,8 +16,8 @@ import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaByType;
@@ -192,15 +192,15 @@ class EvaluatingServiceTest {
         Task task = mock(Task.class);
         final Inventory inventory = mock(Inventory.class);
         final Workspace org = mock(Workspace.class);
-        final Subscriber subscriber = mock(Subscriber.class);
+        final Organization organization = mock(Organization.class);
 
         when(taskRepository.findByStatusAndType(any(), any()))
                 .thenReturn(Collections.singletonList(task));
         when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
         when(task.getInventory()).thenReturn(inventory);
         when(inventory.getWorkspace()).thenReturn(org);
-        when(org.getSubscriber()).thenReturn(subscriber);
-        when(org.getSubscriber().getName()).thenReturn(SUBSCRIBER);
+        when(org.getOrganization()).thenReturn(organization);
+        when(org.getOrganization().getName()).thenReturn(SUBSCRIBER);
         when(org.getId()).thenReturn(ORGANIZATION_ID);
         when(org.getName()).thenReturn(ORGANIZATION);
         when(inventory.getId()).thenReturn(INVENTORY_ID);

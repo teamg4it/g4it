@@ -15,7 +15,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import org.junit.jupiter.api.Test;
@@ -111,7 +111,7 @@ class InApplicationServiceTest {
         InApplicationRest inApplicationRest = new InApplicationRest();
         var organization = Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .organization(Organization.builder().name("SUBSCRIBER").build())
                 .build();
         var inventory = Inventory.builder()
                 .name("Inventory Name")

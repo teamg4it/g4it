@@ -44,8 +44,8 @@ paths:
     post:
       tags:
         - new-workspace
-      summary: get subscribers for domain
-      operationId: getDomainSubscribers
+      summary: get organizations for domain
+      operationId: getDomainOrganization
       requestBody:
         description: user's email.
         required: true
@@ -55,13 +55,13 @@ paths:
               $ref: "#/components/schemas/UserDetailsRest"
       responses:
         "200":
-          description: Return subscribers information
+          description: Return organizations information
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SubscriberDetailsRest"
+                  $ref: "#/components/schemas/OrganizationDetailsRest"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "401":

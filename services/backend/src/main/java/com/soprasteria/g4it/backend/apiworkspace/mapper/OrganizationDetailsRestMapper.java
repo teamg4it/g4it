@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.apiworkspace.mapper;
 
 import com.soprasteria.g4it.backend.apiworkspace.model.OrganizationDetailsBO;
+import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationDetailsRest;
 import org.mapstruct.Mapper;
 
 import java.util.List;
