@@ -18,8 +18,8 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.junit.jupiter.api.Test;
@@ -60,7 +60,7 @@ class InVirtualEquipmentServiceTest {
     void createInVirtualEquipmentInventoryTest() {
         var organization = Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .organization(Organization.builder().name("SUBSCRIBER").build())
                 .build();
         var inventory = Inventory.builder()
                 .name("Inventory Name")
@@ -89,7 +89,7 @@ class InVirtualEquipmentServiceTest {
         String digitalServiceId = "dummy_id";
         var organization = Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .organization(Organization.builder().name("SUBSCRIBER").build())
                 .build();
         var digitalService = DigitalService.builder()
                 .name("DS_Name")

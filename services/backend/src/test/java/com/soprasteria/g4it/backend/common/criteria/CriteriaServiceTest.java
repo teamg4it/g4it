@@ -9,9 +9,9 @@
 package com.soprasteria.g4it.backend.common.criteria;
 
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 class CriteriaServiceTest {
 
     @Mock
-    private SubscriberRepository subscriberRepository;
+    private OrganizationRepository organizationRepository;
 
     @Mock
     private WorkspaceService workspaceService;
@@ -41,10 +41,10 @@ class CriteriaServiceTest {
     void getSelectedCriteriaReturnsCriteriaByTypeWhenSubscriberExists() {
         String subscriber = "testSubscriber";
         List<String> mockCriteria = List.of("criteria1", "criteria2");
-        Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(mockCriteria);
+        Organization mockOrganization = new Organization();
+        mockOrganization.setCriteria(mockCriteria);
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
 
         CriteriaByType result = criteriaService.getSelectedCriteria(subscriber);
         assertNotNull(result);
@@ -54,7 +54,7 @@ class CriteriaServiceTest {
     void getSelectedCriteriaThrowsExceptionWhenSubscriberNotFound() {
         String subscriber = "nonExistentSubscriber";
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.empty());
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class, () -> {
             criteriaService.getSelectedCriteria(subscriber);
@@ -73,10 +73,10 @@ class CriteriaServiceTest {
         Workspace mockWorkspace = new Workspace();
         mockWorkspace.setCriteriaIs(List.of("orgCriteria1"));
 
-        Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriterias);
+        Organization mockOrganization = new Organization();
+        mockOrganization.setCriteria(subscriberCriterias);
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
         when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, inventoryCriterias);
@@ -93,10 +93,10 @@ class CriteriaServiceTest {
         Workspace mockWorkspace = new Workspace();
         mockWorkspace.setCriteriaDs(List.of("orgCriteriaDs1"));
 
-        Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriterias);
+        Organization mockOrganization = new Organization();
+        mockOrganization.setCriteria(subscriberCriterias);
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
         when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalServiceCriterias);
@@ -111,10 +111,10 @@ class CriteriaServiceTest {
         List<String> subscriberCriterias = List.of("criteria1", "criteria2");
         Workspace mockWorkspace = new Workspace();
 
-        Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriterias);
+        Organization mockOrganization = new Organization();
+        mockOrganization.setCriteria(subscriberCriterias);
 
-        when(subscriberRepository.findByName(subscriber)).thenReturn(Optional.of(mockSubscriber));
+        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
         when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, null);

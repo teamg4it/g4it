@@ -91,13 +91,13 @@ components:
         format: int64
       required: false
       description: The organization id.
-    subscriberQueryParam:
+    organizationQueryParam:
       in: query
-      name: subscriber
+      name: organization
       schema:
         type: string
       required: false
-      description: The subscriber.
+      description: The organization.
     reqOrganizationIdQueryParam:
       in: query
       name: organizationId
@@ -219,7 +219,7 @@ components:
           type: string
         isSuperAdmin:
           type: boolean
-        subscribers:
+        organizations:
           type: array
           items:
             $ref: "#/components/schemas/OrganizationRest"
@@ -917,25 +917,15 @@ components:
         end_time:
           type: string
 
-    SubscribertRest:
-      type: object
-      properties:
-        name:
-          type: string
-        impactStep:
-          type: array
-          items:
-            $ref: "#/components/schemas/WorkspaceRest"
-
     WorkspaceUpdateRest:
       description: Workspace update
       type: object
       required:
-        - workspaceId
+        - organizationId
         - name
       properties:
-        workspaceId:
-          description: Workspace id
+        organizationId:
+          description: Organization id
           type: integer
           format: int64
         name:
@@ -1024,21 +1014,21 @@ components:
         email:
           type: string
 
-    SubscriberDetailsRest:
-      description: subscribers linked to user's domain
+    OrganizationDetailsRest:
+      description: organizations linked to user's domain
       type: object
       properties:
         id:
           type: number
         name:
           type: string
-        organizations:
+        workspaces:
           type: array
           items:
-            $ref: "#/components/schemas/OrganizationDetailsRest"
+            $ref: "#/components/schemas/WorkspaceDetailsRest"
 
-    OrganizationDetailsRest:
-      description: organizations linked to subscribers
+    WorkspaceDetailsRest:
+      description: workspaces linked to organizations
       type: object
       properties:
         id:

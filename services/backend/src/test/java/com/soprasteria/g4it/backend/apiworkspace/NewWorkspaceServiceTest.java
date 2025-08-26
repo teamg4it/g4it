@@ -8,12 +8,12 @@
 
 package com.soprasteria.g4it.backend.apiworkspace;
 
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiworkspace.business.NewWorkspaceService;
-import com.soprasteria.g4it.backend.apiworkspace.model.SubscriberDetailsBO;
+import com.soprasteria.g4it.backend.apiworkspace.model.OrganizationDetailsBO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 class NewWorkspaceServiceTest {
 
     @Mock
-    private SubscriberRepository subscriberRepository;
+    private OrganizationRepository organizationRepository;
 
     @Mock
     private WorkspaceRepository workspaceRepository;
@@ -43,15 +43,15 @@ class NewWorkspaceServiceTest {
         String userEmail = "user@example.com";
         String domainName = "example.com";
 
-        Subscriber subscriber = Subscriber.builder().id(1L).name("Subscriber1").build();
+        Organization organization = Organization.builder().id(1L).name("Subscriber1").build();
         Workspace workspace = Workspace.builder().id(1L).name("Org1").status("Active").build();
 
-        when(subscriberRepository.findByAuthorizedDomainsContaining(domainName))
-                .thenReturn(List.of(subscriber));
+        when(organizationRepository.findByAuthorizedDomainsContaining(domainName))
+                .thenReturn(List.of(organization));
         when(workspaceRepository.findBySubscriberId(1L))
                 .thenReturn(List.of(workspace));
 
-        List<SubscriberDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
+        List<OrganizationDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
 
         assertEquals(1, result.size());
         assertEquals("Subscriber1", result.getFirst().getName());
@@ -64,10 +64,10 @@ class NewWorkspaceServiceTest {
         String userEmail = "user@nonexistent.com";
         String domainName = "nonexistent.com";
 
-        when(subscriberRepository.findByAuthorizedDomainsContaining(domainName))
+        when(organizationRepository.findByAuthorizedDomainsContaining(domainName))
                 .thenReturn(List.of());
 
-        List<SubscriberDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
+        List<OrganizationDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
 
         assertTrue(result.isEmpty());
     }
@@ -77,14 +77,14 @@ class NewWorkspaceServiceTest {
         String userEmail = "user@example.com";
         String domainName = "example.com";
 
-        Subscriber subscriber = Subscriber.builder().id(1L).name("Subscriber1").build();
+        Organization organization = Organization.builder().id(1L).name("Subscriber1").build();
 
-        when(subscriberRepository.findByAuthorizedDomainsContaining(domainName))
-                .thenReturn(List.of(subscriber));
+        when(organizationRepository.findByAuthorizedDomainsContaining(domainName))
+                .thenReturn(List.of(organization));
         when(workspaceRepository.findBySubscriberId(1L))
                 .thenReturn(List.of());
 
-        List<SubscriberDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
+        List<OrganizationDetailsBO> result = newWorkspaceService.searchSubscribersByDomainName(userEmail);
 
         assertEquals(1, result.size());
         assertEquals("Subscriber1", result.getFirst().getName());
