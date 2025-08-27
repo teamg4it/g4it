@@ -44,7 +44,7 @@ public class NewWorkspaceService {
         List<Organization> organizations = organizationRepository.findByAuthorizedDomainsContaining(domainName);
         List<OrganizationDetailsBO> lstSubscriber = new ArrayList<>();
         for (Organization organization : organizations) {
-            List<Workspace> workspaces = workspaceRepository.findBySubscriberId(organization.getId());
+            List<Workspace> workspaces = workspaceRepository.findByOrganizationId(organization.getId());
             List<WorkspaceDetailsBO> lstOrganizations = new ArrayList<>();
             for (Workspace workspace : workspaces) {
                 lstOrganizations.add(WorkspaceDetailsBO.builder().id(workspace.getId()).name(workspace.getName()).status(workspace.getStatus()).build());

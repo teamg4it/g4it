@@ -18,68 +18,68 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Organization repository to access organization data in database.
+ * workspace repository to access workspace data in database.
  */
 @Repository
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
 
     /**
-     * Find an organization by subscriber and organization name.
+     * Find a workspace by organization and workspace name.
      *
-     * @param subscriberName   the client subscriber.
-     * @param organizationName the organization name.
-     * @return the organization.
+     * @param organizationName the client organization.
+     * @param workspaceName    the workspace name.
+     * @return the workspace.
      */
-    Optional<Workspace> findBySubscriberNameAndName(final String subscriberName, final String organizationName);
+    Optional<Workspace> findByOrganizationNameAndName(final String organizationName, final String workspaceName);
 
     /**
-     * Find active organization by id.
+     * Find active workspace by id.
      *
-     * @param id     the organization id.
+     * @param id     the workspace id.
      * @param status the status.
-     * @return the organization.
+     * @return the workspace.
      */
     Optional<Workspace> findByIdAndStatusIn(final Long id, List<String> status);
 
     /**
-     * Find all organizations by status.
+     * Find all workspaces by status.
      *
      * @param status the status.
-     * @return the organization.
+     * @return the workspace.
      */
     List<Workspace> findAllByStatusIn(List<String> status);
 
     /**
-     * Find all organizations by isMigrated.
+     * Find all workspaces by isMigrated.
      *
      * @param isMigrated the status isMigrated.
-     * @return the organization.
+     * @return the workspace.
      */
     List<Workspace> findAllByIsMigrated(Boolean isMigrated);
 
     /**
-     * Find organization by organization's name and subscriber's id.
-     *
-     * @param subscriberId     the subscriber's id
-     * @param organizationName the organization's name
-     * @return Organization
-     */
-    Optional<Workspace> findBySubscriberIdAndName(final Long subscriberId, final String organizationName);
-
-    /**
-     * Find organization by organization's id and subscriber's id and organization's statuses.
+     * Find workspace by workspace's name and organization's id.
      *
      * @param organizationId the organization's id
-     * @param subscriberId   the subscriber's id
-     * @param status         the status.
-     * @return Organization
+     * @param workspaceName  the workspace's name
+     * @return workspace
      */
-    Optional<Workspace> findByIdAndSubscriberIdAndStatusIn(final Long organizationId, final Long subscriberId, final List<String> status);
+    Optional<Workspace> findByOrganizationIdAndName(final Long organizationId, final String workspaceName);
 
     /**
-     * Update the status of organization
+     * Find workspace by workspace's id and organization's id and workspace's statuses.
      *
-     * @param id     the organization id
+     * @param workspaceId    the workspace's id
+     * @param organizationId the organization's id
+     * @param status         the status.
+     * @return workspace
+     */
+    Optional<Workspace> findByIdAndOrganizationIdAndStatusIn(final Long workspaceId, final Long organizationId, final List<String> status);
+
+    /**
+     * Update the status of workspace
+     *
+     * @param id     the workspace id
      * @param status the status
      */
     @Transactional
@@ -88,11 +88,11 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
     void setStatusForWorkspace(Long id, String status);
 
     /**
-     * Find organization by subscriber's id.
+     * Find workspace by organization's id.
      *
-     * @param subscriberId the subscriber's id
-     * @return Organization
+     * @param organizationId the organization's id
+     * @return workspace
      */
-    List<Workspace> findBySubscriberId(final Long subscriberId);
+    List<Workspace> findByOrganizationId(final Long organizationId);
 
 }

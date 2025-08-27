@@ -161,7 +161,7 @@ public class UserService {
         User newUser = null;
         for (Organization organization : organizationRepository.findByAuthorizedDomainsNotNull()) {
             if (Arrays.asList(organization.getAuthorizedDomains().split(",")).contains(userInfo.getDomain())) {
-                Workspace demoOrg = workspaceRepository.findBySubscriberNameAndName(organization.getName(), Constants.DEMO)
+                Workspace demoOrg = workspaceRepository.findByOrganizationNameAndName(organization.getName(), Constants.DEMO)
                         .orElseGet(() -> workspaceRepository.save(Workspace.builder()
                                 .name(Constants.DEMO)
                                 .status(WorkspaceStatus.ACTIVE.name())
