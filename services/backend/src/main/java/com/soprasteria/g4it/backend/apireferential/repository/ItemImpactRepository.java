@@ -32,26 +32,26 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
             ((?5 IS NULL) OR (?5 IS NOT NULL AND cf.location = ?5)) AND
             ((?6 IS NULL) OR (?6 IS NOT NULL AND cf.organization = ?6))
             """)
-    List<ItemImpact> findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndSubscriber(final String criterion,
-                                                                                               final String lifecycleStep,
-                                                                                               final String name,
-                                                                                               final String category,
-                                                                                               final String location,
-                                                                                               final String organization);
+    List<ItemImpact> findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(final String criterion,
+                                                                                                 final String lifecycleStep,
+                                                                                                 final String name,
+                                                                                                 final String category,
+                                                                                                 final String location,
+                                                                                                 final String workspace);
 
     List<ItemImpact> findByLevel(final String level);
 
     List<ItemImpact> findByCategory(final String category);
 
-    Page<ItemImpact> findBySubscriber(final String organization, final Pageable pageable);
+    Page<ItemImpact> findByOrganization(final String workspace, final Pageable pageable);
 
     @Query("""
             SELECT distinct ii.location
             FROM ItemImpact ii
             WHERE ii.category = 'electricity-mix'
-            AND (:organization IS NULL OR :organization IS NOT NULL AND ii.organization = :organization)
+            AND (:workspace IS NULL OR :workspace IS NOT NULL AND ii.organization = :workspace)
             """)
-    List<String> findCountries(@Param("organization") String organization);
+    List<String> findCountries(@Param("workspace") String workspace);
 
     @Modifying
     @Transactional
@@ -61,5 +61,5 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
     @Transactional
     @Modifying
     @Query("DELETE FROM #{#entityName} ii WHERE (?1 IS NULL) OR (?1 IS NOT NULL AND ii.organization = ?1)")
-    void deleteBySubscriber(final String organization);
+    void deleteByOrganization(final String workspace);
 }

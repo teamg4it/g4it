@@ -189,7 +189,7 @@ public class ReferentialExportService {
             do {
                 Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE);
 
-                itemImpacts = itemImpactRepository.findBySubscriber(subscriber, pageable);
+                itemImpacts = itemImpactRepository.findByOrganization(subscriber, pageable);
 
                 for (ItemImpact item : itemImpacts.getContent()) {
                     csvPrinter.printRecord(item.toCsvRecord());

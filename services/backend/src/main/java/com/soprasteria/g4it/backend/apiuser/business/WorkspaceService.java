@@ -104,7 +104,7 @@ public class WorkspaceService {
     public Workspace getOrganizationByStatus(final Long subscriberId, final Long organizationId, List<String> status) {
         Optional<Workspace> optOrg = subscriberId == null ?
                 workspaceRepository.findByIdAndStatusIn(organizationId, status) :
-                workspaceRepository.findByIdAndSubscriberIdAndStatusIn(organizationId, subscriberId, status);
+                workspaceRepository.findByIdAndOrganizationIdAndStatusIn(organizationId, subscriberId, status);
 
         return optOrg.orElseThrow(
                 () -> new G4itRestException("404", String.format("organization with id '%d' not found", organizationId))
@@ -123,7 +123,7 @@ public class WorkspaceService {
     public WorkspaceBO createWorkspace(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, Long organizationId) {
 
         // Check if organization with same name already exist on this subscriber.
-        workspaceRepository.findBySubscriberIdAndName(workspaceUpdateRest.getOrganizationId(), workspaceUpdateRest.getName())
+        workspaceRepository.findByOrganizationIdAndName(workspaceUpdateRest.getOrganizationId(), workspaceUpdateRest.getName())
                 .ifPresent(organization -> {
                     throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", workspaceUpdateRest.getName(), organizationId));
                 });
@@ -217,7 +217,7 @@ public class WorkspaceService {
         if (isNameChange) {
             // Handle update in organization's name
             // Check if organization with same name already exist on this subscriber.
-            workspaceRepository.findBySubscriberIdAndName(workspaceUpdateRest.getOrganizationId(), newWorkspace)
+            workspaceRepository.findByOrganizationIdAndName(workspaceUpdateRest.getOrganizationId(), newWorkspace)
                     .ifPresent(org -> {
                         throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newWorkspace, workspaceUpdateRest.getOrganizationId()));
                     });

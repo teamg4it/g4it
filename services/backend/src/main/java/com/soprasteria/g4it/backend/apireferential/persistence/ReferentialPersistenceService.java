@@ -94,8 +94,8 @@ public class ReferentialPersistenceService {
         itemImpactRepository.truncateTable();
     }
 
-    public void deleteItemImpactsBySubscriber(final String subscriber) {
-        itemImpactRepository.deleteBySubscriber(subscriber);
+    public void deleteItemImpactsByOrganization(final String organization) {
+        itemImpactRepository.deleteByOrganization(organization);
     }
 
     @Transactional

@@ -122,7 +122,7 @@ public class ReferentialGetService {
                                                String name, String location,
                                                String category, String subscriber) {
 
-        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndSubscriber(
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
                 StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, subscriber);
         return refRestMapper.toItemImpactRest(itemImpacts);
     }
