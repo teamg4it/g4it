@@ -45,7 +45,7 @@ public class AuthService {
     private Environment environment;
     private static final String TOKEN_ERROR_MESSAGE = "The token is not a JWT token";
     private static final String SUPPORT_ERROR_MESSAGE = "To access to G4IT, you must be added as a member of a organization, please contact your administrator or the support at support.g4it@soprasteria.com";
-    private static final String SUBSCRIBERS = "subscribers";
+    private static final String ORGANIZATIONS = "organizations";
     private static final Set<String> NOT_DIGITAL_SERVICE = Set.of("device-type", "country", "network-type", "server-host", "ecomind-type");
 
 
@@ -100,19 +100,19 @@ public class AuthService {
     }
 
     /**
-     * Get subscriber and organization
+     * Get organization and workspace
      *
      * @return the pair (sub, org)
      */
-    public Pair<String, String> getSubscriberAndOrganization(String[] urlSplit) {
+    public Pair<String, String> getOrganizationAndWorkspace(String[] urlSplit) {
         if (urlSplit == null)
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "Unable to determine associated organization");
 
-        if (SUBSCRIBERS.equals(urlSplit[1]) && urlSplit.length < 5) {
+        if (ORGANIZATIONS.equals(urlSplit[1]) && urlSplit.length < 5) {
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "Unable to determine associated organization");
         }
 
-        if (SUBSCRIBERS.equals(urlSplit[1])) {
+        if (ORGANIZATIONS.equals(urlSplit[1])) {
             return Pair.of(urlSplit[2], urlSplit[4]);
         }
 
@@ -147,12 +147,12 @@ public class AuthService {
      * Get the JwtAuthenticationToken for a user
      *
      * @param userInfo     the userInfo (email, firstName, lastname and subject)
-     * @param subscriber   the subscriber
      * @param organization the organization
+     * @param workspace    the workspace
      * @return the jwt
      */
-    @Cacheable(value = "getJwtToken", key = "#userInfo.email + #subscriber + #organization")
-    public JwtAuthenticationToken getJwtToken(final UserBO userInfo, final String subscriber, final Long organization) {
+    @Cacheable(value = "getJwtToken", key = "#userInfo.email + #organization + #workspace")
+    public JwtAuthenticationToken getJwtToken(final UserBO userInfo, final String organization, final Long workspace) {
         final UserBO user = userService.getUserByName(userInfo);
         if (user == null) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
@@ -160,7 +160,7 @@ public class AuthService {
         }
 
         // Verify authentication and get user roles.
-        final List<GrantedAuthority> userRoles = new ArrayList<>(controlAccess(user, subscriber, organization).stream()
+        final List<GrantedAuthority> userRoles = new ArrayList<>(controlAccess(user, organization, workspace).stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList());
 
@@ -183,13 +183,13 @@ public class AuthService {
     /**
      * Control user access based on the requestUri.
      *
-     * @param user           the user
-     * @param subscriberName the subscriberName.
-     * @param organizationId the organizationId
-     * @return the user roles on ths subscriber and organization containing in the requestURI.
-     * @throws AuthorizationException when the user has no role on the subscriber and/or organization.
+     * @param user             the user
+     * @param organizationName the organizationName.
+     * @param workspaceId      the organizationId
+     * @return the user roles on ths organization and organization containing in the requestURI.
+     * @throws AuthorizationException when the user has no role on the organization and/or workspace.
      */
-    private List<String> controlAccess(final UserBO user, final String subscriberName, final Long organizationId) throws AuthorizationException {
+    private List<String> controlAccess(final UserBO user, final String organizationName, final Long workspaceId) throws AuthorizationException {
 
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) {
             log.info("UserId={} is authorized with role={}", user.getId(), Constants.ROLE_SUPER_ADMINISTRATOR);
@@ -199,29 +199,29 @@ public class AuthService {
             return allRoles;
         }
 
-        var subscriber = user.getSubscribers().stream()
-                .filter(e -> e.getName().equals(subscriberName))
+        var organization = user.getOrganizations().stream()
+                .filter(e -> e.getName().equals(organizationName))
                 .findAny()
-                .orElseThrow(() -> new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, String.format("The subscriber %s is not allowed.", subscriberName)));
+                .orElseThrow(() -> new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, String.format("The organization %s is not allowed.", organizationName)));
 
-        if (subscriber.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)) {
-            log.info("UserId={} is authorized for {}/{} with roles={}", user.getId(), subscriber.getName(), organizationId, Constants.ROLE_SUBSCRIBER_ADMINISTRATOR);
+        if (organization.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)) {
+            log.info("UserId={} is authorized for {}/{} with roles={}", user.getId(), organization.getName(), workspaceId, Constants.ROLE_SUBSCRIBER_ADMINISTRATOR);
             return Constants.SUBSCRIBER_ROLES;
         }
 
-        // Retrieve subscriber from uri, in second position.
-        var organization = subscriber.getOrganizations().stream()
-                .filter(e -> Objects.equals(e.getId(), organizationId))
+        // Retrieve organization from uri, in second position.
+        var workspace = organization.getOrganizations().stream()
+                .filter(e -> Objects.equals(e.getId(), workspaceId))
                 .findAny()
-                .orElseThrow(() -> new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, String.format("The organization name %s is not allowed.", organizationId)));
+                .orElseThrow(() -> new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, String.format("The workspace name %s is not allowed.", workspaceId)));
 
         // Active role.
-        if (CollectionUtils.isEmpty(organization.getRoles())) {
+        if (CollectionUtils.isEmpty(workspace.getRoles())) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "The user has any role.");
         }
 
-        final List<String> roles = new ArrayList<>(organization.getRoles());
-        log.info("UserId={} is authorized for {}/{} with roles={}", user.getId(), subscriber.getName(), organization.getId(), roles);
+        final List<String> roles = new ArrayList<>(workspace.getRoles());
+        log.info("UserId={} is authorized for {}/{} with roles={}", user.getId(), organization.getName(), workspace.getId(), roles);
 
         if (roles.contains(Constants.ROLE_DIGITAL_SERVICE_WRITE)) {
             roles.add(Constants.ROLE_DIGITAL_SERVICE_READ);
@@ -248,40 +248,40 @@ public class AuthService {
      */
     public void checkUserRightForDigitalService(String[] urlSplit) {
         // urlSplit looks like this :
-        // [ "", "subscribers", "$subscriber", "organizations", "$organization", "digital-services", "$digitalServiceUid", ...restOfUri ]
+        // [ "", "organizations", "$organization", "workspaces", "$workspace", "digital-services", "$digitalServiceUid", ...restOfUri ]
         if (urlSplit.length <= 6) return;
         if (!"digital-services".equals(urlSplit[5])) return;
 
         final String digitalServiceUid = urlSplit[6];
         if (NOT_DIGITAL_SERVICE.contains(digitalServiceUid)) return;
-        String subscriber = urlSplit[2];
-        Long organizationId = Long.parseLong(urlSplit[4]);
+        String organization = urlSplit[2];
+        Long workspaceId = Long.parseLong(urlSplit[4]);
 
-        if (!digitalServiceService.digitalServiceExists(subscriber, organizationId, digitalServiceUid)) {
-            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("The digital service '%s' does not exist or is not linked to %s/%s", digitalServiceUid, subscriber, organizationId));
+        if (!digitalServiceService.digitalServiceExists(organization, workspaceId, digitalServiceUid)) {
+            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("The digital service '%s' does not exist or is not linked to %s/%s", digitalServiceUid, organization, workspaceId));
         }
     }
 
     /**
      * Check if the user has the right to manage the inventory
-     * Also checks the inventory id is linked to the subscriber/organizationId
+     * Also checks the inventory id is linked to the organization/workspaceId
      *
      * @param urlSplit the split url
      */
     public void checkUserRightForInventory(String[] urlSplit) {
         if (urlSplit.length <= 6) return;
-        if (!(SUBSCRIBERS.equals(urlSplit[1]) &&
+        if (!(ORGANIZATIONS.equals(urlSplit[1]) &&
                 "organizations".equals(urlSplit[3]) &&
                 "inventories".equals(urlSplit[5]))) return;
 
-        String subscriber = urlSplit[2];
+        String organization = urlSplit[2];
 
         try {
-            Long organizationId = Long.parseLong(urlSplit[4]);
+            Long workspaceId = Long.parseLong(urlSplit[4]);
             Long inventoryId = Long.parseLong(urlSplit[6]);
 
-            if (!inventoryService.inventoryExists(subscriber, organizationId, inventoryId)) {
-                throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("The inventory '%d' does not exist or is not linked to %s/%s", inventoryId, subscriber, organizationId));
+            if (!inventoryService.inventoryExists(organization, workspaceId, inventoryId)) {
+                throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("The inventory '%d' does not exist or is not linked to %s/%s", inventoryId, organization, workspaceId));
             }
         } catch (NumberFormatException e) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "OrganizationId and inventoryId must be in Long format");

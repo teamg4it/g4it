@@ -105,8 +105,8 @@ public class UserService {
         }
 
         List<OrganizationBO> organizationBOList = Constants.SUPER_ADMIN_EMAIL.equals(email) ?
-                buildSubscribersForSuperAdmin() :
-                buildSubscribers(userReturned, userInfo.isAdminMode());
+                buildOrganizationsForSuperAdmin() :
+                buildOrganizations(userReturned, userInfo.isAdminMode());
 
         return UserBO.builder()
                 .id(userReturned.getId())
@@ -114,7 +114,7 @@ public class UserService {
                 .lastName(userReturned.getLastName())
                 .email(userReturned.getEmail())
                 .isSuperAdmin(Constants.SUPER_ADMIN_EMAIL.equals(userReturned.getEmail()))
-                .subscribers(organizationBOList)
+                .organizations(organizationBOList)
                 .adminMode(userInfo.isAdminMode())
                 .build();
     }
@@ -195,11 +195,11 @@ public class UserService {
     /**
      * Create an admin user in 'nosecurity' mode
      *
-     * @param withSubscribers include subscribers
+     * @param withOrganizations include organizations
      * @return the userBO
      */
     @Transactional
-    public UserBO getNoSecurityUser(boolean withSubscribers) {
+    public UserBO getNoSecurityUser(boolean withOrganizations) {
         User user = userRepository.findByEmail(Constants.SUPER_ADMIN_EMAIL).orElseThrow();
 
         return UserBO.builder()
@@ -208,83 +208,83 @@ public class UserService {
                 .lastName("No Security Mode")
                 .email(Constants.SUPER_ADMIN_EMAIL)
                 .isSuperAdmin(true)
-                .subscribers(withSubscribers ? buildSubscribersForSuperAdmin() : null)
+                .organizations(withOrganizations ? buildOrganizationsForSuperAdmin() : null)
                 .adminMode(true)
                 .domain(Constants.SUPER_ADMIN_EMAIL.split("@")[1])
                 .build();
     }
 
     /**
-     * Build subscriber list.
+     * Build organization list.
      *
-     * @return the user's subscriber list.
+     * @return the user's organization list.
      */
-    public List<OrganizationBO> buildSubscribersForSuperAdmin() {
+    public List<OrganizationBO> buildOrganizationsForSuperAdmin() {
 
-        // Get the subscribers and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
+        // Get the organizations and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
         return organizationRepository.findAll().stream()
-                .map(subscriber -> {
-                    var subscriberBO = OrganizationBO.builder()
+                .map(organization -> {
+                    var organizationBO = OrganizationBO.builder()
                             .defaultFlag(false)
-                            .name(subscriber.getName())
-                            .organizations(subscriber.getWorkspaces().stream()
-                                    .map(organization -> {
+                            .name(organization.getName())
+                            .organizations(organization.getWorkspaces().stream()
+                                    .map(workspace -> {
                                         WorkspaceBO workspaceBO = WorkspaceBO.builder()
                                                 .roles(List.of())
                                                 .defaultFlag(false)
-                                                .name(organization.getName())
-                                                .id(organization.getId())
-                                                .status(organization.getStatus())
-                                                .deletionDate(organization.getDeletionDate())
-                                                .criteriaIs(organization.getCriteriaIs())
-                                                .criteriaDs(organization.getCriteriaDs())
+                                                .name(workspace.getName())
+                                                .id(workspace.getId())
+                                                .status(workspace.getStatus())
+                                                .deletionDate(workspace.getDeletionDate())
+                                                .criteriaIs(workspace.getCriteriaIs())
+                                                .criteriaDs(workspace.getCriteriaDs())
                                                 .build();
                                         return workspaceBO;
                                     })
                                     .sorted(Comparator.comparing(WorkspaceBO::getName))
                                     .toList())
                             .roles(List.of(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
-                            .criteria(subscriber.getCriteria())
-                            .authorizedDomains(subscriber.getAuthorizedDomains())
-                            .id(subscriber.getId())
-                            .ecomindai(subscriber.isEcomindai())
+                            .criteria(organization.getCriteria())
+                            .authorizedDomains(organization.getAuthorizedDomains())
+                            .id(organization.getId())
+                            .ecomindai(organization.isEcomindai())
                             .build();
-                    return subscriberBO;
+                    return organizationBO;
                 })
                 .sorted(Comparator.comparing(OrganizationBO::getName))
                 .toList();
     }
 
     /**
-     * Build subscriber list.
+     * Build organization list.
      *
      * @param user the user.
-     * @return the user's subscriber list.
+     * @return the user's organization list.
      */
-    public List<OrganizationBO> buildSubscribers(final User user, final boolean adminMode) {
+    public List<OrganizationBO> buildOrganizations(final User user, final boolean adminMode) {
 
         if (user.getUserOrganizations() == null || user.getUserWorkspaces() == null) return List.of();
 
-        // Get the subscribers and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
+        // Get the organization and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
         List<OrganizationBO> results = new ArrayList<>(user.getUserOrganizations().stream()
-                .filter(userSubscriber -> userSubscriber.getRoles() != null &&
-                        userSubscriber.getRoles().stream().anyMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)))
-                .map(userSubscriber -> buildSubscriber(userSubscriber, adminMode))
+                .filter(userOrganization -> userOrganization.getRoles() != null &&
+                        userOrganization.getRoles().stream().anyMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)))
+                .map(userOrganization -> buildOrganization(userOrganization, adminMode))
                 .sorted(Comparator.comparing(OrganizationBO::getName))
                 .toList());
 
-        Set<String> adminSubscribers = results.stream().map(OrganizationBO::getName).collect(Collectors.toSet());
+        Set<String> adminOrganizations = results.stream().map(OrganizationBO::getName).collect(Collectors.toSet());
 
         if (user.getUserWorkspaces() == null) return results;
 
-        // (subscriber, [userOrganization])
-        final Map<Organization, List<UserWorkspace>> organizationBySubscriber = user.getUserWorkspaces().stream()
+        // (organization, [userWorkspace])
+        final Map<Organization, List<UserWorkspace>> workspaceByOrganization = user.getUserWorkspaces().stream()
                 .collect(Collectors.groupingBy(e -> e.getWorkspace().getOrganization()));
 
-        // Get the subscribers and subObjects on which the user has not ROLE_SUBSCRIBER_ADMINISTRATOR but other roles on organizations
-        results.addAll(organizationBySubscriber.entrySet().stream()
-                .filter(entry -> !adminSubscribers.contains(entry.getKey().getName()))
-                .map(userOrgsBySub -> buildSubscriberWithUserOrganizations(userOrgsBySub.getKey(), userOrgsBySub.getValue(), adminMode))
+        // Get the organizations and subObjects on which the user has not ROLE_SUBSCRIBER_ADMINISTRATOR but other roles on workspaces
+        results.addAll(workspaceByOrganization.entrySet().stream()
+                .filter(entry -> !adminOrganizations.contains(entry.getKey().getName()))
+                .map(userWorksByOrg -> buildOrganizationWithUserWorkspaces(userWorksByOrg.getKey(), userWorksByOrg.getValue(), adminMode))
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(OrganizationBO::getName))
                 .toList());
@@ -293,13 +293,13 @@ public class UserService {
     }
 
     /**
-     * Build subscriber.
+     * Build organization.
      *
-     * @param userOrganization the user subscriber.
+     * @param userOrganization the user organization.
      * @param adminMode        the adminMode
-     * @return the user's subscriber.
+     * @return the user's organization.
      */
-    public OrganizationBO buildSubscriber(final UserOrganization userOrganization, final boolean adminMode) {
+    public OrganizationBO buildOrganization(final UserOrganization userOrganization, final boolean adminMode) {
 
         final List<Role> roles = userOrganization.getRoles() == null ? List.of() : userOrganization.getRoles();
         final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
@@ -332,20 +332,20 @@ public class UserService {
     }
 
     /**
-     * Build the subscriber if any organization has at least one user role
+     * Build the organization if any workspace has at least one user role
      *
-     * @param organization   the user subscriber.
+     * @param organization   the user organization.
      * @param userWorkspaces the user's organization list.
      * @param adminMode      the adminMode
-     * @return the user's subscriber.
+     * @return the user's organization.
      */
-    public OrganizationBO buildSubscriberWithUserOrganizations(final Organization organization, final List<UserWorkspace> userWorkspaces, final boolean adminMode) {
+    public OrganizationBO buildOrganizationWithUserWorkspaces(final Organization organization, final List<UserWorkspace> userWorkspaces, final boolean adminMode) {
 
         final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
 
         List<WorkspaceBO> organizations = userWorkspaces.stream()
                 .filter(userOrganization -> status.contains(userOrganization.getWorkspace().getStatus()))
-                .map(this::buildOrganization)
+                .map(this::buildWorkspace)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -366,10 +366,10 @@ public class UserService {
     /**
      * Build organization.
      *
-     * @param userWorkspace the user's organization.
-     * @return the user's organization.
+     * @param userWorkspace the user's workspace.
+     * @return the user's workspace.
      */
-    public WorkspaceBO buildOrganization(final UserWorkspace userWorkspace) {
+    public WorkspaceBO buildWorkspace(final UserWorkspace userWorkspace) {
         if (userWorkspace.getRoles() == null || userWorkspace.getRoles().isEmpty()) return null;
 
         return WorkspaceBO.builder()
@@ -401,11 +401,11 @@ public class UserService {
      *
      * @param user the user.
      */
-    public void clearUserCache(final UserBO user, final String subscriber, Long organization) {
+    public void clearUserCache(final UserBO user, final String organization, Long workspace) {
         List.of(false, true).forEach(isAdmin -> Objects.requireNonNull(cacheManager.getCache(USER))
                 .evict(UserBO.builder().email(user.getEmail()).adminMode(isAdmin).build()));
         Objects.requireNonNull(cacheManager.getCache(TOKEN))
-                .evict(user.getEmail() + subscriber + organization);
+                .evict(user.getEmail() + organization + workspace);
     }
 
     /**

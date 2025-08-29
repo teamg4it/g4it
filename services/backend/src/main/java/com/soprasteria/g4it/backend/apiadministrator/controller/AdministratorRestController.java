@@ -67,9 +67,9 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<OrganizationRest> getOrganizationById(final Long subscriberId) {
+    public ResponseEntity<OrganizationRest> getOrganizationById(final Long organizationId) {
         return ResponseEntity.ok(
-                organizationRestMapper.toDto(this.administratorService.getSubscriberById(subscriberId)));
+                organizationRestMapper.toDto(this.administratorService.getOrganizationById(organizationId)));
     }
 
 
@@ -77,8 +77,8 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<OrganizationRest> updateOrganization(final Long subscriberId, final CriteriaRest criteriaRest) {
-        return ResponseEntity.ok(organizationRestMapper.toDto(this.administratorService.updateOrganizationCriteria(subscriberId, criteriaRest, authService.getUser()))
+    public ResponseEntity<OrganizationRest> updateOrganization(final Long organizationId, final CriteriaRest criteriaRest) {
+        return ResponseEntity.ok(organizationRestMapper.toDto(this.administratorService.updateOrganizationCriteria(organizationId, criteriaRest, authService.getUser()))
         );
     }
 
@@ -86,8 +86,8 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OrganizationRest>> getWorkspaces(final Long organizationId, final Long subscriberId) {
-        return new ResponseEntity<>(organizationRestMapper.toDto(administratorWorkspaceService.getWorkspaces(subscriberId, organizationId, authService.getUser())),
+    public ResponseEntity<List<OrganizationRest>> getWorkspaces(final Long workspaceId, final Long organizationId) {
+        return new ResponseEntity<>(organizationRestMapper.toDto(administratorWorkspaceService.getWorkspaces(organizationId, workspaceId, authService.getUser())),
                 HttpStatus.OK);
     }
 
@@ -104,8 +104,8 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<WorkspaceRest> updateWorkspace(final WorkspaceUpdateRest workspaceUpdateRest, final Long organizationId) {
-        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.updateWorkspace(organizationId, workspaceUpdateRest, authService.getUser())),
+    public ResponseEntity<WorkspaceRest> updateWorkspace(final WorkspaceUpdateRest workspaceUpdateRest, final Long workspaceId) {
+        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.updateWorkspace(workspaceId, workspaceUpdateRest, authService.getUser())),
                 HttpStatus.OK);
     }
 
@@ -122,9 +122,9 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<UserInfoRest>> getUsersOfWorkspace(Long organizationId) {
+    public ResponseEntity<List<UserInfoRest>> getUsersOfWorkspace(Long workspaceId) {
         return new ResponseEntity<>
-                (userRestMapper.toListRest(administratorWorkspaceService.getUsersOfWorkspace(organizationId, authService.getUser())), HttpStatus.OK);
+                (userRestMapper.toListRest(administratorWorkspaceService.getUsersOfWorkspace(workspaceId, authService.getUser())), HttpStatus.OK);
     }
 
     /**
@@ -149,9 +149,9 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<UserSearchRest>> searchUserByName(final String searchedName, final Long subscriberId, final Long organizationId) {
+    public ResponseEntity<List<UserSearchRest>> searchUserByName(final String searchedName, final Long organizationId, final Long workspaceId) {
         return new ResponseEntity<>(
-                userRestMapper.toRestObj(this.administratorService.searchUserByName(searchedName, subscriberId, organizationId, authService.getUser())), HttpStatus.OK);
+                userRestMapper.toRestObj(this.administratorService.searchUserByName(searchedName, organizationId, workspaceId, authService.getUser())), HttpStatus.OK);
 
     }
 

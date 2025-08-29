@@ -219,7 +219,7 @@ class DigitalServiceServiceTest {
         Organization organizationObj = Organization.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
 
         when(organizationRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(organizationObj));
-        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
                 .thenReturn(false);
         // No change in dataInconsistency
         when(userWorkspaceRepository.findByWorkspaceIdAndUserId(ORGANIZATION_ID, USER_ID))
@@ -242,7 +242,7 @@ class DigitalServiceServiceTest {
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
         verify(userWorkspaceRepository, times(1)).findByWorkspaceIdAndUserId(ORGANIZATION_ID, USER_ID);
         verify(organizationRepository, times(1)).findByName(SUBSCRIBER);
-        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
+        verify(roleService, times(1)).hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
     }
 
 
@@ -260,7 +260,7 @@ class DigitalServiceServiceTest {
         Organization organizationObj = Organization.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
 
         when(organizationRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(organizationObj));
-        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
                 .thenReturn(false);
         when(userWorkspaceRepository.findByWorkspaceIdAndUserId(ORGANIZATION_ID, USER_ID))
                 .thenReturn(Optional.of(userWorkspace));
@@ -280,7 +280,7 @@ class DigitalServiceServiceTest {
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
         verify(userWorkspaceRepository, times(1)).findByWorkspaceIdAndUserId(ORGANIZATION_ID, USER_ID);
         verify(organizationRepository, times(1)).findByName(SUBSCRIBER);
-        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
+        verify(roleService, times(1)).hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
     }
 
     @Test
@@ -323,7 +323,7 @@ class DigitalServiceServiceTest {
         Organization organizationObj = Organization.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
 
         when(organizationRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(organizationObj));
-        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
                 .thenReturn(true);   // user is admin
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
@@ -337,7 +337,7 @@ class DigitalServiceServiceTest {
         assertThat(result).isEqualTo(inputDigitalServiceBO);
 
         verify(organizationRepository, times(1)).findByName(SUBSCRIBER);
-        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
+        verify(roleService, times(1)).hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
 
         // Key point: should NOT check user org roles since admin
         verify(userWorkspaceRepository, never()).findByWorkspaceIdAndUserId(anyLong(), anyLong());
@@ -361,7 +361,7 @@ class DigitalServiceServiceTest {
         Organization organizationObj = Organization.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
 
         when(organizationRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(organizationObj));
-        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
                 .thenReturn(false);
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
@@ -375,7 +375,7 @@ class DigitalServiceServiceTest {
 
         verify(userWorkspaceRepository, times(1)).findByWorkspaceIdAndUserId(ORGANIZATION_ID, USER_ID);
         verify(organizationRepository, times(1)).findByName(SUBSCRIBER);
-        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
+        verify(roleService, times(1)).hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
     }
 
     @Test
@@ -395,7 +395,7 @@ class DigitalServiceServiceTest {
         Organization organizationObj = Organization.builder().id(SUBSCRIBER_ID).name(SUBSCRIBER).build();
 
         when(organizationRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(organizationObj));
-        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID))
                 .thenReturn(false);
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
@@ -427,7 +427,7 @@ class DigitalServiceServiceTest {
                 .roles(List.of(Role.builder().name("ROLE_DIGITAL_SERVICE_WRITE").build())).build();
 
         when(organizationRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(organizationObj));
-        when(roleService.hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID)).thenReturn(false);
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID)).thenReturn(false);
         when(userWorkspaceRepository.findByWorkspaceIdAndUserId(ORGANIZATION_ID, USER_ID)).thenReturn(Optional.of(userWorkspace));
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
@@ -440,7 +440,7 @@ class DigitalServiceServiceTest {
         assertThat(result).isEqualTo(inputDigitalServiceBO);
 
         verify(organizationRepository, times(1)).findByName(SUBSCRIBER);
-        verify(roleService, times(1)).hasAdminRightOnSubscriberOrOrganization(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
+        verify(roleService, times(1)).hasAdminRightOnOrganizationOrWorkspace(userBO, SUBSCRIBER_ID, ORGANIZATION_ID);
         verify(userWorkspaceRepository, times(1)).findByWorkspaceIdAndUserId(ORGANIZATION_ID, USER_ID);
         verify(digitalServiceRepository, times(1)).findById(digitalService.getUid());
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalService);

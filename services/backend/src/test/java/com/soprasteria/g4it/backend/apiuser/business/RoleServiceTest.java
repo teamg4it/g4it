@@ -24,23 +24,23 @@ class RoleServiceTest {
 
     @Test
     void hasAdminRightsOnAnySubscriber_hasAdminRole() {
-        assertTrue(roleService.hasAdminRightsOnAnySubscriber(TestUtils.createUserBOAdminSub()));
+        assertTrue(roleService.hasAdminRightsOnAnyOrganization(TestUtils.createUserBOAdminSub()));
     }
 
     @Test
     void hasAdminRightsOnAnySubscriber_NoAdminRole() {
-        assertFalse(roleService.hasAdminRightsOnAnySubscriber(TestUtils.createUserBONoRole()));
+        assertFalse(roleService.hasAdminRightsOnAnyOrganization(TestUtils.createUserBONoRole()));
     }
 
     @Test
     void hasAdminRightsOnSubscriber_hasAdminRole() {
-        assertTrue(roleService.hasAdminRightsOnSubscriber(TestUtils.createUserBOAdminSub(), 2L));
+        assertTrue(roleService.hasAdminRightsOnOrganization(TestUtils.createUserBOAdminSub(), 2L));
     }
 
     @Test
     void hasAdminRightsOnSubscriber_NoAdminRole() {
         // the user is subscriber admin on subscriber 2, not on 1
-        assertFalse(roleService.hasAdminRightsOnSubscriber(TestUtils.createUserBOAdminSub(), 1L));
+        assertFalse(roleService.hasAdminRightsOnOrganization(TestUtils.createUserBOAdminSub(), 1L));
     }
     @Test
     void UserDomainAuthorized_NoAdminRole() {

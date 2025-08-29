@@ -147,11 +147,11 @@ class AdministratorWorkspaceServiceTest {
         Long orgId = null;
         UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
 
-        doNothing().when(administratorRoleService).hasAdminRightsOnAnySubscriberOrAnyOrganization(userBO);
+        doNothing().when(administratorRoleService).hasAdminRightsOnAnyOrganizationOrAnyWorkspace(userBO);
 
         List<OrganizationBO> result = administratorWorkspaceService.getWorkspaces(subscriberId, orgId, userBO);
 
-        verify(administratorRoleService).hasAdminRightsOnAnySubscriberOrAnyOrganization(userBO);
+        verify(administratorRoleService).hasAdminRightsOnAnyOrganizationOrAnyWorkspace(userBO);
         assertEquals(1, result.size());
 
         OrganizationBO organizationBO = result.getFirst();
@@ -162,7 +162,7 @@ class AdministratorWorkspaceServiceTest {
     void getWorkspacesWithoutAdminRights() {
         UserBO userBO = UserBO.builder().id(1L).build();
 
-        doThrow(new AuthorizationException(403, "User with id '1' do not have admin role")).when(administratorRoleService).hasAdminRightsOnAnySubscriberOrAnyOrganization(userBO);
+        doThrow(new AuthorizationException(403, "User with id '1' do not have admin role")).when(administratorRoleService).hasAdminRightsOnAnyOrganizationOrAnyWorkspace(userBO);
 
         AuthorizationException exception = assertThrows(AuthorizationException.class, () -> {
             administratorWorkspaceService.getWorkspaces(null, null, userBO);
@@ -184,12 +184,12 @@ class AdministratorWorkspaceServiceTest {
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
         WorkspaceBO updatedOrganization = WorkspaceBO.builder().id(orgId).name("UpdatedName").build();
 
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
+        doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(userBO, subscriberId, orgId);
         when(workspaceService.updateWorkspace(orgId, workspaceUpdateRest, userBO.getId())).thenReturn(updatedOrganization);
 
         WorkspaceBO result = administratorWorkspaceService.updateWorkspace(orgId, workspaceUpdateRest, userBO);
 
-        verify(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
+        verify(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(userBO, subscriberId, orgId);
         verify(workspaceService).updateWorkspace(orgId, workspaceUpdateRest, userBO.getId());
         verify(userService).clearUserAllCache();
 
@@ -208,7 +208,7 @@ class AdministratorWorkspaceServiceTest {
         WorkspaceUpdateRest workspaceUpdateRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
 
-        doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "User with id '1' do not have admin role on subscriber '1' or organization '1'")).when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(userBO, subscriberId, orgId);
+        doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "User with id '1' do not have admin role on subscriber '1' or organization '1'")).when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(userBO, subscriberId, orgId);
 
         assertThrows(AuthorizationException.class, () -> {
             administratorWorkspaceService.updateWorkspace(orgId, workspaceUpdateRest, userBO);
@@ -231,10 +231,10 @@ class AdministratorWorkspaceServiceTest {
 
         when(workspaceService.createWorkspace(workspaceUpdateRest, userBO, subscriberId)).thenReturn(expectedOrg);
         when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
-        when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(true);
+        when(roleService.hasAdminRightsOnOrganization(userBO, subscriberId)).thenReturn(true);
         WorkspaceBO result = administratorWorkspaceService.createWorkspace(workspaceUpdateRest, userBO, true);
 
-        verify(administratorRoleService).hasSubscriberAdminOrDomainAccess(userBO, subscriberId, true, true);
+        verify(administratorRoleService).hasOrganizationAdminOrDomainAccess(userBO, subscriberId, true, true);
         verify(workspaceService).createWorkspace(workspaceUpdateRest, userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
 
@@ -261,12 +261,12 @@ class AdministratorWorkspaceServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
         when(userWorkspaceRepository.findByWorkspaceIdAndUserId(org.getId(), userBO.getId())).thenReturn(Optional.empty());
         when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
-        when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(false);
+        when(roleService.hasAdminRightsOnOrganization(userBO, subscriberId)).thenReturn(false);
 
         WorkspaceBO result = administratorWorkspaceService.createWorkspace(workspaceUpdateRest, userBO, false);
 
         verify(workspaceService).createWorkspace(workspaceUpdateRest, userBO, subscriberId);
-        verify(roleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
+        verify(roleService).hasAdminRightsOnOrganization(userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
         verify(userRepository).findById(1L);
         verify(userWorkspaceRepository).save(any());
@@ -286,19 +286,19 @@ class AdministratorWorkspaceServiceTest {
         WorkspaceUpdateRest workspaceUpdateRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
 
-        when(roleService.hasAdminRightsOnSubscriber(userBO, subscriberId)).thenReturn(false);
+        when(roleService.hasAdminRightsOnOrganization(userBO, subscriberId)).thenReturn(false);
         when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(false);
 
         doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
                 "User with id 1 has no admin role on subscriber 1 or has domain not authorized."))
-                .when(administratorRoleService).hasSubscriberAdminOrDomainAccess(userBO,
+                .when(administratorRoleService).hasOrganizationAdminOrDomainAccess(userBO,
                         subscriberId, false, false);
 
         assertThrows(AuthorizationException.class, () -> {
             administratorWorkspaceService.createWorkspace(workspaceUpdateRest, userBO, true);
         });
 
-        verify(roleService).hasAdminRightsOnSubscriber(userBO, subscriberId);
+        verify(roleService).hasAdminRightsOnOrganization(userBO, subscriberId);
         verify(roleService).isUserDomainAuthorized(userBO, subscriberId);
     }
 
@@ -322,8 +322,8 @@ class AdministratorWorkspaceServiceTest {
         Workspace org = TestUtils.createOrganization();
 
         when(workspaceRepository.findById(org.getId())).thenReturn(Optional.of(org));
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), eq(org.getOrganization().getId()), eq(org.getId()));
-        when(roleService.hasAdminRightsOnSubscriber(any(), eq(org.getOrganization().getId()))).thenReturn(true);
+        doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), eq(org.getOrganization().getId()), eq(org.getId()));
+        when(roleService.hasAdminRightsOnOrganization(any(), eq(org.getOrganization().getId()))).thenReturn(true);
 
         // Subscriber admin
         User adminUser = User.builder().id(1L).email("admin@domain.com").build();
@@ -350,8 +350,8 @@ class AdministratorWorkspaceServiceTest {
         Workspace org = TestUtils.createOrganization();
 
         when(workspaceRepository.findById(org.getId())).thenReturn(Optional.of(org));
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), eq(org.getOrganization().getId()), eq(org.getId()));
-        when(roleService.hasAdminRightsOnSubscriber(any(), eq(org.getOrganization().getId()))).thenReturn(false);
+        doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), eq(org.getOrganization().getId()), eq(org.getId()));
+        when(roleService.hasAdminRightsOnOrganization(any(), eq(org.getOrganization().getId()))).thenReturn(false);
 
         User adminUser = User.builder().id(1L).email("admin@domain.com").build();
         Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
@@ -380,7 +380,7 @@ class AdministratorWorkspaceServiceTest {
         Workspace org = TestUtils.createOrganization();
 
         when(workspaceRepository.findById(org.getId())).thenReturn(Optional.of(org));
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), eq(org.getOrganization().getId()), eq(org.getId()));
+        doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), eq(org.getOrganization().getId()), eq(org.getId()));
 
         UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
         userBO.setEmail(Constants.SUPER_ADMIN_EMAIL);
@@ -401,8 +401,8 @@ class AdministratorWorkspaceServiceTest {
         Workspace org = TestUtils.createOrganization();
 
         when(workspaceRepository.findById(org.getId())).thenReturn(Optional.of(org));
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), eq(org.getOrganization().getId()), eq(org.getId()));
-        when(roleService.hasAdminRightsOnSubscriber(any(), eq(org.getOrganization().getId()))).thenReturn(false);
+        doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), eq(org.getOrganization().getId()), eq(org.getId()));
+        when(roleService.hasAdminRightsOnOrganization(any(), eq(org.getOrganization().getId()))).thenReturn(false);
 
         // No subscriber admins
         when(userOrganizationRepository.findBySubscriber(org.getOrganization())).thenReturn(Collections.emptyList());
@@ -430,8 +430,8 @@ class AdministratorWorkspaceServiceTest {
         Workspace org = TestUtils.createOrganization();
 
         when(workspaceRepository.findById(org.getId())).thenReturn(Optional.of(org));
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), eq(org.getOrganization().getId()), eq(org.getId()));
-        when(roleService.hasAdminRightsOnSubscriber(any(), eq(org.getOrganization().getId()))).thenReturn(false);
+        doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), eq(org.getOrganization().getId()), eq(org.getId()));
+        when(roleService.hasAdminRightsOnOrganization(any(), eq(org.getOrganization().getId()))).thenReturn(false);
 
         User sharedUser = User.builder().id(1L).email("admin@domain.com").build();
         Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();

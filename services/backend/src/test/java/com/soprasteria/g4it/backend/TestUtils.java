@@ -66,7 +66,7 @@ public class TestUtils {
         return UserBO.builder()
                 .id(1)
                 .email(EMAIL)
-                .subscribers(List.of(OrganizationBO.builder()
+                .organizations(List.of(OrganizationBO.builder()
                         .name(SUBSCRIBER)
                         .organizations(List.of(WorkspaceBO.builder()
                                 .name(ORGANIZATION)
@@ -153,7 +153,7 @@ public class TestUtils {
 
     public static UserBO createUserBOAdminSub() {
         return UserBO.builder().email(EMAIL)
-                .subscribers(List.of(
+                .organizations(List.of(
                         OrganizationBO.builder()
                                 .id(1L)
                                 .roles(List.of())
@@ -167,7 +167,7 @@ public class TestUtils {
 
     public static UserBO createAuthorizedUserAdminSub() {
         return UserBO.builder().email(EMAIL)
-                .subscribers(List.of(
+                .organizations(List.of(
                         OrganizationBO.builder()
                                 .id(1L)
                                 .authorizedDomains("unitaire")
@@ -177,7 +177,7 @@ public class TestUtils {
 
     public static UserBO createUserBONoRole() {
         return UserBO.builder().email(EMAIL)
-                .subscribers(List.of(OrganizationBO.builder()
+                .organizations(List.of(OrganizationBO.builder()
                         .id(1L)
                         .roles(List.of())
                         .build()))

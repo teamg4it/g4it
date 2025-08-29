@@ -179,7 +179,7 @@ public class DigitalServiceService {
                 digitalServiceToUpdate.isEnableDataInconsistency()
         );
         Long userId = user.getId();
-        boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization
+        boolean isAdmin = roleService.hasAdminRightOnOrganizationOrWorkspace
                 (user, organizationRepository.findByName(subscriber).get().getId(), organizationId);
         if (!isAdmin) {
             UserWorkspace userWorkspace = userWorkspaceRepository.findByWorkspaceIdAndUserId(organizationId, userId).orElseThrow();

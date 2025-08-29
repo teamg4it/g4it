@@ -76,7 +76,7 @@ class AdministratorServiceTest {
         String authorizedDomains = "soprasteria.com,test.com";
         Organization organization = TestUtils.createSubscriber(subscriberId);
         organization.setAuthorizedDomains(authorizedDomains);
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), any(), any());
+        doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), any(), any());
 
         when(organizationRepository.findById(any())).thenReturn(Optional.of(organization));
         when(userRepository.findBySearchedName(eq(searchedUser), any())).thenReturn(
@@ -94,7 +94,7 @@ class AdministratorServiceTest {
         String authorizedDomains = "soprasteria.com,test.com";
         Organization organization = TestUtils.createSubscriber(subscriberId);
         organization.setAuthorizedDomains(authorizedDomains);
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), any(), any());
+        doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), any(), any());
 
         when(organizationRepository.findById(any())).thenReturn(Optional.of(organization));
         when(userRepository.findBySearchedName(eq(searchedUser), any())).thenReturn(Collections.singletonList(User
@@ -127,7 +127,7 @@ class AdministratorServiceTest {
         OrganizationBO organizationBO = OrganizationBO.builder().id(subscriberId)
                 .name("SUBSCRIBER")
                 .criteria(List.of("New Criteria")).build();
-        doNothing().when(administratorRoleService).hasAdminRightsOnAnySubscriber(any());
+        doNothing().when(administratorRoleService).hasAdminRightsOnAnyOrganization(any());
 
         when(organizationService.getSubscriptionById(subscriberId)).thenReturn(organization);
         when(organizationRepository.save(any())).thenReturn(updatedOrganization);

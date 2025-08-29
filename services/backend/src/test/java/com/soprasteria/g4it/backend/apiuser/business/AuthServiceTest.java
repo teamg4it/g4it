@@ -31,7 +31,7 @@ class AuthServiceTest {
     private static final List<String> roles = List.of("Role 1", "Role2");
     private static final UserBO user = UserBO.builder()
             .id(0)
-            .subscribers(
+            .organizations(
                     List.of(OrganizationBO.builder()
                             .name(SUBSCRIBER)
                             .organizations(List.of(WorkspaceBO.builder()
@@ -56,7 +56,7 @@ class AuthServiceTest {
     void testControlAccess_subscriberAdminCase_returnAllRoles() {
         var adminSubscriber = UserBO.builder()
                 .id(0)
-                .subscribers(
+                .organizations(
                         List.of(OrganizationBO.builder()
                                 .name(SUBSCRIBER)
                                 .organizations(List.of(WorkspaceBO.builder()
@@ -91,7 +91,7 @@ class AuthServiceTest {
     void testControlAccess_withNoRole_thenForbidden() {
         final UserBO userWithoutRole = UserBO.builder()
                 .id(0)
-                .subscribers(List.of(OrganizationBO.builder()
+                .organizations(List.of(OrganizationBO.builder()
                         .name(SUBSCRIBER)
                         .organizations(List.of(WorkspaceBO.builder()
                                 .name(ORGANIZATION)
