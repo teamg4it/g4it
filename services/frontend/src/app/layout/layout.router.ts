@@ -6,6 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { RouterModule, Routes } from "@angular/router";
+import { TitleResolver } from "./common/title-resolver.service";
 import { LayoutComponent } from "./layout.component";
 
 const routes: Routes = [
@@ -15,6 +16,12 @@ const routes: Routes = [
         children: [
             {
                 path: "digital-services",
+                resolve: {
+                    title: TitleResolver,
+                },
+                data: {
+                    titleKey: "digital-services.page-title",
+                },
                 loadChildren: () =>
                     import("./digital-services/digital-services.module").then(
                         (modules) => modules.DigitalServicesModule,
@@ -23,7 +30,10 @@ const routes: Routes = [
 
             {
                 path: "eco-mind-ai",
-                data: { isIa: true },
+                data: { isIa: true, titleKey: "welcome-page.eco-mind-ai.title" },
+                resolve: {
+                    title: TitleResolver,
+                },
                 loadChildren: () =>
                     import("./digital-services/digital-services.module").then(
                         (modules) => modules.DigitalServicesModule,
