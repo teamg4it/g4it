@@ -155,7 +155,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                 .orElseThrow(() -> new G4itRestException("404", String.format("task of inventoryId '%d' is not found", inventoryId)));
 
         Long userId = authService.getUser().getId();
-        boolean isAdmin = roleService.hasAdminRightOnSubscriberOrOrganization(authService.getUser(), organizationRepository.findByName(subscriber).get().getId(), organization);
+        boolean isAdmin = roleService.hasAdminRightOnOrganizationOrWorkspace(authService.getUser(), organizationRepository.findByName(subscriber).get().getId(), organization);
         if (!isAdmin) {
             UserWorkspace userWorkspace = userWorkspaceRepository.findByWorkspaceIdAndUserId(organization, userId).orElseThrow();
 

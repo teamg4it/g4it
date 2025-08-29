@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public class AdministratorService {
 
     /**
-     * Repository to access subscriber data.
+     * Repository to access organization data.
      */
     @Autowired
     OrganizationRepository organizationRepository;
@@ -50,7 +50,7 @@ public class AdministratorService {
      */
     UserRepository userRepository;
     /**
-     * Subscriber Mapper.
+     * Organization Mapper.
      */
     @Autowired
     OrganizationRestMapper organizationRestMapper;
@@ -60,7 +60,7 @@ public class AdministratorService {
     @Autowired
     private AdministratorRoleService administratorRoleService;
     /**
-     * The Subscriber Service
+     * The Organization Service
      */
     @Autowired
     private OrganizationService organizationService;
@@ -72,20 +72,20 @@ public class AdministratorService {
     private UserService userService;
 
     /**
-     * Retrieve the list of subscribers for the user which has ROLE_SUBSCRIBER_ADMINISTRATOR on it
+     * Retrieve the list of organizations for the user which has ROLE_SUBSCRIBER_ADMINISTRATOR on it
      *
      * @param user the user.
-     * @return the List<SubscriberBO>.
+     * @return the List<OrganizationBO>.
      */
     public List<OrganizationBO> getOrganizations(final UserBO user) {
-        administratorRoleService.hasAdminRightsOnAnySubscriberOrAnyOrganization(user);
+        administratorRoleService.hasAdminRightsOnAnyOrganizationOrAnyWorkspace(user);
 
-        List<OrganizationBO> resultSubscriberAdmin = user.getSubscribers().stream()
-                .filter(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)).toList();
+        List<OrganizationBO> resultOrganizationAdmin = user.getOrganizations().stream()
+                .filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)).toList();
 
-        List<OrganizationBO> checkOrgAdmin = user.getSubscribers().stream()
-                .filter(subscriberBO -> subscriberBO.getRoles().isEmpty()).toList();
-        List<OrganizationBO> result = new ArrayList<>(resultSubscriberAdmin);
+        List<OrganizationBO> checkOrgAdmin = user.getOrganizations().stream()
+                .filter(organizationBO -> organizationBO.getRoles().isEmpty()).toList();
+        List<OrganizationBO> result = new ArrayList<>(resultOrganizationAdmin);
         for (OrganizationBO subBO : checkOrgAdmin) {
             List<WorkspaceBO> organization = subBO.getOrganizations().stream().filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
             if (!organization.isEmpty()) {
@@ -97,14 +97,14 @@ public class AdministratorService {
     }
 
     /**
-     * @param subscriberId the subscriber id
-     * @param criteriaRest criteria to set
-     * @param user         the current user
-     * @return the SubscriberBo with updated criteria
+     * @param organizationId the organization id
+     * @param criteriaRest   criteria to set
+     * @param user           the current user
+     * @return the organizationBo with updated criteria
      */
-    public OrganizationBO updateOrganizationCriteria(final Long subscriberId, final CriteriaRest criteriaRest, final UserBO user) {
-        administratorRoleService.hasAdminRightsOnAnySubscriber(user);
-        Organization organizationToUpdate = organizationService.getSubscriptionById(subscriberId);
+    public OrganizationBO updateOrganizationCriteria(final Long organizationId, final CriteriaRest criteriaRest, final UserBO user) {
+        administratorRoleService.hasAdminRightsOnAnyOrganization(user);
+        Organization organizationToUpdate = organizationService.getSubscriptionById(organizationId);
         organizationToUpdate.setCriteria(criteriaRest.getCriteria());
         organizationRepository.save(organizationToUpdate);
         userService.clearUserAllCache();
@@ -112,21 +112,21 @@ public class AdministratorService {
     }
 
     /**
-     * Get all the users (filtered by authorized_domains of subscriber)
+     * Get all the users (filtered by authorized_domains of organization)
      *
-     * @param searchedName the string to be searched
-     * @param subscriberId the subscriber's id
-     * @param user         the  user
+     * @param searchedName   the string to be searched
+     * @param organizationId the organization's id
+     * @param user           the  user
      */
     public List<UserSearchBO> searchUserByName(final String searchedName,
-                                               final Long subscriberId,
                                                final Long organizationId,
+                                               final Long workspaceId,
                                                final UserBO user) {
 
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, subscriberId, organizationId);
+        administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, organizationId, workspaceId);
 
-        Organization organization = organizationRepository.findById(subscriberId)
-                .orElseThrow(() -> new G4itRestException("404", String.format("Subscriber %d not found.", subscriberId)));
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Organization %d not found.", organizationId)));
 
         if (organization.getAuthorizedDomains() == null) return List.of();
 
@@ -149,7 +149,7 @@ public class AdministratorService {
 
                     List<String> userRoles = new ArrayList<>();
                     if (searchedUser.getUserWorkspaces() != null) {
-                        userRoles.addAll(searchedUser.getUserWorkspaces().stream().filter(org -> org.getWorkspace().getId() == organizationId)
+                        userRoles.addAll(searchedUser.getUserWorkspaces().stream().filter(org -> org.getWorkspace().getId() == workspaceId)
                                 .findFirst()
                                 .orElse(UserWorkspace.builder().roles(List.of()).build())
                                 .getRoles().stream().map(Role::getName).toList());
@@ -157,9 +157,9 @@ public class AdministratorService {
 
                     if (searchedUser.getUserOrganizations() != null) {
                         userRoles.addAll(searchedUser.getUserOrganizations().stream()
-                                .filter(userSubscriber -> userSubscriber.getOrganization().getId() == subscriberId)
-                                .map(userSubscriber -> userSubscriber.getUserRoleOrganization().stream()
-                                        .map(userRoleSubscriber -> userRoleSubscriber.getRoles().getName())
+                                .filter(userOrganization -> userOrganization.getOrganization().getId() == organizationId)
+                                .map(userOrganization -> userOrganization.getUserRoleOrganization().stream()
+                                        .map(userRoleOrganization -> userRoleOrganization.getRoles().getName())
                                         .toList()
                                 )
                                 .flatMap(Collection::stream)
@@ -183,7 +183,7 @@ public class AdministratorService {
                 .toList();
     }
 
-    public OrganizationBO getSubscriberById(Long id) {
+    public OrganizationBO getOrganizationById(Long id) {
         return organizationRestMapper.toBusinessObject(organizationRepository.findById(id).orElse(null));
     }
 

@@ -63,29 +63,29 @@ public class AdministratorWorkspaceService {
     AuthService authService;
 
     /**
-     * Get the list of active organizations with admin role attached to subscriber
+     * Get the list of active organizations with admin role attached to organization
      * to be displayed in 'manage users' screen.
-     * filter using subscriber or organization or both.
+     * filter using organization or workspace or both.
      *
-     * @param subscriberId the client subscriber id.
-     * @param workspaceId  the organization id.
-     * @param user         the user.
-     * @return list of SubscriberBO.
+     * @param organizationId the client organization id.
+     * @param workspaceId    the workspace id.
+     * @param user           the user.
+     * @return list of organizationBO.
      */
-    public List<OrganizationBO> getWorkspaces(final Long subscriberId, final Long workspaceId, final UserBO user) {
+    public List<OrganizationBO> getWorkspaces(final Long organizationId, final Long workspaceId, final UserBO user) {
 
-        if (workspaceId == null && subscriberId == null) {
-            administratorRoleService.hasAdminRightsOnAnySubscriberOrAnyOrganization(user);
+        if (workspaceId == null && organizationId == null) {
+            administratorRoleService.hasAdminRightsOnAnyOrganizationOrAnyWorkspace(user);
         }
 
-        return user.getSubscribers().stream()
-                .filter(subscriberBO -> subscriberId == null || Objects.equals(subscriberBO.getId(), subscriberId))
-                .peek(subscriberBO -> {
-                    final var workspaces = subscriberBO.getOrganizations().stream()
+        return user.getOrganizations().stream()
+                .filter(organizationBO -> organizationId == null || Objects.equals(organizationBO.getId(), organizationId))
+                .peek(orgBO -> {
+                    final var workspaces = orgBO.getOrganizations().stream()
                             .filter(organizationBO -> workspaceId == null || Objects.equals(organizationBO.getId(), workspaceId))
                             .filter(organizationBO -> Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS.contains(organizationBO.getStatus()))
                             .toList();
-                    subscriberBO.setOrganizations(workspaces);
+                    orgBO.setOrganizations(workspaces);
                 })
                 .toList();
 
@@ -99,8 +99,8 @@ public class AdministratorWorkspaceService {
      * @return OrganizationBO
      */
     public WorkspaceBO updateWorkspace(final Long workspaceId, final WorkspaceUpdateRest organizationUpsertRest, UserBO user) {
-        // Check Admin Role on this subscriber or organization.
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organizationUpsertRest.getOrganizationId(), workspaceId);
+        // Check Admin Role on this organization or workspace.
+        administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, organizationUpsertRest.getOrganizationId(), workspaceId);
         WorkspaceBO workspaceBO = workspaceService.updateWorkspace(workspaceId, organizationUpsertRest, user.getId());
         userService.clearUserAllCache();
         return workspaceBO;
@@ -114,20 +114,20 @@ public class AdministratorWorkspaceService {
      * @return organization BO.
      */
     public WorkspaceBO createWorkspace(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, boolean checkAdminRole) {
-        Long subscriberId = workspaceUpdateRest.getOrganizationId();
-        boolean hasSubscriberAdminRights = roleService.hasAdminRightsOnSubscriber(user, subscriberId);
-        boolean hasDomainAuthorization = roleService.isUserDomainAuthorized(user, subscriberId);
+        Long organizationId = workspaceUpdateRest.getOrganizationId();
+        boolean hasOrganizationAdminRights = roleService.hasAdminRightsOnOrganization(user, organizationId);
+        boolean hasDomainAuthorization = roleService.isUserDomainAuthorized(user, organizationId);
 
-        // Check Admin Role on this subscriber or the logged-in org admin user's domain is authorized
+        // Check Admin Role on this organization or the logged-in org admin user's domain is authorized
         if (checkAdminRole) {
-            administratorRoleService.hasSubscriberAdminOrDomainAccess(user, subscriberId, hasSubscriberAdminRights,
+            administratorRoleService.hasOrganizationAdminOrDomainAccess(user, organizationId, hasOrganizationAdminRights,
                     hasDomainAuthorization);
         }
 
-        final WorkspaceBO result = workspaceService.createWorkspace(workspaceUpdateRest, user, subscriberId);
+        final WorkspaceBO result = workspaceService.createWorkspace(workspaceUpdateRest, user, organizationId);
         userService.clearUserCache(user);
 
-        if (hasSubscriberAdminRights)
+        if (hasOrganizationAdminRights)
             return result;
 
         // Link user to the organization and assign with org admin role
@@ -149,18 +149,18 @@ public class AdministratorWorkspaceService {
     public List<UserInfoBO> getUsersOfWorkspace(Long workspaceId, final UserBO user) {
         final Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Organization %d not found.", workspaceId)));
-        long subscriberId = workspace.getOrganization().getId();
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, subscriberId, workspaceId);
+        long organizationId = workspace.getOrganization().getId();
+        administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, organizationId, workspaceId);
 
-        // fetch subscriber admins
-        List<UserInfoBO> subscriberAdmins = new ArrayList<>(userOrganizationRepository.findByOrganization(workspace.getOrganization())).stream()
-                .<UserInfoBO>map(userSubscriber -> {
-                    List<Role> roles = userSubscriber.getRoles();
+        // fetch organization admins
+        List<UserInfoBO> organizationAdmins = new ArrayList<>(userOrganizationRepository.findByOrganization(workspace.getOrganization())).stream()
+                .<UserInfoBO>map(userOrganization -> {
+                    List<Role> roles = userOrganization.getRoles();
                     if (roles.stream().noneMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))) {
                         return null;
                     }
 
-                    User u = userSubscriber.getUser();
+                    User u = userOrganization.getUser();
                     return UserInfoBO.builder()
                             .id(u.getId())
                             .firstName(u.getFirstName())
@@ -175,7 +175,7 @@ public class AdministratorWorkspaceService {
                 .filter(Objects::nonNull)
                 .toList();
 
-        List<Long> subAdminIds = subscriberAdmins.stream()
+        List<Long> subAdminIds = organizationAdmins.stream()
                 .map(UserInfoBO::getId)
                 .toList();
 
@@ -194,11 +194,11 @@ public class AdministratorWorkspaceService {
                 })
                 .toList();
 
-        // Retrieve all users, including subscriber admins, when the logged-in user is a subscriber admin
-        if (roleService.hasAdminRightsOnSubscriber(user, subscriberId)) {
-            return Stream.concat(subscriberAdmins.stream(), usersByOrganization.stream()).toList();
+        // Retrieve all users, including organization admins, when the logged-in user is a organization admin
+        if (roleService.hasAdminRightsOnOrganization(user, organizationId)) {
+            return Stream.concat(organizationAdmins.stream(), usersByOrganization.stream()).toList();
         }
-        //  Return the users except for subscriber admins when the logged-in user is an organization admin.
+        //  Return the users except for organization admins when the logged-in user is an organization admin.
         else {
             return usersByOrganization;
         }
@@ -219,7 +219,7 @@ public class AdministratorWorkspaceService {
                 .orElseThrow(() -> new G4itRestException("404", String.format("OrganizationId %s is not found in database", organizationId)));
 
         if (checkAdminRole) {
-            administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, workspace.getOrganization().getId(), organizationId);
+            administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, workspace.getOrganization().getId(), organizationId);
         }
         List<UserInfoBO> userInfoList = new ArrayList<>();
 
@@ -291,7 +291,7 @@ public class AdministratorWorkspaceService {
         Long organizationId = linkUserRoleRest.getWorkspaceId();
         Organization organization = workspaceRepository.findById(organizationId).orElseThrow().getOrganization();
 
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, organization.getId(), organizationId);
+        administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, organization.getId(), organizationId);
 
         for (UserRoleRest userRoleRest : linkUserRoleRest.getUsers()) {
             UserWorkspace userOrgEntity = userWorkspaceRepository

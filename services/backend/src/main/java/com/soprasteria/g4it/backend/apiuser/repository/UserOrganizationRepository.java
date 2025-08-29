@@ -18,10 +18,10 @@ import java.util.List;
 public interface UserOrganizationRepository extends JpaRepository<UserOrganization, Long> {
 
     /**
-     * Find userSubscribers by subscriber
+     * Find userOrganizations by organization
      *
-     * @param organization
-     * @return the list of userSubscribers
+     * @param organization organization
+     * @return the list of userOrganizations
      */
     List<UserOrganization> findByOrganization(Organization organization);
 }
