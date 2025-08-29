@@ -58,7 +58,7 @@ public class InventoryDeleteService {
      * @param organizationId the linked organization's id.
      */
     public void deleteInventories(final String subscriberName, final Long organizationId) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
         inventoryRepository.findByWorkspace(linkedWorkspace)
                 .forEach(inventory -> deleteInventory(subscriberName, organizationId, inventory));
     }
@@ -72,7 +72,7 @@ public class InventoryDeleteService {
      * @param inventoryId    the inventory id.
      */
     public void deleteInventory(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
         inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId)
                 .ifPresent(inventory -> deleteInventory(subscriberName, organizationId, inventory));
     }

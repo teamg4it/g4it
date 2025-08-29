@@ -17,8 +17,8 @@ import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
@@ -111,7 +111,7 @@ public class LoadInputFilesService {
         Context context = Context.builder()
                 .subscriber(subscriber)
                 .organizationId(organizationId)
-                .organizationName(workspaceService.getOrganizationById(organizationId).getName())
+                .organizationName(workspaceService.getWorkspaceById(organizationId).getName())
                 .inventoryId(inventoryId)
                 .datetime(LocalDateTime.now())
                 .hasVirtualEquipments(inventory.getVirtualEquipmentCount() > 0)
@@ -187,7 +187,7 @@ public class LoadInputFilesService {
         Context context = Context.builder()
                 .subscriber(subscriber)
                 .organizationId(organizationId)
-                .organizationName(workspaceService.getOrganizationById(organizationId).getName())
+                .organizationName(workspaceService.getWorkspaceById(organizationId).getName())
                 .digitalServiceUid(digitalServiceUid)
                 .datetime(LocalDateTime.now())
                 .build();

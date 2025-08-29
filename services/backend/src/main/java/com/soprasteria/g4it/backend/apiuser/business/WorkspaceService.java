@@ -41,12 +41,12 @@ import java.util.Optional;
 public class WorkspaceService {
 
     /**
-     * Organization Mapper.
+     * workspace Mapper.
      */
     @Autowired
     WorkspaceMapper workspaceMapper;
     /**
-     * Repository to manage user organization.
+     * Repository to manage user workspace.
      */
     @Autowired
     UserWorkspaceRepository userWorkspaceRepository;
@@ -74,7 +74,7 @@ public class WorkspaceService {
     @Value("${g4it.organization.deletion.day}")
     private Integer organizationDataDeletionDays;
     /**
-     * The repository to access organization data.
+     * The repository to access workspace data.
      */
     @Autowired
     private WorkspaceRepository workspaceRepository;
@@ -84,13 +84,13 @@ public class WorkspaceService {
     /**
      * Retrieve the active Organization Entity.
      *
-     * @param organizationId the organization id.
-     * @return the organization.
+     * @param workspaceId the organization id.
+     * @return the workspace.
      */
-    @Cacheable("Organization")
-    public Workspace getOrganizationById(final Long organizationId) {
-        return workspaceRepository.findById(organizationId)
-                .orElseThrow(() -> new G4itRestException("404", String.format("organization %d not found", organizationId)));
+    @Cacheable("Workspace")
+    public Workspace getWorkspaceById(final Long workspaceId) {
+        return workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new G4itRestException("404", String.format("workspace %d not found", workspaceId)));
     }
 
     /**

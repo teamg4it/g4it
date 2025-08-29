@@ -95,7 +95,7 @@ class DigitalServiceServiceTest {
 
         final DigitalService digitalServiceToSave = DigitalService.builder().workspace(linkedWorkspace).user(user).name(expectedName).build();
         when(digitalServiceRepository.findByWorkspaceAndIsAi(linkedWorkspace, false)).thenReturn(existingDigitalService);
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
@@ -104,7 +104,7 @@ class DigitalServiceServiceTest {
 
         assertThat(result).isEqualTo(expectedBo);
 
-        verify(workspaceService, times(1)).getOrganizationById(ORGANIZATION_ID);
+        verify(workspaceService, times(1)).getWorkspaceById(ORGANIZATION_ID);
         verify(digitalServiceRepository, times(1)).findByWorkspaceAndIsAi(linkedWorkspace, false);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
@@ -122,7 +122,7 @@ class DigitalServiceServiceTest {
 
         final DigitalService digitalServiceToSave = DigitalService.builder().workspace(linkedWorkspace).user(user).name(expectedName).build();
         when(digitalServiceRepository.findByWorkspaceAndIsAi(linkedWorkspace, false)).thenReturn(existingDigitalService);
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
@@ -131,7 +131,7 @@ class DigitalServiceServiceTest {
 
         assertThat(result).isEqualTo(expectedBo);
 
-        verify(workspaceService, times(1)).getOrganizationById(ORGANIZATION_ID);
+        verify(workspaceService, times(1)).getWorkspaceById(ORGANIZATION_ID);
         verify(digitalServiceRepository, times(1)).findByWorkspaceAndIsAi(linkedWorkspace, false);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
@@ -193,14 +193,14 @@ class DigitalServiceServiceTest {
 
         when(digitalServiceMapper.toBusinessObject(anyList())).thenReturn(List.of(digitalServiceBo));
 
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
         when(digitalServiceRepository.findByWorkspace(linkedWorkspace)).thenReturn(List.of(digitalService));
 
         List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(ORGANIZATION_ID, IS_AI);
         assertThat(result).isEqualTo(List.of(digitalServiceBo));
 
         verify(digitalServiceRepository, times(1)).findByWorkspace(linkedWorkspace);
-        verify(workspaceService, times(1)).getOrganizationById(ORGANIZATION_ID);
+        verify(workspaceService, times(1)).getWorkspaceById(ORGANIZATION_ID);
         verify(digitalServiceMapper, times(1)).toBusinessObject(anyList());
 
     }
@@ -486,7 +486,7 @@ class DigitalServiceServiceTest {
                 .organization(Organization.builder().name(SUBSCRIBER).build()).build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).build();
 
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(workspace);
         when(digitalServiceRepository.findByWorkspaceAndUid(workspace, DIGITAL_SERVICE_UID))
                 .thenReturn(Optional.of(digitalService));
 
@@ -503,7 +503,7 @@ class DigitalServiceServiceTest {
         final Workspace workspace = Workspace.builder().name("test")
                 .organization(Organization.builder().name("Subscriber2").build()).build();
 
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(workspace);
 
         boolean result = digitalServiceService.digitalServiceExists(
                 SUBSCRIBER, ORGANIZATION_ID, DIGITAL_SERVICE_UID);
@@ -517,7 +517,7 @@ class DigitalServiceServiceTest {
 
         final Workspace workspace = Workspace.builder().name("test")
                 .organization(Organization.builder().name(SUBSCRIBER).build()).build();
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(workspace);
         when(digitalServiceRepository.findByWorkspaceAndUid(workspace, DIGITAL_SERVICE_UID))
                 .thenReturn(Optional.empty());
 

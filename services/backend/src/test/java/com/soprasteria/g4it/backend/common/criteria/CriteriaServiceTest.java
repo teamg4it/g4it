@@ -87,7 +87,7 @@ class CriteriaServiceTest {
 >>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCriteria);
 
@@ -147,7 +147,7 @@ class CriteriaServiceTest {
 >>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, digitalServiceCriteria);
 
@@ -188,7 +188,7 @@ class CriteriaServiceTest {
 >>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, null);
 

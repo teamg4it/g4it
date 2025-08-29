@@ -84,7 +84,7 @@ public class DigitalServiceService {
      */
     public DigitalServiceBO createDigitalService(final Long organizationId, final long userId, final Boolean isAi) {
         // Get the linked organization.
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
 
         // Get last index to create digital service.
 
@@ -132,7 +132,7 @@ public class DigitalServiceService {
      * @return the digital service list.
      */
     public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final Boolean isAi) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
         List<DigitalService> filterDigitalService = digitalServiceRepository.findByWorkspace(linkedWorkspace).stream().filter(ds -> ds.isAi() == isAi)
                 .toList();
         return digitalServiceMapper.toBusinessObject(filterDigitalService);
@@ -221,7 +221,7 @@ public class DigitalServiceService {
      */
     @Cacheable("digitalServiceExists")
     public boolean digitalServiceExists(final String subscriberName, final Long organizationId, final String digitalServiceUid) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
         if (!Objects.equals(subscriberName, linkedWorkspace.getOrganization().getName())) {
             return false;
         }

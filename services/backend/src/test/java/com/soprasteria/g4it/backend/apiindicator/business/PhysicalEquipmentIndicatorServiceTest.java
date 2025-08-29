@@ -106,14 +106,14 @@ class PhysicalEquipmentIndicatorServiceTest {
         List<InPhysicalEquipmentLowImpactView> repositoryResult = List.of(InPhysicalEquipmentLowImpactView.builder().build());
         List<PhysicalEquipmentLowImpactBO> mappedResult = List.of(new PhysicalEquipmentLowImpactBO());
 
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(workspace);
         when(lowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId)).thenReturn(repositoryResult);
         when(mapper.inPhysicalEquipmentLowImpacttoDTO(repositoryResult)).thenReturn(mappedResult);
 
         List<PhysicalEquipmentLowImpactBO> result = service.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
 
         assertEquals(mappedResult, result);
-        verify(workspaceService).getOrganizationById(organizationId);
+        verify(workspaceService).getWorkspaceById(organizationId);
         verify(lowImpactViewRepository).findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         verify(mapper).inPhysicalEquipmentLowImpacttoDTO(repositoryResult);
     }

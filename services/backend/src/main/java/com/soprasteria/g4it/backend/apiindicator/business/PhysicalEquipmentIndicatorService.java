@@ -90,7 +90,7 @@ public class PhysicalEquipmentIndicatorService {
      */
     public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber, final Long organizationId, final Long inventoryId) {
 
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
 
         final List<InPhysicalEquipmentLowImpactView> indicators = inPhysicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         indicators.forEach(indicator -> {
