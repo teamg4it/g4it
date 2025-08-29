@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.6.0
+
+### Major Changes
+
+### Minor Changes
+
+- 1487 | Update file location to be available open source
+
 ## 3.5.0
 
 ### Major Changes
