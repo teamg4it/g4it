@@ -58,12 +58,12 @@ class InventoryDeleteServiceTest {
 
         final List<Inventory> inventorysEntitiesList = List.of(Inventory.builder().id(2L).name("03-2023").build());
 
-        when(workspaceService.getOrganizationById(1L)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
         when(inventoryRepository.findByWorkspace(workspace)).thenReturn(inventorysEntitiesList);
 
         inventoryDeleteService.deleteInventories(subscriber, 1L);
 
-        verify(workspaceService).getOrganizationById(1L);
+        verify(workspaceService).getWorkspaceById(1L);
         verify(inventoryRepository).findByWorkspace(workspace);
         verify(inDatacenterRepository).deleteByInventoryId(2L);
         verify(inPhysicalEquipmentRepository).deleteByInventoryId(2L);
@@ -77,12 +77,12 @@ class InventoryDeleteServiceTest {
     void testDeleteByIdInventory_Exists() {
         final Workspace workspace = TestUtils.createOrganization();
         final Inventory inventory = Inventory.builder().id(2L).name("03-2023").build();
-        when(workspaceService.getOrganizationById(1L)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
         when(inventoryRepository.findByWorkspaceAndId(workspace, 2L)).thenReturn(Optional.of(inventory));
 
         inventoryDeleteService.deleteInventory(subscriber, 1L, 2L);
 
-        verify(workspaceService).getOrganizationById(1L);
+        verify(workspaceService).getWorkspaceById(1L);
         verify(inventoryRepository).findByWorkspaceAndId(workspace, 2L);
         verify(inDatacenterRepository).deleteByInventoryId(2L);
         verify(inPhysicalEquipmentRepository).deleteByInventoryId(2L);
@@ -96,12 +96,12 @@ class InventoryDeleteServiceTest {
     void testDeleteByIdInventory_NotFound() {
         final Workspace workspace = TestUtils.createOrganization();
 
-        when(workspaceService.getOrganizationById(1L)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
         when(inventoryRepository.findByWorkspaceAndId(workspace, 2L)).thenReturn(Optional.empty());
 
         inventoryDeleteService.deleteInventory(subscriber, 1L, 2L);
 
-        verify(workspaceService).getOrganizationById(1L);
+        verify(workspaceService).getWorkspaceById(1L);
         verify(inventoryRepository).findByWorkspaceAndId(workspace, 2L);
         verifyNoMoreInteractions(inDatacenterRepository, inPhysicalEquipmentRepository,
                 inVirtualEquipmentRepository, inApplicationRepository,

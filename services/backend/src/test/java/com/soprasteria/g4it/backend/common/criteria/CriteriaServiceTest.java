@@ -77,7 +77,7 @@ class CriteriaServiceTest {
         mockOrganization.setCriteria(subscriberCriterias);
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, inventoryCriterias);
 
@@ -97,7 +97,7 @@ class CriteriaServiceTest {
         mockOrganization.setCriteria(subscriberCriterias);
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalServiceCriterias);
 
@@ -115,7 +115,7 @@ class CriteriaServiceTest {
         mockOrganization.setCriteria(subscriberCriterias);
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, null);
 

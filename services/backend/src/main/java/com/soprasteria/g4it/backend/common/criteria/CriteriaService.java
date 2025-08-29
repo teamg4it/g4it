@@ -60,7 +60,7 @@ public class CriteriaService {
         List<String> subscriberCriterias = organizationRepository.findByName(subscriber)
                 .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
-        final Workspace workspace = workspaceService.getOrganizationById(organizationId);
+        final Workspace workspace = workspaceService.getWorkspaceById(organizationId);
 
         List<String> organizationCriteriaIs = workspace.getCriteriaIs();
 
@@ -90,7 +90,7 @@ public class CriteriaService {
         List<String> subscriberCriterias = organizationRepository.findByName(subscriber)
                 .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
-        final Workspace workspace = workspaceService.getOrganizationById(organizationId);
+        final Workspace workspace = workspaceService.getWorkspaceById(organizationId);
 
         List<String> organizationCriteriaDs = workspace.getCriteriaDs();
 

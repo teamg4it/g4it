@@ -39,7 +39,7 @@ public class RoleService {
     private RoleMapper roleMapper;
 
     /**
-     * Validate if user have 'SUBSCRIBER_ADMINISTRATOR' role on any subscriber.
+     * Validate if user have 'SUBSCRIBER_ADMINISTRATOR' role on any organization.
      *
      * @param user the user.
      * @return boolean
@@ -47,7 +47,7 @@ public class RoleService {
     public boolean hasAdminRightsOnAnyOrganization(final UserBO user) {
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getOrganizations().stream()
-                .anyMatch(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR));
+                .anyMatch(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR));
     }
 
     /**
@@ -58,23 +58,23 @@ public class RoleService {
     public boolean hasAdminRightsOnAnyWorkspace(final UserBO user) {
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getOrganizations().stream()
-                .anyMatch(subscriberBO -> subscriberBO.getOrganizations().stream()
+                .anyMatch(orgBO -> orgBO.getOrganizations().stream()
                         .anyMatch(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)));
     }
 
 
     /**
-     * Validate if user have 'SUBSCRIBER_ADMINISTRATOR' role on subscriber.
+     * Validate if user have 'SUBSCRIBER_ADMINISTRATOR' role on organization.
      *
-     * @param user         the user.
-     * @param subscriberId the subscriber's id.
+     * @param user           the user.
+     * @param organizationId the organization's id.
      * @return boolean
      */
-    public boolean hasAdminRightsOnOrganization(final UserBO user, final Long subscriberId) {
+    public boolean hasAdminRightsOnOrganization(final UserBO user, final Long organizationId) {
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getOrganizations().stream()
-                .filter(subscriberBO -> Objects.equals(subscriberBO.getId(), subscriberId))
-                .anyMatch(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR));
+                .filter(orgBO -> Objects.equals(orgBO.getId(), organizationId))
+                .anyMatch(orgBO -> orgBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR));
     }
 
     /**
@@ -87,26 +87,26 @@ public class RoleService {
     public boolean hasAdminRightsOnWorkspace(UserBO user, Long organizationId) {
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getOrganizations().stream()
-                .anyMatch(subscriberBO -> subscriberBO.getOrganizations().stream()
+                .anyMatch(orgBO -> orgBO.getOrganizations().stream()
                         .filter(organizationBO -> Objects.equals(organizationBO.getId(), organizationId))
                         .anyMatch(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)));
     }
 
     /**
      * Check if logged in 'ORGANIZATION_ADMINISTRATOR' user's domain
-     * belongs to the subscriber's authorized domain
+     * belongs to the organization's authorized domain
      *
-     * @param user         the user.
-     * @param subscriberId the organization's id
+     * @param user           the user.
+     * @param organizationId the organization's id
      * @return boolean
      */
-    public boolean isUserDomainAuthorized(UserBO user, Long subscriberId) {
+    public boolean isUserDomainAuthorized(UserBO user, Long organizationId) {
         String userDomain = user.getEmail().split("@")[1];
         return user.getOrganizations().stream()
-                .filter(subscriberBO -> Objects.equals(subscriberBO.getId(), subscriberId))
-                .anyMatch(subscriberBO ->
+                .filter(orgBO -> Objects.equals(orgBO.getId(), organizationId))
+                .anyMatch(orgBO ->
                         Arrays.stream(
-                                        Optional.ofNullable(subscriberBO.getAuthorizedDomains())
+                                        Optional.ofNullable(orgBO.getAuthorizedDomains())
                                                 .orElse("")
                                                 .split(",")
                                 )
@@ -124,8 +124,8 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
-    public boolean hasAdminRightOnOrganizationOrWorkspace(UserBO user, Long subscriberId, Long organizationId) {
+    public boolean hasAdminRightOnOrganizationOrWorkspace(UserBO user, Long organizationId, Long workspaceId) {
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
-        return this.hasAdminRightsOnOrganization(user, subscriberId) || this.hasAdminRightsOnWorkspace(user, organizationId);
+        return this.hasAdminRightsOnOrganization(user, organizationId) || this.hasAdminRightsOnWorkspace(user, workspaceId);
     }
 }

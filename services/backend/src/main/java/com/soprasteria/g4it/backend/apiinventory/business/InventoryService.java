@@ -82,7 +82,7 @@ public class InventoryService {
      * @return inventories BO.
      */
     public List<InventoryBO> getInventories(final String organizationName, final Long workspaceId, final Long inventoryId) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(workspaceId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
         var inventories = inventoryId == null ?
                 inventoryRepository.findByWorkspace(linkedWorkspace) :
@@ -100,7 +100,7 @@ public class InventoryService {
      * @return InventoryBO
      */
     public InventoryBO getInventory(final String organizationName, final Long workspaceId, final Long inventoryId) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(workspaceId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
         final Optional<Inventory> inventory = inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId);
 
         if (inventory.isEmpty())
@@ -119,7 +119,7 @@ public class InventoryService {
      */
     @Cacheable("inventoryExists")
     public boolean inventoryExists(final String organizationName, final Long workspaceId, final Long inventoryId) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(workspaceId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
         if (!Objects.equals(organizationName, linkedWorkspace.getOrganization().getName())) {
             return false;
         }
@@ -137,7 +137,7 @@ public class InventoryService {
      * @return inventory BO.
      */
     public InventoryBO createInventory(final String organizationName, final Long workspaceId, final InventoryCreateRest inventoryCreateRest, final UserBO user) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(workspaceId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
         if (inventoryRepository.findByWorkspaceAndName(linkedWorkspace, inventoryCreateRest.getName()).isPresent()) {
             throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), organizationName, workspaceId));
@@ -165,7 +165,7 @@ public class InventoryService {
      * @return InventoryBO
      */
     public InventoryBO updateInventory(final String organizationName, final Long workspaceId, final InventoryUpdateRest inventoryUpdateRest, UserBO user) {
-        final Workspace linkedWorkspace = workspaceService.getOrganizationById(workspaceId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
         final Optional<Inventory> inventory = inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryUpdateRest.getId());
         if (inventory.isEmpty())
             throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryUpdateRest.getId(), organizationName, workspaceId));

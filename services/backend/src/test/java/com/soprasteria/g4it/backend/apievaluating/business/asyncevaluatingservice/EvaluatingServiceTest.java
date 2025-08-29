@@ -17,8 +17,8 @@ import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaByType;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
@@ -100,7 +100,7 @@ class EvaluatingServiceTest {
 
         // Stub repository and service methods
         when(inventoryRepository.findById(INVENTORY_ID)).thenReturn(Optional.of(inventory));
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(org);
         when(criteriaService.getSelectedCriteriaForInventory(any(), any(), any())).thenReturn(criteriaByType);
         when(criteriaByType.active()).thenReturn(CRITERIA);
 
@@ -127,7 +127,7 @@ class EvaluatingServiceTest {
         when(criteriaByType.active()).thenReturn(CRITERIA);
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
         when(digitalService.getName()).thenReturn("digitalService");
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(org);
         when(org.getName()).thenReturn(ORGANIZATION);
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any())).thenReturn(criteriaByType);
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
@@ -156,7 +156,7 @@ class EvaluatingServiceTest {
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
         when(digitalService.getName()).thenReturn("digitalService");
         when(digitalService.isAi()).thenReturn(true);
-        when(workspaceService.getOrganizationById(ORGANIZATION_ID)).thenReturn(org);
+        when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(org);
         when(org.getName()).thenReturn(ORGANIZATION);
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any())).thenReturn(criteriaByType);
         when(userRepository.findById(any())).thenReturn(Optional.of(user));

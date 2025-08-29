@@ -18,8 +18,8 @@ import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
@@ -98,7 +98,7 @@ class LoadInputFilesServiceTest {
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(workspace);
         when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
@@ -132,7 +132,7 @@ class LoadInputFilesServiceTest {
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(workspace);
         when(taskRepository.findByDigitalServiceAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
