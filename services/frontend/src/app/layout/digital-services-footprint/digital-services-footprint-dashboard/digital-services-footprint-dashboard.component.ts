@@ -171,9 +171,12 @@ export class DigitalServicesFootprintDashboardComponent
         const titleKey = this.digitalService.isAi
             ? "welcome-page.eco-mind-ai.title"
             : "digital-services.page-title";
-        this.translate.get(titleKey).subscribe((translatedTitle: string) => {
-            this.titleService.setTitle(`${translatedTitle} - G4IT`);
-        });
+        this.translate
+            .get(titleKey)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((translatedTitle: string) => {
+                this.titleService.setTitle(`${translatedTitle} - G4IT`);
+            });
 
         if (this.digitalService.isAi) {
             try {
@@ -220,6 +223,7 @@ export class DigitalServicesFootprintDashboardComponent
         ).map((criteria) => {
             return { name: criteria, title: "", unite: "", raw: null, peopleeq: null };
         });
+        console.log(this.impacts);
     }
 
     retrieveFootprintData() {
@@ -229,6 +233,7 @@ export class DigitalServicesFootprintDashboardComponent
             this.outPhysicalEquipments,
             this.outVirtualEquipments,
         );
+        console.log(this.globalVisionChartData);
         this.showInconsitencyBtn = this.globalVisionChartData
             .flatMap((footprint) => footprint?.impacts)
             .some((footprint) =>
