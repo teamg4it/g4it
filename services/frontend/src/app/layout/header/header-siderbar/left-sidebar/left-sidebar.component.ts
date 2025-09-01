@@ -11,7 +11,6 @@ import {
     computed,
     DestroyRef,
     ElementRef,
-    HostListener,
     inject,
     OnInit,
     signal,
@@ -80,8 +79,6 @@ export class LeftSidebarComponent implements OnInit {
     isEcoMindEnabledForCurrentSubscriber: boolean = false;
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
     isMobile = computed(() => this.globalStore.mobileView());
-    isPlusMenuOpen: boolean = false;
-    isPlusMenuEnabled: boolean = true;
 
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
@@ -157,28 +154,5 @@ export class LeftSidebarComponent implements OnInit {
 
     getAriaCurrent(page: string): any {
         return this.selectedPage() === page ? "page" : null;
-    }
-
-    @HostListener("document:click", ["$event.target"])
-    public documentClick(target: any): void {
-        const clickedInside = this.el.nativeElement.contains(target);
-        if (!clickedInside) {
-            this.togglePlusMenu(false);
-        }
-    }
-
-    togglePlusMenu(isOpen?: boolean): void {
-        if (this.isMobile() && this.isPlusMenuEnabled) {
-            this.isPlusMenuOpen = isOpen ?? !this.isPlusMenuOpen;
-            if (this.isPlusMenuOpen) {
-                document
-                    .querySelector(".left-sidebar-nav")
-                    ?.classList.add("open-menu-full");
-            } else {
-                document
-                    .querySelector(".left-sidebar-nav")
-                    ?.classList.remove("open-menu-full");
-            }
-        }
     }
 }

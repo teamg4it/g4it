@@ -9,6 +9,7 @@
             (onHide)="closePopup()"
             [dismissableMask]="true"
             id="criteria"
+            [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
         >
             <ng-template pTemplate="header">
                 <h4 class="font-bold">
@@ -135,7 +136,9 @@
             }
 
             <ng-template pTemplate="footer">
-                <div class="flex align-items-center justify-content-between">
+                <div
+                    class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
+                >
                     <div class="flex justify-content-start mr-auto">
                         <p-button
                             styleClass="reset-button"

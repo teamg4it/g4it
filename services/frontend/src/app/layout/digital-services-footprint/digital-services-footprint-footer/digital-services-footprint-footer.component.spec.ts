@@ -180,9 +180,6 @@ describe("DigitalServicesFootprintFooterComponent", () => {
 
         await component.handleSave();
 
-        expect(mockMessageService.add).toHaveBeenCalledWith(
-            jasmine.objectContaining({ severity: "success" }),
-        );
         expect(mockDigitalServiceStore.setEnableCalcul).toHaveBeenCalledWith(true);
     });
 

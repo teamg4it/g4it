@@ -45,7 +45,7 @@ service performance.
 
 ---
 
-### Servers
+### Servers (Private Infrastructures)
 
 #### **Physical Servers**
 

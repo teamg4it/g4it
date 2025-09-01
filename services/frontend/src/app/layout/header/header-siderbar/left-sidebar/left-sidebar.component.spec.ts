@@ -1,4 +1,4 @@
-import { ElementRef, signal } from "@angular/core";
+import { ElementRef } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
@@ -50,54 +50,6 @@ describe("LeftSidebarComponent", () => {
         component.selectedPage.set("digital-services");
         expect(component.getAriaCurrent("digital-services")).toBe("page");
         expect(component.getAriaCurrent("inventories")).toBeNull();
-    });
-
-    it("should call togglePlusMenu(false) when documentClick is outside", () => {
-        spyOn(component, "togglePlusMenu");
-        const outsideTarget = document.createElement("span");
-        component.documentClick(outsideTarget);
-        expect(component.togglePlusMenu).toHaveBeenCalledWith(false);
-    });
-
-    it("should not call togglePlusMenu(false) when documentClick is inside", () => {
-        spyOn(component, "togglePlusMenu");
-        component.documentClick(component["el"].nativeElement);
-        expect(component.togglePlusMenu).not.toHaveBeenCalled();
-    });
-
-    it("should toggle plus menu open/close on mobile", () => {
-        component.isMobile = signal(true);
-        component.isPlusMenuEnabled = true;
-        spyOn(document, "querySelector").and.returnValue({
-            classList: {
-                add: jasmine.createSpy("add"),
-                remove: jasmine.createSpy("remove"),
-            },
-        } as any);
-
-        component.isPlusMenuOpen = false;
-        component.togglePlusMenu();
-        expect(component.isPlusMenuOpen).toBeTrue();
-
-        component.togglePlusMenu();
-        expect(component.isPlusMenuOpen).toBeFalse();
-    });
-
-    it("should set plus menu open state based on argument", () => {
-        component.isMobile = signal(true);
-        component.isPlusMenuEnabled = true;
-        spyOn(document, "querySelector").and.returnValue({
-            classList: {
-                add: jasmine.createSpy("add"),
-                remove: jasmine.createSpy("remove"),
-            },
-        } as any);
-
-        component.togglePlusMenu(true);
-        expect(component.isPlusMenuOpen).toBeTrue();
-
-        component.togglePlusMenu(false);
-        expect(component.isPlusMenuOpen).toBeFalse();
     });
 
     it("getTitle should return correct title when selectedPage matches", () => {

@@ -9,38 +9,54 @@
                     }}"
                     class="inline"
                 >
-                    {{ "inventories-footprint.global.global-vision" | translate }}
+                    {{
+                        "inventories-footprint.global.global-vision-by"
+                            | translate
+                                : {
+                                      variable:
+                                          "inventories-footprint.global.type_" +
+                                              footprintStore.appGraphType() | translate,
+                                  }
+                    }}
                     ({{ "common.peopleeq-min" | translate }})
                 </h3>
                 <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
             } @else {
                 <div class="inline">
-                    <h4
-                        class="cursor-pointer m-0 text-xl color-tertiary"
-                        (click)="onArrowClick()"
-                        attr.aria-label="{{
-                            'inventories-footprint.application.selected-infos' | translate
-                        }}{{ footprintStore.appDomain() }}{{
-                            footprintStore.appSubDomain()
-                        }}{{ footprintStore.appApplication() }}"
-                    >
-                        <p-image
-                            src="assets/images/icons/icon-green-arrow-left.svg"
-                            alt=""
-                            styleClass="mr-2"
-                        />
-                        {{ "inventories-footprint.global.global-vision" | translate }}
-                        {{
-                            footprintStore.appGraphType() === "subdomain"
-                                ? " / " + footprintStore.appDomain()
-                                : footprintStore.appGraphType() === "application"
-                                  ? " / " +
-                                    footprintStore.appDomain() +
-                                    " / " +
-                                    footprintStore.appSubDomain()
-                                  : ""
-                        }}
-                    </h4>
+                    @if (showBackButton()) {
+                        <h4
+                            class="cursor-pointer m-0 text-xl color-tertiary"
+                            (click)="onArrowClick()"
+                            attr.aria-label="{{
+                                'inventories-footprint.application.selected-infos'
+                                    | translate
+                            }}{{ footprintStore.appDomain() }}{{
+                                footprintStore.appSubDomain()
+                            }}{{ footprintStore.appApplication() }}"
+                        >
+                            <p-image
+                                src="assets/images/icons/icon-green-arrow-left.svg"
+                                alt=""
+                                styleClass="mr-2"
+                            />
+                            {{ "inventories-footprint.global.global-vision" | translate }}
+                            {{
+                                footprintStore.appGraphType() === "subdomain"
+                                    ? showDomainLabel()
+                                        ? " / " + footprintStore.appDomain()
+                                        : ""
+                                    : footprintStore.appGraphType() === "application"
+                                      ? (showDomainLabel()
+                                            ? " / " + footprintStore.appDomain()
+                                            : "") +
+                                        (!showDomainByApplication() &&
+                                        showSubDomainLabel()
+                                            ? " / " + footprintStore.appSubDomain()
+                                            : "")
+                                      : ""
+                            }}
+                        </h4>
+                    }
                     @if (footprintStore.appGraphType() === "domain") {
                         <h3
                             attr.aria-label="{{
@@ -51,7 +67,22 @@
                                     | translate
                             }}"
                         >
-                            {{ footprintStore.appDomain() }}
+                            {{
+                                !showBackButton()
+                                    ? ("inventories-footprint.global.global-vision-by"
+                                      | translate
+                                          : {
+                                                variable:
+                                                    "inventories-footprint.global.type_" +
+                                                        footprintStore.appGraphType()
+                                                    | translate,
+                                            })
+                                    : ("inventories-footprint.global.impact-domain-by-subdomain"
+                                      | translate
+                                          : {
+                                                domain: footprintStore.appDomain(),
+                                            })
+                            }}
                             ({{ "common.peopleeq-min" | translate }})
                         </h3>
                     }
@@ -65,7 +96,27 @@
                                     | translate
                             }}"
                         >
-                            {{ footprintStore.appSubDomain() }}
+                            {{
+                                !showBackButton()
+                                    ? ("inventories-footprint.global.global-vision-by"
+                                      | translate
+                                          : {
+                                                variable:
+                                                    "inventories-footprint.global.type_" +
+                                                        footprintStore.appGraphType()
+                                                    | translate,
+                                            })
+                                    : showDomainByApplication()
+                                      ? ("inventories-footprint.global.impact-domain-by-application"
+                                        | translate
+                                            : { domain: footprintStore.appDomain() })
+                                      : ("inventories-footprint.global.impact-subdomain-by-application"
+                                        | translate
+                                            : {
+                                                  subdomain:
+                                                      footprintStore.appSubDomain(),
+                                              })
+                            }}
                             ({{ "common.peopleeq-min" | translate }})
                         </h3>
                     }
@@ -79,7 +130,14 @@
                                     | translate
                             }}"
                         >
-                            {{ footprintStore.appApplication() }}
+                            {{
+                                "inventories-footprint.global.impact-application-by-equipment"
+                                    | translate
+                                        : {
+                                              application:
+                                                  footprintStore.appApplication(),
+                                          }
+                            }}
                             ({{ "common.peopleeq-min" | translate }})
                         </h3>
                     }

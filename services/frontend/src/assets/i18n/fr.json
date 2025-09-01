@@ -87,7 +87,9 @@
             "accordion-open": "Cliquez pour afficher les sous-domaines",
             "accordion-close": "Cliquez pour masquer les sous-domaines",
             "import": "Cliquez pour importer les données de service numériques",
-            "calculate": "Cliquer ici pour calculer votre impact"
+            "calculate": "Cliquer ici pour calculer votre impact",
+            "add": "Cliquez ici pour ajouter un {{type}}",
+            "close-criteria-dialog": "Cliquez ici pour fermer"
         },
         "note": {
             "add": "Ajouter note",
@@ -159,7 +161,9 @@
             "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés."
         },
         "plus-menu": "Plus",
-        "add-button": "Ajouter"
+        "add-button": "Ajouter",
+        "actions": "Actions",
+        "nav-panel": "Ouvrir le menu de navigation"
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"
@@ -177,8 +181,8 @@
         "impacts": "IMPACTS",
         "raw": "Unité",
         "Terminal": "Terminaux",
-        "Server": "Serveurs hors Cloud",
-        "CloudService": "Services Cloud",
+        "Server": "Infrastructures privées",
+        "CloudService": "Clouds Publics - IaaS",
         "infrastructure": "Infrastructure",
         "AiParameters": "Paramètres AI",
         "Network": "Réseaux",
@@ -210,7 +214,10 @@
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
         "visualize-parameters": "Voir les paramètres",
-        "back": "Retour"
+        "back": "Retour",
+        "hide-menu-buttons": "Cacher les options du service numérique",
+        "show-menu-buttons": "Montrer les options du service numérique",
+        "save-inplace": "Sauvegarder le nom du service numérique"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
@@ -226,8 +233,8 @@
         "impacts": "IMPACTS",
         "raw": "Unité",
         "Terminal": "Terminaux",
-        "Server": "Serveurs hors Cloud",
-        "CloudService": "Services Cloud",
+        "Server": "Infrastructures privées",
+        "CloudService": "Clouds Publics - IaaS",
         "infrastructure": "Infrastructure",
         "AiParameters": "Paramètres IA",
         "Network": "Réseaux",
@@ -265,7 +272,6 @@
         "edit": "Édition terminal",
         "devices": "Terminaux",
         "device": "Terminal",
-        "add": "+ Ajouter un terminal",
         "id": "#",
         "type": "Type de terminal",
         "typeCode": "Type de terminal",
@@ -286,7 +292,6 @@
         "edit": "Édition Réseau",
         "networks": "Réseaux",
         "network": "Réseau",
-        "add": "+ AJOUTER UN RÉSEAU",
         "id": "#",
         "name": "Nom",
         "type": "Type",
@@ -310,9 +315,8 @@
         },
         "edit": "Édition Serveur",
         "new": "Nouveau Serveur",
-        "servers": "Serveurs hors Cloud",
-        "server": "Serveur hors Cloud",
-        "add-button": "+ AJOUTER UN SERVEUR",
+        "servers": "Infrastructures privées",
+        "server": "Infrastructure privée",
         "id": "#",
         "name": "Nom",
         "allocation": "Allocation",
@@ -347,6 +351,7 @@
             "vm": "+ Ajouter une VM"
         },
         "vm": "Machines Virtuelles",
+        "accessibility.vm": "Machine Virtuelle",
         "vcpu": "vCPU",
         "vCpu": "vCPU",
         "disk": "Disque",
@@ -360,9 +365,9 @@
     "digital-services-cloud-services": {
         "new": "Nouvelle instance Cloud",
         "edit": "Édition instance Cloud",
-        "cloud-services": "Services Cloud",
-        "cloud-service": "Service Cloud",
-        "add": "+ AJOUTER UN SERVICE CLOUD",
+        "cloud-services": "Clouds Publics - IaaS",
+        "cloud-service": "Cloud Public - IaaS",
+        "accessibility.cloud-service": "Cloud Public",
         "id": "#",
         "name": "Nom",
         "location": "Localisation",
@@ -583,6 +588,15 @@
         },
         "global": {
             "global-vision": "Vision Globale",
+            "global-vision-by": "Vision globale par {{variable}}",
+            "impact-domain-by-subdomain": "Impact du domaine {{domain}} par sous-domaine",
+            "impact-subdomain-by-application": "Impact du sous-domaine {{subdomain}} par application",
+            "impact-application-by-equipment": "Impact de l'application {{application}} par équipement",
+            "impact-domain-by-application": "Impact du domaine {{domain}} par application",
+            "criteria": "critères",
+            "type_global": "domaine",
+            "type_domain": "sous-domaine",
+            "type_subdomain": "application",
             "info-fis-title": "Quel est la signification d'équivalent habitant ?",
             "info-fis-text": "Si chaque être humain respectait les limites planétaires, chacun d'entre nous disposerait d'un forfait individuel qui garantirait l'équilibre soutenable du système : le concept d'équivalent humain (Hab. eq.) représente le nombre de personnes respectant ce forfait individuel soutenable. Il a été obtenu en divisant la limite de la planète pour chaque critère (réf. Rapport technique du CCR - Consommation et empreinte du consommateur : méthodologie et résultats) par le nombre d'habitants de la Terre.",
             "datacenter": "CENTRE DE DONNÉES",
@@ -595,7 +609,7 @@
             "elec-consumption": "Consommation éléctrique totale",
             "equipment": "ÉQUIPEMENT",
             "equipments": "Équipements",
-            "cloud-services": "SERVICES CLOUD",
+            "cloud-services": "Clouds Publics - IaaS",
             "cloud-instances": "Instances cloud",
             "tooltip": {
                 "nb-cloud": "Nombre d'instances Cloud",
@@ -702,7 +716,7 @@
     "digital-services-cards": {
         "global-vision": {
             "title": "Vers l'écoconception de votre service",
-            "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères mentionnés à gauche de l’écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>principes de l'éco-conception</a>). L’une des manières d’éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3 role='content'>​ Une échelle adaptée à l'analyse multicritère : l’équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>consultez ce rapport sur l'impact environnemental des TIC</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d’Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
+            "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères mentionnés à gauche de l’écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>principes de l'éco-conception</a>). L’une des manières d’éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3 role='content'>​ Une échelle adaptée à l'analyse multicritère : l’équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://saas-g4it.com/documentation/2-functional-documentation/global_concepts/uc2_people_equivalent/index.html' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>consultez ce rapport sur l'impact environnemental des TIC</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d’Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
         },
         "global-vision-ai": {
             "title": "Comment faire mieux"
@@ -874,6 +888,7 @@
         "cancel-deletion": "Annuler la suppression",
         "cancel-deletion-accessibility": "Annuler la suppresion de l'organisation {{organizationName}}",
         "cancel-deletion-message": "Les données de votre espace de travail seront supprimées le {{date}}",
+        "cancel-deletion-non-SubscriberAdmin": "Veuillez contacter votre administrateur pour annuler la suppression.",
         "delete-confirmation": "Confirmation de la suppresion",
         "delete-message": "Après 7 jours, toutes les données de votre espace de travail seront supprimées. Voulez-vous vraiment supprimer cet espace de travail ?",
         "user": {

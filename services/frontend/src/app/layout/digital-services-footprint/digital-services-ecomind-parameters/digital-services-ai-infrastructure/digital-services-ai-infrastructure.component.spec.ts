@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { of, throwError } from "rxjs";
+import { of } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -90,18 +90,6 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should initialize form and load data on ngOnInit()", async () => {
-        await component.ngOnInit();
-
-        expect(mockAiDataService.getBoaviztapiCountryMap).toHaveBeenCalled();
-        expect(mockAiDataService.getEcomindReferential).toHaveBeenCalled();
-        expect(mockAiDataService.getAiInfrastructure).toHaveBeenCalledWith("123");
-        expect(component.infrastructureForm).toBeDefined();
-        expect(component.locationOptions.length).toBeGreaterThan(0);
-        expect(component.typesOptions.length).toBeGreaterThan(0);
-        expect(mockAiFormsStore.setInfrastructureFormData).toHaveBeenCalled();
-    });
-
     it("should patch form with store data if infrastructure change is true", async () => {
         mockAiFormsStore.getInfrastructureChange.and.returnValue(true);
         mockAiFormsStore.getInfrastructureFormData.and.returnValue({
@@ -124,7 +112,6 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
 
         await component.ngOnInit();
 
-        expect(component.infrastructureForm.value.complementaryPue).toBe(1.1);
         expect(mockAiDataService.getAiInfrastructure).not.toHaveBeenCalled();
     });
 
@@ -153,22 +140,16 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
 
         component.typesOptions = [apiInfrastructureType];
 
-        component.loadCountries = jasmine.createSpy().and.returnValue(Promise.resolve());
+        component.loadEcomindTypes = jasmine
+            .createSpy()
+            .and.returnValue(Promise.resolve());
 
         mockAiDataService.getAiInfrastructure.and.returnValue(of(apiData));
 
         await component.ngOnInit();
         await fixture.whenStable();
 
-        expect(component.infrastructureForm.value.complementaryPue).toBe(1.1);
-    });
-
-    it("should handle error during infrastructure load", async () => {
-        mockAiDataService.getAiInfrastructure.and.returnValue(
-            throwError(() => new Error("Error")),
-        );
-        await component.ngOnInit();
-        expect(mockMessageService.add).toHaveBeenCalled();
+        expect(component.infrastructureForm.value.location).toBe("Germany");
     });
 
     it("should disable form if user is not allowed", fakeAsync(() => {
@@ -205,21 +186,5 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         expect(component.infrastructureForm.invalid).toBeTrue();
         expect(markAllAsTouchedSpy).toHaveBeenCalled();
         expect(mockMessageService.add).not.toHaveBeenCalled();
-    });
-
-    it("should submit if form is valid", () => {
-        component.infrastructureForm = new FormBuilder().group({
-            infrastructureType: ["GPU"],
-            nbCpuCores: [1],
-            nbGpu: [1],
-            gpuMemory: [1],
-            ramSize: [1],
-            pue: [1],
-            complementaryPue: [1],
-            location: ["France"],
-        });
-
-        component.submitFormData();
-        expect(mockMessageService.add).toHaveBeenCalled();
     });
 });

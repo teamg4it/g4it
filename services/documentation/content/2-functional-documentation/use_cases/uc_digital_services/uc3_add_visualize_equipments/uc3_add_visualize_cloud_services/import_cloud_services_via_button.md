@@ -1,6 +1,6 @@
 ---
-title: "2.3.4.2. Add Cloud Services by importing files"
-description: "This use case describes how to upload files to add Cloud Service equipments to a digital service"
+title: "2.3.4.2. Add Public Cloud - IaaS by importing files"
+description: "This use case describes how to upload files to add Public Cloud - IaaS equipments to a digital service"
 weight: 30
 mermaid: true
 ---
@@ -9,11 +9,11 @@ mermaid: true
 
 -   [Table of contents](#table-of-contents)
 -   [Description](#description)
--   [Import Cloud Services import](#import-cloud-services)
+-   [Import Public Cloud - IaaS](#import-public-cloud---iaas)
 
 ## Description
 
-This use case allows a **project team** to upload Cloud Services equipments by importing the files, into a digital service previously created.
+This use case allows a **project team** to upload Public Cloud - IaaS equipments by importing the files, into a digital service previously created.
 The file types are **datacenter**, **physical equipment** and **virtual equipment**.
 
 The files should be in `.csv` or `.xlsx` format. For **CSV files** specifically, both commas and semicolons are
@@ -24,24 +24,24 @@ other encoding formats, while untested, may also work.
 
 -   My Digital Services / My Digital Service / Import button  / Import Cloud Servers
 
-## Import Cloud Services
+## Import Public Cloud - IaaS
 ![uc3_add_visualize_equipments_CloudServiceImport.png](../../../images/uc3_add_visualize_equipments_CloudServiceImport.png)
 
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
-| Reference | Group      | Elements                   | Type   | Description                                                               |
-|-----------|------------|----------------------------|--------|---------------------------------------------------------------------------|
-| 1         | Cloud service form            |         | Form   | <li><u>_initialization rules_</u>: That form enables the import of files. |
-| 2         |            | Virtual equipment template | button | action rules: To help you start, template file is available to be downloaded.     |
-| 3         |            | Browse file                | button                 | action rules: Click on it to open a window to select one file on the user computer.                                                                                                                                                                                                                                                                                                                                       |
-| 4         |            | Start Upload               | button                 | action rules: Click the upload button to start the loading of attached file.                                                                                                                                                                                                                                                                                                                                              |
-| 5         |  Uploads info          |                | label                  |                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|           |            | Status icon                | label                  | <li><u>_initialization rules_</u>: 5 existing types: Pending (If any other digital service loading or estimation task is in progress), In Progress (Loading in progress), FAILED/Error (Loading could not be performed), Completed with errors (Loading is completed with errors) and Completed (Loading is completed).                                                                                                   |
-|           |            | Dates/ Time                | label                  |                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| 6         |            | Rejected file Download     | button                 | <li><u>_initialization rules_</u>: The button is displayed in case of "Completed with errors" which means some items could not be loaded on the digital service or in case of a 'Failed' task. Button with 'Completed with errors' trigger the download of a file containing the items in error. Items can be then corrected in the file and uploaded later. <br> Button with a 'Failed' task displays the error details. |
-| 7         |            | Previous                   | button                 | action rules: Click to go on the non- cloud equipments import.                                                                                                                                                                                                                                                                                                                                                            |                                                                                                                          |
-| 8         |            | Finish                     | button                 | action rules: To close the import form and go to the digital service view.                                                                                                                                                                                                                                                                                                                                                |                                                                                                            |
+| Reference | Group              | Elements                   | Type   | Description                                                               |
+|-----------|--------------------|----------------------------|--------|---------------------------------------------------------------------------|
+| 1         | Public Cloud - IaaS form |         | Form   | <li><u>_initialization rules_</u>: That form enables the import of files. |
+| 2         |                    | Virtual equipment template | button | action rules: To help you start, template file is available to be downloaded.     |
+| 3         |                    | Browse file                | button                 | action rules: Click on it to open a window to select one file on the user computer.                                                                                                                                                                                                                                                                                                                                       |
+| 4         |                    | Start Upload               | button                 | action rules: Click the upload button to start the loading of attached file.                                                                                                                                                                                                                                                                                                                                              |
+| 5         | Loading history    |                | label                  |                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|           |                    | Status icon                | label                  | <li><u>_initialization rules_</u>: 5 existing types: Pending (If any other digital service loading or estimation task is in progress), In Progress (Loading in progress), FAILED/Error (Loading could not be performed), Completed with errors (Loading is completed with errors) and Completed (Loading is completed).                                                                                                   |
+|           |                    | Dates/ Time                | label                  |                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 6         |                    | Rejected file Download     | button                 | <li><u>_initialization rules_</u>: The button is displayed in case of "Completed with errors" which means some items could not be loaded on the digital service or in case of a 'Failed' task. Button with 'Completed with errors' trigger the download of a file containing the items in error. Items can be then corrected in the file and uploaded later. <br> Button with a 'Failed' task displays the error details. |
+| 7         |                    | Previous                   | button                 | action rules: Click to go on the non- cloud equipments import.                                                                                                                                                                                                                                                                                                                                                            |                                                                                                                          |
+| 8         |                    | Finish                     | button                 | action rules: To close the import form and go to the digital service view.                                                                                                                                                                                                                                                                                                                                                |                                                                                                            |
 
 {{% /expand %}}
 

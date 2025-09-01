@@ -18,8 +18,8 @@ This usecase allows a project team to add network equipment into a digital servi
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Networks / Add Network
--   My Digital Services / My Digital Service / Networks / Modify Network
+-   My Digital Services / My Digital Service / Visualize my resources tab / Networks / Add Network
+-   My Digital Services / My Digital Service / Visualize my resources tab /Networks / Modify Network
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected organization.
@@ -31,10 +31,10 @@ The connected user must have the write access for that module on the selected or
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group      | Elements                        | Type   | Description                                                                                                                                                                                |
-|-----------| ---------- |---------------------------------| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|           | Tab Header |                                 | group  |                                                                                                                                                                                            |
-| 1         |            | Networks                        | title  |                                                                                                                                                                                            |
-| 2         |            | + Add Network                   | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Network details.<br> |
+|-----------| ---------- |---------------------------------|--------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|           | Tab Header |  Visualize my resources         | Tab    |                                                                                                                                                                                            |
+| 1         | Networks           |                         | Table  |                                                                                                                                                                                            |
+| 2         |            | + Add                | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Network details.<br> |
 |           | Tab        |                                 |        |      <br/>                                                                                                                                                                                      |
 | 3         |            | Name                            | column |                                                                                                                                                                                           |
 | 4         |            | Type                            | column |                                                                                                                                                                                            |
@@ -72,7 +72,7 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service network view
+RND ->> front: Click on "Add" button in the digital service's networks table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 back--> DataBase: Create network record in the in_physical_equipment table
 front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments

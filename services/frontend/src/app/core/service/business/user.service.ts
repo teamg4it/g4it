@@ -25,7 +25,7 @@ export class UserService {
 
     public subscriberSubject = new ReplaySubject<Subscriber>(1);
 
-    private rolesSubject = new ReplaySubject<Role[]>(1);
+    private readonly rolesSubject = new ReplaySubject<Role[]>(1);
 
     roles$ = this.rolesSubject.asObservable();
 

@@ -18,8 +18,8 @@ This use case allows a project team to add Terminal equipment into a digital ser
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Terminals / Add Device
--   My Digital Services / My Digital Service / Terminals / Modify Device
+-   My Digital Services / My Digital Service / Visualize my resources tab / Terminals / Add Device
+-   My Digital Services / My Digital Service / Visualize my resources tab / Terminals / Modify Device
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected organization.
@@ -30,20 +30,20 @@ The connected user must have the write access for that module on the selected or
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
-| Reference | Group      | Elements                       | Type   | Description                                                                                                                                                                               |
-|-----------| ---------- | ------------------------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|           | Tab Header |                                | group  |                                                                                                                                                                                           |
-| 1         |            | Devices                        | title  |                                                                                                                                                                                           |
-| 2         |            | + Add Device                   | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Device details.<br> |
-|           | Tab        |                                |        |                                                                                                                                                                                           |
-| 3         |            | Name                 | column |                                                                                                                                                                                           |
-| 4         |            | Type of device                 | column |                                                                                                                                                                                           |
-| 5         |            | Country                        | column |                                                                                                                                                                                           |
-| 6         |            | Number of unique user          | column |                                                                                                                                                                                           |
-| 7         |            | Yearly usage time per user     | column |                                                                                                                                                                                           |
+| Reference | Group      | Elements                        | Type   | Description                                                                                                                                                                               |
+|-----------|------------|---------------------------------|--------| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|           | Tab Header | Visualize my resources          | tab    |                                                                                                                                                                                           |
+| 1         |  Terminals |                                 | table  |                                                                                                                                                                                           |
+| 2         |            | + Add                           | button | <li><u>_initialization rules_</u>: That button is displayed if the connected user have the write right.<br><br><li><u>_action rules_</u>: That button open the window Device details.<br> |
+|           | Tab        |                                 |        |                                                                                                                                                                                           |
+| 3         |            | Name                            | column |                                                                                                                                                                                           |
+| 4         |            | Type of device                  | column |                                                                                                                                                                                           |
+| 5         |            | Country                         | column |                                                                                                                                                                                           |
+| 6         |            | Number of unique user           | column |                                                                                                                                                                                           |
+| 7         |            | Yearly usage time per user      | column |                                                                                                                                                                                           |
 | 8         |            | Average device lifespan (years) | column |                                                                                                                                                                                           |
-| 9         |            | Edit                           | button | <li><u>_action rules_</u>: That button open the window Device details.<br>                                                                                                                |
-| 10        |            | Delete                         | button | <li><u>_action rules_</u>: Delete the device from the current Digital Service.<br> Note : The user must click on Calculate to update the footprint estimation.                            |
+| 9         |            | Edit                            | button | <li><u>_action rules_</u>: That button open the window Device details.<br>                                                                                                                |
+| 10        |            | Delete                          | button | <li><u>_action rules_</u>: Delete the device from the current Digital Service.<br> Note : The user must click on Calculate to update the footprint estimation.                            |
 
 {{% /expand %}}
 
@@ -78,7 +78,7 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service terminal view
+RND ->> front: Click on "Add" button in the digital service's terminal table
 front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 back--> DataBase: Create terminal record in the in_physical_equipment table
 front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments

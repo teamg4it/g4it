@@ -9080,8 +9080,10 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
 }
 
 app-digital-services-ecomind-parameters {
-    p-inputnumber {
-        input:disabled {
+    p-inputnumber,
+    input {
+        input:disabled,
+        &:disabled {
             background-color: #f2eff6;
             color: #282829;
         }

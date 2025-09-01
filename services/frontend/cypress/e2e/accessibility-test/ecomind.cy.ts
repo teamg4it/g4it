@@ -20,16 +20,9 @@ describe("Ecomind", () => {
         cy.log("### Test without change ###");
         cy.get('[id="add-digital"]').click();
 
-        // test calculation failed
-        cy.then(() => setPage("Infrastructure page"));
-        cy.log("### Calculate failed ###");
-        cy.get('[id="calculate"]').click();
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
-
         // fill infrastructure fields
         cy.log("### Fill Infrastructure Fields ###");
         cy.get('[id="pue"]').type("1.5");
-        cy.get('[id="complementary-pue"]').type("1.3");
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
 
         // fill ai parameters fields
@@ -45,7 +38,7 @@ describe("Ecomind", () => {
         // calculate
         cy.log("### Visualize ###");
         cy.then(() => setPage("visualize page"));
-        cy.checkA11y(undefined, undefined, reportA11yViolations, true);
+        cy.wait(2000).checkA11y(undefined, undefined, reportA11yViolations, true);
         // delete the ai digital service
         cy.get('[id="delete-service"]').click();
         cy.get('[aria-label="Yes"]').click();

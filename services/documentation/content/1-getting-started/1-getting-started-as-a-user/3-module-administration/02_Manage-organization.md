@@ -1,5 +1,5 @@
 ---
-title: "How to Create, Edite, or Delete Workspaces (Organizations)"
+title: "How to Create, Edit, or Delete Workspaces (Organizations)"
 description: "This guide explains how to create, edit, or delete a workspace (also referred to as an organization) in G4IT."
 weight: 20
 ---
@@ -51,10 +51,11 @@ Before proceeding, ensure the following:
 ## Step 2: Manage Workspaces (Organizations)
 
 Once in edit mode, you can:
-
-- **Create** a new organization (workspace):  
+- **Create** a new organization (workspace) ():  
   1. Enter a name in field. 
   2. Click **Add an organization**.
+
+**NOTE:** "New Workspace" button is displayed only if I am suscriber admin or if the subcriber domain equal to my domain.
 
 - **Edit** an existing organization (workspace):
     

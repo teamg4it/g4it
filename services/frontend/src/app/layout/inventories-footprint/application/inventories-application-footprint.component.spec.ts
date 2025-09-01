@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
@@ -7,6 +7,7 @@ import { FootprintService } from "src/app/core/service/business/footprint.servic
 import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { Constants } from "src/constants";
 import { InventoriesApplicationFootprintComponent } from "./inventories-application-footprint.component";
 
 const mockTranslateService = {
@@ -47,6 +48,8 @@ const mockFootprintService = {
 
 const mockFootprintStore = {
     setApplicationCriteria: jasmine.createSpy(),
+    setDomain: jasmine.createSpy(),
+    setSubDomain: jasmine.createSpy(),
     setGraphType: jasmine.createSpy(),
     appGraphType: jasmine.createSpy().and.returnValue("global"),
     appDomain: jasmine.createSpy().and.returnValue(""),
@@ -59,6 +62,8 @@ const mockGlobalStore = {
     setLoading: jasmine.createSpy(),
 };
 describe("Inventory Application footprint", () => {
+    let component: InventoriesApplicationFootprintComponent;
+    let fixture: ComponentFixture<InventoriesApplicationFootprintComponent>;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [InventoriesApplicationFootprintComponent],
@@ -72,11 +77,76 @@ describe("Inventory Application footprint", () => {
                 { provide: GlobalStoreService, useValue: mockGlobalStore },
             ],
         }).compileComponents();
+        fixture = TestBed.createComponent(InventoriesApplicationFootprintComponent);
+        component = fixture.componentInstance;
     });
 
     it("should create the component", () => {
-        const fixture = TestBed.createComponent(InventoriesApplicationFootprintComponent);
-        const component = fixture.componentInstance;
         expect(component).toBeTruthy();
+    });
+
+    it('should set graph type to "subdomain" if domain has one child', async () => {
+        const testDomainFilter = [
+            Constants.ALL,
+            {
+                label: "Domain1",
+                checked: true,
+                visible: true,
+                children: [{ label: "SubDomain1", checked: true, visible: true }],
+            },
+        ];
+        mockFootprintService.initApplicationFootprint.and.returnValue(of([]));
+        mockFootprintService.getUniqueValues.and.returnValue({
+            domain: testDomainFilter.slice(1),
+            lifeCycle: [],
+            equipmentType: [],
+            environment: [],
+        });
+
+        await component.ngOnInit();
+
+        expect(mockFootprintStore.setDomain).toHaveBeenCalledWith("Domain1");
+        expect(mockFootprintStore.setSubDomain).toHaveBeenCalledWith("SubDomain1");
+        expect(mockFootprintStore.setGraphType).toHaveBeenCalledWith("subdomain");
+    });
+
+    it("should set graphType global when domain length >2", async () => {
+        spyOn(component.allUnmodifiedFilters, "set").and.callFake(() => {});
+        spyOn(component, "allUnmodifiedFilters").and.returnValue({
+            domain: [{ label: "ALL" }, { label: "Domain1" }, { label: "Domain2" }],
+        });
+        mockFootprintService.getUniqueValues.and.returnValue({
+            domain: [],
+            lifeCycle: [],
+            equipmentType: [],
+            environment: [],
+        });
+        await component.ngOnInit();
+
+        expect(mockFootprintStore.setGraphType).toHaveBeenCalledWith("global");
+    });
+
+    it("should set domain when domain length <=2 and children length >1", async () => {
+        spyOn(component.allUnmodifiedFilters, "set").and.callFake(() => {});
+        spyOn(component, "allUnmodifiedFilters").and.returnValue({
+            domain: [
+                { label: "ALL" },
+                {
+                    label: "Domain1",
+                    children: [{ label: "Child1" }, { label: "Child2" }],
+                },
+            ],
+        });
+        mockFootprintService.getUniqueValues.and.returnValue({
+            domain: [],
+            lifeCycle: [],
+            equipmentType: [],
+            environment: [],
+        });
+        await component.ngOnInit();
+
+        expect(mockFootprintStore.setDomain).toHaveBeenCalledWith("Domain1");
+        expect(mockFootprintStore.setSubDomain).toHaveBeenCalledWith("");
+        expect(mockFootprintStore.setGraphType).toHaveBeenCalledWith("domain");
     });
 });

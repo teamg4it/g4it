@@ -166,12 +166,14 @@ export class DigitalServicesImportComponent {
             this.digitalServicesData.getDsTasks(this.digitalServicesId),
         );
 
-        this.tasks = (ds.tasks ?? []).map((task) => ({
-            ...task,
-            creationDate: new Date(`${task.creationDate}Z`),
-            cssClass: this.getClassStatus(task.status, true),
-            tooltip: this.getClassStatus(task.status, false),
-        }));
+        this.tasks = (ds.tasks ?? [])
+            .filter((task) => task.type?.toUpperCase() === "LOADING")
+            .map((task) => ({
+                ...task,
+                creationDate: new Date(`${task.creationDate}Z`),
+                cssClass: this.getClassStatus(task.status, true),
+                tooltip: this.getClassStatus(task.status, false),
+            }));
 
         this.anyRejectedFiles = this.tasks.some((task) =>
             ["COMPLETED_WITH_ERRORS", "SKIPPED", "FAILED"].includes(task.status),

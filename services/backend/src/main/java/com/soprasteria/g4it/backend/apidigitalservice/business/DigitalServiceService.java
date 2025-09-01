@@ -87,23 +87,31 @@ public class DigitalServiceService {
         final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
 
         // Get last index to create digital service.
-        final List<DigitalService> orgDigitalServices = digitalServiceRepository.findByWorkspaceAndIsAi(linkedWorkspace, isAi);
-        final Integer lastDigitalServiceDefaultNumber = orgDigitalServices
+
+        final List<DigitalService> workDigitalService = digitalServiceRepository.findByWorkspaceAndIsAi(linkedWorkspace, isAi);
+
+        String regex = "^" + DEFAULT_NAME_PREFIX + " (\\d+)" + (isAi ? " AI" : "") + "$";
+        final Integer lastDigitalServiceDefaultNumber = workDigitalService
                 .stream()
                 .map(DigitalService::getName)
-                .filter(name -> name.matches("^" + DEFAULT_NAME_PREFIX + " \\d+$"))
-                .map(name -> name.replace(DEFAULT_NAME_PREFIX + " ", ""))
+                .filter(name -> name.matches(regex))
+                .map(name -> name.replace(DEFAULT_NAME_PREFIX + " ", "")
+                        .replace(isAi ? " AI" : "", "").trim())
                 .map(Integer::valueOf)
-                .max(Comparator.naturalOrder()).orElse(0);
+                .max(Comparator.naturalOrder())
+                .orElse(0);
 
         // Get the linked user.
         final User user = userRepository.findById(userId).orElseThrow();
 
         // Save the digital service with +1 on index name.
         final LocalDateTime now = LocalDateTime.now();
+
+        String dsName = DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1) + (isAi ? " AI" : "");
+
         final DigitalService digitalServiceToSave = DigitalService
                 .builder()
-                .name(DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1))
+                .name(dsName)
                 .user(user)
                 .workspace(linkedWorkspace)
                 .isAi(isAi)

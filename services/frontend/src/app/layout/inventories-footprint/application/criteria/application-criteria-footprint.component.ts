@@ -9,6 +9,7 @@ import {
     Component,
     computed,
     inject,
+    input,
     Input,
     signal,
     Signal,
@@ -21,6 +22,7 @@ import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfac
 import {
     ConstantApplicationFilter,
     Filter,
+    TransformedDomain,
 } from "src/app/core/interfaces/filter.interface";
 import {
     ApplicationFootprint,
@@ -43,6 +45,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
     @Input() footprint: ApplicationFootprint = {} as ApplicationFootprint;
     @Input() filterFields: ConstantApplicationFilter[] = [];
     @Input() selectedInventoryId!: number;
+    allUnmodifiedFilters = input<Filter<string | TransformedDomain>>({});
     showDataConsistencyBtn = false;
     showInconsitencyGraph = false;
     xAxisInput: string[] = [];
@@ -67,6 +70,55 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
 
     impactOrder: ImpactGraph[] = [];
     yAxislist: string[] = [];
+    showBackButton = computed(() => {
+        if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
+            if (
+                (this.allUnmodifiedFilters()["domain"][1] as TransformedDomain)?.children
+                    ?.length <= 1 &&
+                this.footprintStore.appGraphType() === "subdomain"
+            ) {
+                return false;
+            }
+
+            if (this.footprintStore.appGraphType() === "domain") {
+                return false;
+            }
+        }
+        return true;
+    });
+
+    showDomainByApplication = computed(() => {
+        if (this.allUnmodifiedFilters()["domain"]?.length > 2) {
+            const domainSelected: any = this.footprintStore
+                .applicationSelectedFilters()
+                [
+                    "domain"
+                ].find((d) => (d as TransformedDomain).label === this.footprintStore.appDomain());
+            if (domainSelected?.children.length <= 1) {
+                return true;
+            }
+        }
+        return false;
+    });
+
+    showDomainLabel = computed(() => {
+        if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
+            return false;
+        }
+        return true;
+    });
+
+    showSubDomainLabel = computed(() => {
+        if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
+            if (
+                (this.allUnmodifiedFilters()["domain"][1] as TransformedDomain)?.children
+                    ?.length <= 1
+            ) {
+                return false;
+            }
+        }
+        return true;
+    });
 
     options: Signal<EChartsOption> = computed(() => {
         const localFootprint = this.appComponent.formatLifecycleImpact([this.footprint]);
@@ -97,9 +149,18 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
 
     onChartClick(event: any) {
         if (this.footprintStore.appGraphType() === "global") {
-            this.footprintStore.setGraphType("domain");
-            this.footprintStore.setDomain(event.name);
-            this.footprintStore.setSubDomain("");
+            const domainSelected: any = this.footprintStore
+                .applicationSelectedFilters()
+                ["domain"].find((d) => (d as TransformedDomain).label === event.name);
+            if (domainSelected?.children.length <= 1) {
+                this.footprintStore.setDomain(event.name);
+                this.footprintStore.setSubDomain(domainSelected?.children[0].label);
+                this.footprintStore.setGraphType("subdomain");
+            } else {
+                this.footprintStore.setGraphType("domain");
+                this.footprintStore.setDomain(event.name);
+                this.footprintStore.setSubDomain("");
+            }
         } else if (this.footprintStore.appGraphType() === "domain") {
             this.footprintStore.setGraphType("subdomain");
             this.footprintStore.setSubDomain(event.name);
@@ -114,8 +175,17 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             this.footprintStore.setGraphType("subdomain");
             this.footprintStore.setApplication("");
         } else if (this.footprintStore.appGraphType() === "subdomain") {
-            this.footprintStore.setGraphType("domain");
-            this.footprintStore.setSubDomain("");
+            const domainSelected: any = this.allUnmodifiedFilters()["domain"].find(
+                (d) => (d as TransformedDomain).label === this.footprintStore.appDomain(),
+            );
+            if (domainSelected?.children.length <= 1) {
+                this.footprintStore.setGraphType("global");
+                this.footprintStore.setDomain("");
+                this.footprintStore.setSubDomain("");
+            } else {
+                this.footprintStore.setGraphType("domain");
+                this.footprintStore.setSubDomain("");
+            }
         } else if (this.footprintStore.appGraphType() === "domain") {
             this.footprintStore.setGraphType("global");
             this.footprintStore.setDomain("");

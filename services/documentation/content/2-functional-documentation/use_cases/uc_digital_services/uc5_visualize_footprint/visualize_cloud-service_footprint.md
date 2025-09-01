@@ -1,5 +1,5 @@
 ---
-title: "2.5.4. Visualize digital service's cloud service footprint"
+title: "2.5.4. Visualize digital service's Public Clouds - IaaS footprint"
 description: "This use case describes how to visualize the impact of a digital service"
 weight: 40
 mermaid: true
@@ -15,7 +15,7 @@ mermaid: true
 
 ## Description
 
-The use case allows a project team to visualize the impacts of cloud services of a digital service.
+The use case allows a project team to visualize the impacts of Public Clouds - IaaS of a digital service.
 The key indicators displayed on the radar graph are cloud service.
 The results can be filtered by the instance type of cloud service.
 It is also possible to display results for a single criteria only.

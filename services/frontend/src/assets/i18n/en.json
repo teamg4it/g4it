@@ -88,7 +88,9 @@
             "accordion-open": "Click to show sub domains",
             "accordion-close": "Click to hide sub domains",
             "import": "Click to import digital service data",
-            "calculate": "Click here to calculate your impact"
+            "calculate": "Click here to calculate your impact",
+            "add": "Click here to add a {{type}}",
+            "close-criteria-dialog": "Click here to Close"
         },
         "note": {
             "add": "Add a note",
@@ -160,7 +162,9 @@
             "space-name-pattern": "Special characters @ / ; ? are not allowed."
         },
         "plus-menu": "Plus",
-        "add-button": "Add"
+        "add-button": "Add",
+        "actions": "Actions",
+        "nav-panel": "Show the navigation panel"
     },
     "errors": {
         "error-occurred": "An error occurred"
@@ -179,8 +183,8 @@
         "raw": "Raw value",
         "peopleeq": "People eq.",
         "Terminal": "Terminals",
-        "Server": "Non-Cloud Servers",
-        "CloudService": "Cloud Services",
+        "Server": "Private Infrastructures",
+        "CloudService": "Public Clouds - IaaS",
         "Network": "Networks",
         "visualize": "Visualize",
         "infrastructure": "Infrastructure",
@@ -212,7 +216,10 @@
         "view-resources": "Visualize my resources",
         "visualize-results": "Visualize my results",
         "visualize-parameters": "Visualize the parameters",
-        "back": "Back"
+        "back": "Back",
+        "hide-menu-buttons": "Hide option for the digital service",
+        "show-menu-buttons": "Show option for the digital service",
+        "save-inplace": "Save the digital service name"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",
@@ -229,8 +236,8 @@
         "raw": "Raw value",
         "peopleeq": "People eq.",
         "Terminal": "Terminals",
-        "Server": "Non-Cloud Servers",
-        "CloudService": "Cloud Services",
+        "Server": "Private Infrastructures",
+        "CloudService": "Public Clouds - IaaS",
         "Network": "Networks",
         "visualize": "Visualize",
         "infrastructure": "Infrastructure",
@@ -268,7 +275,6 @@
         "edit": "Edit Device",
         "devices": "Devices",
         "device": "Device",
-        "add": "+ ADD DEVICE",
         "id": "#",
         "type": "Type of device",
         "typeCode": "Type of device",
@@ -289,7 +295,6 @@
         "edit": "Edit Network",
         "networks": "Networks",
         "network": "Network",
-        "add": "+ ADD NETWORK",
         "id": "#",
         "name": "Name",
         "type": "Type",
@@ -313,9 +318,8 @@
         },
         "edit": "Edit Server",
         "new": "New Server",
-        "servers": "Non-Cloud Servers",
-        "server": "Non-Cloud Server",
-        "add-button": "+ ADD SERVER",
+        "servers": "Private Infrastructures",
+        "server": "Private Infrastructure",
         "id": "#",
         "name": "Name",
         "allocation": "Allocation",
@@ -349,6 +353,7 @@
             "vm": "Add VM"
         },
         "vm": "Virtual Machines",
+        "accessibility.vm": "Virtual Machine",
         "vcpu": "vCPU",
         "vCpu": "vCPU",
         "disk": "Disk",
@@ -362,9 +367,9 @@
     "digital-services-cloud-services": {
         "new": "New Cloud Instance",
         "edit": "Edit Cloud Instance",
-        "cloud-services": "Cloud Services",
-        "cloud-service": "Cloud Service",
-        "add": "+ ADD CLOUD SERVICE",
+        "cloud-services": "Public Clouds - IaaS",
+        "cloud-service": "Public Cloud - IaaS",
+        "accessibility.cloud-service": "Public Cloud",
         "id": "#",
         "name": "Name",
         "location": "Location",
@@ -586,6 +591,15 @@
         },
         "global": {
             "global-vision": "Global Vision",
+            "global-vision-by": "Global Vision by {{variable}}",
+            "impact-domain-by-subdomain": "Impact of the {{domain}} domain by sub-domain",
+            "impact-subdomain-by-application": "Impact of the {{subdomain}} sub-domain by application",
+            "impact-application-by-equipment": "Impact of the {{application}} application by equipment",
+            "impact-domain-by-application": "Impact of the {{domain}} domain by application",
+            "criteria": "criteria",
+            "type_global": "domain",
+            "type_subdomain": "application",
+            "type_domain": "sub-domain",
             "info-fis-title": "What is the meaning of people eq. ?",
             "info-fis-text": "If every human being respected planetary limits, each of us would have an individual package that would guarantee the sustainable balance of the system: The people equivalent (Eq. People) concept represent the number of people respecting this sustainable individual package. It was performed by dividing planet boundary from each criteria (ref. JRC Technical report - Consumption and Consumer Footprint: methodology and results) by the number of people on Earth.",
             "datacenter": "DATA CENTER",
@@ -598,7 +612,7 @@
             "elec-consumption": "Total power consumption",
             "equipment": "EQUIPMENT",
             "equipments": "Equipments",
-            "cloud-services": "CLOUD SERVICES",
+            "cloud-services": "Public Clouds - IaaS",
             "cloud-instances": "Cloud Instances",
             "tooltip": {
                 "nb-cloud": "Number of cloud instances",
@@ -705,7 +719,7 @@
     "digital-services-cards": {
         "global-vision": {
             "title": "Towards the eco-design of your service",
-            "content": "This graph represents the various environmental impacts attributed to your digital service for 1 year of operation. It takes into account the entire lifecycle of the equipments that enables your service to operate (from manufacturing to end of life) for all the criteria listed on the left side of the screen. <br> <br> ​It helps you understand where to start your analysis in order to effectively reduce the impact of your service. But beware: by seeking to reduce the impact of one criterion, you run the risk of transferring the impact to another criterion or another phase of the life cycle (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>eco-design principles</a>). One way of avoiding this pitfall is to demonstrate sobriety at all levels of your service. <br> <h3>​ A scale suited to multi-criteria analysis: the people equivalent. </h3>​ All graphs are expressed in 'people Eq': to understand this unit, imagine defining a fixed amount for each resident of the planet, corresponding to the planetary limits that must not be exceeded individually to guarantee the overall balance of the system. This theoretical fixed amount is obtained by dividing the maximum quantity of negative externalities allowed by the Earth system (as defined <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>in this technical report about consumption and consumer footprint</a>) by the number of people. <br> <br> ​This unit makes it possible to compare the criteria and target your eco-design action plan (see <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>eco-design definition</a>) on what really matters. <br> <br>​ To find out more about what's at stake: <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>check this report on the environmental impact of ICT</a>. <br> <br>​ To carry out an audit of your application, the Référentiel Général d'Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) is a great starting point."
+            "content": "This graph represents the various environmental impacts attributed to your digital service for 1 year of operation. It takes into account the entire lifecycle of the equipments that enables your service to operate (from manufacturing to end of life) for all the criteria listed on the left side of the screen. <br> <br> ​It helps you understand where to start your analysis in order to effectively reduce the impact of your service. But beware: by seeking to reduce the impact of one criterion, you run the risk of transferring the impact to another criterion or another phase of the life cycle (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>eco-design principles</a>). One way of avoiding this pitfall is to demonstrate sobriety at all levels of your service. <br> <h3>​ A scale suited to multi-criteria analysis: the people equivalent. </h3>​ All graphs are expressed in 'people Eq': to understand this unit, imagine defining a fixed amount for each resident of the planet, corresponding to the planetary limits that must not be exceeded individually to guarantee the overall balance of the system. This theoretical fixed amount is obtained by dividing the maximum quantity of negative externalities allowed by the Earth system (as defined <a href='https://saas-g4it.com/documentation/2-functional-documentation/global_concepts/uc2_people_equivalent/index.html' target='_blank'>in this technical report about consumption and consumer footprint</a>) by the number of people. <br> <br> ​This unit makes it possible to compare the criteria and target your eco-design action plan (see <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>eco-design definition</a>) on what really matters. <br> <br>​ To find out more about what's at stake: <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>check this report on the environmental impact of ICT</a>. <br> <br>​ To carry out an audit of your application, the Référentiel Général d'Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) is a great starting point."
         },
         "global-vision-ai": {
             "title": "How to do better"
@@ -878,6 +892,7 @@
         "cancel-deletion": "Cancel delete",
         "cancel-deletion-accessibility": "Cancel deletion of {{organizationName}} organization",
         "cancel-deletion-message": "Your workspace's data will be deleted on {{date}}",
+        "cancel-deletion-non-SubscriberAdmin": "Please contact your admin to cancel the deletion.",
         "delete-confirmation": "Deletion confirmation",
         "delete-message": "After 7 days, all your workspace's data will be deleted. Are you sure you want to delete this workspace ?",
         "user": {

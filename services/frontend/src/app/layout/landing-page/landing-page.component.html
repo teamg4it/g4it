@@ -15,17 +15,13 @@
     <!-- Sidebar + Main content container -->
     <div class="flex w-full">
         <!-- Sidebar -->
-        <aside class="left-sidebar">
-            <app-left-sidebar />
-        </aside>
+        @if (!isMobile()) {
+            <aside class="left-sidebar hidden lg:block">
+                <app-left-sidebar />
+            </aside>
+        }
         <!-- Main content area -->
-        <main
-            class="flex-1"
-            #mainContent
-            [ngClass]="{
-                'overflow-auto': globalStore.zoomLevel() >= 150,
-            }"
-        >
+        <main class="flex-1" #mainContent>
             <router-outlet></router-outlet>
         </main>
         @if (spaceSidebarVisible) {

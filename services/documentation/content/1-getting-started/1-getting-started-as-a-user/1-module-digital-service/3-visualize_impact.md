@@ -3,10 +3,11 @@ title: "How to visualize the impact of my digital service?"
 description: "This section is a user guide to understand how to visualize the data in G4IT"
 weight: 30
 ---
+
 <!-- TOC -->
   * [Evaluating the Impact of Your Digital Service](#evaluating-the-impact-of-your-digital-service)
     * [**Step 1:** Begin the Evaluation](#step-1-begin-the-evaluation)
-    * [**Step 2:** Select Evaluation Criteria](#step-2-select-evaluation-criteria)
+    * [**Step 2:** Select Evaluation Criteria in the footprint view](#step-2-select-evaluation-criteria-in-the-footprint-view)
     * [**Step 3:** Visualize the Overall Impact](#step-3-visualize-the-overall-impact)
   * [Navigating the Graph](#navigating-the-graph)
     * [**Step 4:** View a Specific Evaluation Criterion](#step-4-view-a-specific-evaluation-criterion)
@@ -15,7 +16,7 @@ weight: 30
       * [**Step 6:** View Lifecycle Steps for End-user Devices](#step-6-view-lifecycle-steps-for-end-user-devices)
     * [Data Exchange](#data-exchange)
       * [**Step 7:** View the Impact of Data Exchange](#step-7-view-the-impact-of-data-exchange)
-    * [Servers](#servers)
+    * [Private Infrastructures](#private-infrastructures)
       * [If You Know Your Infrastructure Configuration](#if-you-know-your-infrastructure-configuration)
         * [**Step 8:** View the Impact of Non-cloud Servers (Infrastructure Known)](#step-8-view-the-impact-of-non-cloud-servers-infrastructure-known)
         * [**Step 9:** View Impact for a Specific Server](#step-9-view-impact-for-a-specific-server)
@@ -32,18 +33,20 @@ weight: 30
 
 ### **Step 1:** Begin the Evaluation
 
-- **Action:**
-    - Click the "Calculate" button to start the evaluation.
-    - Use the "Settings" button to choose the criteria on which you want to evaluate the impact (11 criteria are
-      available).
+-   **Action:**
+    -   Click the "Calculate My Impact" button to start the evaluation.
+    -   The first estimation is done for the default criteria chosen by your organization's administrator.
+    -   The "Calculate My Impact" button disappears. Once any equipment is added/modified, the button is re-appears.
 
 ![Screenshot showing the "Calculate" and "Settings" buttons for starting the evaluation process.](../media/15_evaluate_the_impact.png)
 
-### **Step 2:** Select Evaluation Criteria
+### **Step 2:** Select Evaluation Criteria in the footprint view
 
-- **Action:**
-    - From the list of criteria, select the one you want to evaluate for the impact of your digital service.
-    - If you reset to default, it will select the criteria chosen by your organization's administrator.
+-   **Action:**
+    -   Click the 'Edit Criteria' button
+    -   From the list of criteria, select the one you want to evaluate for the impact of your digital service.
+    -   If you reset to default, it will select the criteria chosen by your organization's administrator.
+    -   Click 'Save' button. Re-evaluation launches for the selected criteria.
 
 ![Screenshot showing the criteria selection interface with a list of evaluation criteria.](../media/16_choose_criteria.png)
 
@@ -52,18 +55,23 @@ weight: 30
 After starting the evaluation by clicking the appropriate button, you will be automatically redirected to the page to
 visualize the impact of your digital service.
 
-- This page is divided into three parts with two important buttons:
+-   This page is divided into three parts with two important buttons:
+
     1. **The List of Evaluated Criteria:** Navigate this menu to view the impact of your digital service on each
        criterion.
     2. **Main Graph:** Depending on the evaluation level, it displays the impact distribution. You can interact with the
        graph by clicking on different components.
     3. **Guidance:** Based on your current view, this section provides an explanation of the impact and key advice for
        reducing it.
-    4. **Action:** Access this view by clicking the "Visualize" tab.
-    5. **Action:** In some cases, G4IT may not have been able to evaluate the impact on all criteria. This button allows
-       you to see inconsistencies in the graph. You can learn more about this in
+    4. **Action:** In some cases, G4IT may not have been able to evaluate the impact on all criteria. This button enables
+       the data consistency view which is disabled by default. You can learn more about this in
        the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md)
        documentation.
+    5. **Action:** This button allows you to see inconsistencies in the graph. If you cannot see this button in the view,
+       you can enable it from the 'Configure the view' button You can learn more about this in
+       the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md)
+
+    **Action:** Access this view by clicking the "Visualize my results in the" tab in the digital service view.
 
 ![Screenshot showing the overall impact of the digital service, divided into different components with the main graph and evaluation criteria list.](../media/17_visualize_impact.png)
 
@@ -73,14 +81,13 @@ visualize the impact of your digital service.
 
 ### **Step 4:** View a Specific Evaluation Criterion
 
-1. **Action:** Click on the generic graph or select a specific criterion to access a new graph showing the impact
+1. **Selected Criteria**
+2. **Action:** Click on the generic graph or select a specific criterion to access a new graph showing the impact
    distribution according to key elements of the digital service:
     - End-user devices
     - Data exchange
-    - Infrastructure:
-           - Servers
-           - Cloud services
-2. **Guidance:** This view provides explanations about the impact and advice on how to reduce it.
+    - Infrastructure: - Servers - Cloud services
+3. **Guidance:** This view provides explanations about the impact and advice on how to reduce it.
 
 ![Screenshot of a graph showing the impact distribution based on selected evaluation criteria. Each section is clickable for further exploration.](../media/18_visualize_impact_criteria.png)
 
@@ -122,7 +129,7 @@ visualize the impact of your digital service.
 
 ---
 
-### Servers
+### Private Infrastructures
 
 #### If You Know Your Infrastructure Configuration
 

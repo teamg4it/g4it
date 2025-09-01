@@ -42,6 +42,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { generateColor } from "src/app/core/utils/color";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+import { LeftSidebarComponent } from "../left-sidebar/left-sidebar.component";
 @Component({
     standalone: true,
     selector: "app-top-header",
@@ -57,6 +58,7 @@ import { environment } from "src/environments/environment";
         TranslateModule,
         SharedModule,
         DialogModule,
+        LeftSidebarComponent,
     ],
 })
 export class TopHeaderComponent implements OnInit {
@@ -99,6 +101,9 @@ export class TopHeaderComponent implements OnInit {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 this.setSelectedPage();
+                if (this.isMobile()) {
+                    this.dialogVisible = false;
+                }
             }
         });
         this.userService.currentSubscriber$.subscribe(

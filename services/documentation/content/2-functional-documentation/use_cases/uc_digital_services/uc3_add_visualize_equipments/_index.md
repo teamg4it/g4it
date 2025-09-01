@@ -14,7 +14,7 @@ mermaid: true
 ## Description
 
 This usecase allows a project team to add equipment into a digital service previously created.
-It means that user can describe all terminals, networks, non-cloud servers, cloud services related to a DS to evaluate its environmental footprint, regardless of whether the service is newly created or an older one
+It means that user can describe all terminals, networks, private infrastructures, public cloud - IaaS related to a DS to evaluate its environmental footprint, regardless of whether the service is newly created or an older one
 
 **Navigation Path**
 
@@ -27,15 +27,15 @@ The connected user must have write access to that module in the selected organiz
 ## State Diagram
 {{< mermaid >}}
 graph TD;
-Step1[Service view] -->Decision1{Choose an equipment tab}
+Step1[Service view] -->Decision1{'Visualize my resources' tab}
 Decision1 -->|Terminals| Step2[Terminals list view]
 Decision1 -->|Network| Step3[Networks list view]
-Decision1 -->|Non-Cloud Servers| Step4[Servers list view]
-Decision1 -->|Cloud Services| Step12[Cloud Service list view]
-Step2 -->|Click on Add Device|Step5[Add terminal view] --> |Fill the information then press 'Add'|Step2
-Step3 -->|Click on Add Network|Step6[Add network view] --> |Fill the information then press 'Add'|Step3
-Step12 -->|Click on Add Cloud Service|Step13[Add cloud service view] --> |Fill the information then press 'Add'|Step12
-Step4 -->|Click on Add Server|Step7[Add server view] --> |Fill the information then press 'Next'|Decision2{Which type of server?}
+Decision1 -->|Private Infrastructures| Step4[Private Infrastructures list view]
+Decision1 -->|Public Cloud - IaaS| Step12[Public Cloud - IaaS list view]
+Step2 -->|Click on Add|Step5[Add terminal view] --> |Fill the information then press 'Add'|Step2
+Step3 -->|Click on Add|Step6[Add network view] --> |Fill the information then press 'Add'|Step3
+Step12 -->|Click on Add|Step13[Add cloud service view] --> |Fill the information then press 'Add'|Step12
+Step4 -->|Click on Add|Step7[Add server view] --> |Fill the information then press 'Next'|Decision2{Which type of server?}
 Decision2 -->|Dedicated|Step8[Add server 2nd view] -->|Fill the information then press 'Add'|Step4
 Decision2 -->|Shared|Step9[Add server shared specific view] -->|Fill the information then press 'Next'|Step10[Virtual Machines View] -->|Click on Add VM|Step11[ADD VM view] -->|Fill the information then press 'Add'|Step10 -->|Click on 'Create'|Step4
 
@@ -47,9 +47,9 @@ Decision2 -->|Shared|Step9[Add server shared specific view] -->|Fill the informa
 
 [2.3.2 Add or Visualize Network](uc3_add_visualize_network.md)
 
-[2.3.3 Add or Visualize Non Cloud Servers](uc3_add_visualize_noncloud_servers.md)
+[2.3.3 Add or Visualize Private Infrastructures](uc3_add_visualize_noncloud_servers.md)
 
-[2.3.4 Add or Visualize Cloud Services](uc3_add_visualize_cloud_services.md)
+[2.3.4 Add or Visualize Public Clouds - IaaS](uc3_add_visualize_cloud_services.md)
 
 ## Sequence Diagram
 
@@ -62,19 +62,19 @@ participant DataBase
 participant BoaviztApi
 
 RND ->> front: Choose a type of equipment
-RND ->> front: Click on 'Add device'
+RND ->> front: Click on 'Add' button in Devices table
 front ->> back: GET /api/{subscriber}/{organization}/digital-services/device-type
 back ->> front: List of device types
 front ->> back: GET /api/{subscriber}/{organization}/digital-services/country
 back ->> front: List of countries
-RND ->> front: Click on 'Add network'
+RND ->> front: Click on 'Add' button in Networks table
 front ->> back: GET /api/{subscriber}/{organization}/digital-services/network-type
 back ->> front: List of network types
-RND ->> front: Click on 'Add server'
+RND ->> front: Click on 'Add' button in Private Infrastructures
 front ->> back: GET /api/{subscriber}/{organization}/digital-services/server-host
 back ->> front: List of hosts
 
-RND ->> front: Click on 'Add cloud service'
+RND ->> front: Click on 'Add' button in Public Cloud - IaaS table
 front ->> BoaviztApi: GET /api/referential/boaviztapi/countries
 BoaviztApi ->> front: List of countries in Boaviztapi
 front ->> BoaviztApi: GET /api/referential/boaviztapi/cloud/providers

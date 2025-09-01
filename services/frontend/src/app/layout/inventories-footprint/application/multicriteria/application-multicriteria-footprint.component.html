@@ -6,7 +6,14 @@
                     'inventories-footprint.application.graph-title-global' | translate
                 }}"
             >
-                {{ "inventories-footprint.global.global-vision" | translate }}
+                {{
+                    "inventories-footprint.global.global-vision-by"
+                        | translate
+                            : {
+                                  variable:
+                                      "inventories-footprint.global.criteria" | translate,
+                              }
+                }}
                 ({{ "common.peopleeq-min" | translate }})
             </h3>
             @if (showDataConsistencyBtn) {
