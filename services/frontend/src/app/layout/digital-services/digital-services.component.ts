@@ -7,6 +7,7 @@
  */
 import { Component, DestroyRef, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -55,12 +56,22 @@ export class DigitalServicesComponent {
         private readonly translate: TranslateService,
         private readonly messageService: MessageService,
         public userService: UserService,
+        private readonly titleService: Title,
     ) {}
 
     async ngOnInit(): Promise<void> {
         this.route.parent?.data.subscribe((data) => {
             this.isEcoMindAi = data["isIa"] === true;
         });
+        const titleKey = this.isEcoMindAi
+            ? "welcome-page.eco-mind-ai.title"
+            : "digital-services.page-title";
+        this.translate
+            .get(titleKey)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((translatedTitle: string) => {
+                this.titleService.setTitle(`${translatedTitle} - G4IT`);
+            });
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((organization: Organization) => {
