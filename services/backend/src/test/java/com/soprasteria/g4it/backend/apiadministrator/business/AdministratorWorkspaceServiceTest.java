@@ -25,7 +25,7 @@ import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.LinkUserRoleRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRoleRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpsertRest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -180,17 +180,17 @@ class AdministratorWorkspaceServiceTest {
         String organizationName = "ORGANIZATION";
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
-        WorkspaceUpdateRest workspaceUpdateRest =
+        WorkspaceUpsertRest workspaceUpsertRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
         WorkspaceBO updatedOrganization = WorkspaceBO.builder().id(orgId).name("UpdatedName").build();
 
         doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(userBO, subscriberId, orgId);
-        when(workspaceService.updateWorkspace(orgId, workspaceUpdateRest, userBO.getId())).thenReturn(updatedOrganization);
+        when(workspaceService.updateWorkspace(orgId, workspaceUpsertRest, userBO.getId())).thenReturn(updatedOrganization);
 
-        WorkspaceBO result = administratorWorkspaceService.updateWorkspace(orgId, workspaceUpdateRest, userBO);
+        WorkspaceBO result = administratorWorkspaceService.updateWorkspace(orgId, workspaceUpsertRest, userBO);
 
         verify(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(userBO, subscriberId, orgId);
-        verify(workspaceService).updateWorkspace(orgId, workspaceUpdateRest, userBO.getId());
+        verify(workspaceService).updateWorkspace(orgId, workspaceUpsertRest, userBO.getId());
         verify(userService).clearUserAllCache();
 
         assertEquals(orgId, result.getId());
@@ -205,13 +205,13 @@ class AdministratorWorkspaceServiceTest {
         String organizationName = "ORGANIZATION";
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
-        WorkspaceUpdateRest workspaceUpdateRest =
+        WorkspaceUpsertRest workspaceUpsertRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
 
         doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "User with id '1' do not have admin role on subscriber '1' or organization '1'")).when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(userBO, subscriberId, orgId);
 
         assertThrows(AuthorizationException.class, () -> {
-            administratorWorkspaceService.updateWorkspace(orgId, workspaceUpdateRest, userBO);
+            administratorWorkspaceService.updateWorkspace(orgId, workspaceUpsertRest, userBO);
         });
 
         verify(workspaceService, never()).updateWorkspace(any(), any(), any());
@@ -225,17 +225,17 @@ class AdministratorWorkspaceServiceTest {
         String organizationName = "ORGANIZATION";
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
-        WorkspaceUpdateRest workspaceUpdateRest =
+        WorkspaceUpsertRest workspaceUpsertRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
         WorkspaceBO expectedOrg = WorkspaceBO.builder().id(33L).build();
 
-        when(workspaceService.createWorkspace(workspaceUpdateRest, userBO, subscriberId)).thenReturn(expectedOrg);
+        when(workspaceService.createWorkspace(workspaceUpsertRest, userBO, subscriberId)).thenReturn(expectedOrg);
         when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
         when(roleService.hasAdminRightsOnOrganization(userBO, subscriberId)).thenReturn(true);
-        WorkspaceBO result = administratorWorkspaceService.createWorkspace(workspaceUpdateRest, userBO, true);
+        WorkspaceBO result = administratorWorkspaceService.createWorkspace(workspaceUpsertRest, userBO, true);
 
         verify(administratorRoleService).hasOrganizationAdminOrDomainAccess(userBO, subscriberId, true, true);
-        verify(workspaceService).createWorkspace(workspaceUpdateRest, userBO, subscriberId);
+        verify(workspaceService).createWorkspace(workspaceUpsertRest, userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
 
         assertEquals(expectedOrg, result);
@@ -248,14 +248,14 @@ class AdministratorWorkspaceServiceTest {
         String organizationName = "ORGANIZATION";
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
-        WorkspaceUpdateRest workspaceUpdateRest =
+        WorkspaceUpsertRest workspaceUpsertRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
         WorkspaceBO expectedOrg = WorkspaceBO.builder().id(1L).name(organizationName).build();
 
         Workspace org = TestUtils.createOrganization();
         User userEntity = User.builder().id(1L).build();
 
-        when(workspaceService.createWorkspace(workspaceUpdateRest, userBO, subscriberId)).thenReturn(expectedOrg);
+        when(workspaceService.createWorkspace(workspaceUpsertRest, userBO, subscriberId)).thenReturn(expectedOrg);
         when(workspaceRepository.findById(1L)).thenReturn(Optional.of(org));
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
         when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
@@ -263,9 +263,9 @@ class AdministratorWorkspaceServiceTest {
         when(roleService.isUserDomainAuthorized(userBO, subscriberId)).thenReturn(true);
         when(roleService.hasAdminRightsOnOrganization(userBO, subscriberId)).thenReturn(false);
 
-        WorkspaceBO result = administratorWorkspaceService.createWorkspace(workspaceUpdateRest, userBO, false);
+        WorkspaceBO result = administratorWorkspaceService.createWorkspace(workspaceUpsertRest, userBO, false);
 
-        verify(workspaceService).createWorkspace(workspaceUpdateRest, userBO, subscriberId);
+        verify(workspaceService).createWorkspace(workspaceUpsertRest, userBO, subscriberId);
         verify(roleService).hasAdminRightsOnOrganization(userBO, subscriberId);
         verify(userService).clearUserCache(userBO);
         verify(userRepository).findById(1L);
@@ -283,7 +283,7 @@ class AdministratorWorkspaceServiceTest {
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
 
-        WorkspaceUpdateRest workspaceUpdateRest =
+        WorkspaceUpsertRest workspaceUpsertRest =
                 TestUtils.createOrganizationUpsert(subscriberId, organizationName, updatedStatus, dataRetentionDay);
 
         when(roleService.hasAdminRightsOnOrganization(userBO, subscriberId)).thenReturn(false);
@@ -295,7 +295,7 @@ class AdministratorWorkspaceServiceTest {
                         subscriberId, false, false);
 
         assertThrows(AuthorizationException.class, () -> {
-            administratorWorkspaceService.createWorkspace(workspaceUpdateRest, userBO, true);
+            administratorWorkspaceService.createWorkspace(workspaceUpsertRest, userBO, true);
         });
 
         verify(roleService).hasAdminRightsOnOrganization(userBO, subscriberId);
@@ -329,13 +329,13 @@ class AdministratorWorkspaceServiceTest {
         User adminUser = User.builder().id(1L).email("admin@domain.com").build();
         Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
         UserOrganization userOrganization = UserOrganization.builder().user(adminUser).roles(List.of(adminRole)).build();
-        when(userOrganizationRepository.findBySubscriber(org.getOrganization())).thenReturn(List.of(userOrganization));
+        when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(List.of(userOrganization));
 
         // Org user
         User orgUser = User.builder().id(2L).email("org@domain.com").build();
         Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
         UserWorkspace userWorkspace = UserWorkspace.builder().user(orgUser).roles(List.of(orgRole)).build();
-        when(userWorkspaceRepository.findByOrganization(org)).thenReturn(List.of(userWorkspace));
+        when(userWorkspaceRepository.findByWorkspace(org)).thenReturn(List.of(userWorkspace));
 
         UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
         List<UserInfoBO> result = administratorWorkspaceService.getUsersOfWorkspace(org.getId(), userBO);
@@ -356,17 +356,16 @@ class AdministratorWorkspaceServiceTest {
         User adminUser = User.builder().id(1L).email("admin@domain.com").build();
         Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
         UserOrganization userOrganization = UserOrganization.builder().user(adminUser).roles(List.of(adminRole)).build();
-        when(userOrganizationRepository.findBySubscriber(org.getOrganization())).thenReturn(List.of(userOrganization));
+        when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(List.of(userOrganization));
 
         User orgUser = User.builder().id(2L).email("org@domain.com").build();
         Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
         User userEntity = User.builder().id(3L).email("user@domain.com").build();
         Role userRole = Role.builder().name(Constants.ROLE_INVENTORY_READ).build();
 
-        when(userWorkspaceRepository.findByOrganization(org)).
+        when(userWorkspaceRepository.findByWorkspace(org)).
                 thenReturn(List.of(UserWorkspace.builder().user(orgUser).roles(List.of(orgRole)).build(),
                         UserWorkspace.builder().user(userEntity).roles(List.of(userRole)).build()));
-
         UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
         List<UserInfoBO> result = administratorWorkspaceService.getUsersOfWorkspace(org.getId(), userBO);
 
@@ -388,8 +387,8 @@ class AdministratorWorkspaceServiceTest {
         User orgUser = User.builder().id(2L).email("user@domain.com").build();
         Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
         UserWorkspace userWorkspace = UserWorkspace.builder().user(orgUser).roles(List.of(orgRole)).build();
-        when(userWorkspaceRepository.findByOrganization(org)).thenReturn(List.of(userWorkspace));
-        when(userOrganizationRepository.findBySubscriber(org.getOrganization())).thenReturn(Collections.emptyList());
+        when(userWorkspaceRepository.findByWorkspace(org)).thenReturn(List.of(userWorkspace));
+        when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(Collections.emptyList());
 
         List<UserInfoBO> result = administratorWorkspaceService.getUsersOfWorkspace(org.getId(), userBO);
         assertEquals(1, result.size());
@@ -405,7 +404,7 @@ class AdministratorWorkspaceServiceTest {
         when(roleService.hasAdminRightsOnOrganization(any(), eq(org.getOrganization().getId()))).thenReturn(false);
 
         // No subscriber admins
-        when(userOrganizationRepository.findBySubscriber(org.getOrganization())).thenReturn(Collections.emptyList());
+        when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(Collections.emptyList());
 
         // Two org users, one has super admin email, one does not
         User superAdminUser = User.builder().id(11L).email(Constants.SUPER_ADMIN_EMAIL).build();
@@ -415,7 +414,7 @@ class AdministratorWorkspaceServiceTest {
         User normalUser = User.builder().id(12L).email("user@domain.com").build();
         UserWorkspace userWorkspaceNormal = UserWorkspace.builder().user(normalUser).roles(List.of(orgRole)).build();
 
-        when(userWorkspaceRepository.findByOrganization(org)).thenReturn(List.of(userWorkspaceSuper, userWorkspaceNormal));
+        when(userWorkspaceRepository.findByWorkspace(org)).thenReturn(List.of(userWorkspaceSuper, userWorkspaceNormal));
 
         UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
         List<UserInfoBO> result = administratorWorkspaceService.getUsersOfWorkspace(org.getId(), userBO);
@@ -436,7 +435,7 @@ class AdministratorWorkspaceServiceTest {
         User sharedUser = User.builder().id(1L).email("admin@domain.com").build();
         Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
         UserOrganization userOrganization = UserOrganization.builder().user(sharedUser).roles(List.of(adminRole)).build();
-        when(userOrganizationRepository.findBySubscriber(org.getOrganization())).thenReturn(List.of(userOrganization));
+        when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(List.of(userOrganization));
 
         Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
         UserWorkspace userWorkspace = UserWorkspace.builder().user(sharedUser).roles(List.of(orgRole)).build();
@@ -445,7 +444,7 @@ class AdministratorWorkspaceServiceTest {
         User orgUser2 = User.builder().id(2L).email("user@domain.com").build();
         UserWorkspace userWorkspace2 = UserWorkspace.builder().user(orgUser2).roles(List.of(orgRole)).build();
 
-        when(userWorkspaceRepository.findByOrganization(org)).thenReturn(List.of(userWorkspace, userWorkspace2));
+        when(userWorkspaceRepository.findByWorkspace(org)).thenReturn(List.of(userWorkspace, userWorkspace2));
 
         UserBO userBO = TestUtils.createUserBO(List.of(ROLE));
         List<UserInfoBO> result = administratorWorkspaceService.getUsersOfWorkspace(org.getId(), userBO);

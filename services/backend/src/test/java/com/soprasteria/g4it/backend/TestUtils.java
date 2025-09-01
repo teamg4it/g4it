@@ -32,7 +32,7 @@ import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import com.soprasteria.g4it.backend.server.gen.api.dto.LinkUserRoleRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRoleRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpsertRest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -200,25 +200,25 @@ public class TestUtils {
                 .builder().defaultFlag(true).roles(roles).organization(createSubscriber(subscriberId)).userRoleOrganization(userRoleOrganizationList).build();
     }
 
-    public static WorkspaceUpdateRest createOrganizationUpsert(Long subscriberId, String orgName
+    public static WorkspaceUpsertRest createOrganizationUpsert(Long subscriberId, String orgName
             , String orgStatus, Long dataRetentionDays) {
 
-        com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus status = null;
+        com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus status = null;
         if (orgStatus != null)
-            status = com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus.valueOf(orgStatus);
+            status = com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus.valueOf(orgStatus);
 
-        return WorkspaceUpdateRest.builder().organizationId(subscriberId).name(orgName).status(status)
+        return WorkspaceUpsertRest.builder().organizationId(subscriberId).name(orgName).status(status)
                 .dataRetentionDays(dataRetentionDays).build();
     }
 
-    public static WorkspaceUpdateRest createOrganizationUpsert(Long subscriberId, String orgName
+    public static WorkspaceUpsertRest createOrganizationUpsert(Long subscriberId, String orgName
             , String orgStatus, String criteriaDs, String criteriaIs) {
 
-        com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus status = null;
+        com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus status = null;
         if (orgStatus != null)
-            status = com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus.valueOf(orgStatus);
+            status = com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus.valueOf(orgStatus);
 
-        return WorkspaceUpdateRest.builder().organizationId(subscriberId)
+        return WorkspaceUpsertRest.builder().organizationId(subscriberId)
                 .name(orgName)
                 .criteriaDs(List.of(criteriaDs))
                 .criteriaIs(List.of(criteriaIs)).status(status)
@@ -235,7 +235,7 @@ public class TestUtils {
 
     public static LinkUserRoleRest createLinkUserRoleRest(Long organizationId, List<UserRoleRest> userRoleRest) {
 
-        return LinkUserRoleRest.builder().organizationId(organizationId).users(userRoleRest).build();
+        return LinkUserRoleRest.builder().workspaceId(organizationId).users(userRoleRest).build();
     }
 
     public static UserRoleRest createUserRoleRest(Long userId, List<String> roles) {

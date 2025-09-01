@@ -95,8 +95,8 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<WorkspaceRest> createWorkspaceAsAdmin(final WorkspaceUpdateRest workspaceUpdateRest) {
-        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.createWorkspace(workspaceUpdateRest, authService.getAdminUser(), true)),
+    public ResponseEntity<WorkspaceRest> createWorkspaceAsAdmin(final WorkspaceUpsertRest workspaceUpsertRest) {
+        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.createWorkspace(workspaceUpsertRest, authService.getAdminUser(), true)),
                 HttpStatus.OK);
     }
 
@@ -104,8 +104,8 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<WorkspaceRest> updateWorkspace(final WorkspaceUpdateRest workspaceUpdateRest, final Long workspaceId) {
-        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.updateWorkspace(workspaceId, workspaceUpdateRest, authService.getUser())),
+    public ResponseEntity<WorkspaceRest> updateWorkspace(final WorkspaceUpsertRest workspaceUpsertRest, final Long workspaceId) {
+        return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.updateWorkspace(workspaceId, workspaceUpsertRest, authService.getUser())),
                 HttpStatus.OK);
     }
 

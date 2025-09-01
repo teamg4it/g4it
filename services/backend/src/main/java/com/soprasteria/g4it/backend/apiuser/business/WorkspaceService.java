@@ -19,7 +19,7 @@ import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpsertRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,23 +114,23 @@ public class WorkspaceService {
     /**
      * Create an Organization.
      *
-     * @param workspaceUpdateRest the organizationUpsertRest.
+     * @param workspaceUpsertRest the organizationUpsertRest.
      * @param user                the user.
      * @param organizationId      the subscriber id.
      * @return organization BO.
      */
     @Transactional
-    public WorkspaceBO createWorkspace(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, Long organizationId) {
+    public WorkspaceBO createWorkspace(WorkspaceUpsertRest workspaceUpsertRest, UserBO user, Long organizationId) {
 
         // Check if organization with same name already exist on this subscriber.
-        workspaceRepository.findByOrganizationIdAndName(workspaceUpdateRest.getOrganizationId(), workspaceUpdateRest.getName())
+        workspaceRepository.findByOrganizationIdAndName(workspaceUpsertRest.getOrganizationId(), workspaceUpsertRest.getName())
                 .ifPresent(organization -> {
-                    throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", workspaceUpdateRest.getName(), organizationId));
+                    throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", workspaceUpsertRest.getName(), organizationId));
                 });
 
         // Create organization
         final Workspace workspaceToCreate = workspaceMapper.toEntity(
-                workspaceUpdateRest.getName(),
+                workspaceUpsertRest.getName(),
                 organizationService.getSubscriptionById(organizationId),
                 User.builder().id(user.getId()).build(),
                 WorkspaceStatus.ACTIVE.name()
@@ -144,20 +144,20 @@ public class WorkspaceService {
     /**
      * Update the organization.
      *
-     * @param workspaceUpdateRest the WorkspaceUpdateRest.
+     * @param workspaceUpsertRest the WorkspaceUpsertRest.
      * @param userId              the user id.
      * @return OrganizationBO
      */
     @Transactional
-    public WorkspaceBO updateWorkspace(final Long organizationId, final WorkspaceUpdateRest workspaceUpdateRest, Long userId) {
+    public WorkspaceBO updateWorkspace(final Long organizationId, final WorkspaceUpsertRest workspaceUpsertRest, Long userId) {
 
-        final Workspace workspaceToSave = getOrganizationByStatus(workspaceUpdateRest.getOrganizationId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
+        final Workspace workspaceToSave = getOrganizationByStatus(workspaceUpsertRest.getOrganizationId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
 
         final String currentStatus = workspaceToSave.getStatus();
-        final String newStatus = workspaceUpdateRest.getStatus().name();
+        final String newStatus = workspaceUpsertRest.getStatus().name();
 
         if (currentStatus.equals(WorkspaceStatus.ACTIVE.name()) && newStatus.equals(WorkspaceStatus.ACTIVE.name())) {
-            updateNameOrCriteria(workspaceUpdateRest, workspaceToSave);
+            updateNameOrCriteria(workspaceUpsertRest, workspaceToSave);
 
         } else {
             Integer dataDeletionDays = null;
@@ -166,9 +166,9 @@ public class WorkspaceService {
             // Case current organization is ACTIVE and update it to TO_BE_DELETED
             if (currentStatus.equals(WorkspaceStatus.ACTIVE.name()) && newStatus.equals(WorkspaceStatus.TO_BE_DELETED.name())) {
                 // Get data retention days
-                dataDeletionDays = workspaceUpdateRest.getDataRetentionDays() == null ?
+                dataDeletionDays = workspaceUpsertRest.getDataRetentionDays() == null ?
                         organizationDataDeletionDays :
-                        workspaceUpdateRest.getDataRetentionDays().intValue();
+                        workspaceUpsertRest.getDataRetentionDays().intValue();
 
                 deletionDate = LocalDateTime.now().plusDays(dataDeletionDays.longValue());
             }
@@ -177,7 +177,7 @@ public class WorkspaceService {
             workspaceToSave.setDataRetentionDay(dataDeletionDays);
             workspaceToSave.setStorageRetentionDayExport(dataDeletionDays);
             workspaceToSave.setStorageRetentionDayOutput(dataDeletionDays);
-            workspaceToSave.setStatus(workspaceUpdateRest.getStatus().name());
+            workspaceToSave.setStatus(workspaceUpsertRest.getStatus().name());
         }
         workspaceToSave.setLastUpdatedBy(User.builder()
                 .id(userId)
@@ -191,18 +191,18 @@ public class WorkspaceService {
     /**
      * Update the organization's name or criteria
      *
-     * @param workspaceUpdateRest the organizationUpsertRest
+     * @param workspaceUpsertRest the organizationUpsertRest
      * @param workspaceToSave     the updated organization
      */
-    private void updateNameOrCriteria(WorkspaceUpdateRest workspaceUpdateRest, Workspace workspaceToSave) {
+    private void updateNameOrCriteria(WorkspaceUpsertRest workspaceUpsertRest, Workspace workspaceToSave) {
         final String currentWorkspace = workspaceToSave.getName();
-        final String newWorkspace = workspaceUpdateRest.getName();
+        final String newWorkspace = workspaceUpsertRest.getName();
 
         final List<String> currentCriteriaDs = workspaceToSave.getCriteriaDs();
-        final List<String> newCriteriaDs = workspaceUpdateRest.getCriteriaDs();
+        final List<String> newCriteriaDs = workspaceUpsertRest.getCriteriaDs();
 
         final List<String> currentCriteriaIs = workspaceToSave.getCriteriaIs();
-        final List<String> newCriteriaIs = workspaceUpdateRest.getCriteriaIs();
+        final List<String> newCriteriaIs = workspaceUpsertRest.getCriteriaIs();
         boolean isCriteriaChange = !Objects.equals(newCriteriaDs, currentCriteriaDs) || !Objects.equals(newCriteriaIs, currentCriteriaIs);
         boolean isNameChange = !currentWorkspace.equals(newWorkspace);
         if (!(isCriteriaChange || isNameChange)) {
@@ -217,9 +217,9 @@ public class WorkspaceService {
         if (isNameChange) {
             // Handle update in organization's name
             // Check if organization with same name already exist on this subscriber.
-            workspaceRepository.findByOrganizationIdAndName(workspaceUpdateRest.getOrganizationId(), newWorkspace)
+            workspaceRepository.findByOrganizationIdAndName(workspaceUpsertRest.getOrganizationId(), newWorkspace)
                     .ifPresent(org -> {
-                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newWorkspace, workspaceUpdateRest.getOrganizationId()));
+                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newWorkspace, workspaceUpsertRest.getOrganizationId()));
                     });
 
             log.info("Update Organization name in file system from '{}' to '{}'", currentWorkspace, newWorkspace);
