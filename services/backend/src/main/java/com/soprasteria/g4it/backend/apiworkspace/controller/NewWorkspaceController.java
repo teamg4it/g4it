@@ -18,7 +18,7 @@ import com.soprasteria.g4it.backend.server.gen.api.NewWorkspaceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserDetailsRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpsertRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +59,7 @@ public class NewWorkspaceController implements NewWorkspaceApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<WorkspaceRest> createWorkspace(WorkspaceUpdateRest organizationUpsertRest) {
+    public ResponseEntity<WorkspaceRest> createWorkspace(WorkspaceUpsertRest organizationUpsertRest) {
         return new ResponseEntity<>(workspaceRestMapper.toDto(administratorWorkspaceService.createWorkspace(organizationUpsertRest, authService.getAdminUser(), false)),
                 HttpStatus.OK);
     }

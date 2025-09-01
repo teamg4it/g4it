@@ -94,7 +94,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/WorkspaceUpdateRest"
+              $ref: "#/components/schemas/WorkspaceUpsertRest"
       tags:
         - administrator
       responses:
@@ -119,12 +119,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/WorkspaceUpdateRest"
+              $ref: "#/components/schemas/WorkspaceUpsertRest"
       tags:
         - administrator
       responses:
         '201':
-          description: Workspaces has been created
+          description: Workspace has been created
           content:
             application/json:
               schema:

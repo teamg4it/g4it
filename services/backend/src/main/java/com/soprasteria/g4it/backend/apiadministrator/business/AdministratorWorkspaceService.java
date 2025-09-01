@@ -23,7 +23,7 @@ import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.LinkUserRoleRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRoleRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpdateRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceUpsertRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +98,7 @@ public class AdministratorWorkspaceService {
      * @param user                   the user.
      * @return OrganizationBO
      */
-    public WorkspaceBO updateWorkspace(final Long workspaceId, final WorkspaceUpdateRest organizationUpsertRest, UserBO user) {
+    public WorkspaceBO updateWorkspace(final Long workspaceId, final WorkspaceUpsertRest organizationUpsertRest, UserBO user) {
         // Check Admin Role on this organization or workspace.
         administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, organizationUpsertRest.getOrganizationId(), workspaceId);
         WorkspaceBO workspaceBO = workspaceService.updateWorkspace(workspaceId, organizationUpsertRest, user.getId());
@@ -109,12 +109,12 @@ public class AdministratorWorkspaceService {
     /**
      * Create an Organization.
      *
-     * @param workspaceUpdateRest the WorkspaceUpdateRest.
+     * @param workspaceUpsertRest the workspaceUpsertRest.
      * @param user                the user.
      * @return organization BO.
      */
-    public WorkspaceBO createWorkspace(WorkspaceUpdateRest workspaceUpdateRest, UserBO user, boolean checkAdminRole) {
-        Long organizationId = workspaceUpdateRest.getOrganizationId();
+    public WorkspaceBO createWorkspace(WorkspaceUpsertRest workspaceUpsertRest, UserBO user, boolean checkAdminRole) {
+        Long organizationId = workspaceUpsertRest.getOrganizationId();
         boolean hasOrganizationAdminRights = roleService.hasAdminRightsOnOrganization(user, organizationId);
         boolean hasDomainAuthorization = roleService.isUserDomainAuthorized(user, organizationId);
 
@@ -124,7 +124,7 @@ public class AdministratorWorkspaceService {
                     hasDomainAuthorization);
         }
 
-        final WorkspaceBO result = workspaceService.createWorkspace(workspaceUpdateRest, user, organizationId);
+        final WorkspaceBO result = workspaceService.createWorkspace(workspaceUpsertRest, user, organizationId);
         userService.clearUserCache(user);
 
         if (hasOrganizationAdminRights)

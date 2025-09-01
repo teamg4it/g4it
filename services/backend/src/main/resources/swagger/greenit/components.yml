@@ -327,7 +327,7 @@ components:
         ecomindai:
           type: boolean
     WorkspaceRest:
-      description: Organization information
+      description: Workspace information
       type: object
       properties:
         id:
@@ -343,7 +343,7 @@ components:
             type: string
         status:
           type: string
-          $ref: "#/components/schemas/OrganizationStatus"
+          $ref: "#/components/schemas/WorkspaceStatus"
         deletionDate:
           type: string
           format: "date-time"
@@ -374,12 +374,12 @@ components:
         lastUpdateDate:
           type: string
           format: date-time
-        organization:
+        workspace:
           type: string
-        organizationId:
+        workspaceId:
           type: integer
           format: int64
-        organizationStatus:
+        workspaceStatus:
           type: string
         dataCenterCount:
           type: integer
@@ -558,7 +558,7 @@ components:
     PhysicalEquipmentsAvgAgeRest:
       type: object
       properties:
-        organisation:
+        workspace:
           type: string
         inventoryName:
           type: string
@@ -847,7 +847,7 @@ components:
         - INFORMATION_SYSTEM
         - SIMULATION
 
-    OrganizationStatus:
+    WorkspaceStatus:
       type: string
       enum:
         - ACTIVE
@@ -917,7 +917,17 @@ components:
         end_time:
           type: string
 
-    WorkspaceUpdateRest:
+#    SubscribertRest:
+#      type: object
+#      properties:
+#        name:
+#          type: string
+#        impactStep:
+#          type: array
+#          items:
+#            $ref: "#/components/schemas/OrganizationRest"
+
+    WorkspaceUpsertRest:
       description: Workspace update
       type: object
       required:
@@ -929,16 +939,16 @@ components:
           type: integer
           format: int64
         name:
-          description: workpspace name
+          description: workspace name
           type: string
           pattern: "^[a-zA-Z0-9\\-\\_]+$"
         status:
-          description: workpspace status
+          description: workspace status
           type: string
-          $ref: "#/components/schemas/OrganizationStatus"
+          $ref: "#/components/schemas/WorkspaceStatus"
           default: ACTIVE
         dataRetentionDays:
-          description: workpspace date retention days
+          description: workspace date retention days
           type: integer
           format: int64
         criteriaIs:
