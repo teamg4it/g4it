@@ -223,7 +223,6 @@ export class DigitalServicesFootprintDashboardComponent
         ).map((criteria) => {
             return { name: criteria, title: "", unite: "", raw: null, peopleeq: null };
         });
-        console.log(this.impacts);
     }
 
     retrieveFootprintData() {
@@ -233,7 +232,6 @@ export class DigitalServicesFootprintDashboardComponent
             this.outPhysicalEquipments,
             this.outVirtualEquipments,
         );
-        console.log(this.globalVisionChartData);
         this.showInconsitencyBtn = this.globalVisionChartData
             .flatMap((footprint) => footprint?.impacts)
             .some((footprint) =>
