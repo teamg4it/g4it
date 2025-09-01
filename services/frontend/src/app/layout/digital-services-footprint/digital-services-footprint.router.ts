@@ -24,6 +24,15 @@ const titleResolveObject = {
     },
 };
 
+const ecomindTitleResolveObject = {
+    resolve: {
+        title: TitleResolver,
+    },
+    data: {
+        titleKey: "welcome-page.eco-mind-ai.title",
+    },
+};
+
 const routes: Routes = [
     {
         path: "",
@@ -32,7 +41,6 @@ const routes: Routes = [
             {
                 path: "dashboard",
                 component: DigitalServicesFootprintDashboardComponent,
-                ...titleResolveObject,
             },
             {
                 path: "resources",
@@ -59,7 +67,7 @@ const routes: Routes = [
             {
                 path: "ecomind-parameters",
                 component: DigitalServicesEcomindParametersComponent,
-                ...titleResolveObject,
+                ...ecomindTitleResolveObject,
             },
 
             {
