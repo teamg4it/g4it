@@ -16,6 +16,7 @@ import {
     signal,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Title } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -139,6 +140,7 @@ export class DigitalServicesFootprintDashboardComponent
         override translate: TranslateService,
         override integerPipe: IntegerPipe,
         override decimalsPipe: DecimalsPipe,
+        private readonly titleService: Title,
     ) {
         super(translate, integerPipe, decimalsPipe, globalStore);
     }
@@ -166,6 +168,12 @@ export class DigitalServicesFootprintDashboardComponent
                 this.organization.criteriaDs = organization.criteriaDs!;
                 this.organization.criteriaIs = organization.criteriaIs!;
             });
+        const titleKey = this.digitalService.isAi
+            ? "welcome-page.eco-mind-ai.title"
+            : "digital-services.page-title";
+        this.translate.get(titleKey).subscribe((translatedTitle: string) => {
+            this.titleService.setTitle(`${translatedTitle} - G4IT`);
+        });
 
         if (this.digitalService.isAi) {
             try {
@@ -212,6 +220,7 @@ export class DigitalServicesFootprintDashboardComponent
         ).map((criteria) => {
             return { name: criteria, title: "", unite: "", raw: null, peopleeq: null };
         });
+        console.log(this.impacts);
     }
 
     retrieveFootprintData() {
@@ -221,6 +230,7 @@ export class DigitalServicesFootprintDashboardComponent
             this.outPhysicalEquipments,
             this.outVirtualEquipments,
         );
+        console.log(this.globalVisionChartData);
         this.showInconsitencyBtn = this.globalVisionChartData
             .flatMap((footprint) => footprint?.impacts)
             .some((footprint) =>

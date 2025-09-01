@@ -41,7 +41,6 @@ const routes: Routes = [
             {
                 path: "dashboard",
                 component: DigitalServicesFootprintDashboardComponent,
-                ...titleResolveObject,
             },
             {
                 path: "resources",
