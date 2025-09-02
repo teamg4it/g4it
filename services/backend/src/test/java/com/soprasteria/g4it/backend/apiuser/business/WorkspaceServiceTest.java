@@ -101,7 +101,7 @@ class WorkspaceServiceTest {
         WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
                 , updatedStatus, dataRetentionDay);
 
-        when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
+        when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
 
         WorkspaceBO orgBO = workspaceService.updateWorkspace(ORGANIZATION_ID, organizationUpsertRest, user.getId());
 
@@ -128,7 +128,7 @@ class WorkspaceServiceTest {
         WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
                 , updatedStatus, dataRetentionDay);
 
-        when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
+        when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
 
         WorkspaceBO orgBO = workspaceService.updateWorkspace(ORGANIZATION_ID, organizationUpsertRest, user.getId());
 
@@ -186,7 +186,7 @@ class WorkspaceServiceTest {
                 .organization(Organization.builder().id(SUBSCRIBER_ID).build())
                 .build());
 
-        when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
+        when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
 
         WorkspaceBO orgBO = workspaceService.updateWorkspace(ORGANIZATION_ID, organizationUpsertRest, user.getId());
 

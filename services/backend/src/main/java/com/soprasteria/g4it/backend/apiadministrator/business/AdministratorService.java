@@ -83,13 +83,14 @@ public class AdministratorService {
         List<OrganizationBO> resultOrganizationAdmin = user.getOrganizations().stream()
                 .filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)).toList();
 
-        List<OrganizationBO> checkOrgAdmin = user.getOrganizations().stream()
+        List<OrganizationBO> checkWorkspaceAdmin = user.getOrganizations().stream()
                 .filter(organizationBO -> organizationBO.getRoles().isEmpty()).toList();
         List<OrganizationBO> result = new ArrayList<>(resultOrganizationAdmin);
-        for (OrganizationBO orgBO : checkOrgAdmin) {
-            List<WorkspaceBO> organization = orgBO.getWorkspaces().stream().filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
-            if (!organization.isEmpty()) {
-                orgBO.setWorkspaces(organization);
+        for (OrganizationBO orgBO : checkWorkspaceAdmin) {
+            List<WorkspaceBO> workspace = orgBO.getWorkspaces().stream()
+                    .filter(workspaceBO -> workspaceBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
+            if (!workspace.isEmpty()) {
+                orgBO.setWorkspaces(workspace);
                 result.add(orgBO);
             }
         }
@@ -104,7 +105,7 @@ public class AdministratorService {
      */
     public OrganizationBO updateOrganizationCriteria(final Long organizationId, final CriteriaRest criteriaRest, final UserBO user) {
         administratorRoleService.hasAdminRightsOnAnyOrganization(user);
-        Organization organizationToUpdate = organizationService.getSubscriptionById(organizationId);
+        Organization organizationToUpdate = organizationService.getOrgById(organizationId);
         organizationToUpdate.setCriteria(criteriaRest.getCriteria());
         organizationRepository.save(organizationToUpdate);
         userService.clearUserAllCache();
@@ -166,9 +167,9 @@ public class AdministratorService {
                                 .toList());
                     }
 
-                    List<Long> linkedOrgIds = searchedUser.getUserWorkspaces() == null ? List.of() :
+                    List<Long> linkedWorkIds = searchedUser.getUserWorkspaces() == null ? List.of() :
                             searchedUser.getUserWorkspaces().stream()
-                                    .map(userOrg -> userOrg.getWorkspace().getId())
+                                    .map(userWork -> userWork.getWorkspace().getId())
                                     .toList();
 
                     return UserSearchBO.builder()
@@ -176,7 +177,7 @@ public class AdministratorService {
                             .firstName(searchedUser.getFirstName())
                             .lastName(searchedUser.getLastName())
                             .email(searchedUser.getEmail())
-                            .linkedOrgIds(linkedOrgIds)
+                            .linkedWorkIds(linkedWorkIds)
                             .roles(userRoles)
                             .build();
                 })

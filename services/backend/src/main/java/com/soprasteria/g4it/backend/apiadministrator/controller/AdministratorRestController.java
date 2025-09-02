@@ -160,7 +160,7 @@ public class AdministratorRestController implements AdministratorApiDelegate {
      */
     @Override
     public ResponseEntity<Void> deleteUserWorkspaceLink(final LinkUserRoleRest linkUserRoleRest) {
-        administratorWorkspaceService.deleteUserOrgLink(linkUserRoleRest, authService.getUser());
+        administratorWorkspaceService.deleteUserWorkLink(linkUserRoleRest, authService.getUser());
         return ResponseEntity.noContent().<Void>build();
     }
 
