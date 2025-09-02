@@ -227,7 +227,7 @@ public class UserService {
                     var organizationBO = OrganizationBO.builder()
                             .defaultFlag(false)
                             .name(organization.getName())
-                            .organizations(organization.getWorkspaces().stream()
+                            .workspaces(organization.getWorkspaces().stream()
                                     .map(workspace -> {
                                         WorkspaceBO workspaceBO = WorkspaceBO.builder()
                                                 .roles(List.of())
@@ -307,7 +307,7 @@ public class UserService {
         return OrganizationBO.builder()
                 .defaultFlag(userOrganization.getDefaultFlag())
                 .name(userOrganization.getOrganization().getName())
-                .organizations(userOrganization.getOrganization().getWorkspaces().stream()
+                .workspaces(userOrganization.getOrganization().getWorkspaces().stream()
                         .filter(organization -> status.contains(organization.getStatus()))
                         .<WorkspaceBO>map(organization ->
                                 WorkspaceBO.builder()
@@ -343,18 +343,18 @@ public class UserService {
 
         final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
 
-        List<WorkspaceBO> organizations = userWorkspaces.stream()
+        List<WorkspaceBO> workspaces = userWorkspaces.stream()
                 .filter(userOrganization -> status.contains(userOrganization.getWorkspace().getStatus()))
                 .map(this::buildWorkspace)
                 .filter(Objects::nonNull)
                 .toList();
 
-        if (organizations.isEmpty()) return null;
+        if (workspaces.isEmpty()) return null;
 
         return OrganizationBO.builder()
                 .defaultFlag(false)
                 .name(organization.getName())
-                .organizations(organizations)
+                .workspaces(workspaces)
                 .roles(List.of())
                 .id(organization.getId())
                 .criteria(organization.getCriteria())

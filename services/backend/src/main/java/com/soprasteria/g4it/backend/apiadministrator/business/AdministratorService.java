@@ -86,11 +86,11 @@ public class AdministratorService {
         List<OrganizationBO> checkOrgAdmin = user.getOrganizations().stream()
                 .filter(organizationBO -> organizationBO.getRoles().isEmpty()).toList();
         List<OrganizationBO> result = new ArrayList<>(resultOrganizationAdmin);
-        for (OrganizationBO subBO : checkOrgAdmin) {
-            List<WorkspaceBO> organization = subBO.getOrganizations().stream().filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
+        for (OrganizationBO orgBO : checkOrgAdmin) {
+            List<WorkspaceBO> organization = orgBO.getWorkspaces().stream().filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
             if (!organization.isEmpty()) {
-                subBO.setOrganizations(organization);
-                result.add(subBO);
+                orgBO.setWorkspaces(organization);
+                result.add(orgBO);
             }
         }
         return result;

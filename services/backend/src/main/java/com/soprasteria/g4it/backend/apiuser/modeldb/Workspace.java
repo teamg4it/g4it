@@ -102,7 +102,7 @@ public class Workspace extends AbstractBaseEntity implements Serializable {
      * The organization's subscriber.
      */
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "organization_id", referencedColumnName = "id")
+    @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
     private Organization organization;
 
     /**

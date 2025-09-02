@@ -37,7 +37,7 @@ public class OrganizationBO {
     /**
      * Subscriber's organization.
      */
-    private List<WorkspaceBO> organizations;
+    private List<WorkspaceBO> workspaces;
 
     /**
      * The authorized organizations to subscriber

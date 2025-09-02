@@ -210,7 +210,7 @@ public class AuthService {
         }
 
         // Retrieve organization from uri, in second position.
-        var workspace = organization.getOrganizations().stream()
+        var workspace = organization.getWorkspaces().stream()
                 .filter(e -> Objects.equals(e.getId(), workspaceId))
                 .findAny()
                 .orElseThrow(() -> new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, String.format("The workspace name %s is not allowed.", workspaceId)));

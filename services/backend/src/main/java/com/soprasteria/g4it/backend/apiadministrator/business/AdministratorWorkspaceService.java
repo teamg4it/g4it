@@ -81,11 +81,11 @@ public class AdministratorWorkspaceService {
         return user.getOrganizations().stream()
                 .filter(organizationBO -> organizationId == null || Objects.equals(organizationBO.getId(), organizationId))
                 .peek(orgBO -> {
-                    final var workspaces = orgBO.getOrganizations().stream()
-                            .filter(organizationBO -> workspaceId == null || Objects.equals(organizationBO.getId(), workspaceId))
-                            .filter(organizationBO -> Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS.contains(organizationBO.getStatus()))
+                    final var workspaces = orgBO.getWorkspaces().stream()
+                            .filter(workspaceBO -> workspaceId == null || Objects.equals(workspaceBO.getId(), workspaceId))
+                            .filter(workspaceBO -> Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS.contains(workspaceBO.getStatus()))
                             .toList();
-                    orgBO.setOrganizations(workspaces);
+                    orgBO.setWorkspaces(workspaces);
                 })
                 .toList();
 

@@ -33,5 +33,5 @@ public class OrganizationDetailsBO {
     /**
      * Subscriber's organization.
      */
-    private List<WorkspaceDetailsBO> organizations;
+    private List<WorkspaceDetailsBO> workspaces;
 }
