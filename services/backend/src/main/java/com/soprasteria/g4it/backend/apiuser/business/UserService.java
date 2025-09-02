@@ -302,7 +302,7 @@ public class UserService {
     public OrganizationBO buildOrganization(final UserOrganization userOrganization, final boolean adminMode) {
 
         final List<Role> roles = userOrganization.getRoles() == null ? List.of() : userOrganization.getRoles();
-        final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
+        final List<String> status = adminMode ? Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
 
         return OrganizationBO.builder()
                 .defaultFlag(userOrganization.getDefaultFlag())
@@ -341,7 +341,7 @@ public class UserService {
      */
     public OrganizationBO buildOrganizationWithUserWorkspaces(final Organization organization, final List<UserWorkspace> userWorkspaces, final boolean adminMode) {
 
-        final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
+        final List<String> status = adminMode ? Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS : List.of(WorkspaceStatus.ACTIVE.name());
 
         List<WorkspaceBO> workspaces = userWorkspaces.stream()
                 .filter(userOrganization -> status.contains(userOrganization.getWorkspace().getStatus()))

@@ -9,7 +9,10 @@ package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
-import com.soprasteria.g4it.backend.apiuser.repository.*;
+import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRoleWorkspaceRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +30,6 @@ public class NewUserService {
      */
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private WorkspaceRepository workspaceRepository;
 
     @Autowired
     private UserOrganizationRepository userOrganizationRepository;

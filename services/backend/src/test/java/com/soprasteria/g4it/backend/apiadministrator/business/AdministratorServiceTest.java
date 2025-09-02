@@ -129,7 +129,7 @@ class AdministratorServiceTest {
                 .criteria(List.of("New Criteria")).build();
         doNothing().when(administratorRoleService).hasAdminRightsOnAnyOrganization(any());
 
-        when(organizationService.getSubscriptionById(subscriberId)).thenReturn(organization);
+        when(organizationService.getOrgById(subscriberId)).thenReturn(organization);
         when(organizationRepository.save(any())).thenReturn(updatedOrganization);
         when(organizationRestMapper.toBusinessObject(updatedOrganization)).thenReturn(organizationBO);
 

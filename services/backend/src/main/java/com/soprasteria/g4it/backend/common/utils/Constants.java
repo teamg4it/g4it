@@ -95,7 +95,7 @@ public final class Constants {
     public static final String DEMO = "DEMO";
     public static final Long INTERNAL_ORGANIZATION = 0L;
     public static final String INTERNAL_SUBSCRIBER = "--INTERNAL-G4IT--";
-    public static final List<String> ORGANIZATION_ACTIVE_OR_DELETED_STATUS = List.of(
+    public static final List<String> WORKSPACE_ACTIVE_OR_DELETED_STATUS = List.of(
             WorkspaceStatus.ACTIVE.name(),
             WorkspaceStatus.TO_BE_DELETED.name()
     );

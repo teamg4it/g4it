@@ -12,10 +12,7 @@ import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.repository.UserRoleWorkspaceRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
-import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -34,36 +31,19 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Organization service.
+ * Workspace service.
  */
 @Service
 @Slf4j
 public class WorkspaceService {
 
     /**
-     * workspace Mapper.
+     * Workspace Mapper.
      */
     @Autowired
     WorkspaceMapper workspaceMapper;
     /**
-     * Repository to manage user workspace.
-     */
-    @Autowired
-    UserWorkspaceRepository userWorkspaceRepository;
-
-    /**
-     * Repository to manage user role.
-     */
-    @Autowired
-    UserRoleWorkspaceRepository userRoleWorkspaceRepository;
-    /**
-     * The Role Service
-     */
-    @Autowired
-    RoleService roleService;
-
-    /**
-     * The Subscriber Service
+     * The Organization Service
      */
     @Autowired
     OrganizationService organizationService;
@@ -72,19 +52,17 @@ public class WorkspaceService {
     private CacheManager cacheManager;
 
     @Value("${g4it.organization.deletion.day}")
-    private Integer organizationDataDeletionDays;
+    private Integer workspaceDataDeletionDays;
     /**
      * The repository to access workspace data.
      */
     @Autowired
     private WorkspaceRepository workspaceRepository;
-    @Autowired
-    private FileSystem fileSystem;
 
     /**
-     * Retrieve the active Organization Entity.
+     * Retrieve the active Workspace Entity.
      *
-     * @param workspaceId the organization id.
+     * @param workspaceId the workspace id.
      * @return the workspace.
      */
     @Cacheable("Workspace")
@@ -94,44 +72,44 @@ public class WorkspaceService {
     }
 
     /**
-     * Retrieve the organization Entity.
+     * Retrieve the Workspace Entity.
      *
-     * @param subscriberId   the client subscriber's id.
-     * @param organizationId the organization's id.
-     * @param status         the organization's statuses.
-     * @return the organization.
+     * @param organizationId   the client organization's id.
+     * @param workspaceId the workspace id.
+     * @param status         the workspace statuses.
+     * @return the workspace.
      */
-    public Workspace getOrganizationByStatus(final Long subscriberId, final Long organizationId, List<String> status) {
-        Optional<Workspace> optOrg = subscriberId == null ?
-                workspaceRepository.findByIdAndStatusIn(organizationId, status) :
-                workspaceRepository.findByIdAndOrganizationIdAndStatusIn(organizationId, subscriberId, status);
+    public Workspace getWorkspaceByStatus(final Long organizationId, final Long workspaceId, List<String> status) {
+        Optional<Workspace> optWork = organizationId == null ?
+                workspaceRepository.findByIdAndStatusIn(workspaceId, status) :
+                workspaceRepository.findByIdAndOrganizationIdAndStatusIn(workspaceId, organizationId, status);
 
-        return optOrg.orElseThrow(
-                () -> new G4itRestException("404", String.format("organization with id '%d' not found", organizationId))
+        return optWork.orElseThrow(
+                () -> new G4itRestException("404", String.format("workspace with id '%d' not found", workspaceId))
         );
     }
 
     /**
-     * Create an Organization.
+     * Create a Workspace.
      *
-     * @param workspaceUpsertRest the organizationUpsertRest.
+     * @param workspaceUpsertRest the workspaceUpsertRest.
      * @param user                the user.
-     * @param organizationId      the subscriber id.
-     * @return organization BO.
+     * @param organizationId      the organization id.
+     * @return Workspace BO.
      */
     @Transactional
     public WorkspaceBO createWorkspace(WorkspaceUpsertRest workspaceUpsertRest, UserBO user, Long organizationId) {
 
-        // Check if organization with same name already exist on this subscriber.
+        // Check if workspace with same name already exist on this organization.
         workspaceRepository.findByOrganizationIdAndName(workspaceUpsertRest.getOrganizationId(), workspaceUpsertRest.getName())
-                .ifPresent(organization -> {
-                    throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", workspaceUpsertRest.getName(), organizationId));
+                .ifPresent(workspace -> {
+                    throw new G4itRestException("409", String.format("workspace '%s' already exists in organization '%s'", workspaceUpsertRest.getName(), organizationId));
                 });
 
-        // Create organization
+        // Create Workspace
         final Workspace workspaceToCreate = workspaceMapper.toEntity(
                 workspaceUpsertRest.getName(),
-                organizationService.getSubscriptionById(organizationId),
+                organizationService.getOrgById(organizationId),
                 User.builder().id(user.getId()).build(),
                 WorkspaceStatus.ACTIVE.name()
         );
@@ -142,16 +120,16 @@ public class WorkspaceService {
     }
 
     /**
-     * Update the organization.
+     * Update the Workspace.
      *
      * @param workspaceUpsertRest the WorkspaceUpsertRest.
      * @param userId              the user id.
-     * @return OrganizationBO
+     * @return WorkspaceBO
      */
     @Transactional
-    public WorkspaceBO updateWorkspace(final Long organizationId, final WorkspaceUpsertRest workspaceUpsertRest, Long userId) {
+    public WorkspaceBO updateWorkspace(final Long workspaceId, final WorkspaceUpsertRest workspaceUpsertRest, Long userId) {
 
-        final Workspace workspaceToSave = getOrganizationByStatus(workspaceUpsertRest.getOrganizationId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
+        final Workspace workspaceToSave = getWorkspaceByStatus(workspaceUpsertRest.getOrganizationId(), workspaceId, Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS);
 
         final String currentStatus = workspaceToSave.getStatus();
         final String newStatus = workspaceUpsertRest.getStatus().name();
@@ -163,11 +141,11 @@ public class WorkspaceService {
             Integer dataDeletionDays = null;
             LocalDateTime deletionDate = null;
 
-            // Case current organization is ACTIVE and update it to TO_BE_DELETED
+            // Case current workspace is ACTIVE and update it to TO_BE_DELETED
             if (currentStatus.equals(WorkspaceStatus.ACTIVE.name()) && newStatus.equals(WorkspaceStatus.TO_BE_DELETED.name())) {
                 // Get data retention days
                 dataDeletionDays = workspaceUpsertRest.getDataRetentionDays() == null ?
-                        organizationDataDeletionDays :
+                        workspaceDataDeletionDays :
                         workspaceUpsertRest.getDataRetentionDays().intValue();
 
                 deletionDate = LocalDateTime.now().plusDays(dataDeletionDays.longValue());
@@ -184,15 +162,15 @@ public class WorkspaceService {
                 .build());
         workspaceToSave.setLastUpdateDate(LocalDateTime.now());
         workspaceRepository.save(workspaceToSave);
-        clearWorkspaceCache(organizationId);
+        clearWorkspaceCache(workspaceId);
         return workspaceMapper.toBusinessObject(workspaceToSave);
     }
 
     /**
-     * Update the organization's name or criteria
+     * Update the workspace name or criteria
      *
-     * @param workspaceUpsertRest the organizationUpsertRest
-     * @param workspaceToSave     the updated organization
+     * @param workspaceUpsertRest the workspaceUpsertRest
+     * @param workspaceToSave     the updated Workspace
      */
     private void updateNameOrCriteria(WorkspaceUpsertRest workspaceUpsertRest, Workspace workspaceToSave) {
         final String currentWorkspace = workspaceToSave.getName();
@@ -206,23 +184,23 @@ public class WorkspaceService {
         boolean isCriteriaChange = !Objects.equals(newCriteriaDs, currentCriteriaDs) || !Objects.equals(newCriteriaIs, currentCriteriaIs);
         boolean isNameChange = !currentWorkspace.equals(newWorkspace);
         if (!(isCriteriaChange || isNameChange)) {
-            log.info("Nothing to update in the organization '{}'", workspaceToSave.getId());
+            log.info("Nothing to update in the workspace '{}'", workspaceToSave.getId());
             return;
         }
-        // Set criteria for organization
+        // Set criteria for workspace
         if (isCriteriaChange) {
             workspaceToSave.setCriteriaDs(newCriteriaDs);
             workspaceToSave.setCriteriaIs(newCriteriaIs);
         }
         if (isNameChange) {
-            // Handle update in organization's name
-            // Check if organization with same name already exist on this subscriber.
+            // Handle update in workspace name
+            // Check if workspace with same name already exist on this organization.
             workspaceRepository.findByOrganizationIdAndName(workspaceUpsertRest.getOrganizationId(), newWorkspace)
                     .ifPresent(org -> {
-                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newWorkspace, workspaceUpsertRest.getOrganizationId()));
+                        throw new G4itRestException("409", String.format("workspace '%s' already exists in organization '%s'", newWorkspace, workspaceUpsertRest.getOrganizationId()));
                     });
 
-            log.info("Update Organization name in file system from '{}' to '{}'", currentWorkspace, newWorkspace);
+            log.info("Update workspace name in file system from '{}' to '{}'", currentWorkspace, newWorkspace);
             workspaceToSave.setName(newWorkspace);
         }
     }
@@ -231,6 +209,6 @@ public class WorkspaceService {
      * clear cache to get the updated criteria
      */
     public void clearWorkspaceCache(Long workspaceId) {
-        Objects.requireNonNull(cacheManager.getCache("Organization")).evict(workspaceId);
+        Objects.requireNonNull(cacheManager.getCache("Workspace")).evict(workspaceId);
     }
 }

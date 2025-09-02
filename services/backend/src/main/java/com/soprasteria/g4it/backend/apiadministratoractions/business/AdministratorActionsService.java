@@ -57,8 +57,8 @@ public class AdministratorActionsService {
             //evaluating
             String digitalServiceUid = digitalService.getUid();
             Workspace workspace = workspaceRepository.findById(digitalService.getWorkspace().getId()).orElseThrow();
-            Long organizationId = workspace.getId();
-            String subscriber = workspace.getOrganization().getName();
+            Long workspaceId = workspace.getId();
+            String organizationName = workspace.getOrganization().getName();
 
             List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
             if (!physicalEquipments.isEmpty()) {
@@ -83,7 +83,7 @@ public class AdministratorActionsService {
                 if (!networkEquipments.isEmpty() && runEvaluation) {
                     count++;
                     log.info("Digital-service re-evaluation and count- {}: {}", digitalServiceUid, count);
-                    evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
+                    evaluatingService.evaluatingDigitalService(organizationName, workspaceId, digitalServiceUid);
                 }
             }
         }

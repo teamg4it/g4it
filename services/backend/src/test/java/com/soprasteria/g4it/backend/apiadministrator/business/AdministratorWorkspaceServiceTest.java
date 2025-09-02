@@ -469,7 +469,7 @@ class AdministratorWorkspaceServiceTest {
         when(userWorkspaceRepository.findByWorkspaceIdAndUserId(organizationId, userId))
                 .thenReturn(java.util.Optional.of(userWorkspace));
 
-        assertDoesNotThrow(() -> administratorWorkspaceService.deleteUserOrgLink(linkUserRoleRest, TestUtils.createUserBOAdminSub()));
+        assertDoesNotThrow(() -> administratorWorkspaceService.deleteUserWorkLink(linkUserRoleRest, TestUtils.createUserBOAdminSub()));
 
         verify(userWorkspaceRepository, times(1)).deleteById(1L);
     }

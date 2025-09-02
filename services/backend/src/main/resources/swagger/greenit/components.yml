@@ -270,7 +270,7 @@ components:
           type: array
           items:
             type: string
-        linkedOrgIds:
+        linkedWorkIds:
           type: array
           items:
             type: integer

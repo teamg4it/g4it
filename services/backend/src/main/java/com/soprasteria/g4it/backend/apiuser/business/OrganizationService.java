@@ -22,22 +22,22 @@ import org.springframework.stereotype.Service;
 public class OrganizationService {
 
     /**
-     * The Repository to access Subscriber data.
+     * The Repository to access Organization data.
      */
     @Autowired
     OrganizationRepository organizationRepository;
 
 
     /**
-     * Find the Subscriber by id.
+     * Find the organization by id.
      *
-     * @param subscriptionId the subscriber's id
-     * @return the Subscriber.
+     * @param organizationId the organization's id
+     * @return the Organization.
      */
-    public Organization getSubscriptionById(final Long subscriptionId) {
-        return organizationRepository.findById(subscriptionId)
+    public Organization getOrgById(final Long organizationId) {
+        return organizationRepository.findById(organizationId)
                 .orElseThrow(
-                        () -> new G4itRestException("404", String.format("subscription with id '%d' not found", subscriptionId))
+                        () -> new G4itRestException("404", String.format("subscription with id '%d' not found", organizationId))
                 );
     }
 
