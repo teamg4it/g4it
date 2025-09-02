@@ -37,7 +37,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /organizations/{subscriber}/workspaces/{organization}/digital-services/{digitalServiceUid}/evaluating:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/evaluating:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
