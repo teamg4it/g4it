@@ -58,8 +58,8 @@ public class RoleService {
     public boolean hasAdminRightsOnAnyWorkspace(final UserBO user) {
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getOrganizations().stream()
-                .anyMatch(orgBO -> orgBO.getOrganizations().stream()
-                        .anyMatch(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)));
+                .anyMatch(orgBO -> orgBO.getWorkspaces().stream()
+                        .anyMatch(workspaceBO -> workspaceBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)));
     }
 
 
@@ -87,9 +87,9 @@ public class RoleService {
     public boolean hasAdminRightsOnWorkspace(UserBO user, Long organizationId) {
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getOrganizations().stream()
-                .anyMatch(orgBO -> orgBO.getOrganizations().stream()
-                        .filter(organizationBO -> Objects.equals(organizationBO.getId(), organizationId))
-                        .anyMatch(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)));
+                .anyMatch(orgBO -> orgBO.getWorkspaces().stream()
+                        .filter(workspaceBO -> Objects.equals(workspaceBO.getId(), organizationId))
+                        .anyMatch(workspaceBO -> workspaceBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)));
     }
 
     /**

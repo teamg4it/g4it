@@ -45,11 +45,11 @@ public class NewWorkspaceService {
         List<OrganizationDetailsBO> lstSubscriber = new ArrayList<>();
         for (Organization organization : organizations) {
             List<Workspace> workspaces = workspaceRepository.findByOrganizationId(organization.getId());
-            List<WorkspaceDetailsBO> lstOrganizations = new ArrayList<>();
+            List<WorkspaceDetailsBO> lstWorkspaces = new ArrayList<>();
             for (Workspace workspace : workspaces) {
-                lstOrganizations.add(WorkspaceDetailsBO.builder().id(workspace.getId()).name(workspace.getName()).status(workspace.getStatus()).build());
+                lstWorkspaces.add(WorkspaceDetailsBO.builder().id(workspace.getId()).name(workspace.getName()).status(workspace.getStatus()).build());
             }
-            OrganizationDetailsBO organizationDetailsBO = OrganizationDetailsBO.builder().id(organization.getId()).name(organization.getName()).organizations(lstOrganizations).build();
+            OrganizationDetailsBO organizationDetailsBO = OrganizationDetailsBO.builder().id(organization.getId()).name(organization.getName()).workspaces(lstWorkspaces).build();
             lstSubscriber.add(organizationDetailsBO);
         }
         return lstSubscriber;
