@@ -8,8 +8,8 @@
 
 package com.soprasteria.g4it.backend.common.utils;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +25,11 @@ public class AuthorizationUtils {
     private boolean isEcomindModuleEnabled;
 
     @Autowired
-    private SubscriberRepository subscriberRepository;
+    private OrganizationRepository organizationRepository;
 
     private static final String ECOMINDAI_DISABLED = "The EcoMindAI module is currently disabled";
 
-    private static final String ECOMINDAI_DISABLED_FOR_SUBSCRIBER = "The EcoMindAi module is currently disabled for this subscriber";
+    private static final String ECOMINDAI_DISABLED_FOR_ORGANIZATION = "The EcoMindAi module is currently disabled for this organization";
 
     public void checkEcomindAuthorization() {
         if (!isEcomindModuleEnabled) {
@@ -38,11 +38,11 @@ public class AuthorizationUtils {
         }
     }
 
-    public void checkEcomindEnabledForSubscriber(String subscriber) {
-        Optional<Subscriber> subsc = subscriberRepository.findByName(subscriber);
-        if (subsc.isPresent() && !subsc.get().isEcomindai()) {
+    public void checkEcomindEnabledForOrganization(String organizationName) {
+        Optional<Organization> org = organizationRepository.findByName(organizationName);
+        if (org.isPresent() && !org.get().isEcomindai()) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
-                    ECOMINDAI_DISABLED_FOR_SUBSCRIBER);
+                    ECOMINDAI_DISABLED_FOR_ORGANIZATION);
         }
     }
 }

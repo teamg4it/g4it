@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -57,17 +57,17 @@ public class DigitalService {
      */
     private boolean enableDataInconsistency;
     /**
-     * The Criterias key.
+     * The Criteria key.
      */
     private List<String> criteria;
 
     /**
-     * Linked organization.
+     * Linked workspace.
      */
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id", referencedColumnName = "id")
-    private Organization organization;
+    private Workspace workspace;
 
     /**
      * The user behind the digital service.

@@ -48,8 +48,8 @@ public class OutDigitalServiceController implements DigitalServiceOutputsApiDele
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutPhysicalEquipmentRest>> getDigitalServiceOutputsPhysicalEquipmentsRest(String subscriber,
-                                                                                                         Long organization,
+    public ResponseEntity<List<OutPhysicalEquipmentRest>> getDigitalServiceOutputsPhysicalEquipmentsRest(String organization,
+                                                                                                         Long workspace,
                                                                                                          String digitalServiceUid) {
         return ResponseEntity.ok().body(outPhysicalEquipmentService.getByDigitalServiceUid(digitalServiceUid));
     }
@@ -58,8 +58,8 @@ public class OutDigitalServiceController implements DigitalServiceOutputsApiDele
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutVirtualEquipmentRest>> getDigitalServiceOutputsVirtualEquipmentsRest(String subscriber,
-                                                                                                       Long organization,
+    public ResponseEntity<List<OutVirtualEquipmentRest>> getDigitalServiceOutputsVirtualEquipmentsRest(String organization,
+                                                                                                       Long workspace,
                                                                                                        String digitalServiceUid) {
         return ResponseEntity.ok().body(outVirtualEquipmentService.getByDigitalServiceUid(digitalServiceUid));
     }
@@ -68,8 +68,8 @@ public class OutDigitalServiceController implements DigitalServiceOutputsApiDele
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutApplicationRest>> getDigitalServiceOutputsApplicationsRest(String subscriber,
-                                                                                             Long organization,
+    public ResponseEntity<List<OutApplicationRest>> getDigitalServiceOutputsApplicationsRest(String organization,
+                                                                                             Long workspace,
                                                                                              String digitalServiceUid) {
         return ResponseEntity.ok().body(outApplicationService.getByDigitalServiceUid(digitalServiceUid));
     }

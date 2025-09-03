@@ -9,10 +9,10 @@ tags:
     description: All endpoint for digital service indicators
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/export:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/export:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
     get:
       summary: endpoint to download digital service indicators export results

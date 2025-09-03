@@ -354,7 +354,7 @@ public class ReferentialImportService {
             return importReportRest;
         }
 
-        persistenceService.deleteItemImpactsBySubscriber(subscriber);
+        persistenceService.deleteItemImpactsByOrganization(subscriber);
 
         i = 0;
 

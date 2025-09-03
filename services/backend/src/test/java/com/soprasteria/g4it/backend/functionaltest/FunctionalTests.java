@@ -27,9 +27,9 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEq
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialImportService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -69,7 +69,7 @@ class FunctionalTests {
     private static final String SUBSCRIBER = "SUBSCRIBER";
     private static final Path API_LOAD_INPUT_FILES = Path.of("src/test/resources/apiloadinputfiles");
     private static final Path API_EVALUATING = Path.of("src/test/resources/apievaluating");
-    
+
     private static final boolean SHOW_ASSERTION = false;
     @Autowired
     LoadInputFilesController loadInputFilesController;
@@ -78,9 +78,9 @@ class FunctionalTests {
     @Autowired
     AsyncEvaluatingService asyncEvaluatingService;
     @Autowired
-    SubscriberRepository subscriberRepository;
-    @Autowired
     OrganizationRepository organizationRepository;
+    @Autowired
+    WorkspaceRepository workspaceRepository;
     @Autowired
     InventoryRepository inventoryRepository;
     @Autowired
@@ -129,9 +129,9 @@ class FunctionalTests {
     void executeAllFunctionalTests() throws IOException {
         Locale.setDefault(Locale.ENGLISH);
 
-        var organization = organizationRepository.save(Organization.builder()
+        var organization = workspaceRepository.save(Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name(SUBSCRIBER).build())
+                .organization(Organization.builder().name(SUBSCRIBER).build())
                 .build());
 
         taskRepository.deleteAll();
@@ -141,7 +141,7 @@ class FunctionalTests {
 
         var inventory = inventoryRepository.save(Inventory.builder()
                 .name("Inventory Name")
-                .organization(organization)
+                .workspace(organization)
                 .doExportVerbose(true)
                 .build());
 

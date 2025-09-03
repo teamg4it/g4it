@@ -7,12 +7,12 @@
  */
 package com.soprasteria.g4it.backend.apiuser.controller;
 
-import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrganizationService;
+import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorWorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
-import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
-import com.soprasteria.g4it.backend.apiworkspace.mapper.SubscriberDetailsRestMapper;
+import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceRestMapper;
+import com.soprasteria.g4it.backend.apiworkspace.mapper.OrganizationDetailsRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.UserApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +38,16 @@ public class UserRestController implements UserApiDelegate {
     private UserRestMapper userRestMapper;
 
     @Autowired
-    AdministratorOrganizationService administratorOrganizationService;
+    AdministratorWorkspaceService administratorWorkspaceService;
 
     @Autowired
-    private OrganizationRestMapper organizationRestMapper;
+    private WorkspaceRestMapper workspaceRestMapper;
 
     @Autowired
-    SubscriberDetailsRestMapper subscriberDetailsRestMapper;
+    OrganizationDetailsRestMapper organizationDetailsRestMapper;
 
     @Autowired
-    SubscriberService subscriberService;
+    OrganizationService organizationService;
 
     /**
      * {@inheritDoc}

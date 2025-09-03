@@ -7,13 +7,13 @@
  */
 package com.soprasteria.g4it.backend.apiuser.repository;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserRoleOrganization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserRoleWorkspace;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface UserRoleOrganizationRepository extends JpaRepository<UserRoleOrganization, Long> {
+public interface UserRoleWorkspaceRepository extends JpaRepository<UserRoleWorkspace, Long> {
 
     @Transactional
-    void deleteByUserOrganizations(final UserOrganization userOrganization);
+    void deleteByUserWorkspaces(final UserWorkspace userWorkspace);
 }

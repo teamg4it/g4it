@@ -10,10 +10,10 @@ tags:
 
 paths:
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/device-type:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/device-type:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
     get:
       tags:
         - digital-service referential
@@ -34,10 +34,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/country:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/country:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
     get:
       tags:
         - digital-service referential
@@ -58,10 +58,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/network-type:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/network-type:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
     get:
       tags:
         - digital-service referential
@@ -82,10 +82,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/server-host:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/server-host:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - in: query
         name: type
         required: true
@@ -111,10 +111,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/ecomind-type:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/ecomind-type:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
     get:
       tags:
         - digital-service referential

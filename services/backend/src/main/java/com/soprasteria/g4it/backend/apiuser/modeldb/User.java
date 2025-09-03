@@ -66,13 +66,13 @@ public class User extends AbstractBaseEntity implements Serializable {
      */
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<UserOrganization> userOrganizations;
+    private List<UserWorkspace> userWorkspaces;
 
     /**
      * User's subscribers.
      */
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<UserSubscriber> userSubscribers;
+    private List<UserOrganization> userOrganizations;
 
 }

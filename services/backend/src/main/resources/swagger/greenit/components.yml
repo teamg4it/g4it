@@ -7,21 +7,21 @@ info:
 components:
   # Define Common Parameters.
   parameters:
-    subscriberPathParam:
-      in: path
-      name: subscriber
-      schema:
-        type: string
-      required: true
-      description: The subscriber name.
     organizationPathParam:
       in: path
       name: organization
       schema:
+        type: string
+      required: true
+      description: The organization name.
+    workspacePathParam:
+      in: path
+      name: workspace
+      schema:
         type: integer
         format: int64
       required: true
-      description: The organization id.
+      description: The workspace id.
     inventoryIdPathParam:
       in: path
       name: inventoryId
@@ -67,14 +67,14 @@ components:
         format: int64
       required: true
       description: The user id.
-    organizationIdQueryParam:
+    workspaceIdQueryParam:
       in: query
-      name: organizationId
+      name: workspaceId
       schema:
         type: integer
         format: int64
       required: false
-      description: The organization id.
+      description: The workspace id.
     isAiPathParam:
       in: query
       name: isAi
@@ -83,29 +83,21 @@ components:
         default: false
       required: false
       description: AI service if true.
-    subscriberIdQueryParam:
+    organizationIdQueryParam:
       in: query
-      name: subscriberId
+      name: organizationId
       schema:
         type: integer
         format: int64
       required: false
-      description: The subscriber id.
-    subscriberQueryParam:
+      description: The organization id.
+    organizationQueryParam:
       in: query
-      name: subscriber
+      name: organization
       schema:
         type: string
       required: false
-      description: The subscriber.
-    reqSubscriberIdQueryParam:
-      in: query
-      name: subscriberId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: The mandatory subscriber id.
+      description: The organization.
     reqOrganizationIdQueryParam:
       in: query
       name: organizationId
@@ -114,6 +106,14 @@ components:
         format: int64
       required: true
       description: The mandatory organization id.
+    reqWorkspaceIdQueryParam:
+      in: query
+      name: workspaceId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The mandatory workspace id.
     nameSearchQueryParam:
       in: query
       name: searchedName
@@ -219,10 +219,10 @@ components:
           type: string
         isSuperAdmin:
           type: boolean
-        subscribers:
+        organizations:
           type: array
           items:
-            $ref: "#/components/schemas/SubscriberRest"
+            $ref: "#/components/schemas/OrganizationRest"
     UserInfoRest:
       description: Users' information
       type: object
@@ -245,7 +245,7 @@ components:
       description: User's roles to add
       type: object
       properties:
-        organizationId:
+        workspaceId:
           type: integer
           format: int64
         users:
@@ -270,7 +270,7 @@ components:
           type: array
           items:
             type: string
-        linkedOrgIds:
+        linkedWorkIds:
           type: array
           items:
             type: integer
@@ -297,8 +297,8 @@ components:
         name:
           type: string
 
-    SubscriberRest:
-      description: Subscriber information
+    OrganizationRest:
+      description: Organization information
       type: object
       properties:
         id:
@@ -320,14 +320,14 @@ components:
           type: array
           items:
             type: string
-        organizations:
+        workspaces:
           type: array
           items:
-            $ref: "#/components/schemas/OrganizationRest"
+            $ref: "#/components/schemas/WorkspaceRest"
         ecomindai:
           type: boolean
-    OrganizationRest:
-      description: Organization information
+    WorkspaceRest:
+      description: Workspace information
       type: object
       properties:
         id:
@@ -343,7 +343,7 @@ components:
             type: string
         status:
           type: string
-          $ref: "#/components/schemas/OrganizationStatus"
+          $ref: "#/components/schemas/WorkspaceStatus"
         deletionDate:
           type: string
           format: "date-time"
@@ -374,12 +374,12 @@ components:
         lastUpdateDate:
           type: string
           format: date-time
-        organization:
+        workspace:
           type: string
-        organizationId:
+        workspaceId:
           type: integer
           format: int64
-        organizationStatus:
+        workspaceStatus:
           type: string
         dataCenterCount:
           type: integer
@@ -558,7 +558,7 @@ components:
     PhysicalEquipmentsAvgAgeRest:
       type: object
       properties:
-        organisation:
+        workspace:
           type: string
         inventoryName:
           type: string
@@ -847,7 +847,7 @@ components:
         - INFORMATION_SYSTEM
         - SIMULATION
 
-    OrganizationStatus:
+    WorkspaceStatus:
       type: string
       enum:
         - ACTIVE
@@ -917,38 +917,38 @@ components:
         end_time:
           type: string
 
-    SubscribertRest:
-      type: object
-      properties:
-        name:
-          type: string
-        impactStep:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrganizationRest"
+#    SubscribertRest:
+#      type: object
+#      properties:
+#        name:
+#          type: string
+#        impactStep:
+#          type: array
+#          items:
+#            $ref: "#/components/schemas/OrganizationRest"
 
-    OrganizationUpsertRest:
-      description: Organization update
+    WorkspaceUpsertRest:
+      description: Workspace update
       type: object
       required:
-        - subscriberId
+        - organizationId
         - name
       properties:
-        subscriberId:
-          description: Subscriber id
+        organizationId:
+          description: Organization id
           type: integer
           format: int64
         name:
-          description: Organization name
+          description: workspace name
           type: string
           pattern: "^[a-zA-Z0-9\\-\\_]+$"
         status:
-          description: Organization status
+          description: workspace status
           type: string
-          $ref: "#/components/schemas/OrganizationStatus"
+          $ref: "#/components/schemas/WorkspaceStatus"
           default: ACTIVE
         dataRetentionDays:
-          description: Organization date retention days
+          description: workspace date retention days
           type: integer
           format: int64
         criteriaIs:
@@ -1024,21 +1024,21 @@ components:
         email:
           type: string
 
-    SubscriberDetailsRest:
-      description: subscribers linked to user's domain
+    OrganizationDetailsRest:
+      description: organizations linked to user's domain
       type: object
       properties:
         id:
           type: number
         name:
           type: string
-        organizations:
+        workspaces:
           type: array
           items:
-            $ref: "#/components/schemas/OrganizationDetailsRest"
+            $ref: "#/components/schemas/WorkspaceDetailsRest"
 
-    OrganizationDetailsRest:
-      description: organizations linked to subscribers
+    WorkspaceDetailsRest:
+      description: workspaces linked to organizations
       type: object
       properties:
         id:

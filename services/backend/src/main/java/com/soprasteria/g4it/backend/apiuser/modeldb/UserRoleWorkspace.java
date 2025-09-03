@@ -21,8 +21,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "g4it_user_role_subscriber")
-public class UserRoleSubscriber implements Serializable {
+@Table(name = "g4it_user_role_organization")
+public class UserRoleWorkspace implements Serializable {
     /**
      * Auto generated id
      */
@@ -32,8 +32,8 @@ public class UserRoleSubscriber implements Serializable {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "user_subscriber_id", referencedColumnName = "id")
-    private UserSubscriber userSubscribers;
+    @JoinColumn(name = "user_organization_id", referencedColumnName = "id")
+    private UserWorkspace userWorkspaces;
 
     @NotNull
     @ManyToOne

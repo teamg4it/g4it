@@ -35,9 +35,9 @@ public class UserSearchBO {
     private String lastName;
 
     /**
-     * List of organizations user is linked with
+     * List of workspaces user is linked with
      */
-    private List<Long> linkedOrgIds;
+    private List<Long> linkedWorkIds;
     
     /**
      * The roles of the user.

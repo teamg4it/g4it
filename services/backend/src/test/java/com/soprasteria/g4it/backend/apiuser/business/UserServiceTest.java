@@ -11,7 +11,7 @@ import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,28 +38,28 @@ class UserServiceTest {
     void givenEmail_thenReturnUser() {
 
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(User.builder().email(EMAIL)
-                .userSubscribers(List.of(UserSubscriber.builder()
+                .userOrganizations(List.of(UserOrganization.builder()
                         .defaultFlag(true)
                         .roles(List.of(Role.builder().name("ROLE_SUBSCRIBER_ADMINISTRATOR").build()))
-                        .subscriber(Subscriber.builder()
-                                .organizations(List.of(Organization.builder()
-                                        .status(OrganizationStatus.ACTIVE.name())
+                        .organization(Organization.builder()
+                                .workspaces(List.of(Workspace.builder()
+                                        .status(WorkspaceStatus.ACTIVE.name())
                                         .build()))
                                 .name(SUBSCRIBER)
                                 .build())
                         .build()))
-                .userOrganizations(List.of(UserOrganization
+                .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
                         .roles(List.of(Role.builder().name("ROLE_INVENTORY_READ").build()))
-                        .organization(Organization.builder().name(ORGANIZATION).status(OrganizationStatus.ACTIVE.name())
-                                .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build())
+                        .workspace(Workspace.builder().name(ORGANIZATION).status(WorkspaceStatus.ACTIVE.name())
+                                .organization(Organization.builder().name(SUBSCRIBER).build()).build())
                         .build()))
                 .build()));
 
         final UserBO user = userService.getUserByName(UserBO.builder().email(EMAIL).build());
 
         Assertions.assertThat(user).isNotNull();
-        Assertions.assertThat(user.getSubscribers().getFirst().getRoles()).contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR);
+        Assertions.assertThat(user.getOrganizations().getFirst().getRoles()).contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR);
 
         verify(userRepository, times(1)).findByEmail(EMAIL);
     }
@@ -68,29 +68,29 @@ class UserServiceTest {
     void givenEmailAndUserWithoutRole_thenReturnUserWithoutSubscriber() {
 
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(User.builder().email(EMAIL)
-                .userSubscribers(List.of(UserSubscriber.builder()
+                .userOrganizations(List.of(UserOrganization.builder()
                         .defaultFlag(true)
                         .roles(List.of())
-                        .subscriber(Subscriber.builder()
-                                .organizations(List.of(Organization.builder()
-                                        .status(OrganizationStatus.ACTIVE.name())
+                        .organization(Organization.builder()
+                                .workspaces(List.of(Workspace.builder()
+                                        .status(WorkspaceStatus.ACTIVE.name())
                                         .build()))
                                 .name(SUBSCRIBER)
                                 .criteria(List.of("criteria"))
                                 .build())
                         .build()))
-                .userOrganizations(List.of(UserOrganization
+                .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
                         .roles(List.of())
-                        .organization(Organization.builder().name(ORGANIZATION).status(OrganizationStatus.ACTIVE.name())
-                                .subscriber(Subscriber.builder().name(SUBSCRIBER).build()).build())
+                        .workspace(Workspace.builder().name(ORGANIZATION).status(WorkspaceStatus.ACTIVE.name())
+                                .organization(Organization.builder().name(SUBSCRIBER).build()).build())
                         .build()))
                 .build()));
 
         final UserBO user = userService.getUserByName(UserBO.builder().email(EMAIL).build());
 
         Assertions.assertThat(user).isNotNull();
-        Assertions.assertThat(user.getSubscribers()).isEmpty();
+        Assertions.assertThat(user.getOrganizations()).isEmpty();
 
         verify(userRepository, times(1)).findByEmail(EMAIL);
     }

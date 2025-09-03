@@ -32,47 +32,46 @@ public class AdministratorRoleService {
      * @param user the current user.
      */
     public List<RoleBO> getAllRoles(final UserBO user) {
-        hasAdminRightsOnAnySubscriberOrAnyOrganization(user);
+        hasAdminRightsOnAnyOrganizationOrAnyWorkspace(user);
         return roleService.getAllRolesBO();
     }
 
-    public void hasAdminRightsOnAnySubscriberOrAnyOrganization(UserBO user) {
-        if (!(roleService.hasAdminRightsOnAnySubscriber(user) || roleService.hasAdminRightsOnAnyOrganization(user))) {
+    public void hasAdminRightsOnAnyOrganizationOrAnyWorkspace(UserBO user) {
+        if (!(roleService.hasAdminRightsOnAnyOrganization(user) || roleService.hasAdminRightsOnAnyWorkspace(user))) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("User with id '%d' do not have admin role", user.getId()));
         }
     }
 
-    public void hasAdminRightOnSubscriberOrOrganization(UserBO user, Long subscriberId, Long organizationId) {
-        if (!(roleService.hasAdminRightsOnSubscriber(user, subscriberId) || roleService.hasAdminRightsOnOrganization(user, organizationId))) {
+    public void hasAdminRightOnOrganizationOrWorkspace(UserBO user, Long organizationId, Long workspaceId) {
+        if (!(roleService.hasAdminRightsOnOrganization(user, organizationId) || roleService.hasAdminRightsOnWorkspace(user, workspaceId))) {
             throw new AuthorizationException(
                     HttpServletResponse.SC_FORBIDDEN,
-                    String.format("User with id '%d' do not have admin role on subscriber '%d' or organization '%d'", user.getId(), subscriberId, organizationId));
+                    String.format("User with id '%d' do not have admin role on organization '%d' or workspace '%d'", user.getId(), organizationId, workspaceId));
         }
     }
 
-    public void hasAdminRightsOnAnySubscriber(UserBO user) {
-        if (!roleService.hasAdminRightsOnAnySubscriber(user)) {
-            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("User with id '%d' do not have admin role on any subscriber", user.getId()));
+    public void hasAdminRightsOnAnyOrganization(UserBO user) {
+        if (!roleService.hasAdminRightsOnAnyOrganization(user)) {
+            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("User with id '%d' do not have admin role on any organization", user.getId()));
         }
     }
 
     /**
-     *
-     * @param user user BO
-     * @param subscriberId subscriber's id
-     * @param hasSubscriberAdminRights has subscriber admin role
-     * @param hasDomainAuthorization has valid domain
+     * @param user                       user BO
+     * @param organizationId             organization's id
+     * @param hasOrganizationAdminRights has organization admin role
+     * @param hasDomainAuthorization     has valid domain
      */
-   public void hasSubscriberAdminOrDomainAccess(UserBO user, Long subscriberId,
-                                       boolean hasSubscriberAdminRights,
-                                       boolean hasDomainAuthorization) {
-       if (!(hasSubscriberAdminRights || hasDomainAuthorization)) {
-           throw new AuthorizationException(
-                   HttpServletResponse.SC_FORBIDDEN,
-                   String.format("User with id '%d' has no admin role on subscriber '%d' or has domain not authorized.",
-                           user.getId(), subscriberId)
-           );
-       }
+    public void hasOrganizationAdminOrDomainAccess(UserBO user, Long organizationId,
+                                                   boolean hasOrganizationAdminRights,
+                                                   boolean hasDomainAuthorization) {
+        if (!(hasOrganizationAdminRights || hasDomainAuthorization)) {
+            throw new AuthorizationException(
+                    HttpServletResponse.SC_FORBIDDEN,
+                    String.format("User with id '%d' has no admin role on organization '%d' or has domain not authorized.",
+                            user.getId(), organizationId)
+            );
+        }
     }
 
 }

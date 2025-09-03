@@ -9,10 +9,10 @@ tags:
     description: Endpoint for ai-parameter
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/ai-parameter-input:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/ai-parameter-input:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
     post:
       tags:

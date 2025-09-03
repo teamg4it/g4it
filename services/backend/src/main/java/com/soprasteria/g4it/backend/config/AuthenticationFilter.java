@@ -71,7 +71,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             UserBO userInfo = authService.verifyUserAuthentication();
 
             final String[] urlSplit = request.getRequestURI().split("/");
-            final Pair<String, String> subOrg = authService.getSubscriberAndOrganization(urlSplit);
+            final Pair<String, String> subOrg = authService.getOrganizationAndWorkspace(urlSplit);
 
             String subscriber = subOrg == null ? null : subOrg.getFirst();
             Long organizationId = subOrg == null ? null : Long.parseLong(subOrg.getSecond());

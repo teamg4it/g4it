@@ -19,15 +19,15 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * G4IT User Subscriber mapping.
+ * G4IT User Organization mapping.
  */
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "g4it_user_subscriber")
-public class UserSubscriber implements Serializable {
+@Table(name = "g4it_user_organization")
+public class UserWorkspace implements Serializable {
 
     /**
      * Auto generated id
@@ -37,12 +37,12 @@ public class UserSubscriber implements Serializable {
     private long id;
 
     /**
-     * The subscriber.
+     * The organization.
      */
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
-    private Subscriber subscriber;
+    @JoinColumn(name = "organization_id", referencedColumnName = "id")
+    private Workspace workspace;
 
     /**
      * The user.
@@ -58,11 +58,11 @@ public class UserSubscriber implements Serializable {
     private Boolean defaultFlag;
 
     /**
-     * User role on subscriber.
+     * User role on organization.
      */
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "g4it_user_role_subscriber",
-            joinColumns = @JoinColumn(name = "user_subscriber_id",
+    @JoinTable(name = "g4it_user_role_organization",
+            joinColumns = @JoinColumn(name = "user_organization_id",
                     referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id",
                     referencedColumnName = "id"))
@@ -70,6 +70,7 @@ public class UserSubscriber implements Serializable {
 
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "userSubscribers", fetch = FetchType.LAZY)
-    private List<UserRoleSubscriber> userRoleSubscriber;
+    @OneToMany(mappedBy = "userWorkspaces", fetch = FetchType.LAZY)
+    private List<UserRoleWorkspace> userRoleWorkspace;
+
 }

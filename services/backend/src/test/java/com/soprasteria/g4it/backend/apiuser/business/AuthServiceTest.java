@@ -8,8 +8,8 @@
 package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
-import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import org.junit.jupiter.api.Assertions;
@@ -31,10 +31,10 @@ class AuthServiceTest {
     private static final List<String> roles = List.of("Role 1", "Role2");
     private static final UserBO user = UserBO.builder()
             .id(0)
-            .subscribers(
-                    List.of(SubscriberBO.builder()
+            .organizations(
+                    List.of(OrganizationBO.builder()
                             .name(SUBSCRIBER)
-                            .organizations(List.of(OrganizationBO.builder()
+                            .organizations(List.of(WorkspaceBO.builder()
                                     .name(ORGANIZATION)
                                     .id(ORGANIZATION_ID)
                                     .roles(roles)
@@ -56,10 +56,10 @@ class AuthServiceTest {
     void testControlAccess_subscriberAdminCase_returnAllRoles() {
         var adminSubscriber = UserBO.builder()
                 .id(0)
-                .subscribers(
-                        List.of(SubscriberBO.builder()
+                .organizations(
+                        List.of(OrganizationBO.builder()
                                 .name(SUBSCRIBER)
-                                .organizations(List.of(OrganizationBO.builder()
+                                .organizations(List.of(WorkspaceBO.builder()
                                         .name(ORGANIZATION)
                                         .roles(List.of())
                                         .build()))
@@ -91,9 +91,9 @@ class AuthServiceTest {
     void testControlAccess_withNoRole_thenForbidden() {
         final UserBO userWithoutRole = UserBO.builder()
                 .id(0)
-                .subscribers(List.of(SubscriberBO.builder()
+                .organizations(List.of(OrganizationBO.builder()
                         .name(SUBSCRIBER)
-                        .organizations(List.of(OrganizationBO.builder()
+                        .organizations(List.of(WorkspaceBO.builder()
                                 .name(ORGANIZATION)
                                 .id(ORGANIZATION_ID)
                                 .roles(List.of())

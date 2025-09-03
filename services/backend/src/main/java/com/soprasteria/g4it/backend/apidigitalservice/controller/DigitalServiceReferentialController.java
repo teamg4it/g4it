@@ -43,7 +43,7 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<DeviceTypeRefRest>> getTerminalDeviceTypeRef(final String subscriber, final Long organization) {
+    public ResponseEntity<List<DeviceTypeRefRest>> getTerminalDeviceTypeRef(final String organization, final Long workspace) {
         return ResponseEntity.ok(digitalServiceReferentialRestMapper.toDeviceTypeDto(digitalServiceReferentialService.getTerminalDeviceType()));
     }
 
@@ -51,7 +51,7 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<EcomindTypeRefRest>> getEcomindDeviceTypeRef(final String subscriber, final Long organization) {
+    public ResponseEntity<List<EcomindTypeRefRest>> getEcomindDeviceTypeRef(final String organization, final Long workspace) {
         return ResponseEntity.ok(digitalServiceReferentialRestMapper.toEcomindTypeDto(digitalServiceReferentialService.getEcomindDeviceType()));
     }
 
@@ -59,7 +59,7 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<String>> getCountryRef(final String subscriber, final Long organization) {
+    public ResponseEntity<List<String>> getCountryRef(final String organization, final Long workspace) {
         return ResponseEntity.ok(digitalServiceReferentialService.getCountry());
     }
 
@@ -67,7 +67,7 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<NetworkTypeRefRest>> getNetworkTypeRef(final String subscriber, final Long organization) {
+    public ResponseEntity<List<NetworkTypeRefRest>> getNetworkTypeRef(final String organization, final Long workspace) {
         return ResponseEntity.ok(digitalServiceReferentialRestMapper.toNetworkTypeDto(digitalServiceReferentialService.getNetworkType()));
     }
 
@@ -75,8 +75,8 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<ServerHostRefRest>> getServerHost(final String subscriber,
-                                                                 final Long organization,
+    public ResponseEntity<List<ServerHostRefRest>> getServerHost(final String organization,
+                                                                 final Long workspace,
                                                                  final String type) {
         return ResponseEntity.ok(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts(type)));
     }
