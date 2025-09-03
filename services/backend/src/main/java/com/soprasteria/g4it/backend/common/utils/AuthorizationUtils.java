@@ -29,7 +29,7 @@ public class AuthorizationUtils {
 
     private static final String ECOMINDAI_DISABLED = "The EcoMindAI module is currently disabled";
 
-    private static final String ECOMINDAI_DISABLED_FOR_SUBSCRIBER = "The EcoMindAi module is currently disabled for this subscriber";
+    private static final String ECOMINDAI_DISABLED_FOR_ORGANIZATION = "The EcoMindAi module is currently disabled for this organization";
 
     public void checkEcomindAuthorization() {
         if (!isEcomindModuleEnabled) {
@@ -38,11 +38,11 @@ public class AuthorizationUtils {
         }
     }
 
-    public void checkEcomindEnabledForSubscriber(String subscriber) {
-        Optional<Organization> subsc = organizationRepository.findByName(subscriber);
-        if (subsc.isPresent() && !subsc.get().isEcomindai()) {
+    public void checkEcomindEnabledForOrganization(String organizationName) {
+        Optional<Organization> org = organizationRepository.findByName(organizationName);
+        if (org.isPresent() && !org.get().isEcomindai()) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
-                    ECOMINDAI_DISABLED_FOR_SUBSCRIBER);
+                    ECOMINDAI_DISABLED_FOR_ORGANIZATION);
         }
     }
 }

@@ -50,7 +50,6 @@ public class AdministratorRestController implements AdministratorApiDelegate {
     private OrganizationRestMapper organizationRestMapper;
     @Autowired
     private WorkspaceRestMapper workspaceRestMapper;
-
     @Autowired
     private RoleRestMapper roleRestMapper;
 

@@ -77,14 +77,14 @@ public class DigitalServiceService {
     /**
      * Create a new digital service.
      *
-     * @param organizationId the linked organization's id.
+     * @param workspaceId the linked workspace id.
      * @param userId         the userId.
      * @param isAi           AI service if true
      * @return the business object corresponding on the digital service created.
      */
-    public DigitalServiceBO createDigitalService(final Long organizationId, final long userId, final Boolean isAi) {
-        // Get the linked organization.
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
+    public DigitalServiceBO createDigitalService(final Long workspaceId, final long userId, final Boolean isAi) {
+        // Get the linked workspace.
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
         // Get last index to create digital service.
 
@@ -127,12 +127,12 @@ public class DigitalServiceService {
     /**
      * Get the digital service list linked to a user.
      *
-     * @param organizationId the organization's id.
+     * @param workspaceId the workspace ID.
      * @param isAi           AI service if true
      * @return the digital service list.
      */
-    public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final Boolean isAi) {
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
+    public List<DigitalServiceBO> getDigitalServices(final Long workspaceId, final Boolean isAi) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
         List<DigitalService> filterDigitalService = digitalServiceRepository.findByWorkspace(linkedWorkspace).stream().filter(ds -> ds.isAi() == isAi)
                 .toList();
         return digitalServiceMapper.toBusinessObject(filterDigitalService);
@@ -157,14 +157,17 @@ public class DigitalServiceService {
     }
 
     /**
-     * Update a digital service if has write access or
+     * Update a digital service if user has write access or
      * update enableDataInconsistency
      *
      * @param digitalService the business object containing data to update.
+     * @param organizationName the organization name
+     * @param workspaceId the workspace Id
      * @param user           the user entity
      * @return the updated digital service
      */
-    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final String subscriber, final Long organizationId, final UserBO user) {
+    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final String organizationName,
+                                                 final Long workspaceId, final UserBO user) {
 
         // Check if digital service exist.
         final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalService.getUid());
@@ -180,9 +183,9 @@ public class DigitalServiceService {
         );
         Long userId = user.getId();
         boolean isAdmin = roleService.hasAdminRightOnOrganizationOrWorkspace
-                (user, organizationRepository.findByName(subscriber).get().getId(), organizationId);
+                (user, organizationRepository.findByName(organizationName).get().getId(), workspaceId);
         if (!isAdmin) {
-            UserWorkspace userWorkspace = userWorkspaceRepository.findByWorkspaceIdAndUserId(organizationId, userId).orElseThrow();
+            UserWorkspace userWorkspace = userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userId).orElseThrow();
 
             boolean hasWriteAccess = userWorkspace.getRoles().stream().anyMatch(role -> "ROLE_DIGITAL_SERVICE_WRITE".equals(role.getName()));
 
@@ -213,16 +216,16 @@ public class DigitalServiceService {
     }
 
     /**
-     * Returns true if the inventory exists and linked to subscriber, organizationId and inventoryId
+     * Returns true if the digital service exists and linked to organization, workspaceId
      *
-     * @param subscriberName    subscriberName
-     * @param organizationId    organizationId
+     * @param organizationName    organizationName
+     * @param workspaceId    workspaceId
      * @param digitalServiceUid digitalServiceUid
      */
     @Cacheable("digitalServiceExists")
-    public boolean digitalServiceExists(final String subscriberName, final Long organizationId, final String digitalServiceUid) {
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
-        if (!Objects.equals(subscriberName, linkedWorkspace.getOrganization().getName())) {
+    public boolean digitalServiceExists(final String organizationName, final Long workspaceId, final String digitalServiceUid) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
+        if (!Objects.equals(organizationName, linkedWorkspace.getOrganization().getName())) {
             return false;
         }
         return digitalServiceRepository.findByWorkspaceAndUid(linkedWorkspace, digitalServiceUid).isPresent();
