@@ -26,24 +26,24 @@ import java.util.Optional;
 public interface DigitalServiceRepository extends JpaRepository<DigitalService, String> {
 
     /**
-     * Find by organization name
+     * Find by workspace name
      *
-     * @param workspace the linked organization.
+     * @param workspace the linked workspace.
      * @return DigitalService list.
      */
     List<DigitalService> findByWorkspace(final Workspace workspace);
 
     /**
-     * @param workspace the linked organization.
+     * @param workspace the linked workspace.
      * @param isAi      is DS an Ai or not
      * @return DigitalService list.
      */
     List<DigitalService> findByWorkspaceAndIsAi(Workspace workspace, Boolean isAi);
 
     /**
-     * Find by organization and the digitalServiceUid and return the matching digitalService
+     * Find by workspace and the digitalServiceUid and return the matching digitalService
      *
-     * @param workspace the unique organization identifier.
+     * @param workspace the unique workspace identifier.
      * @return matching digitalService
      */
     Optional<DigitalService> findByWorkspaceAndUid(final Workspace workspace,

@@ -18,24 +18,24 @@ import java.util.Optional;
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
     /**
-     * Find Subscribers with authorizedDomains not null
+     * Find Organizations with authorizedDomains not null
      *
-     * @return the subscribers with authorizedDomains.
+     * @return the organizations with authorizedDomains.
      */
     List<Organization> findByAuthorizedDomainsNotNull();
 
 
     /**
-     * Find Subscriber by name
+     * Find Organization by name
      *
-     * @return the subscriber.
+     * @return the organization.
      */
     Optional<Organization> findByName(String organizationName);
 
     /**
-     * Find Subscribers for given domain name
+     * Find Organizations for given domain name
      *
-     * @return the subscribers with authorizedDomains.
+     * @return the organizations with authorizedDomains.
      */
     List<Organization> findByAuthorizedDomainsContaining(String domainName);
 

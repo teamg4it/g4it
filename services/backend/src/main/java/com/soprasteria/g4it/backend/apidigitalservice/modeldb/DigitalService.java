@@ -57,12 +57,12 @@ public class DigitalService {
      */
     private boolean enableDataInconsistency;
     /**
-     * The Criterias key.
+     * The Criteria key.
      */
     private List<String> criteria;
 
     /**
-     * Linked organization.
+     * Linked workspace.
      */
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY)
