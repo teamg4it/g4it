@@ -38,7 +38,7 @@ const mockActivatedRoute = {
 };
 
 const mockUserService = {
-    currentOrganization$: of({ name: "Org1" }),
+    currentWorkspace$: of({ name: "Org1" }),
 };
 
 const mockFootprintService = {

@@ -69,7 +69,7 @@
                     </p>
                     <p-button
                         *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        (click)="addSidebarVisible = true"
+                        (onClick)="addSidebarVisible = true"
                         styleClass="black-button white-space-nowrap"
                     >
                         {{ "common.add" | translate }}
@@ -292,13 +292,13 @@
             </div>
         </div>
         <div class="button-bottom-right">
-            <p-button styleClass="white-button" (click)="close()">
+            <p-button styleClass="white-button" (onClick)="close()">
                 {{ "common.cancel" | translate }}
             </p-button>
 
             <p-button
                 styleClass="black-button"
-                (click)="previousStep()"
+                (onClick)="previousStep()"
                 icon="pi pi-arrow-left"
                 [label]="'common.previous' | translate"
             />

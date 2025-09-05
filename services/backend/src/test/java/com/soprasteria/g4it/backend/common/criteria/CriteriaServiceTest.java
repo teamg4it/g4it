@@ -45,11 +45,7 @@ class CriteriaServiceTest {
         Organization mockOrganization = new Organization();
         mockOrganization.setCriteria(mockCriteria);
 
-<<<<<<< HEAD
-        when(subscriberRepository.findByName(SUBSCRIBER)).thenReturn(Optional.of(mockSubscriber));
-=======
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
->>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
         CriteriaByType result = criteriaService.getSelectedCriteria(SUBSCRIBER);
         assertNotNull(result);
@@ -78,16 +74,11 @@ class CriteriaServiceTest {
         Workspace mockWorkspace = new Workspace();
         mockWorkspace.setCriteriaIs(List.of("orgCriteria1"));
 
-<<<<<<< HEAD
-        Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriteria);
-=======
         Organization mockOrganization = new Organization();
         mockOrganization.setCriteria(subscriberCriterias);
->>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCriteria);
 
@@ -138,16 +129,11 @@ class CriteriaServiceTest {
         Workspace mockWorkspace = new Workspace();
         mockWorkspace.setCriteriaDs(List.of("orgCriteriaDs1"));
 
-<<<<<<< HEAD
-        Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriteria);
-=======
         Organization mockOrganization = new Organization();
         mockOrganization.setCriteria(subscriberCriterias);
->>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, digitalServiceCriteria);
 
@@ -179,16 +165,11 @@ class CriteriaServiceTest {
         List<String> subscriberCriterias = List.of("criteria1", "criteria2");
         Workspace mockWorkspace = new Workspace();
 
-<<<<<<< HEAD
-        Subscriber mockSubscriber = new Subscriber();
-        mockSubscriber.setCriteria(subscriberCriteria);
-=======
         Organization mockOrganization = new Organization();
         mockOrganization.setCriteria(subscriberCriterias);
->>>>>>> 592da82d (* fix(1442): rename organization to workspace and subscriber to organization)
 
         when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(mockWorkspace);
+        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, null);
 

@@ -1,7 +1,7 @@
 <p-toast #toast position="bottom-center"></p-toast>
 <div class="flex justify-content-between align-items-center flex-wrap mr-4 mb-4">
     <h1>
-        {{ "inventories.title" | translate: { OrganizationName: selectedOrganization } }}
+        {{ "inventories.title" | translate: { WorkspaceName: selectedWorkspace } }}
     </h1>
     <!-- Side Panel -->
     @if (sidebarType === "FILE" && sidebarVisible) {
@@ -48,7 +48,7 @@
     <p-button
         *ngIf="userService.isAllowedInventoryWrite$ | async"
         styleClass="black-button"
-        (click)="
+        (onClick)="
             name = ''; sidebarPurpose = 'new'; sidebarType = 'FILE'; sidebarVisible = true
         "
         id="new-inventory"

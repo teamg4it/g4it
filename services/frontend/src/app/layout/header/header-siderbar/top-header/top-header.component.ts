@@ -31,9 +31,9 @@ import { RadioButtonModule } from "primeng/radiobutton";
 import {
     Organization,
     OrganizationData,
-    Subscriber,
     User,
     UserInfo,
+    Workspace,
 } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
@@ -73,17 +73,17 @@ export class TopHeaderComponent implements OnInit {
     ingredient: string = "english";
     selectedLanguage: string = "en";
     userDetails!: UserInfo;
-    organizations: OrganizationData[] = [];
+    workspaces: OrganizationData[] = [];
     initials = "";
 
     items: MenuItem[] | undefined;
     isAccountMenuVisible = false;
     isOrgMenuVisible = false;
     isAboutMenuOpen = false;
-    modelOrganization!: number;
-    selectedOrganization: Organization = {} as Organization;
+    modelWorkspace!: number;
+    selectedWorkspace: Workspace = {} as Workspace;
     selectedOrganizationData: OrganizationData | undefined = undefined;
-    currentSubscriber: Subscriber = {} as Subscriber;
+    currentOrganization: Organization = {} as Organization;
     selectedPath = "";
     selectedPage = signal("");
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
@@ -106,8 +106,8 @@ export class TopHeaderComponent implements OnInit {
                 }
             }
         });
-        this.userService.currentSubscriber$.subscribe(
-            (subscriber) => (this.currentSubscriber = subscriber),
+        this.userService.currentOrganization$.subscribe(
+            (organization) => (this.currentOrganization = organization),
         );
         this.userService.user$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -117,33 +117,33 @@ export class TopHeaderComponent implements OnInit {
                     lastName: user.lastName,
                     email: user.email,
                 };
-                this.organizations = [];
-                user.subscribers.forEach((subscriber) => {
-                    subscriber.organizations.forEach((organization) => {
-                        this.organizations.push({
-                            color: generateColor(organization.name + subscriber.name),
-                            id: organization.id,
-                            name: organization.name,
-                            organization,
-                            subscriber: subscriber,
+                this.workspaces = [];
+                user.organizations.forEach((organization) => {
+                    organization.workspaces.forEach((workspace) => {
+                        this.workspaces.push({
+                            color: generateColor(workspace.name + organization.name),
+                            id: workspace.id,
+                            name: workspace.name,
+                            workspace,
+                            organization: organization,
                         });
                     });
                 });
-                this.userService.currentOrganization$
+                this.userService.currentWorkspace$
                     .pipe(takeUntilDestroyed(this.destroyRef))
-                    .subscribe((organization: Organization) => {
-                        this.selectedOrganization = organization;
-                        this.modelOrganization = organization.id;
+                    .subscribe((workspace: Workspace) => {
+                        this.selectedWorkspace = workspace;
+                        this.modelWorkspace = workspace.id;
                         this.selectedOrganizationData = {
                             color: generateColor(
-                                organization.name + this.currentSubscriber.name,
+                                workspace.name + this.currentOrganization.name,
                             ),
-                            id: organization.id,
-                            name: organization.name,
-                            organization,
-                            subscriber: this.currentSubscriber,
+                            id: workspace.id,
+                            name: workspace.name,
+                            workspace,
+                            organization: this.currentOrganization,
                         };
-                        this.selectedPath = `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization?.id}`;
+                        this.selectedPath = `/organizations/${this.currentOrganization.name}/workspaces/${this.selectedWorkspace?.id}`;
                     });
                 this.initials =
                     this.getCapitaleLetter(this.userDetails?.firstName) +
@@ -301,26 +301,25 @@ export class TopHeaderComponent implements OnInit {
     }
 
     handleKeydown(event: KeyboardEvent) {
-        const currentIndex = this.organizations.findIndex(
-            (org) => org.id === this.modelOrganization,
+        const currentIndex = this.workspaces.findIndex(
+            (workspace) => workspace.id === this.modelWorkspace,
         );
 
         let nextIndex = currentIndex;
 
         if (event.key === "ArrowDown" || event.key === "ArrowRight") {
-            nextIndex = (currentIndex + 1) % this.organizations.length;
+            nextIndex = (currentIndex + 1) % this.workspaces.length;
         } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
             nextIndex =
-                (currentIndex - 1 + this.organizations.length) %
-                this.organizations.length;
+                (currentIndex - 1 + this.workspaces.length) % this.workspaces.length;
         } else if (event.key === "Enter" || event.key === " ") {
-            this.selectCompany(this.organizations[currentIndex]);
+            this.selectCompany(this.workspaces[currentIndex]);
             event.preventDefault();
             return;
         }
 
         if (nextIndex !== currentIndex) {
-            this.modelOrganization = this.organizations[nextIndex].id;
+            this.modelWorkspace = this.workspaces[nextIndex].id;
 
             // 👇 Scroll to that element
             setTimeout(() => {
@@ -369,10 +368,10 @@ export class TopHeaderComponent implements OnInit {
         return str.charAt(0).toLocaleUpperCase();
     }
 
-    selectCompany(organization: OrganizationData) {
+    selectCompany(workspace: OrganizationData) {
         this.userService.checkAndRedirect(
-            organization.subscriber!,
-            organization.organization as Organization,
+            workspace.organization!,
+            workspace.workspace as Workspace,
             this.selectedPage(),
         );
         this.isOrgMenuVisible = false;
@@ -384,9 +383,7 @@ export class TopHeaderComponent implements OnInit {
     toggleOrgMenu() {
         this.isOrgMenuVisible = !this.isOrgMenuVisible;
         if (this.isOrgMenuVisible) {
-            const elementToView = document.querySelector(
-                `#org-${this.modelOrganization}`,
-            );
+            const elementToView = document.querySelector(`#org-${this.modelWorkspace}`);
             setTimeout(() => {
                 elementToView?.scrollIntoView({ behavior: "smooth", block: "start" });
             }, 0);
@@ -412,7 +409,7 @@ export class TopHeaderComponent implements OnInit {
     async logout() {
         localStorage.removeItem("username");
         localStorage.removeItem("currentOrganization");
-        localStorage.removeItem("currentSubscriber");
+        localStorage.removeItem("currentWorkspace");
         if (environment.keycloak.enabled === "true") {
             await this.keycloak.logout();
         } else {

@@ -66,9 +66,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 !error.url.includes("/export") &&
                 isDigitalServiceRead
             ) {
-                let [_, _1, subscriber, _2, organization] = this.router.url.split("/");
+                let [_, _1, organization, _2, workspace] = this.router.url.split("/");
                 this.router.navigateByUrl(
-                    `/subscribers/${subscriber}/organizations/${organization}/digital-services`,
+                    `/organizations/${organization}/workspaces/${workspace}/digital-services`,
                 );
                 this.messageService.add({
                     severity: "error",

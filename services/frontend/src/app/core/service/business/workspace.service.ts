@@ -1,6 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { Observable, ReplaySubject } from "rxjs";
-import { DomainSubscribers, Workspace } from "../../interfaces/administration.interfaces";
+import {
+    DomainOrganizations,
+    WorkspaceNameObj,
+} from "../../interfaces/administration.interfaces";
 import { WorkspaceDataService } from "../data/workspace.data.service";
 
 @Injectable({
@@ -11,15 +14,15 @@ export class WorkspaceService {
 
     private readonly isOpen$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
-    getDomainSubscribers(body: { email?: string }): Observable<DomainSubscribers[]> {
-        return this.workspaceDataService.getDomainSubscribers(body);
+    getDomainOrganizations(body: { email?: string }): Observable<DomainOrganizations[]> {
+        return this.workspaceDataService.getDomainOrganizations(body);
     }
 
     postUserWorkspace(body: {
-        subscriberId?: number;
+        organizationId?: number;
         name?: string;
         status?: string;
-    }): Observable<Workspace> {
+    }): Observable<WorkspaceNameObj> {
         return this.workspaceDataService.postUserWorkspace(body);
     }
 

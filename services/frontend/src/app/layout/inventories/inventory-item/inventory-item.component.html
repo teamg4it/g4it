@@ -18,7 +18,7 @@
                     *ngIf="
                         !inventory.note && (userService.isAllowedInventoryWrite$ | async)
                     "
-                    (click)="$event.stopPropagation(); openSidebarNote()"
+                    (onClick)="$event.stopPropagation(); openSidebarNote()"
                     (keydown.enter)="$event.stopPropagation(); openSidebarNote()"
                     styleClass="inventory-add-button-small mx-2"
                     [ariaLabel]="'common.accessibility.addNote' | translate"
@@ -28,7 +28,7 @@
 
                 <p-button
                     *ngIf="inventory.note"
-                    (click)="$event.stopPropagation(); openSidebarNote()"
+                    (onClick)="$event.stopPropagation(); openSidebarNote()"
                     (keydown.enter)="$event.stopPropagation(); openSidebarNote()"
                     styleClass="inventory-attached-button-small mx-2"
                     [ariaLabel]="'common.accessibility.attachedNote' | translate"
@@ -48,7 +48,7 @@
                     *ngIf="!isTaskRunning()"
                     [disabled]="!showEquipment()"
                     styleClass="inventory-button-small mx-2"
-                    (click)="$event.stopPropagation(); redirectFootprint('equipment')"
+                    (onClick)="$event.stopPropagation(); redirectFootprint('equipment')"
                     (keydown.enter)="
                         $event.stopPropagation(); redirectFootprint('equipment')
                     "
@@ -61,7 +61,7 @@
                     *ngIf="!isTaskRunning()"
                     [disabled]="!showApplication()"
                     styleClass="inventory-button-small ml-2 mr-3"
-                    (click)="$event.stopPropagation(); redirectFootprint('application')"
+                    (onClick)="$event.stopPropagation(); redirectFootprint('application')"
                     (keydown.enter)="
                         $event.stopPropagation(); redirectFootprint('application')
                     "
@@ -206,7 +206,7 @@
                 <p-button
                     *ngIf="userService.isAllowedInventoryWrite$ | async"
                     styleClass="bg-transparent text-black-alpha-90 border-1 border-solid border-black-alpha-90 mt-2 pt-1 px-2 pb-1 hover:bg-green-50"
-                    (click)="confirmDelete($event)"
+                    (onClick)="confirmDelete($event)"
                     (keypress)="confirmDelete($event)"
                     id="delete-inventory"
                 >
@@ -232,7 +232,7 @@
                         [text]="true"
                         [raised]="true"
                         [plain]="true"
-                        (click)="displayPopupFct()"
+                        (onClick)="displayPopupFct()"
                         icon="pi pi-cog"
                         [ariaLabel]="
                             'inventories.choose-criteria'
@@ -247,12 +247,12 @@
         <app-criteria-popup
             [displayPopup]="displayPopup"
             [type]="'inventory'"
-            [subscriber]="subscriber"
             [organization]="organization"
+            [workspace]="workspace"
             [inventory]="inventory"
             [selectedCriteriaIS]="selectedCriteria"
-            (onSaveInventory)="saveInventory.emit($event)"
-            (onClose)="displayPopup = false"
+            (outSaveInventory)="saveInventory.emit($event)"
+            (outClose)="displayPopup = false"
         ></app-criteria-popup>
     </ng-template>
 </p-accordionTab>

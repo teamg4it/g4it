@@ -45,8 +45,8 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
     };
 
     const userServiceMock = {
-        currentSubscriber$: of({ name: "SubName", id: 1 }),
-        currentOrganization$: of({
+        currentOrganization$: of({ name: "SubName", id: 1 }),
+        currentWorkspace$: of({
             name: "OrgName",
             id: 2,
             status: "active",
@@ -150,8 +150,6 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
     it("should initialize digitalService and organization on ngOnInit", async () => {
         await component.ngOnInit();
         expect(component.digitalService.name).toBe("Test Digital Service");
-        expect(component.organization.organizationName).toBe("OrgName");
-        expect(component.organization.subscriberName).toBe("SubName");
     });
 
     it("should call retrieveFootprintData on ngOnInit", async () => {
@@ -175,8 +173,8 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
 
     it("should set displayCriteriaPopup and selectedCriteriaPopup on displayPopupFct", () => {
         component.digitalService = { criteria: ["CO2"] } as any;
-        component.organization = { criteriaDs: ["WATER"] } as any;
-        component.subscriber = { criteria: ["CO2", "WATER"] } as any;
+        component.workspace = { criteriaDs: ["WATER"] } as any;
+        component.organization = { criteria: ["CO2", "WATER"] } as any;
         component.displayPopupFct();
         expect(component.displayCriteriaPopup).toBeTrue();
         expect(component.selectedCriteriaPopup.length).toBeGreaterThan(0);

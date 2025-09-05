@@ -16,8 +16,6 @@ import { FileSystemDataService } from "./file-system-data.service";
 describe("FileSystemDataService", () => {
     let httpMock: HttpTestingController;
     let fileSystemService: FileSystemDataService;
-    let organization: string = "SSG";
-    let inventoryDate = 2;
 
     beforeEach(() => {
         TestBed.configureTestingModule({

@@ -188,10 +188,10 @@
             <p-button
                 styleClass="grey-button"
                 *ngIf="!isNew && (userService.isAllowedDigitalServiceWrite$ | async)"
-                (click)="deleteTerminal()"
+                (onClick)="deleteTerminal()"
                 >{{ "common.delete" | translate }}</p-button
             >
-            <p-button styleClass="white-button" (click)="close()"
+            <p-button styleClass="white-button" (onClick)="close()"
                 >{{ "common.cancel" | translate }}
             </p-button>
             <p-button

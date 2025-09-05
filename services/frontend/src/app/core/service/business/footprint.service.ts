@@ -40,12 +40,12 @@ export class FootprintService {
         return this.footprintDataService.deleteIndicators(inventoryId);
     }
 
-    initApplicationFootprint(inventoryId: number, currentOrgName: string) {
+    initApplicationFootprint(inventoryId: number, currentWorkspaceName: string) {
         return this.footprintDataService.getApplicationFootprint(inventoryId).pipe(
             map((footprint) =>
                 this.footprintDataService.transformApplicationEquipmentType(
                     footprint,
-                    currentOrgName,
+                    currentWorkspaceName,
                 ),
             ),
             tap((footprint) => {

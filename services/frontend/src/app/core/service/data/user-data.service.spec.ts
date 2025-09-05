@@ -24,12 +24,12 @@ describe("UserDataService", () => {
         lastName: "nom",
         id: 1,
         isSuperAdmin: true,
-        subscribers: [
+        organizations: [
             {
                 id: 1,
                 name: "SSG",
                 defaultFlag: true,
-                organizations: [
+                workspaces: [
                     {
                         id: 1,
                         name: "SSG",
@@ -82,7 +82,7 @@ describe("UserDataService", () => {
     it("fetchUserInfo() should http GET organization", () => {
         userService.fetchUserInfo().subscribe((res) => {
             expect(res).toEqual(userInfo);
-            expect(res.subscribers[0].name).toEqual(organization);
+            expect(res.organizations[0].name).toEqual(organization);
         });
 
         const req = httpMock.expectOne(`users/me`);

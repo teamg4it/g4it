@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-import { Workspace } from "../../interfaces/administration.interfaces";
+import { WorkspaceNameObj } from "../../interfaces/administration.interfaces";
 import { WorkspaceDataService } from "../data/workspace.data.service";
 import { WorkspaceService } from "./workspace.service";
 
@@ -25,8 +25,8 @@ describe("WorkspaceService", () => {
     });
 
     it("should call postUserWorkspace with the correct body and return the expected result", (done) => {
-        const mockBody = { subscriberId: 1, name: "Test Workspace", status: "active" };
-        const mockResponse: Workspace = {
+        const mockBody = { organizationId: 1, name: "Test Workspace", status: "active" };
+        const mockResponse: WorkspaceNameObj = {
             id: 1,
             name: "Test Workspace",
             status: "active",

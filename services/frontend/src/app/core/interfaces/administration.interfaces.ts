@@ -1,17 +1,17 @@
 import { Role } from "./roles.interfaces";
 
-export interface Subscriber {
-    name?: string;
-    defaultFlag?: boolean;
-    id?: number;
-    organizations?: Organization[];
-    roles?: Role[];
+export interface Organization {
+    name: string;
+    defaultFlag: boolean;
+    id: number;
+    workspaces: Workspace[];
+    roles: Role[];
     criteria?: string[];
     authorizedDomains?: string[];
     ecomindai: boolean;
 }
 
-export interface Organization {
+export interface Workspace {
     id: number;
     name: string;
     status: string;
@@ -24,18 +24,18 @@ export interface Organization {
     criteriaDs?: string[];
 }
 
-export interface OrganizationUpsertRest {
-    subscriberId: number;
+export interface WorkspaceUpsertRest {
+    organizationId: number;
     name: string;
     status: string | null;
     dataRetentionDay?: number | null;
 }
 
-export interface OrganizationWithSubscriber {
-    subscriberName: string;
-    subscriberId: number;
+export interface WorkspaceWithOrganization {
     organizationName: string;
     organizationId: number;
+    workspaceName: string;
+    workspaceId: number;
     status: string;
     dataRetentionDays: number;
     displayLabel: string;
@@ -44,12 +44,12 @@ export interface OrganizationWithSubscriber {
     authorizedDomains?: string[];
 }
 
-export interface SubscriberCriteriaRest {
+export interface OrganizationCriteriaRest {
     criteria: string[];
 }
 
-export interface OrganizationCriteriaRest {
-    subscriberId: number;
+export interface WorkspaceCriteriaRest {
+    organizationId: number;
     name: string;
     status: string;
     dataRetentionDays: number;
@@ -57,19 +57,19 @@ export interface OrganizationCriteriaRest {
     criteriaDs: string[];
 }
 
-export interface OrganizationSubscriber {
+export interface WorkspaceOrganization {
     id: number;
     name: string;
     status: string;
 }
 
-export interface DomainSubscribers {
+export interface DomainOrganizations {
     id: number;
     name: string;
-    organizations: OrganizationSubscriber[];
+    workspaces: WorkspaceOrganization[];
 }
 
-export interface Workspace {
+export interface WorkspaceNameObj {
     id: number;
     name: string;
     status: string;

@@ -18,7 +18,7 @@ import {
 } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
-import { Organization } from "src/app/core/interfaces/user.interfaces";
+import { Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -53,7 +53,7 @@ export class InventoriesComponent implements OnInit {
     enableSearchField = true;
     searchFieldTouched = true;
     selectedInventory: Inventory = {} as Inventory;
-    selectedOrganization!: string;
+    selectedWorkspace!: string;
     isAllowedInventory: boolean = false;
 
     constructor(
@@ -65,10 +65,10 @@ export class InventoriesComponent implements OnInit {
     ) {}
 
     async ngOnInit() {
-        this.userService.currentOrganization$
+        this.userService.currentWorkspace$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((organization: Organization) => {
-                this.selectedOrganization = organization.name;
+            .subscribe((workspace: Workspace) => {
+                this.selectedWorkspace = workspace.name;
             });
 
         this.userService.roles$.subscribe((roles: Role[]) => {

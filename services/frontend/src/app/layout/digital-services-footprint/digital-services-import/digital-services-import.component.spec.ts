@@ -48,8 +48,8 @@ const mockFileSystemBusinessService = {
 };
 
 const mockUserService = {
-    currentSubscriber$: of({ name: "Subscriber A" }),
-    currentOrganization$: of({ name: "Org A" }),
+    currentOrganization$: of({ name: "Organization A" }),
+    currentWorkspace$: of({ name: "Work A" }),
 };
 
 describe("DigitalServicesImportComponent", () => {
@@ -124,8 +124,8 @@ describe("DigitalServicesImportComponent", () => {
     });
 
     it("should call fileSystemBusinessService.downloadFile with correct parameters", () => {
-        component.selectedSubscriber = "sub";
-        component.selectedOrganization = "org";
+        component.selectedOrganization = "sub";
+        component.selectedWorkspace = "org";
         component.digitalServicesId = "123";
         component.downloadFileDs("task1");
         expect(mockFileSystemBusinessService.downloadFile).toHaveBeenCalledWith(

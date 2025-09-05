@@ -38,7 +38,7 @@ describe("DigitalServicesComponent", () => {
             update: jasmine.createSpy("update").and.returnValue(of(null)),
         };
         mockUserService = {
-            currentOrganization$: of({ name: "Org1" } as Organization),
+            currentWorkspace$: of({ name: "Org1" } as Organization),
             roles$: of([Role.DigitalServiceRead]),
         };
         mockGlobalStore = {
@@ -73,8 +73,8 @@ describe("DigitalServicesComponent", () => {
     });
 
     it("should initialize and retrieve digital services", async () => {
-        const fakeSubscriber = { ecomindai: true };
-        mockUserService.currentSubscriber$ = of(fakeSubscriber);
+        const fakeOrganization = { ecomindai: true };
+        mockUserService.currentOrganization$ = of(fakeOrganization);
         spyOn(component, "retrieveDigitalServices").and.callThrough();
         await component.ngOnInit();
         expect(component.retrieveDigitalServices).toHaveBeenCalled();

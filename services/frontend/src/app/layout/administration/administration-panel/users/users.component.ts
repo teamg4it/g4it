@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, effect, inject } from "@angular/core";
+import { Component, DestroyRef, effect, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -13,11 +13,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import {
-    OrganizationCriteriaRest,
-    OrganizationWithSubscriber,
+    WorkspaceCriteriaRest,
+    WorkspaceWithOrganization,
 } from "src/app/core/interfaces/administration.interfaces";
 import { Role, RoleRightMap } from "src/app/core/interfaces/roles.interfaces";
-import { Subscriber, UserDetails } from "src/app/core/interfaces/user.interfaces";
+import { Organization, UserDetails } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
@@ -30,18 +30,18 @@ import { environment } from "src/environments/environment";
     templateUrl: "./users.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class UsersComponent {
-    private destroyRef = inject(DestroyRef);
+export class UsersComponent implements OnInit {
+    private readonly destroyRef = inject(DestroyRef);
 
     userDetails!: UserDetails[];
     userDetailEcoMind: boolean = false;
-    organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
-    organizationlist: OrganizationWithSubscriber[] = [];
+    workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
+    workspacelist: WorkspaceWithOrganization[] = [];
     enableList = false;
     clearForm: any;
     enableSearchButton: boolean = true;
     membersAndSearchVisible = false;
-    subscribersDetails!: any;
+    organizationsDetails!: any;
     membersList: any;
     filteredMembers: any[] = [];
     openSearchResult: boolean = false;
@@ -60,11 +60,11 @@ export class UsersComponent {
     selectedCriteriaIS: string[] = [];
     selectedCriteriaDS: string[] = [];
     defaultCriteria: string[] = [];
-    subscriber!: Subscriber;
+    organization!: Organization;
     firstPage: number = 0;
 
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
-    isEcoMindEnabledForCurrentSubscriberSelected: boolean = false;
+    isEcoMindEnabledForCurrentOrganizationSelected: boolean = false;
 
     constructor(
         private readonly administrationService: AdministrationService,
@@ -91,47 +91,47 @@ export class UsersComponent {
                 [Validators.pattern(/^[ A-Za-z0-9_@.-]*$/), Validators.minLength(3)],
             ],
         });
-        this.userService.currentSubscriber$.subscribe((res) => {
-            this.subscriber = res;
+        this.userService.currentOrganization$.subscribe((res) => {
+            this.organization = res;
         });
     }
 
     getUsers(updateOrganization: boolean = false) {
         this.administrationService.getUsers().subscribe((res) => {
-            this.subscribersDetails = res;
+            this.organizationsDetails = res;
 
-            const list: OrganizationWithSubscriber[] = [];
-            this.subscribersDetails.forEach((subscriber: Subscriber) => {
-                subscriber.organizations.forEach((org: any) => {
-                    const roles = this.userService.getRoles(subscriber, org);
+            const list: WorkspaceWithOrganization[] = [];
+            this.organizationsDetails.forEach((organization: Organization) => {
+                organization.workspaces.forEach((workspace) => {
+                    const roles = this.userService.getRoles(organization, workspace);
                     if (
-                        org.status === Constants.ORGANIZATION_STATUSES.ACTIVE &&
+                        workspace.status === Constants.WORKSPACE_STATUSES.ACTIVE &&
                         (roles.includes(Role.SubscriberAdmin) ||
                             roles.includes(Role.OrganizationAdmin))
                     ) {
                         list.push({
-                            subscriberName: subscriber.name,
-                            subscriberId: subscriber.id,
-                            organizationName: org.name,
-                            organizationId: org.id,
-                            status: org.status,
-                            dataRetentionDays: org.dataRetentionDays,
-                            displayLabel: `${org.name} - (${subscriber.name})`,
-                            criteriaDs: org.criteriaDs,
-                            criteriaIs: org.criteriaIs,
-                            authorizedDomains: subscriber.authorizedDomains,
+                            organizationName: organization.name,
+                            organizationId: organization.id,
+                            workspaceName: workspace.name,
+                            workspaceId: workspace.id,
+                            status: workspace.status,
+                            dataRetentionDays: workspace.dataRetentionDays!,
+                            displayLabel: `${workspace.name} - (${organization.name})`,
+                            criteriaDs: workspace.criteriaDs!,
+                            criteriaIs: workspace.criteriaIs!,
+                            authorizedDomains: organization.authorizedDomains,
                         });
                     }
                 });
             });
 
-            this.organizationlist = list;
-            if (updateOrganization && this.organization.organizationId) {
-                const currentOrganization = this.organizationlist.find(
-                    (o) => o.organizationId === this.organization.organizationId,
+            this.workspacelist = list;
+            if (updateOrganization && this.workspace.workspaceId) {
+                const currentWorkspace = this.workspacelist.find(
+                    (o) => o.workspaceId === this.workspace.workspaceId,
                 );
-                if (currentOrganization) {
-                    this.organization = currentOrganization;
+                if (currentWorkspace) {
+                    this.workspace = currentWorkspace;
                 }
             }
         });
@@ -174,8 +174,8 @@ export class UsersComponent {
             this.administrationService
                 .getSearchDetails(
                     searchData,
-                    this.organization.subscriberId,
-                    this.organization.organizationId,
+                    this.workspace.organizationId,
+                    this.workspace.workspaceId,
                 )
                 .subscribe((res: any) => {
                     this.filteredMembers = res.map((user: any) => this.enrichAdmin(user));
@@ -185,7 +185,7 @@ export class UsersComponent {
 
     getUsersDetails() {
         this.administrationService
-            .getUserDetails(this.organization.organizationId)
+            .getUserDetails(this.workspace.workspaceId)
             .subscribe((res) => {
                 this.firstPage = 0; // To reset the paginator to the first page
                 this.membersList = res.map((user: any) => this.enrichAdmin(user));
@@ -242,7 +242,7 @@ export class UsersComponent {
 
             accept: () => {
                 let body = {
-                    organizationId: this.organization.organizationId,
+                    organizationId: this.workspace.workspaceId,
                     users: [
                         {
                             userId: user.id,
@@ -272,29 +272,26 @@ export class UsersComponent {
 
     openSidepanelForAddORUpdateOrg(
         user: UserDetails,
-        isEcoMindEnabledForCurrentSubscriberSelected: boolean,
+        isEcoMindEnabledForCurrentOrganizationSelected: boolean,
     ) {
         this.sidebarVisible = true;
         this.sidebarCreateMode = user.roles.length === 0;
         this.userDetail = user;
-        this.userDetailEcoMind = isEcoMindEnabledForCurrentSubscriberSelected;
+        this.userDetailEcoMind = isEcoMindEnabledForCurrentOrganizationSelected;
     }
 
     displayPopupFct() {
         const slicedCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
         this.selectedCriteriaDS =
-            this.organization.criteriaDs ?? this.subscriber?.criteria ?? slicedCriteria;
+            this.workspace.criteriaDs ?? this.organization?.criteria ?? slicedCriteria;
         this.selectedCriteriaIS =
-            this.organization.criteriaIs ?? this.subscriber?.criteria ?? slicedCriteria;
+            this.workspace.criteriaIs ?? this.organization?.criteria ?? slicedCriteria;
         this.displayPopup = true;
     }
 
-    handleSaveOrganization(organizationCriteria: OrganizationCriteriaRest) {
+    handleSaveWorkspace(organizationCriteria: WorkspaceCriteriaRest) {
         this.administrationService
-            .updateOrganizationCriteria(
-                this.organization.organizationId,
-                organizationCriteria,
-            )
+            .updateWorkspaceCriteria(this.workspace.workspaceId, organizationCriteria)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
                 this.selectedCriteriaDS = res.criteriaDs;
@@ -304,11 +301,11 @@ export class UsersComponent {
                 this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
             });
     }
-    getSelectedSubscriber() {
+    getSelectedOrganization() {
         this.administrationService
-            .getSubscriberById(this.organization.subscriberId)
+            .getOrganizationById(this.workspace.organizationId)
             .subscribe((res) => {
-                this.isEcoMindEnabledForCurrentSubscriberSelected = res.ecomindai;
+                this.isEcoMindEnabledForCurrentOrganizationSelected = res.ecomindai;
             });
     }
 }
