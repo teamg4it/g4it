@@ -22,7 +22,7 @@ describe("Administration panel", () => {
         cy.then(() => setPage("Organizations page"));
 
         // select subscriber
-        cy.get('p-dropdown[id="subscriberName"]')
+        cy.get('p-dropdown[id="organizationName"]')
             .find(".p-dropdown")
             .click({ force: true })
             .get("p-dropdownitem")

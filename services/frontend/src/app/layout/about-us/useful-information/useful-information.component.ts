@@ -1,10 +1,10 @@
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
 import { sortByProperty } from "sort-by-property";
 import { BusinessHours } from "src/app/core/interfaces/business-hours.interface";
-import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { Version, VersionRest } from "src/app/core/interfaces/version.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
@@ -16,7 +16,7 @@ import { SharedModule } from "src/app/core/shared/shared.module";
     imports: [SharedModule],
     templateUrl: "./useful-information.component.html",
 })
-export class UsefulInformationComponent {
+export class UsefulInformationComponent implements OnInit {
     private readonly translate = inject(TranslateService);
     private readonly businessHoursService = inject(BusinessHoursService);
     private readonly destroyRef = inject(DestroyRef);
@@ -24,8 +24,8 @@ export class UsefulInformationComponent {
     private readonly versionDataService = inject(VersionDataService);
     private readonly userService = inject(UserService);
     private readonly title = inject(Title);
-    currentSubscriber: Subscriber = {} as Subscriber;
-    selectedOrganization: Organization = {} as Organization;
+    currentOrganization: Organization = {} as Organization;
+    selectedWorkspace: Workspace = {} as Workspace;
     versions: Version[] = [];
     businessHoursData: BusinessHours[] = [];
     selectedLanguage: string = "en";
@@ -58,21 +58,21 @@ export class UsefulInformationComponent {
                 this.versions.push(...externalVersions);
             });
 
-        this.userService.currentSubscriber$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((subscriber) => (this.currentSubscriber = subscriber));
-
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((organization: Organization) => {
-                this.selectedOrganization = organization;
+            .subscribe((organization) => (this.currentOrganization = organization));
+
+        this.userService.currentWorkspace$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((workspace: Workspace) => {
+                this.selectedWorkspace = workspace;
             });
     }
 
     composeEmail() {
         window.location.href = this.userService.composeEmail(
-            this.currentSubscriber,
-            this.selectedOrganization,
+            this.currentOrganization,
+            this.selectedWorkspace,
         );
     }
 }

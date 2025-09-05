@@ -14,7 +14,7 @@ import { PaginatorState } from "primeng/paginator";
 import { finalize, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
-import { Organization } from "src/app/core/interfaces/user.interfaces";
+import { Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -34,10 +34,10 @@ export class DigitalServicesComponent {
 
     allDigitalServices: DigitalService[] = [];
     paginatedDigitalServices: DigitalService[] = [];
-    selectedOrganization!: string;
+    selectedWorkspace!: string;
     isAllowedDigitalService: boolean = false;
     isAllowedEcoMindAiService: boolean = false;
-    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindEnabledForCurrentOrganization: boolean = false;
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
     first: number = 0;
@@ -61,13 +61,13 @@ export class DigitalServicesComponent {
         this.route.parent?.data.subscribe((data) => {
             this.isEcoMindAi = data["isIa"] === true;
         });
-        this.userService.currentOrganization$
+        this.userService.currentWorkspace$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((organization: Organization) => {
-                this.selectedOrganization = organization.name;
+            .subscribe((workspace: Workspace) => {
+                this.selectedWorkspace = workspace.name;
             });
-        this.userService.currentSubscriber$.subscribe((subscriber: any) => {
-            this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
+        this.userService.currentOrganization$.subscribe((organization) => {
+            this.isEcoMindEnabledForCurrentOrganization = organization.ecomindai;
         });
         this.userService.roles$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -102,7 +102,7 @@ export class DigitalServicesComponent {
         if (
             this.isEcoMindAi &&
             this.isAllowedEcoMindAiService &&
-            this.isEcoMindEnabledForCurrentSubscriber &&
+            this.isEcoMindEnabledForCurrentOrganization &&
             this.isEcoMindModuleEnabled
         ) {
             const apiResult = await lastValueFrom(this.digitalServicesData.list(true));
@@ -120,7 +120,7 @@ export class DigitalServicesComponent {
         if (
             this.isEcoMindAi &&
             this.isAllowedEcoMindAiService &&
-            this.isEcoMindEnabledForCurrentSubscriber &&
+            this.isEcoMindEnabledForCurrentOrganization &&
             this.isEcoMindModuleEnabled
         ) {
             const { uid } = await lastValueFrom(this.digitalServicesData.create(true));

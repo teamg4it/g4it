@@ -38,20 +38,20 @@ export class ApiInterceptor implements HttpInterceptor {
             return next.handle(req);
         }
 
-        // otherwise, we add current susbcriber and organization in request
+        // otherwise, we add current organization and workspace in request
         return combineLatest([
-            this.userService.currentSubscriber$,
             this.userService.currentOrganization$,
+            this.userService.currentWorkspace$,
         ]).pipe(
             take(1),
-            map(([subscriber, organization]) =>
+            map(([organization, workspace]) =>
                 req.clone({
                     url: this.formatUrl([
                         environment.apiBaseUrl,
                         "organizations",
-                        subscriber.name,
+                        organization.name,
                         "workspaces",
-                        organization.id.toString(),
+                        workspace.id.toString(),
                         req.url,
                     ]),
                 }),

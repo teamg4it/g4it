@@ -132,13 +132,13 @@
                             ) {
                                 <p-button
                                     styleClass="button-secondary-green uppercase"
-                                    (click)="previousTab(menuIndex)"
+                                    (onClick)="previousTab(menuIndex)"
                                     [label]="'common.previous' | translate"
                                     [ariaLabel]="'common.previous' | translate"
                                 ></p-button>
                             }
                             <p-button
-                                (click)="createSpace()"
+                                (onClick)="createSpace()"
                                 styleClass="uppercase bg-light-green"
                                 [disabled]="spaceForm.invalid"
                                 [label]="'common.workspace.create-workspace' | translate"
@@ -149,7 +149,7 @@
                             @if (!lastIndex) {
                                 <p-button
                                     styleClass="button-secondary-green p-button uppercase"
-                                    (click)="nextTab(menuIndex)"
+                                    (onClick)="nextTab(menuIndex)"
                                     [label]="'common.next' | translate"
                                     [ariaLabel]="'common.next' | translate"
                                     [disabled]="

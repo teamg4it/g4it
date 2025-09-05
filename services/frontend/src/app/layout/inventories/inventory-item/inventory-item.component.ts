@@ -12,7 +12,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import {
     OrganizationCriteriaRest,
-    SubscriberCriteriaRest,
+    WorkspaceCriteriaRest,
 } from "src/app/core/interfaces/administration.interfaces";
 import {
     Inventory,
@@ -48,9 +48,9 @@ export class InventoryItemComponent implements OnInit {
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
     displayPopup = false;
     selectedCriteria: string[] = [];
-    subscriber: SubscriberCriteriaRest = { criteria: [] };
-    organization: OrganizationCriteriaRest = {
-        subscriberId: 0,
+    organization: OrganizationCriteriaRest = { criteria: [] };
+    workspace: WorkspaceCriteriaRest = {
+        organizationId: 0,
         name: "",
         status: "",
         dataRetentionDays: 0,
@@ -73,16 +73,16 @@ export class InventoryItemComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.userService.currentSubscriber$.subscribe((subscriber) => {
-            this.subscriber.criteria = subscriber.criteria!;
-        });
         this.userService.currentOrganization$.subscribe((organization) => {
-            this.organization.subscriberId = organization.subscriberId!;
-            this.organization.name = organization.name;
-            this.organization.status = organization.status;
-            this.organization.dataRetentionDays = organization.dataRetentionDays!;
-            this.organization.criteriaIs = organization.criteriaIs!;
-            this.organization.criteriaDs = organization.criteriaDs!;
+            this.organization.criteria = organization.criteria!;
+        });
+        this.userService.currentWorkspace$.subscribe((workspace) => {
+            this.workspace.organizationId = workspace.organizationId!;
+            this.workspace.name = workspace.name;
+            this.workspace.status = workspace.status;
+            this.workspace.dataRetentionDays = workspace.dataRetentionDays!;
+            this.workspace.criteriaIs = workspace.criteriaIs!;
+            this.workspace.criteriaDs = workspace.criteriaDs!;
         });
 
         if (this.inventory.tasks) {
@@ -244,8 +244,8 @@ export class InventoryItemComponent implements OnInit {
         const defaultCriteria = Object.keys(this.global.criteriaList()).slice(0, 5);
         this.selectedCriteria =
             this.inventory.criteria ??
-            this.organization?.criteriaIs ??
-            this.subscriber?.criteria ??
+            this.workspace?.criteriaIs ??
+            this.organization?.criteria ??
             defaultCriteria;
         this.displayPopup = true;
     }

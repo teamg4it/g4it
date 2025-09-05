@@ -9,10 +9,10 @@
 import { Injectable, signal } from "@angular/core";
 import { Observable } from "rxjs";
 import {
+    Organization,
     OrganizationCriteriaRest,
-    OrganizationUpsertRest,
-    Subscriber,
-    SubscriberCriteriaRest,
+    WorkspaceCriteriaRest,
+    WorkspaceUpsertRest,
 } from "../../interfaces/administration.interfaces";
 import { AdministrationDataService } from "../data/administration-data-service";
 
@@ -24,41 +24,38 @@ export class AdministrationService {
 
     getUsersTriggered = signal<boolean>(false);
 
-    getOrganizations(): Observable<Subscriber[]> {
+    getOrganizations(): Observable<Organization[]> {
         return this.administrationDataService.getOrganizations();
     }
 
-    getSubscriberById(subscriberId: number): Observable<Subscriber> {
-        return this.administrationDataService.getSubscriberById(subscriberId);
+    getOrganizationById(organizationById: number): Observable<Organization> {
+        return this.administrationDataService.getOrganizationById(organizationById);
     }
 
-    getUsers(): Observable<Subscriber> {
+    getUsers(): Observable<Organization> {
         return this.administrationDataService.getUsers();
     }
 
-    updateOrganization(
-        organizationId: number,
-        body: OrganizationUpsertRest,
-    ): Observable<any> {
-        return this.administrationDataService.updateOrganization(organizationId, body);
+    updateWorkspace(workspaceId: number, body: WorkspaceUpsertRest): Observable<any> {
+        return this.administrationDataService.updateWorkspace(workspaceId, body);
     }
 
-    updateOrganizationCriteria(
+    updateWorkspaceCriteria(
         organizationId: number,
-        body: OrganizationCriteriaRest,
-    ): Observable<OrganizationCriteriaRest> {
-        return this.administrationDataService.updateOrganizationCriteria(
+        body: WorkspaceCriteriaRest,
+    ): Observable<WorkspaceCriteriaRest> {
+        return this.administrationDataService.updateWorkspaceCriteria(
             organizationId,
             body,
         );
     }
 
-    updateSubscriberCriteria(
-        subscriberId: number,
-        criteria: SubscriberCriteriaRest,
-    ): Observable<SubscriberCriteriaRest> {
-        return this.administrationDataService.updateSubscriberCriteria(
-            subscriberId,
+    updateOrganizationCriteria(
+        organizationId: number,
+        criteria: OrganizationCriteriaRest,
+    ): Observable<OrganizationCriteriaRest> {
+        return this.administrationDataService.updateOrganizationCriteria(
+            organizationId,
             criteria,
         );
     }
@@ -69,26 +66,26 @@ export class AdministrationService {
 
     getSearchDetails(
         searchName: string,
-        subscriberId: number,
         organizationId: number,
+        workspaceId: number,
     ): Observable<any> {
         return this.administrationDataService.getSearchDetails(
             searchName,
-            subscriberId,
             organizationId,
+            workspaceId,
         );
     }
 
-    postUserToOrganizationAndAddRoles(body: any): Observable<any> {
-        return this.administrationDataService.postUserToOrganizationAndAddRoles(body);
+    postUserToWorkspaceAndAddRoles(body: any): Observable<any> {
+        return this.administrationDataService.postUserToWorkspaceAndAddRoles(body);
     }
 
     deleteUserDetails(body: any): Observable<any> {
         return this.administrationDataService.deleteUserDetails(body);
     }
 
-    postOrganization(body: any): Observable<any> {
-        return this.administrationDataService.postOrganization(body);
+    postWorkspace(body: any): Observable<any> {
+        return this.administrationDataService.postWorkspace(body);
     }
 
     refreshGetUsers() {

@@ -24,11 +24,11 @@ describe("TopHeaderComponent", () => {
     const org: OrganizationData = {
         id: 1,
         name: "Org1",
-        subscriber: {
+        organization: {
             id: 1,
             name: "Demo",
             defaultFlag: true,
-            organizations: [
+            workspaces: [
                 {
                     id: 1,
                     name: "Organization 1",
@@ -40,7 +40,7 @@ describe("TopHeaderComponent", () => {
             roles: [],
             ecomindai: false,
         },
-        organization: {
+        workspace: {
             id: 1,
             name: "Organization 1",
             defaultFlag: true,
@@ -62,19 +62,19 @@ describe("TopHeaderComponent", () => {
         };
 
         mockUserService = {
-            currentSubscriber$: of({ name: "subscriber1" }),
+            currentOrganization$: of({ name: "organization1" }),
             user$: of({
                 firstName: "John",
                 lastName: "Doe",
                 email: "john@example.com",
-                subscribers: [
+                organizations: [
                     {
-                        name: "subscriber1",
-                        organizations: [{ id: 1, name: "Org1" }],
+                        name: "organization1",
+                        workspaces: [{ id: 1, name: "Org1" }],
                     },
                 ],
             }),
-            currentOrganization$: of({ id: 1, name: "Org1" }),
+            currentWorkspace$: of({ id: 1, name: "Org1" }),
             ecoDesignPercent: 70,
             getSelectedPage: () => "dashboard",
             checkAndRedirect: jasmine.createSpy("checkAndRedirect"),
@@ -141,8 +141,8 @@ describe("TopHeaderComponent", () => {
     });
 
     it("should navigate to next organization on ArrowDown", fakeAsync(() => {
-        component.organizations = [org];
-        component.modelOrganization = 1;
+        component.workspaces = [org];
+        component.modelWorkspace = 1;
 
         const mockScrollIntoView = jasmine.createSpy("scrollIntoView");
 
@@ -160,7 +160,7 @@ describe("TopHeaderComponent", () => {
         component.handleKeydown(event);
         tick();
 
-        expect(component.modelOrganization).toBe(1);
+        expect(component.modelWorkspace).toBe(1);
     }));
 
     it("should open Boaviztapi GitHub link when help menu item is clicked", () => {
@@ -221,31 +221,31 @@ describe("TopHeaderComponent", () => {
         expect(spySetSelectedPage).toHaveBeenCalled();
     });
 
-    it("should subscribe to userService.currentSubscriber$ and set currentSubscriber", () => {
-        component.currentSubscriber = {} as any;
+    it("should subscribe to userService.currentOrganization$ and set currentorganization", () => {
+        component.currentOrganization = {} as any;
         component.ngOnInit();
-        expect(component.currentSubscriber.name).toBe("subscriber1");
+        expect(component.currentOrganization.name).toBe("organization1");
     });
 
-    it("should populate userDetails and organizations after user$ emits", () => {
+    it("should populate userDetails and workspaces after user$ emits", () => {
         component.userDetails = {} as any;
-        component.organizations = [];
+        component.workspaces = [];
         component.ngOnInit();
         expect(component.userDetails.firstName).toBe("John");
-        expect(component.organizations.length).toBeGreaterThan(0);
-        expect(component.organizations[0].name).toBe("Org1");
+        expect(component.workspaces.length).toBeGreaterThan(0);
+        expect(component.workspaces[0].name).toBe("Org1");
     });
 
-    it("should subscribe to currentOrganization$ and set selectedOrganization, modelOrganization, selectedOrganizationData, selectedPath", () => {
-        component.selectedOrganization = {} as any;
-        component.modelOrganization = 0;
+    it("should subscribe to currentWorkspace$ and set selectedOrganization, modelOrganization, selectedOrganizationData, selectedPath", () => {
+        component.selectedWorkspace = {} as any;
+        component.modelWorkspace = 0;
         component.selectedOrganizationData = undefined;
         component.selectedPath = "";
-        component.currentSubscriber = { name: "subscriber1" } as any;
+        component.currentOrganization = { name: "organization1" } as any;
         component.ngOnInit();
-        expect(component.selectedOrganization.id).toBe(1);
-        expect(component.modelOrganization).toBe(1);
-        expect(component.selectedPath).toBe("/subscribers/subscriber1/organizations/1");
+        expect(component.selectedWorkspace.id).toBe(1);
+        expect(component.modelWorkspace).toBe(1);
+        expect(component.selectedPath).toBe("/organizations/organization1/workspaces/1");
     });
 
     it("should set initials after user$ emits", () => {

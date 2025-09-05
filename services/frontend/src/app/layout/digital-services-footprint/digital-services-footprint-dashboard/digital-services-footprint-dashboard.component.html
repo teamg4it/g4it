@@ -199,12 +199,12 @@
     <app-criteria-popup
         [displayPopup]="displayCriteriaPopup"
         [type]="'ds'"
-        [subscriberDetails]="subscriber"
         [organizationDetails]="organization"
+        [workspaceDetails]="workspace"
         [ds]="digitalService"
         [selectedCriteriaIS]="selectedCriteriaPopup"
-        (onSaveDs)="handleSaveDs($event)"
-        (onClose)="displayCriteriaPopup = false"
+        (outSaveDS)="handleSaveDs($event)"
+        (outClose)="displayCriteriaPopup = false"
     ></app-criteria-popup>
 }
 

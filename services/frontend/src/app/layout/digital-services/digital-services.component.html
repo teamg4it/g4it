@@ -3,10 +3,9 @@
     <h1>
         {{
             isEcoMindAi
-                ? ("eco-mind-ai.title"
-                  | translate: { OrganizationName: selectedOrganization })
+                ? ("eco-mind-ai.title" | translate: { WorkspaceName: selectedWorkspace })
                 : ("digital-services.title"
-                  | translate: { OrganizationName: selectedOrganization })
+                  | translate: { WorkspaceName: selectedWorkspace })
         }}
     </h1>
     <p-button

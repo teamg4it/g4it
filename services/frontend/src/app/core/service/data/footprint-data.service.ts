@@ -42,7 +42,7 @@ export class FootprintDataService {
 
     transformApplicationEquipmentType(
         applications: ApplicationFootprint[],
-        currentOrganization: string,
+        currentWorkspaceName: string,
     ): ApplicationFootprint[] {
         return applications.map((app) => {
             return {
@@ -52,7 +52,7 @@ export class FootprintDataService {
                         ...impact,
                         equipmentType: transformEquipmentType(
                             impact?.equipmentType,
-                            currentOrganization,
+                            currentWorkspaceName,
                         ),
                     };
                 }),

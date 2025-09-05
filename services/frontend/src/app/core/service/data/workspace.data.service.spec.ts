@@ -24,13 +24,13 @@ describe("WorkspaceDataService", () => {
         httpMock.verify();
     });
 
-    describe("getDomainSubscribers", () => {
-        it("should send a POST request to the correct endpoint and return DomainSubscribers[]", () => {
+    describe("getDomainOrganizations", () => {
+        it("should send a POST request to the correct endpoint and return DomainOrganizations[]", () => {
             const mockResponse = [
                 {
                     id: 1,
                     name: "test1@example.com",
-                    organizations: [
+                    workspaces: [
                         { id: 22, name: "org1", status: "active" },
                         { id: 32, name: "org2", status: "inactive" },
                     ],
@@ -38,16 +38,16 @@ describe("WorkspaceDataService", () => {
                 {
                     id: 2,
                     name: "test2@example.com",
-                    organizations: [
+                    workspaces: [
                         { id: 33, name: "org3", status: "active" },
                         { id: 23, name: "org4", status: "inactive" },
                     ],
                 },
             ];
             const requestBody = { email: "test@example.com" };
-            const expectedUrl = `${Constants.ENDPOINTS.workspace}/domain-subscribers`;
+            const expectedUrl = `${Constants.ENDPOINTS.workspace}/domain-organizations`;
 
-            service.getDomainSubscribers(requestBody).subscribe((response) => {
+            service.getDomainOrganizations(requestBody).subscribe((response) => {
                 expect(response).toEqual(mockResponse);
             });
 

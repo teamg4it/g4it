@@ -109,22 +109,22 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         expect(digitalServiceStoreSpy).toHaveBeenCalledWith(testDigitalService);
     });
 
-    it("ngOnInit should subscribe to currentSubscriber$ and set selectedSubscriberName, subscriber, and isEcoMindEnabledForCurrentSubscriber", () => {
-        const testSubscriber = { name: "SubName", ecomindai: true };
-        (component as any).userService.currentSubscriber$ = of(testSubscriber);
-
-        component.ngOnInit();
-
-        expect(component.selectedSubscriberName).toBe("SubName");
-        expect(component.isEcoMindEnabledForCurrentSubscriber).toBeTrue();
-    });
-
-    it("ngOnInit should subscribe to currentOrganization$ and set selectedOrganizationName", () => {
-        const testOrganization = { name: "OrgName" };
+    it("ngOnInit should subscribe to currentOrganization$ and set selectedOrganizationName, organization, and isEcoMindEnabledForCurrentOrganization", () => {
+        const testOrganization = { name: "SubName", ecomindai: true };
         (component as any).userService.currentOrganization$ = of(testOrganization);
 
         component.ngOnInit();
 
-        expect(component.selectedOrganizationName).toBe("OrgName");
+        expect(component.selectedOrganizationName).toBe("SubName");
+        expect(component.isEcoMindEnabledForCurrentOrganization).toBeTrue();
+    });
+
+    it("ngOnInit should subscribe to currentWorkspace$ and set selectedOrganizationName", () => {
+        const testOrganization = { name: "OrgName" };
+        (component as any).userService.currentWorkspace$ = of(testOrganization);
+
+        component.ngOnInit();
+
+        expect(component.selectedWorkspaceName).toBe("OrgName");
     });
 });

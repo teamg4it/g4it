@@ -15,8 +15,6 @@ import { EvaluationDataService } from "./evaluation-data.service";
 describe("EvaluationDataService", () => {
     let httpMock: HttpTestingController;
     let evaluationDataService: EvaluationDataService;
-    let organization: string = "SSG";
-    let inventoryDate = 3;
 
     beforeEach(() => {
         TestBed.configureTestingModule({

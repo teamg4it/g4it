@@ -14,7 +14,7 @@ export interface Inventory {
     name: string;
     creationDate: Date;
     lastUpdateDate: Date;
-    organization: string;
+    workspace: string;
     dataCenterCount: number;
     physicalEquipmentCount: number;
     virtualEquipmentCount: number;
@@ -25,7 +25,7 @@ export interface Inventory {
     tasks: TaskRest[];
     lastTaskLoading?: TaskRest;
     lastTaskEvaluating?: TaskRest;
-    organizationId?: number;
+    workspaceId?: number;
 }
 
 export interface InventoryUpdateRest {
@@ -49,11 +49,6 @@ export interface TaskRest {
     resultFileUrl: string;
     details: string[];
     criteria?: string[];
-}
-
-export interface EvaluationBody {
-    inventoryId: number;
-    organization: string;
 }
 
 export interface IntegrationBatchLaunchDetail {

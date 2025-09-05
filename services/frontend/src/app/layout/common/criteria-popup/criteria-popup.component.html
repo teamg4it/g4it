@@ -14,15 +14,14 @@
             <ng-template pTemplate="header">
                 <h4 class="font-bold">
                     {{
-                        type === "subscriber"
+                        type === "organization"
                             ? ("administration.user.choose-criteria"
-                              | translate: { subscriber: subscriberDetails.name })
-                            : type === "organization"
+                              | translate: { organization: organizationDetails.name })
+                            : type === "workspace"
                               ? ("administration.organization.choose-criteria"
                                 | translate
                                     : {
-                                          organizationName:
-                                              organizationDetails.organizationName,
+                                          workspaceName: workspaceDetails.workspaceName,
                                       })
                               : type === "inventory"
                                 ? ("inventories.choose-criteria"
@@ -34,7 +33,7 @@
                 </h4>
             </ng-template>
 
-            @if (type !== "organization") {
+            @if (type !== "workspace") {
                 <div class="ml-3 pb-2 pt-3">
                     <div class="field-checkbox">
                         <p-checkbox
@@ -125,10 +124,10 @@
             }
 
             @if (
-                (type === "organization" &&
+                (type === "workspace" &&
                     (selectedCriteriaIS.length === 0 ||
                         selectedCriteriaDS.length === 0)) ||
-                (type !== "organization" && selectedCriteriaIS.length === 0)
+                (type !== "workspace" && selectedCriteriaIS.length === 0)
             ) {
                 <p class="error-text">
                     {{ "administration.organization.error" | translate }}
@@ -142,7 +141,7 @@
                     <div class="flex justify-content-start mr-auto">
                         <p-button
                             styleClass="reset-button"
-                            (click)="resetToDefault()"
+                            (onClick)="resetToDefault()"
                             aria-label="Reset"
                             class="m-0"
                         >
@@ -152,7 +151,7 @@
                     </div>
                     <p-button
                         styleClass="white-button"
-                        (click)="closePopup()"
+                        (onClick)="closePopup()"
                         aria-label="Cancel"
                         id="criteria-cancel"
                     >
@@ -160,13 +159,12 @@
                     </p-button>
                     <p-button
                         styleClass="black-button"
-                        (click)="saveChanges()"
+                        (onClick)="saveChanges()"
                         [disabled]="
-                            (type === 'organization' &&
+                            (type === 'workspace' &&
                                 (selectedCriteriaIS.length === 0 ||
                                     selectedCriteriaDS.length === 0)) ||
-                            (type !== 'organization' &&
-                                selectedCriteriaIS.length === 0) ||
+                            (type !== 'workspace' && selectedCriteriaIS.length === 0) ||
                             !hasChanged
                         "
                         aria-label="Save"

@@ -12,11 +12,11 @@
         <p class="text-xl mt-4 line-height-3">
             {{
                 "welcome-page.getting-started-text"
-                    | translate: { subscriberName: currentSubscriber.name }
+                    | translate: { organizationName: currentOrganization.name }
             }}
         </p>
         <p-button
-            (click)="openWorkspaceSidebar()"
+            (onClick)="openWorkspaceSidebar()"
             icon="pi pi-plus-circle"
             styleClass="uppercase bg-light-green text-white mt-4"
             iconPos="right"
@@ -34,7 +34,7 @@
                     disabled: !(userService.isAllowedInventoryRead$ | async),
                     'lg:col-6': !(
                         (userService.isAllowedEcoMindAiRead$ | async) &&
-                        isEcoMindEnabledForCurrentSubscriber &&
+                        isEcoMindEnabledForCurrentOrganization &&
                         isEcoMindModuleEnabled
                     ),
                 }"
@@ -53,7 +53,7 @@
                 </p>
                 <div class="p-card-footer p-0">
                     <p-button
-                        (click)="inventories()"
+                        (onClick)="inventories()"
                         icon="pi pi-arrow-circle-right"
                         [styleClass]="
                             'uppercase inventories-button navigation-button mt-5 white-space-nowrap' +
@@ -86,7 +86,7 @@
                     disabled: !(userService.isAllowedDigitalServiceRead$ | async),
                     'lg:col-6': !(
                         (userService.isAllowedEcoMindAiRead$ | async) &&
-                        isEcoMindEnabledForCurrentSubscriber &&
+                        isEcoMindEnabledForCurrentOrganization &&
                         isEcoMindModuleEnabled
                     ),
                 }"
@@ -105,7 +105,7 @@
                 </p>
                 <div class="p-card-footer p-0">
                     <p-button
-                        (click)="digitalServices()"
+                        (onClick)="digitalServices()"
                         icon="pi pi-arrow-circle-right"
                         [styleClass]="
                             'uppercase digital-service-button navigation-button mt-5 white-space-nowrap' +
@@ -135,7 +135,7 @@
             <!-- EcoMinAi -->
             @if (
                 (userService.isAllowedEcoMindAiRead$ | async) &&
-                isEcoMindEnabledForCurrentSubscriber &&
+                isEcoMindEnabledForCurrentOrganization &&
                 isEcoMindModuleEnabled
             ) {
                 <p-card
@@ -155,7 +155,7 @@
                     </p>
                     <div class="p-card-footer p-0">
                         <p-button
-                            (click)="ecoMindAi()"
+                            (onClick)="ecoMindAi()"
                             icon="pi pi-arrow-circle-right"
                             [styleClass]="
                                 'uppercase eco-mind-ai-button navigation-button mt-5 white-space-nowrap' +

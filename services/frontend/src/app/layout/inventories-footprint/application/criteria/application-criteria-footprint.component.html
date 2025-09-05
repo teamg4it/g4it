@@ -188,7 +188,7 @@
 <ng-template #dataConsistencyRef>
     @if (showDataConsistencyBtn) {
         <p-button
-            (click)="showInconsitencyGraph = !showInconsitencyGraph"
+            (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
             [rounded]="true"
             [label]="'inventories-footprint.data-consistency' | translate"
             [outlined]="!showInconsitencyGraph"

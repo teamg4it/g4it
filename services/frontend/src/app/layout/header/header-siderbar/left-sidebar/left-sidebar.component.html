@@ -56,7 +56,7 @@
                     src="assets/images/icons/icon-dashboard.svg"
                     alt="{{
                         'inventories.title'
-                            | translate: { OrganizationName: selectedOrganization.name }
+                            | translate: { WorkspaceName: selectedWorkspace.name }
                     }}"
                     [attr.title]="inventoriesTitle()"
                 />
@@ -85,7 +85,7 @@
                     src="assets/images/icons/icon-digital-service.svg"
                     alt="{{
                         'digital-services.title'
-                            | translate: { OrganizationName: selectedOrganization.name }
+                            | translate: { WorkspaceName: selectedWorkspace.name }
                     }}"
                     [attr.title]="digitalServicesTitle()"
                     [attr.aria-current]="digitalServicesAriaCurrent()"
@@ -100,7 +100,7 @@
 
     @if (
         (userService.isAllowedEcoMindAiRead$ | async) &&
-        isEcoMindEnabledForCurrentSubscriber &&
+        isEcoMindEnabledForCurrentOrganization &&
         isEcoMindModuleEnabled
     ) {
         <div
@@ -121,8 +121,7 @@
                         src="assets/images/icons/icon_ecomind_ai_small.svg"
                         alt="{{
                             'eco-mind-ai.title'
-                                | translate
-                                    : { OrganizationName: selectedOrganization.name }
+                                | translate: { WorkspaceName: selectedWorkspace.name }
                         }}"
                         [attr.title]="ecoMindAiTitle()"
                         [attr.aria-current]="ecoMindAiAriaCurrent()"
@@ -143,7 +142,7 @@
     >
         <a
             routerLink="/administration/users"
-            *ngIf="isAdminOnSubscriberOrOrganization"
+            *ngIf="isAdminOnWorkspaceOrOrganization"
             id="administration"
             [ngClass]="{
                 'admin-padding-zoomin': isZoomedIn(),

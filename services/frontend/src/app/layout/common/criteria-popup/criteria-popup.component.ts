@@ -8,12 +8,12 @@ import {
 } from "@angular/core";
 import {
     OrganizationCriteriaRest,
-    OrganizationWithSubscriber,
-    SubscriberCriteriaRest,
+    WorkspaceCriteriaRest,
+    WorkspaceWithOrganization,
 } from "src/app/core/interfaces/administration.interfaces";
 import { DSCriteriaRest } from "src/app/core/interfaces/digital-service.interfaces";
 import { InventoryCriteriaRest } from "src/app/core/interfaces/inventory.interfaces";
-import { Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
@@ -22,23 +22,23 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 })
 export class CriteriaPopupComponent implements OnChanges {
     @Input() displayPopup: boolean = false;
-    @Input() type: "subscriber" | "organization" | "inventory" | "ds" | undefined;
+    @Input() type: "organization" | "workspace" | "inventory" | "ds" | undefined;
     @Input() selectedCriteriaIS: string[] = [];
     @Input() selectedCriteriaDS: string[] = [];
-    //this subscriber contains the subscriber list
-    @Input() subscriber!: SubscriberCriteriaRest;
+    //this organization contains the organization list
     @Input() organization!: OrganizationCriteriaRest;
-    //this subscriber contains all the subscriber details
-    @Input() subscriberDetails!: Subscriber;
-    @Input() organizationDetails!: OrganizationWithSubscriber;
+    @Input() workspace!: WorkspaceCriteriaRest;
+    //this workspace contains all the workspace details
+    @Input() organizationDetails!: Organization;
+    @Input() workspaceDetails!: WorkspaceWithOrganization;
     @Input() inventory: any;
     @Input() ds: any;
 
-    @Output() onSaveOrganization = new EventEmitter<OrganizationCriteriaRest>();
-    @Output() onSaveSubscriber = new EventEmitter<SubscriberCriteriaRest>();
-    @Output() onSaveInventory = new EventEmitter<InventoryCriteriaRest>();
-    @Output() onSaveDs = new EventEmitter<DSCriteriaRest>();
-    @Output() onClose = new EventEmitter<void>();
+    @Output() outSaveWorkspace = new EventEmitter<WorkspaceCriteriaRest>();
+    @Output() outSaveOrganization = new EventEmitter<OrganizationCriteriaRest>();
+    @Output() outSaveInventory = new EventEmitter<InventoryCriteriaRest>();
+    @Output() outSaveDS = new EventEmitter<DSCriteriaRest>();
+    @Output() outClose = new EventEmitter<void>();
 
     constructor(private readonly globalStore: GlobalStoreService) {}
 
@@ -55,19 +55,19 @@ export class CriteriaPopupComponent implements OnChanges {
             this.criteriaList = Object.keys(this.globalStore.criteriaList());
             this.hasChanged = false;
         }
-        if (changes["selectedCriteriaIS"] && this.type === "organization") {
+        if (changes["selectedCriteriaIS"] && this.type === "workspace") {
             this.tempSelectedCriteriaIS = [...this.selectedCriteriaIS];
         }
-        if (changes["selectedCriteriaDS"] && this.type === "organization") {
+        if (changes["selectedCriteriaDS"] && this.type === "workspace") {
             this.tempSelectedCriteriaDS = [...this.selectedCriteriaDS];
         }
-        if (changes["selectedCriteriaIS"] && this.type !== "organization") {
+        if (changes["selectedCriteriaIS"] && this.type !== "workspace") {
             this.tempSelectedCriteriaIS = [...this.selectedCriteriaIS];
         }
-        if (changes["organizationDetails"]) {
+        if (changes["workspaceDetails"]) {
             this.setCriteriaList();
         }
-        if (changes["subscriber"]) {
+        if (changes["organization"]) {
             this.setCriteriaList();
         }
     }
@@ -79,25 +79,25 @@ export class CriteriaPopupComponent implements OnChanges {
     closePopup() {
         this.selectedCriteriaIS = [...this.tempSelectedCriteriaIS];
         this.selectedCriteriaDS = [...this.tempSelectedCriteriaDS];
-        this.onClose.emit();
+        this.outClose.emit();
     }
 
     setCriteriaList() {
-        if (this.type === "organization") {
+        if (this.type === "workspace") {
             this.selectedCriteriaIS =
-                this.organizationDetails.criteriaIs ??
-                this.subscriberDetails?.criteria ??
+                this.workspaceDetails.criteriaIs ??
+                this.organizationDetails?.criteria ??
                 this.defaultCriteria;
             this.selectedCriteriaDS =
-                this.organizationDetails.criteriaIs ??
-                this.subscriberDetails?.criteria ??
+                this.workspaceDetails.criteriaIs ??
+                this.organizationDetails?.criteria ??
                 this.defaultCriteria;
         }
-        if (this.type === "subscriber") {
+        if (this.type === "organization") {
             this.selectedCriteriaIS =
-                this.subscriberDetails?.criteria ?? this.defaultCriteria;
+                this.organizationDetails?.criteria ?? this.defaultCriteria;
             this.selectedCriteriaDS =
-                this.subscriberDetails?.criteria ?? this.defaultCriteria;
+                this.organizationDetails?.criteria ?? this.defaultCriteria;
         }
     }
 
@@ -105,22 +105,22 @@ export class CriteriaPopupComponent implements OnChanges {
         let initialSelectedCriteriaIS = [...this.selectedCriteriaIS];
         let initialSelectedCriteriaDS = [...this.selectedCriteriaDS];
 
-        if (this.type === "subscriber") {
+        if (this.type === "organization") {
             this.selectedCriteriaIS = this.defaultCriteria;
-        } else if (this.type === "organization") {
+        } else if (this.type === "workspace") {
             this.selectedCriteriaIS =
-                this.subscriberDetails?.criteria ?? this.defaultCriteria;
+                this.organizationDetails?.criteria ?? this.defaultCriteria;
             this.selectedCriteriaDS =
-                this.subscriberDetails?.criteria ?? this.defaultCriteria;
+                this.organizationDetails?.criteria ?? this.defaultCriteria;
         } else if (this.type === "inventory") {
             this.selectedCriteriaIS =
-                this.organization?.criteriaIs ??
-                this.subscriber?.criteria ??
+                this.workspace?.criteriaIs ??
+                this.organization?.criteria ??
                 this.defaultCriteria;
         } else if (this.type === "ds") {
             this.selectedCriteriaIS =
-                this.organizationDetails?.criteriaDs ??
-                this.subscriberDetails?.criteria ??
+                this.workspaceDetails?.criteriaDs ??
+                this.organizationDetails?.criteria ??
                 this.defaultCriteria;
         }
 
@@ -137,20 +137,20 @@ export class CriteriaPopupComponent implements OnChanges {
     saveChanges() {
         this.hasChanged = false;
         switch (this.type) {
-            case "subscriber":
-                const subscriberCriteria = { criteria: this.selectedCriteriaIS };
-                this.onSaveSubscriber.emit(subscriberCriteria);
-                break;
             case "organization":
-                const organizationCriteria = {
-                    subscriberId: this.organizationDetails?.subscriberId,
-                    name: this.organizationDetails.organizationName,
-                    status: this.organizationDetails.status,
-                    dataRetentionDays: this.organizationDetails?.dataRetentionDays,
+                const organizationCriteria = { criteria: this.selectedCriteriaIS };
+                this.outSaveOrganization.emit(organizationCriteria);
+                break;
+            case "workspace":
+                const workspaceCriteria = {
+                    organizationId: this.workspaceDetails?.organizationId,
+                    name: this.workspaceDetails.workspaceName,
+                    status: this.workspaceDetails.status,
+                    dataRetentionDays: this.workspaceDetails?.dataRetentionDays,
                     criteriaIs: this.selectedCriteriaIS,
                     criteriaDs: this.selectedCriteriaDS,
                 };
-                this.onSaveOrganization.emit(organizationCriteria);
+                this.outSaveWorkspace.emit(workspaceCriteria);
                 break;
             case "inventory":
                 const inventoryCriteria = {
@@ -159,7 +159,7 @@ export class CriteriaPopupComponent implements OnChanges {
                     criteria: this.selectedCriteriaIS,
                     note: this.inventory.note,
                 };
-                this.onSaveInventory.emit(inventoryCriteria);
+                this.outSaveInventory.emit(inventoryCriteria);
                 break;
             case "ds":
                 const dsCriteria = {
@@ -177,7 +177,7 @@ export class CriteriaPopupComponent implements OnChanges {
                     note: this.ds.note,
                     enableDataInconsistency: this.ds.enableDataInconsistency,
                 };
-                this.onSaveDs.emit(dsCriteria);
+                this.outSaveDS.emit(dsCriteria);
                 break;
             default:
                 break;

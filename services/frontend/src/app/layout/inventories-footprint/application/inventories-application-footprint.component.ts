@@ -73,14 +73,14 @@ export class InventoriesApplicationFootprintComponent {
         this.globalStore.setLoading(true);
 
         let footprint: ApplicationFootprint[] = [];
-        const currentOrgName = (
-            await firstValueFrom(this.userService.currentOrganization$)
+        const currentWorkspaceName = (
+            await firstValueFrom(this.userService.currentWorkspace$)
         ).name;
         [footprint] = await Promise.all([
             firstValueFrom(
                 this.footprintService.initApplicationFootprint(
                     this.inventoryId,
-                    currentOrgName,
+                    currentWorkspaceName,
                 ),
             ),
         ]);

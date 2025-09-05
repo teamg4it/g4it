@@ -116,20 +116,20 @@
             [disabled]="
                 editorTextValue !== '' && editorTextValue === editorTextValueUnmodified
             "
-            (click)="saveContent()"
+            (onClick)="saveContent()"
             id="save-note"
             >{{ "common.save" | translate }}</p-button
         >
         <p-button
             styleClass="white-button"
-            (click)="cancelContent($event)"
+            (onClick)="cancelContent($event)"
             id="cancel-button"
             >{{ "common.cancel" | translate }}</p-button
         >
         <p-button
             styleClass="white-button"
             *ngIf="content"
-            (click)="deleteContent($event)"
+            (onClick)="deleteContent($event)"
             >{{ "common.delete" | translate }}</p-button
         >
     </div>

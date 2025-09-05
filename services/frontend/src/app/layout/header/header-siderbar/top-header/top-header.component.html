@@ -111,15 +111,15 @@
             >
                 <span class="ml-2">
                     {{
-                        selectedOrganization &&
-                        selectedOrganization.name &&
-                        selectedOrganization.name.length > maxLength
-                            ? selectedOrganization.name.slice(0, maxLength) + "..."
-                            : selectedOrganization.name
+                        selectedWorkspace &&
+                        selectedWorkspace.name &&
+                        selectedWorkspace.name.length > maxLength
+                            ? selectedWorkspace.name.slice(0, maxLength) + "..."
+                            : selectedWorkspace.name
                     }}
 
                     @if (!isZoomedIn()) {
-                        ({{ currentSubscriber.name }})
+                        ({{ currentOrganization.name }})
                     }
                 </span>
                 <span class="pi pi-chevron-down ml-3"></span>
@@ -148,35 +148,31 @@
                 #radioGroupContainer
             >
                 <div
-                    *ngFor="let organization of organizations; let i = index"
+                    *ngFor="let workspace of workspaces; let i = index"
                     class="field-radiobutton"
                     [attr.data-index]="i"
                     #radioItem
-                    [attr.data-id]="organization.id"
+                    [attr.data-id]="workspace.id"
                 >
                     <p-radioButton
-                        [inputId]="'org-' + organization.id"
+                        [inputId]="'work-' + workspace.id"
                         name="group1"
-                        [value]="organization.id.toString()"
-                        [(ngModel)]="modelOrganization"
-                        (onClick)="selectCompany(organization)"
-                        [attr.aria-labelledby]="'org-' + organization.id"
+                        [value]="workspace.id.toString()"
+                        [(ngModel)]="modelWorkspace"
+                        (onClick)="selectCompany(workspace)"
+                        [attr.aria-labelledby]="'work-' + workspace.id"
                     ></p-radioButton>
 
                     <label
-                        [for]="'org-' + organization.id"
-                        [id]="'org-' + organization.id"
+                        [for]="'work-' + workspace.id"
+                        [id]="'work-' + workspace.id"
                         class="ml-2"
                         [attr.aria-label]="
-                            ('common.workspace-name' | translate) +
-                            ' ' +
-                            organization.organization!.name
+                            ('common.workspace-name' | translate) + ' ' + workspace.name
                         "
                     >
                         {{ "common.workspace-name" | translate }}
-                        {{ organization.organization!.name }} ({{
-                            organization.subscriber!.name
-                        }})
+                        {{ workspace.name }} ({{ workspace.organization!.name }})
                     </label>
                 </div>
             </div>
@@ -248,14 +244,14 @@
                         >
                             <span class="ml-2">
                                 {{
-                                    selectedOrganization &&
-                                    selectedOrganization.name &&
-                                    selectedOrganization.name.length > maxLength
-                                        ? selectedOrganization.name.slice(0, maxLength) +
+                                    selectedWorkspace &&
+                                    selectedWorkspace.name &&
+                                    selectedWorkspace.name.length > maxLength
+                                        ? selectedWorkspace.name.slice(0, maxLength) +
                                           "..."
-                                        : selectedOrganization.name
+                                        : selectedWorkspace.name
                                 }}
-                                ({{ currentSubscriber.name }})
+                                ({{ currentOrganization.name }})
                             </span>
                             <span
                                 class="flex-grow-1 flex align-items-center justify-content-center"
@@ -398,7 +394,7 @@
         <div>
             <p-button
                 styleClass="text-white bg-light-green"
-                (click)="logout()"
+                (onClick)="logout()"
                 [ariaLabel]="'common.logout' | translate"
                 class="mx-1"
                 icon="pi pi-sign-out"

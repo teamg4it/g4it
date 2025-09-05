@@ -98,23 +98,23 @@ export class InventoriesFootprintComponent implements OnInit {
 
     async ngOnInit() {
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
-        const currentOrgName = (
-            await firstValueFrom(this.userService.currentOrganization$)
+        const currentWorkspaceName = (
+            await firstValueFrom(this.userService.currentWorkspace$)
         ).name;
         this.global.setLoading(true);
         this.digitalBusinessService.initCountryMap();
-        this.getDataApis(currentOrgName, criteria);
+        this.getDataApis(currentWorkspaceName, criteria);
     }
 
-    getDataApis(currentOrgName: string, criteria: string | null) {
+    getDataApis(currentWorkspaceName: string, criteria: string | null) {
         forkJoin([
             this.footprintDataService
                 .getFootprint(this.inventoryId)
                 .pipe(
                     map((data) =>
-                        this.inventoryUtilService.removeOrganizationNameFromCriteriaType(
+                        this.inventoryUtilService.removeWorkspaceNameFromCriteriaType(
                             data,
-                            currentOrgName,
+                            currentWorkspaceName,
                         ),
                     ),
                 ),
@@ -123,9 +123,9 @@ export class InventoriesFootprintComponent implements OnInit {
                 .getPhysicalEquipments(this.inventoryId)
                 .pipe(
                     map((data) =>
-                        this.inventoryUtilService.removeOrganizationNameFromType(
+                        this.inventoryUtilService.removeWorkspaceNameFromType(
                             data,
-                            currentOrgName,
+                            currentWorkspaceName,
                         ),
                     ),
                 ),

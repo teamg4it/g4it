@@ -8,7 +8,7 @@
 import { Injectable } from "@angular/core";
 import { ReplaySubject, filter, map } from "rxjs";
 import { UserDataService } from "../data/user-data.service";
-import { Organization, Subscriber, User } from "./../../interfaces/user.interfaces";
+import { Organization, User, Workspace } from "./../../interfaces/user.interfaces";
 
 import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -21,17 +21,17 @@ import { BasicRoles, Role } from "../../interfaces/roles.interfaces";
 })
 export class UserService {
     ecoDesignPercent = 77;
-    public organizationSubject = new ReplaySubject<Organization>(1);
+    public workspaceSubject = new ReplaySubject<Workspace>(1);
 
-    public subscriberSubject = new ReplaySubject<Subscriber>(1);
+    public organizationSubject = new ReplaySubject<Organization>(1);
 
     private readonly rolesSubject = new ReplaySubject<Role[]>(1);
 
     roles$ = this.rolesSubject.asObservable();
 
-    currentSubscriber$ = this.subscriberSubject.asObservable();
-
     currentOrganization$ = this.organizationSubject.asObservable();
+
+    currentWorkspace$ = this.workspaceSubject.asObservable();
 
     user$ = this.userDataService.userSubject.asObservable();
 
@@ -82,13 +82,19 @@ export class UserService {
                 .pipe(filter((event) => event instanceof NavigationEnd))
                 .subscribe(() => {
                     this.userDataService.userSubject.subscribe((currentUser) => {
-                        const [_, subscribers, subscriberName, _1, organizationId, page] =
-                            this.router.url.split("/");
+                        const [
+                            _,
+                            organizations,
+                            organizationName,
+                            _1,
+                            workspaceId,
+                            page,
+                        ] = this.router.url.split("/");
                         this.handleRoutingEvents(
-                            subscribers,
+                            organizations,
                             currentUser,
-                            subscriberName,
-                            organizationId,
+                            organizationName,
+                            workspaceId,
                             page,
                         );
                     });
@@ -97,18 +103,18 @@ export class UserService {
     }
 
     handleRoutingEvents(
-        subscribers: string,
+        organizations: string,
         currentUser: User,
-        subscriberName: string,
-        organizationId: string,
+        organizationName: string,
+        workspaceId: string,
         page: string,
     ): void {
-        if (subscribers === "something-went-wrong") {
+        if (organizations === "something-went-wrong") {
             return;
         }
 
-        if (currentUser.subscribers.length === 0) {
-            this.errorMessage("subscriber-or-organization-not-found");
+        if (currentUser.organizations.length === 0) {
+            this.errorMessage("organization-or-workspace-not-found");
             this.router.navigateByUrl(`something-went-wrong/403`);
             return;
         }
@@ -119,74 +125,74 @@ export class UserService {
         ) {
             return this.handlePageRouting(
                 currentUser,
-                subscriberName,
-                organizationId,
+                organizationName,
+                workspaceId,
                 page,
             );
         }
 
-        return this.subscriberOrganizationHandling(currentUser, subscribers);
+        return this.organizationWorkspaceHandling(currentUser, organizations);
     }
 
     handlePageRouting(
         currentUser: User,
-        subscriberName: string,
-        organizationId: string,
+        organizationName: string,
+        workspaceId: string,
         page: string,
     ): void {
-        const subscriber = currentUser?.subscribers.find(
-            (sub: any) => sub.name == subscriberName,
+        const organization = currentUser?.organizations.find(
+            (org) => org.name == organizationName,
         );
 
-        const organization = subscriber?.organizations.find(
-            (org: any) => org.id === Number(organizationId),
+        const workspace = organization?.workspaces.find(
+            (w) => w.id === Number(workspaceId),
         );
 
-        if (subscriber === undefined) {
-            this.errorMessage("insuffisant-right-subscriber");
-            this.router.navigateByUrl("/");
-            return;
-        }
         if (organization === undefined) {
             this.errorMessage("insuffisant-right-organization");
             this.router.navigateByUrl("/");
             return;
         }
-        this.setSubscriberAndOrganization(subscriber, organization);
-        if (!this.checkIfAllowed(subscriber, organization, page)) {
+        if (workspace === undefined) {
+            this.errorMessage("insuffisant-right-workspace");
+            this.router.navigateByUrl("/");
+            return;
+        }
+        this.setOrganizationAndWorkspace(organization, workspace);
+        if (!this.checkIfAllowed(organization, workspace, page)) {
             this.router.navigateByUrl(Constants.WELCOME_PAGE);
         }
     }
 
-    subscriberOrganizationHandling(currentUser: User, subscribers: string): void {
-        // If the url is unknown, we set the default subscriber and the default organization
-        let subscriber: Subscriber | undefined = this.getSubscriber(currentUser);
-        let organization: Organization | undefined;
+    organizationWorkspaceHandling(currentUser: User, organizations: string): void {
+        // If the url is unknown, we set the default organization and the default workspace
+        let organization: Organization | undefined = this.getOrganization(currentUser);
+        let workspace: Workspace | undefined;
 
-        if (subscriber) {
-            organization = this.getOrganization(subscriber);
+        if (organization) {
+            workspace = this.getWorkspace(organization);
         }
 
-        if (Constants.VALID_PAGES.includes(subscribers)) {
-            this.setSubscriberAndOrganization(subscriber, organization!);
+        if (Constants.VALID_PAGES.includes(organizations)) {
+            this.setOrganizationAndWorkspace(organization, workspace!);
             return;
         }
-        if (subscribers === "administration") {
+        if (organizations === "administration") {
             if (this.hasAnyAdminRole(currentUser)) {
-                this.setSubscriberAndOrganization(subscriber, organization!);
+                this.setOrganizationAndWorkspace(organization, workspace!);
                 return;
             } else {
-                this.setSubscriberAndOrganization(subscriber, organization!);
+                this.setOrganizationAndWorkspace(organization, workspace!);
                 this.router.navigateByUrl(Constants.WELCOME_PAGE);
             }
         }
 
-        if (subscriber && organization) {
+        if (organization && workspace) {
             for (const type of ["inventories", "digital-services"]) {
-                if (this.checkIfAllowed(subscriber, organization, type)) {
-                    this.setSubscriberAndOrganization(subscriber, organization);
+                if (this.checkIfAllowed(organization, workspace, type)) {
+                    this.setOrganizationAndWorkspace(organization, workspace);
                     this.router.navigateByUrl(
-                        `subscribers/${subscriber.name}/organizations/${organization.id}/${type}`,
+                        `organizations/${organization.name}/workspaces/${workspace.id}/${type}`,
                     );
                     break;
                 }
@@ -194,44 +200,45 @@ export class UserService {
         }
     }
 
-    getOrganization(subscriber: Subscriber): Organization {
-        let organization: Organization | undefined;
-        let organizationNameLS = localStorage.getItem("currentOrganization") ?? undefined;
+    getWorkspace(organization: Organization): Workspace {
+        let workspace: Workspace | undefined;
+        let workspaceNameLS = localStorage.getItem("currentWorkspace") ?? undefined;
 
-        if (organizationNameLS && Number.isNaN(organizationNameLS)) {
-            localStorage.removeItem("currentOrganization");
-            organizationNameLS = undefined;
+        if (workspaceNameLS && Number.isNaN(workspaceNameLS)) {
+            localStorage.removeItem("currentWorkspace");
+            workspaceNameLS = undefined;
         }
 
-        if (organizationNameLS) {
-            const tmpOrgs = subscriber.organizations.filter(
-                (o) => o.id === Number(organizationNameLS),
+        if (workspaceNameLS) {
+            const tmpWorkspaces = organization.workspaces.filter(
+                (o) => o.id === Number(workspaceNameLS),
             );
-            if (tmpOrgs.length > 0) {
-                organization = tmpOrgs[0];
+            if (tmpWorkspaces.length > 0) {
+                workspace = tmpWorkspaces[0];
             }
         }
-        if (organization === undefined) organization = subscriber.organizations[0];
-        return organization;
+        if (workspace === undefined) workspace = organization.workspaces[0];
+        return workspace;
     }
 
-    getSubscriber(currentUser: User): Subscriber {
-        let subscriber: Subscriber | undefined;
-        const subscriberNameLS = localStorage.getItem("currentSubscriber") ?? undefined;
+    getOrganization(currentUser: User): Organization {
+        let organization: Organization | undefined;
+        const organizationNameLS =
+            localStorage.getItem("currentOrganization") ?? undefined;
 
-        if (subscriberNameLS) {
-            const tmpSubs = currentUser.subscribers.filter(
-                (s) => s.name === subscriberNameLS,
+        if (organizationNameLS) {
+            const tmpSubs = currentUser.organizations.filter(
+                (s) => s.name === organizationNameLS,
             );
             if (tmpSubs.length === 0) {
-                subscriber = currentUser.subscribers[0];
+                organization = currentUser.organizations[0];
             } else {
-                subscriber = tmpSubs[0];
+                organization = tmpSubs[0];
             }
         } else {
-            subscriber = currentUser.subscribers[0];
+            organization = currentUser.organizations[0];
         }
-        return subscriber;
+        return organization;
     }
 
     errorMessage(key: string): void {
@@ -249,39 +256,39 @@ export class UserService {
     }
 
     hasAnySubscriberAdminRole(user: User): boolean {
-        return user.subscribers.some((subscriber) =>
-            subscriber.roles.includes(Role.SubscriberAdmin),
+        return user.organizations.some((organization) =>
+            organization.roles.includes(Role.SubscriberAdmin),
         );
     }
 
     hasAnyOrganizationAdminRole(user: User): boolean {
-        return user.subscribers.some((subscriber) =>
-            subscriber.organizations.some((organization) =>
-                organization.roles.includes(Role.OrganizationAdmin),
+        return user.organizations.some((organization) =>
+            organization.workspaces.some((workspace) =>
+                workspace.roles.includes(Role.OrganizationAdmin),
             ),
         );
     }
 
-    getRoles(subscriber: Subscriber, organization: Organization): Role[] {
-        if (subscriber.roles.includes(Role.SubscriberAdmin)) {
+    getRoles(organization: Organization, workspace: Workspace): Role[] {
+        if (organization.roles.includes(Role.SubscriberAdmin)) {
             return [Role.SubscriberAdmin, Role.OrganizationAdmin, ...BasicRoles];
         }
 
-        if (organization.roles.includes(Role.OrganizationAdmin)) {
+        if (workspace.roles.includes(Role.OrganizationAdmin)) {
             return [Role.OrganizationAdmin, ...BasicRoles];
         }
 
-        const roles = [...organization.roles];
+        const roles = [...workspace.roles];
 
-        if (organization.roles.includes(Role.InventoryWrite)) {
+        if (workspace.roles.includes(Role.InventoryWrite)) {
             roles.push(Role.InventoryRead);
         }
 
-        if (organization.roles.includes(Role.DigitalServiceWrite)) {
+        if (workspace.roles.includes(Role.DigitalServiceWrite)) {
             roles.push(Role.DigitalServiceRead);
         }
 
-        if (organization.roles.includes(Role.EcoMindAiWrite)) {
+        if (workspace.roles.includes(Role.EcoMindAiWrite)) {
             roles.push(Role.EcoMindAiRead);
         }
 
@@ -289,11 +296,11 @@ export class UserService {
     }
 
     checkIfAllowed(
-        subscriber: Subscriber,
         organization: Organization,
+        workspace: Workspace,
         uri: string,
     ): boolean {
-        let roles: Role[] = this.getRoles(subscriber, organization);
+        let roles: Role[] = this.getRoles(organization, workspace);
 
         if (Constants.VALID_PAGES.includes(uri)) {
             return true;
@@ -310,7 +317,7 @@ export class UserService {
         if (
             uri === "eco-mind-ai" &&
             roles.includes(Role.EcoMindAiRead) &&
-            subscriber.ecomindai
+            organization.ecomindai
         ) {
             return true;
         }
@@ -326,31 +333,28 @@ export class UserService {
         return false;
     }
 
-    setSubscriberAndOrganization(
-        subscriber: Subscriber,
-        organization: Organization,
-    ): void {
-        this.subscriberSubject.next(subscriber);
+    setOrganizationAndWorkspace(organization: Organization, workspace: Workspace): void {
         this.organizationSubject.next(organization);
-        localStorage.setItem("currentSubscriber", subscriber.name);
-        localStorage.setItem("currentOrganization", organization.id.toString());
-        this.rolesSubject.next(this.getRoles(subscriber, organization));
+        this.workspaceSubject.next(workspace);
+        localStorage.setItem("currentOrganization", organization.name);
+        localStorage.setItem("currentWorkspace", workspace.id.toString());
+        this.rolesSubject.next(this.getRoles(organization, workspace));
     }
 
     checkAndRedirect(
-        subscriber: Subscriber,
         organization: Organization,
+        workspace: Workspace,
         page: string,
     ): void {
-        this.setSubscriberAndOrganization(subscriber, organization);
-        if (this.checkIfAllowed(subscriber, organization, page)) {
+        this.setOrganizationAndWorkspace(organization, workspace);
+        if (this.checkIfAllowed(organization, workspace, page)) {
             if (
                 page === "inventories" ||
                 page === "digital-services" ||
                 page === "eco-mind-ai"
             ) {
                 this.router.navigateByUrl(
-                    `subscribers/${subscriber.name}/organizations/${organization.id}/${page}`,
+                    `organizations/${organization.name}/workspaces/${workspace.id}/${page}`,
                 );
             }
         } else {
@@ -359,17 +363,17 @@ export class UserService {
     }
 
     getSelectedPage(): string {
-        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
+        let [_, organizations, _1, _2, _3, page] = this.router.url.split("/");
 
         const validPages = ["administration", ...Constants.VALID_PAGES];
-        return validPages.includes(subscribers) ? subscribers : page;
+        return validPages.includes(organizations) ? organizations : page;
     }
 
     composeEmail(
-        currentSubscriber: Subscriber,
-        selectedOrganization: Organization,
+        currentOrganization: Organization,
+        selectedWorkspace: Workspace,
     ): string {
-        let subject = `[${currentSubscriber.name}/${selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
+        let subject = `[${currentOrganization.name}/${selectedWorkspace?.id}] ${Constants.SUBJECT_MAIL}`;
         return `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
     }
 }

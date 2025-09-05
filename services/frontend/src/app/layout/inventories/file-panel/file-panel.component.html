@@ -123,7 +123,7 @@
             </div>
 
             <p-button
-                (click)="addComponent()"
+                (onClick)="addComponent()"
                 label="+ {{ 'common.add' | translate }}"
                 styleClass="px-4 py-2 border-round-3xl text-xs font-semibold yellow-button-file"
             />
@@ -167,13 +167,13 @@
                 <p-button
                     id="cancel-new-inventory"
                     styleClass="white-button"
-                    (click)="close()"
+                    (onClick)="close()"
                     >{{ "common.cancel" | translate }}</p-button
                 >
                 <p-button
                     styleClass="black-button"
                     type="submit"
-                    (click)="submitFormData()"
+                    (onClick)="submitFormData()"
                     [disabled]="
                         (purpose === 'new' && (name === '' || checkForDuplicate())) ||
                         (purpose === 'upload' && !isFileUploaded())

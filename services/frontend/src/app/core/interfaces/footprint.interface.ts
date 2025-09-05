@@ -122,7 +122,7 @@ export interface Datacenter {
 }
 
 export interface PhysicalEquipment {
-    organisation: string;
+    workspace: string;
     inventoryDate: string;
     country: string | null;
     type: string;
@@ -134,7 +134,7 @@ export interface PhysicalEquipment {
 }
 
 export interface PhysicalEquipmentAvgAge {
-    organisation: string;
+    workspace: string;
     inventoryDate: string;
     country: string | null;
     type: string;

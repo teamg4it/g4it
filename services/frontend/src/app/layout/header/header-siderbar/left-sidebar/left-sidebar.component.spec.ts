@@ -59,7 +59,7 @@ describe("LeftSidebarComponent", () => {
             if (key === "common.active-page") return "Active";
             return key;
         });
-        component.selectedOrganization = { name: "Org" } as any;
+        component.selectedWorkspace = { name: "Org" } as any;
         component.selectedPage.set("welcome-page");
         const result = component.getTitle("welcome-page.title", "welcome-page");
         expect(result).toContain("Welcome");
@@ -72,7 +72,7 @@ describe("LeftSidebarComponent", () => {
             if (key === "welcome-page.title") return "Welcome";
             return key;
         });
-        component.selectedOrganization = { name: "Org" } as any;
+        component.selectedWorkspace = { name: "Org" } as any;
         component.selectedPage.set("other-page");
         const result = component.getTitle("welcome-page.title", "welcome-page");
         expect(result).toBe("Welcome");

@@ -18,12 +18,12 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { Subscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     Organization,
     OrganizationData,
     User,
     UserInfo,
+    Workspace,
 } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -64,19 +64,19 @@ export class LeftSidebarComponent implements OnInit {
 
     selectedLanguage: string = "en";
 
-    organizations: OrganizationData[] = [];
+    workspaces: OrganizationData[] = [];
 
-    selectedOrganization: Organization = {} as Organization;
-    selectedOrganizationData: OrganizationData | undefined = undefined;
+    selectedWorkspace: Workspace = {} as Workspace;
+    selectedWorkspaceData: OrganizationData | undefined = undefined;
     selectedPath = "";
 
-    currentSubscriber: Subscriber = {} as Subscriber;
+    currentOrganization: Organization = {} as Organization;
 
-    isAdminOnSubscriberOrOrganization = false;
+    isAdminOnWorkspaceOrOrganization = false;
     userDetails!: UserInfo;
     isZoomedIn = computed(() => this.globalStore.zoomLevel() >= 150);
     isZoomedIn125 = computed(() => this.globalStore.zoomLevel() >= 125);
-    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindEnabledForCurrentOrganization: boolean = false;
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
     isMobile = computed(() => this.globalStore.mobileView());
 
@@ -98,39 +98,40 @@ export class LeftSidebarComponent implements OnInit {
                     lastName: user.lastName,
                     email: user.email,
                 };
-                this.organizations = [];
-                user.subscribers.forEach((subscriber: any) => {
-                    subscriber.organizations.forEach((organization: any) => {
-                        this.organizations.push({
-                            color: generateColor(organization.name + subscriber.name),
-                            id: organization.id,
-                            name: organization.name,
+                this.workspaces = [];
+                user.organizations.forEach((organization) => {
+                    organization.workspaces.forEach((workspace) => {
+                        this.workspaces.push({
+                            color: generateColor(workspace.name + organization.name),
+                            id: workspace.id,
+                            name: workspace.name,
+                            workspace,
                             organization,
-                            subscriber: subscriber,
                         });
                     });
                 });
-                this.isAdminOnSubscriberOrOrganization =
+                this.isAdminOnWorkspaceOrOrganization =
                     this.userService.hasAnyAdminRole(user);
             });
 
-        this.userService.currentSubscriber$.subscribe((subscriber: any) => {
-            this.currentSubscriber = subscriber;
-            this.isEcoMindEnabledForCurrentSubscriber = this.currentSubscriber.ecomindai;
+        this.userService.currentOrganization$.subscribe((organization) => {
+            this.currentOrganization = organization;
+            this.isEcoMindEnabledForCurrentOrganization =
+                this.currentOrganization.ecomindai;
         });
 
-        this.userService.currentOrganization$
+        this.userService.currentWorkspace$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((organization: any) => {
-                this.selectedOrganization = organization;
-                this.selectedOrganizationData = {
-                    color: generateColor(organization.name + this.currentSubscriber.name),
-                    id: organization.id,
-                    name: organization.name,
-                    organization,
-                    subscriber: this.currentSubscriber as any,
+            .subscribe((workspace) => {
+                this.selectedWorkspace = workspace;
+                this.selectedWorkspaceData = {
+                    color: generateColor(workspace.name + this.currentOrganization.name),
+                    id: workspace.id,
+                    name: workspace.name,
+                    workspace,
+                    organization: this.currentOrganization as any,
                 };
-                this.selectedPath = `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization?.id}`;
+                this.selectedPath = `/organizations/${this.currentOrganization.name}/workspaces/${this.selectedWorkspace?.id}`;
             });
     }
 
@@ -143,12 +144,12 @@ export class LeftSidebarComponent implements OnInit {
     getTitle(name: string, page: string): any {
         return this.selectedPage() === page
             ? this.translate.instant(name, {
-                  OrganizationName: this.selectedOrganization.name,
+                  WorkspaceName: this.selectedWorkspace.name,
               }) +
                   " - " +
                   this.translate.instant("common.active-page")
             : this.translate.instant(name, {
-                  OrganizationName: this.selectedOrganization.name,
+                  WorkspaceName: this.selectedWorkspace.name,
               });
     }
 

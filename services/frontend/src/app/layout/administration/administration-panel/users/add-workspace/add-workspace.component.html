@@ -7,7 +7,7 @@
     >
         {{ "administration.user.accessAndRole" | translate }}
     </div>
-    {{ organization?.organizationName }}
+    {{ workspace.organizationName }}
     <br />
 
     <div>
@@ -103,14 +103,14 @@
         <p-button
             styleClass="white-button-sidebar"
             class="pr-3 pl-3"
-            (click)="cancel()"
+            (onClick)="cancel()"
             >{{ "common.cancel" | translate }}</p-button
         >
         <p-button
             styleClass="black-button-sidebar"
             [disabled]="!adminModule"
             type="submit"
-            (click)="addUpdateOrg()"
+            (onClick)="addUpdateWorkspace()"
             *ngIf="!updateOrganizationEnable"
             id="add-button"
         >
@@ -121,7 +121,7 @@
             *ngIf="updateOrganizationEnable"
             [disabled]="!adminModule"
             type="submit"
-            (click)="addUpdateOrg()"
+            (onClick)="addUpdateWorkspace()"
             id="update-button"
         >
             <span>{{ "common.save" | translate }}</span>

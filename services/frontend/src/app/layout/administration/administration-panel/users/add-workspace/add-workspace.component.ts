@@ -18,6 +18,7 @@ import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { take } from "rxjs";
+import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import { Role, RoleValue } from "src/app/core/interfaces/roles.interfaces";
 import { UserDetails } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
@@ -27,14 +28,14 @@ import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 
 @Component({
-    selector: "app-add-organization",
-    templateUrl: "./add-organization.component.html",
+    selector: "app-add-workspace",
+    templateUrl: "./add-workspace.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class AddOrganizationComponent {
+export class AddWorkspaceComponent {
     @Input() userDetail!: UserDetails;
     @Input() userDetailEcoMind: boolean = false;
-    @Input() organization: any;
+    @Input() workspace!: WorkspaceWithOrganization;
     @Input() clearForm!: false;
     @Output() close: EventEmitter<any> = new EventEmitter();
     @Input() updateOrganizationEnable = false;
@@ -58,7 +59,7 @@ export class AddOrganizationComponent {
 
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
-    private destroyRef = inject(DestroyRef);
+    private readonly destroyRef = inject(DestroyRef);
     constructor(
         public administrationService: AdministrationService,
         private readonly translate: TranslateService,
@@ -143,7 +144,7 @@ export class AddOrganizationComponent {
         return undefined;
     }
 
-    getOrganizationBody() {
+    getWorkspaceBody() {
         let roles: string[] = [];
 
         if (this.adminModule.code === Role.OrganizationAdmin) {
@@ -154,7 +155,7 @@ export class AddOrganizationComponent {
             if (this.ecomindModule) roles.push(this.ecomindModule.code);
         }
         return {
-            organizationId: this.organization.organizationId,
+            workspaceId: this.workspace.workspaceId,
             users: [
                 {
                     userId: this.userDetail?.id,
@@ -164,9 +165,9 @@ export class AddOrganizationComponent {
         };
     }
 
-    addUpdateOrg() {
+    addUpdateWorkspace() {
         this.administrationService
-            .postUserToOrganizationAndAddRoles(this.getOrganizationBody())
+            .postUserToWorkspaceAndAddRoles(this.getWorkspaceBody())
             .subscribe(() => {
                 this.userService.user$
                     .pipe(takeUntilDestroyed(this.destroyRef))
@@ -176,7 +177,7 @@ export class AddOrganizationComponent {
                             .pipe(take(1))
                             .subscribe(() => {
                                 const currentUserRoles =
-                                    this.getOrganizationBody().users.find(
+                                    this.getWorkspaceBody().users.find(
                                         (u) => u.userId === user.id,
                                     )?.roles;
                                 const isAdmin =
@@ -227,8 +228,8 @@ export class AddOrganizationComponent {
     }
 
     restrictAdminRoleByDomain() {
-        if (this.organization.authorizedDomains) {
-            this.isAdminRoleDisabled = !this.organization.authorizedDomains.includes(
+        if (this.workspace.authorizedDomains) {
+            this.isAdminRoleDisabled = !this.workspace.authorizedDomains.includes(
                 this.userDetail.email.split("@")[1],
             );
             if (this.isAdminRoleDisabled) {

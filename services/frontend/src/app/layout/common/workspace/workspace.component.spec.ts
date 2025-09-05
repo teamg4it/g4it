@@ -19,10 +19,10 @@ describe("WorkspaceComponent", () => {
 
     beforeEach(async () => {
         mockWorkspaceService = jasmine.createSpyObj("WorkspaceService", [
-            "getDomainSubscribers",
+            "getDomainOrganizations",
             "setOpen", // Add setOpen to the mock
         ]);
-        mockWorkspaceService.getDomainSubscribers.and.returnValue(of([])); // Ensure it returns an observable
+        mockWorkspaceService.getDomainOrganizations.and.returnValue(of([])); // Ensure it returns an observable
 
         mockUserService = jasmine.createSpyObj("UserService", ["getRoles"]);
         mockUserService.getRoles.and.returnValue([]); // Ensure it returns a valid value
@@ -55,10 +55,10 @@ describe("WorkspaceComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should initialize with default spaceDetails and call getDomainSubscribersList", () => {
-        spyOn(component, "getDomainSubscribersList");
+    it("should initialize with default spaceDetails and call getDomainOrganizationsList", () => {
+        spyOn(component, "getDomainOrganizationsList");
         component.ngOnInit();
-        expect(component.getDomainSubscribersList).toHaveBeenCalled();
+        expect(component.getDomainOrganizationsList).toHaveBeenCalled();
         expect(component.selectedMenuIndex).toBe(0);
     });
 

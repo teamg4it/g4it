@@ -12,7 +12,7 @@ export interface User {
     firstName: string;
     lastName: string;
     id: number;
-    subscribers: Subscriber[];
+    organizations: Organization[];
     isSuperAdmin: boolean;
 }
 
@@ -22,18 +22,18 @@ export interface UserInfo {
     email: string;
 }
 
-export interface Subscriber {
+export interface Organization {
     id: number;
     name: string;
     defaultFlag: boolean;
-    organizations: Organization[];
+    workspaces: Workspace[];
     roles: Role[];
     criteria?: string[];
     authorizedDomains?: string[];
     ecomindai: boolean;
 }
 
-export interface Organization {
+export interface Workspace {
     id: number;
     name: string;
     defaultFlag: boolean;
@@ -42,14 +42,14 @@ export interface Organization {
     criteriaIs?: string[];
     criteriaDs?: string[];
     dataRetentionDays?: number | null;
-    subscriberId?: number;
+    organizationId?: number;
 }
 
 export interface OrganizationData {
     id: number;
     name: string;
+    workspace?: Workspace;
     organization?: Organization;
-    subscriber?: Subscriber;
     color: string;
 }
 
