@@ -102,7 +102,7 @@ public class AuthService {
     /**
      * Get organization and workspace
      *
-     * @return the pair (sub, org)
+     * @return the pair (org, workspace)
      */
     public Pair<String, String> getOrganizationAndWorkspace(String[] urlSplit) {
         if (urlSplit == null)
@@ -195,7 +195,7 @@ public class AuthService {
             log.info("UserId={} is authorized with role={}", user.getId(), Constants.ROLE_SUPER_ADMINISTRATOR);
             List<String> allRoles = new ArrayList<>();
             allRoles.add(Constants.ROLE_SUPER_ADMINISTRATOR);
-            allRoles.addAll(Constants.SUBSCRIBER_ROLES);
+            allRoles.addAll(Constants.ORGANIZATION_ROLES);
             return allRoles;
         }
 
@@ -204,9 +204,9 @@ public class AuthService {
                 .findAny()
                 .orElseThrow(() -> new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, String.format("The organization %s is not allowed.", organizationName)));
 
-        if (organization.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)) {
-            log.info("UserId={} is authorized for {}/{} with roles={}", user.getId(), organization.getName(), workspaceId, Constants.ROLE_SUBSCRIBER_ADMINISTRATOR);
-            return Constants.SUBSCRIBER_ROLES;
+        if (organization.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)) {
+            log.info("UserId={} is authorized for {}/{} with roles={}", user.getId(), organization.getName(), workspaceId, Constants.ROLE_ORGANIZATION_ADMINISTRATOR);
+            return Constants.ORGANIZATION_ROLES;
         }
 
         // Retrieve organization from uri, in second position.
@@ -232,7 +232,7 @@ public class AuthService {
         if (roles.contains(Constants.ROLE_ECO_MIND_AI_WRITE)) {
             roles.add(Constants.ROLE_ECO_MIND_AI_READ);
         }
-        if (roles.contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)) {
+        if (roles.contains(Constants.ROLE_WORKSPACE_ADMINISTRATOR)) {
             roles.addAll(Constants.ALL_BASIC_ROLES);
         }
 

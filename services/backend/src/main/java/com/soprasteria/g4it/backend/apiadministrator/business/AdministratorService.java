@@ -81,14 +81,14 @@ public class AdministratorService {
         administratorRoleService.hasAdminRightsOnAnyOrganizationOrAnyWorkspace(user);
 
         List<OrganizationBO> resultOrganizationAdmin = user.getOrganizations().stream()
-                .filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)).toList();
+                .filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
 
         List<OrganizationBO> checkWorkspaceAdmin = user.getOrganizations().stream()
                 .filter(organizationBO -> organizationBO.getRoles().isEmpty()).toList();
         List<OrganizationBO> result = new ArrayList<>(resultOrganizationAdmin);
         for (OrganizationBO orgBO : checkWorkspaceAdmin) {
             List<WorkspaceBO> workspace = orgBO.getWorkspaces().stream()
-                    .filter(workspaceBO -> workspaceBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
+                    .filter(workspaceBO -> workspaceBO.getRoles().contains(Constants.ROLE_WORKSPACE_ADMINISTRATOR)).toList();
             if (!workspace.isEmpty()) {
                 orgBO.setWorkspaces(workspace);
                 result.add(orgBO);

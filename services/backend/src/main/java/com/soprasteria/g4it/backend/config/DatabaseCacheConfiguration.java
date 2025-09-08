@@ -25,7 +25,7 @@ public class DatabaseCacheConfiguration {
      * Clear all cache configuration.
      */
     @CacheEvict(value = {
-            "Organization",
+            "Workspace",
             "getBusinessHours",
             "ref_getAllLifecycleSteps",
             "ref_getAllCriteria",

@@ -63,13 +63,13 @@ class AuthServiceTest {
                                         .name(ORGANIZATION)
                                         .roles(List.of())
                                         .build()))
-                                .roles(List.of(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
+                                .roles(List.of(Constants.ROLE_ORGANIZATION_ADMINISTRATOR))
                                 .build())
                 )
                 .build();
 
         List<String> actual = ReflectionTestUtils.invokeMethod(authService, "controlAccess", adminSubscriber, SUBSCRIBER, ORGANIZATION_ID);
-        Assertions.assertEquals(Constants.SUBSCRIBER_ROLES, actual);
+        Assertions.assertEquals(Constants.ORGANIZATION_ROLES, actual);
     }
 
 

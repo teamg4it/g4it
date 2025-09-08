@@ -9,10 +9,7 @@ package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
-import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.UserRoleWorkspaceRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,8 +40,8 @@ public class NewUserService {
     /**
      * Create the user and its related objects
      *
-     * @param organization  the subscriber
-     * @param demoWorkspace the demo organization
+     * @param organization  the organization
+     * @param demoWorkspace the demo workspace
      * @param newUser       the new user
      * @param userInfo      the userInfo (email, firstName, lastname and subject)
      * @param accessRoles   the list of roles
@@ -63,14 +60,14 @@ public class NewUserService {
 
         if (accessRoles == null) return newUser;
 
-        // Link user with subscriber
+        // Link user with organization
         userOrganizationRepository.save(UserOrganization.builder()
                 .user(newUser)
                 .organization(organization)
                 .defaultFlag(true)
                 .build());
 
-        //Link user with organization
+        //Link user with workspace
         final UserWorkspace userWorkspace = userWorkspaceRepository.save(UserWorkspace.builder()
                 .user(newUser)
                 .workspace(demoWorkspace)
@@ -102,12 +99,12 @@ public class NewUserService {
      * add new user in g4it_user
      *
      * @param userInfo     the userInfo
-     * @param organization the subscriber
-     * @param demoOrg      the organization
+     * @param organization the organization
+     * @param demoWork      the workspace
      * @param accessRoles  the access Roles
      * @return the user.
      */
-    private User createNewUser(final UserBO userInfo, final Organization organization, final Workspace demoOrg, final List<Role> accessRoles) {
+    private User createNewUser(final UserBO userInfo, final Organization organization, final Workspace demoWork, final List<Role> accessRoles) {
         User userToCreate = User.builder()
                 .email(userInfo.getEmail())
                 .firstName(userInfo.getFirstName())
@@ -125,7 +122,7 @@ public class NewUserService {
                             .build()));
 
             userToCreate.setUserWorkspaces(List.of(UserWorkspace.builder()
-                    .workspace(demoOrg)
+                    .workspace(demoWork)
                     .defaultFlag(true)
                     .roles(accessRoles)
                     .build()));

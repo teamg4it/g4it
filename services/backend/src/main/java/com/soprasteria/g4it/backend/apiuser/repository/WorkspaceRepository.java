@@ -58,18 +58,18 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
     List<Workspace> findAllByIsMigrated(Boolean isMigrated);
 
     /**
-     * Find workspace by workspace's name and organization's id.
+     * Find workspace by workspace name and organization's id.
      *
      * @param organizationId the organization's id
-     * @param workspaceName  the workspace's name
+     * @param workspaceName  the workspace name
      * @return workspace
      */
     Optional<Workspace> findByOrganizationIdAndName(final Long organizationId, final String workspaceName);
 
     /**
-     * Find workspace by workspace's id and organization's id and workspace's statuses.
+     * Find workspace by workspace id and organization's id and workspace statuses.
      *
-     * @param workspaceId    the workspace's id
+     * @param workspaceId    the workspace id
      * @param organizationId the organization's id
      * @param status         the status.
      * @return workspace

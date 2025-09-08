@@ -15,19 +15,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Organization Business Object.
+ * Workspace Business Object.
  */
 @Data
 @SuperBuilder
 public class WorkspaceBO {
 
     /**
-     * The Organization's id.
+     * The Workspace id.
      */
     private Long id;
 
     /**
-     * The Organization's name.
+     * The Workspace name.
      */
     private String name;
 
@@ -57,11 +57,11 @@ public class WorkspaceBO {
     private List<String> criteriaDs;
 
     /**
-     * User roles on organization.
+     * User roles on Workspace.
      */
     private List<String> roles;
 
-    private Long subscriberId;
+    private Long organizationId;
 
     @EqualsAndHashCode.Exclude
     private LocalDateTime creationDate;

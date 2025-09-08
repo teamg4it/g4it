@@ -16,7 +16,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 /**
- * Organization Mapper.
+ * Workspace Mapper.
  */
 @Mapper(componentModel = "spring", uses = {DateMapper.class})
 public interface WorkspaceMapper {
@@ -24,8 +24,8 @@ public interface WorkspaceMapper {
     /**
      * Map an entity to business object.
      *
-     * @param workspace the Organization
-     * @return the Organization.
+     * @param workspace the Workspace
+     * @return the Workspace.
      */
     WorkspaceBO toBusinessObject(final Workspace workspace);
 
@@ -33,11 +33,11 @@ public interface WorkspaceMapper {
     /**
      * Map object to entity.
      *
-     * @param name         the organization name.
-     * @param organization the subscriber.
+     * @param name         the workspace name.
+     * @param organization the organization.
      * @param user         the user.
      * @param status       the status.
-     * @return the organization entity.
+     * @return the workspace entity.
      */
     @Mapping(target = "organization", source = "organization")
     @Mapping(target = "name", source = "name")

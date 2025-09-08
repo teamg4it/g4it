@@ -24,7 +24,7 @@ public interface WorkspaceRestMapper {
      * Map a business object to dto object.
      *
      * @param businessObject the source.
-     * @return the OrganizationRest.
+     * @return the WorkspaceRest.
      */
     WorkspaceRest toDto(final WorkspaceBO businessObject);
 
@@ -32,7 +32,7 @@ public interface WorkspaceRestMapper {
      * Map a business object list to dto object list.
      *
      * @param businessObject the source.
-     * @return the OrganizationRest list.
+     * @return the WorkspaceRest list.
      */
     List<WorkspaceRest> toDto(final List<WorkspaceBO> businessObject);
 

@@ -63,18 +63,18 @@ public class InventoryController implements InventoryApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InventoryRest>> getInventories(final String subscriber, final Long organization, final Long inventoryId) {
-        return ResponseEntity.ok().body(inventoryRestMapper.toRest(this.inventoryService.getInventories(subscriber, organization, inventoryId)));
+    public ResponseEntity<List<InventoryRest>> getInventories(final String organization, final Long workspace, final Long inventoryId) {
+        return ResponseEntity.ok().body(inventoryRestMapper.toRest(this.inventoryService.getInventories(workspace, inventoryId)));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteInventories(final String subscriber, final Long organization) {
-        log.info("Start Delete inventory for organization {}", organization);
-        inventoryDeleteService.deleteInventories(subscriber, organization);
-        log.info("End Delete inventory for organization {}", organization);
+    public ResponseEntity<Void> deleteInventories(final String organization, final Long workspace) {
+        log.info("Start Delete inventory for workspace {}", workspace);
+        inventoryDeleteService.deleteInventories(organization, workspace);
+        log.info("End Delete inventory for workspace {}", workspace);
         return ResponseEntity.noContent().<Void>build();
     }
 
@@ -82,12 +82,12 @@ public class InventoryController implements InventoryApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteInventory(final String subscriber,
-                                                final Long organization,
+    public ResponseEntity<Void> deleteInventory(final String organization,
+                                                final Long workspace,
                                                 final Long inventoryId) {
-        log.info("Start Delete inventory on organizationId={} - inventoryId={}", organization, inventoryId);
-        inventoryDeleteService.deleteInventory(subscriber, organization, inventoryId);
-        log.info("End Delete inventory on organizationId={} - inventoryId={}", organization, inventoryId);
+        log.info("Start Delete inventory on workspaceId={} - inventoryId={}", workspace, inventoryId);
+        inventoryDeleteService.deleteInventory(organization, workspace, inventoryId);
+        log.info("End Delete inventory on workspaceId={} - inventoryId={}", workspace, inventoryId);
         return ResponseEntity.noContent().<Void>build();
     }
 
@@ -96,20 +96,20 @@ public class InventoryController implements InventoryApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InventoryRest> createInventory(final String subscriber,
-                                                         final Long organization,
+    public ResponseEntity<InventoryRest> createInventory(final String organization,
+                                                         final Long workspace,
                                                          final InventoryCreateRest inventoryCreateRest) {
-        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.createInventory(subscriber, organization, inventoryCreateRest, authService.getUser())), HttpStatus.CREATED);
+        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.createInventory(organization, workspace, inventoryCreateRest, authService.getUser())), HttpStatus.CREATED);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InventoryRest> updateInventory(final String subscriber,
-                                                         final Long organization,
+    public ResponseEntity<InventoryRest> updateInventory(final String organization,
+                                                         final Long workspace,
                                                          final InventoryUpdateRest inventoryUpdateRest) {
-        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.updateInventory(subscriber, organization, inventoryUpdateRest, authService.getUser())), HttpStatus.OK);
+        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.updateInventory(organization, workspace, inventoryUpdateRest, authService.getUser())), HttpStatus.OK);
     }
 
 }

@@ -59,7 +59,7 @@ class UserServiceTest {
         final UserBO user = userService.getUserByName(UserBO.builder().email(EMAIL).build());
 
         Assertions.assertThat(user).isNotNull();
-        Assertions.assertThat(user.getOrganizations().getFirst().getRoles()).contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR);
+        Assertions.assertThat(user.getOrganizations().getFirst().getRoles()).contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR);
 
         verify(userRepository, times(1)).findByEmail(EMAIL);
     }

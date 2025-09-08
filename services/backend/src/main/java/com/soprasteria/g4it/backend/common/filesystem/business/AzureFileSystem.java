@@ -47,22 +47,22 @@ public class AzureFileSystem implements FileSystem {
      * {@inheritDoc}
      */
     @Override
-    public FileStorage mount(final String subscriber, final String organization) {
+    public FileStorage mount(final String organization, final String workspace) {
 
-        String organizationPrefix = organization;
+        String workspacePrefix = workspace;
 
         if(subEnv != null && !subEnv.isEmpty()) {
-            // If subEnv is not empty, we add it to the organization name
-            organizationPrefix = String.join("/", subEnv, organization);
+            // If subEnv is not empty, we add it to the workspace name
+            workspacePrefix = String.join("/", subEnv, workspace);
         }
 
 
-        // Retrieve subscriber's connectionString.
-        final String subscriberConnectionString = vaultAccessClient.getConnectionStringForSubscriber(subscriber);
+        // Retrieve organization's connectionString.
+        final String organizationConnectionString = vaultAccessClient.getConnectionStringForOrganization(organization);
 
-        // Find first subscriber's blob storage.
+        // Find first organization's blob storage.
         final BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-                .connectionString(subscriberConnectionString)
+                .connectionString(organizationConnectionString)
                 .buildClient();
         final ListBlobContainersOptions options = new ListBlobContainersOptions()
                 .setPrefix(G4IT_BLOB_CONTAINER_PREFIX)
@@ -70,13 +70,13 @@ public class AzureFileSystem implements FileSystem {
         final BlobContainerItem blobContainer = blobServiceClient.listBlobContainers(options, null)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new FileStorageAccessExcepton(String.format("Unable to find the storage of the subscriber %s.", subscriber)));
+                .orElseThrow(() -> new FileStorageAccessExcepton(String.format("Unable to find the storage of the organization %s.", organization)));
         final String storageName = blobContainer.getName();
 
         // Create the G4IT azureFileStorage service.
         return new AzureFileStorage(
                 blobServiceClient,
                 blobServiceClient.getBlobContainerClient(storageName),
-                organizationPrefix, String.join("/", "azure-blob:/", storageName));
+                workspacePrefix, String.join("/", "azure-blob:/", storageName));
     }
 }

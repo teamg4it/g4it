@@ -47,11 +47,11 @@ public class CheckPhysicalEquipmentService {
         genericRuleService.checkViolations(physicalEquipment,filename, line).ifPresent(errors::add);
 
         // check location is in country referential (itemImpacts - category = 'electricity-mix')
-        genericRuleService.checkLocation(context.getLocale(), context.getSubscriber(), filename, line, physicalEquipment.getLocation())
+        genericRuleService.checkLocation(context.getLocale(), context.getOrganization(), filename, line, physicalEquipment.getLocation())
                 .ifPresent(errors::add);
 
         // check type is in itemTypes referential
-        genericRuleService.checkType(context.getLocale(), context.getSubscriber(),filename, line, physicalEquipment.getType(), isDigitalService)
+        genericRuleService.checkType(context.getLocale(), context.getOrganization(),filename, line, physicalEquipment.getType(), isDigitalService)
                 .ifPresent(errors::add);
 
 

@@ -39,7 +39,7 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsPhysicalEquipmentsRest(final String subscriber, final Long organization, final String digitalServiceUid, final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
+    public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsPhysicalEquipmentsRest(final String organization, final Long workspace, final String digitalServiceUid, final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inPhysicalEquipmentService.createInPhysicalEquipmentDigitalService(digitalServiceUid, inPhysicalEquipmentRest), HttpStatus.CREATED);
     }
@@ -48,8 +48,8 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InPhysicalEquipmentRest>> getDigitalServiceInputsPhysicalEquipmentsRest(String subscriber,
-                                                                                                       Long organization,
+    public ResponseEntity<List<InPhysicalEquipmentRest>> getDigitalServiceInputsPhysicalEquipmentsRest(String organization,
+                                                                                                       Long workspace,
                                                                                                        String digitalServiceUid) {
         return ResponseEntity.ok().body(inPhysicalEquipmentService.getByDigitalService(digitalServiceUid));
     }
@@ -58,8 +58,8 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> getDigitalServiceInputsPhysicalEquipmentRest(String subscriber,
-                                                                                                Long organization,
+    public ResponseEntity<InPhysicalEquipmentRest> getDigitalServiceInputsPhysicalEquipmentRest(String organization,
+                                                                                                Long workspace,
                                                                                                 String digitalServiceUid,
                                                                                                 Long id) {
         return ResponseEntity.ok().body(inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
@@ -69,7 +69,7 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteDigitalServiceInputsPhysicalEquipmentRest(final String subscriber, final Long organization, final String digitalServiceUid, final Long id) {
+    public ResponseEntity<Void> deleteDigitalServiceInputsPhysicalEquipmentRest(final String organization, final Long workspace, final String digitalServiceUid, final Long id) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         inPhysicalEquipmentService.deleteInPhysicalEquipment(digitalServiceUid, id);
         return ResponseEntity.noContent().build();
@@ -79,8 +79,8 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> putDigitalServiceInputsPhysicalEquipmentRest(final String subscriber,
-                                                                                                final Long organization, final String digitalServiceUid, final Long id,
+    public ResponseEntity<InPhysicalEquipmentRest> putDigitalServiceInputsPhysicalEquipmentRest(final String organization,
+                                                                                                final Long workspace, final String digitalServiceUid, final Long id,
                                                                                                 final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceUid, id, inPhysicalEquipmentRest), HttpStatus.OK);

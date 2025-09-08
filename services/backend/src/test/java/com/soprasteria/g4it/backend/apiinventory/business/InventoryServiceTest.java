@@ -129,7 +129,7 @@ class InventoryServiceTest {
         when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
         when(inventoryRepo.findByWorkspace(linkedWorkspace)).thenReturn(inventorysEntitiesList);
 
-        final List<InventoryBO> result = inventoryService.getInventories(SUBSCRIBER, ORGANIZATION_ID, null);
+        final List<InventoryBO> result = inventoryService.getInventories( ORGANIZATION_ID, null);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
@@ -152,7 +152,7 @@ class InventoryServiceTest {
         when(workspaceService.getWorkspaceById(ORGANIZATION_ID)).thenReturn(linkedWorkspace);
         when(this.inventoryRepo.findByWorkspaceAndId(linkedWorkspace, inventoryId)).thenReturn(inventoryOptional);
 
-        final List<InventoryBO> result = this.inventoryService.getInventories(SUBSCRIBER, ORGANIZATION_ID, INVENTORY_ID);
+        final List<InventoryBO> result = this.inventoryService.getInventories(ORGANIZATION_ID, INVENTORY_ID);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 

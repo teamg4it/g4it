@@ -16,17 +16,17 @@ public class TypeUtils {
 
     /**
      * Get the type without prefix if it exists
-     * prefix can be the subscriber_ or organization_
+     * prefix can be the organization_ or workspace_
      *
-     * @param subscriber   the subscriber
-     * @param organization the organization
+     * @param organization   the organization
+     * @param workspace the workspace
      * @param type         the type
      * @return the type without prefix
      */
-    public static String getShortType(final String subscriber, final String organization, final String type) {
+    public static String getShortType(final String organization, final String workspace, final String type) {
         if (type == null) return null;
         return type
-                .replace(subscriber + "_", "")
-                .replace(organization + "_", "");
+                .replace(organization + "_", "")
+                .replace(workspace + "_", "");
     }
 }

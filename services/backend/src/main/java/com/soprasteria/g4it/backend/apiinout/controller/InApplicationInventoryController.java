@@ -37,7 +37,7 @@ public class InApplicationInventoryController implements InventoryInputsApplicat
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InApplicationRest> postInventoryInputsApplicationsRest(final String subscriber, final Long organization, final Long inventoryId, final InApplicationRest inApplicationRest) {
+    public ResponseEntity<InApplicationRest> postInventoryInputsApplicationsRest(final String organization, final Long workspace, final Long inventoryId, final InApplicationRest inApplicationRest) {
         return new ResponseEntity<>(inApplicationService.createInApplicationInventory(inventoryId, inApplicationRest), HttpStatus.CREATED);
     }
 
@@ -45,8 +45,8 @@ public class InApplicationInventoryController implements InventoryInputsApplicat
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InApplicationRest>> getInventoryInputsApplicationsRest(String subscriber,
-                                                                                      Long organization,
+    public ResponseEntity<List<InApplicationRest>> getInventoryInputsApplicationsRest(String organization,
+                                                                                      Long workspace,
                                                                                       Long inventoryId) {
         return ResponseEntity.ok().body(inApplicationService.getByInventory(inventoryId));
     }
@@ -55,8 +55,8 @@ public class InApplicationInventoryController implements InventoryInputsApplicat
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InApplicationRest> getInventoryInputsApplicationRest(String subscriber,
-                                                                               Long organization,
+    public ResponseEntity<InApplicationRest> getInventoryInputsApplicationRest(String organization,
+                                                                               Long workspace,
                                                                                Long inventoryId,
                                                                                Long id) {
         return ResponseEntity.ok().body(inApplicationService.getByInventoryAndId(inventoryId, id));
@@ -66,7 +66,7 @@ public class InApplicationInventoryController implements InventoryInputsApplicat
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteInventoryInputsApplicationRest(final String subscriber, final Long organization, final Long inventoryId, final Long id) {
+    public ResponseEntity<Void> deleteInventoryInputsApplicationRest(final String organization, final Long workspace, final Long inventoryId, final Long id) {
         inApplicationService.deleteInApplication(id);
         return ResponseEntity.noContent().build();
     }
@@ -75,8 +75,8 @@ public class InApplicationInventoryController implements InventoryInputsApplicat
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InApplicationRest> putInventoryInputsApplicationRest(final String subscriber,
-                                                                               final Long organization, final Long inventoryId, final Long id,
+    public ResponseEntity<InApplicationRest> putInventoryInputsApplicationRest(final String organization,
+                                                                               final Long workspace, final Long inventoryId, final Long id,
                                                                                final InApplicationRest inApplicationRest) {
         return new ResponseEntity<>(inApplicationService.updateInApplication(inventoryId, id, inApplicationRest), HttpStatus.OK);
     }

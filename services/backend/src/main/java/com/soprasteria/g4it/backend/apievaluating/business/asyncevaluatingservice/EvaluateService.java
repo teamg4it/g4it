@@ -121,7 +121,7 @@ public class EvaluateService {
         final Inventory inventory = task.getInventory();
         final String inventoryName = inventory == null ? context.getDigitalServiceName() : inventory.getName();
         final long start = System.currentTimeMillis();
-        final String subscriber = context.getSubscriber();
+        final String organization = context.getOrganization();
         final Long taskId = task.getId();
 
         // Get datacenters by name (name, InDatacenter)
@@ -153,7 +153,7 @@ public class EvaluateService {
                 referentialService.getElectricityMixQuartiles()
         );
 
-        final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(subscriber);
+        final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
 
         log.info("Start evaluating impacts for {}/{}", context.log(), taskId);
 
@@ -246,7 +246,7 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            subscriber, activeCriteria, lifecycleSteps, hypothesisRestList);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(physicalEquipment, datacenter));

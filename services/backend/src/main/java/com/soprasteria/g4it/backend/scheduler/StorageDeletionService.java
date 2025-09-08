@@ -39,34 +39,34 @@ public class StorageDeletionService {
 
     /**
      * Execute the deletion
-     * Get all subscribers and organizations
+     * Get all organizations and workspaces
      * Execute the deletion for output and work folders
      */
     public void executeDeletion() {
 
         final long start = System.currentTimeMillis();
-        // Fetch Organization with 'ACTIVE' status only.
+        // Fetch workspaces with 'ACTIVE' status only.
         List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()));
 
         List<String> deletedFilePaths = new ArrayList<>();
         for (Workspace workspaceEntity : workspaces) {
-            final String subscriber = workspaceEntity.getOrganization().getName();
-            final Long organizationId = workspaceEntity.getId();
+            final String organization = workspaceEntity.getOrganization().getName();
+            final Long workspaceId = workspaceEntity.getId();
 
-            // organization > subscriber > default
+            // workspace > organization > default
             final Integer retentionExport = Optional.ofNullable(workspaceEntity.getStorageRetentionDayExport())
                     .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getStorageRetentionDayExport())
                             .orElse(storageRetentionDayExport));
 
-            List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.EXPORT, retentionExport);
+            List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.EXPORT, retentionExport);
 
             deletedFilePaths.addAll(deletedExportFilePaths);
-            // organization > subscriber > default
+            // workspace > organization > default
             final Integer retentionOutput = Optional.ofNullable(workspaceEntity.getStorageRetentionDayOutput())
                     .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getStorageRetentionDayOutput())
                             .orElse(storageRetentionDayOutput));
 
-            List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.OUTPUT, retentionOutput);
+            List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.OUTPUT, retentionOutput);
             deletedFilePaths.addAll(deletedOutputFilePaths);
         }
 

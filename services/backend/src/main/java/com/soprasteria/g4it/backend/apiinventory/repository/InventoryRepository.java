@@ -38,25 +38,25 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     /**
      * Find by organization and the inventory id and return  a list of matching inventories
      *
-     * @param workspace the unique organization identifier.
+     * @param workspace the unique workspace identifier.
      * @return a list of matching inventories
      */
     Optional<Inventory> findByWorkspaceAndId(final Workspace workspace,
                                              final Long inventoryId);
 
     /**
-     * Find by subscriber and organization then return a list of inventories
+     * Find by workspace and workspace then return a list of inventories
      *
-     * @param workspace the linked organization
+     * @param workspace the linked workspace
      * @return a list of inventory
      */
     List<Inventory> findByWorkspace(final Workspace workspace);
 
 
     /**
-     * Find by organization and the inventory name and return  a list of matching inventories
+     * Find by workspace and the inventory name and return  a list of matching inventories
      *
-     * @param workspace the unique organization identifier.
+     * @param workspace the unique workspace identifier.
      * @param name      the inventory name.
      * @return a list of matching inventories
      */

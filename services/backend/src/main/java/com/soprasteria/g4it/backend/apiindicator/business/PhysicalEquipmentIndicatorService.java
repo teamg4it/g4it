@@ -52,7 +52,7 @@ public class PhysicalEquipmentIndicatorService {
     private PhysicalEquipmentIndicatorMapper physicalEquipmentIndicatorMapper;
 
     /**
-     * The Organization Service
+     * The Workspace Service
      */
     @Autowired
     private WorkspaceService workspaceService;
@@ -83,18 +83,18 @@ public class PhysicalEquipmentIndicatorService {
     /**
      * Retrieve low impact indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organization's id.
+     * @param organization     the organization.
+     * @param workspaceId the workspace id.
      * @param inventoryId    the inventory id.
      * @return low impact indicators.
      */
-    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber, final Long organizationId, final Long inventoryId) {
+    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String organization, final Long workspaceId, final Long inventoryId) {
 
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
         final List<InPhysicalEquipmentLowImpactView> indicators = inPhysicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         indicators.forEach(indicator -> {
-                    indicator.setType(TypeUtils.getShortType(subscriber, linkedWorkspace.getName(), indicator.getType()));
+                    indicator.setType(TypeUtils.getShortType(organization, linkedWorkspace.getName(), indicator.getType()));
                     indicator.setLowImpact(lowImpactService.isLowImpact(indicator.getCountry()));
                 }
         );

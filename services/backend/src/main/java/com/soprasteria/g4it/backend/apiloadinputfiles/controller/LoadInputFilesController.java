@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 /**
- * Inventory Loading Rest Service.
+ * Inventory Loading end points.
  */
 @Service
 @NoArgsConstructor
@@ -36,8 +36,8 @@ public class LoadInputFilesController implements LoadingFilesApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<TaskIdRest> launchloadInputFiles(final String subscriber,
-                                                           final Long organization,
+    public ResponseEntity<TaskIdRest> launchloadInputFiles(final String organization,
+                                                           final Long workspace,
                                                            final Long inventoryId,
                                                            String acceptLanguage,
                                                            final List<MultipartFile> datacenters,
@@ -47,7 +47,7 @@ public class LoadInputFilesController implements LoadingFilesApiDelegate {
     ) {
         return ResponseEntity.ok(taskMapper.mapTaskId(
                 loadInputFilesService.loadFiles(
-                        subscriber, organization, inventoryId,
+                        organization, workspace, inventoryId,
                         datacenters, physicalEquipments, virtualEquipments, applications
                 )
         ));
@@ -57,8 +57,8 @@ public class LoadInputFilesController implements LoadingFilesApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<TaskIdRest> launchLoadInputFilesDigitalService(String subscriber,
-                                                                         Long organization,
+    public ResponseEntity<TaskIdRest> launchLoadInputFilesDigitalService(String organization,
+                                                                         Long workspace,
                                                                          String  digitalServiceUid,
                                                                          String acceptLanguage,
                                                                          List<MultipartFile> datacenters,
@@ -67,7 +67,7 @@ public class LoadInputFilesController implements LoadingFilesApiDelegate {
 
             return ResponseEntity.ok(taskMapper.mapTaskId(
                     loadInputFilesService.loadDigitalServiceFiles(
-                            subscriber, organization, digitalServiceUid,
+                            organization, workspace, digitalServiceUid,
                             datacenters, physicalEquipments, virtualEquipments)
             ));
 

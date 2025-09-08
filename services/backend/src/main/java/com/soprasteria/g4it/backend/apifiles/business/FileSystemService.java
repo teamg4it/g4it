@@ -86,29 +86,29 @@ public class FileSystemService {
     }
 
     /**
-     * List files of subscriber and organization in INPUT directory
+     * List files of organization and workspace in INPUT directory
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organization's id
+     * @param organization     the organization
+     * @param workspaceId the workspace id
      * @return the list of files
      */
-    public List<FileDescriptionRest> listFiles(final String subscriber, final Long organizationId) throws IOException {
-        return fileDescriptionRestMapper.toDto(fetchStorage(subscriber, organizationId.toString()).listFiles(FileFolder.INPUT));
+    public List<FileDescriptionRest> listFiles(final String organization, final Long workspaceId) throws IOException {
+        return fileDescriptionRestMapper.toDto(fetchStorage(organization, workspaceId.toString()).listFiles(FileFolder.INPUT));
     }
 
     /**
-     * List files of subscriber and organization in INPUT directory
+     * List files of organization and workspace in INPUT directory
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organization's id
+     * @param organization     the organization
+     * @param workspaceId the workspace id
      * @return the list of files
      */
-    public List<FileDescriptionRest> listFiles(final String subscriber, final Long organizationId, final FileFolder fileFolder) throws IOException {
-        return fileDescriptionRestMapper.toDto(fetchStorage(subscriber, organizationId.toString()).listFiles(fileFolder));
+    public List<FileDescriptionRest> listFiles(final String organization, final Long workspaceId, final FileFolder fileFolder) throws IOException {
+        return fileDescriptionRestMapper.toDto(fetchStorage(organization, workspaceId.toString()).listFiles(fileFolder));
     }
 
     /**
-     * List files of subscriber and organization in INPUT directory
+     * List files of organization and workspace in INPUT directory
      *
      * @return the list of files
      */
@@ -117,24 +117,24 @@ public class FileSystemService {
 
         if (FileFolder.DS_TEMPLATE.getFolderName().equals(module)) {
             return fileDescriptionRestMapper.toDto(
-                    fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
+                    fetchStorage(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE))
                             .listFiles(FileFolder.DS_TEMPLATE)
             );
         } else return fileDescriptionRestMapper.toDto(
-                fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
+                fetchStorage(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE))
                         .listFiles(FileFolder.IS_TEMPLATE)
         );
     }
 
     /**
-     * List files of subscriber and organization in INPUT directory
+     * List files of organization and workspace in INPUT directory
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organizationId
+     * @param organization     the organization
+     * @param workspaceId the workspaceId
      * @return the list of files
      */
-    public InputStream downloadFile(final String subscriber, final Long organizationId, final FileFolder fileFolder, final String filename) throws IOException {
-        return fetchStorage(subscriber, organizationId.toString()).readFile(fileFolder, filename);
+    public InputStream downloadFile(final String organization, final Long workspaceId, final FileFolder fileFolder, final String filename) throws IOException {
+        return fetchStorage(organization, workspaceId.toString()).readFile(fileFolder, filename);
     }
 
     /**
@@ -143,16 +143,16 @@ public class FileSystemService {
      * - get fileStorage
      * - upload each file into fileStorage
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organization's id
+     * @param organization     the organization
+     * @param workspaceId the workspace id
      * @param files          the list of file
      * @return the fileName list uploaded
      */
-    public List<String> manageFilesAndRename(final String subscriber, final Long organizationId,
+    public List<String> manageFilesAndRename(final String organization, final Long workspaceId,
                                              final List<MultipartFile> files, final List<String> filenames, Boolean isInventory) {
         if (files == null) return List.of();
         checkFiles(files);
-        FileStorage fileStorage = fetchStorage(subscriber, organizationId.toString());
+        FileStorage fileStorage = fetchStorage(organization, workspaceId.toString());
 
         final List<String> result = new ArrayList<>();
 
@@ -185,24 +185,24 @@ public class FileSystemService {
     }
 
     /**
-     * Retrieve the storage associated with organization
+     * Retrieve the storage associated with workspace
      *
-     * @param subscriber   the client subscriber.
-     * @param organization the organization as known by G4IT
-     * @return the filestorage associated with this subscriber
+     * @param organization   the client organization.
+     * @param workspace the workspace as known by G4IT
+     * @return the filestorage associated with this organization
      * @throws ResponseStatusException Not Found if storage is unknown
      */
-    private FileStorage fetchStorage(final String subscriber, final String organization) {
-        final FileStorage storage = fileSystem.mount(subscriber, organization);
+    private FileStorage fetchStorage(final String organization, final String workspace) {
+        final FileStorage storage = fileSystem.mount(organization, workspace);
         if (storage == null) {
-            log.info("No storage found for organization {}", organization);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Storage not found for organization " + organization);
+            log.info("No storage found for workspace {}", workspace);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Storage not found for workspace " + workspace);
         }
         return storage;
     }
 
     /**
-     * Puts file on file storage for an organization.
+     * Puts file on file storage for an workspace.
      *
      * @param file        the file to put.
      * @param fileStorage the fileStorage
@@ -275,17 +275,17 @@ public class FileSystemService {
 
 
     /**
-     * Delete file for subscriber, organization, fileFolder
+     * Delete file for organization, workspace, fileFolder
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organizationId
+     * @param organization     the organization
+     * @param workspaceId the workspaceId
      * @param fileFolder     the fileFolder
      * @param fileUrl        the fileUrl
      */
-    public String deleteFile(String subscriber, Long organizationId, FileFolder fileFolder, String fileUrl) {
+    public String deleteFile(String organization, Long workspaceId, FileFolder fileFolder, String fileUrl) {
         String fileName = getFilenameFromUrl(fileUrl, 0);
         String deletedFilePath = null;
-        final FileStorage fileStorage = fileSystem.mount(subscriber, organizationId.toString());
+        final FileStorage fileStorage = fileSystem.mount(organization, workspaceId.toString());
         try {
             deletedFilePath = fileStorage.getFileUrl(fileFolder, fileName);
             fileStorage.delete(fileFolder, fileName);

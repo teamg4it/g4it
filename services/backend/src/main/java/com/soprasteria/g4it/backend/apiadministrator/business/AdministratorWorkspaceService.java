@@ -156,7 +156,7 @@ public class AdministratorWorkspaceService {
         List<UserInfoBO> organizationAdmins = new ArrayList<>(userOrganizationRepository.findByOrganization(workspace.getOrganization())).stream()
                 .<UserInfoBO>map(userOrganization -> {
                     List<Role> roles = userOrganization.getRoles();
-                    if (roles.stream().noneMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))) {
+                    if (roles.stream().noneMatch(role -> role.getName().equals(Constants.ROLE_ORGANIZATION_ADMINISTRATOR))) {
                         return null;
                     }
 
@@ -168,7 +168,7 @@ public class AdministratorWorkspaceService {
                             .email(u.getEmail())
                             .roles(roles.stream()
                                     .map(Role::getName)
-                                    .filter(name -> name.equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
+                                    .filter(name -> name.equals(Constants.ROLE_ORGANIZATION_ADMINISTRATOR))
                                     .toList())
                             .build();
                 })

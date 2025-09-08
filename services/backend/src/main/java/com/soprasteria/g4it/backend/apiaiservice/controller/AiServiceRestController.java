@@ -23,6 +23,9 @@ public class AiServiceRestController implements AiServiceApiDelegate {
     @Autowired
     AiModelConfigMapper aiModelConfigMapper;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseEntity<List<AIModelConfigRest>> getAIModelConfigurations(String type) {
         return ResponseEntity.ok(

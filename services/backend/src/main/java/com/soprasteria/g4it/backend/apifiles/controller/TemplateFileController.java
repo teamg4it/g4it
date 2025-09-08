@@ -51,9 +51,9 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
                                                           Long organizationId,
                                                           String name, final String module) {
         FileFolder templateFolder =  FileFolder.IS_TEMPLATE.getFolderName().equals(module) ? FileFolder.IS_TEMPLATE : FileFolder.DS_TEMPLATE;
-        final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_ORGANIZATION), templateFolder.getFolderName(), name);
+        final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_WORKSPACE), templateFolder.getFolderName(), name);
         try {
-            InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_SUBSCRIBER, Constants.INTERNAL_ORGANIZATION, templateFolder, name);
+            InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_ORGANIZATION, Constants.INTERNAL_WORKSPACE, templateFolder, name);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (BlobStorageException e) {
             if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {

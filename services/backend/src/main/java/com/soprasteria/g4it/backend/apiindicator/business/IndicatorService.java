@@ -110,15 +110,15 @@ public class IndicatorService {
     /**
      * Retrieve low impact indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organization's id.
+     * @param organization     the organization.
+     * @param workspaceId the workspace id.
      * @param inventoryId    the inventory id.
      * @return low impact indicators.
      */
-    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber,
-                                                                             final Long organizationId,
+    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String organization,
+                                                                             final Long workspaceId,
                                                                              final Long inventoryId) {
-        return physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
+        return physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId);
     }
 
     /**

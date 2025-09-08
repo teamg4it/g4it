@@ -80,23 +80,23 @@ public class EvaluatingService {
     /**
      * Evaluating an inventory
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organization id
+     * @param organization     the organization
+     * @param workspaceId the workspace id
      * @param inventoryId    the inventory id
      * @return the Task created
      */
-    public Task evaluating(final String subscriber,
-                           final Long organizationId,
+    public Task evaluating(final String organization,
+                           final Long workspaceId,
                            final Long inventoryId) {
 
         Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow();
 
-        manageInventoryTasks(subscriber, organizationId, inventory);
+        manageInventoryTasks(organization, workspaceId, inventory);
 
         Context context = Context.builder()
-                .subscriber(subscriber)
-                .organizationId(organizationId)
-                .organizationName(workspaceService.getWorkspaceById(organizationId).getName())
+                .organization(organization)
+                .workspaceId(workspaceId)
+                .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .inventoryId(inventoryId)
                 .locale(LocaleContextHolder.getLocale())
                 .datetime(LocalDateTime.now())
@@ -104,7 +104,7 @@ public class EvaluatingService {
                 .hasApplications(inventory.getApplicationCount() > 0)
                 .build();
 
-        List<String> activeCriteria = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, inventory.getCriteria())
+        List<String> activeCriteria = criteriaService.getSelectedCriteriaForInventory(organization, workspaceId, inventory.getCriteria())
                 .active();
 
         // evaluate impacts on 5 default criteria if no activeCriteria
@@ -138,24 +138,24 @@ public class EvaluatingService {
     /**
      * Evaluating an inventory
      *
-     * @param subscriber        the subscriber
-     * @param organizationId    the organization id
+     * @param organization        the organization
+     * @param workspaceId    the workspace id
      * @param digitalServiceUid digitalServiceUid
      * @return the Task created
      */
-    public Task evaluatingDigitalService(final String subscriber,
-                                         final Long organizationId,
+    public Task evaluatingDigitalService(final String organization,
+                                         final Long workspaceId,
                                          final String digitalServiceUid) {
 
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
 
-        manageDigitalServiceTasks(subscriber, organizationId, digitalService);
+        manageDigitalServiceTasks(organization, workspaceId, digitalService);
 
         Context context = Context.builder()
-                .subscriber(subscriber)
-                .organizationId(organizationId)
-                .organizationName(workspaceService.getWorkspaceById(organizationId).getName())
+                .organization(organization)
+                .workspaceId(workspaceId)
+                .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
                 .digitalServiceUid(digitalServiceUid)
                 .digitalServiceName(digitalService.getName())
                 .locale(LocaleContextHolder.getLocale())
@@ -165,7 +165,7 @@ public class EvaluatingService {
                 .isAi(digitalService.isAi())
                 .build();
 
-        List<String> activeCriteria = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalService.getCriteria())
+        List<String> activeCriteria = criteriaService.getSelectedCriteriaForDigitalService(organization, workspaceId, digitalService.getCriteria())
                 .active();
 
         // evaluate impacts on 5 default criteria if no activeCriteria
@@ -223,13 +223,13 @@ public class EvaluatingService {
 
                     final Inventory inventory = task.getInventory();
                     final Workspace workspace = inventory.getWorkspace();
-                    final String subscriber = workspace.getOrganization().getName();
-                    manageInventoryTasks(subscriber, workspace.getId(), inventory);
+                    final String organization = workspace.getOrganization().getName();
+                    manageInventoryTasks(organization, workspace.getId(), inventory);
 
                     final Context context = Context.builder()
-                            .subscriber(subscriber)
-                            .organizationId(workspace.getId())
-                            .organizationName(workspace.getName())
+                            .organization(organization)
+                            .workspaceId(workspace.getId())
+                            .workspaceName(workspace.getName())
                             .inventoryId(task.getInventory().getId())
                             .locale(LocaleContextHolder.getLocale())
                             .datetime(now)
@@ -248,11 +248,11 @@ public class EvaluatingService {
      * - check for already running task
      * - clean old tasks, always keep the 2 last tasks
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organization id
+     * @param organization     the organization
+     * @param workspaceId the workspace id
      * @param inventory      the inventory
      */
-    private void manageInventoryTasks(String subscriber, Long organizationId, Inventory inventory) {
+    private void manageInventoryTasks(String organization, Long workspaceId, Inventory inventory) {
         // check if any task is already running
         List<Task> tasks = taskRepository.findByInventoryAndStatusAndType(inventory, TaskStatus.IN_PROGRESS.toString(), TaskType.EVALUATING.toString());
         if (!tasks.isEmpty()) {
@@ -266,7 +266,7 @@ public class EvaluatingService {
                 .skip(2)
                 .forEach(task -> {
                     taskRepository.deleteTask(task.getId());
-                    exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
+                    exportService.cleanExport(task.getId(), organization, String.valueOf(workspaceId));
                 });
     }
 
@@ -274,11 +274,11 @@ public class EvaluatingService {
      * Manage tasks:
      * - clean old tasks, always keep the 2 last tasks
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organization id
+     * @param organization     the organization
+     * @param workspaceId the workspace id
      * @param digitalService the digitalService
      */
-    private void manageDigitalServiceTasks(String subscriber, Long organizationId, DigitalService digitalService) {
+    private void manageDigitalServiceTasks(String organization, Long workspaceId, DigitalService digitalService) {
 
         // clean old tasks
         taskRepository.findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
@@ -287,7 +287,7 @@ public class EvaluatingService {
                 .skip(2)
                 .forEach(task -> {
                     taskRepository.deleteTask(task.getId());
-                    exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
+                    exportService.cleanExport(task.getId(), organization, String.valueOf(workspaceId));
                 });
     }
 

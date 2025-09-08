@@ -72,10 +72,10 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Map<String, EquipmentIndicatorRest>> getEquipmentIndicators(final String subscriber,
-                                                                                      final Long organization,
+    public ResponseEntity<Map<String, EquipmentIndicatorRest>> getEquipmentIndicators(final String organization,
+                                                                                      final Long workspace,
                                                                                       final Long inventoryId) {
-        final Map<String, EquipmentIndicatorBO> indicators = inventoryIndicatorService.getEquipmentIndicators(subscriber, organization, inventoryId);
+        final Map<String, EquipmentIndicatorBO> indicators = inventoryIndicatorService.getEquipmentIndicators(organization, workspace, inventoryId);
         return ResponseEntity.ok().body(indicators.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, map -> this.indicatorRestMapper.toDto(map.getValue()))));
     }
 
@@ -83,10 +83,10 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<ApplicationIndicatorRest>> getApplicationIndicators(final String subscriber,
-                                                                                   final Long organization,
+    public ResponseEntity<List<ApplicationIndicatorRest>> getApplicationIndicators(final String organization,
+                                                                                   final Long workspace,
                                                                                    final Long inventoryId) {
-        final List<ApplicationIndicatorBO<ApplicationImpactBO>> indicators = inventoryIndicatorService.getApplicationIndicators(subscriber, organization, inventoryId);
+        final List<ApplicationIndicatorBO<ApplicationImpactBO>> indicators = inventoryIndicatorService.getApplicationIndicators(organization, workspace, inventoryId);
         return ResponseEntity.ok().body(this.indicatorRestMapper.toApplicationIndicatorDto(indicators));
     }
 
@@ -94,18 +94,18 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<PhysicalEquipmentLowImpactRest>> getPhysicalEquipmentsLowImpact(final String subscriber,
-                                                                                               final Long organization,
+    public ResponseEntity<List<PhysicalEquipmentLowImpactRest>> getPhysicalEquipmentsLowImpact(final String organization,
+                                                                                               final Long workspace,
                                                                                                final Long inventoryId) {
-        return ResponseEntity.ok(indicatorRestMapper.toLowImpactDto(inventoryIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organization, inventoryId)));
+        return ResponseEntity.ok(indicatorRestMapper.toLowImpactDto(inventoryIndicatorService.getPhysicalEquipmentsLowImpact(organization, workspace, inventoryId)));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<PhysicalEquipmentsAvgAgeRest>> getPhysicalEquipmentAvgAge(final String subscriber,
-                                                                                         final Long organization,
+    public ResponseEntity<List<PhysicalEquipmentsAvgAgeRest>> getPhysicalEquipmentAvgAge(final String organization,
+                                                                                         final Long workspace,
                                                                                          final Long inventoryId) {
         return ResponseEntity.ok(indicatorRestMapper.toAvgAgeDto(inventoryIndicatorService.getPhysicalEquipmentAvgAge(inventoryId)));
     }
@@ -114,20 +114,20 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<PhysicalEquipmentElecConsumptionRest>> getPhysicalEquipmentElecConsumption(final String subscriber,
-                                                                                                          final Long organizationId,
+    public ResponseEntity<List<PhysicalEquipmentElecConsumptionRest>> getPhysicalEquipmentElecConsumption(final String organization,
+                                                                                                          final Long workspaceId,
                                                                                                           final Long inventoryId) {
-        return ResponseEntity.ok(indicatorRestMapper.toElecConsumptionDto(inventoryIndicatorService.getPhysicalEquipmentElecConsumption(subscriber, organizationId, inventoryId)));
+        return ResponseEntity.ok(indicatorRestMapper.toElecConsumptionDto(inventoryIndicatorService.getPhysicalEquipmentElecConsumption(organization, workspaceId, inventoryId)));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteIndicators(final String subscriber,
-                                                 final Long organization,
+    public ResponseEntity<Void> deleteIndicators(final String organization,
+                                                 final Long workspace,
                                                  final Long inventoryId) {
-        inventoryIndicatorService.deleteIndicators(subscriber, organization, inventoryId);
+        inventoryIndicatorService.deleteIndicators(organization, workspace, inventoryId);
         return ResponseEntity.noContent().build();
     }
 
@@ -135,8 +135,8 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<DataCentersInformationRest>> getDataCenterIndicators(final String subscriber,
-                                                                                    final Long organization,
+    public ResponseEntity<List<DataCentersInformationRest>> getDataCenterIndicators(final String organization,
+                                                                                    final Long workspace,
                                                                                     final Long inventoryId) {
         return ResponseEntity.ok().body(
                 indicatorRestMapper.toDataCenterDto(inventoryIndicatorService.getDataCenterIndicators(inventoryId))
@@ -147,32 +147,32 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Resource> getIndicatorsExportResult(final String subscriber,
-                                                              final Long organization,
+    public ResponseEntity<Resource> getIndicatorsExportResult(final String organization,
+                                                              final Long workspace,
                                                               final Long inventoryId) {
 
         Task task = taskRepository.findByInventoryAndLastCreationDate(Inventory.builder().id(inventoryId).build())
                 .orElseThrow(() -> new G4itRestException("404", String.format("task of inventoryId '%d' is not found", inventoryId)));
 
         Long userId = authService.getUser().getId();
-        boolean isAdmin = roleService.hasAdminRightOnOrganizationOrWorkspace(authService.getUser(), organizationRepository.findByName(subscriber).get().getId(), organization);
+        boolean isAdmin = roleService.hasAdminRightOnOrganizationOrWorkspace(authService.getUser(), organizationRepository.findByName(organization).get().getId(), workspace);
         if (!isAdmin) {
-            UserWorkspace userWorkspace = userWorkspaceRepository.findByWorkspaceIdAndUserId(organization, userId).orElseThrow();
+            UserWorkspace userWorkspace = userWorkspaceRepository.findByWorkspaceIdAndUserId(workspace, userId).orElseThrow();
 
-            boolean isDefaultOrganization = userWorkspace.getWorkspace().getName().equalsIgnoreCase("DEMO");
+            boolean isDefaultWorkspace = userWorkspace.getWorkspace().getName().equalsIgnoreCase("DEMO");
             boolean hasAccess = userWorkspace.getRoles().stream().anyMatch(role -> "ROLE_INVENTORY_WRITE".equals(role.getName()));
 
-            if (!(isDefaultOrganization || hasAccess)) {
+            if (!(isDefaultWorkspace || hasAccess)) {
                 throw new G4itRestException("403", "Not authorized");
             }
         }
 
         String filename = task.getId() + Constants.ZIP;
 
-        final String filePath = String.join("/", subscriber, organization.toString(), FileFolder.EXPORT.getFolderName(), filename);
+        final String filePath = String.join("/", organization, workspace.toString(), FileFolder.EXPORT.getFolderName(), filename);
 
         try {
-            InputStream inputStream = fileSystemService.downloadFile(subscriber, organization, FileFolder.EXPORT, filename);
+            InputStream inputStream = fileSystemService.downloadFile(organization, workspace, FileFolder.EXPORT, filename);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (BlobStorageException e) {
             if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {

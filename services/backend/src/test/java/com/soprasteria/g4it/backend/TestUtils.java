@@ -160,7 +160,7 @@ public class TestUtils {
                                 .build(),
                         OrganizationBO.builder()
                                 .id(2L)
-                                .roles(List.of(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
+                                .roles(List.of(Constants.ROLE_ORGANIZATION_ADMINISTRATOR))
                                 .build()))
                 .build();
     }
@@ -244,7 +244,7 @@ public class TestUtils {
 
     public static User createUserWithAdminRoleOnOrg() {
         long organizationId = 1L;
-        List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
+        List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_WORKSPACE_ADMINISTRATOR).build());
         return User.builder().email(EMAIL)
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)

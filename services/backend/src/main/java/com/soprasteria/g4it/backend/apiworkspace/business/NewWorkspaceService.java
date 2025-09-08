@@ -28,21 +28,21 @@ import java.util.List;
 @Slf4j
 public class NewWorkspaceService {
     /**
-     * The Repository to access Subscriber data.
+     * The Repository to access Organization data.
      */
     @Autowired
     OrganizationRepository organizationRepository;
 
     /**
-     * The Repository to access Organization data.
+     * The Repository to access Workspace data.
      */
     @Autowired
     WorkspaceRepository workspaceRepository;
 
-    public List<OrganizationDetailsBO> searchSubscribersByDomainName(final String userEmail) {
+    public List<OrganizationDetailsBO> searchOrganizationsByDomainName(final String userEmail) {
         String domainName = userEmail.substring(userEmail.indexOf("@") + 1);
         List<Organization> organizations = organizationRepository.findByAuthorizedDomainsContaining(domainName);
-        List<OrganizationDetailsBO> lstSubscriber = new ArrayList<>();
+        List<OrganizationDetailsBO> lstOrganization = new ArrayList<>();
         for (Organization organization : organizations) {
             List<Workspace> workspaces = workspaceRepository.findByOrganizationId(organization.getId());
             List<WorkspaceDetailsBO> lstWorkspaces = new ArrayList<>();
@@ -50,8 +50,8 @@ public class NewWorkspaceService {
                 lstWorkspaces.add(WorkspaceDetailsBO.builder().id(workspace.getId()).name(workspace.getName()).status(workspace.getStatus()).build());
             }
             OrganizationDetailsBO organizationDetailsBO = OrganizationDetailsBO.builder().id(organization.getId()).name(organization.getName()).workspaces(lstWorkspaces).build();
-            lstSubscriber.add(organizationDetailsBO);
+            lstOrganization.add(organizationDetailsBO);
         }
-        return lstSubscriber;
+        return lstOrganization;
     }
 }

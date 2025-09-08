@@ -15,12 +15,12 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class WorkspaceDetailsBO {
     /**
-     * The Organization's id.
+     * The Workspace id.
      */
     private Long id;
 
     /**
-     * The Organization's name.
+     * The Workspace name.
      */
     private String name;
 

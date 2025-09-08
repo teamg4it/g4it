@@ -28,7 +28,7 @@ public interface OrganizationRestMapper {
      * @param businessObject the source.
      * @return the SubscriberRest.
      */
-    @Mapping(source = "workspaces", target = "workspaces")
+     @Mapping(source = "workspaces", target = "workspaces")
     OrganizationRest toDto(final OrganizationBO businessObject);
 
     /**

@@ -21,17 +21,17 @@ import java.util.List;
 @SuperBuilder
 public class OrganizationDetailsBO {
     /**
-     * The subscriber's id.
+     * The Organization's id.
      */
     private Long id;
 
     /**
-     * The subscriber's name.
+     * The Organization's name.
      */
     private String name;
 
     /**
-     * Subscriber's organization.
+     * Organization's workspaces.
      */
     private List<WorkspaceDetailsBO> workspaces;
 }

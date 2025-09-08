@@ -37,7 +37,7 @@ public class InPhysicalEquipmentInventoryController implements InventoryInputsPh
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> postInventoryInputsPhysicalEquipmentsRest(final String subscriber, final Long organization, final Long inventoryId, final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
+    public ResponseEntity<InPhysicalEquipmentRest> postInventoryInputsPhysicalEquipmentsRest(final String organization, final Long workspace, final Long inventoryId, final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
         return new ResponseEntity<>(inPhysicalEquipmentService.createInPhysicalEquipmentInventory(inventoryId, inPhysicalEquipmentRest), HttpStatus.CREATED);
     }
 
@@ -45,8 +45,8 @@ public class InPhysicalEquipmentInventoryController implements InventoryInputsPh
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InPhysicalEquipmentRest>> getInventoryInputsPhysicalEquipmentsRest(String subscriber,
-                                                                                                  Long organization,
+    public ResponseEntity<List<InPhysicalEquipmentRest>> getInventoryInputsPhysicalEquipmentsRest(String organization,
+                                                                                                  Long workspace,
                                                                                                   Long inventoryId) {
         return ResponseEntity.ok().body(inPhysicalEquipmentService.getByInventory(inventoryId));
     }
@@ -55,8 +55,8 @@ public class InPhysicalEquipmentInventoryController implements InventoryInputsPh
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> getInventoryInputsPhysicalEquipmentRest(String subscriber,
-                                                                                           Long organization,
+    public ResponseEntity<InPhysicalEquipmentRest> getInventoryInputsPhysicalEquipmentRest(String organization,
+                                                                                           Long workspace,
                                                                                            Long inventoryId,
                                                                                            Long id) {
         return ResponseEntity.ok().body(inPhysicalEquipmentService.getByInventoryAndId(inventoryId, id));
@@ -66,7 +66,7 @@ public class InPhysicalEquipmentInventoryController implements InventoryInputsPh
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteInventoryInputsPhysicalEquipmentRest(final String subscriber, final Long organization, final Long inventoryId, final Long id) {
+    public ResponseEntity<Void> deleteInventoryInputsPhysicalEquipmentRest(final String organization, final Long workspace, final Long inventoryId, final Long id) {
         inPhysicalEquipmentService.deleteInPhysicalEquipment(inventoryId, id);
         return ResponseEntity.noContent().build();
     }
@@ -75,8 +75,8 @@ public class InPhysicalEquipmentInventoryController implements InventoryInputsPh
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> putInventoryInputsPhysicalEquipmentRest(final String subscriber,
-                                                                                           final Long organization, final Long inventoryId, final Long id,
+    public ResponseEntity<InPhysicalEquipmentRest> putInventoryInputsPhysicalEquipmentRest(final String organization,
+                                                                                           final Long workspace, final Long inventoryId, final Long id,
                                                                                            final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
         return new ResponseEntity<>(inPhysicalEquipmentService.updateInPhysicalEquipment(inventoryId, id, inPhysicalEquipmentRest), HttpStatus.OK);
     }

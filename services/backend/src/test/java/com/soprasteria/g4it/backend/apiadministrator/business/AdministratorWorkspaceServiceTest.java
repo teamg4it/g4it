@@ -327,13 +327,13 @@ class AdministratorWorkspaceServiceTest {
 
         // Subscriber admin
         User adminUser = User.builder().id(1L).email("admin@domain.com").build();
-        Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
+        Role adminRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
         UserOrganization userOrganization = UserOrganization.builder().user(adminUser).roles(List.of(adminRole)).build();
         when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(List.of(userOrganization));
 
         // Org user
         User orgUser = User.builder().id(2L).email("org@domain.com").build();
-        Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
+        Role orgRole = Role.builder().name(Constants.ROLE_WORKSPACE_ADMINISTRATOR).build();
         UserWorkspace userWorkspace = UserWorkspace.builder().user(orgUser).roles(List.of(orgRole)).build();
         when(userWorkspaceRepository.findByWorkspace(org)).thenReturn(List.of(userWorkspace));
 
@@ -354,12 +354,12 @@ class AdministratorWorkspaceServiceTest {
         when(roleService.hasAdminRightsOnOrganization(any(), eq(org.getOrganization().getId()))).thenReturn(false);
 
         User adminUser = User.builder().id(1L).email("admin@domain.com").build();
-        Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
+        Role adminRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
         UserOrganization userOrganization = UserOrganization.builder().user(adminUser).roles(List.of(adminRole)).build();
         when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(List.of(userOrganization));
 
         User orgUser = User.builder().id(2L).email("org@domain.com").build();
-        Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
+        Role orgRole = Role.builder().name(Constants.ROLE_WORKSPACE_ADMINISTRATOR).build();
         User userEntity = User.builder().id(3L).email("user@domain.com").build();
         Role userRole = Role.builder().name(Constants.ROLE_INVENTORY_READ).build();
 
@@ -385,7 +385,7 @@ class AdministratorWorkspaceServiceTest {
         userBO.setEmail(Constants.SUPER_ADMIN_EMAIL);
         // One org user
         User orgUser = User.builder().id(2L).email("user@domain.com").build();
-        Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
+        Role orgRole = Role.builder().name(Constants.ROLE_WORKSPACE_ADMINISTRATOR).build();
         UserWorkspace userWorkspace = UserWorkspace.builder().user(orgUser).roles(List.of(orgRole)).build();
         when(userWorkspaceRepository.findByWorkspace(org)).thenReturn(List.of(userWorkspace));
         when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(Collections.emptyList());
@@ -408,7 +408,7 @@ class AdministratorWorkspaceServiceTest {
 
         // Two org users, one has super admin email, one does not
         User superAdminUser = User.builder().id(11L).email(Constants.SUPER_ADMIN_EMAIL).build();
-        Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
+        Role orgRole = Role.builder().name(Constants.ROLE_WORKSPACE_ADMINISTRATOR).build();
         UserWorkspace userWorkspaceSuper = UserWorkspace.builder().user(superAdminUser).roles(List.of(orgRole)).build();
 
         User normalUser = User.builder().id(12L).email("user@domain.com").build();
@@ -433,11 +433,11 @@ class AdministratorWorkspaceServiceTest {
         when(roleService.hasAdminRightsOnOrganization(any(), eq(org.getOrganization().getId()))).thenReturn(false);
 
         User sharedUser = User.builder().id(1L).email("admin@domain.com").build();
-        Role adminRole = Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build();
+        Role adminRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
         UserOrganization userOrganization = UserOrganization.builder().user(sharedUser).roles(List.of(adminRole)).build();
         when(userOrganizationRepository.findByOrganization(org.getOrganization())).thenReturn(List.of(userOrganization));
 
-        Role orgRole = Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build();
+        Role orgRole = Role.builder().name(Constants.ROLE_WORKSPACE_ADMINISTRATOR).build();
         UserWorkspace userWorkspace = UserWorkspace.builder().user(sharedUser).roles(List.of(orgRole)).build();
 
         // Plus one more org user

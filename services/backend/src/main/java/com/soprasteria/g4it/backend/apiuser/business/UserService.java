@@ -221,7 +221,7 @@ public class UserService {
      */
     public List<OrganizationBO> buildOrganizationsForSuperAdmin() {
 
-        // Get the organizations and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
+        // Get the organizations and subObjects on which the user has ROLE_ORGANIZATION_ADMINISTRATOR
         return organizationRepository.findAll().stream()
                 .map(organization -> {
                     var organizationBO = OrganizationBO.builder()
@@ -243,7 +243,7 @@ public class UserService {
                                     })
                                     .sorted(Comparator.comparing(WorkspaceBO::getName))
                                     .toList())
-                            .roles(List.of(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
+                            .roles(List.of(Constants.ROLE_ORGANIZATION_ADMINISTRATOR))
                             .criteria(organization.getCriteria())
                             .authorizedDomains(organization.getAuthorizedDomains())
                             .id(organization.getId())
@@ -265,10 +265,10 @@ public class UserService {
 
         if (user.getUserOrganizations() == null || user.getUserWorkspaces() == null) return List.of();
 
-        // Get the organization and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
+        // Get the organization and subObjects on which the user has ROLE_ORGANIZATION_ADMINISTRATOR
         List<OrganizationBO> results = new ArrayList<>(user.getUserOrganizations().stream()
                 .filter(userOrganization -> userOrganization.getRoles() != null &&
-                        userOrganization.getRoles().stream().anyMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)))
+                        userOrganization.getRoles().stream().anyMatch(role -> role.getName().equals(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)))
                 .map(userOrganization -> buildOrganization(userOrganization, adminMode))
                 .sorted(Comparator.comparing(OrganizationBO::getName))
                 .toList());
@@ -281,7 +281,7 @@ public class UserService {
         final Map<Organization, List<UserWorkspace>> workspaceByOrganization = user.getUserWorkspaces().stream()
                 .collect(Collectors.groupingBy(e -> e.getWorkspace().getOrganization()));
 
-        // Get the organizations and subObjects on which the user has not ROLE_SUBSCRIBER_ADMINISTRATOR but other roles on workspaces
+        // Get the organizations and subObjects on which the user has not ROLE_ORGANIZATION_ADMINISTRATOR but other roles on workspaces
         results.addAll(workspaceByOrganization.entrySet().stream()
                 .filter(entry -> !adminOrganizations.contains(entry.getKey().getName()))
                 .map(userWorksByOrg -> buildOrganizationWithUserWorkspaces(userWorksByOrg.getKey(), userWorksByOrg.getValue(), adminMode))

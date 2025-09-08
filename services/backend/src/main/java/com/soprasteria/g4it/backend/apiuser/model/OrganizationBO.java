@@ -13,19 +13,19 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 /**
- * Subscriber Business Object.
+ * organization Business Object.
  */
 @Data
 @SuperBuilder
 public class OrganizationBO {
 
     /**
-     * The subscriber's id.
+     * The organization's id.
      */
     private Long id;
 
     /**
-     * The subscriber's name.
+     * The organization's name.
      */
     private String name;
 
@@ -35,12 +35,12 @@ public class OrganizationBO {
     private boolean defaultFlag;
 
     /**
-     * Subscriber's organization.
+     * organization's workspace.
      */
     private List<WorkspaceBO> workspaces;
 
     /**
-     * The authorized organizations to subscriber
+     * The authorized domains to organization
      */
     private String authorizedDomains;
 
@@ -50,11 +50,11 @@ public class OrganizationBO {
     private List<String> criteria;
 
     /**
-     * User roles on subscriber.
+     * User roles on organization.
      */
     private List<String> roles;
     /**
-     * Is EcomindAi enabled or not for this subscriber
+     * Is EcomindAi enabled or not for this organization
      */
     private boolean ecomindai;
 

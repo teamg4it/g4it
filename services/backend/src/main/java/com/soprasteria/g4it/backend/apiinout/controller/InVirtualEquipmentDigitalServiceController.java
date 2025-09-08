@@ -40,7 +40,7 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InVirtualEquipmentRest> postDigitalServiceInputsVirtualEquipmentsRest(final String subscriber, final Long organization, final String digitalServiceUid, final InVirtualEquipmentRest inVirtualEquipmentRest) {
+    public ResponseEntity<InVirtualEquipmentRest> postDigitalServiceInputsVirtualEquipmentsRest(final String organization, final Long workspace, final String digitalServiceUid, final InVirtualEquipmentRest inVirtualEquipmentRest) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inVirtualEquipmentService.createInVirtualEquipmentDigitalService(digitalServiceUid, inVirtualEquipmentRest), HttpStatus.CREATED);
     }
@@ -49,8 +49,8 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InVirtualEquipmentRest>> getDigitalServiceInputsVirtualEquipmentsRest(String subscriber,
-                                                                                                     Long organization,
+    public ResponseEntity<List<InVirtualEquipmentRest>> getDigitalServiceInputsVirtualEquipmentsRest(String organization,
+                                                                                                     Long workspace,
                                                                                                      String digitalServiceUid) {
 
         return ResponseEntity.ok().body(inVirtualEquipmentService.getByDigitalService(digitalServiceUid));
@@ -60,8 +60,8 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InVirtualEquipmentRest> getDigitalServiceInputsVirtualEquipmentRest(String subscriber,
-                                                                                              Long organization,
+    public ResponseEntity<InVirtualEquipmentRest> getDigitalServiceInputsVirtualEquipmentRest(String organization,
+                                                                                              Long workspace,
                                                                                               String digitalServiceUid,
                                                                                               Long id) {
         return ResponseEntity.ok().body(inVirtualEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
@@ -71,7 +71,7 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteDigitalServiceInputsVirtualEquipmentRest(final String subscriber, final Long organization, final String digitalServiceUid, final Long id) {
+    public ResponseEntity<Void> deleteDigitalServiceInputsVirtualEquipmentRest(final String organization, final Long workspace, final String digitalServiceUid, final Long id) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         inVirtualEquipmentService.deleteInVirtualEquipment(digitalServiceUid, id);
         return ResponseEntity.noContent().build();
@@ -81,8 +81,8 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InVirtualEquipmentRest> putDigitalServiceInputsVirtualEquipmentRest(final String subscriber,
-                                                                                              final Long organization, final String digitalServiceUid, final Long id,
+    public ResponseEntity<InVirtualEquipmentRest> putDigitalServiceInputsVirtualEquipmentRest(final String organization,
+                                                                                              final Long workspace, final String digitalServiceUid, final Long id,
                                                                                               final InVirtualEquipmentRest inVirtualEquipmentRest) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inVirtualEquipmentService.updateInVirtualEquipment(digitalServiceUid, id, inVirtualEquipmentRest), HttpStatus.OK);
@@ -92,7 +92,7 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InVirtualEquipmentRest>> updateDigitalServiceInputsVirtualEquipmentRest(String subscriber, Long organization,
+    public ResponseEntity<List<InVirtualEquipmentRest>> updateDigitalServiceInputsVirtualEquipmentRest(String organization, Long workspace,
                                                                                                        String digitalServiceUid, Long physicalEqpId,
                                                                                                        List<InVirtualEquipmentRest> inVirtualEquipmentRest) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);

@@ -58,11 +58,11 @@ public class ExportService {
      * Upload this zip into FileStorage export/$taskId.zip
      *
      * @param taskId         the taskId
-     * @param subscriber     the subscriber
-     * @param organizationId the organization id as string
+     * @param organization     the organization
+     * @param workspaceId the workspace id as string
      */
-    public void uploadExportZip(Long taskId, String subscriber, String organizationId) {
-        FileStorage fileStorage = fileSystem.mount(subscriber, organizationId);
+    public void uploadExportZip(Long taskId, String organization, String workspaceId) {
+        FileStorage fileStorage = fileSystem.mount(organization, workspaceId);
         try {
             final Path exportPath = Path.of(localWorkingFolder).resolve("export").resolve(String.valueOf(taskId));
             if (Files.exists(exportPath) && !localFileService.isEmpty(exportPath)) {
@@ -99,8 +99,8 @@ public class ExportService {
      *
      * @param taskId the task id
      */
-    public void cleanExport(Long taskId, String subscriber, String organizationId) {
-        FileStorage fileStorage = fileSystem.mount(subscriber, organizationId);
+    public void cleanExport(Long taskId, String organization, String workspaceId) {
+        FileStorage fileStorage = fileSystem.mount(organization, workspaceId);
         try {
             fileStorage.delete(FileFolder.EXPORT, taskId + Constants.ZIP);
         } catch (IOException e) {

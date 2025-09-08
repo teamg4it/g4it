@@ -44,7 +44,7 @@ public class WorkspaceDeletionService {
 
     /**
      * Execute the deletion
-     * Get all organizations with status 'TO_BE_DELETED'
+     * Get all workspaces with status 'TO_BE_DELETED'
      * Execute the deletion for data and storage files
      */
     public void executeDeletion() {
@@ -57,21 +57,21 @@ public class WorkspaceDeletionService {
         List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()));
 
         for (Workspace workspaceEntity : workspaces) {
-            final String subscriber = workspaceEntity.getOrganization().getName();
-            final Long organizationId = workspaceEntity.getId();
+            final String organization = workspaceEntity.getOrganization().getName();
+            final Long workspaceId = workspaceEntity.getId();
 
             if (workspaceEntity.getDeletionDate() == null) {
-                log.error("Organization {} has {} status and deletion date NULL", organizationId, WorkspaceStatus.TO_BE_DELETED);
+                log.error("Workspace {} has {} status and deletion date NULL", workspaceId, WorkspaceStatus.TO_BE_DELETED);
                 continue;
             }
 
             final int dataRetentionDay = now.isAfter(workspaceEntity.getDeletionDate()) ? 0 : -1;
             if (dataRetentionDay == 0) {
-                log.info("Deleting data of {}/{}", subscriber, workspaceEntity.getName());
+                log.info("Deleting data of {}/{}", organization, workspaceEntity.getName());
                 // Delete Inventories
                 nbInventoriesDeleted += inventoryRepository.findByWorkspace(workspaceEntity).stream()
                         .mapToInt(inventory -> {
-                            inventoryDeleteService.deleteInventory(subscriber, organizationId, inventory.getId());
+                            inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
                             return 1;
                         })
                         .sum();
@@ -85,22 +85,22 @@ public class WorkspaceDeletionService {
                         .sum();
 
                 // Delete Export Files from storage
-                List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.EXPORT, dataRetentionDay);
+                List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.EXPORT, dataRetentionDay);
 
                 deletedFilePaths.addAll(deletedExportFilePaths);
 
                 // Delete Output Files from storage
-                List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.OUTPUT, dataRetentionDay);
+                List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.OUTPUT, dataRetentionDay);
                 deletedFilePaths.addAll(deletedOutputFilePaths);
 
-                // update organization status to "INACTIVE" if status is "TO_BE_DELETED"
+                // update workspace status to "INACTIVE" if status is "TO_BE_DELETED"
                 if (workspaceEntity.getStatus().equals(WorkspaceStatus.TO_BE_DELETED.name())) {
                     workspaceRepository.setStatusForWorkspace(workspaceEntity.getId(), WorkspaceStatus.INACTIVE.name());
-                    log.info("Update status of {}/{} to {} ", subscriber, workspaceEntity.getName(), WorkspaceStatus.INACTIVE.name());
+                    log.info("Update status of {}/{} to {} ", organization, workspaceEntity.getName(), WorkspaceStatus.INACTIVE.name());
                 }
             }
         }
-        log.info("Deletion of {} inventories , {} digital-services  and {} files - {} , execution time={} ms for organization marked as {}",
+        log.info("Deletion of {} inventories , {} digital-services  and {} files - {} , execution time={} ms for workspace marked as {}",
                 nbInventoriesDeleted,
                 nbDigitalServicesDeleted,
                 deletedFilePaths.size(),

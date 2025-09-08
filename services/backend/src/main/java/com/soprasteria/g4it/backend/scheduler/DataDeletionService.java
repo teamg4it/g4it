@@ -47,7 +47,7 @@ public class DataDeletionService {
 
     /**
      * Execute the deletion
-     * Get all subscribers and organizations
+     * Get all organizations and workspaces
      * Execute the deletion for data in
      */
     public void executeDeletion() {
@@ -59,10 +59,10 @@ public class DataDeletionService {
         List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()));
 
         for (Workspace workspaceEntity : workspaces) {
-            final String subscriber = workspaceEntity.getOrganization().getName();
-            final Long organizationId = workspaceEntity.getId();
+            final String organization = workspaceEntity.getOrganization().getName();
+            final Long workspaceId = workspaceEntity.getId();
 
-            // organization > subscriber > default
+            // workspace > organization > default
             final Integer retentionDay = Optional.ofNullable(workspaceEntity.getDataRetentionDay())
                     .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getDataRetentionDay())
                             .orElse(dataRetentiondDay));
@@ -71,7 +71,7 @@ public class DataDeletionService {
             nbInventoriesDeleted += inventoryRepository.findByWorkspace(workspaceEntity).stream()
                     .filter(inventory -> now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate()))
                     .mapToInt(inventory -> {
-                        inventoryDeleteService.deleteInventory(subscriber, organizationId, inventory.getId());
+                        inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
                         return 1;
                     })
                     .sum();

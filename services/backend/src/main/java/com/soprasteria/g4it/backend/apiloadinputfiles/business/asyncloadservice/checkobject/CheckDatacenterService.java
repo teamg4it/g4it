@@ -39,7 +39,7 @@ public class CheckDatacenterService {
         genericRuleService.checkViolations(datacenter,filename, line).ifPresent(errors::add);
 
         // check location is in country referential
-        genericRuleService.checkLocation(context.getLocale(), context.getSubscriber(), filename, line, datacenter.getLocation()).ifPresent(errors::add);
+        genericRuleService.checkLocation(context.getLocale(), context.getOrganization(), filename, line, datacenter.getLocation()).ifPresent(errors::add);
 
         return errors;
     }

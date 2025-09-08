@@ -91,7 +91,7 @@ class WorkspaceServiceTest {
         String organizationName = "ORGANIZATION";
         String currentStatus = WorkspaceStatus.ACTIVE.name();
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
-        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build());
+        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
 
         User user = TestUtils.createUserWithRoleOnSub(subscriberId, subscriberAdminRole);
         Optional<Workspace> organizationEntity = Optional.of(Workspace.builder().id(organizationId).name(organizationName).status(currentStatus)
@@ -118,7 +118,7 @@ class WorkspaceServiceTest {
         String organizationName = "ORGANIZATION";
         String currentStatus = WorkspaceStatus.TO_BE_DELETED.name();
         String updatedStatus = WorkspaceStatus.ACTIVE.name();
-        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build());
+        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
 
         User user = TestUtils.createUserWithRoleOnSub(subscriberId, subscriberAdminRole);
         Optional<Workspace> organizationEntity = Optional.of(Workspace.builder().name(organizationName).id(organizationId).status(currentStatus)
@@ -145,7 +145,7 @@ class WorkspaceServiceTest {
         long dataRetentionDay = 7L;
         String organizationName = "ORGANIZATION";
         String organizationUpdatedName = "ORGANIZATION_UPDATED";
-        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build());
+        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
         User user = TestUtils.createUserWithRoleOnSub(subscriberId, subscriberAdminRole);
 
         WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationUpdatedName
@@ -176,7 +176,7 @@ class WorkspaceServiceTest {
         Long subscriberId = 1L;
         long organizationId = 1L;
         String organizationName = "ORGANIZATION";
-        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build());
+        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
         User user = TestUtils.createUserWithRoleOnSub(subscriberId, subscriberAdminRole);
 
         WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName

@@ -46,7 +46,7 @@ public class InventoryService {
     @Autowired
     private InventoryRepository inventoryRepository;
     /**
-     * The organization service.
+     * The Workspace service.
      */
     @Autowired
     private WorkspaceService workspaceService;
@@ -73,15 +73,14 @@ public class InventoryService {
     }
 
     /**
-     * Retrieve all inventory of an organization if inventoryId is null.
+     * Retrieve all inventory of a workspace if inventoryId is null.
      * Filter on inventoryId if not null
      *
-     * @param organizationName the client organization name.
-     * @param workspaceId      the linked organization's id.
+     * @param workspaceId      the linked workspace id.
      * @param inventoryId      the inventory id optional query param
      * @return inventories BO.
      */
-    public List<InventoryBO> getInventories(final String organizationName, final Long workspaceId, final Long inventoryId) {
+    public List<InventoryBO> getInventories(final Long workspaceId, final Long inventoryId) {
         final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
         var inventories = inventoryId == null ?
@@ -92,7 +91,7 @@ public class InventoryService {
     }
 
     /**
-     * Retrieving an inventory for an organization and inventory id.
+     * Retrieving an inventory for a workspace and inventory id.
      *
      * @param organizationName organizationName
      * @param workspaceId      workspaceId
@@ -131,7 +130,7 @@ public class InventoryService {
      * Create an inventory.
      *
      * @param organizationName    the client organization name.
-     * @param workspaceId         the linked organization's id.
+     * @param workspaceId         the linked workspace id.
      * @param inventoryCreateRest the inventoryCreateRest.
      * @param user                the inventory's creator
      * @return inventory BO.
@@ -159,7 +158,7 @@ public class InventoryService {
      * Update note or criteria for an inventory.
      *
      * @param organizationName    the organizationName.
-     * @param workspaceId         the organization's id
+     * @param workspaceId         the workspace id
      * @param inventoryUpdateRest the inventoryUpdateRest.
      * @param user                the user.
      * @return InventoryBO

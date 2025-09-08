@@ -47,11 +47,11 @@ public class FileSystemController implements FileSystemApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<FileDescriptionRest>> listFiles(final String subscriber,
-                                                               final Long organization,
+    public ResponseEntity<List<FileDescriptionRest>> listFiles(final String organization,
+                                                               final Long workspace,
                                                                final Long inventoryId) {
         try {
-            return ResponseEntity.ok().body(fileSystemService.listFiles(subscriber, organization));
+            return ResponseEntity.ok().body(fileSystemService.listFiles(organization, workspace));
         } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while get file: " + e.getMessage());
         }
@@ -61,16 +61,16 @@ public class FileSystemController implements FileSystemApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Resource> downloadResultsFile(@PathVariable final String subscriber,
-                                                        @PathVariable final Long organization,
+    public ResponseEntity<Resource> downloadResultsFile(@PathVariable final String organization,
+                                                        @PathVariable final Long workspace,
                                                         @PathVariable final String taskId) {
 
         String filename = String.join("/", taskId, Constants.REJECTED_FILES_ZIP);
 
-        final String filePath = String.join("/", subscriber, organization.toString(), FileFolder.OUTPUT.getFolderName(), filename);
+        final String filePath = String.join("/", organization, workspace.toString(), FileFolder.OUTPUT.getFolderName(), filename);
 
         try {
-            InputStream inputStream = fileSystemService.downloadFile(subscriber, organization, FileFolder.OUTPUT, filename);
+            InputStream inputStream = fileSystemService.downloadFile(organization, workspace, FileFolder.OUTPUT, filename);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (BlobStorageException e) {
             if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {

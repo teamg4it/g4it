@@ -39,14 +39,14 @@ public class LocalFileSystem implements FileSystem {
     /**
      * Mount the local storage.
      *
-     * @param subscriber the client subscriber.
+     * @param organization the client organization.
      * @return the local file storage.
      */
     @Override
-    public FileStorage mount(final String subscriber, final String organization) {
+    public FileStorage mount(final String organization, final String workspace) {
         // We create the expected folder structure if it doesn't exist
-        Arrays.stream(FileFolder.values()).forEach(e -> Paths.get(localPath, subscriber, organization, e.getFolderName()).toFile().mkdirs());
-        return new LocalFileStorage(Paths.get(localPath, subscriber, organization).toString());
+        Arrays.stream(FileFolder.values()).forEach(e -> Paths.get(localPath, organization, workspace, e.getFolderName()).toFile().mkdirs());
+        return new LocalFileStorage(Paths.get(localPath, organization, workspace).toString());
     }
 
 

@@ -70,7 +70,7 @@ public class AsyncEvaluatingService implements ITaskExecute {
             } else {
                 evaluateService.doEvaluate(context, task, exportDirectory);
             }
-            exportService.uploadExportZip(taskId, context.getSubscriber(), context.getOrganizationId().toString());
+            exportService.uploadExportZip(taskId, context.getOrganization(), context.getWorkspaceId().toString());
             exportService.clean(taskId);
 
             task.setStatus(TaskStatus.COMPLETED.toString());

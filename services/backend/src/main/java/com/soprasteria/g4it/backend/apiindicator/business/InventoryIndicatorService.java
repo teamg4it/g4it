@@ -74,40 +74,40 @@ public class InventoryIndicatorService {
     /**
      * Get inventory indicators.
      * *
-     * * @param subscriber    the subscriber.
-     * * @param organizationId  the organizationId.
+     * * @param organization    the organization.
+     * * @param workspaceId  the workspaceId.
      * * @param inventoryId the inventory id.
      * * @return indicators.
      */
-    public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
-        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
+    public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
         return indicatorService.getEquipmentIndicators(getLastTaskId(inventory));
     }
 
     /**
      * Get inventory application indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organizationId.
+     * @param organization     the organization.
+     * @param workspaceId the workspaceId.
      * @param inventoryId    the inventory id.
      * @return indicators.
      */
 
-    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
-        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
+    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
         return indicatorService.getApplicationIndicators(getLastTaskId(inventory));
     }
 
     /**
      * Delete inventory indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organizationId.
+     * @param organization     the organization.
+     * @param workspaceId the workspaceId.
      * @param inventoryId    the inventory id.
      */
-    public void deleteIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
+    public void deleteIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
         // clean all evaluating tasks
-        taskService.deleteEvaluatingTasksByInventoryId(subscriber, organizationId, inventoryId);
+        taskService.deleteEvaluatingTasksByInventoryId(organization, workspaceId, inventoryId);
     }
 
     /**
@@ -133,25 +133,25 @@ public class InventoryIndicatorService {
     /**
      * Get physical equipment low impact indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organizationId.
+     * @param organization     the organization.
+     * @param workspaceId the workspaceId.
      * @param inventoryId    the inventory id.
      * @return indicators
      */
-    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber, final Long organizationId, final Long inventoryId) {
-        return indicatorService.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
+    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String organization, final Long workspaceId, final Long inventoryId) {
+        return indicatorService.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId);
     }
 
     /**
      * Get electric consumption of physical equipments
      *
-     * @param subscriber     the subscriber
-     * @param organizationId the organization's id
+     * @param organization     the organization
+     * @param workspaceId the workspace id
      * @param inventoryId    the inventory id
      * @return electric consumption indicators
      */
-    public List<PhysicalEquipmentElecConsumptionBO> getPhysicalEquipmentElecConsumption(final String subscriber, final Long organizationId, final Long inventoryId) {
-        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
+    public List<PhysicalEquipmentElecConsumptionBO> getPhysicalEquipmentElecConsumption(final String organization, final Long workspaceId, final Long inventoryId) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
         Long taskId = getLastTaskId(inventory);
         final Long criteriaNumber = inventoryService.getCriteriaNumber(taskId);
         return indicatorService.getPhysicalEquipmentElecConsumption(taskId, criteriaNumber);

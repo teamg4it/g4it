@@ -31,7 +31,7 @@ public class InventoryDeleteService {
     private InventoryRepository inventoryRepository;
 
     /**
-     * The organization service.
+     * The workspace service.
      */
     @Autowired
     private WorkspaceService workspaceService;
@@ -52,41 +52,41 @@ public class InventoryDeleteService {
 
 
     /**
-     * Delete all inventories in an organization.
+     * Delete all inventories in a workspace.
      *
-     * @param subscriberName the client subscriber name.
-     * @param organizationId the linked organization's id.
+     * @param organizationName the client organization name.
+     * @param workspaceId the linked workspace id.
      */
-    public void deleteInventories(final String subscriberName, final Long organizationId) {
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
+    public void deleteInventories(final String organizationName, final Long workspaceId) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
         inventoryRepository.findByWorkspace(linkedWorkspace)
-                .forEach(inventory -> deleteInventory(subscriberName, organizationId, inventory));
+                .forEach(inventory -> deleteInventory(organizationName, workspaceId, inventory));
     }
 
 
     /**
-     * Delete an inventory for an organization on a date.
+     * Delete an inventory for a workspace on a date.
      *
-     * @param subscriberName the client subscriber name.
-     * @param organizationId the organization id.
+     * @param organizationName the client organization name.
+     * @param workspaceId the workspace id.
      * @param inventoryId    the inventory id.
      */
-    public void deleteInventory(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(organizationId);
+    public void deleteInventory(final String organizationName, final Long workspaceId, final Long inventoryId) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
         inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId)
-                .ifPresent(inventory -> deleteInventory(subscriberName, organizationId, inventory));
+                .ifPresent(inventory -> deleteInventory(organizationName, workspaceId, inventory));
     }
 
 
     /**
      * Delete the inventory based on the inventory database object
      *
-     * @param subscriberName the client subscriber name.
-     * @param organizationId the organization's id.
+     * @param organizationName the client organization name.
+     * @param workspaceId the workspace id.
      * @param inventory      the inventory database object.
      */
 
-    public void deleteInventory(final String subscriberName, final Long organizationId, final Inventory inventory) {
+    public void deleteInventory(final String organizationName, final Long workspaceId, final Inventory inventory) {
         Long inventoryId = inventory.getId();
         // Delete input data
         inDatacenterRepository.deleteByInventoryId(inventoryId);
@@ -95,7 +95,7 @@ public class InventoryDeleteService {
         inApplicationRepository.deleteByInventoryId(inventoryId);
 
         // Delete EVALUATING tasks and indicator data
-        inventoryIndicatorService.deleteIndicators(subscriberName, organizationId, inventoryId);
+        inventoryIndicatorService.deleteIndicators(organizationName, workspaceId, inventoryId);
 
         // Remove inventory.
         inventoryRepository.deleteByInventoryId(inventory.getId());

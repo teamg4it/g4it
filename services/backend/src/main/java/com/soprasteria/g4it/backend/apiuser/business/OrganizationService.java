@@ -37,7 +37,7 @@ public class OrganizationService {
     public Organization getOrgById(final Long organizationId) {
         return organizationRepository.findById(organizationId)
                 .orElseThrow(
-                        () -> new G4itRestException("404", String.format("subscription with id '%d' not found", organizationId))
+                        () -> new G4itRestException("404", String.format("organization with id '%d' not found", organizationId))
                 );
     }
 

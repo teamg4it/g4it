@@ -70,6 +70,6 @@ public class NewWorkspaceController implements NewWorkspaceApiDelegate {
     @Override
     public ResponseEntity<List<OrganizationDetailsRest>> getDomainOrganization(UserDetailsRest userDetailsRest) {
         return new ResponseEntity<>(
-                organizationDetailsRestMapper.toDto(this.newWorkspaceService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
+                organizationDetailsRestMapper.toDto(this.newWorkspaceService.searchOrganizationsByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
     }
 }
