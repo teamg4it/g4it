@@ -42,13 +42,13 @@ public class GenericRuleService {
     /**
      * Check location is in referential item impacts
      *
-     * @param subscriber the subscriber
+     * @param organization the organization
      * @param location   the location
      * @return error
      */
-    public Optional<LineError> checkLocation(Locale locale, String subscriber, String filename, int line, String location) {
+    public Optional<LineError> checkLocation(Locale locale, String organization, String filename, int line, String location) {
 
-        if (referentialGetService.getCountries(subscriber).contains(location)) return Optional.empty();
+        if (referentialGetService.getCountries(organization).contains(location)) return Optional.empty();
         if (referentialGetService.getCountries(null).contains(location)) return Optional.empty();
 
         return Optional.of(new LineError(filename,line, messageSource.getMessage("referential.location.not.exist", new String[]{location}, locale)));
@@ -57,11 +57,11 @@ public class GenericRuleService {
     /**
      * Check type is in referential item types
      *
-     * @param subscriber the subscriber
+     * @param organization the organization
      * @param type       the location
      * @return error
      */
-   public Optional<LineError> checkType(Locale locale, String subscriber, String filename, int line, String type, boolean isDigitalService) {
+   public Optional<LineError> checkType(Locale locale, String organization, String filename, int line, String type, boolean isDigitalService) {
 
         if (StringUtils.isEmpty(type)) {
             return Optional.of(new LineError(filename, line,
@@ -77,7 +77,7 @@ public class GenericRuleService {
                                 locale)));
         }
         else {
-            if (referentialGetService.getItemTypes(type, subscriber).isEmpty() &&
+            if (referentialGetService.getItemTypes(type, organization).isEmpty() &&
                     referentialGetService.getItemTypes(type, null).isEmpty()) {
 
                 return Optional.of(new LineError(

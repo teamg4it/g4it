@@ -50,18 +50,18 @@ class InventoryDeleteServiceTest {
     @Mock
     private InApplicationRepository inApplicationRepository;
 
-    private final String subscriber = "subscriber";
+    private final String organization = "organization";
 
     @Test
     void testDeleteAllInventoriesOfOrganization() {
-        final Workspace workspace = TestUtils.createOrganization();
+        final Workspace workspace = TestUtils.createWorkspace();
 
         final List<Inventory> inventorysEntitiesList = List.of(Inventory.builder().id(2L).name("03-2023").build());
 
         when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
         when(inventoryRepository.findByWorkspace(workspace)).thenReturn(inventorysEntitiesList);
 
-        inventoryDeleteService.deleteInventories(subscriber, 1L);
+        inventoryDeleteService.deleteInventories(organization, 1L);
 
         verify(workspaceService).getWorkspaceById(1L);
         verify(inventoryRepository).findByWorkspace(workspace);
@@ -69,18 +69,18 @@ class InventoryDeleteServiceTest {
         verify(inPhysicalEquipmentRepository).deleteByInventoryId(2L);
         verify(inVirtualEquipmentRepository).deleteByInventoryId(2L);
         verify(inApplicationRepository).deleteByInventoryId(2L);
-        verify(inventoryIndicatorService).deleteIndicators(subscriber, 1L, 2L);
+        verify(inventoryIndicatorService).deleteIndicators(organization, 1L, 2L);
         verify(inventoryRepository).deleteByInventoryId(2L);
     }
 
     @Test
     void testDeleteByIdInventory_Exists() {
-        final Workspace workspace = TestUtils.createOrganization();
+        final Workspace workspace = TestUtils.createWorkspace();
         final Inventory inventory = Inventory.builder().id(2L).name("03-2023").build();
         when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
         when(inventoryRepository.findByWorkspaceAndId(workspace, 2L)).thenReturn(Optional.of(inventory));
 
-        inventoryDeleteService.deleteInventory(subscriber, 1L, 2L);
+        inventoryDeleteService.deleteInventory(organization, 1L, 2L);
 
         verify(workspaceService).getWorkspaceById(1L);
         verify(inventoryRepository).findByWorkspaceAndId(workspace, 2L);
@@ -88,18 +88,18 @@ class InventoryDeleteServiceTest {
         verify(inPhysicalEquipmentRepository).deleteByInventoryId(2L);
         verify(inVirtualEquipmentRepository).deleteByInventoryId(2L);
         verify(inApplicationRepository).deleteByInventoryId(2L);
-        verify(inventoryIndicatorService).deleteIndicators(subscriber, 1L, 2L);
+        verify(inventoryIndicatorService).deleteIndicators(organization, 1L, 2L);
         verify(inventoryRepository).deleteByInventoryId(2L);
     }
 
     @Test
     void testDeleteByIdInventory_NotFound() {
-        final Workspace workspace = TestUtils.createOrganization();
+        final Workspace workspace = TestUtils.createWorkspace();
 
         when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
         when(inventoryRepository.findByWorkspaceAndId(workspace, 2L)).thenReturn(Optional.empty());
 
-        inventoryDeleteService.deleteInventory(subscriber, 1L, 2L);
+        inventoryDeleteService.deleteInventory(organization, 1L, 2L);
 
         verify(workspaceService).getWorkspaceById(1L);
         verify(inventoryRepository).findByWorkspaceAndId(workspace, 2L);
@@ -112,13 +112,13 @@ class InventoryDeleteServiceTest {
     void deleteInventory_byInventory_shouldDeleteInputAndIndicatorsAndInventory() {
         final Inventory inventory = Inventory.builder().id(2L).name("03-2023").build();
 
-        inventoryDeleteService.deleteInventory(subscriber, 1L, inventory);
+        inventoryDeleteService.deleteInventory(organization, 1L, inventory);
 
         verify(inDatacenterRepository).deleteByInventoryId(2L);
         verify(inPhysicalEquipmentRepository).deleteByInventoryId(2L);
         verify(inVirtualEquipmentRepository).deleteByInventoryId(2L);
         verify(inApplicationRepository).deleteByInventoryId(2L);
-        verify(inventoryIndicatorService).deleteIndicators(subscriber, 1L, 2L);
+        verify(inventoryIndicatorService).deleteIndicators(organization, 1L, 2L);
         verify(inventoryRepository).deleteByInventoryId(2L);
     }
 }

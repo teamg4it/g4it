@@ -46,9 +46,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TestUtils {
 
-    public static final String SUBSCRIBER = "SUBSCRIBER";
     public static final String ORGANIZATION = "ORGANIZATION";
-    public static final Long ORGANIZATION_ID = 1L;
+    public static final String WORKSPACE = "WORKSPACE";
+    public static final Long WORKSPACE_ID = 1L;
     public static final String EMAIL = "user.test@unitaire";
     public static final String ROLE = "ROLE";
     public static ObjectMapper mapper = JsonMapper.builder()
@@ -67,9 +67,9 @@ public class TestUtils {
                 .id(1)
                 .email(EMAIL)
                 .organizations(List.of(OrganizationBO.builder()
-                        .name(SUBSCRIBER)
-                        .organizations(List.of(WorkspaceBO.builder()
-                                .name(ORGANIZATION)
+                        .name(ORGANIZATION)
+                        .workspaces(List.of(WorkspaceBO.builder()
+                                .name(WORKSPACE)
                                 .status(WorkspaceStatus.ACTIVE.name())
                                 .roles(userRoles)
                                 .build()))
@@ -78,32 +78,32 @@ public class TestUtils {
     }
 
     public static Organization createSubscriber() {
-        return Organization.builder().id(1L).name(SUBSCRIBER).build();
+        return Organization.builder().id(1L).name(ORGANIZATION).build();
     }
 
     public static Organization createSubscriber(Long subscriberId) {
-        return Organization.builder().id(subscriberId).name(SUBSCRIBER).build();
+        return Organization.builder().id(subscriberId).name(ORGANIZATION).build();
     }
 
-    public static Workspace createOrganization() {
+    public static Workspace createWorkspace() {
         return Workspace.builder()
                 .id(1)
-                .name(ORGANIZATION)
+                .name(WORKSPACE)
                 .status(WorkspaceStatus.ACTIVE.name())
                 .organization(Organization.builder()
                         .id(1)
-                        .name(SUBSCRIBER)
+                        .name(ORGANIZATION)
                         .build())
                 .build();
     }
 
     public static Workspace createOrganizationWithStatus(String status) {
         return Workspace.builder()
-                .name(ORGANIZATION)
+                .name(WORKSPACE)
                 .status(status)
                 .deletionDate(LocalDateTime.now())
                 .organization(Organization.builder()
-                        .name(SUBSCRIBER)
+                        .name(ORGANIZATION)
                         .build())
                 .build();
     }
@@ -111,24 +111,24 @@ public class TestUtils {
     public static Workspace createOrganization(Long subId, Long orgId, String status, LocalDateTime deletionDate) {
         return Workspace.builder()
                 .id(orgId)
-                .name(ORGANIZATION)
+                .name(WORKSPACE)
                 .status(status)
                 .deletionDate(deletionDate)
                 .organization(Organization.builder()
                         .id(subId)
-                        .name(SUBSCRIBER)
+                        .name(ORGANIZATION)
                         .build())
                 .build();
     }
 
     public static Workspace createToBeDeletedOrganization(LocalDateTime deletionDate) {
         return Workspace.builder()
-                .id(ORGANIZATION_ID)
-                .name(ORGANIZATION)
+                .id(WORKSPACE_ID)
+                .name(WORKSPACE)
                 .status(WorkspaceStatus.TO_BE_DELETED.name())
                 .deletionDate(deletionDate)
                 .organization(Organization.builder()
-                        .name(SUBSCRIBER)
+                        .name(ORGANIZATION)
                         .build())
                 .build();
     }
@@ -145,10 +145,10 @@ public class TestUtils {
 
     public static User createUserWithRoleOnSub(Long subscriberId, List<Role> roles) {
         return User.builder().email(EMAIL)
-                .userOrganizations(List.of(UserOrganization.builder().defaultFlag(true).roles(roles).organization(Organization.builder().name(SUBSCRIBER).build()).build()))
+                .userOrganizations(List.of(UserOrganization.builder().defaultFlag(true).roles(roles).organization(Organization.builder().name(ORGANIZATION).build()).build()))
                 .userWorkspaces(List.of(UserWorkspace
-                        .builder().defaultFlag(true).roles(List.of(Role.builder().name("ROLE_INVENTORY_READ").build())).workspace(Workspace.builder().name(ORGANIZATION).status(WorkspaceStatus.ACTIVE.name())
-                                .organization(Organization.builder().id(subscriberId).name(SUBSCRIBER).build()).build()).build())).build();
+                        .builder().defaultFlag(true).roles(List.of(Role.builder().name("ROLE_INVENTORY_READ").build())).workspace(Workspace.builder().name(WORKSPACE).status(WorkspaceStatus.ACTIVE.name())
+                                .organization(Organization.builder().id(subscriberId).name(ORGANIZATION).build()).build()).build())).build();
     }
 
     public static UserBO createUserBOAdminSub() {
@@ -185,12 +185,12 @@ public class TestUtils {
     }
 
 
-    public static UserWorkspace createUserOrganization(List<Role> roles, String status) {
+    public static UserWorkspace createUserWorkspace(List<Role> roles, String status) {
         return UserWorkspace
                 .builder().defaultFlag(true).roles(roles).workspace(createOrganizationWithStatus(status)).build();
     }
 
-    public static UserWorkspace createUserOrganization(Long subId, Long orgId, List<Role> roles, String status, LocalDateTime deletionDate, List<UserRoleWorkspace> userRoleWorkspace) {
+    public static UserWorkspace createUserWorkspace(Long subId, Long orgId, List<Role> roles, String status, LocalDateTime deletionDate, List<UserRoleWorkspace> userRoleWorkspace) {
         return UserWorkspace
                 .builder().defaultFlag(true).roles(roles).workspace(createOrganization(subId, orgId, status, deletionDate)).userRoleWorkspace(userRoleWorkspace).build();
     }
@@ -248,16 +248,16 @@ public class TestUtils {
         return User.builder().email(EMAIL)
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
-                        .roles(organizationAdminRole).workspace(Workspace.builder().id(organizationId).name(ORGANIZATION).status(WorkspaceStatus.ACTIVE.name())
+                        .roles(organizationAdminRole).workspace(Workspace.builder().id(organizationId).name(WORKSPACE).status(WorkspaceStatus.ACTIVE.name())
                                 .build()).build())).build();
 
 
     }
 
-    public static UserWorkspace createUserOrganization(Long organizationId, Long userId) {
+    public static UserWorkspace createUserWorkspace(Long organizationId, Long userId) {
         return UserWorkspace.builder()
                 .id(1L)
-                .workspace(Workspace.builder().id(organizationId).name(ORGANIZATION).build())
+                .workspace(Workspace.builder().id(organizationId).name(WORKSPACE).build())
                 .user(User.builder().id(userId).email(EMAIL).build())
                 .defaultFlag(true)
                 .build();

@@ -43,8 +43,8 @@ class InventoryIndicatorServiceTest {
 
     @Test
     void returnsElectricConsumptionIndicatorsWhenValidInputsProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         Long inventoryId = 2L;
         Long taskId = 3L;
         Long criteriaNumber = 4L;
@@ -54,31 +54,31 @@ class InventoryIndicatorServiceTest {
 
         List<PhysicalEquipmentElecConsumptionBO> expectedIndicators = List.of(new PhysicalEquipmentElecConsumptionBO());
 
-        when(inventoryService.getInventory(subscriber, organizationId, inventoryId)).thenReturn(inventory);
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
         when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
                 .thenReturn(Optional.of(Task.builder().id(taskId).build()));
         when(inventoryService.getCriteriaNumber(taskId)).thenReturn(criteriaNumber);
         when(indicatorService.getPhysicalEquipmentElecConsumption(taskId, criteriaNumber)).thenReturn(expectedIndicators);
 
-        List<PhysicalEquipmentElecConsumptionBO> result = inventoryIndicatorService.getPhysicalEquipmentElecConsumption(subscriber, organizationId, inventoryId);
+        List<PhysicalEquipmentElecConsumptionBO> result = inventoryIndicatorService.getPhysicalEquipmentElecConsumption(organization, workspaceId, inventoryId);
 
         assertEquals(expectedIndicators, result);
     }
 
     @Test
     void throwsExceptionWhenNoTaskFoundForInventory() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         Long inventoryId = 2L;
 
         InventoryBO inventory = new InventoryBO();
         inventory.setId(inventoryId);
 
-        when(inventoryService.getInventory(subscriber, organizationId, inventoryId)).thenReturn(inventory);
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
         when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class))).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class,
-                () -> inventoryIndicatorService.getPhysicalEquipmentElecConsumption(subscriber, organizationId, inventoryId));
+                () -> inventoryIndicatorService.getPhysicalEquipmentElecConsumption(organization, workspaceId, inventoryId));
 
         assertEquals("404", exception.getCode());
         assertEquals(String.format("inventory %d has no batch executed", inventoryId), exception.getMessage());
@@ -86,8 +86,8 @@ class InventoryIndicatorServiceTest {
 
     @Test
     void returnsEmptyListWhenNoIndicatorsFound() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         Long inventoryId = 2L;
         Long taskId = 3L;
         Long criteriaNumber = 4L;
@@ -95,13 +95,13 @@ class InventoryIndicatorServiceTest {
         InventoryBO inventory = new InventoryBO();
         inventory.setId(inventoryId);
         inventory.setName("test_data");
-        when(inventoryService.getInventory(subscriber, organizationId, inventoryId)).thenReturn(inventory);
+        when(inventoryService.getInventory(organization, workspaceId, inventoryId)).thenReturn(inventory);
         when(taskRepository.findByInventoryAndLastCreationDate(Mockito.any(Inventory.class)))
                 .thenReturn(Optional.of(Task.builder().id(taskId).build()));
         when(inventoryService.getCriteriaNumber(taskId)).thenReturn(criteriaNumber);
         when(indicatorService.getPhysicalEquipmentElecConsumption(taskId, criteriaNumber)).thenReturn(List.of());
 
-        List<PhysicalEquipmentElecConsumptionBO> result = inventoryIndicatorService.getPhysicalEquipmentElecConsumption(subscriber, organizationId, inventoryId);
+        List<PhysicalEquipmentElecConsumptionBO> result = inventoryIndicatorService.getPhysicalEquipmentElecConsumption(organization, workspaceId, inventoryId);
 
         assertTrue(result.isEmpty());
     }

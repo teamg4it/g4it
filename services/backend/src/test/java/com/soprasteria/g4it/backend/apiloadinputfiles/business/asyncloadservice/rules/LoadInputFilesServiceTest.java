@@ -74,8 +74,8 @@ class LoadInputFilesServiceTest {
 
     @Test
     void loadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         Long inventoryId = 1L;
         List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
         List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
@@ -90,20 +90,20 @@ class LoadInputFilesServiceTest {
                 .build();
 
         Workspace workspace = Workspace.builder()
-                .id(organizationId)
-                .name("Test Organization")
+                .id(workspaceId)
+                .name("Test Workspace")
                 .build();
 
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
-        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
         when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
 
-        Task result = loadInputFilesService.loadFiles(subscriber, organizationId, inventoryId, datacenters, physicalEquipments, virtualEquipments, applications);
+        Task result = loadInputFilesService.loadFiles(organization, workspaceId, inventoryId, datacenters, physicalEquipments, virtualEquipments, applications);
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
@@ -112,8 +112,8 @@ class LoadInputFilesServiceTest {
 
     @Test
     void digitalServiceLoadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         String digitalServiceUid = "uid";
         List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
         List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
@@ -124,20 +124,20 @@ class LoadInputFilesServiceTest {
                 .build();
 
         Workspace workspace = Workspace.builder()
-                .id(organizationId)
-                .name("Test Organization")
+                .id(workspaceId)
+                .name("Test Workspace")
                 .build();
 
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
-        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
         when(taskRepository.findByDigitalServiceAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
 
-        Task result = loadInputFilesService.loadDigitalServiceFiles(subscriber, organizationId, digitalServiceUid, datacenters, physicalEquipments, virtualEquipments);
+        Task result = loadInputFilesService.loadDigitalServiceFiles(organization, workspaceId, digitalServiceUid, datacenters, physicalEquipments, virtualEquipments);
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
@@ -146,11 +146,11 @@ class LoadInputFilesServiceTest {
 
     @Test
     void loadFiles_returnsEmptyTask_whenNoFilesProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         Long inventoryId = 1L;
 
-        Task result = loadInputFilesService.loadFiles(subscriber, organizationId, inventoryId, null, null, null, null);
+        Task result = loadInputFilesService.loadFiles(organization, workspaceId, inventoryId, null, null, null, null);
 
         assertNotNull(result);
         assertNull(result.getId());
@@ -168,8 +168,8 @@ class LoadInputFilesServiceTest {
                         .id(1L)
                         .workspace(Workspace.builder()
                                 .id(1L)
-                                .name("Test Organization")
-                                .organization(Organization.builder().name("testSubscriber").build())
+                                .name("Test Workspace")
+                                .organization(Organization.builder().name("testOrganization").build())
                                 .build())
                         .virtualEquipmentCount(1L)
                         .applicationCount(1L)
@@ -196,8 +196,8 @@ class LoadInputFilesServiceTest {
                         .uid("uid")
                         .workspace(Workspace.builder()
                                 .id(1L)
-                                .name("Test Organization")
-                                .organization(Organization.builder().name("testSubscriber").build())
+                                .name("Test Workspace")
+                                .organization(Organization.builder().name("testOrganization").build())
                                 .build())
                         .build())
                 .build();

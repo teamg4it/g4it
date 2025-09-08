@@ -51,7 +51,7 @@ g4it:
       ttl: PT20M
     short:
       ttl: PT2M
-  organization:
+  workspace:
     deletion:
       oninit: "false"
       cron: "0 0 0 * * *"

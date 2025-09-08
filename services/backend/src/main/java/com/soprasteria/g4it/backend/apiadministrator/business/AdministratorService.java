@@ -72,7 +72,7 @@ public class AdministratorService {
     private UserService userService;
 
     /**
-     * Retrieve the list of organizations for the user which has ROLE_SUBSCRIBER_ADMINISTRATOR on it
+     * Retrieve the list of organizations for the user which has ROLE_ORGANIZATION_ADMINISTRATOR on it
      *
      * @param user the user.
      * @return the List<OrganizationBO>.

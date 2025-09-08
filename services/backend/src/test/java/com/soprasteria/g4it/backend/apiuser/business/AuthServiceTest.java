@@ -24,19 +24,19 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-    public static final long ORGANIZATION_ID = 1L;
+    public static final long WORKSPACE_ID = 1L;
     // Given global
-    private static final String SUBSCRIBER = "subscriber";
     private static final String ORGANIZATION = "organization";
+    private static final String WORKSPACE = "workpace";
     private static final List<String> roles = List.of("Role 1", "Role2");
     private static final UserBO user = UserBO.builder()
             .id(0)
             .organizations(
                     List.of(OrganizationBO.builder()
-                            .name(SUBSCRIBER)
-                            .organizations(List.of(WorkspaceBO.builder()
-                                    .name(ORGANIZATION)
-                                    .id(ORGANIZATION_ID)
+                            .name(ORGANIZATION)
+                            .workspaces(List.of(WorkspaceBO.builder()
+                                    .name(WORKSPACE)
+                                    .id(WORKSPACE_ID)
                                     .roles(roles)
                                     .build()))
                             .roles(List.of())
@@ -48,19 +48,19 @@ class AuthServiceTest {
 
     @Test
     void testControlAccess_nominalCase_returnAllRoles() {
-        List<String> actual = ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, SUBSCRIBER, ORGANIZATION_ID);
+        List<String> actual = ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, ORGANIZATION, WORKSPACE_ID);
         Assertions.assertEquals(roles, actual);
     }
 
     @Test
-    void testControlAccess_subscriberAdminCase_returnAllRoles() {
-        var adminSubscriber = UserBO.builder()
+    void testControlAccess_OrganizationAdminCase_returnAllRoles() {
+        var adminOrganization = UserBO.builder()
                 .id(0)
                 .organizations(
                         List.of(OrganizationBO.builder()
-                                .name(SUBSCRIBER)
-                                .organizations(List.of(WorkspaceBO.builder()
-                                        .name(ORGANIZATION)
+                                .name(ORGANIZATION)
+                                .workspaces(List.of(WorkspaceBO.builder()
+                                        .name(WORKSPACE)
                                         .roles(List.of())
                                         .build()))
                                 .roles(List.of(Constants.ROLE_ORGANIZATION_ADMINISTRATOR))
@@ -68,22 +68,22 @@ class AuthServiceTest {
                 )
                 .build();
 
-        List<String> actual = ReflectionTestUtils.invokeMethod(authService, "controlAccess", adminSubscriber, SUBSCRIBER, ORGANIZATION_ID);
+        List<String> actual = ReflectionTestUtils.invokeMethod(authService, "controlAccess", adminOrganization, ORGANIZATION, WORKSPACE_ID);
         Assertions.assertEquals(Constants.ORGANIZATION_ROLES, actual);
     }
 
 
     @Test
-    void testControlAccess_withUnknownSubscriber_thenUnauthorized() {
+    void testControlAccess_withUnknownOrganization_thenUnauthorized() {
         Assertions.assertThrows(AuthorizationException.class, () -> {
-            ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, "BadSubscriber", ORGANIZATION_ID);
+            ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, "BadOrganization", WORKSPACE_ID);
         });
     }
 
     @Test
-    void testControlAccess_withUnknownOrganization_thenUnauthorized() {
+    void testControlAccess_withUnknownWorkspace_thenUnauthorized() {
         Assertions.assertThrows(AuthorizationException.class, () -> {
-            ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, SUBSCRIBER, 3L);
+            ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, ORGANIZATION, 3L);
         });
     }
 
@@ -92,10 +92,10 @@ class AuthServiceTest {
         final UserBO userWithoutRole = UserBO.builder()
                 .id(0)
                 .organizations(List.of(OrganizationBO.builder()
-                        .name(SUBSCRIBER)
-                        .organizations(List.of(WorkspaceBO.builder()
-                                .name(ORGANIZATION)
-                                .id(ORGANIZATION_ID)
+                        .name(ORGANIZATION)
+                        .workspaces(List.of(WorkspaceBO.builder()
+                                .name(WORKSPACE)
+                                .id(WORKSPACE_ID)
                                 .roles(List.of())
                                 .build()))
                         .roles(List.of())
@@ -103,7 +103,7 @@ class AuthServiceTest {
                 .build();
 
         Assertions.assertThrows(AuthorizationException.class, () -> {
-            ReflectionTestUtils.invokeMethod(authService, "controlAccess", userWithoutRole, SUBSCRIBER, ORGANIZATION_ID);
+            ReflectionTestUtils.invokeMethod(authService, "controlAccess", userWithoutRole, ORGANIZATION, WORKSPACE_ID);
         });
     }
 

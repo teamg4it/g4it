@@ -51,7 +51,7 @@ public class WorkspaceService {
     @Autowired
     private CacheManager cacheManager;
 
-    @Value("${g4it.organization.deletion.day}")
+    @Value("${g4it.workspace.deletion.day}")
     private Integer workspaceDataDeletionDays;
     /**
      * The repository to access workspace data.

@@ -98,22 +98,22 @@ class PhysicalEquipmentIndicatorServiceTest {
 
     @Test
     void getPhysicalEquipmentsLowImpactReturnsMappedIndicatorsWhenValidInputs() {
-        String subscriber = "subscriber";
-        Long organizationId = 1L;
+        String organization = "organization";
+        Long workspaceId = 1L;
         Long inventoryId = 2L;
         Workspace workspace = new Workspace();
-        workspace.setName("OrgName");
+        workspace.setName("WorkName");
         List<InPhysicalEquipmentLowImpactView> repositoryResult = List.of(InPhysicalEquipmentLowImpactView.builder().build());
         List<PhysicalEquipmentLowImpactBO> mappedResult = List.of(new PhysicalEquipmentLowImpactBO());
 
-        when(workspaceService.getWorkspaceById(organizationId)).thenReturn(workspace);
+        when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
         when(lowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId)).thenReturn(repositoryResult);
         when(mapper.inPhysicalEquipmentLowImpacttoDTO(repositoryResult)).thenReturn(mappedResult);
 
-        List<PhysicalEquipmentLowImpactBO> result = service.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
+        List<PhysicalEquipmentLowImpactBO> result = service.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId);
 
         assertEquals(mappedResult, result);
-        verify(workspaceService).getWorkspaceById(organizationId);
+        verify(workspaceService).getWorkspaceById(workspaceId);
         verify(lowImpactViewRepository).findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         verify(mapper).inPhysicalEquipmentLowImpacttoDTO(repositoryResult);
     }

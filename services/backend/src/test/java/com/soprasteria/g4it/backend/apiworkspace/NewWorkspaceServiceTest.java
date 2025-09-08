@@ -48,15 +48,15 @@ class NewWorkspaceServiceTest {
 
         when(organizationRepository.findByAuthorizedDomainsContaining(domainName))
                 .thenReturn(List.of(organization));
-        when(workspaceRepository.findBySubscriberId(1L))
+        when(workspaceRepository.findByOrganizationId(1L))
                 .thenReturn(List.of(workspace));
 
         List<OrganizationDetailsBO> result = newWorkspaceService.searchOrganizationsByDomainName(userEmail);
 
         assertEquals(1, result.size());
         assertEquals("Subscriber1", result.getFirst().getName());
-        assertEquals(1, result.getFirst().getOrganizations().size());
-        assertEquals("Org1", result.getFirst().getOrganizations().getFirst().getName());
+        assertEquals(1, result.getFirst().getWorkspaces().size());
+        assertEquals("Org1", result.getFirst().getWorkspaces().getFirst().getName());
     }
 
     @Test
@@ -81,14 +81,14 @@ class NewWorkspaceServiceTest {
 
         when(organizationRepository.findByAuthorizedDomainsContaining(domainName))
                 .thenReturn(List.of(organization));
-        when(workspaceRepository.findBySubscriberId(1L))
+        when(workspaceRepository.findByOrganizationId(1L))
                 .thenReturn(List.of());
 
         List<OrganizationDetailsBO> result = newWorkspaceService.searchOrganizationsByDomainName(userEmail);
 
         assertEquals(1, result.size());
         assertEquals("Subscriber1", result.getFirst().getName());
-        assertTrue(result.getFirst().getOrganizations().isEmpty());
+        assertTrue(result.getFirst().getWorkspaces().isEmpty());
     }
 
 }

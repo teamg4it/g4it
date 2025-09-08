@@ -40,7 +40,7 @@ class CriteriaServiceTest {
     private CriteriaService criteriaService;
 
     @Test
-    void getSelectedCriteriaReturnsCriteriaByTypeWhenSubscriberExists() {
+    void getSelectedCriteriaReturnsCriteriaByTypeWhenOrganizationExists() {
         List<String> mockCriteria = List.of("criteria1", "criteria2");
         Organization mockOrganization = new Organization();
         mockOrganization.setCriteria(mockCriteria);
@@ -52,42 +52,40 @@ class CriteriaServiceTest {
     }
 
     @Test
-    void getSelectedCriteriaThrowsExceptionWhenSubscriberNotFound() {
-        String subscriber = "nonExistentSubscriber";
+    void getSelectedCriteriaThrowsExceptionWhenOrganizationNotFound() {
+        String organization = "nonExistentOrganization";
 
-        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.empty());
+        when(organizationRepository.findByName(organization)).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class, () -> {
-            criteriaService.getSelectedCriteria(subscriber);
+            criteriaService.getSelectedCriteria(organization);
         });
 
         assertEquals("404", exception.getCode());
-        assertEquals("Subscriber nonExistentSubscriber not found", exception.getMessage());
+        assertEquals("Organization nonExistentOrganization not found", exception.getMessage());
     }
 
     @Test
     void getSelectedCriteriaForInventoryReturnsInventoryCriteriaWhenInventoryCriteriaProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
-        List<String> inventoryCriterias = List.of("inventory1", "inventory2");
-        List<String> subscriberCriterias = List.of("criteria1", "criteria2");
+        List<String> inventoryCriteria = List.of("inventory1", "inventory2");
+        List<String> orgCriteria = List.of("criteria1", "criteria2");
         Workspace mockWorkspace = new Workspace();
-        mockWorkspace.setCriteriaIs(List.of("orgCriteria1"));
+        mockWorkspace.setCriteriaIs(List.of("workCriteria1"));
 
         Organization mockOrganization = new Organization();
         mockOrganization.setCriteria(subscriberCriterias);
 
-        when(organizationRepository.findByName(subscriber)).thenReturn(Optional.of(mockOrganization));
-        when(workspaceService.getOrganizationById(organizationId)).thenReturn(mockWorkspace);
+        when(organizationRepository.findByName(ORGANIZATION)).thenReturn(Optional.of(mockOrganization));
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(mockWorkspace);
 
         CriteriaByType result = criteriaService.getSelectedCriteriaForInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCriteria);
 
         assertNotNull(result);
     }
     @Test
-    void getSelectedCriteriaForInventoryReturnsOrganizationCriteriaWhenNoInventoryCriteriaProvided() {
-        List<String> orgCriteria = List.of("orgCriteria1", "orgCriteria2");
-        List<String> subscriberCriteria = List.of("criteria1", "criteria2");
+    void getSelectedCriteriaForInventoryReturnsWorkspaceCriteriaWhenNoInventoryCriteriaProvided() {
+        List<String> workSpaceCriteria = List.of("orgCriteria1", "orgCriteria2");
+        List<String> orgCriteria = List.of("criteria1", "criteria2");
 
         Organization mockOrg = new Organization();
         mockOrg.setCriteriaIs(orgCriteria);
@@ -159,10 +157,8 @@ class CriteriaServiceTest {
     }
 
     @Test
-    void getSelectedCriteriaForInventoryReturnsSubscriberCriteriaWhenNoInventoryOrOrganizationCriteriaProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
-        List<String> subscriberCriterias = List.of("criteria1", "criteria2");
+    void getSelectedCriteriaForInventoryReturnsOrganizationCriteriaWhenNoInventoryOrWorkspaceCriteriaProvided() {
+        List<String> orgCriteria = List.of("criteria1", "criteria2");
         Workspace mockWorkspace = new Workspace();
 
         Organization mockOrganization = new Organization();
@@ -175,5 +171,43 @@ class CriteriaServiceTest {
 
         assertNotNull(result);
     }
+
+
+    @Test
+    void getSelectedCriteriaForDigitalServiceReturnsDigitalServiceCriteriaWhenDigitalServiceCriteriaProvided() {
+        List<String> digitalServiceCriteria = List.of("digital1", "digital2");
+        List<String> orgCriteria = List.of("criteria1", "criteria2");
+        Workspace mockWorkspace = new Workspace();
+        mockWorkspace.setCriteriaDs(List.of("workCriteriaDs1"));
+
+        Organization mockOrg = new Organization();
+        mockOrg.setCriteria(orgCriteria);
+
+        when(organizationRepository.findByName(ORGANIZATION)).thenReturn(Optional.of(mockOrg));
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(mockWorkspace);
+
+        CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(ORGANIZATION, WORKSPACE_ID, digitalServiceCriteria);
+
+        assertNotNull(result);
+    }
+    @Test
+    void getSelectedCriteriaForDigitalServiceReturnsWorkspaceCriteriaWhenNoDigitalServiceCriteriaProvided() {
+        List<String> workCriteria = List.of("workCriteria1", "workCriteria2");
+        List<String> orgCriteria = List.of("criteria1", "criteria2");
+
+        Workspace mockWork = new Workspace();
+        mockWork.setCriteriaDs(workCriteria);
+
+        Organization mockOrg = new Organization();
+        mockOrg.setCriteria(orgCriteria);
+
+        when(organizationRepository.findByName(ORGANIZATION)).thenReturn(Optional.of(mockOrg));
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(mockWork);
+
+        CriteriaByType result = criteriaService.getSelectedCriteriaForDigitalService(ORGANIZATION, WORKSPACE_ID, null);
+
+        assertNotNull(result);
+    }
+
 
 }

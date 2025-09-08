@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AdministratorServiceTest {
 
-    private final Workspace workspace = TestUtils.createOrganization();
+    private final Workspace workspace = TestUtils.createWorkspace();
     @Mock
     CacheManager cacheManager;
     private long organizationId;
@@ -101,9 +101,9 @@ class AdministratorServiceTest {
                 .builder().email("test@soprasteria.com")
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true).roles(List.of(Role.builder().name(ROLE).build()))
-                        .workspace(Workspace.builder().id(organizationId).name(ORGANIZATION)
+                        .workspace(Workspace.builder().id(organizationId).name(WORKSPACE)
                                 .status(WorkspaceStatus.ACTIVE.name())
-                                .organization(Organization.builder().id(2L).name(SUBSCRIBER).build()).build())
+                                .organization(Organization.builder().id(2L).name(ORGANIZATION).build()).build())
                         .build()))
                 .userOrganizations(List.of())
                 .build()));

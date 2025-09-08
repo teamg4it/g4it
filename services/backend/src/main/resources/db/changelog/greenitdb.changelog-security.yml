@@ -80,14 +80,3 @@ databaseChangeLog:
                   value: ${now}
             tableName: organization_domain_mapping
 
-  - changeSet:
-      id: rename-admin-roles-in-g4it-role
-      author: G4IT Dev Team
-      changes:
-        - sql:
-            sql: UPDATE g4it_role
-              SET name = 'ROLE_WORKSPACE_ADMINISTRATOR'
-              WHERE name = 'ROLE_ORGANIZATION_ADMINISTRATOR';
-              UPDATE g4it_role
-              SET name = 'ROLE_ORGANIZATION_ADMINISTRATOR'
-              WHERE name = 'ROLE_SUBSCRIBER_ADMINISTRATOR';

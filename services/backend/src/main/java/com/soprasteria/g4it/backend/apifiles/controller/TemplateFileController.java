@@ -47,8 +47,8 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Resource> downloadTemplatesFile(String subscriber,
-                                                          Long organizationId,
+    public ResponseEntity<Resource> downloadTemplatesFile(String organization,
+                                                          Long workspaceId,
                                                           String name, final String module) {
         FileFolder templateFolder =  FileFolder.IS_TEMPLATE.getFolderName().equals(module) ? FileFolder.IS_TEMPLATE : FileFolder.DS_TEMPLATE;
         final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_WORKSPACE), templateFolder.getFolderName(), name);
@@ -73,8 +73,8 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<FileDescriptionRest>> getTemplateFiles(final String subscriber,
-                                                                      final Long organizationId,
+    public ResponseEntity<List<FileDescriptionRest>> getTemplateFiles(final String organization,
+                                                                      final Long workspaceId,
                                                                       final String module) {
         try {
             return ResponseEntity.ok().body(fileSystemService.listTemplatesFiles(module));

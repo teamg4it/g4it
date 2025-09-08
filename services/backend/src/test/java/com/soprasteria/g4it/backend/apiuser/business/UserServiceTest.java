@@ -40,19 +40,19 @@ class UserServiceTest {
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(User.builder().email(EMAIL)
                 .userOrganizations(List.of(UserOrganization.builder()
                         .defaultFlag(true)
-                        .roles(List.of(Role.builder().name("ROLE_SUBSCRIBER_ADMINISTRATOR").build()))
+                        .roles(List.of(Role.builder().name("ROLE_ORGANIZATION_ADMINISTRATOR").build()))
                         .organization(Organization.builder()
                                 .workspaces(List.of(Workspace.builder()
                                         .status(WorkspaceStatus.ACTIVE.name())
                                         .build()))
-                                .name(SUBSCRIBER)
+                                .name(ORGANIZATION)
                                 .build())
                         .build()))
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
                         .roles(List.of(Role.builder().name("ROLE_INVENTORY_READ").build()))
-                        .workspace(Workspace.builder().name(ORGANIZATION).status(WorkspaceStatus.ACTIVE.name())
-                                .organization(Organization.builder().name(SUBSCRIBER).build()).build())
+                        .workspace(Workspace.builder().name(WORKSPACE).status(WorkspaceStatus.ACTIVE.name())
+                                .organization(Organization.builder().name(ORGANIZATION).build()).build())
                         .build()))
                 .build()));
 
@@ -75,15 +75,15 @@ class UserServiceTest {
                                 .workspaces(List.of(Workspace.builder()
                                         .status(WorkspaceStatus.ACTIVE.name())
                                         .build()))
-                                .name(SUBSCRIBER)
+                                .name(ORGANIZATION)
                                 .criteria(List.of("criteria"))
                                 .build())
                         .build()))
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true)
                         .roles(List.of())
-                        .workspace(Workspace.builder().name(ORGANIZATION).status(WorkspaceStatus.ACTIVE.name())
-                                .organization(Organization.builder().name(SUBSCRIBER).build()).build())
+                        .workspace(Workspace.builder().name(WORKSPACE).status(WorkspaceStatus.ACTIVE.name())
+                                .organization(Organization.builder().name(ORGANIZATION).build()).build())
                         .build()))
                 .build()));
 

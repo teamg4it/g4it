@@ -54,14 +54,14 @@ class AzureGreenItFileSystemApplicationTests {
     private static final String FILE_NEW_NAME1 = "test1.txt";
     private static final String FILE_NEW_NAME2 = "test2.txt";
     /**
-     * Organization associated to test container
+     * Workspace associated to test container
      */
-    private static final String ORGANIZATION = "0";
+    private static final String WORKSPACE = "0";
 
     /**
-     * The real subscriber name in Azure.
+     * The real organization name in Azure.
      */
-    private static final String SUBSCRIBER = "FS-TEST";
+    private static final String ORGANIZATION = "FS-TEST";
     @Autowired
     ResourceLoader resourceLoader;
     @Autowired
@@ -100,7 +100,7 @@ class AzureGreenItFileSystemApplicationTests {
 
     @Test
     void fileSystemShouldHandleCompleteFilesLifeCycle() throws IOException {
-        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
 
         List<FileDescription> inputFiles, workFiles, outputFiles;
         final String FILE_CONTENT = "Content for test";
@@ -211,7 +211,7 @@ class AzureGreenItFileSystemApplicationTests {
     // Test cleanup method
     @AfterEach
     void cleanUp() throws IOException {
-        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
         List<FileDescription> inputFiles, outputFiles;
 
         fs.delete(FileFolder.INPUT, FILE_TEST_NAME);
@@ -235,7 +235,7 @@ class AzureGreenItFileSystemApplicationTests {
     void listFilesOfFolderShouldReturnInputStream() throws IOException {
         final String TMP_FOLDER = UUID.randomUUID().toString();
         final String FILE_NAME = "work_file";
-        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
         try {
             // Given an existing file in the work/<gen_folder>/DATACENTER/
             fs.writeFile(FileFolder.WORK, TMP_FOLDER + "/DATACENTER/" + FILE_NAME + "1", "Content");
@@ -257,7 +257,7 @@ class AzureGreenItFileSystemApplicationTests {
     void listResourcesOfFolderShouldReturnInputStream() throws IOException {
         final String TMP_FOLDER = UUID.randomUUID().toString();
         final String FILE_NAME = "work_file";
-        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
         try {
             // Given an existing file in the work/<gen_folder>/DATACENTER/
             fs.writeFile(FileFolder.WORK, TMP_FOLDER + "/DATACENTER/" + FILE_NAME + "1", "Content");
@@ -285,7 +285,7 @@ class AzureGreenItFileSystemApplicationTests {
     void getFileUrl_shouldCreateUrlWithTokenIfFileExists() throws IOException {
         final String TMP_FOLDER = UUID.randomUUID().toString();
         final String FILE_NAME_WITH_PATH = TMP_FOLDER + "/DATACENTER/work_file.zip";
-        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
         try {
             // Given an existing file in the work/<gen_folder>/DATACENTER/
             fs.writeFile(FileFolder.WORK, FILE_NAME_WITH_PATH, "Content");
@@ -301,7 +301,7 @@ class AzureGreenItFileSystemApplicationTests {
 
     @Test
     void getFileUrl_shouldReturnEmptyStringIfFileDoesNotExists() {
-        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
         // Given an unknown file in the work folder
         // when we get url
         final String url = fs.getFileUrl(FileFolder.WORK, "unknown_file.zip");
@@ -311,7 +311,7 @@ class AzureGreenItFileSystemApplicationTests {
 
     @Test
     void getFileSize_shouldReturnMoreThanZeroForExistingFile() throws IOException {
-        final FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        final FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
         final String FILE_NAME = "filename";
         try {
             // Given an existing file in the output folder
@@ -328,7 +328,7 @@ class AzureGreenItFileSystemApplicationTests {
 
     @Test
     void getFileSize_shouldReturnZeroForUnknownFile() {
-        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
         // Given an unknown file in the work folder
         // when we get size
         final long size = fs.getFileSize(FileFolder.WORK, "unknown_file.zip");
@@ -338,7 +338,7 @@ class AzureGreenItFileSystemApplicationTests {
 
     @Test
     void deleteFolder_shouldDeleteAllFilesInFolder() throws IOException {
-        FileStorage fs = fileSystem.mount(SUBSCRIBER, ORGANIZATION);
+        FileStorage fs = fileSystem.mount(ORGANIZATION, WORKSPACE);
         final String folder = "DATACENTER/";
 
         // Given an existing file in the output folder
