@@ -35,12 +35,12 @@ export class UserService {
 
     user$ = this.userDataService.userSubject.asObservable();
 
-    isAllowedSubscriberAdmin$ = this.roles$.pipe(
-        map((roles) => roles.includes(Role.SubscriberAdmin)),
-    );
-
     isAllowedOrganizationAdmin$ = this.roles$.pipe(
         map((roles) => roles.includes(Role.OrganizationAdmin)),
+    );
+
+    isAllowedWorkspaceAdmin$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.WorkspaceAdmin)),
     );
 
     isAllowedDigitalServiceRead$ = this.roles$.pipe(
@@ -251,31 +251,31 @@ export class UserService {
 
     hasAnyAdminRole(user: User): boolean {
         return (
-            this.hasAnyOrganizationAdminRole(user) || this.hasAnySubscriberAdminRole(user)
-        );
-    }
-
-    hasAnySubscriberAdminRole(user: User): boolean {
-        return user.organizations.some((organization) =>
-            organization.roles.includes(Role.SubscriberAdmin),
+            this.hasAnyWorkspaceAdminRole(user) || this.hasAnyOrganizationAdminRole(user)
         );
     }
 
     hasAnyOrganizationAdminRole(user: User): boolean {
         return user.organizations.some((organization) =>
+            organization.roles.includes(Role.OrganizationAdmin),
+        );
+    }
+
+    hasAnyWorkspaceAdminRole(user: User): boolean {
+        return user.organizations.some((organization) =>
             organization.workspaces.some((workspace) =>
-                workspace.roles.includes(Role.OrganizationAdmin),
+                workspace.roles.includes(Role.WorkspaceAdmin),
             ),
         );
     }
 
     getRoles(organization: Organization, workspace: Workspace): Role[] {
-        if (organization.roles.includes(Role.SubscriberAdmin)) {
-            return [Role.SubscriberAdmin, Role.OrganizationAdmin, ...BasicRoles];
+        if (organization.roles.includes(Role.OrganizationAdmin)) {
+            return [Role.OrganizationAdmin, Role.WorkspaceAdmin, ...BasicRoles];
         }
 
-        if (workspace.roles.includes(Role.OrganizationAdmin)) {
-            return [Role.OrganizationAdmin, ...BasicRoles];
+        if (workspace.roles.includes(Role.WorkspaceAdmin)) {
+            return [Role.WorkspaceAdmin, ...BasicRoles];
         }
 
         const roles = [...workspace.roles];
@@ -324,8 +324,8 @@ export class UserService {
 
         if (
             uri === "administration" &&
-            (roles.includes(Role.SubscriberAdmin) ||
-                roles.includes(Role.OrganizationAdmin))
+            (roles.includes(Role.OrganizationAdmin) ||
+                roles.includes(Role.WorkspaceAdmin))
         ) {
             return true;
         }

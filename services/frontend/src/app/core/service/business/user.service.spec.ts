@@ -50,7 +50,7 @@ describe("UserService", () => {
 
     it("should check if subscriber admin is allowed to see page admnistration ", () => {
         const organization = {
-            roles: [Role.SubscriberAdmin],
+            roles: [Role.OrganizationAdmin],
         } as Organization;
 
         const workspace = {} as Workspace;
@@ -66,7 +66,7 @@ describe("UserService", () => {
         } as Organization;
 
         const workspace = {
-            roles: [Role.OrganizationAdmin],
+            roles: [Role.WorkspaceAdmin],
         } as Workspace;
 
         var result = service.checkIfAllowed(organization, workspace, "administration");
@@ -90,7 +90,7 @@ describe("UserService", () => {
 
     it("should check if subscriber administrator is allowed to see page inventories and digital-services page", () => {
         const organization = {
-            roles: [Role.SubscriberAdmin],
+            roles: [Role.OrganizationAdmin],
         } as Organization;
 
         const workspace = {
@@ -133,11 +133,11 @@ describe("UserService", () => {
     describe("checkIfAllowed", () => {
         it("should check if user is allowed to see page correctly", () => {
             const organization = {
-                roles: [Role.SubscriberAdmin],
+                roles: [Role.OrganizationAdmin],
             } as Organization;
 
             const workspace = {
-                roles: [Role.OrganizationAdmin],
+                roles: [Role.WorkspaceAdmin],
             } as Workspace;
 
             expect(
@@ -308,11 +308,11 @@ describe("UserService", () => {
 
     it("should navigate to the specified page if user is allowed", () => {
         const organization = {
-            roles: [Role.SubscriberAdmin],
+            roles: [Role.OrganizationAdmin],
         } as Organization;
 
         const workspace = {
-            roles: [Role.OrganizationAdmin],
+            roles: [Role.WorkspaceAdmin],
         } as Workspace;
 
         spyOn(service, "checkIfAllowed").and.returnValue(true);
@@ -362,18 +362,18 @@ describe("UserService", () => {
     it("should set the subscriber, organization, and roles", () => {
         const organization = {
             name: "testSubscriber",
-            roles: [Role.SubscriberAdmin],
+            roles: [Role.OrganizationAdmin],
             workspaces: [
                 {
                     id: 1,
-                    roles: [Role.OrganizationAdmin],
+                    roles: [Role.WorkspaceAdmin],
                 },
             ],
         } as Organization;
 
         const workspace = {
             id: 1,
-            roles: [Role.OrganizationAdmin],
+            roles: [Role.WorkspaceAdmin],
         } as Workspace;
 
         spyOn(service.organizationSubject, "next");
@@ -394,13 +394,13 @@ describe("UserService", () => {
             workspace.id.toString(),
         );
         expect(service["rolesSubject"].next).toHaveBeenCalledWith([
-            Role.SubscriberAdmin,
             Role.OrganizationAdmin,
+            Role.WorkspaceAdmin,
             ...BasicRoles,
         ]);
     });
 
-    describe("hasAnyOrganizationAdminRole", () => {
+    describe("hasAnyWorkspaceAdminRole", () => {
         it("should return true if the user has any organization admin role", () => {
             const user: User = {
                 organizations: [
@@ -409,14 +409,14 @@ describe("UserService", () => {
                         workspaces: [
                             {
                                 id: 1,
-                                roles: [Role.OrganizationAdmin],
+                                roles: [Role.WorkspaceAdmin],
                             },
                         ],
                     },
                 ],
             } as User;
 
-            const result = service.hasAnyOrganizationAdminRole(user);
+            const result = service.hasAnyWorkspaceAdminRole(user);
 
             expect(result).toBeTrue();
         });
@@ -436,18 +436,18 @@ describe("UserService", () => {
                 ],
             } as User;
 
-            const result = service.hasAnyOrganizationAdminRole(user);
+            const result = service.hasAnyWorkspaceAdminRole(user);
 
             expect(result).toBeFalse();
         });
     });
 
-    describe("hasAnySubscriberAdminRole", () => {
-        it("should return true if the user has a subscriber with SubscriberAdmin role", () => {
+    describe("hasAnyOrganizationAdminRole", () => {
+        it("should return true if the user has a subscriber with OrganizationAdmin role", () => {
             const user: User = {
                 organizations: [
                     {
-                        roles: [Role.SubscriberAdmin],
+                        roles: [Role.OrganizationAdmin],
                     },
                     {
                         roles: [Role.DigitalServiceRead],
@@ -455,12 +455,12 @@ describe("UserService", () => {
                 ],
             } as User;
 
-            const result = service.hasAnySubscriberAdminRole(user);
+            const result = service.hasAnyOrganizationAdminRole(user);
 
             expect(result).toBeTrue();
         });
 
-        it("should return false if the user does not have a subscriber with SubscriberAdmin role", () => {
+        it("should return false if the user does not have a subscriber with OrganizationAdmin role", () => {
             const user: User = {
                 organizations: [
                     {
@@ -472,7 +472,7 @@ describe("UserService", () => {
                 ],
             } as User;
 
-            const result = service.hasAnySubscriberAdminRole(user);
+            const result = service.hasAnyOrganizationAdminRole(user);
 
             expect(result).toBeFalse();
         });
@@ -497,10 +497,10 @@ describe("UserService", () => {
             const user: User = {
                 organizations: [
                     {
-                        roles: [Role.SubscriberAdmin],
+                        roles: [Role.OrganizationAdmin],
                         workspaces: [
                             {
-                                roles: [Role.OrganizationAdmin],
+                                roles: [Role.WorkspaceAdmin],
                             },
                         ],
                     },
@@ -540,7 +540,7 @@ describe("UserService", () => {
                         workspaces: [
                             {
                                 id: 1,
-                                roles: [Role.OrganizationAdmin],
+                                roles: [Role.WorkspaceAdmin],
                             },
                         ],
                     },

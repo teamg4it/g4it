@@ -106,8 +106,8 @@ export class UsersComponent implements OnInit {
                     const roles = this.userService.getRoles(organization, workspace);
                     if (
                         workspace.status === Constants.WORKSPACE_STATUSES.ACTIVE &&
-                        (roles.includes(Role.SubscriberAdmin) ||
-                            roles.includes(Role.OrganizationAdmin))
+                        (roles.includes(Role.OrganizationAdmin) ||
+                            roles.includes(Role.WorkspaceAdmin))
                     ) {
                         list.push({
                             organizationName: organization.name,
@@ -156,8 +156,8 @@ export class UsersComponent implements OnInit {
         if (!user.firstName) user.firstName = "";
         if (!user.lastName) user.lastName = "";
 
-        user.isOrganizationAdmin = user.roles.includes(Role.OrganizationAdmin);
-        user.isSubscriberAdmin = user.roles.includes(Role.SubscriberAdmin);
+        user.isOrganizationAdmin = user.roles.includes(Role.WorkspaceAdmin);
+        user.isSubscriberAdmin = user.roles.includes(Role.OrganizationAdmin);
         user.isModule = this.getRole(user.roles, "INVENTORY_");
         user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
         user.role = this.getRole(user.roles, "ADMINISTRATOR");
@@ -195,7 +195,7 @@ export class UsersComponent implements OnInit {
 
     isAdmin(roles: string[]): boolean {
         return (
-            roles.includes(Role.OrganizationAdmin) || roles.includes(Role.SubscriberAdmin)
+            roles.includes(Role.WorkspaceAdmin) || roles.includes(Role.OrganizationAdmin)
         );
     }
 
@@ -254,7 +254,7 @@ export class UsersComponent implements OnInit {
                     const currentUserRoles = body.users.find(
                         (u) => u.userId === userId,
                     )?.roles;
-                    if (currentUserRoles?.includes(Role.OrganizationAdmin)) {
+                    if (currentUserRoles?.includes(Role.WorkspaceAdmin)) {
                         this.userDataService
                             .fetchUserInfo()
                             .pipe(take(1))

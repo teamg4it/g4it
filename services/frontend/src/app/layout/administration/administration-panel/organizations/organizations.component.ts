@@ -71,7 +71,7 @@ export class OrganizationsComponent implements OnInit {
                 )!;
             }
             this.notSubscriberAdminInSome = this.organizationsDetails.some(
-                (s) => !s.roles?.includes(Role.SubscriberAdmin),
+                (s) => !s.roles?.includes(Role.OrganizationAdmin),
             );
 
             if (this.notSubscriberAdminInSome) {
@@ -98,7 +98,7 @@ export class OrganizationsComponent implements OnInit {
     }
 
     checkOrganization(event: any, workspace: Workspace, organization: Organization) {
-        const isSubscriberAdmin = organization.roles?.includes(Role.SubscriberAdmin);
+        const isSubscriberAdmin = organization.roles?.includes(Role.OrganizationAdmin);
         let workspaces: Workspace[] = [];
         if (isSubscriberAdmin) {
             workspaces =

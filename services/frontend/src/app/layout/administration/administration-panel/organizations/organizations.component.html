@@ -51,7 +51,7 @@
                         [ariaLabel]="'common.cancel' | translate"
                     />
                 }
-                @if (organization.roles.includes(Role.SubscriberAdmin)) {
+                @if (organization.roles.includes(Role.OrganizationAdmin)) {
                     <p-button
                         [ariaLabel]="
                             'administration.accessibility.select-criteria' | translate
@@ -90,7 +90,7 @@
     <div *ngIf="organization" class="my-2">
         <div *ngIf="editable">
             @if (
-                organization.roles.includes(Role.SubscriberAdmin) ||
+                organization.roles.includes(Role.OrganizationAdmin) ||
                 organization.authorizedDomains?.includes(myDomain)
             ) {
                 <input
@@ -145,7 +145,7 @@
                 pInputText
                 [disabled]="
                     !editable ||
-                    (!workspace?.roles?.includes(Role.SubscriberAdmin) &&
+                    (!workspace?.roles?.includes(Role.OrganizationAdmin) &&
                         workspace.status === status.TO_BE_DELETED)
                 "
                 (ngModelChange)="checkOrganization($event, workspace, organization)"
@@ -172,7 +172,7 @@
                 styleClass="black-button-sidebar"
                 *ngIf="workspace.status === status.TO_BE_DELETED"
                 (onClick)="confirmToActive(workspace)"
-                [disabled]="!workspace?.roles?.includes(Role.SubscriberAdmin)"
+                [disabled]="!workspace?.roles?.includes(Role.OrganizationAdmin)"
                 >{{ "administration.cancel-deletion" | translate }}</p-button
             >
 
@@ -186,7 +186,7 @@
                 }}</small
             >
             @if (
-                !workspace.roles.includes(Role.SubscriberAdmin) &&
+                !workspace.roles.includes(Role.OrganizationAdmin) &&
                 workspace.status === status.TO_BE_DELETED
             ) {
                 <small class="mx-1"

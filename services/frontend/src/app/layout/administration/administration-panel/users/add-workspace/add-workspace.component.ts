@@ -82,7 +82,7 @@ export class AddWorkspaceComponent {
                 value: this.translate.instant("administration.role.user"),
             },
             {
-                code: Role.OrganizationAdmin,
+                code: Role.WorkspaceAdmin,
                 value: this.translate.instant("administration.role.admin"),
             },
         ];
@@ -97,7 +97,7 @@ export class AddWorkspaceComponent {
 
         const roles = this.userDetail.roles;
 
-        if (roles.includes(Role.OrganizationAdmin)) {
+        if (roles.includes(Role.WorkspaceAdmin)) {
             this.forceAdmin();
             return;
         }
@@ -147,8 +147,8 @@ export class AddWorkspaceComponent {
     getWorkspaceBody() {
         let roles: string[] = [];
 
-        if (this.adminModule.code === Role.OrganizationAdmin) {
-            roles.push(Role.OrganizationAdmin);
+        if (this.adminModule.code === Role.WorkspaceAdmin) {
+            roles.push(Role.WorkspaceAdmin);
         } else {
             if (this.isModule) roles.push(this.isModule.code);
             if (this.dsModule) roles.push(this.dsModule.code);
@@ -181,8 +181,8 @@ export class AddWorkspaceComponent {
                                         (u) => u.userId === user.id,
                                     )?.roles;
                                 const isAdmin =
-                                    currentUserRoles?.includes(Role.SubscriberAdmin) ||
-                                    currentUserRoles?.includes(Role.OrganizationAdmin);
+                                    currentUserRoles?.includes(Role.OrganizationAdmin) ||
+                                    currentUserRoles?.includes(Role.WorkspaceAdmin);
                                 if (!isAdmin && currentUserRoles) {
                                     this.router.navigateByUrl(Constants.WELCOME_PAGE);
                                     return;
@@ -199,14 +199,14 @@ export class AddWorkspaceComponent {
         this.ecomindModule = this.getRoleValue(Role.EcoMindAiWrite);
 
         this.adminModule = {
-            code: Role.OrganizationAdmin,
+            code: Role.WorkspaceAdmin,
             value: this.translate.instant("administration.role.admin"),
         };
         this.isAdmin = true;
     }
 
     validateOnAdmin() {
-        if (this.adminModule.code === Role.OrganizationAdmin) {
+        if (this.adminModule.code === Role.WorkspaceAdmin) {
             this.forceAdmin();
         } else {
             this.isAdmin = false;
@@ -234,7 +234,7 @@ export class AddWorkspaceComponent {
             );
             if (this.isAdminRoleDisabled) {
                 this.adminModuleValues = this.adminModuleValues.filter(
-                    (role) => role.code !== Role.OrganizationAdmin,
+                    (role) => role.code !== Role.WorkspaceAdmin,
                 );
             }
         }
