@@ -11,8 +11,6 @@ import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationRest;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
 
 import java.util.List;
 
@@ -28,7 +26,6 @@ public interface OrganizationRestMapper {
      * @param businessObject the source.
      * @return the OrganizationRest.
      */
-    // @Mapping(source = "workspaces", target = "workspaces")
     OrganizationRest toDto(final OrganizationBO businessObject);
 
     /**
