@@ -173,7 +173,7 @@
                     }
                     <td class="text-center">{{ user?.role | translate }}</td>
                     <td class="text-center">
-                        <div *ngIf="!user.isSubscriberAdmin">
+                        <div *ngIf="!user.isOrganizationAdmin">
                             <p-button
                                 *ngIf="user.roles.length > 0"
                                 styleClass="p-button-text bg-white p-0 m-0"

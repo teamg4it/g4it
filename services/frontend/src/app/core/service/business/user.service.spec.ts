@@ -48,14 +48,14 @@ describe("UserService", () => {
         expect(UserService).toBeTruthy();
     });
 
-    it("should check if subscriber admin is allowed to see page admnistration ", () => {
+    it("should check if organization admin is allowed to see page admnistration ", () => {
         const organization = {
             roles: [Role.OrganizationAdmin],
         } as Organization;
 
         const workspace = {} as Workspace;
 
-        var result = service.checkIfAllowed(organization, workspace, "administration");
+        let result = service.checkIfAllowed(organization, workspace, "administration");
 
         expect(result).toBeTrue();
     });
@@ -88,7 +88,7 @@ describe("UserService", () => {
         expect(result).toBeFalse();
     });
 
-    it("should check if subscriber administrator is allowed to see page inventories and digital-services page", () => {
+    it("should check if organization administrator is allowed to see page inventories and digital-services page", () => {
         const organization = {
             roles: [Role.OrganizationAdmin],
         } as Organization;
@@ -232,7 +232,7 @@ describe("UserService", () => {
             );
         });
 
-        it("should handle case when subscriber is not found", () => {
+        it("should handle case when organization is not found", () => {
             const user: User = {
                 organizations: [{ name: "test", workspaces: [{ id: 1 }] }],
             } as User;
@@ -337,7 +337,7 @@ describe("UserService", () => {
 
     it("should navigate to the 403 page if user is not allowed", () => {
         const organization = {
-            name: "testSubscriber",
+            name: "testOrganization",
             roles: [Role.DigitalServiceRead],
         } as Organization;
 
@@ -359,9 +359,9 @@ describe("UserService", () => {
         expect(router.navigateByUrl).toHaveBeenCalledWith("welcome-page");
     });
 
-    it("should set the subscriber, organization, and roles", () => {
+    it("should set the workspace, organization, and roles", () => {
         const organization = {
-            name: "testSubscriber",
+            name: "testOrganization",
             roles: [Role.OrganizationAdmin],
             workspaces: [
                 {
@@ -443,7 +443,7 @@ describe("UserService", () => {
     });
 
     describe("hasAnyOrganizationAdminRole", () => {
-        it("should return true if the user has a subscriber with OrganizationAdmin role", () => {
+        it("should return true if the user has a organization with OrganizationAdmin role", () => {
             const user: User = {
                 organizations: [
                     {
@@ -460,7 +460,7 @@ describe("UserService", () => {
             expect(result).toBeTrue();
         });
 
-        it("should return false if the user does not have a subscriber with OrganizationAdmin role", () => {
+        it("should return false if the user does not have a organization with OrganizationAdmin role", () => {
             const user: User = {
                 organizations: [
                     {
@@ -532,11 +532,11 @@ describe("UserService", () => {
         });
     });
     describe("organizationWorkspaceHandling", () => {
-        it("should set the default subscriber and organization if the URL is unknown", () => {
+        it("should set the default workspace and organization if the URL is unknown", () => {
             const currentUser: User = {
                 organizations: [
                     {
-                        name: "testSubscriber",
+                        name: "testOrganization",
                         workspaces: [
                             {
                                 id: 1,
@@ -572,7 +572,7 @@ describe("UserService", () => {
             const currentUser: User = {
                 organizations: [
                     {
-                        name: "testSubscriber",
+                        name: "testOrganization",
                         workspaces: [
                             {
                                 id: 1,

@@ -45,7 +45,7 @@ export class OrganizationsComponent implements OnInit {
     selectedCriteria: string[] = [];
     Role = Role;
     myDomain!: string;
-    notSubscriberAdminInSome = false;
+    notOrganizationAdminInSome = false;
     domainOrganizations: DomainOrganizations[] = [];
     constructor(
         private readonly confirmationService: ConfirmationService,
@@ -70,11 +70,11 @@ export class OrganizationsComponent implements OnInit {
                     (s) => s.name === organization,
                 )!;
             }
-            this.notSubscriberAdminInSome = this.organizationsDetails.some(
+            this.notOrganizationAdminInSome = this.organizationsDetails.some(
                 (s) => !s.roles?.includes(Role.OrganizationAdmin),
             );
 
-            if (this.notSubscriberAdminInSome) {
+            if (this.notOrganizationAdminInSome) {
                 this.getDomainOrganizationsList();
             }
         });
@@ -98,9 +98,9 @@ export class OrganizationsComponent implements OnInit {
     }
 
     checkOrganization(event: any, workspace: Workspace, organization: Organization) {
-        const isSubscriberAdmin = organization.roles?.includes(Role.OrganizationAdmin);
+        const isOrganizationAdmin = organization.roles?.includes(Role.OrganizationAdmin);
         let workspaces: Workspace[] = [];
-        if (isSubscriberAdmin) {
+        if (isOrganizationAdmin) {
             workspaces =
                 this.unmodifiedOrganizationsDetails.find(
                     (s) => s.name === organization.name,
@@ -190,7 +190,7 @@ export class OrganizationsComponent implements OnInit {
         this.administrationService.updateWorkspace(workspaceId, body).subscribe((_) => {
             this.init(this.organization?.name);
             this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
-            if (this.notSubscriberAdminInSome) {
+            if (this.notOrganizationAdminInSome) {
                 this.getDomainOrganizationsList();
             }
         });
@@ -202,9 +202,9 @@ export class OrganizationsComponent implements OnInit {
         this.displayPopup = true;
     }
 
-    handleSaveSubscriber(subscriberCriteria: OrganizationCriteriaRest) {
+    handleSaveOrganization(organizationCriteria: OrganizationCriteriaRest) {
         this.administrationService
-            .updateOrganizationCriteria(this.organization?.id, subscriberCriteria)
+            .updateOrganizationCriteria(this.organization?.id, organizationCriteria)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((_) => {
                 this.displayPopup = false;

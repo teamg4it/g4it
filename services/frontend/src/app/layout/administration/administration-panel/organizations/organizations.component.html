@@ -4,7 +4,7 @@
             appendTo="body"
             optionLabel="name"
             [style]="{ width: '35%' }"
-            name="subscriber"
+            name="organization"
             [options]="organizationsDetails"
             placeholder="{{ 'administration.organization-placeholder' | translate }}"
             ngDefaultControl
@@ -77,7 +77,7 @@
             [type]="'organization'"
             [organizationDetails]="organization"
             [selectedCriteriaIS]="selectedCriteria"
-            (outSaveOrganization)="handleSaveSubscriber($event)"
+            (outSaveOrganization)="handleSaveOrganization($event)"
             (outClose)="displayPopup = false"
         ></app-criteria-popup>
 

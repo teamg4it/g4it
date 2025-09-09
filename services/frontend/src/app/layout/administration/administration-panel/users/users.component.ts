@@ -156,8 +156,8 @@ export class UsersComponent implements OnInit {
         if (!user.firstName) user.firstName = "";
         if (!user.lastName) user.lastName = "";
 
-        user.isOrganizationAdmin = user.roles.includes(Role.WorkspaceAdmin);
-        user.isSubscriberAdmin = user.roles.includes(Role.OrganizationAdmin);
+        user.isWorkspaceAdmin = user.roles.includes(Role.WorkspaceAdmin);
+        user.isOrganizationAdmin = user.roles.includes(Role.OrganizationAdmin);
         user.isModule = this.getRole(user.roles, "INVENTORY_");
         user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
         user.role = this.getRole(user.roles, "ADMINISTRATOR");
