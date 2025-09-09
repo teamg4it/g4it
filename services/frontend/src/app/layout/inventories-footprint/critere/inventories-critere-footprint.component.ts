@@ -10,6 +10,7 @@ import {
     computed,
     inject,
     Input,
+    OnChanges,
     Signal,
     signal,
     SimpleChanges,
@@ -38,7 +39,10 @@ import { AbstractDashboard } from "../abstract-dashboard";
     selector: "app-inventories-critere-footprint",
     templateUrl: "./inventories-critere-footprint.component.html",
 })
-export class InventoriesCritereFootprintComponent extends AbstractDashboard {
+export class InventoriesCritereFootprintComponent
+    extends AbstractDashboard
+    implements OnChanges
+{
     protected footprintStore = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
     @Input() footprint: Criterias = {} as Criterias;

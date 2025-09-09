@@ -11,6 +11,7 @@ import {
     inject,
     input,
     Input,
+    OnChanges,
     signal,
     Signal,
     SimpleChanges,
@@ -41,7 +42,10 @@ import { InventoriesApplicationFootprintComponent } from "../inventories-applica
     selector: "app-application-criteria-footprint",
     templateUrl: "./application-criteria-footprint.component.html",
 })
-export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
+export class ApplicationCriteriaFootprintComponent
+    extends AbstractDashboard
+    implements OnChanges
+{
     @Input() footprint: ApplicationFootprint = {} as ApplicationFootprint;
     @Input() filterFields: ConstantApplicationFilter[] = [];
     @Input() selectedInventoryId!: number;

@@ -5,7 +5,14 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, DestroyRef, inject, OnInit } from "@angular/core";
+import {
+    Component,
+    computed,
+    DestroyRef,
+    inject,
+    OnDestroy,
+    OnInit,
+} from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { differenceInDays } from "date-fns";
@@ -31,7 +38,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     templateUrl: "./digital-services-servers.component.html",
     providers: [MessageService],
 })
-export class DigitalServicesServersComponent implements OnInit {
+export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
     private readonly inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);

@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject, OnInit, ViewChild } from "@angular/core";
+import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Event, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -30,7 +30,7 @@ import { FilePanelComponent } from "./file-panel/file-panel.component";
     templateUrl: "./inventories.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class InventoriesComponent implements OnInit {
+export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);
     private readonly global = inject(GlobalStoreService);
 

@@ -6,10 +6,13 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import {
+    AfterViewInit,
     Component,
     ComponentRef,
     EventEmitter,
     Input,
+    OnChanges,
+    OnDestroy,
     OnInit,
     Output,
     signal,
@@ -39,7 +42,7 @@ import { SelectFileComponent } from "./select-file/select-file.component";
     selector: "app-file-panel",
     templateUrl: "./file-panel.component.html",
 })
-export class FilePanelComponent implements OnInit {
+export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     className: string = "default-calendar max-w-full";
 
     @ViewChild("uploaderContainer", { read: ViewContainerRef })
@@ -84,7 +87,7 @@ export class FilePanelComponent implements OnInit {
         private readonly templateFileService: TemplateFileService,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit(): void {
         this.fileTypes = [
             {
                 value: "DATACENTER",

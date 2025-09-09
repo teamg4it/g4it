@@ -11,6 +11,7 @@ import {
     inject,
     input,
     Input,
+    OnChanges,
     Output,
     SimpleChanges,
 } from "@angular/core";
@@ -31,7 +32,7 @@ import { Constants } from "src/constants";
     selector: "app-radial-chart",
     templateUrl: "./radial-chart.component.html",
 })
-export class RadialChartComponent extends AbstractDashboard {
+export class RadialChartComponent extends AbstractDashboard implements OnChanges {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
     @Output() selectedCriteriaChange: EventEmitter<string> = new EventEmitter();
     @Input() enableDataInconsistency: boolean = false;

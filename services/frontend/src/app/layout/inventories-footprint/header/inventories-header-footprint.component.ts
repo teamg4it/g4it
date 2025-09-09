@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
@@ -25,7 +25,7 @@ import { Constants } from "src/constants";
     templateUrl: "./inventories-header-footprint.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class InventoriesHeaderFootprintComponent implements OnInit {
+export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     @Input() inventoryId: number = 0;
     @Input() indicatorType: string = "";
 

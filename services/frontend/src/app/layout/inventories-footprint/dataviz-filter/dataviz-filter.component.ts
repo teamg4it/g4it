@@ -5,7 +5,14 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, Input, SimpleChanges } from "@angular/core";
+import {
+    Component,
+    computed,
+    inject,
+    Input,
+    OnChanges,
+    SimpleChanges,
+} from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { debounceTime, Subject } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
@@ -17,7 +24,7 @@ import { Constants } from "src/constants";
     selector: "dataviz-filter",
     templateUrl: "./dataviz-filter.component.html",
 })
-export class DatavizFilterComponent {
+export class DatavizFilterComponent implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);
     private readonly filterService = inject(FilterService);
     private readonly translate = inject(TranslateService);

@@ -4,6 +4,7 @@ import {
     ElementRef,
     EventEmitter,
     inject,
+    OnDestroy,
     OnInit,
     Output,
     ViewChild,
@@ -35,7 +36,7 @@ import { Constants } from "src/constants";
     templateUrl: "./digital-services-import.component.html",
     styleUrl: "./digital-services-import.component.scss",
 })
-export class DigitalServicesImportComponent implements OnInit {
+export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     private readonly userDataService = inject(UserDataService);
     private readonly destroyRef = inject(DestroyRef);
     protected readonly userService = inject(UserService);
