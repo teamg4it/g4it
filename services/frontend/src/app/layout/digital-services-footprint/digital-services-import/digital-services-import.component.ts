@@ -97,7 +97,7 @@ export class DigitalServicesImportComponent implements OnInit {
         cloud: new FormControl<string | undefined>(undefined),
     });
 
-    async ngOnInit() {
+    ngOnInit(): void {
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((organization: Organization) => {
@@ -109,7 +109,7 @@ export class DigitalServicesImportComponent implements OnInit {
                 this.selectedWorkspace = workspace.name;
             });
         this.getTemplates();
-        await this.getDigitalServiceStatus();
+        this.getDigitalServiceStatus();
         this.selectTab(0);
     }
 
