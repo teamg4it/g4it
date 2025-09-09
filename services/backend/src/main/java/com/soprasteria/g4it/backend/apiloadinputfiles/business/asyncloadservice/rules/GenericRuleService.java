@@ -8,23 +8,17 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules;
 
-import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
-import com.soprasteria.g4it.backend.apidigitalservice.model.ServerHostBO;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.ValidationUtils;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import jakarta.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class GenericRuleService {
@@ -51,7 +45,7 @@ public class GenericRuleService {
         if (referentialGetService.getCountries(subscriber).contains(location)) return Optional.empty();
         if (referentialGetService.getCountries(null).contains(location)) return Optional.empty();
 
-        return Optional.of(new LineError(filename,line, messageSource.getMessage("referential.location.not.exist", new String[]{location}, locale)));
+        return Optional.of(new LineError(filename, line, messageSource.getMessage("referential.location.not.exist", new String[]{location}, locale)));
     }
 
     /**
@@ -61,7 +55,7 @@ public class GenericRuleService {
      * @param type       the location
      * @return error
      */
-   public Optional<LineError> checkType(Locale locale, String subscriber, String filename, int line, String type, boolean isDigitalService) {
+    public Optional<LineError> checkType(Locale locale, String subscriber, String filename, int line, String type, boolean isDigitalService) {
 
         if (StringUtils.isEmpty(type)) {
             return Optional.of(new LineError(filename, line,
@@ -69,14 +63,7 @@ public class GenericRuleService {
                             new String[]{},
                             locale)));
         }
-        if (isDigitalService) {
-            if( !"Shared Server".equals(type) && !"Dedicated Server".equals(type))
-                return Optional.of(new LineError(filename, line,
-                        messageSource.getMessage("physical.eqp.type.invalid",
-                                new String[]{type},
-                                locale)));
-        }
-        else {
+        if (!isDigitalService) {
             if (referentialGetService.getItemTypes(type, subscriber).isEmpty() &&
                     referentialGetService.getItemTypes(type, null).isEmpty()) {
 
@@ -87,7 +74,8 @@ public class GenericRuleService {
                 ));
             }
 
-        } return Optional.empty();
+        }
+        return Optional.empty();
 
     }
 
@@ -99,6 +87,6 @@ public class GenericRuleService {
      * @return the LineError if violation
      */
     public Optional<LineError> checkViolations(final Object object, String filename, final int line) {
-        return ValidationUtils.getViolations(validator.validate(object)).map(s -> new LineError(filename,line, s));
+        return ValidationUtils.getViolations(validator.validate(object)).map(s -> new LineError(filename, line, s));
     }
 }

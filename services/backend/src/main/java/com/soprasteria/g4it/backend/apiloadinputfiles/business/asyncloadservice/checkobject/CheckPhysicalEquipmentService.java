@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceType;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.GenericRuleService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RuleDateService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RulePhysicalEquipmentService;
@@ -31,6 +32,9 @@ public class CheckPhysicalEquipmentService {
     @Autowired
     RulePhysicalEquipmentService rulePhysicalEqpService;
 
+    @Autowired
+    private DigitalServiceRuleFactory digitalServiceRuleFactory;
+
     /**
      * Check a physical equipment object
      *
@@ -39,34 +43,36 @@ public class CheckPhysicalEquipmentService {
      * @param line              the line number
      * @return the list of errors
      */
-    public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment,final String filename, final int line) {
+    public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment, final String filename, final int line) {
         List<LineError> errors = new ArrayList<>();
         final boolean isDigitalService = context.getDigitalServiceUid() != null;
 
         // check InPhysicalEquipmentRest constraint violations
-        genericRuleService.checkViolations(physicalEquipment,filename, line).ifPresent(errors::add);
+        genericRuleService.checkViolations(physicalEquipment, filename, line).ifPresent(errors::add);
 
         // check location is in country referential (itemImpacts - category = 'electricity-mix')
         genericRuleService.checkLocation(context.getLocale(), context.getSubscriber(), filename, line, physicalEquipment.getLocation())
                 .ifPresent(errors::add);
 
         // check type is in itemTypes referential
-        genericRuleService.checkType(context.getLocale(), context.getSubscriber(),filename, line, physicalEquipment.getType(), isDigitalService)
+        genericRuleService.checkType(context.getLocale(), context.getSubscriber(), filename, line, physicalEquipment.getType(), isDigitalService)
                 .ifPresent(errors::add);
 
 
         // check date purchase < date retrieval
-        ruleDateService.checkDatesPurchaseRetrieval(context.getLocale(), filename, line, physicalEquipment.getDatePurchase(), physicalEquipment.getDateWithdrawal(), isDigitalService)
-                .ifPresent(errors::add);
+        if (!(isDigitalService && DigitalServiceType.NETWORK.getValue().equals(physicalEquipment.getType()))) {
+            ruleDateService.checkDatesPurchaseRetrieval(context.getLocale(), filename, line, physicalEquipment.getDatePurchase(), physicalEquipment.getDateWithdrawal(), isDigitalService)
+                    .ifPresent(errors::add);
+        }
 
         // check model for digital service
-        if(isDigitalService) {
-            rulePhysicalEqpService.checkDigitalServiceModel(context.getLocale(), filename, line, physicalEquipment.getModel(),physicalEquipment )
-                    .ifPresent(errors::add);
-            rulePhysicalEqpService.checkElectricityConsumption(context.getLocale(), filename, line, physicalEquipment.getElectricityConsumption())
-            .ifPresent(errors::add);
-            rulePhysicalEqpService.checkDurationHour(context.getLocale(), filename, line, physicalEquipment.getDurationHour())
-            .ifPresent(errors::add);
+        if (isDigitalService) {
+            DigitalServiceRule rule = digitalServiceRuleFactory.getRule(physicalEquipment.getType());
+            if (rule != null) {
+                errors.addAll(rule.validate(context.getLocale(), physicalEquipment, filename, line));
+            } else {
+                errors.add(new LineError(filename, line, "No rules found for digital service type: " + physicalEquipment.getType()));
+            }
         }
 
         return errors;
