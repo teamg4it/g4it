@@ -8,6 +8,8 @@
 package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.TestUtils;
+import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
+import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceMapperImpl;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
@@ -40,9 +42,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -80,7 +82,29 @@ class WorkspaceServiceTest {
         ReflectionTestUtils.setField(workspaceService, "workspaceMapper", new WorkspaceMapperImpl());
         Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(Mockito.mock(Cache.class));
     }
+    @Test
+    void getWorkspaceById_returnsWorkspace() {
+        Workspace workspace = Workspace.builder().id(WORKSPACE_ID).build();
+        when(workspaceRepository.findById(WORKSPACE_ID)).thenReturn(Optional.of(workspace));
 
+        Workspace result = workspaceService.getWorkspaceById(WORKSPACE_ID);
+
+        assertEquals(workspace, result);
+        verify(workspaceRepository, times(1)).findById(WORKSPACE_ID);
+    }
+
+    @Test
+    void getWorkspaceById_workspaceNotFound_throwsException() {
+
+        when(workspaceRepository.findById(WORKSPACE_ID)).thenReturn(Optional.empty());
+
+        G4itRestException thrown = assertThrows(G4itRestException.class,
+                () -> workspaceService.getWorkspaceById(WORKSPACE_ID));
+
+        assertEquals("404", thrown.getCode());
+        assertTrue(thrown.getMessage().contains("workspace 1 not found"));
+        verify(workspaceRepository, times(1)).findById(WORKSPACE_ID);
+    }
 
     @Test
     void updateWorkspace_setStatustoToBeDeleted() {

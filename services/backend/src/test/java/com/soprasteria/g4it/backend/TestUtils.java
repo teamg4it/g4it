@@ -40,6 +40,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -179,6 +180,11 @@ public class TestUtils {
         return UserBO.builder().email(EMAIL)
                 .organizations(List.of(OrganizationBO.builder()
                         .id(1L)
+                        .workspaces(List.of(WorkspaceBO.builder()
+                                .name(WORKSPACE)
+                                .status(WorkspaceStatus.ACTIVE.name())
+                                .roles(List.of(Constants.ROLE_INVENTORY_WRITE))
+                                .build()))
                         .roles(List.of())
                         .build()))
                 .build();
@@ -308,6 +314,86 @@ public class TestUtils {
                 .inventory(inventory)
                 .filenames(filenames)
                 .criteria(criteria)
+                .build();
+    }
+    public static UserBO createSuperAdminUserBO() {
+        return UserBO.builder()
+                .email(Constants.SUPER_ADMIN_EMAIL)
+                .organizations(Collections.emptyList())
+                .build();
+    }
+
+//    public static UserBO createUserBONoRole() {
+//        return UserBO.builder()
+//                .email(EMAIL)
+//                .organizations(List.of(
+//                        OrganizationBO.builder()
+//                                .id(1L)
+//                                .roles(Collections.emptyList())
+//                                .workspaces(Collections.emptyList())
+//                                .authorizedDomains("")
+//                                .build()))
+//                .build();
+//    }
+
+    public static UserBO createWorkspaceAdminUserBO(Long workspaceId) {
+        return UserBO.builder()
+                .email(EMAIL)
+                .organizations(List.of(
+                        OrganizationBO.builder()
+                                .id(workspaceId)
+                                .roles(Collections.emptyList())
+                                .workspaces(List.of(
+                                        WorkspaceBO.builder()
+                                                .id(workspaceId)
+                                                .name(WORKSPACE)
+                                                .status(WorkspaceStatus.ACTIVE.name())
+                                                .roles(List.of(Constants.ROLE_WORKSPACE_ADMINISTRATOR))
+                                                .build()))
+                                .build()))
+                .build();
+    }
+
+    public static UserBO createUserBOWithOrgAdminRole(Long organizationId) {
+        return UserBO.builder()
+                .email(EMAIL)
+                .organizations(List.of(
+                        OrganizationBO.builder()
+                                .id(organizationId)
+                                .roles(List.of(Constants.ROLE_ORGANIZATION_ADMINISTRATOR))
+                                .workspaces(Collections.emptyList())
+                                .build()))
+                .build();
+    }
+
+    public static UserBO createUserBOWithWorkspaceAndRoles(Long workspaceId, List<String> roles) {
+        return UserBO.builder()
+                .email(EMAIL)
+                .organizations(List.of(
+                        OrganizationBO.builder()
+                                .id(workspaceId)
+                                .roles(Collections.emptyList())
+                                .workspaces(List.of(
+                                        WorkspaceBO.builder()
+                                                .id(workspaceId)
+                                                .name(WORKSPACE)
+                                                .status(WorkspaceStatus.ACTIVE.name())
+                                                .roles(roles)
+                                                .build()))
+                                .build()))
+                .build();
+    }
+
+    public static UserBO createUserBOWithAuthorizedDomains(Long organizationId, String domainsCsv, String emailDomain) {
+        return UserBO.builder()
+                .email("test@" + emailDomain)
+                .organizations(List.of(
+                        OrganizationBO.builder()
+                                .id(organizationId)
+                                .roles(Collections.emptyList())
+                                .workspaces(Collections.emptyList())
+                                .authorizedDomains(domainsCsv)
+                                .build()))
                 .build();
     }
 
