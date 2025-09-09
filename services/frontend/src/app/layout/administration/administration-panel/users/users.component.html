@@ -1,5 +1,5 @@
 <div class="pt-4">
-    <span for="organizationName" role="heading" [ariaLevel]="3"
+    <span for="workspaceName" role="heading" [ariaLevel]="3"
         >{{ "administration.user.select-org" | translate }} </span
     ><br />
     <div
@@ -10,7 +10,7 @@
         appendTo="body"
         [options]="workspacelist"
         optionLabel="displayLabel"
-        name="organizationName"
+        name="workspaceName"
         [(ngModel)]="workspace"
         [style]="{ width: '35%' }"
         [placeholder]="'administration.user-placeholder' | translate"
@@ -21,9 +21,9 @@
             checkForValidation();
             getSelectedOrganization()
         "
-        inputId="organizationName"
+        inputId="workspaceName"
         [ariaLabel]="'administration.user.select-org' | translate"
-        id="organizationName"
+        id="workspaceName"
     />
     @if (workspace.workspaceName) {
         <div class="inline-block vertical-align-middle">
