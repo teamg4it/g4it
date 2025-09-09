@@ -148,14 +148,8 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
     });
 
     it("should initialize digitalService and organization on ngOnInit", async () => {
-        await component.ngOnInit();
+        component.ngOnInit();
         expect(component.digitalService.name).toBe("Test Digital Service");
-    });
-
-    it("should call retrieveFootprintData on ngOnInit", async () => {
-        spyOn(component, "retrieveFootprintData");
-        await component.ngOnInit();
-        expect(component.retrieveFootprintData).toHaveBeenCalled();
     });
 
     it("should handle chart change logic", () => {

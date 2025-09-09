@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
@@ -11,7 +11,6 @@ import { AppComponent } from "./app.component";
 import { MatomoScriptService } from "./core/service/business/matomo-script.service";
 import { UserDataService } from "./core/service/data/user-data.service";
 import { GlobalStoreService } from "./core/store/global.store";
-
 describe("AppComponent", () => {
     let component: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
@@ -87,18 +86,23 @@ describe("AppComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should store user email in localStorage and set criteria", async () => {
+    it("should store user email in localStorage and set criteria (async)", fakeAsync(async () => {
         spyOn(localStorage, "setItem");
 
-        await component.ngOnInit();
+        component.ngOnInit();
+
+        // Resolve pending microtasks (e.g., Promises in ngOnInit)
+        await component["initializeAsync"]();
 
         expect(mockUserService.fetchUserInfo).toHaveBeenCalled();
+
         expect(localStorage.setItem).toHaveBeenCalledWith("username", "test@example.com");
+
         expect(mockGlobalStore.setcriteriaList).toHaveBeenCalledWith([
             "criteria1",
             "criteria2",
         ]);
-    });
+    }));
 
     it("should append Matomo script if URL is present", async () => {
         const mockUrl = "https://tagmanager.matomo.example";
@@ -106,7 +110,8 @@ describe("AppComponent", () => {
             matomoTagManager: { containerUrl: mockUrl },
         };
 
-        await component.ngOnInit();
+        component.ngOnInit();
+        await component["initializeAsync"]();
 
         expect(mockMatomo.appendScriptToHead).toHaveBeenCalledWith(mockUrl);
     });

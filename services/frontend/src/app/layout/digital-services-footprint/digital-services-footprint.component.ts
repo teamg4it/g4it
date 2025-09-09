@@ -6,10 +6,12 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import {
+    AfterViewInit,
     ChangeDetectorRef,
     Component,
     ElementRef,
     inject,
+    OnDestroy,
     OnInit,
     signal,
     ViewChild,
@@ -31,7 +33,9 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
 })
-export class DigitalServicesFootprintComponent implements OnInit {
+export class DigitalServicesFootprintComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     private readonly global = inject(GlobalStoreService);
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
     private readonly inDatacentersService = inject(InDatacentersService);
@@ -57,7 +61,10 @@ export class DigitalServicesFootprintComponent implements OnInit {
         private readonly cdr: ChangeDetectorRef,
     ) {}
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
+        this.asyncInit();
+    }
+    private async asyncInit() {
         this.setMobileView();
         this.global.setLoading(true);
 

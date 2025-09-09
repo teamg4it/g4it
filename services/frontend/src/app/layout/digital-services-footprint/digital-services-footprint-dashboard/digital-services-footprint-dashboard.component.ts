@@ -145,7 +145,10 @@ export class DigitalServicesFootprintDashboardComponent
         super(translate, integerPipe, decimalsPipe, globalStore);
     }
 
-    async ngOnInit() {
+    ngOnInit() {
+        this.asyncInit();
+    }
+    private async asyncInit() {
         this.digitalService = await firstValueFrom(
             this.digitalServicesDataService.digitalService$,
         );

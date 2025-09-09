@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -10,7 +10,7 @@ import { UserService } from "src/app/core/service/business/user.service";
     templateUrl: "./digital-services-item.component.html",
     providers: [MessageService, ConfirmationService],
 })
-export class DigitalServicesItemComponent {
+export class DigitalServicesItemComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Input() isAi: boolean = false;
 
@@ -32,7 +32,7 @@ export class DigitalServicesItemComponent {
         this.firstFootprintTab = this.isAi ? "ecomind-parameters" : "resources";
     }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         this.firstFootprintTab = this.isAi ? "ecomind-parameters" : "resources";
     }
 

@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
@@ -32,7 +32,7 @@ import { environment } from "src/environments/environment";
         RouterModule,
     ],
 })
-export class WelcomePageComponent {
+export class WelcomePageComponent implements OnInit {
     userName: string = "";
     selectedPath: string = "";
     currentOrganization: Organization = {} as Organization;

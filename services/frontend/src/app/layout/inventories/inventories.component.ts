@@ -64,62 +64,65 @@ export class InventoriesComponent implements OnInit {
         public userService: UserService,
     ) {}
 
-    async ngOnInit() {
-        this.userService.currentWorkspace$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((workspace: Workspace) => {
-                this.selectedWorkspace = workspace.name;
+    ngOnInit(): void {
+        (async () => {
+            this.userService.currentWorkspace$
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((workspace: Workspace) => {
+                    this.selectedWorkspace = workspace.name;
+                });
+
+            this.userService.roles$.subscribe((roles: Role[]) => {
+                this.isAllowedInventory =
+                    roles.includes(Role.InventoryRead) ||
+                    roles.includes(Role.InventoryWrite);
             });
+            this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
+                ? new Set(
+                      localStorage
+                          .getItem("inventoriesOpen")
+                          ?.split(",")
+                          .filter((v) => v !== "NaN")
+                          .map((v) => parseInt(v)),
+                  )
+                : new Set();
 
-        this.userService.roles$.subscribe((roles: Role[]) => {
-            this.isAllowedInventory =
-                roles.includes(Role.InventoryRead) || roles.includes(Role.InventoryWrite);
-        });
-        this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
-            ? new Set(
-                  localStorage
-                      .getItem("inventoriesOpen")
-                      ?.split(",")
-                      .filter((v) => v !== "NaN")
-                      .map((v) => parseInt(v)),
-              )
-            : new Set();
+            if (localStorage.getItem("inventoryBlocksOpen") == null) {
+                this.inventoryBlocksOpen = new Set([
+                    Constants.INVENTORY_TYPE.INFORMATION_SYSTEM,
+                    Constants.INVENTORY_TYPE.SIMULATION,
+                ]);
+                this.updateLocalStorageBlock();
+            } else {
+                this.inventoryBlocksOpen = new Set(
+                    localStorage.getItem("inventoryBlocksOpen")?.split(","),
+                );
+            }
 
-        if (localStorage.getItem("inventoryBlocksOpen") == null) {
-            this.inventoryBlocksOpen = new Set([
-                Constants.INVENTORY_TYPE.INFORMATION_SYSTEM,
-                Constants.INVENTORY_TYPE.SIMULATION,
-            ]);
-            this.updateLocalStorageBlock();
-        } else {
-            this.inventoryBlocksOpen = new Set(
-                localStorage.getItem("inventoryBlocksOpen")?.split(","),
-            );
-        }
+            await this.reloadInventories();
+            if (this.doLoop) {
+                this.loopLoadInventories();
+            }
 
-        await this.reloadInventories();
-        if (this.doLoop) {
-            this.loopLoadInventories();
-        }
+            this.router.events
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((event: Event) => {
+                    if (event instanceof NavigationEnd) {
+                        clearInterval(this.inventoryInterval);
+                        if (event.url.includes("/footprint")) {
+                            return;
+                        }
 
-        this.router.events
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((event: Event) => {
-                if (event instanceof NavigationEnd) {
-                    clearInterval(this.inventoryInterval);
-                    if (event.url.includes("/footprint")) {
-                        return;
+                        if (this.isAllowedInventory) {
+                            this.reloadInventories().then(() => {
+                                if (this.doLoop) {
+                                    this.loopLoadInventories();
+                                }
+                            });
+                        }
                     }
-
-                    if (this.isAllowedInventory) {
-                        this.reloadInventories().then(() => {
-                            if (this.doLoop) {
-                                this.loopLoadInventories();
-                            }
-                        });
-                    }
-                }
-            });
+                });
+        })();
     }
 
     loopLoadInventories() {

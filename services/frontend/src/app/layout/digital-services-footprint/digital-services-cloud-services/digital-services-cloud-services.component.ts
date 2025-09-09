@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, signal } from "@angular/core";
+import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -21,7 +21,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     templateUrl: "./digital-services-cloud-services.component.html",
     providers: [MessageService],
 })
-export class DigitalServicesCloudServicesComponent {
+export class DigitalServicesCloudServicesComponent implements OnInit {
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
     protected digitalServiceStore = inject(DigitalServiceStoreService);
 
@@ -56,7 +56,7 @@ export class DigitalServicesCloudServicesComponent {
         private readonly router: Router,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit(): void {
         this.digitalServiceUid = this.router.url.split("/")[6];
         this.getCloudServices();
     }

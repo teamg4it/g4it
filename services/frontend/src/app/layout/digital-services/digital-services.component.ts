@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
@@ -26,7 +26,7 @@ import { environment } from "src/environments/environment";
     templateUrl: "./digital-services.component.html",
     providers: [MessageService, ConfirmationService],
 })
-export class DigitalServicesComponent {
+export class DigitalServicesComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);
 
     digitalServices: DigitalService[] = [];
@@ -59,7 +59,7 @@ export class DigitalServicesComponent {
         private readonly titleService: Title,
     ) {}
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         this.route.parent?.data.subscribe((data) => {
             this.isEcoMindAi = data["isIa"] === true;
         });

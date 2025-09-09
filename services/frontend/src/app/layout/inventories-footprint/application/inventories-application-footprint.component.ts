@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, signal, Signal } from "@angular/core";
+import { Component, computed, inject, OnInit, signal, Signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
@@ -31,7 +31,7 @@ import { Constants } from "src/constants";
     selector: "app-inventories-application-footprint",
     templateUrl: "./inventories-application-footprint.component.html",
 })
-export class InventoriesApplicationFootprintComponent {
+export class InventoriesApplicationFootprintComponent implements OnInit {
     protected readonly footprintStore = inject(FootprintStoreService);
     private readonly globalStore = inject(GlobalStoreService);
     private readonly userService = inject(UserService);

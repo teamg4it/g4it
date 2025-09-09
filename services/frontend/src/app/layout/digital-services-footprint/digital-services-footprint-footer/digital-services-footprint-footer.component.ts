@@ -7,6 +7,7 @@ import {
     inject,
     input,
     Input,
+    OnInit,
     Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -27,7 +28,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     selector: "app-digital-services-footprint-footer",
     templateUrl: "./digital-services-footprint-footer.component.html",
 })
-export class DigitalServicesFootprintFooterComponent {
+export class DigitalServicesFootprintFooterComponent implements OnInit {
     isEcoMindAi = input<boolean>(false);
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() updateEnableCalculation = new EventEmitter<boolean>();

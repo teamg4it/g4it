@@ -11,6 +11,8 @@ import {
     EventEmitter,
     inject,
     Input,
+    OnChanges,
+    OnInit,
     Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -32,7 +34,7 @@ import { environment } from "src/environments/environment";
     templateUrl: "./add-workspace.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class AddWorkspaceComponent {
+export class AddWorkspaceComponent implements OnInit, OnChanges {
     @Input() userDetail!: UserDetails;
     @Input() userDetailEcoMind: boolean = false;
     @Input() workspace!: WorkspaceWithOrganization;
