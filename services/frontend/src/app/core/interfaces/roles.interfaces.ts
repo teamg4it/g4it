@@ -10,7 +10,7 @@ export enum Role {
     DigitalServiceRead = "ROLE_DIGITAL_SERVICE_READ",
     InventoryWrite = "ROLE_INVENTORY_WRITE",
     DigitalServiceWrite = "ROLE_DIGITAL_SERVICE_WRITE",
-    OrganizationAdmin = "ROLE_ORGANIZATION_ADMINISTRATOR ",
+    OrganizationAdmin = "ROLE_ORGANIZATION_ADMINISTRATOR",
     WorkspaceAdmin = "ROLE_WORKSPACE_ADMINISTRATOR",
     EcoMindAiRead = "ROLE_ECO_MIND_AI_READ",
     EcoMindAiWrite = "ROLE_ECO_MIND_AI_WRITE",
@@ -31,7 +31,7 @@ export const RoleRightMap: any = {
     ROLE_INVENTORY_WRITE: "write",
     ROLE_DIGITAL_SERVICE_WRITE: "write",
     ROLE_ORGANIZATION_ADMINISTRATOR: "admin",
-    ROLE_SUBSCRIBER_ADMINISTRATOR: "admin",
+    ROLE_WORKSPACE_ADMINISTRATOR: "admin",
     ROLE_ECO_MIND_AI_READ: "read",
     ROLE_ECO_MIND_AI_WRITE: "write",
 };

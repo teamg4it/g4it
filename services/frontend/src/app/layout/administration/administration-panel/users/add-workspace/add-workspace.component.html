@@ -24,12 +24,14 @@
     </div>
     <br />
     <div>
-        <label> {{ "administration.user.access" | translate }} </label><br />
+        {{ "administration.user.access" | translate }} <br />
         <div
             class="h-2rem border-top-2 border-primary p-0 mt-1"
             style="color: lightgray"
         ></div>
-        <label> {{ "administration.user.is-module" | translate }} </label>
+        <label for="module-is-dropdown">
+            {{ "administration.user.is-module" | translate }}
+        </label>
         <p-dropdown
             appendTo="body"
             [style]="{ width: '100%' }"
@@ -43,7 +45,9 @@
         ></p-dropdown>
         <br />
         <br />
-        <label>{{ "administration.user.ds-module" | translate }}</label>
+        <label for="module-ds-dropdown">{{
+            "administration.user.ds-module" | translate
+        }}</label>
         <p-dropdown
             appendTo="body"
             [style]="{ width: '100%' }"
@@ -58,7 +62,9 @@
         @if (isEcoMindModuleEnabled && userDetailEcoMind) {
             <br />
             <br />
-            <label>{{ "administration.user.ecomind-module" | translate }}</label>
+            <label for="module-ecomind-dropdown">{{
+                "administration.user.ecomind-module" | translate
+            }}</label>
             <p-dropdown
                 appendTo="body"
                 [style]="{ width: '100%' }"
@@ -74,7 +80,9 @@
     </div>
     <br />
     <div>
-        <label>{{ "administration.user.role" | translate }} </label><br />
+        <label for="user-role-dropdown"
+            >{{ "administration.user.role" | translate }} </label
+        ><br />
         <div
             class="h-2rem border-top-2 border-primary p-0 mt-1"
             style="color: lightgray"

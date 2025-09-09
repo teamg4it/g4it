@@ -219,8 +219,8 @@ export class WorkspaceComponent implements OnInit {
                                     (sub) => sub.name === organization.name,
                                 );
                                 let newWorkspace;
-                                if (newOrganization && newOrganization?.workspaces) {
-                                    newWorkspace = newOrganization?.workspaces.find(
+                                if (newOrganization?.workspaces) {
+                                    newWorkspace = newOrganization.workspaces.find(
                                         (org) => org.id === res.id,
                                     );
                                 }

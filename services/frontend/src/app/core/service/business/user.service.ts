@@ -217,7 +217,7 @@ export class UserService {
                 workspace = tmpWorkspaces[0];
             }
         }
-        if (workspace === undefined) workspace = organization.workspaces[0];
+        workspace ??= organization.workspaces[0];
         return workspace;
     }
 
