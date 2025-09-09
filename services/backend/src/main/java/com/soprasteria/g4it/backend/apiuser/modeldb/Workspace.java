@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * G4IT Organization.
+ * G4IT Workspace (formerly Organization).
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -42,7 +42,7 @@ public class Workspace extends AbstractBaseEntity implements Serializable {
     private long id;
 
     /**
-     * The organization's name.
+     * The Workspace name.
      */
     @NotNull
     private String name;
@@ -91,7 +91,7 @@ public class Workspace extends AbstractBaseEntity implements Serializable {
     private User lastUpdatedBy;
 
     /**
-     * The  user who created the organization.
+     * The  user who created the Workspace.
      */
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @OneToOne(cascade = CascadeType.DETACH)
@@ -99,7 +99,7 @@ public class Workspace extends AbstractBaseEntity implements Serializable {
     private User createdBy;
 
     /**
-     * The organization's subscriber.
+     * The workspace's organization.
      */
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
@@ -113,7 +113,7 @@ public class Workspace extends AbstractBaseEntity implements Serializable {
     private List<Inventory> inventory;
 
     /**
-     * Boolean isMigrated: true if organization name has been migrated to organization id
+     * Boolean isMigrated: true if Workspace name has been migrated to Workspace id
      */
     private Boolean isMigrated = true;
 

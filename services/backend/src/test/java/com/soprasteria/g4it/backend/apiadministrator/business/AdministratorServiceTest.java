@@ -43,8 +43,8 @@ class AdministratorServiceTest {
     private final Workspace workspace = TestUtils.createWorkspace();
     @Mock
     CacheManager cacheManager;
+    private long workspaceId;
     private long organizationId;
-    private long subscriberId;
     // Given global
     @InjectMocks
     private AdministratorService administratorService;
@@ -63,8 +63,8 @@ class AdministratorServiceTest {
 
     @BeforeEach
     void init() {
-        subscriberId = workspace.getOrganization().getId();
-        organizationId = workspace.getId();
+        organizationId = workspace.getOrganization().getId();
+        workspaceId = workspace.getId();
         Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(Mockito.mock(Cache.class));
     }
 
@@ -74,7 +74,7 @@ class AdministratorServiceTest {
         String searchedUser = "stName";
 
         String authorizedDomains = "soprasteria.com,test.com";
-        Organization organization = TestUtils.createSubscriber(subscriberId);
+        Organization organization = TestUtils.createOrganization(organizationId);
         organization.setAuthorizedDomains(authorizedDomains);
         doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), any(), any());
 
@@ -82,7 +82,7 @@ class AdministratorServiceTest {
         when(userRepository.findBySearchedName(eq(searchedUser), any())).thenReturn(
                 List.of(User.builder().email("testName@soprasteria.com").firstName("test").lastName("Name").build()));
 
-        List<UserSearchBO> searchedUsers = administratorService.searchUserByName(searchedUser, subscriberId, workspace.getId(),
+        List<UserSearchBO> searchedUsers = administratorService.searchUserByName(searchedUser, organizationId, workspace.getId(),
                 TestUtils.createUserBOAdminSub());
 
         assertEquals(1, searchedUsers.size());
@@ -92,7 +92,7 @@ class AdministratorServiceTest {
     void searchUserByName_withLinkedOrg() {
         String searchedUser = "test";
         String authorizedDomains = "soprasteria.com,test.com";
-        Organization organization = TestUtils.createSubscriber(subscriberId);
+        Organization organization = TestUtils.createOrganization(organizationId);
         organization.setAuthorizedDomains(authorizedDomains);
         doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(any(), any(), any());
 
@@ -101,7 +101,7 @@ class AdministratorServiceTest {
                 .builder().email("test@soprasteria.com")
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true).roles(List.of(Role.builder().name(ROLE).build()))
-                        .workspace(Workspace.builder().id(organizationId).name(WORKSPACE)
+                        .workspace(Workspace.builder().id(workspaceId).name(WORKSPACE)
                                 .status(WorkspaceStatus.ACTIVE.name())
                                 .organization(Organization.builder().id(2L).name(ORGANIZATION).build()).build())
                         .build()))
@@ -109,7 +109,7 @@ class AdministratorServiceTest {
                 .build()));
         List<UserSearchBO> searchedUsers;
 
-        searchedUsers = administratorService.searchUserByName(searchedUser, subscriberId, organizationId, TestUtils.createUserBOAdminSub());
+        searchedUsers = administratorService.searchUserByName(searchedUser, organizationId, workspaceId, TestUtils.createUserBOAdminSub());
 
         assertEquals(1, searchedUsers.size());
     }
@@ -117,23 +117,23 @@ class AdministratorServiceTest {
     @Test
     void updateOrganizationCriteria() {
         // Arrange
-        subscriberId = 1L;
+        organizationId = 1L;
         CriteriaRest criteriaRest = CriteriaRest.builder().criteria(List.of("New Criteria")).build();
-        Organization organization = TestUtils.createSubscriber(subscriberId);
+        Organization organization = TestUtils.createOrganization(organizationId);
         organization.setCriteria(List.of("Old Criteria"));
 
-        Organization updatedOrganization = TestUtils.createSubscriber(subscriberId);
+        Organization updatedOrganization = TestUtils.createOrganization(organizationId);
         updatedOrganization.setCriteria(List.of("New Criteria"));
-        OrganizationBO organizationBO = OrganizationBO.builder().id(subscriberId)
+        OrganizationBO organizationBO = OrganizationBO.builder().id(organizationId)
                 .name("SUBSCRIBER")
                 .criteria(List.of("New Criteria")).build();
         doNothing().when(administratorRoleService).hasAdminRightsOnAnyOrganization(any());
 
-        when(organizationService.getOrgById(subscriberId)).thenReturn(organization);
+        when(organizationService.getOrgById(organizationId)).thenReturn(organization);
         when(organizationRepository.save(any())).thenReturn(updatedOrganization);
         when(organizationRestMapper.toBusinessObject(updatedOrganization)).thenReturn(organizationBO);
 
-        OrganizationBO result = administratorService.updateOrganizationCriteria(subscriberId, criteriaRest, createUserBOAdminSub());
+        OrganizationBO result = administratorService.updateOrganizationCriteria(organizationId, criteriaRest, createUserBOAdminSub());
 
         assertThat(result.getCriteria()).isEqualTo(List.of("New Criteria"));
 

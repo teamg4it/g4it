@@ -39,12 +39,12 @@ class NewWorkspaceServiceTest {
     private NewWorkspaceService newWorkspaceService;
 
     @Test
-    void searchSubscribersByDomainName_returnsSubscribersWithOrganizations_whenDomainMatches() {
+    void searchOrganizationsByDomainName_returnsOrganizationsWithWorkspaces_whenDomainMatches() {
         String userEmail = "user@example.com";
         String domainName = "example.com";
 
-        Organization organization = Organization.builder().id(1L).name("Subscriber1").build();
-        Workspace workspace = Workspace.builder().id(1L).name("Org1").status("Active").build();
+        Organization organization = Organization.builder().id(1L).name("Organization1").build();
+        Workspace workspace = Workspace.builder().id(1L).name("Work1").status("Active").build();
 
         when(organizationRepository.findByAuthorizedDomainsContaining(domainName))
                 .thenReturn(List.of(organization));
@@ -54,13 +54,13 @@ class NewWorkspaceServiceTest {
         List<OrganizationDetailsBO> result = newWorkspaceService.searchOrganizationsByDomainName(userEmail);
 
         assertEquals(1, result.size());
-        assertEquals("Subscriber1", result.getFirst().getName());
+        assertEquals("Organization1", result.getFirst().getName());
         assertEquals(1, result.getFirst().getWorkspaces().size());
-        assertEquals("Org1", result.getFirst().getWorkspaces().getFirst().getName());
+        assertEquals("Work1", result.getFirst().getWorkspaces().getFirst().getName());
     }
 
     @Test
-    void searchSubscribersByDomainName_returnsEmptyList_whenNoSubscribersMatchDomain() {
+    void searchOrganizationsByDomainName_returnsEmptyList_whenNoOrganizationsMatchDomain() {
         String userEmail = "user@nonexistent.com";
         String domainName = "nonexistent.com";
 
@@ -73,11 +73,11 @@ class NewWorkspaceServiceTest {
     }
 
     @Test
-    void searchSubscribersByDomainName_returnsSubscribersWithEmptyOrganizations_whenNoOrganizationsFound() {
+    void searchOrganizationsByDomainName_returnsOrganizationsWithEmptyWorkspaces_whenNoWorkspacesFound() {
         String userEmail = "user@example.com";
         String domainName = "example.com";
 
-        Organization organization = Organization.builder().id(1L).name("Subscriber1").build();
+        Organization organization = Organization.builder().id(1L).name("Organization1").build();
 
         when(organizationRepository.findByAuthorizedDomainsContaining(domainName))
                 .thenReturn(List.of(organization));
@@ -87,7 +87,7 @@ class NewWorkspaceServiceTest {
         List<OrganizationDetailsBO> result = newWorkspaceService.searchOrganizationsByDomainName(userEmail);
 
         assertEquals(1, result.size());
-        assertEquals("Subscriber1", result.getFirst().getName());
+        assertEquals("Organization1", result.getFirst().getName());
         assertTrue(result.getFirst().getWorkspaces().isEmpty());
     }
 

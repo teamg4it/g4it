@@ -6,7 +6,7 @@ info:
 
 tags:
   - name: administrator-actions
-    description: Endpoint for subscriber administration actions
+    description: Endpoint for super admin actions
 
 paths:
   /administrator-actions/do-admin-actions:

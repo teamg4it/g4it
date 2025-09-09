@@ -93,7 +93,7 @@ class WorkspaceServiceTest {
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
 
-        User user = TestUtils.createUserWithRoleOnSub(organizationId, organizationAdminRole);
+        User user = TestUtils.createUserWithRoleOnOrg(organizationId, organizationAdminRole);
         Optional<Workspace> workspaceEntity = Optional.of(Workspace.builder().id(workspaceId).name(workspaceName).status(currentStatus)
                 .deletionDate(now.plusDays(dataRetentionDay))
                 .organization(Organization.builder().id(ORGANIZATION_ID).build())
@@ -120,7 +120,7 @@ class WorkspaceServiceTest {
         String updatedStatus = WorkspaceStatus.ACTIVE.name();
         List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
 
-        User user = TestUtils.createUserWithRoleOnSub(organizationId, organizationAdminRole);
+        User user = TestUtils.createUserWithRoleOnOrg(organizationId, organizationAdminRole);
         Optional<Workspace> workspaceEntity = Optional.of(Workspace.builder().name(workspaceName).id(workspaceId).status(currentStatus)
                 .deletionDate(null)
                 .organization(Organization.builder().id(ORGANIZATION_ID).build())
@@ -146,7 +146,7 @@ class WorkspaceServiceTest {
         String workspaceName = "WORKSPACE";
         String workspaceUpdatedName = "WORKSPACE_UPDATED";
         List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
-        User user = TestUtils.createUserWithRoleOnSub(organizationId, organizationAdminRole);
+        User user = TestUtils.createUserWithRoleOnOrg(organizationId, organizationAdminRole);
 
         WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceUpdatedName
                 , WorkspaceStatus.ACTIVE.name(), dataRetentionDay);
@@ -177,7 +177,7 @@ class WorkspaceServiceTest {
         long workspaceId = 1L;
         String workspaceName = "WORKSPACE";
         List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
-        User user = TestUtils.createUserWithRoleOnSub(organizationId, organizationAdminRole);
+        User user = TestUtils.createUserWithRoleOnOrg(organizationId, organizationAdminRole);
 
         WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceName
                 , WorkspaceStatus.ACTIVE.name(), "criteriaDs", "criteriaIs");

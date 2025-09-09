@@ -65,7 +65,7 @@ class UserServiceTest {
     }
 
     @Test
-    void givenEmailAndUserWithoutRole_thenReturnUserWithoutSubscriber() {
+    void givenEmailAndUserWithoutRole_thenReturnUserWithoutOrganization() {
 
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(User.builder().email(EMAIL)
                 .userOrganizations(List.of(UserOrganization.builder()

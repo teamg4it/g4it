@@ -41,14 +41,14 @@ class StorageDeletionServiceTest {
     FileDeletionService fileDeletionService;
 
     @Test
-    void testStorageDeletionService_zeroOrganization() {
+    void testStorageDeletionService_zeroWorkspace() {
         Mockito.when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()))).thenReturn(List.of());
         storageDeletionService.executeDeletion();
         Mockito.verify(workspaceRepository).findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()));
     }
 
     @Test
-    void testStorageDeletionService_organizationAndSubscriberChosen() {
+    void testStorageDeletionService_workspaceAndOrganizationChosen() {
 
         ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayExport", 100);
         ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayOutput", 300);
@@ -56,11 +56,11 @@ class StorageDeletionServiceTest {
         List<Workspace> workspaces = List.of(Workspace.builder()
                 .storageRetentionDayExport(10) // value chosen
                 .organization(Organization.builder()
-                        .name("sub")
+                        .name("org")
                         .storageRetentionDayExport(10000)
                         .storageRetentionDayOutput(30000) // value chosen
                         .build())
-                .name("org")
+                .name("work")
                 .status(WorkspaceStatus.ACTIVE.name())
                 .build());
 
@@ -83,9 +83,9 @@ class StorageDeletionServiceTest {
         List<Workspace> workspaces = List.of(Workspace.builder()
                 .storageRetentionDayExport(10) // value chosen
                 .organization(Organization.builder()
-                        .name("sub")
+                        .name("org")
                         .build())
-                .name("org")
+                .name("work")
                 .status(WorkspaceStatus.ACTIVE.name())
                 .build());
 

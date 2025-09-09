@@ -47,7 +47,7 @@ class NewUserServiceTest {
     private NewUserService newUserService;
 
     @Test
-    void createUserCreatesUserAndLinksWithSubscriberAndOrganization() {
+    void createUserCreatesUserAndLinksWithOrganizationAndWorkspace() {
         Organization organization = new Organization();
         Workspace demoWorkspace = new Workspace();
         UserBO userInfo = UserBO.builder().email("email@example.com").firstName("First").lastName("Last").sub("sub").domain("domain").build();

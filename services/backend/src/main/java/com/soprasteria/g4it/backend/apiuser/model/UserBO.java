@@ -58,7 +58,7 @@ public class UserBO {
     private String domain;
 
     /**
-     * User's subscriber.
+     * User's organization.
      */
     @EqualsAndHashCode.Exclude
     private List<OrganizationBO> organizations;

@@ -480,7 +480,7 @@ class DigitalServiceServiceTest {
     }
 
     @Test
-    void digitalServiceExists_WhenSubscriberMatchesAndServiceExists_ReturnsTrue() {
+    void digitalServiceExists_WhenOrganizationMatchesAndServiceExists_ReturnsTrue() {
 
         final Workspace workspace = Workspace.builder().name("test")
                 .organization(Organization.builder().name(SUBSCRIBER).build()).build();
@@ -498,7 +498,7 @@ class DigitalServiceServiceTest {
     }
 
     @Test
-    void digitalServiceExists_WhenSubscriberMismatch_ReturnsFalse() {
+    void digitalServiceExists_WhenOrganizationMismatch_ReturnsFalse() {
 
         final Workspace workspace = Workspace.builder().name("test")
                 .organization(Organization.builder().name("Subscriber2").build()).build();
@@ -513,7 +513,7 @@ class DigitalServiceServiceTest {
     }
 
     @Test
-    void digitalServiceExists_WhenSubscriberMatchesAndServiceNotExist_ReturnsFalse() {
+    void digitalServiceExists_WhenOrganizationMatchesAndServiceNotExist_ReturnsFalse() {
 
         final Workspace workspace = Workspace.builder().name("test")
                 .organization(Organization.builder().name(SUBSCRIBER).build()).build();

@@ -77,12 +77,12 @@ public class TestUtils {
                 .build();
     }
 
-    public static Organization createSubscriber() {
+    public static Organization createOrganization() {
         return Organization.builder().id(1L).name(ORGANIZATION).build();
     }
 
-    public static Organization createSubscriber(Long subscriberId) {
-        return Organization.builder().id(subscriberId).name(ORGANIZATION).build();
+    public static Organization createOrganization(Long organizationId) {
+        return Organization.builder().id(organizationId).name(ORGANIZATION).build();
     }
 
     public static Workspace createWorkspace() {
@@ -143,12 +143,12 @@ public class TestUtils {
         return DigitalServiceBO.builder().uid(digitalServiceUid).name("name").lastUpdateDate(LocalDateTime.now()).build();
     }
 
-    public static User createUserWithRoleOnSub(Long subscriberId, List<Role> roles) {
+    public static User createUserWithRoleOnOrg(Long organizationId, List<Role> roles) {
         return User.builder().email(EMAIL)
                 .userOrganizations(List.of(UserOrganization.builder().defaultFlag(true).roles(roles).organization(Organization.builder().name(ORGANIZATION).build()).build()))
                 .userWorkspaces(List.of(UserWorkspace
                         .builder().defaultFlag(true).roles(List.of(Role.builder().name("ROLE_INVENTORY_READ").build())).workspace(Workspace.builder().name(WORKSPACE).status(WorkspaceStatus.ACTIVE.name())
-                                .organization(Organization.builder().id(subscriberId).name(ORGANIZATION).build()).build()).build())).build();
+                                .organization(Organization.builder().id(organizationId).name(ORGANIZATION).build()).build()).build())).build();
     }
 
     public static UserBO createUserBOAdminSub() {
@@ -195,41 +195,41 @@ public class TestUtils {
                 .builder().defaultFlag(true).roles(roles).workspace(createOrganization(subId, orgId, status, deletionDate)).userRoleWorkspace(userRoleWorkspace).build();
     }
 
-    public static UserOrganization createUserSubscriber(Long subscriberId, List<Role> roles, List<UserRoleOrganization> userRoleOrganizationList) {
+    public static UserOrganization createUserOrganization(Long organizationId, List<Role> roles, List<UserRoleOrganization> userRoleOrganizationList) {
         return UserOrganization
-                .builder().defaultFlag(true).roles(roles).organization(createSubscriber(subscriberId)).userRoleOrganization(userRoleOrganizationList).build();
+                .builder().defaultFlag(true).roles(roles).organization(createOrganization(organizationId)).userRoleOrganization(userRoleOrganizationList).build();
     }
 
-    public static WorkspaceUpsertRest createOrganizationUpsert(Long subscriberId, String orgName
+    public static WorkspaceUpsertRest createOrganizationUpsert(Long organizationId, String orgName
             , String orgStatus, Long dataRetentionDays) {
 
         com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus status = null;
         if (orgStatus != null)
             status = com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus.valueOf(orgStatus);
 
-        return WorkspaceUpsertRest.builder().organizationId(subscriberId).name(orgName).status(status)
+        return WorkspaceUpsertRest.builder().organizationId(organizationId).name(orgName).status(status)
                 .dataRetentionDays(dataRetentionDays).build();
     }
 
-    public static WorkspaceUpsertRest createOrganizationUpsert(Long subscriberId, String orgName
+    public static WorkspaceUpsertRest createOrganizationUpsert(Long organizationId, String orgName
             , String orgStatus, String criteriaDs, String criteriaIs) {
 
         com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus status = null;
         if (orgStatus != null)
             status = com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus.valueOf(orgStatus);
 
-        return WorkspaceUpsertRest.builder().organizationId(subscriberId)
+        return WorkspaceUpsertRest.builder().organizationId(organizationId)
                 .name(orgName)
                 .criteriaDs(List.of(criteriaDs))
                 .criteriaIs(List.of(criteriaIs)).status(status)
                 .build();
     }
 
-    public static UserRoleOrganization createUserRoleSubscriber(Role role) {
+    public static UserRoleOrganization createUserRoleOrganization(Role role) {
         return UserRoleOrganization.builder().roles(role).build();
     }
 
-    public static UserRoleWorkspace createUserRoleOrganization(Role role) {
+    public static UserRoleWorkspace createUserRoleWorkspace(Role role) {
         return UserRoleWorkspace.builder().roles(role).build();
     }
 

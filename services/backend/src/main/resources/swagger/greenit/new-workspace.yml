@@ -6,7 +6,7 @@ info:
 
 tags:
   - name: new-workspace
-    description: All endpoint for a workspace
+    description: All endpoint for a workspace creation from top header
 
 paths:
   /workspace/workspaces:

@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * G4IT User Subscriber mapping.
+ * G4IT User Organization(formerly Subscriber) mapping.
  */
 @Data
 @EqualsAndHashCode

@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * The G4IT client subscriber.
+ * The G4IT client organization (formerly subscriber).
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -38,19 +38,19 @@ public class Organization extends AbstractBaseEntity implements Serializable {
     private long id;
 
     /**
-     * The subscriber organization.
+     * The Organization's workspaces.
      */
     @ToString.Exclude
     @OneToMany(mappedBy = "organization")
     private List<Workspace> workspaces;
 
     /**
-     * The authorized organizations to subscriber
+     * The authorized domains of organizations
      */
     private String authorizedDomains;
 
     /**
-     * The subscriber name.
+     * The Organization name.
      */
     @NotNull
     private String name;
@@ -76,7 +76,7 @@ public class Organization extends AbstractBaseEntity implements Serializable {
     private List<String> criteria;
 
     /**
-     * Is EcomindAi enabled or not for this subscriber
+     * Is EcomindAi enabled or not for this Organization
      */
     private boolean ecomindai;
 }

@@ -6,7 +6,7 @@ info:
 
 tags:
   - name: administrator
-    description: Endpoint for subscriber administration
+    description: Endpoint for organization and workspace administration
 
 paths:
   /administrator/organizations:
@@ -46,7 +46,7 @@ paths:
         - administrator
       responses:
         '200':
-          description: Criteria have been updated for subscriber
+          description: Criteria have been updated for organization
           content:
             application/json:
               schema:

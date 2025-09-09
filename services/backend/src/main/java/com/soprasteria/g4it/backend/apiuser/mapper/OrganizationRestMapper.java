@@ -26,9 +26,9 @@ public interface OrganizationRestMapper {
      * Map a business object to dto object.
      *
      * @param businessObject the source.
-     * @return the SubscriberRest.
+     * @return the OrganizationRest.
      */
-     @Mapping(source = "workspaces", target = "workspaces")
+    // @Mapping(source = "workspaces", target = "workspaces")
     OrganizationRest toDto(final OrganizationBO businessObject);
 
     /**
@@ -46,15 +46,15 @@ public interface OrganizationRestMapper {
      * Map a business object list to dto object list.
      *
      * @param businessObject the source.
-     * @return the SubscriberRest list.
+     * @return the OrganizationRest list.
      */
     List<OrganizationRest> toDto(final List<OrganizationBO> businessObject);
 
     /**
      * Map an entity to business object.
      *
-     * @param organization the SubscriberBO
-     * @return the SubscriberBO.
+     * @param organization the OrganizationBO
+     * @return the OrganizationBO.
      */
     OrganizationBO toBusinessObject(final Organization organization);
 

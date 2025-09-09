@@ -39,7 +39,7 @@ public class RoleService {
     private RoleMapper roleMapper;
 
     /**
-     * Validate if user have 'SUBSCRIBER_ADMINISTRATOR' role on any organization.
+     * Validate if user have 'ROLE_ORGANIZATION_ADMINISTRATOR' role on any organization.
      *
      * @param user the user.
      * @return boolean
@@ -64,7 +64,7 @@ public class RoleService {
 
 
     /**
-     * Validate if user have 'SUBSCRIBER_ADMINISTRATOR' role on organization.
+     * Validate if user have 'ROLE_ORGANIZATION_ADMINISTRATOR' role on organization.
      *
      * @param user           the user.
      * @param organizationId the organization's id.
