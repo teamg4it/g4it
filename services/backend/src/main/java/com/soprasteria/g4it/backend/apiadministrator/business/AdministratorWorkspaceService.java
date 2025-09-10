@@ -132,7 +132,7 @@ public class AdministratorWorkspaceService {
 
         // Link user to the Workspace and assign with workspace admin role
         if (!(checkAdminRole) || hasDomainAuthorization) {
-            UserRoleRest userRoleRest = UserRoleRest.builder().userId(user.getId()).roles(List.of("ROLE_ORGANIZATION_ADMINISTRATOR")).build();
+            UserRoleRest userRoleRest = UserRoleRest.builder().userId(user.getId()).roles(List.of(Constants.ROLE_WORKSPACE_ADMINISTRATOR)).build();
             LinkUserRoleRest linkUserRoleRest = LinkUserRoleRest.builder().workspaceId(result.getId()).users(Collections.singletonList(userRoleRest)).build();
             linkUserToWorkspace(linkUserRoleRest, authService.getUser(), false);
         }
