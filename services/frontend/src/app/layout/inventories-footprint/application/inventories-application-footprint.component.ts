@@ -68,7 +68,10 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         private readonly translate: TranslateService,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit() {
+        this.asyncInit();
+    }
+    private async asyncInit() {
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
         this.globalStore.setLoading(true);
 

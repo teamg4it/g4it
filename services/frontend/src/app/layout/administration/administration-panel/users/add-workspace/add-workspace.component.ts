@@ -19,7 +19,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { take } from "rxjs";
+import { map, switchMap, take } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import { Role, RoleValue } from "src/app/core/interfaces/roles.interfaces";
 import { UserDetails } from "src/app/core/interfaces/user.interfaces";
@@ -168,30 +168,31 @@ export class AddWorkspaceComponent implements OnInit, OnChanges {
     }
 
     addUpdateWorkspace() {
+        const body = this.getWorkspaceBody();
         this.administrationService
-            .postUserToWorkspaceAndAddRoles(this.getWorkspaceBody())
-            .subscribe(() => {
-                this.userService.user$
-                    .pipe(takeUntilDestroyed(this.destroyRef))
-                    .subscribe((user) => {
-                        this.userDataService
-                            .fetchUserInfo()
-                            .pipe(take(1))
-                            .subscribe(() => {
-                                const currentUserRoles =
-                                    this.getWorkspaceBody().users.find(
-                                        (u) => u.userId === user.id,
-                                    )?.roles;
-                                const isAdmin =
-                                    currentUserRoles?.includes(Role.OrganizationAdmin) ||
-                                    currentUserRoles?.includes(Role.WorkspaceAdmin);
-                                if (!isAdmin && currentUserRoles) {
-                                    this.router.navigateByUrl(Constants.WELCOME_PAGE);
-                                    return;
-                                }
-                                this.outClose.emit(false);
-                            });
-                    });
+            .postUserToWorkspaceAndAddRoles(body)
+            .pipe(
+                switchMap(() => this.userService.user$.pipe(take(1))),
+                switchMap((user) =>
+                    this.userDataService.fetchUserInfo().pipe(
+                        take(1),
+                        map(() => user),
+                    ),
+                ),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe((user) => {
+                const currentUserRoles = body.users.find(
+                    (u) => u.userId === user.id,
+                )?.roles;
+                const isAdmin =
+                    currentUserRoles?.includes(Role.OrganizationAdmin) ||
+                    currentUserRoles?.includes(Role.WorkspaceAdmin);
+                if (!isAdmin && currentUserRoles) {
+                    this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                    return;
+                }
+                this.outClose.emit(false);
             });
     }
 
