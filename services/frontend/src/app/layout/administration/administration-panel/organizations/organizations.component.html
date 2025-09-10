@@ -172,7 +172,7 @@
                 styleClass="black-button-sidebar"
                 *ngIf="workspace.status === status.TO_BE_DELETED"
                 (onClick)="confirmToActive(workspace)"
-                [disabled]="!workspace?.roles?.includes(Role.OrganizationAdmin)"
+                [disabled]="!organization.roles.includes(Role.OrganizationAdmin)"
                 >{{ "administration.cancel-deletion" | translate }}</p-button
             >
 
@@ -186,7 +186,7 @@
                 }}</small
             >
             @if (
-                !workspace.roles.includes(Role.OrganizationAdmin) &&
+                !organization.roles.includes(Role.OrganizationAdmin) &&
                 workspace.status === status.TO_BE_DELETED
             ) {
                 <small class="mx-1"
