@@ -13,7 +13,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { firstValueFrom } from "rxjs";
+import { take } from "rxjs";
 import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
@@ -65,12 +65,11 @@ export class WelcomePageComponent implements OnInit {
     ];
 
     constructor(
-        private workspaceService: WorkspaceService,
+        private readonly workspaceService: WorkspaceService,
         public readonly router: Router,
     ) {}
 
-    async ngOnInit() {
-        const userDetails = await firstValueFrom(this.userService.user$);
+    ngOnInit() {
         this.userService.isAllowedInventoryRead$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((isAllowed: boolean) => {
@@ -86,7 +85,9 @@ export class WelcomePageComponent implements OnInit {
             .subscribe((isAllowed: boolean) => {
                 this.isAllowedEcoMindAi = isAllowed;
             });
-        this.userName = userDetails?.firstName + " " + userDetails?.lastName;
+        this.userService.user$.pipe(take(1)).subscribe((userDetails) => {
+            this.userName = userDetails?.firstName + " " + userDetails?.lastName;
+        });
 
         this.userService.currentOrganization$.subscribe((organization) => {
             this.currentOrganization = organization;
