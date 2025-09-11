@@ -5,6 +5,7 @@ import {
     EventEmitter,
     inject,
     Output,
+    signal,
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -45,10 +46,33 @@ export class DigitalServicesImportComponent {
         menu: [
             {
                 subTitle: this.translate.instant("common.optional"),
+                title: this.translate.instant("digital-services-terminals.devices"),
+                description: this.translate.instant("common.no-document-upload"),
+                iconClass: "pi pi-exclamation-circle",
+                optional: true,
+                descriptionText: this.translate.instant(
+                    "digital-services-import.terminal-text",
+                ),
+            },
+            {
+                subTitle: this.translate.instant("common.optional"),
+                title: this.translate.instant("digital-services.Network"),
+                description: this.translate.instant("common.no-document-upload"),
+                iconClass: "pi pi-exclamation-circle",
+                optional: true,
+                descriptionText: this.translate.instant(
+                    "digital-services-import.network-text",
+                ),
+            },
+            {
+                subTitle: this.translate.instant("common.optional"),
                 title: this.translate.instant("digital-services.Server"),
                 description: this.translate.instant("common.no-document-upload"),
                 iconClass: "pi pi-exclamation-circle",
                 optional: true,
+                descriptionText: this.translate.instant(
+                    "digital-services-import.non-cloud-text",
+                ),
             },
             {
                 subTitle: this.translate.instant("common.optional"),
@@ -56,9 +80,16 @@ export class DigitalServicesImportComponent {
                 description: this.translate.instant("common.no-document-upload"),
                 iconClass: "pi pi-exclamation-circle",
                 optional: true,
+                descriptionText: this.translate.instant(
+                    "digital-services-import.cloud-text",
+                ),
             },
         ],
         form: [
+            { name: "terminal" },
+            {
+                name: "network",
+            },
             {
                 name: "nonCloud",
             },
@@ -77,6 +108,7 @@ export class DigitalServicesImportComponent {
     dsTemplateParam = Constants.TEMPLATE_PARAMS.DS_MODULE;
     digitalServicesId = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
     templateFilesDescription: TemplateFileDescription[] = [];
+    templateFileVisible = signal<TemplateFileDescription[]>([]);
     anyRejectedFiles = false;
     selectedOrganization!: string;
     selectedSubscriber!: string;
@@ -92,6 +124,8 @@ export class DigitalServicesImportComponent {
     ) {}
 
     importForm = new FormGroup({
+        terminal: new FormControl<string | undefined>(undefined),
+        network: new FormControl<string | undefined>(undefined),
         nonCloud: new FormControl<string | undefined>(undefined),
         cloud: new FormControl<string | undefined>(undefined),
     });
@@ -109,7 +143,6 @@ export class DigitalServicesImportComponent {
             });
         this.getTemplates();
         await this.getDigitalServiceStatus();
-        this.selectTab(0);
     }
 
     focusFirstTemplate() {
@@ -147,7 +180,8 @@ export class DigitalServicesImportComponent {
                         Constants.FILE_TYPES.indexOf(b.csvFileType ?? "")
                     );
                 });
-
+                console.log(this.templateFilesDescription);
+                this.selectTab(0);
                 setTimeout(() => {
                     this.focusFirstTemplate();
                 }, 100);
@@ -261,9 +295,33 @@ export class DigitalServicesImportComponent {
 
     selectTab(index: number) {
         this.selectedMenuIndex = index;
+        const files = this.templateFilesDescription;
+        this.templateFileVisible.set(this.getSelectedTemplates(files));
         this.importDetails.menu.forEach((detail, i) => {
             detail.active = i === index;
         });
+    }
+
+    getSelectedTemplates(files: TemplateFileDescription[]): TemplateFileDescription[] {
+        if (this.selectedMenuIndex === 0)
+            return files.filter((file) =>
+                file.name.includes("physical_equipment_terminal"),
+            );
+        else if (this.selectedMenuIndex === 1)
+            return files.filter((file) =>
+                file.name.includes("physical_equipment_network"),
+            );
+        else if (this.selectedMenuIndex === 2)
+            return files.filter(
+                (file) =>
+                    ![
+                        "virtual_equipment_cloud",
+                        "physical_equipment_terminal",
+                        "physical_equipment_network",
+                    ].some((type) => file.name.includes(type)),
+            );
+
+        return files.filter((file) => file.name.includes("virtual_equipment_cloud"));
     }
 
     closeSidebar() {

@@ -150,7 +150,12 @@ describe("DigitalServicesImportComponent", () => {
     it("should reset form and emit sidebarVisibleChange as false", () => {
         spyOn(component.sidebarVisibleChange, "emit");
         component.closeSidebar();
-        expect(component.importForm.value).toEqual({ nonCloud: null, cloud: null });
+        expect(component.importForm.value).toEqual({
+            nonCloud: null,
+            cloud: null,
+            terminal: null,
+            network: null,
+        });
         expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
     });
 
