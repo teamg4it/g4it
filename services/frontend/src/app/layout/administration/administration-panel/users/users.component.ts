@@ -242,7 +242,7 @@ export class UsersComponent implements OnInit {
 
             accept: () => {
                 let body = {
-                    organizationId: this.workspace.workspaceId,
+                    workspaceId: this.workspace.workspaceId,
                     users: [
                         {
                             userId: user.id,
