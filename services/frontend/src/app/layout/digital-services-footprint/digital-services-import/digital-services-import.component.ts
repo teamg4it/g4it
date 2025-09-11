@@ -167,7 +167,6 @@ export class DigitalServicesImportComponent {
                         Constants.FILE_TYPES.indexOf(b.csvFileType ?? "")
                     );
                 });
-                console.log(this.templateFilesDescription);
                 this.selectTab(0);
                 setTimeout(() => {
                     this.focusFirstTemplate();

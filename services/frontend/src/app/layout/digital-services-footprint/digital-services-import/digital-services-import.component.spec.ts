@@ -5,6 +5,7 @@ import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
+import { TemplateFileDescription } from "src/app/core/interfaces/file-system.interfaces";
 import { InDatacenterRest } from "src/app/core/interfaces/input.interface";
 import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -275,5 +276,51 @@ describe("DigitalServicesImportComponent", () => {
         expect(digitalServiceStore.initInVirtualEquipments).toHaveBeenCalledWith(
             component.digitalServicesId,
         );
+    });
+
+    // Tests for getSelectedTemplates
+    describe("getSelectedTemplates", () => {
+        const files: TemplateFileDescription[] = [
+            { name: "file_physical_equipment_terminal_1.csv" } as any,
+            { name: "file_physical_equipment_network_1.csv" } as any,
+            { name: "file_virtual_equipment_cloud_1.csv" } as any,
+            { name: "file_non_cloud_server.csv" } as any,
+            { name: "another_non_cloud_asset.csv" } as any,
+        ];
+
+        it("should return only terminal templates when selectedMenuIndex is 0", () => {
+            component.selectedMenuIndex = 0;
+            const result = component.getSelectedTemplates(files);
+            expect(result.length).toBe(1);
+            expect(result[0].name).toContain("physical_equipment_terminal");
+        });
+
+        it("should return only network templates when selectedMenuIndex is 1", () => {
+            component.selectedMenuIndex = 1;
+            const result = component.getSelectedTemplates(files);
+            expect(result.length).toBe(1);
+            expect(result[0].name).toContain("physical_equipment_network");
+        });
+
+        it("should return non-cloud (excluding terminal, network, and cloud) when selectedMenuIndex is 2", () => {
+            component.selectedMenuIndex = 2;
+            const result = component.getSelectedTemplates(files);
+            expect(result.length).toBe(2);
+            expect(
+                result.every(
+                    (f) =>
+                        !f.name.includes("physical_equipment_terminal") &&
+                        !f.name.includes("physical_equipment_network") &&
+                        !f.name.includes("virtual_equipment_cloud"),
+                ),
+            ).toBeTrue();
+        });
+
+        it("should return only virtual cloud templates when selectedMenuIndex is other (e.g., 3)", () => {
+            component.selectedMenuIndex = 3;
+            const result = component.getSelectedTemplates(files);
+            expect(result.length).toBe(1);
+            expect(result[0].name).toContain("virtual_equipment_cloud");
+        });
     });
 });
