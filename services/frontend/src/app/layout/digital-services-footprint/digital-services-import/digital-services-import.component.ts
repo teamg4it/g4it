@@ -42,62 +42,49 @@ export class DigitalServicesImportComponent {
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);
     private readonly inDatacentersService = inject(InDatacentersService);
     public readonly digitalServiceStore = inject(DigitalServiceStoreService);
-    importDetails: CustomSidebarMenuForm = {
-        menu: [
+    importDetails: CustomSidebarMenuForm = this.buildImportDetails();
+
+    private buildImportDetails(): CustomSidebarMenuForm {
+        const common = {
+            subTitle: this.translate.instant("common.optional"),
+            description: this.translate.instant("common.no-document-upload"),
+            iconClass: "pi pi-exclamation-circle",
+            optional: true,
+        };
+
+        const menuConfigs: { titleKey: string; textKey: string }[] = [
             {
-                subTitle: this.translate.instant("common.optional"),
-                title: this.translate.instant("digital-services-terminals.devices"),
-                description: this.translate.instant("common.no-document-upload"),
-                iconClass: "pi pi-exclamation-circle",
-                optional: true,
-                descriptionText: this.translate.instant(
-                    "digital-services-import.terminal-text",
-                ),
+                titleKey: "digital-services-terminals.devices",
+                textKey: "digital-services-import.terminal-text",
             },
             {
-                subTitle: this.translate.instant("common.optional"),
-                title: this.translate.instant("digital-services.Network"),
-                description: this.translate.instant("common.no-document-upload"),
-                iconClass: "pi pi-exclamation-circle",
-                optional: true,
-                descriptionText: this.translate.instant(
-                    "digital-services-import.network-text",
-                ),
+                titleKey: "digital-services.Network",
+                textKey: "digital-services-import.network-text",
             },
             {
-                subTitle: this.translate.instant("common.optional"),
-                title: this.translate.instant("digital-services.Server"),
-                description: this.translate.instant("common.no-document-upload"),
-                iconClass: "pi pi-exclamation-circle",
-                optional: true,
-                descriptionText: this.translate.instant(
-                    "digital-services-import.non-cloud-text",
-                ),
+                titleKey: "digital-services.Server",
+                textKey: "digital-services-import.non-cloud-text",
             },
             {
-                subTitle: this.translate.instant("common.optional"),
-                title: this.translate.instant("digital-services.CloudService"),
-                description: this.translate.instant("common.no-document-upload"),
-                iconClass: "pi pi-exclamation-circle",
-                optional: true,
-                descriptionText: this.translate.instant(
-                    "digital-services-import.cloud-text",
-                ),
+                titleKey: "digital-services.CloudService",
+                textKey: "digital-services-import.cloud-text",
             },
-        ],
-        form: [
-            { name: "terminal" },
-            {
-                name: "network",
-            },
-            {
-                name: "nonCloud",
-            },
-            {
-                name: "cloud",
-            },
-        ],
-    };
+        ];
+
+        return {
+            menu: menuConfigs.map((c) => ({
+                ...common,
+                title: this.translate.instant(c.titleKey),
+                descriptionText: this.translate.instant(c.textKey),
+            })),
+            form: [
+                { name: "terminal" },
+                { name: "network" },
+                { name: "nonCloud" },
+                { name: "cloud" },
+            ],
+        };
+    }
 
     @Output() sidebarVisibleChange: EventEmitter<any> = new EventEmitter();
 
