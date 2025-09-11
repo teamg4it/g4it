@@ -213,10 +213,10 @@ services:
 
   #EcomindAPI
   ecomind-api:
-    image: soury35/ecomindai:1.0.0
+    image: sustain4raise/ecomindai:1.1.0
     container_name: ecomind-api
     ports:
-      - "3000:8080"
+      - "8000:8000"
 
 
 
