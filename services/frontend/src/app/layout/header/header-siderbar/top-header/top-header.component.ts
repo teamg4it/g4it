@@ -74,12 +74,16 @@ export class TopHeaderComponent implements OnInit {
     selectedLanguage: string = "en";
     userDetails!: UserInfo;
     workspaces: OrganizationData[] = [];
+    filteredWorkspaces: OrganizationData[] = [];
     initials = "";
 
     items: MenuItem[] | undefined;
     isAccountMenuVisible = false;
     isOrgMenuVisible = false;
     isAboutMenuOpen = false;
+    enableSearchField = true;
+    searchFieldTouched = true;
+    filterMode: any;
     modelWorkspace!: number;
     selectedWorkspace: Workspace = {} as Workspace;
     selectedOrganizationData: OrganizationData | undefined = undefined;
@@ -96,6 +100,7 @@ export class TopHeaderComponent implements OnInit {
     constructor(private readonly workspaceService: WorkspaceService) {}
 
     ngOnInit() {
+        this.filteredWorkspaces = this.workspaces;
         this.selectedLanguage = this.translate.currentLang;
         this.setSelectedPage();
         this.router.events.subscribe((event) => {
@@ -148,6 +153,8 @@ export class TopHeaderComponent implements OnInit {
                 this.initials =
                     this.getCapitaleLetter(this.userDetails?.firstName) +
                     this.getCapitaleLetter(this.userDetails?.lastName);
+
+                this.searchWorkspaceList();
             });
         this.mobileMenuItems = [
             {
@@ -382,12 +389,15 @@ export class TopHeaderComponent implements OnInit {
 
     toggleOrgMenu() {
         this.isOrgMenuVisible = !this.isOrgMenuVisible;
+        this.filterMode = "";
+
         if (this.isOrgMenuVisible) {
             const elementToView = document.querySelector(`#org-${this.modelWorkspace}`);
             setTimeout(() => {
                 elementToView?.scrollIntoView({ behavior: "smooth", block: "start" });
             }, 0);
             this.showDialog();
+            this.searchWorkspaceList();
         }
     }
 
@@ -440,5 +450,17 @@ export class TopHeaderComponent implements OnInit {
 
     showDialog() {
         this.dialogVisible = true;
+    }
+
+    searchWorkspaceList() {
+        const filter = this.filterMode?.toLowerCase() || "";
+        this.filteredWorkspaces = filter
+            ? this.workspaces.filter((o) =>
+                  o.organization!.name.toLowerCase().includes(filter),
+              )
+            : this.workspaces;
+    }
+    onClick($event: MouseEvent) {
+        $event.stopPropagation();
     }
 }

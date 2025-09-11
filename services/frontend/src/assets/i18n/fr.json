@@ -158,7 +158,9 @@
             "duplicate-error": "Le nom de l'espace de travail existe déjà",
             "no-organization": "Aucune organisation correspondant à votre nom de domaine n’a été trouvée. Veuillez contacter votre administrateur pour demander l’accès ou vérifier la configuration de votre organisation.",
             "space-name-maxlength": "Le nom de l'espace de travail ne doit pas dépasser 20 caractères.",
-            "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés."
+            "space-name-pattern": "Les caractères spéciaux @ / ; ? ne sont pas autorisés.",
+            "search-by-name": "Recherche par nom",
+            "search-by-name-label": "Recherche par nom d'espace de travail"
         },
         "plus-menu": "Plus",
         "add-button": "Ajouter",

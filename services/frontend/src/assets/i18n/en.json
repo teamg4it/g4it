@@ -159,7 +159,9 @@
             "duplicate-error": "Workspace name already exists",
             "no-organization": "No eligible organization was found based on your domain name. Please contact your administrator to request access or verify your organization's configuration.",
             "space-name-maxlength": "The workspace name must be no longer than 20 characters.",
-            "space-name-pattern": "Special characters @ / ; ? are not allowed."
+            "space-name-pattern": "Special characters @ / ; ? are not allowed.",
+            "search-by-name": "Search by name",
+            "search-by-name-label": "Search by workspace name"
         },
         "plus-menu": "Plus",
         "add-button": "Add",
