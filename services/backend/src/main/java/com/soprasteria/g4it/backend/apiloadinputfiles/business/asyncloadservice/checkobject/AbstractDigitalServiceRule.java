@@ -8,30 +8,30 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject;
 
-import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RulePhysicalEquipmentService;
-import com.soprasteria.g4it.backend.common.model.LineError;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RulePhysicalEquipmentService;
+import com.soprasteria.g4it.backend.common.model.LineError;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 
 public abstract class AbstractDigitalServiceRule implements DigitalServiceRule {
 
     @Autowired
     RulePhysicalEquipmentService rulePhysicalEqpService;
 
-    protected List<LineError> errors = new ArrayList<>();
-
     @Override
     public List<LineError> validate(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line) {
-        validateCommonRules(locale, physicalEquipment, filename, line);
+        final List<LineError> errors = new ArrayList<>();
+        validateCommonRules(locale, physicalEquipment, filename, line, errors);
         validateSpecificRules(locale, physicalEquipment, filename, line, errors);
         return errors;
     }
 
-    protected void validateCommonRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line) {
+    protected void validateCommonRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {
         // Add common validation logic here
         rulePhysicalEqpService.checkElectricityConsumption(locale, filename, line, physicalEquipment.getElectricityConsumption())
                 .ifPresent(errors::add);

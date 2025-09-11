@@ -8,24 +8,31 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.checkobject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.naming.Context;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
+
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceType;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.GenericRuleService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RuleDateService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules.RulePhysicalEquipmentService;
-import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CheckPhysicalEquipmentService {
 
     @Autowired
     GenericRuleService genericRuleService;
+
+    @Autowired
+    MessageSource messageSource;
 
     @Autowired
     RuleDateService ruleDateService;
@@ -66,12 +73,16 @@ public class CheckPhysicalEquipmentService {
         }
 
         // check model for digital service
-        if (isDigitalService) {
-            DigitalServiceRule rule = digitalServiceRuleFactory.getRule(physicalEquipment.getType());
+        final String type = physicalEquipment.getType();
+        if (isDigitalService && Objects.nonNull(type)) {
+            DigitalServiceRule rule = digitalServiceRuleFactory.getRule(type);
             if (rule != null) {
                 errors.addAll(rule.validate(context.getLocale(), physicalEquipment, filename, line));
             } else {
-                errors.add(new LineError(filename, line, "No rules found for digital service type: " + physicalEquipment.getType()));
+                errors.add(new LineError(filename, line,
+                        messageSource.getMessage("physical.eqp.type.invalid",
+                                new String[]{type},
+                                context.getLocale())));
             }
         }
 
