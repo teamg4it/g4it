@@ -156,6 +156,10 @@
                         "
                         [(ngModel)]="searchmodel"
                         id="workspaceFilter"
+                        [ngClass]="{
+                            'pt-2': isZoomedIn(),
+                            'pb-2': isZoomedIn(),
+                        }"
                     />
                 </span>
             </div>
