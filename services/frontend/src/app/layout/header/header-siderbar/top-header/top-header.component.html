@@ -132,13 +132,12 @@
             class="org-menu-new p-4 pr-3 bg-white shadow-5 border-round-xs"
             [ngClass]="{ block: isOrgMenuVisible, 'max-h-20rem': isZoomedIn() }"
         >
-            <span class="text-2xl">{{ "common.workspaces" | translate }}</span>
             <!-- Workspace Search Bar -->
             <div
-                class="align-items-center my-3"
+                class="align-items-center mb-3"
                 [ngClass]="{
                     inline: isZoomedIn(),
-                    'ml-3': isZoomedIn(),
+                    'mr-3': isZoomedIn(),
                     flex: !isZoomedIn(),
                 }"
             >
@@ -160,6 +159,9 @@
                     />
                 </span>
             </div>
+
+            <span class="text-2xl">{{ "common.workspaces" | translate }}</span>
+
             <div
                 [ngClass]="{
                     'max-h-7rem': isZoomedIn(),
