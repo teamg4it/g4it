@@ -24,12 +24,12 @@ boaviztapi:
 #AI Model configs
 aimodelconfigapi:
   version: 1.0
-  base-url: http://localhost:3000
+  base-url: http://localhost:8000
 
 #AI Model Estimation configs
 aimodelestimationapi:
   version: 1.0
-  base-url: http://localhost:3000
+  base-url: http://localhost:8000
 
 
 g4it:
