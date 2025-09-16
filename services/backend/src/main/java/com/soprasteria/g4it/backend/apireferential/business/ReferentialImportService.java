@@ -60,28 +60,28 @@ public class ReferentialImportService {
      *
      * @param type       the ref type
      * @param file       file to be imported
-     * @param subscriber the subscriber
+     * @param organization the organization
      * @return the ImportReportRest
      */
-    public ImportReportRest importReferentialCSV(final String type, final MultipartFile file, final String subscriber) {
+    public ImportReportRest importReferentialCSV(final String type, final MultipartFile file, final String organization) {
         if (file == null || file.isEmpty()) {
             throw new BadRequestException("file", "The file does not exist or it is empty");
         }
 
-        log.info("Referential - start importing with: type={}, file={}, subscriber={}", type, file.getOriginalFilename(), subscriber);
+        log.info("Referential - start importing with: type={}, file={}, subscriber={}", type, file.getOriginalFilename(), organization);
 
         ImportReportRest result = switch (type) {
             case "lifecycleStep" -> processLifecycleStepCsv(file);
             case "criterion" -> processCriterionCsv(file);
-            case "hypothesis" -> processHypothesisCsv(file, subscriber);
-            case "itemType" -> processItemTypeCsv(file, subscriber);
-            case "matchingItem" -> processMatchingItemCsv(file, subscriber);
-            case "itemImpact" -> processItemImpactCsv(file, subscriber);
+            case "hypothesis" -> processHypothesisCsv(file, organization);
+            case "itemType" -> processItemTypeCsv(file, organization);
+            case "matchingItem" -> processMatchingItemCsv(file, organization);
+            case "itemImpact" -> processItemImpactCsv(file, organization);
             default ->
                     throw new BadRequestException("type", String.format("type of referential '%s' does not exist", type));
         };
 
-        log.info("Referential - end importing with: type={}, file={}, subscriber={}", type, file.getOriginalFilename(), subscriber);
+        log.info("Referential - end importing with: type={}, file={}, subscriber={}", type, file.getOriginalFilename(), organization);
 
         return result;
     }
@@ -183,10 +183,10 @@ public class ReferentialImportService {
      * Import Hypotheses
      *
      * @param file       file to be imported
-     * @param subscriber the subscriber
+     * @param organization the organization(mapped to subscriber column in table)
      * @return the report
      */
-    public ImportReportRest processHypothesisCsv(final MultipartFile file, final String subscriber) {
+    public ImportReportRest processHypothesisCsv(final MultipartFile file, final String organization) {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -214,11 +214,11 @@ public class ReferentialImportService {
             return importReportRest;
         }
 
-        if (objects.stream().allMatch(o -> Objects.equals(o.getSubscriber(), subscriber))) {
-            int lines = persistenceService.saveHypotheses(referentialMapper.toHypothesisEntity(objects), subscriber);
+        if (objects.stream().allMatch(o -> Objects.equals(o.getOrganization(), organization))) {
+            int lines = persistenceService.saveHypotheses(referentialMapper.toHypothesisEntity(objects), organization);
             importReportRest.setImportedLineNumber((long) lines);
         } else {
-            throw new BadRequestException(SUBSCRIBER, String.format(PRINT_SUBSCRIBER_ERROR, subscriber == null ? "" : subscriber));
+            throw new BadRequestException(SUBSCRIBER, String.format(PRINT_SUBSCRIBER_ERROR, organization == null ? "" : organization));
         }
 
         Objects.requireNonNull(cacheManager.getCache("ref_getHypotheses")).clear();
@@ -230,10 +230,10 @@ public class ReferentialImportService {
      * Import Item types
      *
      * @param file       file to be imported
-     * @param subscriber the subscriber
+     * @param organization the organization(mapped to subscriber column in table)
      * @return the report
      */
-    public ImportReportRest processItemTypeCsv(final MultipartFile file, final String subscriber) {
+    public ImportReportRest processItemTypeCsv(final MultipartFile file, final String organization) {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -261,11 +261,11 @@ public class ReferentialImportService {
             return importReportRest;
         }
 
-        if (objects.stream().allMatch(o -> Objects.equals(o.getSubscriber(), subscriber))) {
-            int lines = persistenceService.saveItemTypes(referentialMapper.toItemTypeEntity(objects), subscriber);
+        if (objects.stream().allMatch(o -> Objects.equals(o.getOrganization(), organization))) {
+            int lines = persistenceService.saveItemTypes(referentialMapper.toItemTypeEntity(objects), organization);
             importReportRest.setImportedLineNumber((long) lines);
         } else {
-            throw new BadRequestException(SUBSCRIBER, String.format(PRINT_SUBSCRIBER_ERROR, subscriber == null ? "" : subscriber));
+            throw new BadRequestException(SUBSCRIBER, String.format(PRINT_SUBSCRIBER_ERROR, organization == null ? "" : organization));
         }
 
         Objects.requireNonNull(cacheManager.getCache("ref_getItemTypes")).clear();
@@ -277,10 +277,10 @@ public class ReferentialImportService {
      * Import Matching items
      *
      * @param file       file to be imported
-     * @param subscriber the subscriber
+     * @param organization the organization(mapped to subscriber column in table)
      * @return the report
      */
-    public ImportReportRest processMatchingItemCsv(final MultipartFile file, final String subscriber) {
+    public ImportReportRest processMatchingItemCsv(final MultipartFile file, final String organization) {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -307,11 +307,11 @@ public class ReferentialImportService {
             return importReportRest;
         }
 
-        if (objects.stream().allMatch(o -> Objects.equals(o.getSubscriber(), subscriber))) {
-            int lines = persistenceService.saveItemMatchings(referentialMapper.toMatchingEntity(objects), subscriber);
+        if (objects.stream().allMatch(o -> Objects.equals(o.getOrganization(), organization))) {
+            int lines = persistenceService.saveItemMatchings(referentialMapper.toMatchingEntity(objects), organization);
             importReportRest.setImportedLineNumber((long) lines);
         } else {
-            throw new BadRequestException(SUBSCRIBER, String.format(PRINT_SUBSCRIBER_ERROR, subscriber == null ? "" : subscriber));
+            throw new BadRequestException(SUBSCRIBER, String.format(PRINT_SUBSCRIBER_ERROR, organization == null ? "" : organization));
         }
 
         Objects.requireNonNull(cacheManager.getCache("ref_getMatchingItem")).clear();
@@ -323,10 +323,10 @@ public class ReferentialImportService {
      * Import Item impacts
      *
      * @param file       file to be imported
-     * @param subscriber the subscriber
+     * @param organization the organization(mapped to subscriber column in table)
      * @return the report
      */
-    public ImportReportRest processItemImpactCsv(final MultipartFile file, final String subscriber) {
+    public ImportReportRest processItemImpactCsv(final MultipartFile file, final String organization) {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -343,8 +343,8 @@ public class ReferentialImportService {
             Iterable<CSVRecord> records = createCsvParser().parse(reader);
             for (CSVRecord csvRecord : records) {
                 ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
-                if (!Objects.equals(itemImpactRest.getSubscriber(), subscriber)) {
-                    throw new BadRequestException(SUBSCRIBER, String.format("Line %d : The column subscriber does not contain all values equal to '%s'", i + 2, subscriber == null ? "" : subscriber));
+                if (!Objects.equals(itemImpactRest.getOrganization(), organization)) {
+                    throw new BadRequestException(SUBSCRIBER, String.format("Line %d : The column subscriber does not contain all values equal to '%s'", i + 2, organization == null ? "" : organization));
                 }
                 i++;
             }
@@ -354,7 +354,7 @@ public class ReferentialImportService {
             return importReportRest;
         }
 
-        persistenceService.deleteItemImpactsByOrganization(subscriber);
+        persistenceService.deleteItemImpactsByOrganization(organization);
 
         i = 0;
 

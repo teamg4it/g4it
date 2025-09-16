@@ -99,7 +99,7 @@ class AdministratorWorkspaceServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(User.builder().id(userId).build()));
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
 
-        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, TestUtils.createUserBOAdminSub(), true);
+        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, TestUtils.createUserBOAdminOrg(), true);
         assertEquals(1, users.size());
         assertEquals(ROLE, users.getFirst().getRoles().getFirst());
         verify(userWorkspaceRepository, times(1)).save(any(UserWorkspace.class));
@@ -118,7 +118,7 @@ class AdministratorWorkspaceServiceTest {
         when(userRepository.findById(userRoleRest.getUserId())).thenReturn(Optional.of(User.builder().id(userId).build()));
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
 
-        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, TestUtils.createUserBOAdminSub(), true);
+        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, TestUtils.createUserBOAdminOrg(), true);
         assertEquals(1, users.size());
         assertEquals(List.of(), users.getFirst().getRoles());
         verify(userWorkspaceRepository, times(1)).save(any(UserWorkspace.class));
@@ -139,7 +139,7 @@ class AdministratorWorkspaceServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(User.builder().id(userId).build()));
         when(roleService.getAllRoles()).thenReturn(List.of(Role.builder().name(ROLE).build()));
 
-        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, TestUtils.createUserBOAdminSub(), true);
+        List<UserInfoBO> users = administratorWorkspaceService.linkUserToWorkspace(linkUserRoleRest, TestUtils.createUserBOAdminOrg(), true);
         assertEquals(1, users.size());
         assertEquals(ROLE, users.getFirst().getRoles().getFirst());
         verify(userRoleWorkspaceRepository, times(1)).saveAll(anyList());
@@ -185,7 +185,7 @@ class AdministratorWorkspaceServiceTest {
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
         WorkspaceUpsertRest workspaceUpsertRest =
-                TestUtils.createOrganizationUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
+                TestUtils.createWorkspaceUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
         WorkspaceBO updatedOrganization = WorkspaceBO.builder().id(workId).name("UpdatedName").build();
 
         doNothing().when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(userBO, organizationId, workId);
@@ -210,7 +210,7 @@ class AdministratorWorkspaceServiceTest {
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
         WorkspaceUpsertRest workspaceUpsertRest =
-                TestUtils.createOrganizationUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
+                TestUtils.createWorkspaceUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
 
         doThrow(new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "User with id '1' do not have admin role on organization '1' or organization '1'")).when(administratorRoleService).hasAdminRightOnOrganizationOrWorkspace(userBO, organizationId, workId);
 
@@ -230,7 +230,7 @@ class AdministratorWorkspaceServiceTest {
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
         WorkspaceUpsertRest workspaceUpsertRest =
-                TestUtils.createOrganizationUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
+                TestUtils.createWorkspaceUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
         WorkspaceBO expectedOrg = WorkspaceBO.builder().id(33L).build();
 
         when(workspaceService.createWorkspace(workspaceUpsertRest, userBO, organizationId)).thenReturn(expectedOrg);
@@ -253,7 +253,7 @@ class AdministratorWorkspaceServiceTest {
         String updatedStatus = WorkspaceStatus.TO_BE_DELETED.name();
         long dataRetentionDay = 7L;
         WorkspaceUpsertRest workspaceUpsertRest =
-                TestUtils.createOrganizationUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
+                TestUtils.createWorkspaceUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
         WorkspaceBO expectedOrg = WorkspaceBO.builder().id(1L).name(workspaceName).build();
 
         Workspace work = TestUtils.createWorkspace();
@@ -288,7 +288,7 @@ class AdministratorWorkspaceServiceTest {
         long dataRetentionDay = 7L;
 
         WorkspaceUpsertRest workspaceUpsertRest =
-                TestUtils.createOrganizationUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
+                TestUtils.createWorkspaceUpsert(organizationId, workspaceName, updatedStatus, dataRetentionDay);
 
         when(roleService.hasAdminRightsOnOrganization(userBO, organizationId)).thenReturn(false);
         when(roleService.isUserDomainAuthorized(userBO, organizationId)).thenReturn(false);
@@ -473,7 +473,7 @@ class AdministratorWorkspaceServiceTest {
         when(userWorkspaceRepository.findByWorkspaceIdAndUserId(workspaceId, userId))
                 .thenReturn(java.util.Optional.of(userWorkspace));
 
-        assertDoesNotThrow(() -> administratorWorkspaceService.deleteUserWorkLink(linkUserRoleRest, TestUtils.createUserBOAdminSub()));
+        assertDoesNotThrow(() -> administratorWorkspaceService.deleteUserWorkLink(linkUserRoleRest, TestUtils.createUserBOAdminOrg()));
 
         verify(userWorkspaceRepository, times(1)).deleteById(1L);
     }

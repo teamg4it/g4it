@@ -57,7 +57,8 @@ public class Hypothesis implements Serializable {
     /**
      * Hypothesis subscriber
      */
-    private String subscriber;
+    @Column(name = "subscriber")
+    private String organization;
 
     /**
      * Hypothesis version
@@ -69,7 +70,7 @@ public class Hypothesis implements Serializable {
     }
 
     public Object[] toCsvRecord() {
-        return new Object[]{code, value, description, source, subscriber, version};
+        return new Object[]{code, value, description, source, organization, version};
     }
 }
 

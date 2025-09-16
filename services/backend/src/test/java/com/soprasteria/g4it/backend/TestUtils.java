@@ -98,7 +98,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static Workspace createOrganizationWithStatus(String status) {
+    public static Workspace createWorkspaceWithStatus(String status) {
         return Workspace.builder()
                 .name(WORKSPACE)
                 .status(status)
@@ -109,20 +109,20 @@ public class TestUtils {
                 .build();
     }
 
-    public static Workspace createOrganization(Long subId, Long orgId, String status, LocalDateTime deletionDate) {
+    public static Workspace createWorkspace(Long orgId, Long workId, String status, LocalDateTime deletionDate) {
         return Workspace.builder()
-                .id(orgId)
+                .id(workId)
                 .name(WORKSPACE)
                 .status(status)
                 .deletionDate(deletionDate)
                 .organization(Organization.builder()
-                        .id(subId)
+                        .id(orgId)
                         .name(ORGANIZATION)
                         .build())
                 .build();
     }
 
-    public static Workspace createToBeDeletedOrganization(LocalDateTime deletionDate) {
+    public static Workspace createToBeDeletedWorkspace(LocalDateTime deletionDate) {
         return Workspace.builder()
                 .id(WORKSPACE_ID)
                 .name(WORKSPACE)
@@ -152,7 +152,7 @@ public class TestUtils {
                                 .organization(Organization.builder().id(organizationId).name(ORGANIZATION).build()).build()).build())).build();
     }
 
-    public static UserBO createUserBOAdminSub() {
+    public static UserBO createUserBOAdminOrg() {
         return UserBO.builder().email(EMAIL)
                 .organizations(List.of(
                         OrganizationBO.builder()
@@ -166,7 +166,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static UserBO createAuthorizedUserAdminSub() {
+    public static UserBO createAuthorizedUserAdminOrg() {
         return UserBO.builder().email(EMAIL)
                 .organizations(List.of(
                         OrganizationBO.builder()
@@ -193,12 +193,12 @@ public class TestUtils {
 
     public static UserWorkspace createUserWorkspace(List<Role> roles, String status) {
         return UserWorkspace
-                .builder().defaultFlag(true).roles(roles).workspace(createOrganizationWithStatus(status)).build();
+                .builder().defaultFlag(true).roles(roles).workspace(createWorkspaceWithStatus(status)).build();
     }
 
     public static UserWorkspace createUserWorkspace(Long subId, Long orgId, List<Role> roles, String status, LocalDateTime deletionDate, List<UserRoleWorkspace> userRoleWorkspace) {
         return UserWorkspace
-                .builder().defaultFlag(true).roles(roles).workspace(createOrganization(subId, orgId, status, deletionDate)).userRoleWorkspace(userRoleWorkspace).build();
+                .builder().defaultFlag(true).roles(roles).workspace(createWorkspace(subId, orgId, status, deletionDate)).userRoleWorkspace(userRoleWorkspace).build();
     }
 
     public static UserOrganization createUserOrganization(Long organizationId, List<Role> roles, List<UserRoleOrganization> userRoleOrganizationList) {
@@ -206,26 +206,26 @@ public class TestUtils {
                 .builder().defaultFlag(true).roles(roles).organization(createOrganization(organizationId)).userRoleOrganization(userRoleOrganizationList).build();
     }
 
-    public static WorkspaceUpsertRest createOrganizationUpsert(Long organizationId, String orgName
-            , String orgStatus, Long dataRetentionDays) {
+    public static WorkspaceUpsertRest createWorkspaceUpsert(Long organizationId, String workName
+            , String workStatus, Long dataRetentionDays) {
 
         com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus status = null;
-        if (orgStatus != null)
-            status = com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus.valueOf(orgStatus);
+        if (workStatus != null)
+            status = com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus.valueOf(workStatus);
 
-        return WorkspaceUpsertRest.builder().organizationId(organizationId).name(orgName).status(status)
+        return WorkspaceUpsertRest.builder().organizationId(organizationId).name(workName).status(status)
                 .dataRetentionDays(dataRetentionDays).build();
     }
 
-    public static WorkspaceUpsertRest createOrganizationUpsert(Long organizationId, String orgName
-            , String orgStatus, String criteriaDs, String criteriaIs) {
+    public static WorkspaceUpsertRest createOrganizationUpsert(Long organizationId, String workName
+            , String workStatus, String criteriaDs, String criteriaIs) {
 
         com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus status = null;
-        if (orgStatus != null)
-            status = com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus.valueOf(orgStatus);
+        if (workStatus != null)
+            status = com.soprasteria.g4it.backend.server.gen.api.dto.WorkspaceStatus.valueOf(workStatus);
 
         return WorkspaceUpsertRest.builder().organizationId(organizationId)
-                .name(orgName)
+                .name(workName)
                 .criteriaDs(List.of(criteriaDs))
                 .criteriaIs(List.of(criteriaIs)).status(status)
                 .build();
@@ -239,16 +239,16 @@ public class TestUtils {
         return UserRoleWorkspace.builder().roles(role).build();
     }
 
-    public static LinkUserRoleRest createLinkUserRoleRest(Long organizationId, List<UserRoleRest> userRoleRest) {
+    public static LinkUserRoleRest createLinkUserRoleRest(Long workspaceId, List<UserRoleRest> userRoleRest) {
 
-        return LinkUserRoleRest.builder().workspaceId(organizationId).users(userRoleRest).build();
+        return LinkUserRoleRest.builder().workspaceId(workspaceId).users(userRoleRest).build();
     }
 
     public static UserRoleRest createUserRoleRest(Long userId, List<String> roles) {
         return UserRoleRest.builder().userId(userId).roles(roles).build();
     }
 
-    public static User createUserWithAdminRoleOnOrg() {
+    public static User createUserWithAdminRoleOnWork() {
         long organizationId = 1L;
         List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_WORKSPACE_ADMINISTRATOR).build());
         return User.builder().email(EMAIL)
@@ -260,10 +260,10 @@ public class TestUtils {
 
     }
 
-    public static UserWorkspace createUserWorkspace(Long organizationId, Long userId) {
+    public static UserWorkspace createUserWorkspace(Long workspaceId, Long userId) {
         return UserWorkspace.builder()
                 .id(1L)
-                .workspace(Workspace.builder().id(organizationId).name(WORKSPACE).build())
+                .workspace(Workspace.builder().id(workspaceId).name(WORKSPACE).build())
                 .user(User.builder().id(userId).email(EMAIL).build())
                 .defaultFlag(true)
                 .build();

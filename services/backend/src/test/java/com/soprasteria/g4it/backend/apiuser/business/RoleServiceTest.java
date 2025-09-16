@@ -39,7 +39,7 @@ class RoleServiceTest {
 
     @Test
     void hasAdminRightsOnAnyOrganization_hasAdminRole() {
-        assertTrue(roleService.hasAdminRightsOnAnyOrganization(TestUtils.createUserBOAdminSub()));
+        assertTrue(roleService.hasAdminRightsOnAnyOrganization(TestUtils.createUserBOAdminOrg()));
     }
 
     @Test
@@ -70,13 +70,13 @@ class RoleServiceTest {
 
     @Test
     void hasAdminRightsOnOrganization_hasAdminRole() {
-        assertTrue(roleService.hasAdminRightsOnOrganization(TestUtils.createUserBOAdminSub(), 2L));
+        assertTrue(roleService.hasAdminRightsOnOrganization(TestUtils.createUserBOAdminOrg(), 2L));
     }
 
     @Test
     void hasAdminRightsOnOrganization_NoAdminRole() {
         // the user is organization admin on organization 2, not on 1
-        assertFalse(roleService.hasAdminRightsOnOrganization(TestUtils.createUserBOAdminSub(), 1L));
+        assertFalse(roleService.hasAdminRightsOnOrganization(TestUtils.createUserBOAdminOrg(), 1L));
     }
 
     @Test
@@ -103,7 +103,7 @@ class RoleServiceTest {
     @Test
     void isUserDomainAuthorized_authorizedDomain() {
         // the user domain is present in organization's authorized domain
-        assertTrue(roleService.isUserDomainAuthorized(TestUtils.createAuthorizedUserAdminSub(), 1L));
+        assertTrue(roleService.isUserDomainAuthorized(TestUtils.createAuthorizedUserAdminOrg(), 1L));
     }
     @Test
     void isUserDomainAuthorized_noAuthorizedDomain() {
@@ -138,7 +138,7 @@ class RoleServiceTest {
 
     @Test
     void hasAdminRightOnOrganizationOrWorkspace_organizationAdmin() {
-        UserBO user = TestUtils.createUserBOAdminSub();
+        UserBO user = TestUtils.createUserBOAdminOrg();
         assertTrue(roleService.hasAdminRightOnOrganizationOrWorkspace(user, 2L, 99L));
     }
 

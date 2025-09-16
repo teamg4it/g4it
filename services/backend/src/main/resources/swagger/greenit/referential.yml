@@ -33,7 +33,7 @@ paths:
         <li>Output: csv referential file</li>
         </ul>
       operationId: exportReferentialCSV
-      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      x-custom-role: "hasRole('ORGANIZATION_ADMINISTRATOR')"
       responses:
         "200":
           description: return csv file
@@ -60,7 +60,7 @@ paths:
         <li>Output: csv file report: line number, line number in error, line parsed, error list detail</li>
         </ul>
       operationId: importReferentialCSV
-      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      x-custom-role: "hasRole('ORGANIZATION_ADMINISTRATOR')"
       requestBody:
         content:
           multipart/form-data:
@@ -138,9 +138,9 @@ paths:
         - referential get
       summary: Get item types
       description: |
-        Returns all types of items, can be filtered by type and subscriber
+        Returns all types of items, can be filtered by type and organization
       operationId: getItemTypes
-      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      x-custom-role: "hasRole('ORGANIZATION_ADMINISTRATOR')"
       parameters:
         - name: type
           in: query
@@ -171,11 +171,11 @@ paths:
     get:
       tags:
         - referential get
-      summary: Get hypotheses by the subscriber
+      summary: Get hypotheses by the organization
       description: |
-        Returns an hypothesis list based on subscriber.
+        Returns an hypothesis list based on organization.
       operationId: getHypotheses
-      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      x-custom-role: "hasRole('ORGANIZATION_ADMINISTRATOR')"
       parameters:
         - $ref: "#/components/parameters/organizationQueryParam"
       responses:
@@ -206,11 +206,11 @@ paths:
             <li>The name of the sought item impact: name</li>
             <li>The location: location</li>
             <li>The category: category</li>
-            <li>The subscriber: subscriber</li>
+            <li>The organization: organization</li>
         </ul>
         .
       operationId: getItemImpacts
-      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      x-custom-role: "hasRole('ORGANIZATION_ADMINISTRATOR')"
       parameters:
         - name: criterion
           in: query
@@ -271,7 +271,7 @@ paths:
         - referential get
       summary: Get item reference matching
       operationId: getMatchingItem
-      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      x-custom-role: "hasRole('ORGANIZATION_ADMINISTRATOR')"
       parameters:
         - name: source
           in: query
@@ -390,9 +390,9 @@ components:
         refDefaultItem:
           type: string
           description: Reference of the default item, allows matches in case of no direct match
-        subscriber:
+        organization:
           type: string
-          description: Subscriber
+          description: organization
         version:
           type: string
           description: Version
@@ -418,9 +418,9 @@ components:
         description:
           type: string
           description: Description of the hypothesis
-        subscriber:
+        organization:
           type: string
-          description: subscriber
+          description: organization
         version:
           type: string
           description: version
@@ -439,9 +439,9 @@ components:
         refItemTarget:
           type: string
           description: Reference of item matching the item
-        subscriber:
+        organization:
           type: string
-          description: subscriber
+          description: organization
       description: Reference matching between a physical equipment model and an equipment reference in the references.
     ItemImpactRest:
       type: object
@@ -491,9 +491,9 @@ components:
         source:
           type: string
           description: Source of the ecological impact for this item impact
-        subscriber:
+        organization:
           type: string
-          description: subscriber
+          description: organization
         version:
           type: string
           description: version

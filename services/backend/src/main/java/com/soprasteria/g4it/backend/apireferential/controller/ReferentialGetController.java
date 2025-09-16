@@ -52,8 +52,8 @@ public class ReferentialGetController implements ReferentialGetApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<HypothesisRest>> getHypotheses(String subscriber) {
-        List<HypothesisRest> hypotheses = referentialGetService.getHypotheses(subscriber);
+    public ResponseEntity<List<HypothesisRest>> getHypotheses(String organization) {
+        List<HypothesisRest> hypotheses = referentialGetService.getHypotheses(organization);
         return new ResponseEntity<>(hypotheses, HttpStatus.OK);
     }
 
@@ -61,8 +61,8 @@ public class ReferentialGetController implements ReferentialGetApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<ItemTypeRest>> getItemTypes(String type, String subscriber) {
-        List<ItemTypeRest> itemTypes = referentialGetService.getItemTypes(type, subscriber);
+    public ResponseEntity<List<ItemTypeRest>> getItemTypes(String type, String organization) {
+        List<ItemTypeRest> itemTypes = referentialGetService.getItemTypes(type, organization);
         return new ResponseEntity<>(itemTypes, HttpStatus.OK);
     }
 
@@ -72,8 +72,8 @@ public class ReferentialGetController implements ReferentialGetApiDelegate {
     @Override
     public ResponseEntity<List<ItemImpactRest>> getItemImpacts(String criterion, String lifecycleStep,
                                                                String name, String location, String category,
-                                                               String subscriber) {
-        List<ItemImpactRest> itemImpacts = referentialGetService.getItemImpacts(criterion, lifecycleStep, name, location, category, subscriber);
+                                                               String organization) {
+        List<ItemImpactRest> itemImpacts = referentialGetService.getItemImpacts(criterion, lifecycleStep, name, location, category, organization);
         return new ResponseEntity<>(itemImpacts, HttpStatus.OK);
     }
 
@@ -82,8 +82,8 @@ public class ReferentialGetController implements ReferentialGetApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<MatchingItemRest> getMatchingItem(String model, String subscriber) {
-        MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, subscriber);
+    public ResponseEntity<MatchingItemRest> getMatchingItem(String model, String organization) {
+        MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, organization);
         if (matchingItem == null) throw new G4itRestException("404", "Matching item not found");
 
         return new ResponseEntity<>(matchingItem, HttpStatus.OK);

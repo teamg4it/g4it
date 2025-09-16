@@ -37,21 +37,21 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
                                                                                                  final String name,
                                                                                                  final String category,
                                                                                                  final String location,
-                                                                                                 final String workspace);
+                                                                                                 final String organization);
 
     List<ItemImpact> findByLevel(final String level);
 
     List<ItemImpact> findByCategory(final String category);
 
-    Page<ItemImpact> findByOrganization(final String workspace, final Pageable pageable);
+    Page<ItemImpact> findByOrganization(final String organization, final Pageable pageable);
 
     @Query("""
             SELECT distinct ii.location
             FROM ItemImpact ii
             WHERE ii.category = 'electricity-mix'
-            AND (:workspace IS NULL OR :workspace IS NOT NULL AND ii.organization = :workspace)
+            AND (:organization IS NULL OR :organization IS NOT NULL AND ii.organization = :organization)
             """)
-    List<String> findCountries(@Param("workspace") String workspace);
+    List<String> findCountries(@Param("organization") String organization);
 
     @Modifying
     @Transactional
@@ -61,5 +61,5 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
     @Transactional
     @Modifying
     @Query("DELETE FROM #{#entityName} ii WHERE (?1 IS NULL) OR (?1 IS NOT NULL AND ii.organization = ?1)")
-    void deleteByOrganization(final String workspace);
+    void deleteByOrganization(final String organization);
 }

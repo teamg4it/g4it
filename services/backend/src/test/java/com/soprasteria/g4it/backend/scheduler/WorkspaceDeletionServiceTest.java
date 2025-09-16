@@ -50,11 +50,11 @@ class WorkspaceDeletionServiceTest {
     private DigitalServiceRepository digitalServiceRepo;
 
     @Test
-    void testOrganizationDeletionService_toBeDeletedStatusWithPastDate() {
+    void testWorkspaceDeletionService_toBeDeletedStatusWithPastDate() {
         var now = LocalDateTime.now().minusHours(1);
         final Optional<Inventory> inventoryEntity1 = Optional.ofNullable(Inventory.builder().id(1L).name("03-2023").lastUpdateDate(now).build());
         final Optional<DigitalService> digitalServiceEntity = Optional.ofNullable(DigitalService.builder().uid("1234").name("name").lastUpdateDate(now).build());
-        final Workspace linkedWorkspace = TestUtils.createToBeDeletedOrganization(now);
+        final Workspace linkedWorkspace = TestUtils.createToBeDeletedWorkspace(now);
 
         when(inventoryRepo.findByWorkspace(linkedWorkspace)).thenReturn(List.of(inventoryEntity1.get()));
         when(digitalServiceRepo.findByWorkspace(linkedWorkspace)).thenReturn(List.of(digitalServiceEntity.get()));
@@ -69,8 +69,8 @@ class WorkspaceDeletionServiceTest {
     }
 
     @Test
-    void testOrganizationDeletionService_toBeDeletedStatusWithFutureDate() {
-        final Workspace linkedWorkspace = TestUtils.createToBeDeletedOrganization(LocalDateTime.now().plusDays(1));
+    void testWorkspaceDeletionService_toBeDeletedStatusWithFutureDate() {
+        final Workspace linkedWorkspace = TestUtils.createToBeDeletedWorkspace(LocalDateTime.now().plusDays(1));
         when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
 
         // EXECUTE
@@ -83,7 +83,7 @@ class WorkspaceDeletionServiceTest {
 
     @Test
     void testStorageDeletionService_inActiveStatus() {
-        final Workspace linkedWorkspace = TestUtils.createOrganizationWithStatus(WorkspaceStatus.INACTIVE.name());
+        final Workspace linkedWorkspace = TestUtils.createWorkspaceWithStatus(WorkspaceStatus.INACTIVE.name());
 
         when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));
         // EXECUTE
@@ -95,7 +95,7 @@ class WorkspaceDeletionServiceTest {
 
     @Test
     void testStorageDeletionService_deletionDateNull() {
-        final Workspace linkedWorkspace = TestUtils.createOrganizationWithStatus(WorkspaceStatus.INACTIVE.name());
+        final Workspace linkedWorkspace = TestUtils.createWorkspaceWithStatus(WorkspaceStatus.INACTIVE.name());
         linkedWorkspace.setDeletionDate(null);
 
         when(workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedWorkspace));

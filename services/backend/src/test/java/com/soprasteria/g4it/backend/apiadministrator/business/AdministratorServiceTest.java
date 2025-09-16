@@ -83,7 +83,7 @@ class AdministratorServiceTest {
                 List.of(User.builder().email("testName@soprasteria.com").firstName("test").lastName("Name").build()));
 
         List<UserSearchBO> searchedUsers = administratorService.searchUserByName(searchedUser, organizationId, workspace.getId(),
-                TestUtils.createUserBOAdminSub());
+                TestUtils.createUserBOAdminOrg());
 
         assertEquals(1, searchedUsers.size());
     }
@@ -109,7 +109,7 @@ class AdministratorServiceTest {
                 .build()));
         List<UserSearchBO> searchedUsers;
 
-        searchedUsers = administratorService.searchUserByName(searchedUser, organizationId, workspaceId, TestUtils.createUserBOAdminSub());
+        searchedUsers = administratorService.searchUserByName(searchedUser, organizationId, workspaceId, TestUtils.createUserBOAdminOrg());
 
         assertEquals(1, searchedUsers.size());
     }
@@ -125,7 +125,7 @@ class AdministratorServiceTest {
         Organization updatedOrganization = TestUtils.createOrganization(organizationId);
         updatedOrganization.setCriteria(List.of("New Criteria"));
         OrganizationBO organizationBO = OrganizationBO.builder().id(organizationId)
-                .name("SUBSCRIBER")
+                .name("ORGANIZATION")
                 .criteria(List.of("New Criteria")).build();
         doNothing().when(administratorRoleService).hasAdminRightsOnAnyOrganization(any());
 
@@ -133,7 +133,7 @@ class AdministratorServiceTest {
         when(organizationRepository.save(any())).thenReturn(updatedOrganization);
         when(organizationRestMapper.toBusinessObject(updatedOrganization)).thenReturn(organizationBO);
 
-        OrganizationBO result = administratorService.updateOrganizationCriteria(organizationId, criteriaRest, createUserBOAdminSub());
+        OrganizationBO result = administratorService.updateOrganizationCriteria(organizationId, criteriaRest, createUserBOAdminOrg());
 
         assertThat(result.getCriteria()).isEqualTo(List.of("New Criteria"));
 

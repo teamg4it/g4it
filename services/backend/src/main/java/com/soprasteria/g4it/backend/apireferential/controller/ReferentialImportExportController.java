@@ -36,9 +36,9 @@ public class ReferentialImportExportController implements ReferentialImportExpor
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Resource> exportReferentialCSV(String type, String subscriber) {
+    public ResponseEntity<Resource> exportReferentialCSV(String type, String organization) {
         try {
-            InputStream inputStream = referentialExportService.exportReferentialToCSV(type, subscriber);
+            InputStream inputStream = referentialExportService.exportReferentialToCSV(type, organization);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while downloading file: " + e.getMessage());
@@ -49,9 +49,9 @@ public class ReferentialImportExportController implements ReferentialImportExpor
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<ImportReportRest> importReferentialCSV(String type, MultipartFile file, String subscriber) {
+    public ResponseEntity<ImportReportRest> importReferentialCSV(String type, MultipartFile file, String organization) {
 
-        ImportReportRest importReportRest = referentialImportService.importReferentialCSV(type, file, subscriber);
+        ImportReportRest importReportRest = referentialImportService.importReferentialCSV(type, file, organization);
 
         return new ResponseEntity<>(importReportRest, HttpStatus.OK);
     }

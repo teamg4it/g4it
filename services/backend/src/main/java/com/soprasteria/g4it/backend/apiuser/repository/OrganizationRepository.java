@@ -14,11 +14,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Organization Repository(mapped to subscriber table)
+ */
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
     /**
-     * Find Organizations with authorizedDomains not null
+     * Find Organizations(mapped to subscriber table) with authorizedDomains not null
      *
      * @return the organizations with authorizedDomains.
      */

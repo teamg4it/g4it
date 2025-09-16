@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * workspace repository to access workspace data in database.
+ * workspace(mapped to organization table) repository to access workspace data in database.
  */
 @Repository
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {

@@ -62,8 +62,8 @@ public class ReferentialPersistenceService {
         return itemTypeRepository.saveAll(itemTypeEntities).size();
     }
 
-    public int saveItemTypes(List<ItemType> itemTypeEntities, final String subscriber) {
-        itemTypeRepository.deleteBySubscriber(subscriber);
+    public int saveItemTypes(List<ItemType> itemTypeEntities, final String organization) {
+        itemTypeRepository.deleteByOrganization(organization);
         return itemTypeRepository.saveAll(itemTypeEntities).size();
     }
 
@@ -73,8 +73,8 @@ public class ReferentialPersistenceService {
         return hypothesisRepository.saveAll(hypotheses).size();
     }
 
-    public int saveHypotheses(List<Hypothesis> hypotheses, final String subscriber) {
-        hypothesisRepository.deleteBySubscriber(subscriber);
+    public int saveHypotheses(List<Hypothesis> hypotheses, final String organization) {
+        hypothesisRepository.deleteByOrganization(organization);
         return hypothesisRepository.saveAll(hypotheses).size();
     }
 
@@ -84,8 +84,8 @@ public class ReferentialPersistenceService {
         return matchingItemRepository.saveAll(matchingItems).size();
     }
 
-    public int saveItemMatchings(List<MatchingItem> matchingItems, final String subscriber) {
-        matchingItemRepository.deleteBySubscriber(subscriber);
+    public int saveItemMatchings(List<MatchingItem> matchingItems, final String organization) {
+        matchingItemRepository.deleteByOrganization(organization);
         return matchingItemRepository.saveAll(matchingItems).size();
     }
 

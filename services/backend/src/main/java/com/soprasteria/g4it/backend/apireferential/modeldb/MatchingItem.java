@@ -47,14 +47,15 @@ public class MatchingItem implements Serializable {
     /**
      * Subscriber
      */
-    private String subscriber;
+    @Column(name = "subscriber")
+    private String organization;
 
     public static String[] getCsvHeaders() {
         return new String[]{"itemSource", "refItemTarget", "subscriber"};
     }
 
     public Object[] toCsvRecord() {
-        return new Object[]{itemSource, refItemTarget, subscriber};
+        return new Object[]{itemSource, refItemTarget, organization};
     }
 
 }

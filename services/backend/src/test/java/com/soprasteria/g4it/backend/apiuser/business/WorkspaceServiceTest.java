@@ -8,8 +8,6 @@
 package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.TestUtils;
-import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
-import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.mapper.WorkspaceMapperImpl;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
@@ -17,8 +15,6 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Role;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.repository.UserRoleWorkspaceRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
@@ -42,7 +38,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -66,12 +61,6 @@ class WorkspaceServiceTest {
     private final FileStorage storage = fileSystem.mount("local", "G4IT");
     @Mock
     WorkspaceRepository workspaceRepository;
-    @Mock
-    UserWorkspaceRepository userWorkspaceRepository;
-    @Mock
-    UserRoleWorkspaceRepository userRoleWorkspaceRepository;
-    @Mock
-    RoleService roleService;
     @Mock
     OrganizationService organizationService;
     @Mock
@@ -122,12 +111,12 @@ class WorkspaceServiceTest {
                 .deletionDate(now.plusDays(dataRetentionDay))
                 .organization(Organization.builder().id(ORGANIZATION_ID).build())
                 .build());
-        WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceName
+        WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createWorkspaceUpsert(ORGANIZATION_ID, workspaceName
                 , updatedStatus, dataRetentionDay);
 
         when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(WORKSPACE_ID, ORGANIZATION_ID, Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS)).thenReturn(workspaceEntity);
 
-        WorkspaceBO orgBO = workspaceService.updateWorkspace(WORKSPACE_ID, organizationUpsertRest, user.getId());
+        WorkspaceBO orgBO = workspaceService.updateWorkspace(WORKSPACE_ID, workspaceUpsertRest, user.getId());
 
         verify(workspaceRepository, times(1)).findByIdAndOrganizationIdAndStatusIn(WORKSPACE_ID, ORGANIZATION_ID, ORGANIZATION_ACTIVE_STATUS);
         verify(workspaceRepository, times(1)).save(any());
@@ -149,12 +138,12 @@ class WorkspaceServiceTest {
                 .deletionDate(null)
                 .organization(Organization.builder().id(ORGANIZATION_ID).build())
                 .build());
-        WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceName
+        WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createWorkspaceUpsert(ORGANIZATION_ID, workspaceName
                 , updatedStatus, dataRetentionDay);
 
         when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(WORKSPACE_ID, ORGANIZATION_ID, Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS)).thenReturn(workspaceEntity);
 
-        WorkspaceBO orgBO = workspaceService.updateWorkspace(WORKSPACE_ID, organizationUpsertRest, user.getId());
+        WorkspaceBO orgBO = workspaceService.updateWorkspace(WORKSPACE_ID, workspaceUpsertRest, user.getId());
 
         verify(workspaceRepository, times(1)).findByIdAndOrganizationIdAndStatusIn(WORKSPACE_ID, ORGANIZATION_ID, ORGANIZATION_ACTIVE_STATUS);
         verify(workspaceRepository, times(1)).save(any());
@@ -163,7 +152,7 @@ class WorkspaceServiceTest {
     }
 
     @Test
-    void updateOrganization_updateOrgNameWithAlreadyExist() {
+    void updateWorkspace_updateWorkNameWithAlreadyExist() {
         Long organizationId = 1L;
         long workspaceId = 1L;
         long dataRetentionDay = 7L;
@@ -172,7 +161,7 @@ class WorkspaceServiceTest {
         List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
         User user = TestUtils.createUserWithRoleOnOrg(organizationId, organizationAdminRole);
 
-        WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceUpdatedName
+        WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createWorkspaceUpsert(ORGANIZATION_ID, workspaceUpdatedName
                 , WorkspaceStatus.ACTIVE.name(), dataRetentionDay);
 
         Optional<Workspace> workspaceEntity = Optional.of(Workspace.builder().name(workspaceName).id(workspaceId).status(WorkspaceStatus.ACTIVE.name())
@@ -188,7 +177,7 @@ class WorkspaceServiceTest {
         when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(WORKSPACE_ID, ORGANIZATION_ID, ORGANIZATION_ACTIVE_STATUS)).thenReturn(workspaceEntity);
         when(workspaceRepository.findByOrganizationIdAndName(ORGANIZATION_ID, workspaceUpdatedName)).thenReturn(organizationEntityWithSameName);
 
-        assertThatThrownBy(() -> workspaceService.updateWorkspace(workspaceId, organizationUpsertRest, user.getId()))
+        assertThatThrownBy(() -> workspaceService.updateWorkspace(workspaceId, workspaceUpsertRest, user.getId()))
                 .isInstanceOf(G4itRestException.class)
                 .hasMessageContaining("workspace 'WORKSPACE_UPDATED' already exists in organization '1'");
 
@@ -196,14 +185,14 @@ class WorkspaceServiceTest {
     }
 
     @Test
-    void updateOrganization_updateCriteria() {
+    void updateWorkspace_updateCriteria() {
         Long organizationId = 1L;
         long workspaceId = 1L;
         String workspaceName = "WORKSPACE";
         List<Role> organizationAdminRole = List.of(Role.builder().name(Constants.ROLE_ORGANIZATION_ADMINISTRATOR).build());
         User user = TestUtils.createUserWithRoleOnOrg(organizationId, organizationAdminRole);
 
-        WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceName
+        WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceName
                 , WorkspaceStatus.ACTIVE.name(), "criteriaDs", "criteriaIs");
 
         Optional<Workspace> workspaceEntity = Optional.of(Workspace.builder().name(workspaceName).id(workspaceId).status(WorkspaceStatus.ACTIVE.name())
@@ -212,7 +201,7 @@ class WorkspaceServiceTest {
 
         when(workspaceRepository.findByIdAndOrganizationIdAndStatusIn(WORKSPACE_ID, ORGANIZATION_ID, Constants.WORKSPACE_ACTIVE_OR_DELETED_STATUS)).thenReturn(workspaceEntity);
 
-        WorkspaceBO orgBO = workspaceService.updateWorkspace(WORKSPACE_ID, organizationUpsertRest, user.getId());
+        WorkspaceBO orgBO = workspaceService.updateWorkspace(WORKSPACE_ID, workspaceUpsertRest, user.getId());
 
         verify(workspaceRepository, times(1)).findByIdAndOrganizationIdAndStatusIn(WORKSPACE_ID, ORGANIZATION_ID, ORGANIZATION_ACTIVE_STATUS);
         verify(workspaceRepository, times(1)).save(any());
@@ -224,18 +213,18 @@ class WorkspaceServiceTest {
     @Test
     void createWorkspace() {
         String workspaceName = "WORKSPACE";
-        UserBO user = TestUtils.createUserBOAdminSub();
+        UserBO user = TestUtils.createUserBOAdminOrg();
         Organization organization = Organization.builder().name("ORGANIZATION").id(1L).build();
 
-        WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceName
+        WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createWorkspaceUpsert(ORGANIZATION_ID, workspaceName
                 , null, 0L);
 
 
-        WorkspaceBO orgBO = workspaceService.createWorkspace(organizationUpsertRest, user, organization.getId());
+        WorkspaceBO orgBO = workspaceService.createWorkspace(workspaceUpsertRest, user, organization.getId());
 
         verify(workspaceRepository, times(1)).findByOrganizationIdAndName(ORGANIZATION_ID, workspaceName);
 
-        assertEquals(organizationUpsertRest.getName(), orgBO.getName());
+        assertEquals(workspaceUpsertRest.getName(), orgBO.getName());
         assertEquals(WorkspaceStatus.ACTIVE.name(), orgBO.getStatus());
     }
 
@@ -245,9 +234,9 @@ class WorkspaceServiceTest {
         long workspaceId = 1L;
         String workspaceName = "WORKSPACE";
         String status = WorkspaceStatus.ACTIVE.name();
-        UserBO user = TestUtils.createUserBOAdminSub();
+        UserBO user = TestUtils.createUserBOAdminOrg();
 
-        WorkspaceUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(ORGANIZATION_ID, workspaceName
+        WorkspaceUpsertRest workspaceUpsertRest = TestUtils.createWorkspaceUpsert(ORGANIZATION_ID, workspaceName
                 , null, 0L);
         Optional<Workspace> workspaceEntity = Optional.of(Workspace.builder().name(workspaceName).id(workspaceId).status(status)
                 .deletionDate(null)
@@ -255,7 +244,7 @@ class WorkspaceServiceTest {
                 .build());
 
         when(workspaceRepository.findByOrganizationIdAndName(ORGANIZATION_ID, workspaceName)).thenReturn(workspaceEntity);
-        assertThatThrownBy(() -> workspaceService.createWorkspace(organizationUpsertRest, user, organization.getId()))
+        assertThatThrownBy(() -> workspaceService.createWorkspace(workspaceUpsertRest, user, organization.getId()))
                 .isInstanceOf(G4itRestException.class)
                 .hasMessageContaining("workspace 'WORKSPACE' already exists in organization '1'");
 

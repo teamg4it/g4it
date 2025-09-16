@@ -28,7 +28,6 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEqu
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialImportService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;

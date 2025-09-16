@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 /**
- * Subscriber Details Business Object.
+ * Organization Details Business Object.
  */
 @Data
 @SuperBuilder

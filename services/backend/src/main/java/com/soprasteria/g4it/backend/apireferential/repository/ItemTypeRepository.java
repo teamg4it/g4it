@@ -20,11 +20,11 @@ import java.util.Optional;
 @Repository
 public interface ItemTypeRepository extends JpaRepository<ItemType, Long> {
 
-    Optional<ItemType> findByTypeAndSubscriber(final String type, final String subscriber);
+    Optional<ItemType> findByTypeAndOrganization(final String type, final String organization);
 
-    List<ItemType> findBySubscriber(final String subscriber);
+    List<ItemType> findByOrganization(final String organization);
 
     @Transactional
     @Modifying
-    void deleteBySubscriber(final String subscriber);
+    void deleteByOrganization(final String organization);
 }
