@@ -32,48 +32,48 @@ class NewUserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private OrganizationRepository organizationRepository;
-
-    @Mock
-    private UserSubscriberRepository userSubscriberRepository;
+    private WorkspaceRepository workspaceRepository;
 
     @Mock
     private UserOrganizationRepository userOrganizationRepository;
 
     @Mock
-    private UserRoleOrganizationRepository userRoleOrganizationRepository;
+    private UserWorkspaceRepository userWorkspaceRepository;
+
+    @Mock
+    private UserRoleWorkspaceRepository userRoleWorkspaceRepository;
 
     @InjectMocks
     private NewUserService newUserService;
 
     @Test
-    void createUserCreatesUserAndLinksWithSubscriberAndOrganization() {
-        Subscriber subscriber = new Subscriber();
-        Organization demoOrganization = new Organization();
+    void createUserCreatesUserAndLinksWithOrganizationAndWorkspace() {
+        Organization organization = new Organization();
+        Workspace demoWorkspace = new Workspace();
         UserBO userInfo = UserBO.builder().email("email@example.com").firstName("First").lastName("Last").sub("sub").domain("domain").build();
         List<Role> accessRoles = List.of(Role.builder().name("ROLE_USER").build());
         User newUser = new User();
 
         when(userRepository.save(Mockito.any(User.class))).thenReturn(newUser);
-        when(userOrganizationRepository.save(Mockito.any(UserOrganization.class))).thenReturn(new UserOrganization());
+        when(userWorkspaceRepository.save(Mockito.any(UserWorkspace.class))).thenReturn(new UserWorkspace());
 
-        User result = newUserService.createUser(subscriber, demoOrganization, null, userInfo, accessRoles);
+        User result = newUserService.createUser(organization, demoWorkspace, null, userInfo, accessRoles);
 
         assertNotNull(result);
-        verify(userSubscriberRepository).save(Mockito.any(UserSubscriber.class));
         verify(userOrganizationRepository).save(Mockito.any(UserOrganization.class));
-        verify(userRoleOrganizationRepository).saveAll(anyList());
+        verify(userWorkspaceRepository).save(Mockito.any(UserWorkspace.class));
+        verify(userRoleWorkspaceRepository).saveAll(anyList());
     }
 
     @Test
     void createUserReturnsExistingUserWhenProvided() {
-        Subscriber subscriber = new Subscriber();
-        Organization demoOrganization = new Organization();
+        Organization organization = new Organization();
+        Workspace demoWorkspace = new Workspace();
         UserBO userInfo = UserBO.builder().email("email@example.com").firstName("First").lastName("Last").sub("sub").domain("domain").build();
         List<Role> accessRoles = List.of(Role.builder().name("ROLE_USER").build());
         User existingUser = new User();
 
-        User result = newUserService.createUser(subscriber, demoOrganization, existingUser, userInfo, accessRoles);
+        User result = newUserService.createUser(organization, demoWorkspace, existingUser, userInfo, accessRoles);
 
         assertEquals(existingUser, result);
         verifyNoInteractions(userRepository);

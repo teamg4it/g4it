@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class PhysicalEquipmentsAvgAgeBO {
 
-    private String organisation;
+    private String workspace;
 
     private String inventoryName;
 

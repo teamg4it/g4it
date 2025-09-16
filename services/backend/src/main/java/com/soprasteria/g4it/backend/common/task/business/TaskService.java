@@ -108,11 +108,11 @@ public class TaskService {
      * Delete EVALUATING tasks of an inventory
      *
      * @param inventoryId    the inventory id
-     * @param subscriber     the subscriber
-     * @param organizationId the organization id
+     * @param organization     the organization
+     * @param workspaceId the workspace id
      */
     @Transactional
-    public void deleteEvaluatingTasksByInventoryId(String subscriber, Long organizationId, Long inventoryId) {
+    public void deleteEvaluatingTasksByInventoryId(String organization, Long workspaceId, Long inventoryId) {
         // Retrieve EVALUATING tasks to be deleted
         List<Task> tasksToDelete = taskRepository.findByTypeAndInventoryId(TaskType.EVALUATING.toString(), inventoryId);
         if (tasksToDelete.isEmpty()) {
@@ -120,7 +120,7 @@ public class TaskService {
         }
         // Clean exports for each task
         tasksToDelete.forEach(task -> {
-            exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
+            exportService.cleanExport(task.getId(), organization, String.valueOf(workspaceId));
         });
 
         taskRepository.deleteAll(tasksToDelete);

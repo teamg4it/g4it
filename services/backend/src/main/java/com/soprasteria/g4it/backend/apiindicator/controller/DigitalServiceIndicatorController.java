@@ -55,8 +55,8 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Resource> getDigitalServiceIndicatorsExportResult(String subscriber,
-                                                                            Long organization,
+    public ResponseEntity<Resource> getDigitalServiceIndicatorsExportResult(String organization,
+                                                                            Long workspace,
                                                                             String digitalServiceUid) {
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
 
@@ -64,10 +64,10 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
                 .orElseThrow(() -> new G4itRestException("404", "Digital service task not found"));
         String filename = task.getId() + Constants.ZIP;
 
-        final String filePath = String.join("/", subscriber, organization.toString(), FileFolder.EXPORT.getFolderName(), filename);
+        final String filePath = String.join("/", organization, workspace.toString(), FileFolder.EXPORT.getFolderName(), filename);
 
         try {
-            InputStream inputStream =  fileSystemService.downloadFile(subscriber, organization, FileFolder.EXPORT, filename);
+            InputStream inputStream =  fileSystemService.downloadFile(organization, workspace, FileFolder.EXPORT, filename);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (BlobStorageException e) {
             if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {

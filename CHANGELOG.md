@@ -4,6 +4,8 @@
 
 ### Major Changes
 
+- 1442 | Rename organization to workspace and subscriber to organization
+
 ### Minor Changes
 
 - 1487 | Update file location to be available open source

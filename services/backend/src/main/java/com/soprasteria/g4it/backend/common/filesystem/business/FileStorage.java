@@ -51,7 +51,7 @@ public interface FileStorage {
     void delete(final FileFolder folder, final String fileName) throws IOException;
 
     /**
-     * Delete a folder recursively : organization/folder/path
+     * Delete a folder recursively : workspace/folder/path
      *
      * @param folder the FileFolder
      * @param path   the rest of the path
@@ -73,6 +73,6 @@ public interface FileStorage {
 
     long getFileSize(final FileFolder folder, final String fileName);
 
-    void renameOrganization(final String newOrganization) throws IOException;
+    void renameWorkspace(final String newWorkspace) throws IOException;
 
 }

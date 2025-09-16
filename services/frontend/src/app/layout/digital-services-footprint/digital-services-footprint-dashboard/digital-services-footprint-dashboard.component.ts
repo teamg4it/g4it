@@ -20,7 +20,7 @@ import { Title } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { firstValueFrom, lastValueFrom } from "rxjs";
-import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
+import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import {
     AiRecommendation,
     DigitalService,
@@ -34,7 +34,7 @@ import {
     OutPhysicalEquipmentRest,
     OutVirtualEquipmentRest,
 } from "src/app/core/interfaces/output.interface";
-import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
@@ -97,8 +97,8 @@ export class DigitalServicesFootprintDashboardComponent
     outVirtualEquipments: OutVirtualEquipmentRest[] = [];
     onlyOneCriteria = false;
     displayCriteriaPopup = false;
-    organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
-    subscriber!: Subscriber;
+    workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
+    organization!: Organization;
 
     cloudData = computed(() => {
         if (this.outVirtualEquipments === undefined) return [];
@@ -145,28 +145,31 @@ export class DigitalServicesFootprintDashboardComponent
         super(translate, integerPipe, decimalsPipe, globalStore);
     }
 
-    async ngOnInit() {
+    ngOnInit() {
+        this.asyncInit();
+    }
+    private async asyncInit() {
         this.digitalService = await firstValueFrom(
             this.digitalServicesDataService.digitalService$,
         );
 
-        this.userService.currentSubscriber$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((subscriber: Subscriber) => {
-                this.subscriber = subscriber;
-            });
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((organization: Organization) => {
-                this.organization.subscriberName = this.subscriber.name;
-                this.organization.subscriberId = this.subscriber.id;
-                this.organization.organizationName = organization.name;
-                this.organization.organizationId = organization.id;
-                this.organization.status = organization.status;
-                this.organization.dataRetentionDays = organization.dataRetentionDays!;
-                this.organization.displayLabel = `${organization.name} - (${this.subscriber.name})`;
-                this.organization.criteriaDs = organization.criteriaDs!;
-                this.organization.criteriaIs = organization.criteriaIs!;
+                this.organization = organization;
+            });
+        this.userService.currentWorkspace$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((workspace: Workspace) => {
+                this.workspace.organizationName = this.organization.name;
+                this.workspace.organizationId = this.organization.id;
+                this.workspace.workspaceName = workspace.name;
+                this.workspace.workspaceId = workspace.id;
+                this.workspace.status = workspace.status;
+                this.workspace.dataRetentionDays = workspace.dataRetentionDays!;
+                this.workspace.displayLabel = `${workspace.name} - (${this.organization.name})`;
+                this.workspace.criteriaDs = workspace.criteriaDs!;
+                this.workspace.criteriaIs = workspace.criteriaIs!;
             });
         const titleKey = this.digitalService.isAi
             ? "welcome-page.eco-mind-ai.title"
@@ -399,8 +402,8 @@ export class DigitalServicesFootprintDashboardComponent
         const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
         this.selectedCriteriaPopup =
             this.digitalService.criteria ??
-            this.organization.criteriaDs ??
-            this.subscriber.criteria ??
+            this.workspace.criteriaDs ??
+            this.organization.criteria ??
             defaultCriteria;
         this.displayCriteriaPopup = true;
     }

@@ -10,6 +10,7 @@ import {
     EventEmitter,
     input,
     Input,
+    OnChanges,
     Output,
     SimpleChanges,
 } from "@angular/core";
@@ -38,7 +39,7 @@ import { Constants } from "src/constants";
     selector: "app-bar-chart",
     templateUrl: "./bar-chart.component.html",
 })
-export class BarChartComponent extends AbstractDashboard {
+export class BarChartComponent extends AbstractDashboard implements OnChanges {
     @Input() barChartChild: boolean = false;
     @Input() selectedParam: string = "";
     @Input() selectedDetailParam: string = "";

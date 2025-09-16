@@ -10,6 +10,7 @@ import {
     EventEmitter,
     input,
     Input,
+    OnChanges,
     Output,
     SimpleChanges,
 } from "@angular/core";
@@ -28,7 +29,7 @@ import { Constants } from "src/constants";
     selector: "app-pie-chart",
     templateUrl: "./pie-chart.component.html",
 })
-export class PieChartComponent extends AbstractDashboard {
+export class PieChartComponent extends AbstractDashboard implements OnChanges {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
     @Input() selectedCriteria: string = "acidification";
     @Input() enableDataInconsistency: boolean = false;

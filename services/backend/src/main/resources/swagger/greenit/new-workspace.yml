@@ -5,30 +5,30 @@ info:
   version: "1.0.0"
 
 tags:
-  - name: workspace
-    description: All endpoint for a workspace
+  - name: new-workspace
+    description: All endpoint for a workspace creation from top header
 
 paths:
-  /workspace/organizations:
+  /workspace/workspaces:
     post:
       tags:
-        - workspace
+        - new-workspace
       summary: Create workspace
       operationId: createWorkspace
       requestBody:
-        description: Mandatory organization details to create.
+        description: Mandatory workspace details to create.
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrganizationUpsertRest"
+              $ref: "#/components/schemas/WorkspaceUpsertRest"
       responses:
         "201":
           description: workspace has been created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrganizationRest"
+                $ref: "#/components/schemas/WorkspaceRest"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
         "409":
@@ -40,12 +40,12 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /workspace/domain-subscribers:
+  /workspace/domain-organizations:
     post:
       tags:
-        - workspace
-      summary: get subscribers for domain
-      operationId: getDomainSubscribers
+        - new-workspace
+      summary: get organizations for domain
+      operationId: getDomainOrganization
       requestBody:
         description: user's email.
         required: true
@@ -55,13 +55,13 @@ paths:
               $ref: "#/components/schemas/UserDetailsRest"
       responses:
         "200":
-          description: Return subscribers information
+          description: Return organizations information
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SubscriberDetailsRest"
+                  $ref: "#/components/schemas/OrganizationDetailsRest"
         "500":
           $ref: "#/components/responses/InternalServerError"
         "401":

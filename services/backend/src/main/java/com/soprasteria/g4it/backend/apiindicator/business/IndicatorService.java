@@ -15,7 +15,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class IndicatorService {
     private ApplicationIndicatorMapper applicationIndicatorMapper;
 
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     @Autowired
     private OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
@@ -110,15 +110,15 @@ public class IndicatorService {
     /**
      * Retrieve low impact indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organization's id.
+     * @param organization     the organization.
+     * @param workspaceId the workspace id.
      * @param inventoryId    the inventory id.
      * @return low impact indicators.
      */
-    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber,
-                                                                             final Long organizationId,
+    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String organization,
+                                                                             final Long workspaceId,
                                                                              final Long inventoryId) {
-        return physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
+        return physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId);
     }
 
     /**

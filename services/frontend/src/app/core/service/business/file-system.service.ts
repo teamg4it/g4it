@@ -17,8 +17,8 @@ export class FileSystemBusinessService {
     private readonly taskDataService = inject(TaskDataService);
     async downloadFile(
         taskId: string,
-        selectedSubscriber: string,
         selectedOrganization: string,
+        selectedWorkspace: string,
         moduleId: number | string,
     ): Promise<void> {
         try {
@@ -27,7 +27,7 @@ export class FileSystemBusinessService {
             );
             saveAs(
                 blob,
-                `g4it_${selectedSubscriber}_${selectedOrganization}_${moduleId}_rejected-files.zip`,
+                `g4it_${selectedOrganization}_${selectedWorkspace}_${moduleId}_rejected-files.zip`,
             );
         } catch (err) {
             this.messageService.add({

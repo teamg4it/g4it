@@ -11,9 +11,9 @@ import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceSer
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class DataDeletionService {
     private Integer dataRetentiondDay;
 
     @Autowired
-    private OrganizationRepository organizationRepository;
+    private WorkspaceRepository workspaceRepository;
 
     @Autowired
     private InventoryRepository inventoryRepository;
@@ -47,7 +47,7 @@ public class DataDeletionService {
 
     /**
      * Execute the deletion
-     * Get all subscribers and organizations
+     * Get all organizations and workspaces
      * Execute the deletion for data in
      */
     public void executeDeletion() {
@@ -56,28 +56,28 @@ public class DataDeletionService {
         int nbDigitalServicesDeleted = 0;
         final long start = System.currentTimeMillis();
 
-        List<Organization> organizations = organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()));
+        List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.ACTIVE.name()));
 
-        for (Organization organizationEntity : organizations) {
-            final String subscriber = organizationEntity.getSubscriber().getName();
-            final Long organizationId = organizationEntity.getId();
+        for (Workspace workspaceEntity : workspaces) {
+            final String organization = workspaceEntity.getOrganization().getName();
+            final Long workspaceId = workspaceEntity.getId();
 
-            // organization > subscriber > default
-            final Integer retentionDay = Optional.ofNullable(organizationEntity.getDataRetentionDay())
-                    .orElse(Optional.ofNullable(organizationEntity.getSubscriber().getDataRetentionDay())
+            // workspace > organization > default
+            final Integer retentionDay = Optional.ofNullable(workspaceEntity.getDataRetentionDay())
+                    .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getDataRetentionDay())
                             .orElse(dataRetentiondDay));
 
             // Inventories
-            nbInventoriesDeleted += inventoryRepository.findByOrganization(organizationEntity).stream()
+            nbInventoriesDeleted += inventoryRepository.findByWorkspace(workspaceEntity).stream()
                     .filter(inventory -> now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate()))
                     .mapToInt(inventory -> {
-                        inventoryDeleteService.deleteInventory(subscriber, organizationId, inventory.getId());
+                        inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
                         return 1;
                     })
                     .sum();
 
             // Digital services
-            nbDigitalServicesDeleted += digitalServiceRepository.findByOrganization(organizationEntity).stream()
+            nbDigitalServicesDeleted += digitalServiceRepository.findByWorkspace(workspaceEntity).stream()
                     .filter(digitalServiceBO -> now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate()))
                     .mapToInt(digitalServiceBO -> {
                         digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());

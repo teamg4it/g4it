@@ -11,10 +11,10 @@ import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapper;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -46,10 +46,10 @@ public class InventoryService {
     @Autowired
     private InventoryRepository inventoryRepository;
     /**
-     * The organization service.
+     * The Workspace service.
      */
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
     /**
      * Mapper for inventory data.
      */
@@ -73,78 +73,77 @@ public class InventoryService {
     }
 
     /**
-     * Retrieve all inventory of an organization if inventoryId is null.
+     * Retrieve all inventory of a workspace if inventoryId is null.
      * Filter on inventoryId if not null
      *
-     * @param subscriberName the client subscriber name.
-     * @param organizationId the linked organization's id.
-     * @param inventoryId    the inventory id optional query param
+     * @param workspaceId      the linked workspace id.
+     * @param inventoryId      the inventory id optional query param
      * @return inventories BO.
      */
-    public List<InventoryBO> getInventories(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+    public List<InventoryBO> getInventories(final Long workspaceId, final Long inventoryId) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
         var inventories = inventoryId == null ?
-                inventoryRepository.findByOrganization(linkedOrganization) :
-                inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId).stream().toList();
+                inventoryRepository.findByWorkspace(linkedWorkspace) :
+                inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId).stream().toList();
 
         return inventoryMapper.toBusinessObject(inventories);
     }
 
     /**
-     * Retrieving an inventory for an organization and inventory id.
+     * Retrieving an inventory for a workspace and inventory id.
      *
-     * @param subscriberName subscriberName
-     * @param organizationId organizationId
-     * @param inventoryId    inventoryId
+     * @param organizationName organizationName
+     * @param workspaceId      workspaceId
+     * @param inventoryId      inventoryId
      * @return InventoryBO
      */
-    public InventoryBO getInventory(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        final Optional<Inventory> inventory = inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId);
+    public InventoryBO getInventory(final String organizationName, final Long workspaceId, final Long inventoryId) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
+        final Optional<Inventory> inventory = inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId);
 
         if (inventory.isEmpty())
-            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryId, subscriberName, organizationId));
+            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryId, organizationName, workspaceId));
 
         return inventoryMapper.toBusinessObject(inventory.get());
     }
 
     /**
-     * Returns true if the inventory exists and linked to subscriber, organizationId and inventoryId
+     * Returns true if the inventory exists and linked to organization, workspaceId and inventoryId
      *
-     * @param subscriberName subscriberName
-     * @param organizationId organizationId
-     * @param inventoryId    inventoryId
+     * @param organizationName organizationName
+     * @param workspaceId      workspaceId
+     * @param inventoryId      inventoryId
      * @return InventoryBO
      */
     @Cacheable("inventoryExists")
-    public boolean inventoryExists(final String subscriberName, final Long organizationId, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        if (!Objects.equals(subscriberName, linkedOrganization.getSubscriber().getName())) {
+    public boolean inventoryExists(final String organizationName, final Long workspaceId, final Long inventoryId) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
+        if (!Objects.equals(organizationName, linkedWorkspace.getOrganization().getName())) {
             return false;
         }
 
-        return inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId).isPresent();
+        return inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId).isPresent();
     }
 
     /**
      * Create an inventory.
      *
-     * @param subscriberName      the client subscriber name.
-     * @param organizationId      the linked organization's id.
+     * @param organizationName    the client organization name.
+     * @param workspaceId         the linked workspace id.
      * @param inventoryCreateRest the inventoryCreateRest.
      * @param user                the inventory's creator
      * @return inventory BO.
      */
-    public InventoryBO createInventory(final String subscriberName, final Long organizationId, final InventoryCreateRest inventoryCreateRest, final UserBO user) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+    public InventoryBO createInventory(final String organizationName, final Long workspaceId, final InventoryCreateRest inventoryCreateRest, final UserBO user) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
-        if (inventoryRepository.findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName()).isPresent()) {
-            throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), subscriberName, organizationId));
+        if (inventoryRepository.findByWorkspaceAndName(linkedWorkspace, inventoryCreateRest.getName()).isPresent()) {
+            throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), organizationName, workspaceId));
         }
 
         final User userEntity = User.builder().id(user.getId()).build();
-        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest, userEntity);
+        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedWorkspace, inventoryCreateRest, userEntity);
 
         // Deprecated inventoryDate, used to better revert if needed
         if (InventoryType.INFORMATION_SYSTEM.name().equals(inventoryCreateRest.getType().name())) {
@@ -158,17 +157,17 @@ public class InventoryService {
     /**
      * Update note or criteria for an inventory.
      *
-     * @param subscriberName      the subscriberName.
-     * @param organizationId      the organization's id
+     * @param organizationName    the organizationName.
+     * @param workspaceId         the workspace id
      * @param inventoryUpdateRest the inventoryUpdateRest.
      * @param user                the user.
      * @return InventoryBO
      */
-    public InventoryBO updateInventory(final String subscriberName, final Long organizationId, final InventoryUpdateRest inventoryUpdateRest, UserBO user) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        final Optional<Inventory> inventory = inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryUpdateRest.getId());
+    public InventoryBO updateInventory(final String organizationName, final Long workspaceId, final InventoryUpdateRest inventoryUpdateRest, UserBO user) {
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
+        final Optional<Inventory> inventory = inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryUpdateRest.getId());
         if (inventory.isEmpty())
-            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryUpdateRest.getId(), subscriberName, organizationId));
+            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryUpdateRest.getId(), organizationName, workspaceId));
 
         final Inventory inventoryToSave = inventory.get();
         inventoryToSave.setName(inventoryUpdateRest.getName());

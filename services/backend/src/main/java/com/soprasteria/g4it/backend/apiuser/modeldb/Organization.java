@@ -7,7 +7,6 @@
  */
 package com.soprasteria.g4it.backend.apiuser.modeldb;
 
-import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -16,22 +15,19 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * G4IT Organization.
+ * The G4IT client organization (formerly subscriber).
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@EqualsAndHashCode(callSuper = false)
+@SuperBuilder
 @NoArgsConstructor
 @Entity
-@SuperBuilder
-@Table(name = "g4it_organization")
+@Table(name = "g4it_subscriber")
 public class Organization extends AbstractBaseEntity implements Serializable {
 
     /**
@@ -42,7 +38,19 @@ public class Organization extends AbstractBaseEntity implements Serializable {
     private long id;
 
     /**
-     * The organization's name.
+     * The Organization's workspaces.
+     */
+    @ToString.Exclude
+    @OneToMany(mappedBy = "organization")
+    private List<Workspace> workspaces;
+
+    /**
+     * The authorized domains of organizations
+     */
+    private String authorizedDomains;
+
+    /**
+     * The Organization name.
      */
     @NotNull
     private String name;
@@ -63,58 +71,12 @@ public class Organization extends AbstractBaseEntity implements Serializable {
     private Integer dataRetentionDay;
 
     /**
-     * The deletion Date
+     * The Criteria key
      */
-    private LocalDateTime deletionDate;
+    private List<String> criteria;
 
     /**
-     * The status
+     * Is EcomindAi enabled or not for this Organization
      */
-    private String status;
-
-    /**
-     * The Criteria key for inventory.
-     */
-    private List<String> criteriaIs;
-
-    /**
-     * Criteria key for digital service.
-     */
-    private List<String> criteriaDs;
-
-    /**
-     * The last user who updated the note.
-     */
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "last_updated_by", referencedColumnName = "id")
-    private User lastUpdatedBy;
-
-    /**
-     * The  user who created the organization.
-     */
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private User createdBy;
-
-    /**
-     * The organization's subscriber.
-     */
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
-    private Subscriber subscriber;
-
-    /**
-     * Identifier of the inventory related to the export request
-     */
-    @ToString.Exclude
-    @OneToMany(mappedBy = "organization")
-    private List<Inventory> inventory;
-
-    /**
-     * Boolean isMigrated: true if organization name has been migrated to organization id
-     */
-    private Boolean isMigrated = true;
-
+    private boolean ecomindai;
 }

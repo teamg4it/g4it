@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -14,7 +14,7 @@ import { UserService } from "src/app/core/service/business/user.service";
     selector: "app-administration-panel",
     templateUrl: "./administration-panel.component.html",
 })
-export class AdministrationPanelComponent {
+export class AdministrationPanelComponent implements OnInit {
     tabMenuList!: MenuItem[];
     constructor(
         public userService: UserService,

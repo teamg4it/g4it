@@ -20,9 +20,9 @@ import java.util.Locale;
 @Getter
 public class Context {
 
-    private String subscriber;
-    private Long organizationId;
-    private String organizationName;
+    private String organization;
+    private Long workspaceId;
+    private String workspaceName;
     private Long inventoryId;
     private String digitalServiceUid;
     private String digitalServiceName;
@@ -50,8 +50,8 @@ public class Context {
 
     public String log(String delim) {
         if (inventoryId == null) {
-            return String.join(delim, subscriber, organizationId.toString(), digitalServiceUid);
+            return String.join(delim, organization, workspaceId.toString(), digitalServiceUid);
         }
-        return String.join(delim, subscriber, organizationId.toString(), inventoryId.toString());
+        return String.join(delim, organization, workspaceId.toString(), inventoryId.toString());
     }
 }

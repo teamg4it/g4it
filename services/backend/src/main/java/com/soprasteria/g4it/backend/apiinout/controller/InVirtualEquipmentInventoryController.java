@@ -37,7 +37,7 @@ public class InVirtualEquipmentInventoryController implements InventoryInputsVir
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InVirtualEquipmentRest> postInventoryInputsVirtualEquipmentsRest(final String subscriber, final Long organization, final Long inventoryId, final InVirtualEquipmentRest inVirtualEquipmentRest) {
+    public ResponseEntity<InVirtualEquipmentRest> postInventoryInputsVirtualEquipmentsRest(final String organization, final Long workspace, final Long inventoryId, final InVirtualEquipmentRest inVirtualEquipmentRest) {
         return new ResponseEntity<>(inVirtualEquipmentService.createInVirtualEquipmentInventory(inventoryId, inVirtualEquipmentRest), HttpStatus.CREATED);
     }
 
@@ -45,8 +45,8 @@ public class InVirtualEquipmentInventoryController implements InventoryInputsVir
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InVirtualEquipmentRest>> getInventoryInputsVirtualEquipmentsRest(String subscriber,
-                                                                                                Long organization,
+    public ResponseEntity<List<InVirtualEquipmentRest>> getInventoryInputsVirtualEquipmentsRest(String organization,
+                                                                                                Long workspace,
                                                                                                 Long inventoryId) {
         return ResponseEntity.ok().body(inVirtualEquipmentService.getByInventory(inventoryId));
     }
@@ -55,8 +55,8 @@ public class InVirtualEquipmentInventoryController implements InventoryInputsVir
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InVirtualEquipmentRest> getInventoryInputsVirtualEquipmentRest(String subscriber,
-                                                                                         Long organization,
+    public ResponseEntity<InVirtualEquipmentRest> getInventoryInputsVirtualEquipmentRest(String organization,
+                                                                                         Long workspace,
                                                                                          Long inventoryId,
                                                                                          Long id) {
         return ResponseEntity.ok().body(inVirtualEquipmentService.getByInventoryAndId(inventoryId, id));
@@ -66,7 +66,7 @@ public class InVirtualEquipmentInventoryController implements InventoryInputsVir
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteInventoryInputsVirtualEquipmentRest(final String subscriber, final Long organization, final Long inventoryId, final Long id) {
+    public ResponseEntity<Void> deleteInventoryInputsVirtualEquipmentRest(final String organization, final Long workspace, final Long inventoryId, final Long id) {
         inVirtualEquipmentService.deleteInVirtualEquipment(inventoryId, id);
         return ResponseEntity.noContent().build();
     }
@@ -75,8 +75,8 @@ public class InVirtualEquipmentInventoryController implements InventoryInputsVir
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InVirtualEquipmentRest> putInventoryInputsVirtualEquipmentRest(final String subscriber,
-                                                                                         final Long organization, final Long inventoryId, final Long id,
+    public ResponseEntity<InVirtualEquipmentRest> putInventoryInputsVirtualEquipmentRest(final String organization,
+                                                                                         final Long workspace, final Long inventoryId, final Long id,
                                                                                          final InVirtualEquipmentRest inVirtualEquipmentRest) {
         return new ResponseEntity<>(inVirtualEquipmentService.updateInVirtualEquipment(inventoryId, id, inVirtualEquipmentRest), HttpStatus.OK);
     }

@@ -380,13 +380,13 @@ export class InventoryUtilService {
         ];
     }
 
-    removeOrganizationNameFromType(
+    removeWorkspaceNameFromType(
         equipment: [
             PhysicalEquipmentAvgAge[],
             PhysicalEquipmentLowImpact[],
             PhysicalEquipmentsElecConsumption[],
         ],
-        currentOrganization: string,
+        currentWorkspaceName: string,
     ): [
         PhysicalEquipmentAvgAge[],
         PhysicalEquipmentLowImpact[],
@@ -395,7 +395,7 @@ export class InventoryUtilService {
         return equipment.map((eq) =>
             eq.map((i) => ({
                 ...i,
-                type: transformEquipmentType(i.type, currentOrganization),
+                type: transformEquipmentType(i.type, currentWorkspaceName),
             })),
         ) as [
             PhysicalEquipmentAvgAge[],
@@ -404,9 +404,9 @@ export class InventoryUtilService {
         ];
     }
 
-    removeOrganizationNameFromCriteriaType(
+    removeWorkspaceNameFromCriteriaType(
         footprint: Criterias,
-        currentOrganization: string,
+        currentWorkspaceName: string,
     ): Criterias {
         return Object.fromEntries(
             Object.entries(footprint).map(([key, value]) => [
@@ -417,7 +417,7 @@ export class InventoryUtilService {
                         ...i,
                         equipment: transformEquipmentType(
                             i?.equipment!,
-                            currentOrganization,
+                            currentWorkspaceName,
                         ),
                     })),
                 },

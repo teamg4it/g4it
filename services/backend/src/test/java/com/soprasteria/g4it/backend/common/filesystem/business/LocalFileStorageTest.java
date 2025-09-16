@@ -31,8 +31,8 @@ class LocalFileStorageTest {
 
     private static final String LOCAL_FILESYSTEM_PATH = "target/local-filestorage-test/";
 
-    private static final String SUBSCRIBER = "local";
-    private static final String ORGANIZATION = "G4IT";
+    private static final String ORGANIZATION = "local";
+    private static final String WORKSPACE = "G4IT";
     private final FileSystem fileSystem = new LocalFileSystem(LOCAL_FILESYSTEM_PATH);
     private final FileStorage storage = fileSystem.mount("local", "G4IT");
 
@@ -91,7 +91,7 @@ class LocalFileStorageTest {
     void listFilesShouldListAllFiles() throws IOException {
         // given 2 files in the input folder
         FileSystemUtils.copyRecursively(testFolder.resolve("input").toFile(),
-                new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.INPUT.getFolderName())));
+                new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.INPUT.getFolderName())));
         // when we list files
         List<FileDescription> files = storage.listFiles(FileFolder.INPUT);
         // it should find them
@@ -102,7 +102,7 @@ class LocalFileStorageTest {
     void hasFileInSubfolderShouldReturnTrue() throws IOException {
         // given a file in the work folder
         FileSystemUtils.copyRecursively(testFolder.resolve("work").toFile(),
-                new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.WORK.getFolderName())));
+                new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.WORK.getFolderName())));
         // When listing file in this folder, it should find it
         assertTrue(storage.hasFileInSubfolder(FileFolder.WORK, "20231904-1808", FileType.DATACENTER));
     }
@@ -110,8 +110,8 @@ class LocalFileStorageTest {
     @Test
     void moveShouldMoveFileToDifferentFolder() throws IOException {
         storage.writeFile(FileFolder.INPUT, "file_to_move", new ByteArrayInputStream("something".getBytes()));
-        File fileToMove = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.INPUT.getFolderName(), "/file_to_move"));
-        File movedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_to_move"));
+        File fileToMove = new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.INPUT.getFolderName(), "/file_to_move"));
+        File movedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.OUTPUT.getFolderName(), "/file_to_move"));
         assertTrue(fileToMove.exists());
         assertFalse(movedFiles.exists());
         storage.move(FileFolder.INPUT, FileFolder.OUTPUT, "file_to_move");
@@ -122,8 +122,8 @@ class LocalFileStorageTest {
     @Test
     void renameShouldChangeFileName() throws IOException {
         storage.writeFile(FileFolder.OUTPUT, "file_to_rename", new ByteArrayInputStream("something".getBytes()));
-        File fileToRename = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_to_rename"));
-        File renamedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/renamed_file"));
+        File fileToRename = new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.OUTPUT.getFolderName(), "/file_to_rename"));
+        File renamedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.OUTPUT.getFolderName(), "/renamed_file"));
         assertTrue(fileToRename.exists());
         assertFalse(renamedFiles.exists());
         storage.rename(FileFolder.OUTPUT, "file_to_rename", "renamed_file");
@@ -134,8 +134,8 @@ class LocalFileStorageTest {
     @Test
     void moveAndRenameShouldMoveFileToDifferentFolderAndRenameIt() throws IOException {
         storage.writeFile(FileFolder.INPUT, "file_to_move", new ByteArrayInputStream("something".getBytes()));
-        File fileToMove = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.INPUT.getFolderName(), "/file_to_move"));
-        File movedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file_moved_and_renamed"));
+        File fileToMove = new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.INPUT.getFolderName(), "/file_to_move"));
+        File movedFiles = new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.OUTPUT.getFolderName(), "/file_moved_and_renamed"));
         assertTrue(fileToMove.exists());
         assertFalse(movedFiles.exists());
         storage.moveAndRename(FileFolder.INPUT, FileFolder.OUTPUT, "file_to_move", "file_moved_and_renamed");
@@ -151,7 +151,7 @@ class LocalFileStorageTest {
                 FileFolder.OUTPUT, "file1_upload.txt");
 
         // then it should exist
-        File output = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file1_upload.txt"));
+        File output = new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.OUTPUT.getFolderName(), "/file1_upload.txt"));
         assertTrue(output.exists());
     }
 
@@ -159,7 +159,7 @@ class LocalFileStorageTest {
     void uploadShouldCopyMultipartFile() throws IOException {
         MultipartFile fileInput = new MockMultipartFile("DATACENTER", "file1_upload.txt", String.valueOf(MediaType.TEXT_PLAIN), "Hello world".getBytes());
         storage.upload(FileFolder.OUTPUT, fileInput.getOriginalFilename(), fileInput.getName(), fileInput.getInputStream());
-        File output = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file1_upload.txt"));
+        File output = new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.OUTPUT.getFolderName(), "/file1_upload.txt"));
         assertTrue(output.exists());
     }
 
@@ -167,7 +167,7 @@ class LocalFileStorageTest {
     void deleteShouldDeleteTheFile() throws IOException {
         // given a file in the work folder
         FileSystemUtils.copyRecursively(testFolder.resolve("work").toFile(),
-                new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.WORK.getFolderName())));
+                new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.WORK.getFolderName())));
 
         storage.delete(FileFolder.WORK, "20230511-1815/DATACENTER/datacenter.txt");
         Resource[] resources = storage.listResources(FileFolder.WORK, "20230511-1815", FileType.DATACENTER);
@@ -178,7 +178,7 @@ class LocalFileStorageTest {
     void listResourcesShouldReturnAllFiles() throws IOException {
         // given a file in the work folder
         FileSystemUtils.copyRecursively(testFolder.resolve("work").toFile(),
-                new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.WORK.getFolderName())));
+                new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.WORK.getFolderName())));
 
         // When we list resources, it should find them
         Resource[] resources = storage.listResources(FileFolder.WORK, "20230511-1815", FileType.DATACENTER);
@@ -189,7 +189,7 @@ class LocalFileStorageTest {
     void getFileUrlShouldReturnUrlIfFileExist() throws IOException {
         // given a file in the work folder
         FileSystemUtils.copyRecursively(testFolder.resolve("work").toFile(),
-                new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.WORK.getFolderName())));
+                new File(LOCAL_FILESYSTEM_PATH + Path.of(ORGANIZATION, WORKSPACE, FileFolder.WORK.getFolderName())));
         // when we get url
         String url = storage.getFileUrl(FileFolder.WORK, "20230511-1815/DATACENTER/datacenter.txt");
         assertNotNull(url);

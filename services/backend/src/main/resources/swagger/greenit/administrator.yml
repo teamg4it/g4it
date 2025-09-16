@@ -6,24 +6,24 @@ info:
 
 tags:
   - name: administrator
-    description: Endpoint for subscriber administration
+    description: Endpoint for organization and workspace administration
 
 paths:
-  /administrator/subscribers:
+  /administrator/organizations:
     get:
       tags:
         - administrator
-      summary: Get subscribers information
-      operationId: getSubscribers
+      summary: Get organizations information
+      operationId: getOrganizations
       responses:
         '200':
-          description: Return subscribers information
+          description: Return organizations information
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SubscriberRest"
+                  $ref: "#/components/schemas/OrganizationRest"
         '500':
           $ref: "#/components/responses/InternalServerError"
         '401':
@@ -31,10 +31,10 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
     put:
-      summary: Update criteria for a subscriber
-      operationId: updateSubscriber
+      summary: Update criteria for an organizations
+      operationId: updateOrganization
       parameters:
-        - $ref: '#/components/parameters/reqSubscriberIdQueryParam'
+        - $ref: '#/components/parameters/reqOrganizationIdQueryParam'
       requestBody:
         description: Mandatory criteria details to update.
         required: true
@@ -46,36 +46,36 @@ paths:
         - administrator
       responses:
         '200':
-          description: Criteria have been updated for subscriber
+          description: Criteria have been updated for organization
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SubscriberRest"
+                $ref: "#/components/schemas/OrganizationRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  
-  /administrator/organizations:
+
+  /administrator/workspaces:
     get:
       tags:
         - administrator
-      summary: Get Organization information
-      operationId: getOrganizations
+      summary: Get workspaces information
+      operationId: getWorkspaces
       parameters:
+        - $ref: '#/components/parameters/workspaceIdQueryParam'
         - $ref: '#/components/parameters/organizationIdQueryParam'
-        - $ref: '#/components/parameters/subscriberIdQueryParam'
       responses:
         '200':
-          description: Return Organizations information
+          description: Return Workspaces information
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SubscriberRest"
+                  $ref: "#/components/schemas/OrganizationRest"
         '500':
           $ref: "#/components/responses/InternalServerError"
         '401':
@@ -84,26 +84,26 @@ paths:
           $ref: '#/components/responses/NotFoundError'
 
     put:
-      summary: Update an organization
-      operationId: updateOrganization
+      summary: Update a workspace
+      operationId: updateWorkspace
       parameters:
-        - $ref: '#/components/parameters/organizationIdQueryParam'
+        - $ref: '#/components/parameters/workspaceIdQueryParam'
       requestBody:
-        description: Mandatory organization details to update.
+        description: Mandatory workspace details to update.
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrganizationUpsertRest"
+              $ref: "#/components/schemas/WorkspaceUpsertRest"
       tags:
         - administrator
       responses:
         '200':
-          description: Organization has been updated
+          description: Workspace has been updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrganizationRest"
+                $ref: "#/components/schemas/WorkspaceRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
@@ -111,28 +111,28 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
     post:
-      summary: Create a new organization
-      operationId: createOrganization
+      summary: Create a new workspace
+      operationId: createWorkspaceAsAdmin
       requestBody:
-        description: Mandatory organization details to create.
+        description: Mandatory workspace details to create.
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OrganizationUpsertRest"
+              $ref: "#/components/schemas/WorkspaceUpsertRest"
       tags:
         - administrator
       responses:
         '201':
-          description: Organization has been created
+          description: Workspace has been created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrganizationRest"
+                $ref: "#/components/schemas/WorkspaceRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '409':
-          description: Organization already exists.
+          description: Workspace already exists.
           content:
             'application/json':
               schema:
@@ -140,17 +140,17 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /administrator/organizations/users:
+  /administrator/workspaces/users:
     get:
       tags:
         - administrator
-      summary: Get users related to the organization
-      operationId: getUsersOfOrg
+      summary: Get users related to the workspace
+      operationId: getUsersOfWorkspace
       parameters:
-        - $ref: '#/components/parameters/reqOrganizationIdQueryParam'
+        - $ref: '#/components/parameters/reqWorkspaceIdQueryParam'
       responses:
         '200':
-          description: Return users linked to the Organization.
+          description: Return users linked to the Workspace.
           content:
             application/json:
               schema:
@@ -164,8 +164,8 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
     post:
-      summary: Link a user to an org and add roles
-      operationId: linkUserToOrg
+      summary: Link a user to a workspace and add roles
+      operationId: linkUserToWorkspace
       requestBody:
         description: Mandatory user and role details to link.
         required: true
@@ -177,7 +177,7 @@ paths:
         - administrator
       responses:
         '204':
-          description: User has been linked to the organization.
+          description: User has been linked to the workspace.
           content:
             application/json:
               schema:
@@ -187,7 +187,7 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '409':
-          description: User is  already linked to the organization.
+          description: User is  already linked to the workspace.
           content:
             'application/json':
               schema:
@@ -224,10 +224,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
     delete:
-      summary: Delete user-organization link
-      operationId: deleteUserOrgLink
+      summary: Delete user-workspace link
+      operationId: deleteUserWorkspaceLink
       requestBody:
-        description: Mandatory user and organization details to unlink.
+        description: Mandatory user and workspace details to unlink.
         required: true
         content:
           application/json:
@@ -237,7 +237,7 @@ paths:
         - administrator
       responses:
         '204':
-          description: link between user and organization has been deleted.
+          description: link between user and workspace has been deleted.
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
@@ -245,19 +245,19 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /administrator/subscribers/users:
+  /administrator/organizations/users:
     get:
       tags:
         - administrator
-      summary: search and display the users( filtered by related_domains of subscriber)
+      summary: search and display the users( filtered by related_domains of organization)
       operationId: searchUserByName
       parameters:
         - $ref: '#/components/parameters/nameSearchQueryParam'
-        - $ref: '#/components/parameters/reqSubscriberIdQueryParam'
-        - $ref: '#/components/parameters/organizationIdQueryParam'
+        - $ref: '#/components/parameters/reqOrganizationIdQueryParam'
+        - $ref: '#/components/parameters/workspaceIdQueryParam'
       responses:
         '200':
-          description: Return Organizations information
+          description: Return Workspaces information
           content:
             application/json:
               schema:
@@ -292,21 +292,21 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-  /administrator/subscriber:
+  /administrator/organization:
     get:
       tags:
         - administrator
-      summary: Get subscriber by his id
-      operationId: getSubscriberById
+      summary: Get organization by id
+      operationId: getOrganizationById
       parameters:
-        - $ref: '#/components/parameters/reqSubscriberIdQueryParam'
+        - $ref: '#/components/parameters/reqOrganizationIdQueryParam'
       responses:
         '200':
-          description: Return subscriber
+          description: Return organization
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/SubscriberRest"
+                  $ref: "#/components/schemas/OrganizationRest"
         '500':
           $ref: "#/components/responses/InternalServerError"
         '401':

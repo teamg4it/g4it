@@ -49,8 +49,8 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutPhysicalEquipmentRest>> getInventoryOutputsPhysicalEquipmentsRest(String subscriber,
-                                                                                                    Long organization,
+    public ResponseEntity<List<OutPhysicalEquipmentRest>> getInventoryOutputsPhysicalEquipmentsRest(String organization,
+                                                                                                    Long workspace,
                                                                                                     Long inventoryId) {
         return ResponseEntity.ok().body(outPhysicalEquipmentService.getByInventory(Inventory.builder().id(inventoryId).build()));
     }
@@ -59,8 +59,8 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutVirtualEquipmentRest>> getInventoryOutputsVirtualEquipmentsRest(String subscriber,
-                                                                                                  Long organization,
+    public ResponseEntity<List<OutVirtualEquipmentRest>> getInventoryOutputsVirtualEquipmentsRest(String organization,
+                                                                                                  Long workspace,
                                                                                                   Long inventoryId) {
         return ResponseEntity.ok().body(outVirtualEquipmentService.getByInventory(Inventory.builder().id(inventoryId).build()));
     }
@@ -69,8 +69,8 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutApplicationRest>> getInventoryOutputsApplicationsRest(String subscriber,
-                                                                                        Long organization,
+    public ResponseEntity<List<OutApplicationRest>> getInventoryOutputsApplicationsRest(String organization,
+                                                                                        Long workspace,
                                                                                         Long inventoryId) {
         return ResponseEntity.ok().body(outApplicationService.getByInventory(Inventory.builder().id(inventoryId).build()));
     }

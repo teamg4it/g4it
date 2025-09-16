@@ -37,7 +37,7 @@ public class InDatacenterInventoryController implements InventoryInputsDatacente
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InDatacenterRest> postInventoryInputsDatacentersRest(final String subscriber, final Long organization, final Long inventoryId, final InDatacenterRest inDatacenterRest) {
+    public ResponseEntity<InDatacenterRest> postInventoryInputsDatacentersRest(final String organization, final Long workspace, final Long inventoryId, final InDatacenterRest inDatacenterRest) {
         return new ResponseEntity<>(inDatacenterService.createInDatacenterInventory(inventoryId, inDatacenterRest), HttpStatus.CREATED);
     }
 
@@ -45,8 +45,8 @@ public class InDatacenterInventoryController implements InventoryInputsDatacente
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InDatacenterRest>> getInventoryInputsDatacentersRest(String subscriber,
-                                                                                    Long organization,
+    public ResponseEntity<List<InDatacenterRest>> getInventoryInputsDatacentersRest(String organization,
+                                                                                    Long workspace,
                                                                                     Long inventoryId) {
         return ResponseEntity.ok().body(inDatacenterService.getByInventory(inventoryId));
     }
@@ -55,8 +55,8 @@ public class InDatacenterInventoryController implements InventoryInputsDatacente
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InDatacenterRest> getInventoryInputsDatacenterRest(String subscriber,
-                                                                             Long organization,
+    public ResponseEntity<InDatacenterRest> getInventoryInputsDatacenterRest(String organization,
+                                                                             Long workspace,
                                                                              Long inventoryId,
                                                                              Long id) {
         return ResponseEntity.ok().body(inDatacenterService.getByInventoryAndId(inventoryId, id));
@@ -66,7 +66,7 @@ public class InDatacenterInventoryController implements InventoryInputsDatacente
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteInventoryInputsDatacenterRest(final String subscriber, final Long organization, final Long inventoryId, final Long id) {
+    public ResponseEntity<Void> deleteInventoryInputsDatacenterRest(final String organization, final Long workspace, final Long inventoryId, final Long id) {
         inDatacenterService.deleteInDatacenter(id);
         return ResponseEntity.noContent().build();
     }
@@ -75,8 +75,8 @@ public class InDatacenterInventoryController implements InventoryInputsDatacente
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InDatacenterRest> putInventoryInputsDatacenterRest(final String subscriber,
-                                                                             final Long organization, final Long inventoryId, final Long id,
+    public ResponseEntity<InDatacenterRest> putInventoryInputsDatacenterRest(final String organization,
+                                                                             final Long workspace, final Long inventoryId, final Long id,
                                                                              final InDatacenterRest inDatacenterRest) {
         return new ResponseEntity<>(inDatacenterService.updateInDatacenter(inventoryId, id, inDatacenterRest), HttpStatus.OK);
     }

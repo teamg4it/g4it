@@ -32,7 +32,7 @@ describe("DigitalServicesFootprintFooterComponent", () => {
 
     beforeEach(() => {
         mockRouter = jasmine.createSpyObj("Router", ["navigateByUrl", "navigate"], {
-            url: "/subscribers/abc/organizations/xyz/digital-services/123/footprint",
+            url: "/organizations/abc/workpsaces/xyz/digital-services/123/footprint",
         });
         mockTranslate = jasmine.createSpyObj("TranslateService", ["instant"]);
         mockMessageService = jasmine.createSpyObj("MessageService", ["add"]);

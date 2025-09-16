@@ -999,3 +999,15 @@ databaseChangeLog:
             referencedTableName: g4it_user
             referencedColumnNames: id
             onDelete: SET NULL
+
+  - changeSet:
+      id: rename-admin-roles-in-g4it-role
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql: UPDATE g4it_role
+              SET name = 'ROLE_WORKSPACE_ADMINISTRATOR'
+              WHERE name = 'ROLE_ORGANIZATION_ADMINISTRATOR';
+              UPDATE g4it_role
+              SET name = 'ROLE_ORGANIZATION_ADMINISTRATOR'
+              WHERE name = 'ROLE_SUBSCRIBER_ADMINISTRATOR';

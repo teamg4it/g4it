@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
@@ -13,7 +13,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { Subject, firstValueFrom, takeUntil } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
-import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
@@ -25,21 +25,19 @@ import { Constants } from "src/constants";
     templateUrl: "./inventories-header-footprint.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class InventoriesHeaderFootprintComponent implements OnInit {
+export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     @Input() inventoryId: number = 0;
     @Input() indicatorType: string = "";
 
     types = Constants.INVENTORY_TYPE;
-    subscriber = "";
-    organization = "";
     sidebarVisible = false;
     inventory: Inventory = {} as Inventory;
     downloadInProgress = false;
 
     ngUnsubscribe = new Subject<void>();
 
+    selectedWorkspace = "";
     selectedOrganization = "";
-    selectedSubscriber = "";
 
     constructor(
         private readonly inventoryService: InventoryService,
@@ -52,15 +50,15 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
 
     async ngOnInit() {
         await this.initInventory();
-        this.userService.currentSubscriber$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((subscriber: Subscriber) => {
-                this.selectedSubscriber = subscriber.name;
-            });
         this.userService.currentOrganization$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
+            });
+        this.userService.currentWorkspace$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((workspace: Workspace) => {
+                this.selectedWorkspace = workspace.name;
             });
     }
 
@@ -70,8 +68,8 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
     }
 
     changePageToInventories() {
-        let [_, _1, subscriber, _2, organization] = this.router.url.split("/");
-        return `/subscribers/${subscriber}/organizations/${organization}/inventories`;
+        let [_, _1, organization, _2, workspace] = this.router.url.split("/");
+        return `/organizations/${organization}/workspaces/${workspace}/inventories`;
     }
 
     download(event: Event) {
@@ -86,7 +84,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
             );
             saveAs(
                 blob,
-                `g4it_${this.selectedSubscriber}_${this.selectedOrganization}_${this.inventoryId}_export-result-files.zip`,
+                `g4it_${this.selectedOrganization}_${this.selectedWorkspace}_${this.inventoryId}_export-result-files.zip`,
             );
             await delay(2000);
         } catch (err) {

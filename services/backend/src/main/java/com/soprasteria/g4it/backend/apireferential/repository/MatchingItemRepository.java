@@ -20,11 +20,11 @@ import java.util.Optional;
 
 @Repository
 public interface MatchingItemRepository extends JpaRepository<MatchingItem, Long> {
-    Optional<MatchingItem> findByItemSourceAndSubscriber(final String itemSource, final String subscriber);
+    Optional<MatchingItem> findByItemSourceAndOrganization(final String itemSource, final String organization);
 
-    Page<MatchingItem> findBySubscriber(final String subscriber, final Pageable pageable);
+    Page<MatchingItem> findByOrganization(final String organization, final Pageable pageable);
 
     @Transactional
     @Modifying
-    void deleteBySubscriber(final String subscriber);
+    void deleteByOrganization(final String organization);
 }

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 /**
- * Client to access vault containing subscriber's connection string.
+ * Client to access vault containing organization's connection string.
  */
 @Profile("azure")
 @Component
@@ -29,13 +29,13 @@ public class VaultAccessClient {
     private SecretClient secretClient;
 
     /**
-     * Retrieve the subscriber's connection string.
+     * Retrieve the organization's connection string.
      *
-     * @param subscriber the client subscriber.
-     * @return the subscriber's connection string.
+     * @param organization the client organization.
+     * @return the organization's connection string.
      */
-    public String getConnectionStringForSubscriber(final String subscriber) {
-        return Optional.ofNullable(subscriber)
+    public String getConnectionStringForOrganization(final String organization) {
+        return Optional.ofNullable(organization)
                 .map(sub -> secretClient.getSecret(sub.toUpperCase().replace("_", "-")))
                 .orElseThrow(FileStorageAccessExcepton::new).getValue();
     }

@@ -8,9 +8,15 @@
 
 package com.soprasteria.g4it.backend.apiworkspace.model;
 
+
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
+/**
+ * Organization Details Business Object.
+ */
 @Data
 @SuperBuilder
 public class OrganizationDetailsBO {
@@ -25,7 +31,7 @@ public class OrganizationDetailsBO {
     private String name;
 
     /**
-     * The 'status'.
+     * Organization's workspaces.
      */
-    private String status;
+    private List<WorkspaceDetailsBO> workspaces;
 }

@@ -8,18 +8,18 @@
 package com.soprasteria.g4it.backend.apiadministrator.business;
 
 
-import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
-import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
+import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
-import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserSearchBO;
+import com.soprasteria.g4it.backend.apiuser.model.WorkspaceBO;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Role;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -41,29 +41,29 @@ import java.util.stream.Collectors;
 public class AdministratorService {
 
     /**
-     * Repository to access subscriber data.
+     * Repository to access organization data.
      */
     @Autowired
-    SubscriberRepository subscriberRepository;
+    OrganizationRepository organizationRepository;
     /**
      * Repository to access user data.
      */
     UserRepository userRepository;
     /**
-     * Subscriber Mapper.
+     * Organization Mapper.
      */
     @Autowired
-    SubscriberRestMapper subscriberRestMapper;
+    OrganizationRestMapper organizationRestMapper;
     /**
      * The Administrator Role Service
      */
     @Autowired
     private AdministratorRoleService administratorRoleService;
     /**
-     * The Subscriber Service
+     * The Organization Service
      */
     @Autowired
-    private SubscriberService subscriberService;
+    private OrganizationService organizationService;
 
     /**
      * The User Service
@@ -72,65 +72,66 @@ public class AdministratorService {
     private UserService userService;
 
     /**
-     * Retrieve the list of subscribers for the user which has ROLE_SUBSCRIBER_ADMINISTRATOR on it
+     * Retrieve the list of organizations for the user which has ROLE_ORGANIZATION_ADMINISTRATOR on it
      *
      * @param user the user.
-     * @return the List<SubscriberBO>.
+     * @return the List<OrganizationBO>.
      */
-    public List<SubscriberBO> getSubscribers(final UserBO user) {
-        administratorRoleService.hasAdminRightsOnAnySubscriberOrAnyOrganization(user);
+    public List<OrganizationBO> getOrganizations(final UserBO user) {
+        administratorRoleService.hasAdminRightsOnAnyOrganizationOrAnyWorkspace(user);
 
-        List<SubscriberBO> resultSubscriberAdmin = user.getSubscribers().stream()
-                .filter(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)).toList();
+        List<OrganizationBO> resultOrganizationAdmin = user.getOrganizations().stream()
+                .filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
 
-        List<SubscriberBO> checkOrgAdmin = user.getSubscribers().stream()
-                .filter(subscriberBO -> subscriberBO.getRoles().isEmpty()).toList();
-        List<SubscriberBO> result = new ArrayList<>(resultSubscriberAdmin);
-        for (SubscriberBO subBO : checkOrgAdmin) {
-            List<OrganizationBO> organization = subBO.getOrganizations().stream().filter(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)).toList();
-            if (!organization.isEmpty()) {
-                subBO.setOrganizations(organization);
-                result.add(subBO);
+        List<OrganizationBO> checkWorkspaceAdmin = user.getOrganizations().stream()
+                .filter(organizationBO -> organizationBO.getRoles().isEmpty()).toList();
+        List<OrganizationBO> result = new ArrayList<>(resultOrganizationAdmin);
+        for (OrganizationBO orgBO : checkWorkspaceAdmin) {
+            List<WorkspaceBO> workspace = orgBO.getWorkspaces().stream()
+                    .filter(workspaceBO -> workspaceBO.getRoles().contains(Constants.ROLE_WORKSPACE_ADMINISTRATOR)).toList();
+            if (!workspace.isEmpty()) {
+                orgBO.setWorkspaces(workspace);
+                result.add(orgBO);
             }
         }
         return result;
     }
 
     /**
-     * @param subscriberId the subscriber id
-     * @param criteriaRest criteria to set
-     * @param user         the current user
-     * @return the SubscriberBo with updated criteria
+     * @param organizationId the organization id
+     * @param criteriaRest   criteria to set
+     * @param user           the current user
+     * @return the organizationBo with updated criteria
      */
-    public SubscriberBO updateSubscriberCriteria(final Long subscriberId, final CriteriaRest criteriaRest, final UserBO user) {
-        administratorRoleService.hasAdminRightsOnAnySubscriber(user);
-        Subscriber subscriberToUpdate = subscriberService.getSubscriptionById(subscriberId);
-        subscriberToUpdate.setCriteria(criteriaRest.getCriteria());
-        subscriberRepository.save(subscriberToUpdate);
+    public OrganizationBO updateOrganizationCriteria(final Long organizationId, final CriteriaRest criteriaRest, final UserBO user) {
+        administratorRoleService.hasAdminRightsOnAnyOrganization(user);
+        Organization organizationToUpdate = organizationService.getOrgById(organizationId);
+        organizationToUpdate.setCriteria(criteriaRest.getCriteria());
+        organizationRepository.save(organizationToUpdate);
         userService.clearUserAllCache();
-        return subscriberRestMapper.toBusinessObject(subscriberToUpdate);
+        return organizationRestMapper.toBusinessObject(organizationToUpdate);
     }
 
     /**
-     * Get all the users (filtered by authorized_domains of subscriber)
+     * Get all the users (filtered by authorized_domains of organization)
      *
-     * @param searchedName the string to be searched
-     * @param subscriberId the subscriber's id
-     * @param user         the  user
+     * @param searchedName   the string to be searched
+     * @param organizationId the organization's id
+     * @param user           the  user
      */
     public List<UserSearchBO> searchUserByName(final String searchedName,
-                                               final Long subscriberId,
                                                final Long organizationId,
+                                               final Long workspaceId,
                                                final UserBO user) {
 
-        administratorRoleService.hasAdminRightOnSubscriberOrOrganization(user, subscriberId, organizationId);
+        administratorRoleService.hasAdminRightOnOrganizationOrWorkspace(user, organizationId, workspaceId);
 
-        Subscriber subscriber = subscriberRepository.findById(subscriberId)
-                .orElseThrow(() -> new G4itRestException("404", String.format("Subscriber %d not found.", subscriberId)));
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Organization %d not found.", organizationId)));
 
-        if (subscriber.getAuthorizedDomains() == null) return List.of();
+        if (organization.getAuthorizedDomains() == null) return List.of();
 
-        Set<String> domains = Arrays.stream(subscriber.getAuthorizedDomains().replaceAll("\\s+", "").split(","))
+        Set<String> domains = Arrays.stream(organization.getAuthorizedDomains().replaceAll("\\s+", "").split(","))
                 .collect(Collectors.toSet());
 
         final List<User> searchedList = new ArrayList<>();
@@ -148,27 +149,27 @@ public class AdministratorService {
                 .<UserSearchBO>map(searchedUser -> {
 
                     List<String> userRoles = new ArrayList<>();
-                    if (searchedUser.getUserOrganizations() != null) {
-                        userRoles.addAll(searchedUser.getUserOrganizations().stream().filter(org -> org.getOrganization().getId() == organizationId)
+                    if (searchedUser.getUserWorkspaces() != null) {
+                        userRoles.addAll(searchedUser.getUserWorkspaces().stream().filter(org -> org.getWorkspace().getId() == workspaceId)
                                 .findFirst()
-                                .orElse(UserOrganization.builder().roles(List.of()).build())
+                                .orElse(UserWorkspace.builder().roles(List.of()).build())
                                 .getRoles().stream().map(Role::getName).toList());
                     }
 
-                    if (searchedUser.getUserSubscribers() != null) {
-                        userRoles.addAll(searchedUser.getUserSubscribers().stream()
-                                .filter(userSubscriber -> userSubscriber.getSubscriber().getId() == subscriberId)
-                                .map(userSubscriber -> userSubscriber.getUserRoleSubscriber().stream()
-                                        .map(userRoleSubscriber -> userRoleSubscriber.getRoles().getName())
+                    if (searchedUser.getUserOrganizations() != null) {
+                        userRoles.addAll(searchedUser.getUserOrganizations().stream()
+                                .filter(userOrganization -> userOrganization.getOrganization().getId() == organizationId)
+                                .map(userOrganization -> userOrganization.getUserRoleOrganization().stream()
+                                        .map(userRoleOrganization -> userRoleOrganization.getRoles().getName())
                                         .toList()
                                 )
                                 .flatMap(Collection::stream)
                                 .toList());
                     }
 
-                    List<Long> linkedOrgIds = searchedUser.getUserOrganizations() == null ? List.of() :
-                            searchedUser.getUserOrganizations().stream()
-                                    .map(userOrg -> userOrg.getOrganization().getId())
+                    List<Long> linkedWorkIds = searchedUser.getUserWorkspaces() == null ? List.of() :
+                            searchedUser.getUserWorkspaces().stream()
+                                    .map(userWork -> userWork.getWorkspace().getId())
                                     .toList();
 
                     return UserSearchBO.builder()
@@ -176,15 +177,15 @@ public class AdministratorService {
                             .firstName(searchedUser.getFirstName())
                             .lastName(searchedUser.getLastName())
                             .email(searchedUser.getEmail())
-                            .linkedOrgIds(linkedOrgIds)
+                            .linkedWorkIds(linkedWorkIds)
                             .roles(userRoles)
                             .build();
                 })
                 .toList();
     }
 
-    public SubscriberBO getSubscriberById(Long id) {
-        return subscriberRestMapper.toBusinessObject(subscriberRepository.findById(id).orElse(null));
+    public OrganizationBO getOrganizationById(Long id) {
+        return organizationRestMapper.toBusinessObject(organizationRepository.findById(id).orElse(null));
     }
 
 }

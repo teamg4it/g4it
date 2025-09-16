@@ -10,6 +10,7 @@ import {
     EventEmitter,
     inject,
     Input,
+    OnChanges,
     Output,
     SimpleChanges,
 } from "@angular/core";
@@ -19,7 +20,7 @@ import { TranslateService } from "@ngx-translate/core";
     selector: "app-impact-aggregate-infos",
     templateUrl: "./impact-aggregate-infos.component.html",
 })
-export class ImpactAggregateInfosComponent {
+export class ImpactAggregateInfosComponent implements OnChanges {
     private readonly translate = inject(TranslateService);
 
     @Input() displayValue = 0;

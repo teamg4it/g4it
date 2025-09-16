@@ -8,7 +8,7 @@
 package com.soprasteria.g4it.backend.apiinventory.repository;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -38,28 +38,28 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     /**
      * Find by organization and the inventory id and return  a list of matching inventories
      *
-     * @param organization the unique organization identifier.
+     * @param workspace the unique workspace identifier.
      * @return a list of matching inventories
      */
-    Optional<Inventory> findByOrganizationAndId(final Organization organization,
-                                                final Long inventoryId);
+    Optional<Inventory> findByWorkspaceAndId(final Workspace workspace,
+                                             final Long inventoryId);
 
     /**
-     * Find by subscriber and organization then return a list of inventories
+     * Find by workspace and workspace then return a list of inventories
      *
-     * @param organization the linked organization
+     * @param workspace the linked workspace
      * @return a list of inventory
      */
-    List<Inventory> findByOrganization(final Organization organization);
+    List<Inventory> findByWorkspace(final Workspace workspace);
 
 
     /**
-     * Find by organization and the inventory name and return  a list of matching inventories
+     * Find by workspace and the inventory name and return  a list of matching inventories
      *
-     * @param organization the unique organization identifier.
-     * @param name         the inventory name.
+     * @param workspace the unique workspace identifier.
+     * @param name      the inventory name.
      * @return a list of matching inventories
      */
-    Optional<Inventory> findByOrganizationAndName(final Organization organization, final String name);
-    
+    Optional<Inventory> findByWorkspaceAndName(final Workspace workspace, final String name);
+
 }

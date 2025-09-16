@@ -13,12 +13,12 @@ package com.soprasteria.g4it.backend.common.filesystem.business;
 public interface FileSystem {
 
     /**
-     * Mount file storage for given subscriber.
+     * Mount file storage for given organization.
      *
-     * @param subscriber   the client subscriber.
-     * @param organization the subscriber organization.
-     * @return a FileStorage for this subscriber.
+     * @param organization the client organization.
+     * @param workspace the organization's workspace.
+     * @return a FileStorage for this organization.
      */
-    FileStorage mount(final String subscriber, final String organization);
+    FileStorage mount(final String organization, final String workspace);
 
 }

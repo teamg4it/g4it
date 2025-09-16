@@ -29,8 +29,8 @@ public class TaskController implements TaskApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<TaskRest> getTask(final String subscriber,
-                                            final Long organization,
+    public ResponseEntity<TaskRest> getTask(final String organization,
+                                            final Long workspace,
                                             final Long taskId
     ) {
         return ResponseEntity.ok(taskService.getTask(taskId));

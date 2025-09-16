@@ -15,11 +15,11 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.LoadInputFilesService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.*;
 class LoadInputFilesServiceTest {
 
     @Mock
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     @Mock
     private TaskRepository taskRepository;
@@ -74,8 +74,8 @@ class LoadInputFilesServiceTest {
 
     @Test
     void loadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         Long inventoryId = 1L;
         List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
         List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
@@ -89,30 +89,31 @@ class LoadInputFilesServiceTest {
                 .createdBy(User.builder().id(1L).firstName("test").lastName("user").email("test.user@gmail.com").build())
                 .build();
 
-        Organization organization = Organization.builder()
-                .id(organizationId)
-                .name("Test Organization")
+        Workspace workspace = Workspace.builder()
+                .id(workspaceId)
+                .name("Test Workspace")
                 .build();
 
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(inventoryRepository.findById(inventoryId)).thenReturn(Optional.of(inventory));
-        when(organizationService.getOrganizationById(organizationId)).thenReturn(organization);
+        when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
         when(taskRepository.findByInventoryAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
 
-        Task result = loadInputFilesService.loadFiles(subscriber, organizationId, inventoryId, datacenters, physicalEquipments, virtualEquipments, applications);
+        Task result = loadInputFilesService.loadFiles(organization, workspaceId, inventoryId, datacenters, physicalEquipments, virtualEquipments, applications);
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
+
     @Test
     void digitalServiceLoadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         String digitalServiceUid = "uid";
         List<MultipartFile> datacenters = List.of(mock(MultipartFile.class));
         List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
@@ -122,21 +123,21 @@ class LoadInputFilesServiceTest {
                 .uid(digitalServiceUid)
                 .build();
 
-        Organization organization = Organization.builder()
-                .id(organizationId)
-                .name("Test Organization")
+        Workspace workspace = Workspace.builder()
+                .id(workspaceId)
+                .name("Test Workspace")
                 .build();
 
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
         when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
-        when(organizationService.getOrganizationById(organizationId)).thenReturn(organization);
+        when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
         when(taskRepository.findByDigitalServiceAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
 
-        Task result = loadInputFilesService.loadDigitalServiceFiles(subscriber, organizationId, digitalServiceUid, datacenters, physicalEquipments, virtualEquipments);
+        Task result = loadInputFilesService.loadDigitalServiceFiles(organization, workspaceId, digitalServiceUid, datacenters, physicalEquipments, virtualEquipments);
 
         assertNotNull(result);
         verify(taskRepository).save(any(Task.class));
@@ -145,11 +146,11 @@ class LoadInputFilesServiceTest {
 
     @Test
     void loadFiles_returnsEmptyTask_whenNoFilesProvided() {
-        String subscriber = "testSubscriber";
-        Long organizationId = 1L;
+        String organization = "testOrganization";
+        Long workspaceId = 1L;
         Long inventoryId = 1L;
 
-        Task result = loadInputFilesService.loadFiles(subscriber, organizationId, inventoryId, null, null, null, null);
+        Task result = loadInputFilesService.loadFiles(organization, workspaceId, inventoryId, null, null, null, null);
 
         assertNotNull(result);
         assertNull(result.getId());
@@ -165,10 +166,10 @@ class LoadInputFilesServiceTest {
                 .type(TaskType.LOADING.toString())
                 .inventory(Inventory.builder()
                         .id(1L)
-                        .organization(Organization.builder()
+                        .workspace(Workspace.builder()
                                 .id(1L)
-                                .name("Test Organization")
-                                .subscriber(Subscriber.builder().name("testSubscriber").build())
+                                .name("Test Workspace")
+                                .organization(Organization.builder().name("testOrganization").build())
                                 .build())
                         .virtualEquipmentCount(1L)
                         .applicationCount(1L)
@@ -183,6 +184,7 @@ class LoadInputFilesServiceTest {
         verify(taskRepository).save(any(Task.class));
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
+
     @Test
     void restartDigitalService_LoadingFiles_restartsTasks_whenTasksAreStale() {
         Task staleTask = Task.builder()
@@ -192,10 +194,10 @@ class LoadInputFilesServiceTest {
                 .type(TaskType.LOADING.toString())
                 .digitalService(DigitalService.builder()
                         .uid("uid")
-                        .organization(Organization.builder()
+                        .workspace(Workspace.builder()
                                 .id(1L)
-                                .name("Test Organization")
-                                .subscriber(Subscriber.builder().name("testSubscriber").build())
+                                .name("Test Workspace")
+                                .organization(Organization.builder().name("testOrganization").build())
                                 .build())
                         .build())
                 .build();

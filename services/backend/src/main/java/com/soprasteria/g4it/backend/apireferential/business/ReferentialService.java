@@ -56,30 +56,45 @@ public class ReferentialService {
 
     }
 
-    public List<HypothesisRest> getHypotheses(String subscriber) {
-        final List<HypothesisRest> result = new ArrayList<>(referentialGetService.getHypotheses(subscriber));
+    /**
+     *
+     * @param organization (mapped to subscriber column in table)
+     * @return List<HypothesisRest>
+     */
 
-        final Set<String> subscriberHypotheseCodes = result.stream()
+    public List<HypothesisRest> getHypotheses(String organization) {
+        final List<HypothesisRest> result = new ArrayList<>(referentialGetService.getHypotheses(organization));
+
+        final Set<String> organizationHypotheseCodes = result.stream()
                 .map(HypothesisRest::getCode)
                 .collect(Collectors.toSet());
 
         result.addAll(referentialGetService.getHypotheses(null).stream()
-                .filter(hypothesisRest -> !subscriberHypotheseCodes.contains(hypothesisRest.getCode()))
+                .filter(hypothesisRest -> !organizationHypotheseCodes.contains(hypothesisRest.getCode()))
                 .toList());
 
         return result;
     }
 
-    public MatchingItemRest getMatchingItem(String model, String subscriber) {
-        MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, subscriber);
+    /**
+     *
+     * @param organization (mapped to subscriber column in table)
+     * @return MatchingItemRest
+     */
+    public MatchingItemRest getMatchingItem(String model, String organization) {
+        MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, organization);
         if (matchingItem == null) {
             matchingItem = referentialGetService.getMatchingItem(model, null);
         }
         return matchingItem;
     }
 
-    public ItemTypeRest getItemType(String type, String subscriber) {
-        List<ItemTypeRest> itemTypeRestList = referentialGetService.getItemTypes(type, subscriber);
+    /**
+     * @param organization (mapped to subscriber column in table)
+     * @return ItemTypeRest
+     */
+    public ItemTypeRest getItemType(String type, String organization) {
+        List<ItemTypeRest> itemTypeRestList = referentialGetService.getItemTypes(type, organization);
         if (itemTypeRestList.isEmpty()) {
             itemTypeRestList = referentialGetService.getItemTypes(type, null);
         }
@@ -87,17 +102,22 @@ public class ReferentialService {
         return itemTypeRestList.getFirst();
     }
 
+    /**
+     *
+     * @param organization (mapped to subscriber in table)
+     * @return List<ItemImpactRest>
+     */
     public List<ItemImpactRest> getItemImpacts(final String criterion, final String lifecycleStep, final String name,
-                                               final String location, final String subscriber) {
+                                               final String location, final String organization) {
         List<ItemImpactRest> itemImpacts = new ArrayList<>(referentialGetService.getItemImpacts(criterion, lifecycleStep,
-                name, null, null, subscriber));
+                name, null, null, organization));
 
         if (itemImpacts.isEmpty()) {
             itemImpacts = new ArrayList<>(referentialGetService.getItemImpacts(criterion, lifecycleStep,
                     name, null, null, null));
         }
 
-        List<ItemImpactRest> electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpacts(criterion, null, null, location, "electricity-mix", subscriber));
+        List<ItemImpactRest> electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpacts(criterion, null, null, location, "electricity-mix", organization));
         if (electricityMixImpact.isEmpty()) {
             electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpacts(criterion, null, null, location, "electricity-mix", null));
         }

@@ -79,3 +79,4 @@ databaseChangeLog:
                   name: creation_date
                   value: ${now}
             tableName: organization_domain_mapping
+

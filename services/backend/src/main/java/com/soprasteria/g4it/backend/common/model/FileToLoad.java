@@ -24,8 +24,8 @@ public class FileToLoad {
     private String originalFileName;
     private FileType fileType;
     private Path filePath;
-    private String subscriber;
-    private Long organizationId;
+    private String organization;
+    private Long workspaceId;
     private File convertedFile;
 
     private Map<Integer, List<LineError>> coherenceErrorByLineNumer = new HashMap<>();

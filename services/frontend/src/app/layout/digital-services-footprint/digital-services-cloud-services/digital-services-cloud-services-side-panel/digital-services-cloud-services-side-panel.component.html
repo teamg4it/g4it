@@ -238,12 +238,12 @@
                         *ngIf="
                             !isNew && (userService.isAllowedDigitalServiceWrite$ | async)
                         "
-                        (click)="deleteServerCloud()"
+                        (onClick)="deleteServerCloud()"
                         >{{ "common.delete" | translate }}</p-button
                     >
                     <p-button
                         styleClass="white-button"
-                        (click)="close()"
+                        (onClick)="close()"
                         id="cloud-cancel"
                         >{{ "common.cancel" | translate }}</p-button
                     >

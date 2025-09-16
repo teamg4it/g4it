@@ -122,7 +122,7 @@ class EvaluateAiServiceTest {
 
     @Test
     void testDoEvaluateAiSuccess() throws Exception {
-        when(context.getSubscriber()).thenReturn("sub");
+        when(context.getOrganization()).thenReturn("org");
         when(context.getDigitalServiceUid()).thenReturn("uid");
         when(context.getDigitalServiceName()).thenReturn("Digital Service 1");
         when(context.log()).thenReturn("context-log");

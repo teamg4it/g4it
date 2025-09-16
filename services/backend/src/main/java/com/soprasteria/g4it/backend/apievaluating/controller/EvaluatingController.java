@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 /**
- * Inventory Loading Rest Service.
+ * Inventory Evaluating end points.
  */
 @Service
 @NoArgsConstructor
@@ -33,14 +33,14 @@ public class EvaluatingController implements EvaluatingApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<TaskIdRest> launchEvaluating(final String subscriber,
-                                                       final Long organization,
+    public ResponseEntity<TaskIdRest> launchEvaluating(final String organization,
+                                                       final Long workspace,
                                                        final Long inventoryId,
                                                        String acceptLanguage
     ) {
         return ResponseEntity.ok(taskMapper.mapTaskId(
                 evaluatingService.evaluating(
-                        subscriber, organization, inventoryId
+                        organization, workspace, inventoryId
                 )
         ));
     }
@@ -50,14 +50,14 @@ public class EvaluatingController implements EvaluatingApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<TaskIdRest> launchEvaluatingDigitalService(final String subscriber,
-                                                                     final Long organization,
+    public ResponseEntity<TaskIdRest> launchEvaluatingDigitalService(final String organization,
+                                                                     final Long workspace,
                                                                      final String digitalServiceUid,
                                                                      String acceptLanguage
     ) {
         return ResponseEntity.ok(taskMapper.mapTaskId(
                 evaluatingService.evaluatingDigitalService(
-                        subscriber, organization, digitalServiceUid
+                         organization, workspace, digitalServiceUid
                 )
         ));
     }

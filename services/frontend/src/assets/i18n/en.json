@@ -175,7 +175,7 @@
         "not-found": "Digital service does not exist.",
         "expired": "Digital service link is expired.",
         "linkCopied": "LINK COPIED !",
-        "title": "My Digital Services - {{OrganizationName}}",
+        "title": "My Digital Services - {{WorkspaceName}}",
         "page-title": "My Digital Services",
         "add": "Evaluate New Service",
         "empty-digital-services": "You do not have any digital service.",
@@ -228,7 +228,7 @@
         "not-found": "Digital service AI does not exist.",
         "expired": "Digital service AI link is expired.",
         "linkCopied": "LINK COPIED !",
-        "title": "My Digital Services AI - {{OrganizationName}}",
+        "title": "My Digital Services AI - {{WorkspaceName}}",
         "page-title": "My Digital Services AI",
         "add": "Evaluate New Service AI",
         "empty-digital-services": "You do not have any digital service.",
@@ -454,7 +454,7 @@
         "hello": "Hello",
         "about-g4it": "G4IT is designed to help to implement a <strong>sustainable digital approach</strong> for your <strong>information systems</strong> and <strong>digital services.</strong>",
         "getting-started": "Getting started",
-        "getting-started-text": "When you first log in, a demo workspace is available to you. You can switch between workspaces at any time via the menu in the top right corner of the application (the name of the current workspace is displayed). You also have the option to create a new workspace within your {{ subscriberName }} organization to conduct your own assessments and invite other users to join you.",
+        "getting-started-text": "When you first log in, a demo workspace is available to you. You can switch between workspaces at any time via the menu in the top right corner of the application (the name of the current workspace is displayed). You also have the option to create a new workspace within your {{ organizationName }} organization to conduct your own assessments and invite other users to join you.",
         "modules-access": "Modules access",
         "inventories": {
             "title": "Inventories",
@@ -496,7 +496,7 @@
         "inventory": "Inventory",
         "page-title": "My Information System",
         "equipment-page-title": "My impact G4IT",
-        "title": "My Information System - {{OrganizationName}}",
+        "title": "My Information System - {{WorkspaceName}}",
         "add": "New inventory",
         "created": "created",
         "details.equipment": "EQUIPMENT",
@@ -683,17 +683,17 @@
             "title": "Maximum file size exceeded",
             "text": "The maximum file size for import is 100MB"
         },
-        "subscriber-or-organization-not-found": {
-            "title": "No souscripteur or organisation found",
-            "text": "Please ask your administrator to attach you to an organization"
-        },
-        "insuffisant-right-subscriber": {
-            "title": "Subscriber not authorized",
-            "text": "Please ask your administrator to attach you to the subscriber"
+        "organization-or-workspace-not-found": {
+            "title": "No organization or workspace found",
+            "text": "Please ask your administrator to attach you to an workspace"
         },
         "insuffisant-right-organization": {
             "title": "Organization not authorized",
             "text": "Please ask your administrator to attach you to the organization"
+        },
+        "insuffisant-right-workspace": {
+            "title": "Workspace not authorized",
+            "text": "Please ask your administrator to attach you to the workspace"
         },
         "boavitzapi-no-country-found": {
             "title": "Boavizta referential",
@@ -918,7 +918,7 @@
             "searchEmailValidation": "Special characters are not allowed except @.-_",
             "delete-message": "The user {{FirstName}} {{LastName}} will no longer have access to this organization. Are you sure you want to proceed ?",
             "search": "Search",
-            "choose-criteria": "Choose criteria for organization {{subscriber}}",
+            "choose-criteria": "Choose criteria for organization {{organization}}",
             "error": "At least one criteria must be selected",
             "is-header": "Information system module",
             "ds-header": "Digital service module",
@@ -940,7 +940,7 @@
             "accessibility": {
                 "addAnOrganization": "Add a workspace"
             },
-            "choose-criteria": "Choose criteria for workspace {{organizationName}}",
+            "choose-criteria": "Choose criteria for workspace {{workspaceName}}",
             "error": "At least one criteria must be selected",
             "information-system-module": "Module système d'information",
             "digital-service-module": "Module de services numériques"

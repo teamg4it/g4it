@@ -94,8 +94,8 @@ class FileSystemServiceTest {
 
     @Test
     void testDeleteFile_Success() throws Exception {
-        String subscriber = "user";
-        Long orgId = 1L;
+        String organization = "user";
+        Long workId = 1L;
         FileFolder folder = FileFolder.INPUT;
         String fileUrl = "url/file.txt";
         String fileName = "file.txt";
@@ -105,18 +105,18 @@ class FileSystemServiceTest {
         FileSystemService spyService = Mockito.spy(fileSystemService);
         doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
 
-        when(fileSystem.mount(subscriber, orgId.toString())).thenReturn(fileStorage);
+        when(fileSystem.mount(organization, workId.toString())).thenReturn(fileStorage);
         when(fileStorage.getFileUrl(folder, fileName)).thenReturn(expectedPath);
 
-        String result = spyService.deleteFile(subscriber, orgId, folder, fileUrl);
+        String result = spyService.deleteFile(organization, workId, folder, fileUrl);
 
         assertEquals(expectedPath, result);
         verify(fileStorage).delete(folder, fileName);
     }
     @Test
     void testDeleteFile_FileNotFound() throws Exception {
-        String subscriber = "user";
-        Long orgId = 1L;
+        String organization = "user";
+        Long workId = 1L;
         FileFolder folder = FileFolder.INPUT;
         String fileUrl = "url/file.txt";
         String fileName = "file.txt";
@@ -126,21 +126,21 @@ class FileSystemServiceTest {
         FileSystemService spyService = Mockito.spy(fileSystemService);
         doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
 
-        when(fileSystem.mount(subscriber, orgId.toString())).thenReturn(fileStorage);
+        when(fileSystem.mount(organization, workId.toString())).thenReturn(fileStorage);
         when(fileStorage.getFileUrl(folder, fileName)).thenReturn(expectedPath);
 
         when(mockResponse.getStatusCode()).thenReturn(404);
         doThrow(new BlobStorageException("Not found", mockResponse, null)).when(fileStorage).delete(folder, fileName);
 
-        String result = spyService.deleteFile(subscriber, orgId, folder, fileUrl);
+        String result = spyService.deleteFile(organization, workId, folder, fileUrl);
 
         assertEquals(expectedPath, result);
     }
 
     @Test
     void testDeleteFile_OtherException() throws Exception {
-        String subscriber = "user";
-        Long orgId = 1L;
+        String organization = "user";
+        Long workId = 1L;
         FileFolder folder = FileFolder.INPUT;
         String fileUrl = "url/file.txt";
         String fileName = "file.txt";
@@ -149,11 +149,11 @@ class FileSystemServiceTest {
         FileSystemService spyService = Mockito.spy(fileSystemService);
         doReturn(fileName).when(spyService).getFilenameFromUrl(fileUrl, 0);
 
-        when(fileSystem.mount(subscriber, orgId.toString())).thenReturn(fileStorage);
+        when(fileSystem.mount(organization, workId.toString())).thenReturn(fileStorage);
         when(fileStorage.getFileUrl(folder, fileName)).thenReturn(expectedPath);
         doThrow(new IOException("IO Error")).when(fileStorage).delete(folder, fileName);
 
-        String result = spyService.deleteFile(subscriber, orgId, folder, fileUrl);
+        String result = spyService.deleteFile(organization, workId, folder, fileUrl);
 
         assertEquals(expectedPath, result);
     }

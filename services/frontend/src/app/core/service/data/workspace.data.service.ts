@@ -2,7 +2,10 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Constants } from "src/constants";
-import { DomainSubscribers, Workspace } from "../../interfaces/administration.interfaces";
+import {
+    DomainOrganizations,
+    WorkspaceNameObj,
+} from "../../interfaces/administration.interfaces";
 
 const workspaceEndpoint = Constants.ENDPOINTS.workspace;
 
@@ -11,18 +14,18 @@ const workspaceEndpoint = Constants.ENDPOINTS.workspace;
 })
 export class WorkspaceDataService {
     private readonly http = inject(HttpClient);
-    getDomainSubscribers(body: { email?: string }): Observable<DomainSubscribers[]> {
-        return this.http.post<DomainSubscribers[]>(
-            `${workspaceEndpoint}/domain-subscribers`,
+    getDomainOrganizations(body: { email?: string }): Observable<DomainOrganizations[]> {
+        return this.http.post<DomainOrganizations[]>(
+            `${workspaceEndpoint}/domain-organizations`,
             body,
         );
     }
 
     postUserWorkspace(body: {
-        subscriberId?: number;
+        organizationId?: number;
         name?: string;
         status?: string;
-    }): Observable<Workspace> {
-        return this.http.post<Workspace>(`${workspaceEndpoint}/organizations`, body);
+    }): Observable<WorkspaceNameObj> {
+        return this.http.post<WorkspaceNameObj>(`${workspaceEndpoint}/workspaces`, body);
     }
 }

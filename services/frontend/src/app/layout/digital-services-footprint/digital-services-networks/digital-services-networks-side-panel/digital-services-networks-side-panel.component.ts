@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
@@ -19,7 +19,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     templateUrl: "./digital-services-networks-side-panel.component.html",
     providers: [MessageService],
 })
-export class DigitalServicesNetworksSidePanelComponent {
+export class DigitalServicesNetworksSidePanelComponent implements OnInit {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;

@@ -15,8 +15,8 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import org.junit.jupiter.api.Test;
@@ -93,13 +93,13 @@ class InDatacenterServiceTest {
 
     @Test
     void createInDatacenterInventory() {
-        var organization = Organization.builder()
+        var organization = Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .organization(Organization.builder().name("SUBSCRIBER").build())
                 .build();
         var inventory = Inventory.builder()
                 .name("Inventory Name")
-                .organization(organization)
+                .workspace(organization)
                 .doExportVerbose(true)
                 .build();
         InDatacenterRest inDatacenterRest = new InDatacenterRest();
@@ -201,14 +201,14 @@ class InDatacenterServiceTest {
 
     @Test
     void createInDatacenterDigitalService() {
-        var organization = Organization.builder()
+        var organization = Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .organization(Organization.builder().name("SUBSCRIBER").build())
                 .build();
         var digitalService = DigitalService.builder()
                 .name("DS_Name")
                 .uid("dummy_id")
-                .organization(organization)
+                .workspace(organization)
                 .build();
         InDatacenterRest inDatacenterRest = new InDatacenterRest();
         InDatacenter inDatacenter = InDatacenter.builder().name("datacenter_name").build();

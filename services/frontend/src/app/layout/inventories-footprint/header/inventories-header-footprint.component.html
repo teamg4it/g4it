@@ -8,8 +8,7 @@
             [ariaLabel]="'inventories.return' | translate"
             icon="pi pi-arrow-left"
             [label]="
-                'inventories.title'
-                    | translate: { OrganizationName: selectedOrganization }
+                'inventories.title' | translate: { WorkspaceName: selectedWorkspace }
             "
             id="my-is-return-button"
         />
@@ -34,7 +33,7 @@
 
         <p-button
             *ngIf="inventory.note"
-            (click)="sidebarVisible = true"
+            (onClick)="sidebarVisible = true"
             styleClass="text-gray-900 header-button"
             [text]="true"
             [plain]="true"
@@ -46,10 +45,10 @@
         <p-button
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
-            (click)="download($event)"
+            (onClick)="download($event)"
             [disabled]="downloadInProgress"
             *ngIf="
-                selectedOrganization?.toLowerCase() === 'demo' ||
+                selectedWorkspace?.toLowerCase() === 'demo' ||
                 (userService.isAllowedInventoryWrite$ | async)
             "
             id="export-inventory-button"

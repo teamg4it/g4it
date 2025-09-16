@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
-import { DomainSubscribers } from "src/app/core/interfaces/administration.interfaces";
+import { DomainOrganizations } from "src/app/core/interfaces/administration.interfaces";
 import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
 import { User } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
@@ -70,9 +70,8 @@ export class WorkspaceComponent implements OnInit {
     @Output() sidebarVisibleChange: EventEmitter<any> = new EventEmitter();
 
     selectedMenuIndex: number | null = null;
-    subscribersDetails: any;
-    organizationlist: DomainSubscribers[] = [];
-    existingOrganization: any = [];
+    organizationlist: DomainOrganizations[] = [];
+    existingWorkspace: any = [];
 
     constructor(
         private readonly workspaceService: WorkspaceService,
@@ -94,15 +93,14 @@ export class WorkspaceComponent implements OnInit {
     });
 
     ngOnInit() {
-        this.getDomainSubscribersList();
+        this.getDomainOrganizationsList();
         this.selectTab(0);
 
         this.spaceForm.get("organization")?.valueChanges.subscribe((value) => {
             if (value) {
-                this.existingOrganization =
-                    this.organizationlist?.find(
-                        (subscriber: any) => subscriber.id === value,
-                    )?.organizations ?? [];
+                this.existingWorkspace =
+                    this.organizationlist?.find((org) => org.id === value)?.workspaces ??
+                    [];
                 this.spaceForm.get("spaceName")?.updateValueAndValidity();
             }
         });
@@ -117,7 +115,7 @@ export class WorkspaceComponent implements OnInit {
             return { spaceNotAllowed: true };
         } else if (control?.value) {
             const getSpaceName =
-                this.existingOrganization?.find(
+                this.existingWorkspace?.find(
                     (data: any) => data.name.toLowerCase() == control.value.toLowerCase(),
                 ) ?? undefined;
             if (getSpaceName) {
@@ -153,14 +151,14 @@ export class WorkspaceComponent implements OnInit {
         });
     }
 
-    async getDomainSubscribersList() {
+    async getDomainOrganizationsList() {
         const userEmail = (await firstValueFrom(this.userService.user$)).email;
 
         if (userEmail) {
             const body = {
                 email: userEmail,
             };
-            this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
+            this.workspaceService.getDomainOrganizations(body).subscribe((res) => {
                 this.organizationlist = res;
                 this.spaceForm
                     .get("organization")
@@ -192,18 +190,17 @@ export class WorkspaceComponent implements OnInit {
     createSpace() {
         if (this.spaceForm.valid) {
             const body = {
-                subscriberId: this.spaceForm.value["organization"] ?? undefined,
+                organizationId: this.spaceForm.value["organization"] ?? undefined,
                 name: this.spaceForm.value["spaceName"]?.trim() ?? undefined,
                 status: "ACTIVE",
             };
             this.workspaceService.postUserWorkspace(body).subscribe((res) => {
-                const subscriber =
+                const organization =
                     this.organizationlist?.find(
-                        (subscriber: any) =>
-                            subscriber.id === this.spaceForm.value["organization"],
+                        (org) => org.id === this.spaceForm.value["organization"],
                     ) ?? undefined;
                 this.closeSidebar();
-                if (subscriber) {
+                if (organization) {
                     this.userDataService
                         .fetchUserInfo()
                         .pipe(take(1))
@@ -215,23 +212,23 @@ export class WorkspaceComponent implements OnInit {
                                 page === Constants.ENDPOINTS.inventories
                             ) {
                                 this.router.navigateByUrl(
-                                    `subscribers/${subscriber.name}/organizations/${res.id}/${page}`,
+                                    `organizations/${organization.name}/workspaces/${res.id}/${page}`,
                                 );
                             } else {
-                                const newSubscriber = user.subscribers.find(
-                                    (sub) => sub.name === subscriber.name,
+                                const newOrganization = user.organizations.find(
+                                    (sub) => sub.name === organization.name,
                                 );
-                                let newOrganization;
-                                if (newSubscriber && newSubscriber?.organizations) {
-                                    newOrganization = newSubscriber?.organizations.find(
+                                let newWorkspace;
+                                if (newOrganization?.workspaces) {
+                                    newWorkspace = newOrganization.workspaces.find(
                                         (org) => org.id === res.id,
                                     );
                                 }
-                                if (newSubscriber && newOrganization) {
-                                    // To set the new subscriber and organization in the user service. So that Top component is updated with new workspace which created
-                                    this.userService.setSubscriberAndOrganization(
-                                        newSubscriber,
+                                if (newOrganization && newWorkspace) {
+                                    // To set the new organization and workspace in the user service. So that Top component is updated with new workspace which created
+                                    this.userService.setOrganizationAndWorkspace(
                                         newOrganization,
+                                        newWorkspace,
                                     );
                                 }
                                 if (routeSplit.includes("administration")) {

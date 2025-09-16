@@ -63,20 +63,20 @@ public class ReferentialExportService {
      * Export a referential to csv format
      *
      * @param type       the referential type
-     * @param subscriber subscriber
+     * @param organization organization (mapped to subscriber column in table)
      * @return the inputstream
      */
-    public InputStream exportReferentialToCSV(String type, String subscriber) throws IOException {
+    public InputStream exportReferentialToCSV(String type, String organization) throws IOException {
 
         return switch (type) {
             case "lifecycleStep" -> exportToCsv(lifecycleStepRepository.findAll(), type, LifecycleStep.getCsvHeaders());
             case "criterion" -> exportToCsv(criterionRepository.findAll(), type, Criterion.getCsvHeaders());
             case "hypothesis" ->
-                    exportToCsv(hypothesisRepository.findBySubscriber(subscriber), type, Hypothesis.getCsvHeaders());
+                    exportToCsv(hypothesisRepository.findByOrganization(organization), type, Hypothesis.getCsvHeaders());
             case "itemType" ->
-                    exportToCsv(itemTypeRepository.findBySubscriber(subscriber), type, ItemType.getCsvHeaders());
-            case "matchingItem" -> exportMatchingItems(type, subscriber, MatchingItem.getCsvHeaders());
-            case "itemImpact" -> exportItemImpacts(type, subscriber, ItemImpact.getCsvHeaders());
+                    exportToCsv(itemTypeRepository.findByOrganization(organization), type, ItemType.getCsvHeaders());
+            case "matchingItem" -> exportMatchingItems(type, organization, MatchingItem.getCsvHeaders());
+            case "itemImpact" -> exportItemImpacts(type, organization, ItemImpact.getCsvHeaders());
             default ->
                     throw new BadRequestException("type", String.format("type of referential '%s' does not exist", type));
         };
@@ -132,11 +132,11 @@ public class ReferentialExportService {
      * Exports matching items to CSV format for large data
      *
      * @param type       The type
-     * @param subscriber The subscriber to filter matching items by, or null for all.
+     * @param organization The organization(mapped to subscriber column in table) to filter matching items by, or null for all.
      * @param header     The header array
      * @return the inputstream
      */
-    public InputStream exportMatchingItems(String type, String subscriber, final String[] header) throws IOException {
+    public InputStream exportMatchingItems(String type, String organization, final String[] header) throws IOException {
         CSVFormat csvFormat = CSVFormat.Builder.create()
                 .setHeader(header)
                 .setDelimiter(CsvUtils.DELIMITER)
@@ -151,7 +151,7 @@ public class ReferentialExportService {
             do {
                 Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE);
 
-                matchingItems = matchingItemRepository.findBySubscriber(subscriber, pageable);
+                matchingItems = matchingItemRepository.findByOrganization(organization, pageable);
 
                 for (MatchingItem item : matchingItems.getContent()) {
                     csvPrinter.printRecord(item.toCsvRecord());
@@ -170,11 +170,11 @@ public class ReferentialExportService {
      * Exports item impacts to CSV format for large data
      *
      * @param type       The type
-     * @param subscriber The subscriber to filter item impacts by, or null for all.
+     * @param organization The organization(mapped to subscriber column in table) to filter item impacts by, or null for all.
      * @param header     The header array
      * @return the inputstream
      */
-    public InputStream exportItemImpacts(String type, String subscriber, final String[] header) throws IOException {
+    public InputStream exportItemImpacts(String type, String organization, final String[] header) throws IOException {
         CSVFormat csvFormat = CSVFormat.Builder.create()
                 .setHeader(header)
                 .setDelimiter(CsvUtils.DELIMITER)
@@ -189,7 +189,7 @@ public class ReferentialExportService {
             do {
                 Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE);
 
-                itemImpacts = itemImpactRepository.findBySubscriber(subscriber, pageable);
+                itemImpacts = itemImpactRepository.findByOrganization(organization, pageable);
 
                 for (ItemImpact item : itemImpacts.getContent()) {
                     csvPrinter.printRecord(item.toCsvRecord());

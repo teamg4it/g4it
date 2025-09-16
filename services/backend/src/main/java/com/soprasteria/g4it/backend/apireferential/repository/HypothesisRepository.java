@@ -19,9 +19,9 @@ import java.util.List;
 @Repository
 public interface HypothesisRepository extends JpaRepository<Hypothesis, Long> {
 
-    List<Hypothesis> findBySubscriber(final String subscriber);
+    List<Hypothesis> findByOrganization(final String organization);
 
     @Transactional
     @Modifying
-    void deleteBySubscriber(final String subscriber);
+    void deleteByOrganization(final String organization);
 }

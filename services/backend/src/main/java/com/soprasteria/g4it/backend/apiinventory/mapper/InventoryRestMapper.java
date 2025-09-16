@@ -22,7 +22,7 @@ public interface InventoryRestMapper {
 
     InventoryRest toDto(final InventoryBO entity);
 
-    @Mapping(target = "organizationId", source = "organization.id")
-    @Mapping(target = "organizationStatus", source = "organization.status")
+    @Mapping(target = "workspaceId", source = "workspace.id")
+    @Mapping(target = "workspaceStatus", source = "workspace.status")
     List<InventoryRest> toRest(final List<InventoryBO> entities);
 }

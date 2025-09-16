@@ -74,8 +74,8 @@ public final class Constants {
     public static final String ROLE_INVENTORY_WRITE = "ROLE_INVENTORY_WRITE";
     public static final String ROLE_DIGITAL_SERVICE_READ = "ROLE_DIGITAL_SERVICE_READ";
     public static final String ROLE_DIGITAL_SERVICE_WRITE = "ROLE_DIGITAL_SERVICE_WRITE";
-    public static final String ROLE_SUBSCRIBER_ADMINISTRATOR = "ROLE_SUBSCRIBER_ADMINISTRATOR";
     public static final String ROLE_ORGANIZATION_ADMINISTRATOR = "ROLE_ORGANIZATION_ADMINISTRATOR";
+    public static final String ROLE_WORKSPACE_ADMINISTRATOR = "ROLE_WORKSPACE_ADMINISTRATOR";
     public static final String ROLE_SUPER_ADMINISTRATOR = "ROLE_SUPER_ADMINISTRATOR";
     public static final String ROLE_ECO_MIND_AI_READ = "ROLE_ECO_MIND_AI_READ";
     public static final String ROLE_ECO_MIND_AI_WRITE = "ROLE_ECO_MIND_AI_WRITE";
@@ -88,16 +88,16 @@ public final class Constants {
             ROLE_ECO_MIND_AI_READ,
             ROLE_ECO_MIND_AI_WRITE
     );
-    public static final List<String> SUBSCRIBER_ROLES = Stream.concat(
-                    Stream.of(ROLE_SUBSCRIBER_ADMINISTRATOR, ROLE_ORGANIZATION_ADMINISTRATOR),
+    public static final List<String> ORGANIZATION_ROLES = Stream.concat(
+                    Stream.of(ROLE_ORGANIZATION_ADMINISTRATOR, ROLE_WORKSPACE_ADMINISTRATOR),
                     ALL_BASIC_ROLES.stream())
             .toList();
     public static final String DEMO = "DEMO";
-    public static final Long INTERNAL_ORGANIZATION = 0L;
-    public static final String INTERNAL_SUBSCRIBER = "--INTERNAL-G4IT--";
-    public static final List<String> ORGANIZATION_ACTIVE_OR_DELETED_STATUS = List.of(
-            OrganizationStatus.ACTIVE.name(),
-            OrganizationStatus.TO_BE_DELETED.name()
+    public static final Long INTERNAL_WORKSPACE = 0L;
+    public static final String INTERNAL_ORGANIZATION = "--INTERNAL-G4IT--";
+    public static final List<String> WORKSPACE_ACTIVE_OR_DELETED_STATUS = List.of(
+            WorkspaceStatus.ACTIVE.name(),
+            WorkspaceStatus.TO_BE_DELETED.name()
     );
     public static final String NOSECURITY = "nosecurity";
     /**

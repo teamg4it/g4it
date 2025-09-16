@@ -101,7 +101,7 @@ public class MockFileStorage implements FileStorage {
     }
 
     @Override
-    public void renameOrganization(String newOrganization) throws IOException {
+    public void renameWorkspace(String newWorkspace) throws IOException {
         // do nothing
     }
 }

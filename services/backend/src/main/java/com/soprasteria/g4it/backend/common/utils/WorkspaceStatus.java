@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.common.utils;
 
-public enum OrganizationStatus {
+public enum WorkspaceStatus {
     ACTIVE,
     TO_BE_DELETED,
     INACTIVE

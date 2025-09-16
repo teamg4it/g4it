@@ -134,8 +134,8 @@ class TaskServiceTest {
 
     @Test
     void deleteEvaluatingTasksByInventoryIdDeletesTasksWhenTasksExist() {
-        String subscriber = "subscriber123";
-        Long organizationId = 1L;
+        String organization = "organization123";
+        Long workspaceId = 1L;
         Long inventoryId = 2L;
         Task task1 = new Task();
         task1.setId(1L);
@@ -145,10 +145,10 @@ class TaskServiceTest {
 
         when(taskRepository.findByTypeAndInventoryId(TaskType.EVALUATING.toString(), inventoryId)).thenReturn(tasks);
 
-        taskService.deleteEvaluatingTasksByInventoryId(subscriber, organizationId, inventoryId);
+        taskService.deleteEvaluatingTasksByInventoryId(organization, workspaceId, inventoryId);
 
-        verify(exportService).cleanExport(1L, subscriber, String.valueOf(organizationId));
-        verify(exportService).cleanExport(2L, subscriber, String.valueOf(organizationId));
+        verify(exportService).cleanExport(1L, organization, String.valueOf(workspaceId));
+        verify(exportService).cleanExport(2L, organization, String.valueOf(workspaceId));
         verify(taskRepository).deleteAll(tasks);
     }
 
@@ -158,7 +158,7 @@ class TaskServiceTest {
 
         when(taskRepository.findByTypeAndInventoryId(TaskType.EVALUATING.toString(), inventoryId)).thenReturn(List.of());
 
-        taskService.deleteEvaluatingTasksByInventoryId("subscriber123", 1L, inventoryId);
+        taskService.deleteEvaluatingTasksByInventoryId("organization123", 1L, inventoryId);
 
         verifyNoInteractions(exportService);
         verify(taskRepository, never()).deleteAll(anyList());

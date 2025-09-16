@@ -17,7 +17,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import org.junit.jupiter.api.Test;
@@ -270,13 +270,13 @@ class InPhysicalEquipmentServiceTest {
 
     @Test
     void createInVirtualEquipmentInventoryTest() {
-        var organization = Organization.builder()
+        var organization = Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .organization(Organization.builder().name("SUBSCRIBER").build())
                 .build();
         var inventory = Inventory.builder()
                 .name("Inventory Name")
-                .organization(organization)
+                .workspace(organization)
                 .doExportVerbose(true)
                 .build();
         Long inventoryId = 1L;
@@ -300,13 +300,13 @@ class InPhysicalEquipmentServiceTest {
     @Test
     void createInPhysicalEquipmentDigitalServiceTest() {
         String digitalServiceId = "dummy_id";
-        var organization = Organization.builder()
+        var organization = Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name("SUBSCRIBER").build())
+                .organization(Organization.builder().name("SUBSCRIBER").build())
                 .build();
         var digitalService = DigitalService.builder()
                 .name("DS_Name")
-                .organization(organization)
+                .workspace(organization)
                 .build();
         InPhysicalEquipmentRest inVirtualEquipmentRest = InPhysicalEquipmentRest.builder().datacenterName("default").name("MyPE").name("MyVE").id(1L).digitalServiceUid("dummyid").electricityConsumption(22.0).build();
         InPhysicalEquipment inVirtualEquipment = InPhysicalEquipment.builder().id(1L).name("MyVE").name("MyPE")

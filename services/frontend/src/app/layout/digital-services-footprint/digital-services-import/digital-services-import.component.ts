@@ -4,6 +4,8 @@ import {
     ElementRef,
     EventEmitter,
     inject,
+    OnDestroy,
+    OnInit,
     Output,
     ViewChild,
 } from "@angular/core";
@@ -19,7 +21,7 @@ import {
 } from "src/app/core/interfaces/file-system.interfaces";
 import { TaskRest } from "src/app/core/interfaces/inventory.interfaces";
 import { CustomSidebarMenuForm } from "src/app/core/interfaces/sidebar-menu-form.interface";
-import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -34,7 +36,7 @@ import { Constants } from "src/constants";
     templateUrl: "./digital-services-import.component.html",
     styleUrl: "./digital-services-import.component.scss",
 })
-export class DigitalServicesImportComponent {
+export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     private readonly userDataService = inject(UserDataService);
     private readonly destroyRef = inject(DestroyRef);
     protected readonly userService = inject(UserService);
@@ -78,8 +80,8 @@ export class DigitalServicesImportComponent {
     digitalServicesId = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
     templateFilesDescription: TemplateFileDescription[] = [];
     anyRejectedFiles = false;
+    selectedWorkspace!: string;
     selectedOrganization!: string;
-    selectedSubscriber!: string;
     digitalServiceInterval: any;
     waitingLoop = 10000;
     toReloadDigitalService = false;
@@ -96,19 +98,19 @@ export class DigitalServicesImportComponent {
         cloud: new FormControl<string | undefined>(undefined),
     });
 
-    async ngOnInit() {
-        this.userService.currentSubscriber$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((subscriber: Subscriber) => {
-                this.selectedSubscriber = subscriber.name;
-            });
+    ngOnInit(): void {
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization.name;
             });
+        this.userService.currentWorkspace$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((workspace: Workspace) => {
+                this.selectedWorkspace = workspace.name;
+            });
         this.getTemplates();
-        await this.getDigitalServiceStatus();
+        this.getDigitalServiceStatus();
         this.selectTab(0);
     }
 
@@ -283,8 +285,8 @@ export class DigitalServicesImportComponent {
     downloadFileDs(taskId: string) {
         this.fileSystemBusinessService.downloadFile(
             taskId,
-            this.selectedSubscriber,
             this.selectedOrganization,
+            this.selectedWorkspace,
             this.digitalServicesId,
         );
     }

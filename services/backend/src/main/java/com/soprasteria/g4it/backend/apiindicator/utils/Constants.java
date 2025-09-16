@@ -15,19 +15,19 @@ import java.util.List;
 public final class Constants {
 
     /**
-     * The subscriber parameter name.
-     */
-    public static final String PARAM_SUBSCRIBER = "subscriber";
-
-    /**
      * The organization parameter name.
      */
     public static final String PARAM_ORGANIZATION = "organization";
 
     /**
-     * The organization id parameter name.
+     * The workspace parameter name.
      */
-    public static final String PARAM_ORGANIZATION_ID = "organizationId";
+    public static final String PARAM_WORKSPACE = "workspace";
+
+    /**
+     * The workspace id parameter name.
+     */
+    public static final String PARAM_WORKSPACE_ID = "workspaceId";
 
     /**
      * The inventory identifier parameter name.

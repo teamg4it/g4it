@@ -11,15 +11,15 @@ import { Observable } from "rxjs";
 
 import { Constants } from "src/constants";
 import {
+    Organization,
     OrganizationCriteriaRest,
-    OrganizationUpsertRest,
-    Subscriber,
-    SubscriberCriteriaRest,
+    WorkspaceCriteriaRest,
+    WorkspaceUpsertRest,
 } from "../../interfaces/administration.interfaces";
 
-const endpoint = Constants.ENDPOINTS.subscribers;
-const endpointById = Constants.ENDPOINTS.subscriberbyid;
-const endpointForOrg = Constants.ENDPOINTS.organizations;
+const endpoint = Constants.ENDPOINTS.organizations;
+const endpointById = Constants.ENDPOINTS.organizationById;
+const endpointForWorkspace = Constants.ENDPOINTS.workspaces;
 const endpointForUser = Constants.ENDPOINTS.users;
 
 @Injectable({
@@ -28,74 +28,76 @@ const endpointForUser = Constants.ENDPOINTS.users;
 export class AdministrationDataService {
     constructor(private readonly http: HttpClient) {}
 
-    getOrganizations(): Observable<Subscriber[]> {
-        return this.http.get<Subscriber[]>(`${endpoint}`);
+    getOrganizations(): Observable<Organization[]> {
+        return this.http.get<Organization[]>(`${endpoint}`);
     }
 
-    getSubscriberById(subscriberId: number): Observable<Subscriber> {
-        return this.http.get<Subscriber>(`${endpointById}?subscriberId=${subscriberId}`);
+    getOrganizationById(organizationId: number): Observable<Organization> {
+        return this.http.get<Organization>(
+            `${endpointById}?organizationId=${organizationId}`,
+        );
     }
 
-    getUsers(): Observable<Subscriber> {
-        return this.http.get<Subscriber>(`${endpointForOrg}`);
+    getUsers(): Observable<Organization> {
+        return this.http.get<Organization>(`${endpointForWorkspace}`);
     }
 
-    postOrganization(body: OrganizationUpsertRest): Observable<OrganizationUpsertRest> {
-        return this.http.post<OrganizationUpsertRest>(`${endpointForOrg}`, body);
+    postWorkspace(body: WorkspaceUpsertRest): Observable<WorkspaceUpsertRest> {
+        return this.http.post<WorkspaceUpsertRest>(`${endpointForWorkspace}`, body);
     }
 
-    updateOrganization(
-        organizationId: number,
-        body: OrganizationUpsertRest,
-    ): Observable<OrganizationUpsertRest> {
-        return this.http.put<OrganizationUpsertRest>(
-            `${endpointForOrg}?organizationId=${organizationId}`,
+    updateWorkspace(
+        workspaceId: number,
+        body: WorkspaceUpsertRest,
+    ): Observable<WorkspaceUpsertRest> {
+        return this.http.put<WorkspaceUpsertRest>(
+            `${endpointForWorkspace}?workspaceId=${workspaceId}`,
+            body,
+        );
+    }
+
+    updateWorkspaceCriteria(
+        workspaceId: number,
+        body: WorkspaceCriteriaRest,
+    ): Observable<WorkspaceCriteriaRest> {
+        return this.http.put<WorkspaceCriteriaRest>(
+            `${endpointForWorkspace}?workspaceId=${workspaceId}`,
             body,
         );
     }
 
     updateOrganizationCriteria(
         organizationId: number,
-        body: OrganizationCriteriaRest,
+        criteria: OrganizationCriteriaRest,
     ): Observable<OrganizationCriteriaRest> {
         return this.http.put<OrganizationCriteriaRest>(
-            `${endpointForOrg}?organizationId=${organizationId}`,
-            body,
-        );
-    }
-
-    updateSubscriberCriteria(
-        subscriberId: number,
-        criteria: SubscriberCriteriaRest,
-    ): Observable<SubscriberCriteriaRest> {
-        return this.http.put<SubscriberCriteriaRest>(
-            `${endpoint}?subscriberId=${subscriberId}`,
+            `${endpoint}?organizationId=${organizationId}`,
             criteria,
         );
     }
 
-    getUserDetails(organizationId: number): Observable<any> {
+    getUserDetails(workspaceId: number): Observable<any> {
         return this.http.get<any>(
-            `${endpointForOrg}/users?organizationId=${organizationId}`,
+            `${endpointForWorkspace}/users?workspaceId=${workspaceId}`,
         );
     }
 
     getSearchDetails(
         searchName: string,
-        subscriberId: number,
         organizationId: number,
+        workspaceId: number,
     ): Observable<any> {
         return this.http.get<any>(
-            `${endpoint}/${endpointForUser}?searchedName=${searchName}&subscriberId=${subscriberId}&organizationId=${organizationId}`,
+            `${endpoint}/${endpointForUser}?searchedName=${searchName}&organizationId=${organizationId}&workspaceId=${workspaceId}`,
         );
     }
 
-    postUserToOrganizationAndAddRoles(body: any): Observable<any> {
-        return this.http.post<any>(`${endpointForOrg}/users`, body);
+    postUserToWorkspaceAndAddRoles(body: any): Observable<any> {
+        return this.http.post<any>(`${endpointForWorkspace}/users`, body);
     }
 
     deleteUserDetails(body: any): Observable<any> {
-        return this.http.delete<any>(`${endpointForOrg}/users`, {
+        return this.http.delete<any>(`${endpointForWorkspace}/users`, {
             body,
         });
     }

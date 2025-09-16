@@ -120,7 +120,7 @@ public class EvaluateAiService {
      */
     public void doEvaluateAi(final Context context, final Task task, Path exportDirectory) throws IOException {
 
-        final String subscriber = context.getSubscriber();
+        final String organization = context.getOrganization();
         final long start = System.currentTimeMillis();
         final Long taskId = task.getId();
         final String digitalServiceName = context.getDigitalServiceName();
@@ -206,7 +206,7 @@ public class EvaluateAiService {
                 referentialService.getElectricityMixQuartiles()
         );
 
-        final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(subscriber);
+        final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
 
         Map<String, Double> refSip = referentialService.getSipValueMap(criteriaCodes);
 
@@ -270,7 +270,7 @@ public class EvaluateAiService {
 
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
-                            subscriber, activeCriteria, lifecycleSteps, hypothesisRestList);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(inPhysicalEq, datacenter));

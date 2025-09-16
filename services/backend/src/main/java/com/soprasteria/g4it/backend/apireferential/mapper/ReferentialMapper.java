@@ -64,7 +64,7 @@ public interface ReferentialMapper {
                 .value(readDouble(csvRecord, "value"))
                 .source(read(csvRecord, "source"))
                 .description(read(csvRecord, "description"))
-                .subscriber(read(csvRecord, "subscriber"))
+                .organization(read(csvRecord, "subscriber"))
                 .version(read(csvRecord, "version"))
                 .build();
     }
@@ -78,7 +78,7 @@ public interface ReferentialMapper {
                 .isServer(readBoolean(csvRecord, "isServer"))
                 .source(read(csvRecord, "source"))
                 .refDefaultItem(read(csvRecord, "refDefaultItem"))
-                .subscriber(read(csvRecord, "subscriber"))
+                .organization(read(csvRecord, "subscriber"))
                 .version(read(csvRecord, "version"))
                 .build();
     }
@@ -87,7 +87,7 @@ public interface ReferentialMapper {
         return MatchingItemRest.builder()
                 .itemSource(read(csvRecord, "itemSource"))
                 .refItemTarget(read(csvRecord, "refItemTarget"))
-                .subscriber(read(csvRecord, "subscriber"))
+                .organization(read(csvRecord, "subscriber"))
                 .build();
     }
 
@@ -105,7 +105,7 @@ public interface ReferentialMapper {
                 .value(readDouble(csvRecord, "value"))
                 .unit(read(csvRecord, "unit"))
                 .source(read(csvRecord, "source"))
-                .subscriber(read(csvRecord, "subscriber"))
+                .organization(read(csvRecord, "subscriber"))
                 .version(read(csvRecord, "version"))
                 .build();
     }

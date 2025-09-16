@@ -63,7 +63,7 @@ public class FileLoadingUtils {
      */
     public void downloadAllFileToLoad(Context context) {
         for (FileToLoad fileToLoad : context.getFilesToLoad()) {
-            try (InputStream is = fileSystemService.downloadFile(context.getSubscriber(), context.getOrganizationId(), FileFolder.INPUT, fileToLoad.getFilename())) {
+            try (InputStream is = fileSystemService.downloadFile(context.getOrganization(), context.getWorkspaceId(), FileFolder.INPUT, fileToLoad.getFilename())) {
                 // copy file to local storage tmp
                 FileUtils.copyInputStreamToFile(is, fileToLoad.getFilePath().toFile());
             } catch (IOException e) {
@@ -106,13 +106,13 @@ public class FileLoadingUtils {
         }
     }
 
-    public boolean handelRejectedFiles(String subscriber, Long organizationId, Long inventoryId, String digitalServiceUid,
+    public boolean handelRejectedFiles(String organization, Long workspaceId, Long inventoryId, String digitalServiceUid,
                                        Long taskId, List<String> filenames) {
 
         String pathId = null != inventoryId ? String.valueOf(inventoryId) : digitalServiceUid;
         String inputPath = null != inventoryId ? "input/inventory" : "input/digital-service";
 
-        FileStorage fileStorage = fileSystem.mount(subscriber, organizationId.toString());
+        FileStorage fileStorage = fileSystem.mount(organization, workspaceId.toString());
         boolean hasRejectedFile = uploadRejectedZip(pathId, taskId, fileStorage);
         cleanFromLocalAndFileStorage(inputPath, fileStorage, filenames);
         return hasRejectedFile;
