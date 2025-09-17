@@ -1,0 +1,36 @@
+<main class="flex-1 shared-main">
+    <app-digital-services-footprint-header
+        [digitalService]="digitalService"
+        [isEcoMindAi]="false"
+        [isSharedDs]="true"
+    >
+    </app-digital-services-footprint-header>
+
+    <p-scrollPanel
+        #scrollPanel
+        [style]="{
+            width: '100%',
+            height: 'calc(100vh - 100px)',
+        }"
+    >
+        @if (!isMobile()) {
+            <p-tabMenu
+                [model]="tabItems"
+                [activeItem]="selectedTab"
+                (activeItemChange)="onMenuTabChange($event)"
+                [attr.aria-label]="'common.ds-menu' | translate"
+            ></p-tabMenu>
+        } @else {
+            <p-dropdown
+                styleClass="w-full my-2"
+                [options]="tabItems"
+                optionLabel="label"
+                [(ngModel)]="selectedTab"
+                (onChange)="onTabChange($event.value)"
+                [placeholder]="'common.ds-menu' | translate"
+            ></p-dropdown>
+        }
+
+        <router-outlet></router-outlet>
+    </p-scrollPanel>
+</main>

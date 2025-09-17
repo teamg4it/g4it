@@ -24,6 +24,7 @@ export interface DigitalService {
     criteria?: string[];
     creator?: DigitalServiceUserInfo;
     isAi?: boolean;
+    isShared?: boolean;
     tasks?: TaskRest[];
     enableDataInconsistency: boolean;
 }
@@ -386,4 +387,9 @@ export interface AiRecommendation {
     digitalServiceUid: string;
     creationDate: string;
     lastUpdateDate: string;
+}
+
+export interface ShareLinkResp {
+    url: string;
+    expiryDate: Date;
 }
