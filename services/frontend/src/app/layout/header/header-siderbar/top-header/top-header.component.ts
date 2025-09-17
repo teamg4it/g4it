@@ -456,7 +456,7 @@ export class TopHeaderComponent implements OnInit {
         const filter = this.searchModel?.toLowerCase() || "";
         this.filteredWorkspaces = filter
             ? this.workspaces.filter((o) =>
-                  o.organization!.name.toLowerCase().includes(filter),
+                  o.workspace!.name.toLowerCase().includes(filter),
               )
             : this.workspaces;
     }
