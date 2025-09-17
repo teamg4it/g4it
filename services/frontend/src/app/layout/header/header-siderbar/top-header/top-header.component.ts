@@ -83,7 +83,7 @@ export class TopHeaderComponent implements OnInit {
     isAboutMenuOpen = false;
     enableSearchField = true;
     searchFieldTouched = true;
-    filterMode: any;
+    searchModel!: string;
     modelWorkspace!: number;
     selectedWorkspace: Workspace = {} as Workspace;
     selectedOrganizationData: OrganizationData | undefined = undefined;
@@ -389,7 +389,7 @@ export class TopHeaderComponent implements OnInit {
 
     toggleOrgMenu() {
         this.isOrgMenuVisible = !this.isOrgMenuVisible;
-        this.filterMode = "";
+        this.searchModel = "";
 
         if (this.isOrgMenuVisible) {
             const elementToView = document.querySelector(`#org-${this.modelWorkspace}`);
@@ -453,7 +453,7 @@ export class TopHeaderComponent implements OnInit {
     }
 
     searchWorkspaceList() {
-        const filter = this.filterMode?.toLowerCase() || "";
+        const filter = this.searchModel?.toLowerCase() || "";
         this.filteredWorkspaces = filter
             ? this.workspaces.filter((o) =>
                   o.organization!.name.toLowerCase().includes(filter),
