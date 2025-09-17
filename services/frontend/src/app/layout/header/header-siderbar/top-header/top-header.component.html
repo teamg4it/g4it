@@ -130,8 +130,41 @@
     @if (isOrgMenuVisible) {
         <div
             class="org-menu-new p-4 pr-3 bg-white shadow-5 border-round-xs"
-            [ngClass]="{ block: isOrgMenuVisible, 'max-h-15rem': isZoomedIn() }"
+            [ngClass]="{ block: isOrgMenuVisible, 'max-h-20rem': isZoomedIn() }"
         >
+            <!-- Workspace Search Bar -->
+            <div
+                class="align-items-center mb-3"
+                [ngClass]="{
+                    inline: isZoomedIn(),
+                    'mr-3': isZoomedIn(),
+                    flex: !isZoomedIn(),
+                }"
+            >
+                <span class="p-input-icon-left pr-2">
+                    <i class="pi pi-search"></i>
+                    <input
+                        type="text"
+                        pInputText
+                        class="p-inputtext-sm"
+                        (keyup)="searchWorkspaceList()"
+                        (click)="onClick($event)"
+                        name="filterWorkspace"
+                        placeholder="{{ 'common.workspace.search-by-name' | translate }}"
+                        [attr.aria-label]="
+                            'common.workspace.search-by-name-label' | translate
+                        "
+                        [(ngModel)]="searchModel"
+                        id="workspaceFilter"
+                        [ngClass]="{
+                            'pt-2': isZoomedIn(),
+                            'pb-2': isZoomedIn(),
+                            'w-20rem': !isZoomedIn(),
+                        }"
+                    />
+                </span>
+            </div>
+
             <span class="text-2xl">{{ "common.workspaces" | translate }}</span>
 
             <div
@@ -148,7 +181,7 @@
                 #radioGroupContainer
             >
                 <div
-                    *ngFor="let workspace of workspaces; let i = index"
+                    *ngFor="let workspace of filteredWorkspaces; let i = index"
                     class="field-radiobutton"
                     [attr.data-index]="i"
                     #radioItem
