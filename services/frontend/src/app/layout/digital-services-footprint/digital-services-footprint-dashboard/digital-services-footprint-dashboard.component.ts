@@ -43,6 +43,7 @@ import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { OutPhysicalEquipmentsService } from "src/app/core/service/data/in-out/out-physical-equipments.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
+import { ShareDigitalServiceDataService } from "src/app/core/service/data/share-digital-service-data.service";
 import {
     convertToGlobalVision,
     transformOutPhysicalEquipmentsToNetworkData,
@@ -68,6 +69,7 @@ export class DigitalServicesFootprintDashboardComponent
     private readonly outVirtualEquipmentsService = inject(OutVirtualEquipmentsService);
     private readonly digitalServicesAiData = inject(DigitalServicesAiDataService);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly shareDigitalService = inject(ShareDigitalServiceDataService);
     chartType = signal("radial");
     showInconsitencyBtn = false;
     constants = Constants;
@@ -193,15 +195,23 @@ export class DigitalServicesFootprintDashboardComponent
             }
         }
 
+        const isShared = this.digitalServiceStore.isSharedDS();
+        const physicalEquipments$ = isShared
+            ? this.shareDigitalService.getOutSharedPhysicalEquipments(
+                  this.digitalService.uid,
+              )
+            : this.outPhysicalEquipmentsService.get(this.digitalService.uid);
+        const virtualEquipments$ = isShared
+            ? this.shareDigitalService.getOutSharedVirtualEquipments(
+                  this.digitalService.uid,
+              )
+            : this.outVirtualEquipmentsService.getByDigitalService(
+                  this.digitalService.uid,
+              );
+
         const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
-            firstValueFrom(
-                this.outPhysicalEquipmentsService.get(this.digitalService.uid),
-            ),
-            firstValueFrom(
-                this.outVirtualEquipmentsService.getByDigitalService(
-                    this.digitalService.uid,
-                ),
-            ),
+            firstValueFrom(physicalEquipments$),
+            firstValueFrom(virtualEquipments$),
         ]);
         this.outPhysicalEquipments = outPhysicalEquipments;
         this.outVirtualEquipments = outVirtualEquipments;

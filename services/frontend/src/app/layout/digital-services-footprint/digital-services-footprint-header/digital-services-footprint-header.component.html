@@ -130,12 +130,19 @@
                 [label]="'common.note.attached' | translate"
             />
 
-            @if (!isEcoMindAi()) {
+            @if (!isEcoMindAi() && (userService.isAllowedDigitalServiceWrite$ | async)) {
+                <p-button
+                    [ariaLabel]="'common.accessibility.share' | translate"
+                    styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
+                    (onClick)="shareDs()"
+                    icon="pi pi-share-alt"
+                    [label]="'digital-services.share' | translate"
+                />
+
                 <p-button
                     [ariaLabel]="'common.accessibility.import' | translate"
                     styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
                     (onClick)="importData()"
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                     icon="pi pi-upload"
                     [label]="'digital-services.import' | translate"
                 />
@@ -167,3 +174,12 @@
         </div>
     }
 </div>
+
+@if (displayLinkCreatePopup && !global.loading()) {
+    <app-link-create-popup
+        [displayPopup]="displayLinkCreatePopup"
+        (outClose)="displayLinkCreatePopup = false"
+        [sharedLink]="shareLink"
+    >
+    </app-link-create-popup>
+}

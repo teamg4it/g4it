@@ -80,6 +80,7 @@ export abstract class Constants {
         workspace: "workspace",
         downloadReject: "download-reject",
         task: "task",
+        sharedDs: "shared/ds",
     };
 
     static readonly TEMPLATE_PARAMS = {

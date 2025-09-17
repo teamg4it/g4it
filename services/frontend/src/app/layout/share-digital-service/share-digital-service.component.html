@@ -1,0 +1,24 @@
+<main class="flex-1 shared-main">
+    <app-digital-services-footprint-header
+        [digitalService]="digitalService"
+        [isEcoMindAi]="false"
+    >
+    </app-digital-services-footprint-header>
+
+    <p-scrollPanel
+        #scrollPanel
+        [style]="{
+            width: '100%',
+            height: 'calc(100vh - 100px)',
+        }"
+    >
+        <p-tabMenu
+            [model]="tabItems"
+            [activeItem]="selectedTab"
+            (activeItemChange)="onMenuTabChange($event)"
+            [attr.aria-label]="'common.ds-menu' | translate"
+        ></p-tabMenu>
+
+        <router-outlet></router-outlet>
+    </p-scrollPanel>
+</main>

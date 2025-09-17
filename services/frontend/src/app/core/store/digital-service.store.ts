@@ -29,6 +29,7 @@ interface DigitalServiceState {
     inPhysicalEquipments: InPhysicalEquipmentRest[];
     inVirtualEquipments: InVirtualEquipmentRest[];
     refresh: number;
+    isSharedDs: boolean;
 }
 
 const initialState: DigitalServiceState = {
@@ -44,6 +45,7 @@ const initialState: DigitalServiceState = {
     inPhysicalEquipments: [] as InPhysicalEquipmentRest[],
     inVirtualEquipments: [] as InVirtualEquipmentRest[],
     refresh: 0,
+    isSharedDs: false,
 };
 
 @Injectable({
@@ -130,5 +132,10 @@ export class DigitalServiceStoreService {
     readonly refresh = computed(() => this._store().refresh);
     setRefresh(refresh: number) {
         this._store.update((s) => ({ ...s, refresh }));
+    }
+
+    readonly isSharedDS = computed(() => this._store().isSharedDs);
+    setIsSharedDS(isSharedDs: boolean) {
+        this._store.update((s) => ({ ...s, isSharedDs }));
     }
 }
