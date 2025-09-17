@@ -5,12 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, HostListener, inject } from "@angular/core";
+import { Component, HostListener, inject, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
-import { Subject, filter, firstValueFrom, map, of, switchMap } from "rxjs";
+import { filter, firstValueFrom, map, of, Subject, switchMap } from "rxjs";
 import { environment } from "src/environments/environment";
 import { MatomoScriptService } from "./core/service/business/matomo-script.service";
 import { UserDataService } from "./core/service/data/user-data.service";
@@ -20,7 +20,7 @@ import { GlobalStoreService } from "./core/store/global.store";
     selector: "app-root",
     templateUrl: "./app.component.html",
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
     selectedLang: string = this.translate.currentLang;
     isZoomedIn = false;
@@ -35,7 +35,11 @@ export class AppComponent {
         private readonly titleService: Title,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit(): void {
+        this.initializeAsync();
+    }
+
+    private async initializeAsync(): Promise<void> {
         if (environment.keycloak.enabled === "true") {
             const token = await this.keycloak.getToken();
             if (!token) {

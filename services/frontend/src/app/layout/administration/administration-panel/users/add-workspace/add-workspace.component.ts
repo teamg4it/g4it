@@ -11,13 +11,16 @@ import {
     EventEmitter,
     inject,
     Input,
+    OnChanges,
+    OnInit,
     Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { take } from "rxjs";
+import { map, switchMap, take } from "rxjs";
+import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import { Role, RoleValue } from "src/app/core/interfaces/roles.interfaces";
 import { UserDetails } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
@@ -27,16 +30,16 @@ import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 
 @Component({
-    selector: "app-add-organization",
-    templateUrl: "./add-organization.component.html",
+    selector: "app-add-workspace",
+    templateUrl: "./add-workspace.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class AddOrganizationComponent {
+export class AddWorkspaceComponent implements OnInit, OnChanges {
     @Input() userDetail!: UserDetails;
     @Input() userDetailEcoMind: boolean = false;
-    @Input() organization: any;
+    @Input() workspace!: WorkspaceWithOrganization;
     @Input() clearForm!: false;
-    @Output() close: EventEmitter<any> = new EventEmitter();
+    @Output() outClose: EventEmitter<any> = new EventEmitter();
     @Input() updateOrganizationEnable = false;
 
     dsRoles = [Role.DigitalServiceRead, Role.DigitalServiceWrite];
@@ -58,7 +61,7 @@ export class AddOrganizationComponent {
 
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
-    private destroyRef = inject(DestroyRef);
+    private readonly destroyRef = inject(DestroyRef);
     constructor(
         public administrationService: AdministrationService,
         private readonly translate: TranslateService,
@@ -81,7 +84,7 @@ export class AddOrganizationComponent {
                 value: this.translate.instant("administration.role.user"),
             },
             {
-                code: Role.OrganizationAdmin,
+                code: Role.WorkspaceAdmin,
                 value: this.translate.instant("administration.role.admin"),
             },
         ];
@@ -92,11 +95,11 @@ export class AddOrganizationComponent {
     ngOnChanges() {
         this.clearFormData();
 
-        if (this.userDetail === undefined || this.userDetail.roles === undefined) return;
+        if (this.userDetail?.roles === undefined) return;
 
         const roles = this.userDetail.roles;
 
-        if (roles.includes(Role.OrganizationAdmin)) {
+        if (roles.includes(Role.WorkspaceAdmin)) {
             this.forceAdmin();
             return;
         }
@@ -143,18 +146,18 @@ export class AddOrganizationComponent {
         return undefined;
     }
 
-    getOrganizationBody() {
+    getWorkspaceBody() {
         let roles: string[] = [];
 
-        if (this.adminModule.code === Role.OrganizationAdmin) {
-            roles.push(Role.OrganizationAdmin);
+        if (this.adminModule.code === Role.WorkspaceAdmin) {
+            roles.push(Role.WorkspaceAdmin);
         } else {
             if (this.isModule) roles.push(this.isModule.code);
             if (this.dsModule) roles.push(this.dsModule.code);
             if (this.ecomindModule) roles.push(this.ecomindModule.code);
         }
         return {
-            organizationId: this.organization.organizationId,
+            workspaceId: this.workspace.workspaceId,
             users: [
                 {
                     userId: this.userDetail?.id,
@@ -164,31 +167,32 @@ export class AddOrganizationComponent {
         };
     }
 
-    addUpdateOrg() {
+    addUpdateWorkspace() {
+        const body = this.getWorkspaceBody();
         this.administrationService
-            .postUserToOrganizationAndAddRoles(this.getOrganizationBody())
-            .subscribe(() => {
-                this.userService.user$
-                    .pipe(takeUntilDestroyed(this.destroyRef))
-                    .subscribe((user) => {
-                        this.userDataService
-                            .fetchUserInfo()
-                            .pipe(take(1))
-                            .subscribe(() => {
-                                const currentUserRoles =
-                                    this.getOrganizationBody().users.find(
-                                        (u) => u.userId === user.id,
-                                    )?.roles;
-                                const isAdmin =
-                                    currentUserRoles?.includes(Role.SubscriberAdmin) ||
-                                    currentUserRoles?.includes(Role.OrganizationAdmin);
-                                if (!isAdmin && currentUserRoles) {
-                                    this.router.navigateByUrl(Constants.WELCOME_PAGE);
-                                    return;
-                                }
-                                this.close.emit(false);
-                            });
-                    });
+            .postUserToWorkspaceAndAddRoles(body)
+            .pipe(
+                switchMap(() => this.userService.user$.pipe(take(1))),
+                switchMap((user) =>
+                    this.userDataService.fetchUserInfo().pipe(
+                        take(1),
+                        map(() => user),
+                    ),
+                ),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe((user) => {
+                const currentUserRoles = body.users.find(
+                    (u) => u.userId === user.id,
+                )?.roles;
+                const isAdmin =
+                    currentUserRoles?.includes(Role.OrganizationAdmin) ||
+                    currentUserRoles?.includes(Role.WorkspaceAdmin);
+                if (!isAdmin && currentUserRoles) {
+                    this.router.navigateByUrl(Constants.WELCOME_PAGE);
+                    return;
+                }
+                this.outClose.emit(false);
             });
     }
 
@@ -198,14 +202,14 @@ export class AddOrganizationComponent {
         this.ecomindModule = this.getRoleValue(Role.EcoMindAiWrite);
 
         this.adminModule = {
-            code: Role.OrganizationAdmin,
+            code: Role.WorkspaceAdmin,
             value: this.translate.instant("administration.role.admin"),
         };
         this.isAdmin = true;
     }
 
     validateOnAdmin() {
-        if (this.adminModule.code === Role.OrganizationAdmin) {
+        if (this.adminModule.code === Role.WorkspaceAdmin) {
             this.forceAdmin();
         } else {
             this.isAdmin = false;
@@ -214,7 +218,7 @@ export class AddOrganizationComponent {
 
     cancel() {
         this.clearFormData();
-        this.close.emit(false);
+        this.outClose.emit(false);
     }
 
     clearFormData() {
@@ -227,13 +231,13 @@ export class AddOrganizationComponent {
     }
 
     restrictAdminRoleByDomain() {
-        if (this.organization.authorizedDomains) {
-            this.isAdminRoleDisabled = !this.organization.authorizedDomains.includes(
+        if (this.workspace.authorizedDomains) {
+            this.isAdminRoleDisabled = !this.workspace.authorizedDomains.includes(
                 this.userDetail.email.split("@")[1],
             );
             if (this.isAdminRoleDisabled) {
                 this.adminModuleValues = this.adminModuleValues.filter(
-                    (role) => role.code !== Role.OrganizationAdmin,
+                    (role) => role.code !== Role.WorkspaceAdmin,
                 );
             }
         }

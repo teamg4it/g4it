@@ -6,15 +6,15 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router, RouterModule } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { firstValueFrom } from "rxjs";
-import { Subscriber } from "src/app/core/interfaces/administration.interfaces";
+import { take } from "rxjs";
+import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { environment } from "src/environments/environment";
@@ -32,14 +32,14 @@ import { environment } from "src/environments/environment";
         RouterModule,
     ],
 })
-export class WelcomePageComponent {
+export class WelcomePageComponent implements OnInit {
     userName: string = "";
     selectedPath: string = "";
-    currentSubscriber: Subscriber = {} as Subscriber;
+    currentOrganization: Organization = {} as Organization;
     isAllowedInventory: boolean = false;
     isAllowedDigitalService: boolean = false;
     isAllowedEcoMindAi: boolean = false;
-    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    isEcoMindEnabledForCurrentOrganization: boolean = false;
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
 
     private readonly destroyRef = inject(DestroyRef);
@@ -65,12 +65,11 @@ export class WelcomePageComponent {
     ];
 
     constructor(
-        private workspaceService: WorkspaceService,
+        private readonly workspaceService: WorkspaceService,
         public readonly router: Router,
     ) {}
 
-    async ngOnInit() {
-        const userDetails = await firstValueFrom(this.userService.user$);
+    ngOnInit() {
         this.userService.isAllowedInventoryRead$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((isAllowed: boolean) => {
@@ -86,17 +85,20 @@ export class WelcomePageComponent {
             .subscribe((isAllowed: boolean) => {
                 this.isAllowedEcoMindAi = isAllowed;
             });
-        this.userName = userDetails?.firstName + " " + userDetails?.lastName;
-
-        this.userService.currentSubscriber$.subscribe((subscriber: any) => {
-            this.currentSubscriber = subscriber;
-            this.isEcoMindEnabledForCurrentSubscriber = this.currentSubscriber.ecomindai;
+        this.userService.user$.pipe(take(1)).subscribe((userDetails) => {
+            this.userName = userDetails?.firstName + " " + userDetails?.lastName;
         });
 
-        this.userService.currentOrganization$
+        this.userService.currentOrganization$.subscribe((organization) => {
+            this.currentOrganization = organization;
+            this.isEcoMindEnabledForCurrentOrganization =
+                this.currentOrganization.ecomindai;
+        });
+
+        this.userService.currentWorkspace$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((organization: any) => {
-                this.selectedPath = `/subscribers/${this.currentSubscriber.name}/organizations/${organization?.id}`;
+            .subscribe((workspace: any) => {
+                this.selectedPath = `/organizations/${this.currentOrganization.name}/workspaces/${workspace?.id}`;
             });
     }
 

@@ -9,10 +9,10 @@ tags:
     description: Endpoint for digital service outputs
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/physical-equipments:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/outputs/physical-equipments:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
     get:
       tags:
@@ -34,10 +34,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/virtual-equipments:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/outputs/virtual-equipments:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
     get:
       tags:
@@ -59,10 +59,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/applications:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/outputs/applications:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
     get:
       tags:

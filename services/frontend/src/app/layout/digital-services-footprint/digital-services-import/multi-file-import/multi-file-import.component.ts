@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnChanges, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
@@ -7,7 +7,7 @@ import { LoadingDataService } from "src/app/core/service/data/loading-data.servi
     selector: "app-multi-file-import",
     templateUrl: "./multi-file-import.component.html",
 })
-export class MultiFileImportComponent {
+export class MultiFileImportComponent implements OnChanges {
     private readonly loadingService = inject(LoadingDataService);
     private readonly translate = inject(TranslateService);
     private readonly route = inject(ActivatedRoute);

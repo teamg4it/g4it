@@ -55,6 +55,13 @@ public class CheckPhysicalEquipment {
     @Column(name = "filename")
     private String fileName;
 
+
+    /**
+     * Equipment type
+     */
+    @Column(name = "type")
+    private String type;
+
     /**
      * Line Number.
      */

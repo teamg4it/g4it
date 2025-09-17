@@ -58,10 +58,10 @@ public class UserBO {
     private String domain;
 
     /**
-     * User's subscriber.
+     * User's organization.
      */
     @EqualsAndHashCode.Exclude
-    private List<SubscriberBO> subscribers;
+    private List<OrganizationBO> organizations;
 
     @EqualsAndHashCode.Exclude
     private LocalDateTime creationDate;

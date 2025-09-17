@@ -8,30 +8,24 @@
 
 package com.soprasteria.g4it.backend.apiworkspace.model;
 
-
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
-/**
- * Subscriber Details Business Object.
- */
 @Data
 @SuperBuilder
-public class SubscriberDetailsBO {
+public class WorkspaceDetailsBO {
     /**
-     * The subscriber's id.
+     * The Workspace id.
      */
     private Long id;
 
     /**
-     * The subscriber's name.
+     * The Workspace name.
      */
     private String name;
 
     /**
-     * Subscriber's organization.
+     * The 'status'.
      */
-    private List<OrganizationDetailsBO> organizations;
+    private String status;
 }

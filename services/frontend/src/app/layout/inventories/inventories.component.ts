@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject, OnInit, ViewChild } from "@angular/core";
+import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Event, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -18,7 +18,7 @@ import {
 } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
-import { Organization } from "src/app/core/interfaces/user.interfaces";
+import { Workspace } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -30,7 +30,7 @@ import { FilePanelComponent } from "./file-panel/file-panel.component";
     templateUrl: "./inventories.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class InventoriesComponent implements OnInit {
+export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);
     private readonly global = inject(GlobalStoreService);
 
@@ -53,7 +53,7 @@ export class InventoriesComponent implements OnInit {
     enableSearchField = true;
     searchFieldTouched = true;
     selectedInventory: Inventory = {} as Inventory;
-    selectedOrganization!: string;
+    selectedWorkspace!: string;
     isAllowedInventory: boolean = false;
 
     constructor(
@@ -64,62 +64,65 @@ export class InventoriesComponent implements OnInit {
         public userService: UserService,
     ) {}
 
-    async ngOnInit() {
-        this.userService.currentOrganization$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((organization: Organization) => {
-                this.selectedOrganization = organization.name;
+    ngOnInit(): void {
+        (async () => {
+            this.userService.currentWorkspace$
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((workspace: Workspace) => {
+                    this.selectedWorkspace = workspace.name;
+                });
+
+            this.userService.roles$.subscribe((roles: Role[]) => {
+                this.isAllowedInventory =
+                    roles.includes(Role.InventoryRead) ||
+                    roles.includes(Role.InventoryWrite);
             });
+            this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
+                ? new Set(
+                      localStorage
+                          .getItem("inventoriesOpen")
+                          ?.split(",")
+                          .filter((v) => v !== "NaN")
+                          .map((v) => parseInt(v)),
+                  )
+                : new Set();
 
-        this.userService.roles$.subscribe((roles: Role[]) => {
-            this.isAllowedInventory =
-                roles.includes(Role.InventoryRead) || roles.includes(Role.InventoryWrite);
-        });
-        this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
-            ? new Set(
-                  localStorage
-                      .getItem("inventoriesOpen")
-                      ?.split(",")
-                      .filter((v) => v !== "NaN")
-                      .map((v) => parseInt(v)),
-              )
-            : new Set();
+            if (localStorage.getItem("inventoryBlocksOpen") == null) {
+                this.inventoryBlocksOpen = new Set([
+                    Constants.INVENTORY_TYPE.INFORMATION_SYSTEM,
+                    Constants.INVENTORY_TYPE.SIMULATION,
+                ]);
+                this.updateLocalStorageBlock();
+            } else {
+                this.inventoryBlocksOpen = new Set(
+                    localStorage.getItem("inventoryBlocksOpen")?.split(","),
+                );
+            }
 
-        if (localStorage.getItem("inventoryBlocksOpen") == null) {
-            this.inventoryBlocksOpen = new Set([
-                Constants.INVENTORY_TYPE.INFORMATION_SYSTEM,
-                Constants.INVENTORY_TYPE.SIMULATION,
-            ]);
-            this.updateLocalStorageBlock();
-        } else {
-            this.inventoryBlocksOpen = new Set(
-                localStorage.getItem("inventoryBlocksOpen")?.split(","),
-            );
-        }
+            await this.reloadInventories();
+            if (this.doLoop) {
+                this.loopLoadInventories();
+            }
 
-        await this.reloadInventories();
-        if (this.doLoop) {
-            this.loopLoadInventories();
-        }
+            this.router.events
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((event: Event) => {
+                    if (event instanceof NavigationEnd) {
+                        clearInterval(this.inventoryInterval);
+                        if (event.url.includes("/footprint")) {
+                            return;
+                        }
 
-        this.router.events
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((event: Event) => {
-                if (event instanceof NavigationEnd) {
-                    clearInterval(this.inventoryInterval);
-                    if (event.url.includes("/footprint")) {
-                        return;
+                        if (this.isAllowedInventory) {
+                            this.reloadInventories().then(() => {
+                                if (this.doLoop) {
+                                    this.loopLoadInventories();
+                                }
+                            });
+                        }
                     }
-
-                    if (this.isAllowedInventory) {
-                        this.reloadInventories().then(() => {
-                            if (this.doLoop) {
-                                this.loopLoadInventories();
-                            }
-                        });
-                    }
-                }
-            });
+                });
+        })();
     }
 
     loopLoadInventories() {

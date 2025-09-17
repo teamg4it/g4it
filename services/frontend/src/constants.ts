@@ -69,9 +69,9 @@ export abstract class Constants {
         digitalServices: "digital-services",
         referential: "referential",
         users: "users",
-        subscribers: "administrator/subscribers",
-        subscriberbyid: "administrator/subscriber",
         organizations: "administrator/organizations",
+        organizationById: "administrator/organization",
+        workspaces: "administrator/workspaces",
         ecomindaiModelConfig: "ecomindai/aiModelConfig/type",
         actions: "administrator-actions",
         version: "version",
@@ -131,7 +131,7 @@ export abstract class Constants {
     static readonly EXPORT_BATCH_GENERATED = "EXPORT_GENERATED";
     static readonly EXPORT_REMOVED = "REMOVED";
 
-    static readonly ORGANIZATION_STATUSES = {
+    static readonly WORKSPACE_STATUSES = {
         ACTIVE: "ACTIVE",
         TO_BE_DELETED: "TO_BE_DELETED",
     };

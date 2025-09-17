@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceType;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DeviceTypeRefRepository;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class TerminalDigitalServiceRule extends AbstractDigitalServiceRule {
     MessageSource messageSource;
     @Autowired
     DigitalServiceReferentialService digitalServiceRefService;
+    @Autowired
+    DeviceTypeRefRepository deviceTypeRefRepository;
 
     @Override
     protected void validateSpecificRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {
@@ -38,6 +41,8 @@ public class TerminalDigitalServiceRule extends AbstractDigitalServiceRule {
         checkType(locale, physicalEquipment, filename, line, errors);
 
         checkNumberOfUsers(locale, physicalEquipment, filename, line, errors);
+        rulePhysicalEqpService.checkDurationHour(locale, filename, line, physicalEquipment.getDurationHour())
+                .ifPresent(errors::add);
 
     }
 
@@ -68,9 +73,8 @@ public class TerminalDigitalServiceRule extends AbstractDigitalServiceRule {
 
     private Optional<LineError> checkDigitalServiceModel(Locale locale, String filename, int line, String model) {
         //Consistent with the list of model available in ref_device_type.reference
-        DeviceTypeRef refDeviceType = digitalServiceRefService.getTerminalDeviceType(model);
-
-        if (refDeviceType == null) {
+        Optional<DeviceTypeRef> refDeviceType =  deviceTypeRefRepository.findByReference(model);
+        if (refDeviceType.isEmpty()) {
             return Optional.of(new LineError(
                     filename,
                     line,

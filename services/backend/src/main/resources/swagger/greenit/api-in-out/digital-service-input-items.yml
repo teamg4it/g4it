@@ -13,10 +13,10 @@ tags:
     description: Endpoint for digital service inputs - virtual-equipment
 
 paths:
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
     get:
       tags:
@@ -63,10 +63,10 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters/{id}:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters/{id}:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
       - $ref: '#/components/parameters/idPathParam'
     get:
@@ -127,10 +127,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
     get:
       tags:
@@ -177,10 +177,10 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments/{id}:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments/{id}:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
       - $ref: '#/components/parameters/idPathParam'
     get:
@@ -241,10 +241,10 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
     get:
       tags:
@@ -323,10 +323,10 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments/{id}:
+  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments/{id}:
     parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
       - $ref: '#/components/parameters/idPathParam'
     get:

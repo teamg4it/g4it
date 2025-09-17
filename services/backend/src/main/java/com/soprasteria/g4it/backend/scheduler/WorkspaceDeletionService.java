@@ -11,11 +11,11 @@ import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceSer
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileDeletionService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +26,10 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class OrganizationDeletionService {
+public class WorkspaceDeletionService {
 
     @Autowired
-    private OrganizationRepository organizationRepository;
+    private WorkspaceRepository workspaceRepository;
     @Autowired
     private InventoryRepository inventoryRepository;
     @Autowired
@@ -44,7 +44,7 @@ public class OrganizationDeletionService {
 
     /**
      * Execute the deletion
-     * Get all organizations with status 'TO_BE_DELETED'
+     * Get all workspaces with status 'TO_BE_DELETED'
      * Execute the deletion for data and storage files
      */
     public void executeDeletion() {
@@ -54,30 +54,30 @@ public class OrganizationDeletionService {
         int nbDigitalServicesDeleted = 0;
         List<String> deletedFilePaths = new ArrayList<>();
 
-        List<Organization> organizations = organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()));
+        List<Workspace> workspaces = workspaceRepository.findAllByStatusIn(List.of(WorkspaceStatus.TO_BE_DELETED.name()));
 
-        for (Organization organizationEntity : organizations) {
-            final String subscriber = organizationEntity.getSubscriber().getName();
-            final Long organizationId = organizationEntity.getId();
+        for (Workspace workspaceEntity : workspaces) {
+            final String organization = workspaceEntity.getOrganization().getName();
+            final Long workspaceId = workspaceEntity.getId();
 
-            if (organizationEntity.getDeletionDate() == null) {
-                log.error("Organization {} has {} status and deletion date NULL", organizationId, OrganizationStatus.TO_BE_DELETED);
+            if (workspaceEntity.getDeletionDate() == null) {
+                log.error("Workspace {} has {} status and deletion date NULL", workspaceId, WorkspaceStatus.TO_BE_DELETED);
                 continue;
             }
 
-            final int dataRetentionDay = now.isAfter(organizationEntity.getDeletionDate()) ? 0 : -1;
+            final int dataRetentionDay = now.isAfter(workspaceEntity.getDeletionDate()) ? 0 : -1;
             if (dataRetentionDay == 0) {
-                log.info("Deleting data of {}/{}", subscriber, organizationEntity.getName());
+                log.info("Deleting data of {}/{}", organization, workspaceEntity.getName());
                 // Delete Inventories
-                nbInventoriesDeleted += inventoryRepository.findByOrganization(organizationEntity).stream()
+                nbInventoriesDeleted += inventoryRepository.findByWorkspace(workspaceEntity).stream()
                         .mapToInt(inventory -> {
-                            inventoryDeleteService.deleteInventory(subscriber, organizationId, inventory.getId());
+                            inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
                             return 1;
                         })
                         .sum();
 
                 // Delete Digital services
-                nbDigitalServicesDeleted += digitalServiceRepository.findByOrganization(organizationEntity).stream()
+                nbDigitalServicesDeleted += digitalServiceRepository.findByWorkspace(workspaceEntity).stream()
                         .mapToInt(digitalServiceBO -> {
                             digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
                             return 1;
@@ -85,28 +85,28 @@ public class OrganizationDeletionService {
                         .sum();
 
                 // Delete Export Files from storage
-                List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.EXPORT, dataRetentionDay);
+                List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.EXPORT, dataRetentionDay);
 
                 deletedFilePaths.addAll(deletedExportFilePaths);
 
                 // Delete Output Files from storage
-                List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.OUTPUT, dataRetentionDay);
+                List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(organization, workspaceId.toString(), FileFolder.OUTPUT, dataRetentionDay);
                 deletedFilePaths.addAll(deletedOutputFilePaths);
 
-                // update organization status to "INACTIVE" if status is "TO_BE_DELETED"
-                if (organizationEntity.getStatus().equals(OrganizationStatus.TO_BE_DELETED.name())) {
-                    organizationRepository.setStatusForOrganization(organizationEntity.getId(), OrganizationStatus.INACTIVE.name());
-                    log.info("Update status of {}/{} to {} ", subscriber, organizationEntity.getName(), OrganizationStatus.INACTIVE.name());
+                // update workspace status to "INACTIVE" if status is "TO_BE_DELETED"
+                if (workspaceEntity.getStatus().equals(WorkspaceStatus.TO_BE_DELETED.name())) {
+                    workspaceRepository.setStatusForWorkspace(workspaceEntity.getId(), WorkspaceStatus.INACTIVE.name());
+                    log.info("Update status of {}/{} to {} ", organization, workspaceEntity.getName(), WorkspaceStatus.INACTIVE.name());
                 }
             }
         }
-        log.info("Deletion of {} inventories , {} digital-services  and {} files - {} , execution time={} ms for organization marked as {}",
+        log.info("Deletion of {} inventories , {} digital-services  and {} files - {} , execution time={} ms for workspace marked as {}",
                 nbInventoriesDeleted,
                 nbDigitalServicesDeleted,
                 deletedFilePaths.size(),
                 deletedFilePaths,
                 System.currentTimeMillis() - start,
-                OrganizationStatus.TO_BE_DELETED.name()
+                WorkspaceStatus.TO_BE_DELETED.name()
         );
     }
 

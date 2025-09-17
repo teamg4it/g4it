@@ -5,10 +5,12 @@
 ### Major Changes
 
 - 1402 | Import .csv for terminal and network
+- 1442 | Rename organization to workspace and subscriber to organization
 
 ### Minor Changes
 
 - 1487 | Update file location to be available open source
+- 1486 | EcoMindAI - update ecomind version
 
 ## 3.5.0
 

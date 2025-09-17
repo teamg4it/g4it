@@ -70,44 +70,44 @@ public class ReferentialGetService {
 
     /**
      * Get the referential Hypothesis by
-     * code and/or subscriber
+     * code and/or organization (mapped to subscriber column in table)
      *
-     * @param subscriber the subscriber
+     * @param organization the organization
      * @return list of hypotheses
      */
     @Cacheable("ref_getHypotheses")
-    public List<HypothesisRest> getHypotheses(String subscriber) {
-        return refRestMapper.toHypothesesRest(hypothesisRepository.findBySubscriber(subscriber));
+    public List<HypothesisRest> getHypotheses(String organization) {
+        return refRestMapper.toHypothesesRest(hypothesisRepository.findByOrganization(organization));
     }
 
     /**
      * Get the referential ItemTypes by type
-     * and/or subscriber
+     * and/or organization (mapped to subscriber column in table)
      *
      * @return the of itemTypes
      */
     @Cacheable("ref_getItemTypes")
-    public List<ItemTypeRest> getItemTypes(String type, String subscriber) {
+    public List<ItemTypeRest> getItemTypes(String type, String organization) {
 
         // get all itemTypes
         if (type == null) {
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findBySubscriber(subscriber));
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganization(organization));
         }
 
-        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndSubscriber(type, subscriber);
+        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganization(type, organization);
 
         return refRestMapper.toItemTypeRest(itemType.map(List::of).orElseGet(List::of));
     }
 
     /**
      * Get the referential MatchingItem by model
-     * and/or subscriber
+     * and/or organization(mapped to subscriber column in table)
      *
      * @return matchingItem
      */
     @Cacheable("ref_getMatchingItem")
-    public MatchingItemRest getMatchingItem(String model, String subscriber) {
-        return matchingItemRepository.findByItemSourceAndSubscriber(model, subscriber)
+    public MatchingItemRest getMatchingItem(String model, String organization) {
+        return matchingItemRepository.findByItemSourceAndOrganization(model, organization)
                 .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
@@ -115,26 +115,27 @@ public class ReferentialGetService {
     /**
      * Get the referential item impacts
      *
+     * @param organization the organization(mapped to subscriber column in table)
      * @return list of item impacts
      */
     @Cacheable("ref_getItemImpacts")
     public List<ItemImpactRest> getItemImpacts(String criterion, String lifecycleStep,
                                                String name, String location,
-                                               String category, String subscriber) {
+                                               String category, String organization) {
 
-        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndSubscriber(
-                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, subscriber);
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization);
         return refRestMapper.toItemImpactRest(itemImpacts);
     }
 
     /**
      * Get the referential item impacts
-     *
+     * @param organization the organization (mapped to subscriber column in table)
      * @return list of item impacts
      */
     @Cacheable("ref_getCountries")
-    public List<String> getCountries(String subscriber) {
-        return itemImpactRepository.findCountries(subscriber).stream().sorted().toList();
+    public List<String> getCountries(String organization) {
+        return itemImpactRepository.findCountries(organization).stream().sorted().toList();
     }
 
     /**

@@ -38,7 +38,7 @@ const mockActivatedRoute = {
 };
 
 const mockUserService = {
-    currentOrganization$: of({ name: "Org1" }),
+    currentWorkspace$: of({ name: "Org1" }),
 };
 
 const mockFootprintService = {
@@ -103,7 +103,7 @@ describe("Inventory Application footprint", () => {
             environment: [],
         });
 
-        await component.ngOnInit();
+        await component["asyncInit"]();
 
         expect(mockFootprintStore.setDomain).toHaveBeenCalledWith("Domain1");
         expect(mockFootprintStore.setSubDomain).toHaveBeenCalledWith("SubDomain1");
@@ -121,7 +121,7 @@ describe("Inventory Application footprint", () => {
             equipmentType: [],
             environment: [],
         });
-        await component.ngOnInit();
+        await component["asyncInit"]();
 
         expect(mockFootprintStore.setGraphType).toHaveBeenCalledWith("global");
     });
@@ -143,7 +143,7 @@ describe("Inventory Application footprint", () => {
             equipmentType: [],
             environment: [],
         });
-        await component.ngOnInit();
+        await component["asyncInit"]();
 
         expect(mockFootprintStore.setDomain).toHaveBeenCalledWith("Domain1");
         expect(mockFootprintStore.setSubDomain).toHaveBeenCalledWith("");

@@ -60,14 +60,14 @@ public class AzureFileStorage implements FileStorage {
     private final BlobContainerClient blobContainerClient;
 
     /**
-     * The subscriber organization.
+     * The Organization workspace.
      */
-    private final String organization;
+    private final String workspace;
 
     /**
-     * The subscriber azure storage (start with azure-blob://[container-name].
+     * The organization azure storage (start with azure-blob://[container-name].
      */
-    private final String subscriberAzureStoragePrefix;
+    private final String organizationAzureStoragePrefix;
 
     private static final String MOVE_MESSAGE = "Moving {} to {}";
     private static final String WRITE_MESSAGE = "Writing {}";
@@ -77,7 +77,7 @@ public class AzureFileStorage implements FileStorage {
      */
     @Override
     public InputStream readFile(final FileFolder folder, final String fileName) throws IOException {
-        final BlobClient blob = blobContainerClient.getBlobClient(String.join(FILE_PATH_DELIMITER, organization, folder.getFolderName(), fileName));
+        final BlobClient blob = blobContainerClient.getBlobClient(String.join(FILE_PATH_DELIMITER, workspace, folder.getFolderName(), fileName));
         log.info("Reading {}", blob.getBlobUrl());
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         blob.downloadStream(outputStream);
@@ -89,7 +89,7 @@ public class AzureFileStorage implements FileStorage {
      */
     @Override
     public void writeFile(final FileFolder folder, final String fileName, final String content) throws IOException {
-        final BlobClient blob = blobContainerClient.getBlobClient(String.join(FILE_PATH_DELIMITER, organization, folder.getFolderName(), fileName));
+        final BlobClient blob = blobContainerClient.getBlobClient(String.join(FILE_PATH_DELIMITER, workspace, folder.getFolderName(), fileName));
         log.info(WRITE_MESSAGE, blob.getBlobUrl());
         blob.upload(new ByteArrayInputStream(content.getBytes()));
     }
@@ -99,7 +99,7 @@ public class AzureFileStorage implements FileStorage {
      */
     @Override
     public void writeFile(final FileFolder folder, final String fileName, final InputStream content) throws IOException {
-        final BlobClient blob = blobContainerClient.getBlobClient(String.join(FILE_PATH_DELIMITER, organization, folder.getFolderName(), fileName));
+        final BlobClient blob = blobContainerClient.getBlobClient(String.join(FILE_PATH_DELIMITER, workspace, folder.getFolderName(), fileName));
         log.info(WRITE_MESSAGE, blob.getBlobUrl());
         blob.upload(content);
     }
@@ -109,7 +109,7 @@ public class AzureFileStorage implements FileStorage {
      */
     @Override
     public List<FileDescription> listFiles(final FileFolder folder) throws IOException {
-        return listFiles(organization, folder.getFolderName()).stream().map(this::fileFromBlob).toList();
+        return listFiles(workspace, folder.getFolderName()).stream().map(this::fileFromBlob).toList();
     }
 
     /**
@@ -117,7 +117,7 @@ public class AzureFileStorage implements FileStorage {
      */
     @Override
     public boolean hasFileInSubfolder(final FileFolder folder, final String subfolder, final FileType fileType) throws IOException {
-        return !listFiles(organization, folder.getFolderName(), subfolder, fileType.name()).stream().toList().isEmpty();
+        return !listFiles(workspace, folder.getFolderName(), subfolder, fileType.name()).stream().toList().isEmpty();
     }
 
     /**
@@ -125,7 +125,7 @@ public class AzureFileStorage implements FileStorage {
      */
     @Override
     public Resource[] listResources(final FileFolder folder, final String subfolder, final FileType fileType) throws IOException {
-        return listFiles(organization, folder.getFolderName(), subfolder, fileType.name()).stream().map(this::mapToResource).toArray(Resource[]::new);
+        return listFiles(workspace, folder.getFolderName(), subfolder, fileType.name()).stream().map(this::mapToResource).toArray(Resource[]::new);
     }
 
     /**
@@ -185,7 +185,7 @@ public class AzureFileStorage implements FileStorage {
     @Override
     public void deleteFolder(final FileFolder folder, final String path) {
 
-        String fullPath = String.join(FILE_PATH_DELIMITER, organization, folder.getFolderName());
+        String fullPath = String.join(FILE_PATH_DELIMITER, workspace, folder.getFolderName());
         if (path != null) fullPath = String.join(FILE_PATH_DELIMITER, fullPath, path);
 
         ListBlobsOptions options = new ListBlobsOptions()
@@ -250,15 +250,15 @@ public class AzureFileStorage implements FileStorage {
     }
 
     @Override
-    public void renameOrganization(String newOrganization) throws IOException {
+    public void renameWorkspace(String newWorkspace) throws IOException {
         final ListBlobsOptions options = new ListBlobsOptions();
-        options.setPrefix(String.join(FILE_PATH_DELIMITER, organization));
+        options.setPrefix(String.join(FILE_PATH_DELIMITER, workspace));
         options.setDetails(new BlobListDetails().setRetrieveMetadata(true));
         blobContainerClient.listBlobs(options, null).iterator()
                 .forEachRemaining(item -> {
                     final String oldFilePath = Path.of(item.getName()).toString();
                     final BlobClient oldBlobClient = blobContainerClient.getBlobClient(oldFilePath);
-                    final String newFilePath = oldFilePath.replaceFirst(organization, newOrganization);
+                    final String newFilePath = oldFilePath.replaceFirst(workspace, newWorkspace);
                     final BlobClient newBlobClient = blobContainerClient.getBlobClient(newFilePath);
                     log.info(MOVE_MESSAGE, oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
                     newBlobClient.copyFromUrl(getSasUrl(oldBlobClient));
@@ -273,7 +273,7 @@ public class AzureFileStorage implements FileStorage {
      * @return the resource.
      */
     private Resource mapToResource(final BlobItem item) {
-        return new StorageBlobResource(blobServiceClient, String.join(FILE_PATH_DELIMITER, subscriberAzureStoragePrefix, item.getName()));
+        return new StorageBlobResource(blobServiceClient, String.join(FILE_PATH_DELIMITER, organizationAzureStoragePrefix, item.getName()));
     }
 
     /**
@@ -290,7 +290,7 @@ public class AzureFileStorage implements FileStorage {
     }
 
     private String filePath(final FileFolder folder, final String fileName) {
-        return Path.of(organization, folder.getFolderName(), fileName).toString();
+        return Path.of(workspace, folder.getFolderName(), fileName).toString();
     }
 
     private FileDescription fileFromBlob(final BlobItem blob) {

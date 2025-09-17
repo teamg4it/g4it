@@ -27,9 +27,8 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEq
 import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialImportService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
-import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -66,10 +65,10 @@ import java.util.*;
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FunctionalTests {
-    private static final String SUBSCRIBER = "SUBSCRIBER";
+    private static final String ORGANIZATION = "ORGANIZATION";
     private static final Path API_LOAD_INPUT_FILES = Path.of("src/test/resources/apiloadinputfiles");
     private static final Path API_EVALUATING = Path.of("src/test/resources/apievaluating");
-    
+
     private static final boolean SHOW_ASSERTION = false;
     @Autowired
     LoadInputFilesController loadInputFilesController;
@@ -78,9 +77,7 @@ class FunctionalTests {
     @Autowired
     AsyncEvaluatingService asyncEvaluatingService;
     @Autowired
-    SubscriberRepository subscriberRepository;
-    @Autowired
-    OrganizationRepository organizationRepository;
+    WorkspaceRepository workspaceRepository;
     @Autowired
     InventoryRepository inventoryRepository;
     @Autowired
@@ -129,9 +126,9 @@ class FunctionalTests {
     void executeAllFunctionalTests() throws IOException {
         Locale.setDefault(Locale.ENGLISH);
 
-        var organization = organizationRepository.save(Organization.builder()
+        var workspace = workspaceRepository.save(Workspace.builder()
                 .name("DEMO")
-                .subscriber(Subscriber.builder().name(SUBSCRIBER).build())
+                .organization(Organization.builder().name(ORGANIZATION).build())
                 .build());
 
         taskRepository.deleteAll();
@@ -141,27 +138,27 @@ class FunctionalTests {
 
         var inventory = inventoryRepository.save(Inventory.builder()
                 .name("Inventory Name")
-                .organization(organization)
+                .workspace(workspace)
                 .doExportVerbose(true)
                 .build());
 
         // case with no input data
-        ResponseEntity<TaskIdRest> response = loadInputFilesController.launchloadInputFiles(SUBSCRIBER, organization.getId(), inventory.getId(), "fr", null, null, null, null);
+        ResponseEntity<TaskIdRest> response = loadInputFilesController.launchloadInputFiles(ORGANIZATION, workspace.getId(), inventory.getId(), "fr", null, null, null, null);
         Long taskId = response.getBody().getTaskId();
         Assertions.assertNull(taskId);
 
 
-        final Path targetInputFiles = Path.of("target/local-filesystem").resolve(SUBSCRIBER).resolve(String.valueOf(organization.getId())).resolve("input");
+        final Path targetInputFiles = Path.of("target/local-filesystem").resolve(ORGANIZATION).resolve(String.valueOf(workspace.getId())).resolve("input");
         Files.createDirectories(targetInputFiles);
 
-        final Path targetOutputFiles = Path.of("target/local-filesystem").resolve(SUBSCRIBER).resolve(String.valueOf(organization.getId())).resolve("output");
+        final Path targetOutputFiles = Path.of("target/local-filesystem").resolve(ORGANIZATION).resolve(String.valueOf(workspace.getId())).resolve("output");
         FileSystemUtils.deleteRecursively(targetOutputFiles);
 
         LocalDateTime fixedDateTime = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
         Context context = Context.builder()
-                .subscriber("SUBSCRIBER")
-                .organizationId(organization.getId())
-                .organizationName("DEMO")
+                .organization("ORGANIZATION")
+                .workspaceId(workspace.getId())
+                .workspaceName("DEMO")
                 .inventoryId(inventory.getId())
                 .locale(Locale.getDefault())
                 .datetime(fixedDateTime)
@@ -233,7 +230,7 @@ class FunctionalTests {
                 }
             }
 
-            Path zipDirPath = Path.of("target/local-filesystem").resolve("SUBSCRIBER").resolve(String.valueOf(organization.getId())).resolve("output").resolve(String.valueOf(task.getId()));
+            Path zipDirPath = Path.of("target/local-filesystem").resolve("ORGANIZATION").resolve(String.valueOf(workspace.getId())).resolve("output").resolve(String.valueOf(task.getId()));
             Path zipPath = zipDirPath.resolve(Constants.REJECTED_FILES_ZIP);
 
             if (Files.exists(zipPath)) {
@@ -269,7 +266,7 @@ class FunctionalTests {
         /*
          * EVALUATING FUNCTIONAL TESTS
          */
-        final Path targetExportFiles = Path.of("target/local-filesystem").resolve(SUBSCRIBER).resolve(String.valueOf(organization.getId())).resolve("export");
+        final Path targetExportFiles = Path.of("target/local-filesystem").resolve(ORGANIZATION).resolve(String.valueOf(workspace.getId())).resolve("export");
         FileSystemUtils.deleteRecursively(targetExportFiles);
 
         for (File testFolder : Arrays.stream(Objects.requireNonNull(API_EVALUATING.toFile().listFiles())).sorted().toList()) {
@@ -330,7 +327,7 @@ class FunctionalTests {
                 }
             }
 
-            Path zipDirPath = Path.of("target/local-filesystem").resolve("SUBSCRIBER").resolve(String.valueOf(organization.getId())).resolve("export");
+            Path zipDirPath = Path.of("target/local-filesystem").resolve("ORGANIZATION").resolve(String.valueOf(workspace.getId())).resolve("export");
             Path zipPath = zipDirPath.resolve(taskEvaluating.getId() + Constants.ZIP);
 
             if (Files.exists(zipPath)) {

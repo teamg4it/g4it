@@ -11,7 +11,7 @@ package com.soprasteria.g4it.backend.common.criteria;
 import java.util.List;
 
 
-public record CriteriaByType(List<String> active, List<String> subscriber,
-                             List<String> organizationIs, List<String> organizationDs,
+public record CriteriaByType(List<String> active, List<String> organization,
+                             List<String> workspaceCriteriaIs, List<String> workspaceCriteriaDs,
                              List<String> inventory, List<String> digitalService) {
 }

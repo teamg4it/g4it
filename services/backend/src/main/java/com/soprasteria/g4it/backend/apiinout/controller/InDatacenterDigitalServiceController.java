@@ -39,7 +39,7 @@ public class InDatacenterDigitalServiceController implements DigitalServiceInput
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InDatacenterRest> postDigitalServiceInputsDatacentersRest(final String subscriber, final Long organization, final String digitalServiceUid, final InDatacenterRest inDatacenterRest) {
+    public ResponseEntity<InDatacenterRest> postDigitalServiceInputsDatacentersRest(final String organization, final Long workspace, final String digitalServiceUid, final InDatacenterRest inDatacenterRest) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inDatacenterService.createInDatacenterDigitalService(digitalServiceUid, inDatacenterRest), HttpStatus.CREATED);
     }
@@ -48,8 +48,8 @@ public class InDatacenterDigitalServiceController implements DigitalServiceInput
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InDatacenterRest>> getDigitalServiceInputsDatacentersRest(String subscriber,
-                                                                                         Long organization,
+    public ResponseEntity<List<InDatacenterRest>> getDigitalServiceInputsDatacentersRest(String organization,
+                                                                                         Long workspace,
                                                                                          String digitalServiceUid) {
         return ResponseEntity.ok().body(inDatacenterService.getByDigitalService(digitalServiceUid));
     }
@@ -58,8 +58,8 @@ public class InDatacenterDigitalServiceController implements DigitalServiceInput
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InDatacenterRest> getDigitalServiceInputsDatacenterRest(String subscriber,
-                                                                                  Long organization,
+    public ResponseEntity<InDatacenterRest> getDigitalServiceInputsDatacenterRest(String organization,
+                                                                                  Long workspace,
                                                                                   String digitalServiceUid,
                                                                                   Long id) {
         return ResponseEntity.ok().body(inDatacenterService.getByDigitalServiceAndId(digitalServiceUid, id));
@@ -69,7 +69,7 @@ public class InDatacenterDigitalServiceController implements DigitalServiceInput
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteDigitalServiceInputsDatacenterRest(final String subscriber, final Long organization, final String digitalServiceUid, final Long id) {
+    public ResponseEntity<Void> deleteDigitalServiceInputsDatacenterRest(final String organization, final Long workspace, final String digitalServiceUid, final Long id) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         inDatacenterService.deleteInDatacenter(id);
         return ResponseEntity.noContent().build();
@@ -79,8 +79,8 @@ public class InDatacenterDigitalServiceController implements DigitalServiceInput
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InDatacenterRest> putDigitalServiceInputsDatacenterRest(final String subscriber,
-                                                                                  final Long organization, final String digitalServiceUid, final Long id,
+    public ResponseEntity<InDatacenterRest> putDigitalServiceInputsDatacenterRest(final String organization,
+                                                                                  final Long workspace, final String digitalServiceUid, final Long id,
                                                                                   final InDatacenterRest inDatacenterRest) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
         return new ResponseEntity<>(inDatacenterService.updateInDatacenter(digitalServiceUid, id, inDatacenterRest), HttpStatus.OK);

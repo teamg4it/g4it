@@ -47,13 +47,13 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Resource> downloadTemplatesFile(String subscriber,
-                                                          Long organizationId,
+    public ResponseEntity<Resource> downloadTemplatesFile(String organization,
+                                                          Long workspaceId,
                                                           String name, final String module) {
         FileFolder templateFolder =  FileFolder.IS_TEMPLATE.getFolderName().equals(module) ? FileFolder.IS_TEMPLATE : FileFolder.DS_TEMPLATE;
-        final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_ORGANIZATION), templateFolder.getFolderName(), name);
+        final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_WORKSPACE), templateFolder.getFolderName(), name);
         try {
-            InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_SUBSCRIBER, Constants.INTERNAL_ORGANIZATION, templateFolder, name);
+            InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_ORGANIZATION, Constants.INTERNAL_WORKSPACE, templateFolder, name);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (BlobStorageException e) {
             if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {
@@ -73,8 +73,8 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<FileDescriptionRest>> getTemplateFiles(final String subscriber,
-                                                                      final Long organizationId,
+    public ResponseEntity<List<FileDescriptionRest>> getTemplateFiles(final String organization,
+                                                                      final Long workspaceId,
                                                                       final String module) {
         try {
             return ResponseEntity.ok().body(fileSystemService.listTemplatesFiles(module));

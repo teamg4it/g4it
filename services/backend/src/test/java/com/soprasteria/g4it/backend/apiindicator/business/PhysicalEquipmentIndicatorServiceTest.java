@@ -19,8 +19,8 @@ import com.soprasteria.g4it.backend.apiindicator.repository.InPhysicalEquipmentA
 import com.soprasteria.g4it.backend.apiindicator.repository.InPhysicalEquipmentElecConsumptionViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.InPhysicalEquipmentLowImpactViewRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ class PhysicalEquipmentIndicatorServiceTest {
     private PhysicalEquipmentIndicatorMapper mapper;
 
     @Mock
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     @Mock
     private LowImpactService lowImpactService;
@@ -98,22 +98,22 @@ class PhysicalEquipmentIndicatorServiceTest {
 
     @Test
     void getPhysicalEquipmentsLowImpactReturnsMappedIndicatorsWhenValidInputs() {
-        String subscriber = "subscriber";
-        Long organizationId = 1L;
+        String organization = "organization";
+        Long workspaceId = 1L;
         Long inventoryId = 2L;
-        Organization organization = new Organization();
-        organization.setName("OrgName");
+        Workspace workspace = new Workspace();
+        workspace.setName("WorkName");
         List<InPhysicalEquipmentLowImpactView> repositoryResult = List.of(InPhysicalEquipmentLowImpactView.builder().build());
         List<PhysicalEquipmentLowImpactBO> mappedResult = List.of(new PhysicalEquipmentLowImpactBO());
 
-        when(organizationService.getOrganizationById(organizationId)).thenReturn(organization);
+        when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
         when(lowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId)).thenReturn(repositoryResult);
         when(mapper.inPhysicalEquipmentLowImpacttoDTO(repositoryResult)).thenReturn(mappedResult);
 
-        List<PhysicalEquipmentLowImpactBO> result = service.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
+        List<PhysicalEquipmentLowImpactBO> result = service.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId);
 
         assertEquals(mappedResult, result);
-        verify(organizationService).getOrganizationById(organizationId);
+        verify(workspaceService).getWorkspaceById(workspaceId);
         verify(lowImpactViewRepository).findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         verify(mapper).inPhysicalEquipmentLowImpacttoDTO(repositoryResult);
     }

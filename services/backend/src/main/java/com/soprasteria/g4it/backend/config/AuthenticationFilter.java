@@ -59,7 +59,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Check that the requested organization is authorized.
+     * Check that the requested workspace is authorized.
      * <p>
      * {@inheritDoc}
      */
@@ -71,14 +71,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             UserBO userInfo = authService.verifyUserAuthentication();
 
             final String[] urlSplit = request.getRequestURI().split("/");
-            final Pair<String, String> subOrg = authService.getSubscriberAndOrganization(urlSplit);
+            final Pair<String, String> orgWork = authService.getOrganizationAndWorkspace(urlSplit);
 
-            String subscriber = subOrg == null ? null : subOrg.getFirst();
-            Long organizationId = subOrg == null ? null : Long.parseLong(subOrg.getSecond());
+            String organization = orgWork == null ? null : orgWork.getFirst();
+            Long workspaceId = orgWork == null ? null : Long.parseLong(orgWork.getSecond());
 
-            if (subscriber == null) subscriber = request.getParameter("subscriber");
+            if (organization == null) organization = request.getParameter("organization");
 
-            JwtAuthenticationToken newAuth = authService.getJwtToken(userInfo, subscriber, organizationId);
+            JwtAuthenticationToken newAuth = authService.getJwtToken(userInfo, organization, workspaceId);
             SecurityContextHolder.getContext().setAuthentication(newAuth);
 
             authService.checkUserRightForDigitalService(urlSplit);

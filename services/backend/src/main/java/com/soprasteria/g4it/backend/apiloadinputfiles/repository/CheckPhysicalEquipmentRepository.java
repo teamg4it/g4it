@@ -42,12 +42,12 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                                    STRING_AGG(cpe.filename || ':' || cpe.line_nb, ',') as filenameLineInfo
                             FROM check_inv_load_physical_equipment cpe
                             WHERE cpe.task_id = :taskId
+                              AND cpe.physical_equipment_name IS NOT NULL                            
                             GROUP BY cpe.physical_equipment_name 
                             HAVING COUNT(*) > 1
                             LIMIT 50000
             """)
     List<DuplicateEquipmentDTO> findDuplicatePhysicalEquipments(@Param("taskId") Long taskId);
-
     @Query(nativeQuery = true, value = """
             select filename,
                    line_nb as lineNb,
@@ -55,6 +55,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                    physical_equipment_name as equipmentName
             from check_inv_load_physical_equipment cilpe
             where cilpe.datacenter_name is null
+            and cilpe.type IN ('Dedicated Server', 'Shared Server')
             and cilpe.task_id = :taskId
                         
             UNION
@@ -80,6 +81,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                 and cild.datacenter_name not in (:parentDuplicates)
             )
             and cilpe.datacenter_name is not null
+            and cilpe.type IN ('Dedicated Server', 'Shared Server')
             and cilpe.task_id = :taskId
                         
             """)
@@ -94,6 +96,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                     physical_equipment_name as equipmentName
              from check_inv_load_physical_equipment cilpe
              where cilpe.datacenter_name is null
+             and cilpe.type IN ('Dedicated Server', 'Shared Server')
              and cilpe.task_id = :taskId
              
              UNION
@@ -118,6 +121,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                  and cilpe.datacenter_name = cild.datacenter_name
              )
              and cilpe.datacenter_name is not null
+             and cilpe.type IN ('Dedicated Server', 'Shared Server')
              and cilpe.task_id = :taskId
              
             """)    List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,

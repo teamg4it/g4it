@@ -32,7 +32,7 @@ export const appRoutes: Routes = [
         canActivate,
     },
     {
-        path: "subscribers/:subscriber/organizations/:organization",
+        path: "organizations/:organization/workspaces/:workspace",
         loadChildren: () =>
             import("../layout.module").then((modules) => modules.LayoutModule),
         canActivate,

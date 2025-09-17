@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, signal, ViewChild } from "@angular/core";
+import { Component, computed, inject, OnInit, signal, ViewChild } from "@angular/core";
 import { addYears } from "date-fns";
 import { MessageService } from "primeng/api";
 import { firstValueFrom } from "rxjs";
@@ -26,7 +26,7 @@ import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-ne
     templateUrl: "./digital-services-networks.component.html",
     providers: [MessageService],
 })
-export class DigitalServicesNetworksComponent {
+export class DigitalServicesNetworksComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);
     inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);
@@ -71,7 +71,10 @@ export class DigitalServicesNetworksComponent {
         public userService: UserService,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit() {
+        this.asyncInit();
+    }
+    private async asyncInit() {
         this.digitalService = await firstValueFrom(
             this.digitalServicesData.digitalService$,
         );

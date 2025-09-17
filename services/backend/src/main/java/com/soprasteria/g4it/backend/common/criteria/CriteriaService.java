@@ -8,9 +8,9 @@
 
 package com.soprasteria.g4it.backend.common.criteria;
 
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,85 +24,85 @@ import java.util.List;
 public class CriteriaService {
 
     @Autowired
-    SubscriberRepository subscriberRepository;
+    OrganizationRepository organizationRepository;
 
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
-    private static final String ERROR_MESSAGE = "Subscriber %s not found";
+    private static final String ERROR_MESSAGE = "Organization %s not found";
 
     /**
-     * Get the selected criteria from inventory, organization, subscriber
+     * Get the selected criteria from inventory, workspace, organization
      * Empty list of nothing found
      *
-     * @param subscriber the subscriber
+     * @param organization the organization
      * @return the selected criteria list
      */
-    public CriteriaByType getSelectedCriteria(String subscriber) {
+    public CriteriaByType getSelectedCriteria(String organization) {
 
-        List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
-                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
+        List<String> organizationCriteria = organizationRepository.findByName(organization)
+                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, organization))).getCriteria();
 
-        return new CriteriaByType(subscriberCriterias, subscriberCriterias, null, null, null, null);
+        return new CriteriaByType(organizationCriteria, organizationCriteria, null, null, null, null);
     }
 
     /**
-     * Get the selected criteria from inventory, organization, subscriber
+     * Get the selected criteria from inventory, workspace, organization
      * Empty list of nothing found
      *
-     * @param subscriber         the subscriber
-     * @param organizationId     the organization id
-     * @param inventoryCriterias the inventory criterias
+     * @param organization         the organization
+     * @param workspaceId     the workspace id
+     * @param inventoryCriteria the inventory criteria
      * @return the criteria by type
      */
-    public CriteriaByType getSelectedCriteriaForInventory(String subscriber, Long organizationId, List<String> inventoryCriterias) {
+    public CriteriaByType getSelectedCriteriaForInventory(String organization, Long workspaceId, List<String> inventoryCriteria) {
 
-        List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
-                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
+        List<String> organizationCriteria = organizationRepository.findByName(organization)
+                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, organization))).getCriteria();
 
-        final Organization organization = organizationService.getOrganizationById(organizationId);
+        final Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
 
-        List<String> organizationCriteriaIs = organization.getCriteriaIs();
+        List<String> workspaceCriteriaIs = workspace.getCriteriaIs();
 
-        List<String> activeCriterias = null;
-        if (inventoryCriterias != null) {
-            activeCriterias = inventoryCriterias;
-        } else if (organizationCriteriaIs != null) {
-            activeCriterias = organizationCriteriaIs;
-        } else if (subscriberCriterias != null) {
-            activeCriterias = subscriberCriterias;
+        List<String> activeCriteria = null;
+        if (inventoryCriteria != null) {
+            activeCriteria = inventoryCriteria;
+        } else if (workspaceCriteriaIs != null) {
+            activeCriteria = workspaceCriteriaIs;
+        } else if (organizationCriteria != null) {
+            activeCriteria= organizationCriteria;
         }
 
-        return new CriteriaByType(activeCriterias, subscriberCriterias, organizationCriteriaIs, null, inventoryCriterias, null);
+        return new CriteriaByType(activeCriteria, organizationCriteria, workspaceCriteriaIs, null, inventoryCriteria, null);
     }
 
     /**
-     * Get the selected criteria from inventory, organization, subscriber
+     * Get the selected criteria from inventory, workspace, organization
      * Empty list of nothing found
      *
-     * @param subscriber              the subscriber
-     * @param organizationId          the organization id
-     * @param digitalServiceCriterias the digital service id
+     * @param organization              the organization
+     * @param workspaceId          the workspace id
+     * @param digitalServiceCriteria the digital service criteria
      * @return the criteria by type
      */
-    public CriteriaByType getSelectedCriteriaForDigitalService(String subscriber, Long organizationId, List<String> digitalServiceCriterias) {
+    public CriteriaByType getSelectedCriteriaForDigitalService(String organization, Long workspaceId, List<String> digitalServiceCriteria) {
 
-        List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
-                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
+        List<String> organizationCriteria = organizationRepository.findByName(organization)
+                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, organization))).getCriteria();
 
-        final Organization organization = organizationService.getOrganizationById(organizationId);
+        final Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
 
-        List<String> organizationCriteriaDs = organization.getCriteriaDs();
+        List<String> workspaceCriteriaDs = workspace.getCriteriaDs();
 
-        List<String> activeCriterias = null;
-        if (digitalServiceCriterias != null) {
-            activeCriterias = digitalServiceCriterias;
-        } else if (organizationCriteriaDs != null) {
-            activeCriterias = organizationCriteriaDs;
-        } else if (subscriberCriterias != null) {
-            activeCriterias = subscriberCriterias;
+        List<String> activeCriteria = null;
+        if (digitalServiceCriteria != null) {
+            activeCriteria = digitalServiceCriteria;
+        } else if (workspaceCriteriaDs != null) {
+            activeCriteria = workspaceCriteriaDs;
+        } else if (organizationCriteria != null) {
+            activeCriteria = organizationCriteria;
         }
 
-        return new CriteriaByType(activeCriterias, subscriberCriterias, null, organizationCriteriaDs, null, digitalServiceCriterias);
+        return new CriteriaByType(activeCriteria, organizationCriteria, null, workspaceCriteriaDs, null, digitalServiceCriteria);
     }
 }

@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceType;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.NetworkTypeRefRepository;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -30,6 +31,8 @@ public class NetworkDigitalServiceRule extends AbstractDigitalServiceRule {
     MessageSource messageSource;
     @Autowired
     DigitalServiceReferentialService digitalServiceRefService;
+    @Autowired
+    NetworkTypeRefRepository networkTypeRefRepository;
 
     @Override
     protected void validateSpecificRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {
@@ -38,11 +41,8 @@ public class NetworkDigitalServiceRule extends AbstractDigitalServiceRule {
 
         checkType(locale, physicalEquipment, filename, line, errors).ifPresent(errors::add);
 
-        checkDatePurchase(locale, filename, line,
-                physicalEquipment).ifPresent(errors::add);
-
-        checkDateRetrieval(locale, filename, line,
-                physicalEquipment).ifPresent(errors::add);
+        checkAndSaveDates(locale, filename, line,
+                physicalEquipment);
     }
 
     private Optional<LineError> checkType(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {
@@ -56,48 +56,24 @@ public class NetworkDigitalServiceRule extends AbstractDigitalServiceRule {
         return Optional.empty();
     }
 
-    private Optional<LineError> checkDatePurchase(Locale locale, String filename, int line, InPhysicalEquipmentRest physicalEquipment) {
+    private void checkAndSaveDates(Locale locale, String filename, int line, InPhysicalEquipmentRest physicalEquipment) {
 
         LocalDate defaultDatePurchase = LocalDate.parse(Constants.NETWORK_DATE_PURCHASE);
-
-        //if datePurchase is null then set them to '2020-01-01' automatically else it should always be 2020-01-01
-        if (physicalEquipment.getDatePurchase() == null) {
-            physicalEquipment.setDatePurchase(defaultDatePurchase);
-        } else if (!physicalEquipment.getDatePurchase().equals(defaultDatePurchase)) {
-            return Optional.of(new LineError(
-                    filename,
-                    line,
-                    messageSource.getMessage("date.purchase.invalid", new String[]{physicalEquipment.getDatePurchase().toString()}, locale)
-            ));
-        }
-
-        return Optional.empty();
-    }
-
-    private Optional<LineError> checkDateRetrieval(Locale locale, String filename, int line, InPhysicalEquipmentRest physicalEquipment) {
-
         LocalDate defaultDateWithdrawal = LocalDate.parse(Constants.NETWORK_DATE_WITHDRAWAL);
 
-        //if dateWithdrawal is null then set them to '2021-01-01' automatically else it should always be 2021-01-01
-        if (physicalEquipment.getDateWithdrawal() == null) {
-            physicalEquipment.setDateWithdrawal(defaultDateWithdrawal);
-        } else if (!physicalEquipment.getDateWithdrawal().equals(defaultDateWithdrawal)) {
-            return Optional.of(new LineError(
-                    filename,
-                    line,
-                    messageSource.getMessage("date.withdrawal.invalid", new String[]{physicalEquipment.getDateWithdrawal().toString()}, locale)
-            ));
-        }
+        //set datePurchase  to '2020-01-01'
+        physicalEquipment.setDatePurchase(defaultDatePurchase);
 
+        //set dateWithdrawal to '2021-01-01'
+        physicalEquipment.setDateWithdrawal(defaultDateWithdrawal);
 
-        return Optional.empty();
     }
 
     private Optional<LineError> checkDigitalServiceModel(Locale locale, String filename, int line, String model) {
         //Consistent with the list of model available in ref_network_type.reference
-        NetworkTypeRef refNetworkType = digitalServiceRefService.getNetworkType(model);
+        Optional<NetworkTypeRef> refNetworkType = networkTypeRefRepository.findByReference(model);
 
-        if (refNetworkType == null) {
+        if (refNetworkType.isEmpty()) {
             return Optional.of(new LineError(
                     filename,
                     line,

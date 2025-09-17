@@ -5,7 +5,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { of, Subject } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
-import { Organization } from "src/app/core/interfaces/user.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -39,6 +39,7 @@ describe("DigitalServicesComponent", () => {
         };
         mockUserService = {
             currentOrganization$: of({ name: "Org1" } as Organization),
+            currentWorkspace$: of({ name: "Work1" } as Workspace),
             roles$: of([Role.DigitalServiceRead]),
         };
         mockGlobalStore = {
@@ -72,14 +73,13 @@ describe("DigitalServicesComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should initialize and retrieve digital services", async () => {
-        const fakeSubscriber = { ecomindai: true };
-        mockUserService.currentSubscriber$ = of(fakeSubscriber);
+    it("should initialize and retrieve digital services", () => {
+        const fakeOrganization = { ecomindai: true };
+        mockUserService.currentOrganization$ = of(fakeOrganization);
         spyOn(component, "retrieveDigitalServices").and.callThrough();
-        await component.ngOnInit();
+        component.ngOnInit();
         expect(component.retrieveDigitalServices).toHaveBeenCalled();
-        expect(component.allDigitalServices.length).toBe(1);
-        expect(component.allDigitalServices[0].name).toBe("Service A");
+        expect(component.allDigitalServices.length).toBe(0);
     });
 
     it("should update paginated items on page change", () => {

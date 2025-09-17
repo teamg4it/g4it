@@ -4,16 +4,16 @@
             appendTo="body"
             optionLabel="name"
             [style]="{ width: '35%' }"
-            name="subscriber"
-            [options]="subscribersDetails"
+            name="organization"
+            [options]="organizationsDetails"
             placeholder="{{ 'administration.organization-placeholder' | translate }}"
             ngDefaultControl
-            [(ngModel)]="subscriber"
-            id="subscriberName"
+            [(ngModel)]="organization"
+            id="organizationName"
         >
         </p-dropdown>
 
-        @if (subscriber) {
+        @if (organization) {
             <div class="inline-block vertical-align-middle mx-2">
                 @if (!editable) {
                     <p-button
@@ -31,7 +31,7 @@
                     <p-button
                         styleClass="p-button-text"
                         (onClick)="
-                            saveOrganizations(subscriber.organizations); editable = false
+                            saveWorkspaces(organization.workspaces); editable = false
                         "
                         styleClass="mx-1"
                         [text]="true"
@@ -51,7 +51,7 @@
                         [ariaLabel]="'common.cancel' | translate"
                     />
                 }
-                @if (subscriber?.roles?.includes(Role.SubscriberAdmin)) {
+                @if (organization.roles.includes(Role.OrganizationAdmin)) {
                     <p-button
                         [ariaLabel]="
                             'administration.accessibility.select-criteria' | translate
@@ -64,7 +64,7 @@
                         [rounded]="true"
                         [ariaLabel]="
                             'administration.user.choose-criteria'
-                                | translate: { subscriber: subscriber.name }
+                                | translate: { organization: organization.name }
                         "
                     >
                     </p-button>
@@ -74,11 +74,11 @@
 
         <app-criteria-popup
             [displayPopup]="displayPopup"
-            [type]="'subscriber'"
-            [subscriberDetails]="subscriber"
+            [type]="'organization'"
+            [organizationDetails]="organization"
             [selectedCriteriaIS]="selectedCriteria"
-            (onSaveSubscriber)="handleSaveSubscriber($event)"
-            (onClose)="displayPopup = false"
+            (outSaveOrganization)="handleSaveOrganization($event)"
+            (outClose)="displayPopup = false"
         ></app-criteria-popup>
 
         <div
@@ -87,29 +87,29 @@
         ></div>
     </div>
 
-    <div *ngIf="subscriber" class="my-2">
+    <div *ngIf="organization" class="my-2">
         <div *ngIf="editable">
             @if (
-                subscriber?.roles?.includes(Role.SubscriberAdmin) ||
-                subscriber.authorizedDomains.includes(myDomain)
+                organization.roles.includes(Role.OrganizationAdmin) ||
+                organization.authorizedDomains?.includes(myDomain)
             ) {
                 <input
                     class="label-input-div-medium input-width inline-block p-2 mx-1"
                     pInputText
-                    [(ngModel)]="newOrganization.name"
+                    [(ngModel)]="newWorkspace.name"
                     [placeholder]="'administration.organization.new' | translate"
                     name="newOrg"
                     ngDefaultControl
                     (ngModelChange)="
-                        checkOrganization($event, newOrganization, subscriber)
+                        checkOrganization($event, newWorkspace, organization)
                     "
                     id="new-organization-input"
                 />
                 <p-button
                     class="mx-2"
                     styleClass="black-button-sidebar"
-                    (onClick)="addOrganization(newOrganization)"
-                    [disabled]="newOrganization.uiStatus !== 'OK'"
+                    (onClick)="addWorkplace(newWorkspace)"
+                    [disabled]="newWorkspace.uiStatus !== 'OK'"
                     id="add-organization-button"
                     [ariaLabel]="
                         'administration.organization.accessibility.addAnOrganization'
@@ -121,41 +121,41 @@
                 >
             }
         </div>
-        <p class="error-text" *ngIf="newOrganization.uiStatus === 'DUPLICATE'">
+        <p class="error-text" *ngIf="newWorkspace.uiStatus === 'DUPLICATE'">
             {{
                 "administration.organization.duplicateOrganizationValidation" | translate
             }}
         </p>
-        <p class="error-text" *ngIf="newOrganization.uiStatus === 'SPACE'">
+        <p class="error-text" *ngIf="newWorkspace.uiStatus === 'SPACE'">
             {{ "administration.organization.spaceValidation" | translate }}
         </p>
 
-        <div *ngFor="let organization of subscriber.organizations">
+        <div *ngFor="let workspace of organization.workspaces">
             <input
                 class="label-input-div-medium input-width inline-block p-2 mx-1"
                 [class.ng-invalid]="
-                    organization.uiStatus !== undefined && organization.uiStatus !== 'OK'
+                    workspace.uiStatus !== undefined && workspace.uiStatus !== 'OK'
                 "
                 [class.ng-dirty]="
-                    organization.uiStatus !== undefined && organization.uiStatus !== 'OK'
+                    workspace.uiStatus !== undefined && workspace.uiStatus !== 'OK'
                 "
-                [(ngModel)]="organization.name"
+                [(ngModel)]="workspace.name"
                 name="name"
                 placeholder="Name"
                 pInputText
                 [disabled]="
                     !editable ||
-                    (!subscriber.roles?.includes(Role.SubscriberAdmin) &&
-                        organization.status === status.TO_BE_DELETED)
+                    (!workspace?.roles?.includes(Role.OrganizationAdmin) &&
+                        workspace.status === status.TO_BE_DELETED)
                 "
-                (ngModelChange)="checkOrganization($event, organization, subscriber)"
+                (ngModelChange)="checkOrganization($event, workspace, organization)"
             />
             <p-button
                 styleClass="p-button-text"
                 [ariaLabel]="'administration.accessibility.on-deletion' | translate"
                 class="mx-1"
-                *ngIf="editable && organization.status === status.ACTIVE"
-                (onClick)="confirmDelete($event, organization)"
+                *ngIf="editable && workspace.status === status.ACTIVE"
+                (onClick)="confirmDelete($event, workspace)"
                 id="delete-organization-button"
             >
                 <img
@@ -166,43 +166,43 @@
             <p-button
                 [ariaLabel]="
                     'administration.cancel-deletion-accessibility'
-                        | translate: { organizationName: organization.name }
+                        | translate: { organizationName: workspace.name }
                 "
                 class="mx-2"
                 styleClass="black-button-sidebar"
-                *ngIf="organization.status === status.TO_BE_DELETED"
-                (onClick)="confirmToActive(organization)"
-                [disabled]="!subscriber.roles?.includes(Role.SubscriberAdmin)"
+                *ngIf="workspace.status === status.TO_BE_DELETED"
+                (onClick)="confirmToActive(workspace)"
+                [disabled]="!organization.roles.includes(Role.OrganizationAdmin)"
                 >{{ "administration.cancel-deletion" | translate }}</p-button
             >
 
-            <small class="mx-1" *ngIf="organization.status === status.TO_BE_DELETED">
+            <small class="mx-1" *ngIf="workspace.status === status.TO_BE_DELETED">
                 {{
                     "administration.cancel-deletion-message"
                         | translate
                             : {
-                                  date: organization.deletionDate | date: "dd/MM/yyyy",
+                                  date: workspace.deletionDate | date: "dd/MM/yyyy",
                               }
                 }}</small
             >
             @if (
-                !subscriber.roles?.includes(Role.SubscriberAdmin) &&
-                organization.status === status.TO_BE_DELETED
+                !organization.roles.includes(Role.OrganizationAdmin) &&
+                workspace.status === status.TO_BE_DELETED
             ) {
                 <small class="mx-1"
                     >{{
                         "administration.cancel-deletion-non-SubscriberAdmin"
-                            | translate: { organizationName: organization.name }
+                            | translate: { organizationName: workspace.name }
                     }}
                 </small>
             }
-            <p class="error-text" *ngIf="organization.uiStatus === 'DUPLICATE'">
+            <p class="error-text" *ngIf="workspace.uiStatus === 'DUPLICATE'">
                 {{
                     "administration.organization.duplicateOrganizationValidation"
                         | translate
                 }}
             </p>
-            <p class="error-text" *ngIf="organization.uiStatus === 'SPACE'">
+            <p class="error-text" *ngIf="workspace.uiStatus === 'SPACE'">
                 {{ "administration.organization.spaceValidation" | translate }}
             </p>
         </div>

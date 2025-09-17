@@ -4,6 +4,7 @@ import {
     DestroyRef,
     inject,
     OnDestroy,
+    OnInit,
     Signal,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -25,7 +26,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     selector: "app-digital-services-ai-infrastructure",
     templateUrl: "./digital-services-ai-infrastructure.component.html",
 })
-export class DigitalServicesAiInfrastructureComponent implements OnDestroy {
+export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestroy {
     infrastructureForm!: FormGroup;
     private formSubscription: Subscription | undefined;
     locationOptions: Signal<

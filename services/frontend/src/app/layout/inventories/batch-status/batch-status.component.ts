@@ -9,7 +9,7 @@ import { Component, inject, Input, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Subject, takeUntil } from "rxjs";
-import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { Workspace } from "src/app/core/interfaces/user.interfaces";
 import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { TaskDataService } from "src/app/core/service/data/task-data.service";
@@ -34,8 +34,8 @@ export class BatchStatusComponent implements OnInit {
     @Input() taskId = "";
     @Input() fileUrl = "";
 
+    selectedWorkspace!: string;
     selectedOrganization!: string;
-    selectedSubscriber!: string;
     ngUnsubscribe = new Subject<void>();
 
     constructor(
@@ -46,15 +46,15 @@ export class BatchStatusComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.userService.currentSubscriber$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((subscriber: Subscriber) => {
-                this.selectedSubscriber = subscriber.name;
-            });
         this.userService.currentOrganization$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((organization: Organization) => {
+            .subscribe((organization) => {
                 this.selectedOrganization = organization.name;
+            });
+        this.userService.currentWorkspace$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((workspace: Workspace) => {
+                this.selectedWorkspace = workspace.name;
             });
 
         const defaultClasses =
@@ -92,8 +92,8 @@ export class BatchStatusComponent implements OnInit {
     downloadFile() {
         this.fileSystemBusinessService.downloadFile(
             this.taskId,
-            this.selectedSubscriber,
             this.selectedOrganization,
+            this.selectedWorkspace,
             this.inventoryId,
         );
     }

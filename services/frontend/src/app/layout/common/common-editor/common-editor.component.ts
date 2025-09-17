@@ -2,6 +2,7 @@ import {
     Component,
     EventEmitter,
     Input,
+    OnChanges,
     Output,
     SecurityContext,
     SimpleChanges,
@@ -15,7 +16,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
     templateUrl: "./common-editor.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class CommonEditorComponent {
+export class CommonEditorComponent implements OnChanges {
     @Input() styleClass = "";
     @Input() maxContentLength = 20000;
     @Input() content: string | undefined = undefined;

@@ -25,22 +25,31 @@ public class InAiInfrastructureRestController implements AiInfraInputsApiDelegat
     @Autowired
     private AuthorizationUtils authorizationUtils;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ResponseEntity<InAiInfrastructureRest> getDigitalServiceInputsAiInfraRest(String subscriber, Long organization, String digitalServiceUid) {
+    public ResponseEntity<InAiInfrastructureRest> getDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceUid) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
         return new ResponseEntity<>(inAiInfrastructureMapper.toRest(inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(digitalServiceUid)), HttpStatus.OK);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsAiInfraRest(String subscriber, Long organization, String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
+    public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
         return new ResponseEntity<>(inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest), HttpStatus.CREATED);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> updateDigitalServiceInputsAiInfraRest(String subscriber, Long organization, String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
+    public ResponseEntity<InPhysicalEquipmentRest> updateDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
         return new ResponseEntity<>(inAiInfrastructureService.updateDigitalServiceInputsAiInfraRest(digitalServiceUid, aiInfraRest), HttpStatus.OK);

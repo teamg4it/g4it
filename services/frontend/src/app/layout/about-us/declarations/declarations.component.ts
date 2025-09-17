@@ -1,8 +1,8 @@
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
-import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 
@@ -13,14 +13,14 @@ import { SharedModule } from "src/app/core/shared/shared.module";
     templateUrl: "./declarations.component.html",
     styleUrls: ["./declarations.component.scss"],
 })
-export class DeclarationsComponent {
+export class DeclarationsComponent implements OnInit {
     private readonly translate = inject(TranslateService);
     private readonly titleService = inject(Title);
     private readonly userService = inject(UserService);
     private readonly destroyRef = inject(DestroyRef);
     currentLang: string = this.translate.currentLang;
-    currentSubscriber: Subscriber = {} as Subscriber;
-    selectedOrganization: Organization = {} as Organization;
+    currentOrganization: Organization = {} as Organization;
+    selectedWorkspace: Workspace = {} as Workspace;
     ecoDesignPercent = this.userService.ecoDesignPercent;
     pdfSize = 0;
     ngOnInit() {
@@ -30,14 +30,14 @@ export class DeclarationsComponent {
         this.currentLang = this.translate.currentLang;
         this.pdfSize = this.currentLang === "en" ? 139 : 428;
 
-        this.userService.currentSubscriber$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((subscriber) => (this.currentSubscriber = subscriber));
-
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((organization: Organization) => {
-                this.selectedOrganization = organization;
+            .subscribe((organization) => (this.currentOrganization = organization));
+
+        this.userService.currentWorkspace$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((workspace: Workspace) => {
+                this.selectedWorkspace = workspace;
             });
     }
 
@@ -50,8 +50,8 @@ export class DeclarationsComponent {
 
     composeEmail() {
         window.location.href = this.userService.composeEmail(
-            this.currentSubscriber,
-            this.selectedOrganization,
+            this.currentOrganization,
+            this.selectedWorkspace,
         );
     }
 }

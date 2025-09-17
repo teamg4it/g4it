@@ -31,6 +31,10 @@ public class NonCloudDigitalServiceRule extends AbstractDigitalServiceRule {
     @Override
     protected void validateSpecificRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {
         checkDigitalServiceModel(locale, filename, line, physicalEquipment.getModel(), physicalEquipment).ifPresent(errors::add);
+        rulePhysicalEqpService.checkElectricityConsumption(locale, filename, line, physicalEquipment.getElectricityConsumption())
+                .ifPresent(errors::add);
+        rulePhysicalEqpService.checkDurationHour(locale, filename, line, physicalEquipment.getDurationHour())
+                .ifPresent(errors::add);
     }
 
     private Optional<LineError> checkDigitalServiceModel(Locale locale, String filename, int line, String model, InPhysicalEquipmentRest physicalEquipment) {

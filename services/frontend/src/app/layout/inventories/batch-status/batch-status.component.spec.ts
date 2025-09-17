@@ -86,8 +86,8 @@ describe("BatchStatusComponent", () => {
 
     it("should call fileSystemBusinessService.downloadFile with correct arguments", () => {
         component.taskId = "task-1";
-        component.selectedSubscriber = "subscriber-1";
-        component.selectedOrganization = "org-1";
+        component.selectedOrganization = "organization-1";
+        component.selectedWorkspace = "work-1";
         component.inventoryId = 42;
 
         const fileSystemBusinessServiceSpy = spyOn(
@@ -99,8 +99,8 @@ describe("BatchStatusComponent", () => {
 
         expect(fileSystemBusinessServiceSpy).toHaveBeenCalledWith(
             "task-1",
-            "subscriber-1",
-            "org-1",
+            "organization-1",
+            "work-1",
             42,
         );
     });

@@ -174,7 +174,7 @@
         "not-found": "Le service numérique n'existe pas.",
         "expired": "Le lien de service numérique a expiré.",
         "linkCopied": "LIEN COPIÉ !",
-        "title": "Mes Services Numériques - {{OrganizationName}}",
+        "title": "Mes Services Numériques - {{WorkspaceName}}",
         "page-title": "Mes Services Numériques",
         "add": "Evaluer Un Nouveau Service",
         "empty-digital-services": "Vous n'avez pas de service numérique.",
@@ -226,7 +226,7 @@
         "not-found": "Le service numérique IA n'existe pas.",
         "expired": "Le lien du service numérique IA a expiré.",
         "linkCopied": "LIEN COPIÉ !",
-        "title": "Mes Services Numériques IA - {{OrganizationName}}",
+        "title": "Mes Services Numériques IA - {{WorkspaceName}}",
         "page-title": "Mes Services Numériques IA",
         "add": "Evaluer Un Nouveau Service IA",
         "empty-digital-services": "Vous n'avez pas de service numérique.",
@@ -453,7 +453,7 @@
         "hello": "Bonjour",
         "about-g4it": "G4IT est conçu pour vous aider à mettre en œuvre une <strong>approche numérique durable</strong> pour vos <strong>systèmes d’information</strong> et vos <strong>services numériques.</strong>",
         "getting-started": "Prêt à démarrer",
-        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d’un espace de travail à un autre via le menu situé en haut à droite de l’application (le nom de l’espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation {{ subscriberName }}, afin de réaliser vos propres évaluations et inviter d’autres utilisateurs à vous y rejoindre.",
+        "getting-started-text": "Lors de votre première connexion, un espace de démonstration est mis à votre disposition. Vous pouvez à tout moment passer d’un espace de travail à un autre via le menu situé en haut à droite de l’application (le nom de l’espace en cours y est affiché). Vous avez également la possibilité de créer un nouvel espace de travail au sein de votre organisation {{ organizationName }}, afin de réaliser vos propres évaluations et inviter d’autres utilisateurs à vous y rejoindre.",
         "modules-access": "Accès aux modules",
         "inventories": {
             "title": "Inventaires",
@@ -495,7 +495,7 @@
         "inventory": "Inventaire",
         "page-title": "Mon Système d'information",
         "equipment-page-title": "Mon impact G4IT",
-        "title": "Mon Système d'information - {{OrganizationName}}",
+        "title": "Mon Système d'information - {{WorkspaceName}}",
         "add": "Nouvel Inventaire",
         "created": "créé",
         "details.equipment": "EQUIPEMENT",
@@ -682,17 +682,17 @@
             "title": "La taille maximum d'un fichier est dépassées",
             "text": "La taille maximum d'un fichier est de 100Mo"
         },
-        "subscriber-or-organization-not-found": {
-            "title": "Aucun souscripteur ou organisation trouvé",
-            "text": "Demandez à votre administrateur de vous rattacher à une organisation"
-        },
-        "insuffisant-right-subscriber": {
-            "title": "Souscripteur non autorisé",
-            "text": "Demandez à votre administrateur de vous rattacher au souscripteur"
+        "organization-or-workspace-not-found": {
+            "title": "Aucun organisation ou espace de travail trouvé",
+            "text": "Demandez à votre administrateur de vous rattacher à une espace de travail"
         },
         "insuffisant-right-organization": {
-            "title": "Organisation non autorisée",
-            "text": "Demandez à votre administrateur de vous rattacher à l'organisation"
+            "title": "Organisation non autorisé",
+            "text": "Demandez à votre administrateur de vous rattacher au organisation"
+        },
+        "insuffisant-right-workspace": {
+            "title": "Espace de travail non autorisé",
+            "text": "Demandez à votre administrateur de vous rattacher à l'espace de travail"
         },
         "boavitzapi-no-country-found": {
             "title": "Réferentiel Boavizta",
@@ -916,7 +916,7 @@
             "searchEmailValidation": "Les caractères spéciaux ne sont pas autorisés sauf @.-_",
             "delete-message": "L'utilisateur {{FirstName}} {{LastName}} n'aura plus accès à cette organisation. Êtes-vous sur de vouloir continuer ?",
             "search": "Recherche",
-            "choose-criteria": "Choisissez les critères pour l'organisation {{subscriber}}",
+            "choose-criteria": "Choisissez les critères pour l'organisation {{organization}}",
             "error": "Au moins un critère doit être sélectionné",
             "is-header": "Module système d'information",
             "ds-header": "Module service numérique",
@@ -938,7 +938,7 @@
             "accessibility": {
                 "addAnOrganization": "Ajouter un espace de travail"
             },
-            "choose-criteria": "Choisissez les critères de l'espace de travail {{organizationName}}",
+            "choose-criteria": "Choisissez les critères de l'espace de travail {{workspaceName}}",
             "error": "Au moins un critère doit être sélectionné",
             "information-system-module": "Information system",
             "digital-service-module": "Digital service module"

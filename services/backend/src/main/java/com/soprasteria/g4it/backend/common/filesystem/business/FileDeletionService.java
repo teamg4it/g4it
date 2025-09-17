@@ -27,23 +27,23 @@ public class FileDeletionService {
     private FileSystem fileSystem;
 
     /**
-     * Delete files older than storageRetentionday for subscriber, organization, fileFolder
+     * Delete files older than storageRetentionday for organization, workspace, fileFolder
      *
-     * @param subscriber          the subscriber
-     * @param organization        the organization
+     * @param organization          the organization
+     * @param workspace        the workspace
      * @param fileFolder          the fileFolder
      * @param storageRetentionDay the storageRetention in days
      */
-    public List<String> deleteFiles(String subscriber, String organization, FileFolder fileFolder, Integer storageRetentionDay) {
+    public List<String> deleteFiles(String organization, String workspace, FileFolder fileFolder, Integer storageRetentionDay) {
 
         List<String> filePathsToDelete = new ArrayList<>();
 
         final OffsetDateTime now = OffsetDateTime.now();
 
-        final FileStorage fileStorage = fileSystem.mount(subscriber, organization);
-        final String prefix = Path.of(organization).resolve(fileFolder.getFolderName()).toString();
+        final FileStorage fileStorage = fileSystem.mount(organization, workspace);
+        final String prefix = Path.of(workspace).resolve(fileFolder.getFolderName()).toString();
 
-        log.info("Check deletion for: {}/{}/{}, retention={}", subscriber, organization, fileFolder.getFolderName(), storageRetentionDay);
+        log.info("Check deletion for: {}/{}/{}, retention={}", organization, workspace, fileFolder.getFolderName(), storageRetentionDay);
         try {
             final List<String> filesToDelete = fileStorage.listFiles(fileFolder).stream()
                     // date now - n days > createTime

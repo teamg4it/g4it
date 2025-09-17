@@ -26,18 +26,10 @@ public abstract class AbstractDigitalServiceRule implements DigitalServiceRule {
     @Override
     public List<LineError> validate(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line) {
         final List<LineError> errors = new ArrayList<>();
-        validateCommonRules(locale, physicalEquipment, filename, line, errors);
         validateSpecificRules(locale, physicalEquipment, filename, line, errors);
         return errors;
     }
 
-    protected void validateCommonRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors) {
-        // Add common validation logic here
-        rulePhysicalEqpService.checkElectricityConsumption(locale, filename, line, physicalEquipment.getElectricityConsumption())
-                .ifPresent(errors::add);
-        rulePhysicalEqpService.checkDurationHour(locale, filename, line, physicalEquipment.getDurationHour())
-                .ifPresent(errors::add);
-    }
 
     protected abstract void validateSpecificRules(Locale locale, InPhysicalEquipmentRest physicalEquipment, String filename, int line, List<LineError> errors);
 }

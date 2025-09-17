@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * UserRest Mapper.
  */
-@Mapper(componentModel = "spring", uses = SubscriberRestMapper.class)
+@Mapper(componentModel = "spring", uses = OrganizationRestMapper.class)
 public interface UserRestMapper {
 
     /**

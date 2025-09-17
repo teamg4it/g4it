@@ -16,27 +16,27 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("!test")
-public class OrganizationDeletionScheduler {
+public class WorkspaceDeletionScheduler {
 
-    @Value("${g4it.organization.deletion.oninit:false}")
+    @Value("${g4it.workspace.deletion.oninit:false}")
     private boolean onInit;
 
     @Autowired
-    private OrganizationDeletionService organizationDeletionService;
+    private WorkspaceDeletionService workspaceDeletionService;
 
     @PostConstruct
     public void init() {
         if (onInit) {
-            organizationDeletionService.executeDeletion();
+            workspaceDeletionService.executeDeletion();
         }
     }
 
     /**
      * Execute the data deletion with a cron scheduler
      */
-    @Scheduled(cron = "${g4it.organization.deletion.cron}")
+    @Scheduled(cron = "${g4it.workspace.deletion.cron}")
     public void executeAutoDeletion() {
-        organizationDeletionService.executeDeletion();
+        workspaceDeletionService.executeDeletion();
     }
 
 }

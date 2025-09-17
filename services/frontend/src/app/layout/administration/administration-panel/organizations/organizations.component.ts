@@ -5,17 +5,17 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import {
-    DomainSubscribers,
+    DomainOrganizations,
     Organization,
-    OrganizationUpsertRest,
-    Subscriber,
-    SubscriberCriteriaRest,
+    OrganizationCriteriaRest,
+    Workspace,
+    WorkspaceUpsertRest,
 } from "src/app/core/interfaces/administration.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
@@ -30,23 +30,23 @@ import { Constants } from "src/constants";
     templateUrl: "./organizations.component.html",
     providers: [ConfirmationService, MessageService],
 })
-export class OrganizationsComponent {
+export class OrganizationsComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);
 
     editable = false;
-    subscribersDetails!: Subscriber[];
-    unmodifiedSubscribersDetails!: Subscriber[];
-    subscriber: any;
-    newOrganization: Organization = {} as Organization;
+    organizationsDetails!: Organization[];
+    unmodifiedOrganizationsDetails!: Organization[];
+    organization!: Organization;
+    newWorkspace: Workspace = {} as Workspace;
 
-    status = Constants.ORGANIZATION_STATUSES;
+    status = Constants.WORKSPACE_STATUSES;
 
     displayPopup = false;
     selectedCriteria: string[] = [];
     Role = Role;
     myDomain!: string;
-    notSubscriberAdminInSome = false;
-    domainSubscribers: DomainSubscribers[] = [];
+    notOrganizationAdminInSome = false;
+    domainOrganizations: DomainOrganizations[] = [];
     constructor(
         private readonly confirmationService: ConfirmationService,
         public administrationService: AdministrationService,
@@ -61,21 +61,21 @@ export class OrganizationsComponent {
         this.init();
     }
 
-    init(subscriber: string | undefined = undefined) {
-        this.administrationService.getOrganizations().subscribe((res: Subscriber[]) => {
-            this.subscribersDetails = res;
-            this.unmodifiedSubscribersDetails = JSON.parse(JSON.stringify(res));
-            if (subscriber) {
-                this.subscriber = this.unmodifiedSubscribersDetails.find(
-                    (s) => s.name === subscriber,
-                );
+    init(organization: string | undefined = undefined) {
+        this.administrationService.getOrganizations().subscribe((res: Organization[]) => {
+            this.organizationsDetails = res;
+            this.unmodifiedOrganizationsDetails = JSON.parse(JSON.stringify(res));
+            if (organization) {
+                this.organization = this.unmodifiedOrganizationsDetails.find(
+                    (s) => s.name === organization,
+                )!;
             }
-            this.notSubscriberAdminInSome = this.subscribersDetails.some(
-                (s) => !s.roles?.includes(Role.SubscriberAdmin),
+            this.notOrganizationAdminInSome = this.organizationsDetails.some(
+                (s) => !s.roles?.includes(Role.OrganizationAdmin),
             );
 
-            if (this.notSubscriberAdminInSome) {
-                this.getDomainSubscribersList();
+            if (this.notOrganizationAdminInSome) {
+                this.getDomainOrganizationsList();
             }
         });
 
@@ -84,52 +84,51 @@ export class OrganizationsComponent {
         });
     }
 
-    async getDomainSubscribersList() {
+    async getDomainOrganizationsList() {
         const userEmail = (await firstValueFrom(this.userService.user$)).email;
 
         if (userEmail) {
             const body = {
                 email: userEmail,
             };
-            this.workspaceService.getDomainSubscribers(body).subscribe((res) => {
-                this.domainSubscribers = res;
+            this.workspaceService.getDomainOrganizations(body).subscribe((res) => {
+                this.domainOrganizations = res;
             });
         }
     }
 
-    checkOrganization(event: any, organization: Organization, subscriber: Subscriber) {
-        const isSubscriberAdmin = subscriber.roles?.includes(Role.SubscriberAdmin);
-        let organizations: Organization[] = [];
-        if (isSubscriberAdmin) {
-            organizations =
-                this.unmodifiedSubscribersDetails.find((s) => s.name === subscriber.name)
-                    ?.organizations || [];
-            organization.uiStatus = undefined;
+    checkOrganization(event: any, workspace: Workspace, organization: Organization) {
+        const isOrganizationAdmin = organization.roles?.includes(Role.OrganizationAdmin);
+        let workspaces: Workspace[] = [];
+        if (isOrganizationAdmin) {
+            workspaces =
+                this.unmodifiedOrganizationsDetails.find(
+                    (s) => s.name === organization.name,
+                )?.workspaces || [];
+            workspace.uiStatus = undefined;
         } else {
-            organizations = (this.domainSubscribers.find(
-                (s) => s.name === subscriber.name,
-            )?.organizations || []) as Organization[];
-            organization.uiStatus = undefined;
+            workspaces = (this.domainOrganizations.find(
+                (s) => s.name === organization.name,
+            )?.workspaces || []) as Workspace[];
+            workspace.uiStatus = undefined;
         }
 
         if (event.trim().includes(" ")) {
-            organization.uiStatus = "SPACE";
+            workspace.uiStatus = "SPACE";
             return;
         }
 
-        if (
-            organizations.some((org) => org.name === event && org.id !== organization.id)
-        ) {
-            organization.uiStatus = "DUPLICATE";
+        if (workspaces.some((org) => org.name === event && org.id !== workspace.id)) {
+            workspace.uiStatus = "DUPLICATE";
             return;
         }
 
-        if (event && !organizations.some((org) => org.name === event)) {
-            organization.uiStatus = "OK";
+        if (event && !workspaces.some((org) => org.name === event)) {
+            workspace.uiStatus = "OK";
         }
     }
 
-    confirmDelete(event: Event, organization: Organization) {
+    confirmDelete(event: Event, workspace: Workspace) {
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             message: this.translate.instant("administration.delete-message"),
@@ -143,75 +142,73 @@ export class OrganizationsComponent {
             rejectVisible: false,
 
             accept: () => {
-                this.updateOrganization(organization.id, {
-                    subscriberId: this.subscriber.id,
-                    name: organization.name.trim(),
-                    status: Constants.ORGANIZATION_STATUSES.TO_BE_DELETED,
+                this.updateWorkspace(workspace.id, {
+                    organizationId: this.organization.id,
+                    name: workspace.name.trim(),
+                    status: Constants.WORKSPACE_STATUSES.TO_BE_DELETED,
                 });
             },
         });
     }
 
-    confirmToActive(organization: Organization) {
-        this.updateOrganization(organization.id, {
-            subscriberId: this.subscriber.id,
-            name: organization.name.trim(),
-            status: Constants.ORGANIZATION_STATUSES.ACTIVE,
+    confirmToActive(workspace: Workspace) {
+        this.updateWorkspace(workspace.id, {
+            organizationId: this.organization?.id,
+            name: workspace.name.trim(),
+            status: Constants.WORKSPACE_STATUSES.ACTIVE,
         });
     }
 
-    saveOrganizations(organizations: Organization[]) {
-        organizations
-            .filter((organization) => organization.uiStatus === "OK")
-            .forEach((organization) => {
-                this.updateOrganization(organization.id, {
-                    subscriberId: this.subscriber.id,
-                    name: organization.name,
-                    status: organization.status,
+    saveWorkspaces(workspaces: Workspace[]) {
+        workspaces
+            .filter((workspace) => workspace.uiStatus === "OK")
+            .forEach((workspace) => {
+                this.updateWorkspace(workspace.id, {
+                    organizationId: this.organization?.id,
+                    name: workspace.name,
+                    status: workspace.status,
                 });
             });
     }
 
-    addOrganization(organization: Organization) {
-        if (organization === undefined) return;
+    addWorkplace(workspace: Workspace) {
+        if (workspace === undefined) return;
         let body = {
-            subscriberId: this.subscriber.id,
-            name: organization.name.trim(),
-            status: Constants.ORGANIZATION_STATUSES.ACTIVE,
+            organizationId: this.organization?.id,
+            name: workspace.name.trim(),
+            status: Constants.WORKSPACE_STATUSES.ACTIVE,
         };
-        this.administrationService.postOrganization(body).subscribe((_) => {
-            this.init(this.subscriber.name);
-            this.newOrganization = {} as Organization;
+        this.administrationService.postWorkspace(body).subscribe((_) => {
+            this.init(this.organization?.name);
+            this.newWorkspace = {} as Workspace;
             this.editable = false;
             this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
         });
     }
 
-    updateOrganization(organizationId: number, body: OrganizationUpsertRest) {
-        this.administrationService
-            .updateOrganization(organizationId, body)
-            .subscribe((_) => {
-                this.init(this.subscriber.name);
-                this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
-                if (this.notSubscriberAdminInSome) {
-                    this.getDomainSubscribersList();
-                }
-            });
+    updateWorkspace(workspaceId: number, body: WorkspaceUpsertRest) {
+        this.administrationService.updateWorkspace(workspaceId, body).subscribe((_) => {
+            this.init(this.organization?.name);
+            this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
+            if (this.notOrganizationAdminInSome) {
+                this.getDomainOrganizationsList();
+            }
+        });
     }
 
     displayPopupFct() {
         const slicedCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
-        this.selectedCriteria = this.subscriber.criteria ?? slicedCriteria;
+        this.selectedCriteria = this.organization?.criteria ?? slicedCriteria;
         this.displayPopup = true;
     }
 
-    handleSaveSubscriber(subscriberCriteria: SubscriberCriteriaRest) {
+    handleSaveOrganization(organizationCriteria: OrganizationCriteriaRest) {
         this.administrationService
-            .updateSubscriberCriteria(this.subscriber.id, subscriberCriteria)
+            .updateOrganizationCriteria(this.organization?.id, organizationCriteria)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((_) => {
                 this.displayPopup = false;
-                this.init(this.subscriber.name);
+                this.init(this.organization?.name);
                 this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
             });
     }

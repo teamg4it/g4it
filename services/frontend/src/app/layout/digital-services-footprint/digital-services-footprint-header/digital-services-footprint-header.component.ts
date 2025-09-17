@@ -24,7 +24,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { finalize, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
-import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
@@ -47,11 +47,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     isMobile = computed(() => this.global.mobileView());
     sidebarVisible: boolean = false;
     importSidebarVisible = false;
-    selectedSubscriberName = "";
-    selectedOrganizationId!: number;
     selectedOrganizationName = "";
-    subscriber!: Subscriber;
-    isEcoMindEnabledForCurrentSubscriber: boolean = false;
+    selectedOrganizationId!: number;
+    selectedWorkspaceName = "";
+    organization!: Organization;
+    isEcoMindEnabledForCurrentOrganization: boolean = false;
     isEcoMindAi = input<boolean>(false);
     showKebabMenu = false;
 
@@ -75,17 +75,17 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.digitalServiceStore.setDigitalService(this.digitalService);
             });
 
-        this.userService.currentSubscriber$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((subscriber: Subscriber) => {
-                this.selectedSubscriberName = subscriber.name;
-                this.subscriber = subscriber;
-                this.isEcoMindEnabledForCurrentSubscriber = subscriber.ecomindai;
-            });
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((organization: Organization) => {
+            .subscribe((organization) => {
                 this.selectedOrganizationName = organization.name;
+                this.organization = organization;
+                this.isEcoMindEnabledForCurrentOrganization = organization.ecomindai;
+            });
+        this.userService.currentWorkspace$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((workspace: Workspace) => {
+                this.selectedWorkspaceName = workspace.name;
             });
         //to reset the form when a new digitalService is set
         if (this.digitalService.isAi) {
@@ -132,13 +132,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let [_, _1, subscriber, _2, organization, serviceType] =
+        let [_, _1, organization, _2, workspace, serviceType] =
             this.router.url.split("/");
         // serviceType can be 'digital-services' or 'eco-mind-ai'
         if (serviceType === "eco-mind-ai") {
-            return `/subscribers/${subscriber}/organizations/${organization}/eco-mind-ai`;
+            return `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai`;
         } else {
-            return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
+            return `/organizations/${organization}/workspaces/${workspace}/digital-services`;
         }
     }
 
@@ -170,7 +170,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     async exportData() {
         try {
-            const filename = `g4it_${this.selectedSubscriberName}_${this.selectedOrganizationName}_${this.digitalService.uid}_export-result-files`;
+            const filename = `g4it_${this.selectedOrganizationName}_${this.selectedWorkspaceName}_${this.digitalService.uid}_export-result-files`;
             const blob: Blob = await lastValueFrom(
                 this.digitalServicesData.downloadFile(this.digitalService.uid),
             );

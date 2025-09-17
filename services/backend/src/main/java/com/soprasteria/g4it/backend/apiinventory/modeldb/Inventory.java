@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiinventory.modeldb;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
@@ -75,7 +75,7 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(optional = false)
     @JoinColumn(name = "organization_id", referencedColumnName = "id")
-    private Organization organization;
+    private Workspace workspace;
 
     @Builder.Default
     private Long dataCenterCount = 0L;

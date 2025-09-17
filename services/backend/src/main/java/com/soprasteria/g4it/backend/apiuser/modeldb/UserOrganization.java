@@ -19,14 +19,14 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * G4IT User Organization mapping.
+ * G4IT User Organization(formerly Subscriber) mapping.
  */
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "g4it_user_organization")
+@Table(name = "g4it_user_subscriber")
 public class UserOrganization implements Serializable {
 
     /**
@@ -37,11 +37,11 @@ public class UserOrganization implements Serializable {
     private long id;
 
     /**
-     * The organization.
+     * The subscriber.
      */
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "organization_id", referencedColumnName = "id")
+    @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
     private Organization organization;
 
     /**
@@ -58,11 +58,11 @@ public class UserOrganization implements Serializable {
     private Boolean defaultFlag;
 
     /**
-     * User role on organization.
+     * User role on subscriber.
      */
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "g4it_user_role_organization",
-            joinColumns = @JoinColumn(name = "user_organization_id",
+    @JoinTable(name = "g4it_user_role_subscriber",
+            joinColumns = @JoinColumn(name = "user_subscriber_id",
                     referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id",
                     referencedColumnName = "id"))
@@ -72,5 +72,4 @@ public class UserOrganization implements Serializable {
     @ToString.Exclude
     @OneToMany(mappedBy = "userOrganizations", fetch = FetchType.LAZY)
     private List<UserRoleOrganization> userRoleOrganization;
-
 }

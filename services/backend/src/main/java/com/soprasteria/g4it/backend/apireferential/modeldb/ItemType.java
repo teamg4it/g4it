@@ -72,7 +72,8 @@ public class ItemType implements Serializable {
     /**
      * Subscriber
      */
-    private String subscriber;
+    @Column(name = "subscriber")
+    private String organization;
 
     /**
      * Version
@@ -86,7 +87,7 @@ public class ItemType implements Serializable {
 
     public Object[] toCsvRecord() {
         return new Object[]{type, category, comment, defaultLifespan, isServer,
-                source, refDefaultItem, subscriber, version};
+                source, refDefaultItem, organization, version};
     }
 
 }

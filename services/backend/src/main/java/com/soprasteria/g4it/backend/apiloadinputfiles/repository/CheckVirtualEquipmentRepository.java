@@ -74,7 +74,7 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
                               LIMIT 50000
                            
             """)
-    List<DuplicateEquipmentDTO> findDuplicateNonCloudVirtualEquipments(@Param("taskId") Long taskId);
+    List<DuplicateEquipmentDTO> findDuplicateDigitalServiceVirtualEqp(@Param("taskId") Long taskId);
 
     @Query(nativeQuery = true, value = """
             select filename,

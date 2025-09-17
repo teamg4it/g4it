@@ -147,7 +147,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
                 }
             }
 
-            boolean hasRejectedFile = fileLoadingUtils.handelRejectedFiles(context.getSubscriber(), context.getOrganizationId(),
+            boolean hasRejectedFile = fileLoadingUtils.handelRejectedFiles(context.getOrganization(), context.getWorkspaceId(),
                     context.getInventoryId(), context.getDigitalServiceUid(), task.getId(), filenames);
 
             fileLoadingUtils.cleanConvertedFiles(context);

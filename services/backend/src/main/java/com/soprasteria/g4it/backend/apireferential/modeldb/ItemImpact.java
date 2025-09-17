@@ -99,7 +99,8 @@ public class ItemImpact implements Serializable {
     /**
      * Subscriber
      */
-    private String subscriber;
+    @Column(name = "subscriber")
+    private String organization;
 
     /**
      * Version
@@ -113,7 +114,7 @@ public class ItemImpact implements Serializable {
 
     public Object[] toCsvRecord() {
         return new Object[]{criterion, lifecycleStep, name, category, avgElectricityConsumption == null ? null : avgElectricityConsumption.toString(), description
-                , location, level, source, tier, unit, value == null ? null : value.toString(), subscriber, version};
+                , location, level, source, tier, unit, value == null ? null : value.toString(), organization, version};
     }
 }
 

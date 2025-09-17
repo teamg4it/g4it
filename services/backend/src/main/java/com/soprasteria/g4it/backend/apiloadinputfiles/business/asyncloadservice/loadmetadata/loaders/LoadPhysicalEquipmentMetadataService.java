@@ -45,6 +45,7 @@ public class LoadPhysicalEquipmentMetadataService implements IMetadataLoaderServ
 
             CheckPhysicalEquipment checkPhysicalEquipment = new CheckPhysicalEquipment();
             checkPhysicalEquipment.setPhysicalEquipmentName(inPhysicalEquipmentRest.getName());
+            checkPhysicalEquipment.setType(inPhysicalEquipmentRest.getType());
             checkPhysicalEquipment.setDatacenterName(inPhysicalEquipmentRest.getDatacenterName());
             checkPhysicalEquipment.setCreationDate(beginBulkCreation);
             checkPhysicalEquipment.setFileName(fileToLoad.getFilename());

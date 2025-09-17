@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 
@@ -6,7 +6,7 @@ import { DigitalService } from "src/app/core/interfaces/digital-service.interfac
     selector: "app-set-view-popup",
     templateUrl: "./set-view-popup.component.html",
 })
-export class SetViewPopupComponent {
+export class SetViewPopupComponent implements OnInit {
     @Input() displayPopup: boolean = false;
     @Input() digitalService!: DigitalService;
     @Output() onClose = new EventEmitter<void>();

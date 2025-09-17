@@ -17,8 +17,8 @@ import com.soprasteria.g4it.backend.apiindicator.repository.InPhysicalEquipmentE
 import com.soprasteria.g4it.backend.apiindicator.repository.InPhysicalEquipmentLowImpactViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import lombok.AllArgsConstructor;
@@ -52,10 +52,10 @@ public class PhysicalEquipmentIndicatorService {
     private PhysicalEquipmentIndicatorMapper physicalEquipmentIndicatorMapper;
 
     /**
-     * The Organization Service
+     * The Workspace Service
      */
     @Autowired
-    private OrganizationService organizationService;
+    private WorkspaceService workspaceService;
 
     /**
      * The LowImpact Service
@@ -83,18 +83,18 @@ public class PhysicalEquipmentIndicatorService {
     /**
      * Retrieve low impact indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organization's id.
+     * @param organization     the organization.
+     * @param workspaceId the workspace id.
      * @param inventoryId    the inventory id.
      * @return low impact indicators.
      */
-    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber, final Long organizationId, final Long inventoryId) {
+    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String organization, final Long workspaceId, final Long inventoryId) {
 
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
         final List<InPhysicalEquipmentLowImpactView> indicators = inPhysicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         indicators.forEach(indicator -> {
-                    indicator.setType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getType()));
+                    indicator.setType(TypeUtils.getShortType(organization, linkedWorkspace.getName(), indicator.getType()));
                     indicator.setLowImpact(lowImpactService.isLowImpact(indicator.getCountry()));
                 }
         );

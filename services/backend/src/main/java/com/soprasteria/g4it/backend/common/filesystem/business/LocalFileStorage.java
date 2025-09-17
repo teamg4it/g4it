@@ -64,7 +64,7 @@ public class LocalFileStorage implements FileStorage {
     public List<FileDescription> listFiles(final FileFolder folder) throws IOException {
 
         final Path folderPath = toPath(folder);
-        final String organization = Path.of(localPath).getFileName().toString();
+        final String workspace = Path.of(localPath).getFileName().toString();
 
         try (Stream<Path> walk = Files.walk(folderPath)) {
             return walk
@@ -73,7 +73,7 @@ public class LocalFileStorage implements FileStorage {
                                 try {
                                     final BasicFileAttributes attributes = Files.readAttributes(p, BasicFileAttributes.class);
 
-                                    String relativeFilePath = String.join(File.separator, organization, folder.getFolderName(), p.toFile().getAbsolutePath().replace(folderPath.toFile().getAbsolutePath(), "").substring(1));
+                                    String relativeFilePath = String.join(File.separator, workspace, folder.getFolderName(), p.toFile().getAbsolutePath().replace(folderPath.toFile().getAbsolutePath(), "").substring(1));
 
                                     return FileDescription.builder()
                                             .name(relativeFilePath)
@@ -180,8 +180,8 @@ public class LocalFileStorage implements FileStorage {
     }
 
     @Override
-    public void renameOrganization(String newOrganization) throws IOException {
-        Files.move(Path.of(localPath), Path.of(Path.of(localPath).getParent().toString(), newOrganization));
+    public void renameWorkspace(String newWorkspace) throws IOException {
+        Files.move(Path.of(localPath), Path.of(Path.of(localPath).getParent().toString(), newWorkspace));
     }
 
     private Path toPath(final FileFolder folder) {

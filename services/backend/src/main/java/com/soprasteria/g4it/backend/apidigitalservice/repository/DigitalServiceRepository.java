@@ -8,12 +8,11 @@
 package com.soprasteria.g4it.backend.apidigitalservice.repository;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -27,29 +26,28 @@ import java.util.Optional;
 public interface DigitalServiceRepository extends JpaRepository<DigitalService, String> {
 
     /**
-     * Find by organization name
+     * Find by workspace name
      *
-     * @param organization the linked organization.
+     * @param workspace the linked workspace.
      * @return DigitalService list.
      */
-    List<DigitalService> findByOrganization(final Organization organization);
+    List<DigitalService> findByWorkspace(final Workspace workspace);
 
     /**
-     *
-     * @param organization the linked organization.
-     * @param isAi is DS an Ai or not
+     * @param workspace the linked workspace.
+     * @param isAi      is DS an Ai or not
      * @return DigitalService list.
      */
-    List<DigitalService> findByOrganizationAndIsAi(Organization organization, Boolean isAi);
+    List<DigitalService> findByWorkspaceAndIsAi(Workspace workspace, Boolean isAi);
 
     /**
-     * Find by organization and the digitalServiceUid and return the matching digitalService
+     * Find by workspace and the digitalServiceUid and return the matching digitalService
      *
-     * @param organization the unique organization identifier.
+     * @param workspace the unique workspace identifier.
      * @return matching digitalService
      */
-    Optional<DigitalService> findByOrganizationAndUid(final Organization organization,
-                                                final String digitalServiceUid);
+    Optional<DigitalService> findByWorkspaceAndUid(final Workspace workspace,
+                                                   final String digitalServiceUid);
 
     @Modifying
     @Transactional

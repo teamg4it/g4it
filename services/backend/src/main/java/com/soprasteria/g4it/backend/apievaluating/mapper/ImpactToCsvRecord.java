@@ -63,12 +63,12 @@ public interface ImpactToCsvRecord {
                 impact.getTypeEquipement(),
                 impact.getUnite(),
                 printFirst(physicalEquipment.getCommonFilters()), // entityName
-                context.getOrganizationId().toString(), // organizationName (actually organizationId)
+                context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
                 "", // dataSourceName
                 physicalEquipment.getName(),
                 printFirst(physicalEquipment.getCommonFilters()), // entityName
                 taskId.toString(),
-                context.getOrganizationId().toString(), // organizationName (actually organizationId)
+                context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
                 "", // dataSourceName
                 print(peopleEqImpact), // peopleEqImpact
                 print(physicalEquipment.getDurationHour())
@@ -88,7 +88,7 @@ public interface ImpactToCsvRecord {
                 evaluateReportBO.getTaskId().toString(),
                 LifecycleStepUtils.getReverse(impact.getEtapeACV()),
                 CriteriaUtils.transformCriteriaKeyToCriteriaName(StringUtils.snakeToKebabCase(impact.getCritere())),
-                context.getOrganizationId().toString(),
+                context.getWorkspaceId().toString(),
                 "", // dataSourceName
                 print(virtualEquipment.getPhysicalEquipmentName()),
                 virtualEquipment.getName(),
@@ -106,7 +106,7 @@ public interface ImpactToCsvRecord {
                 print(impact.getConsoElecMoyenne()),
                 printFirst(virtualEquipment.getFilters()), // cluster
                 now.toLocalDate().toString(),
-                context.getOrganizationId().toString(), // organizationName (actually organizationId)
+                context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
                 printFirst(virtualEquipment.getCommonFilters()), // entityName
                 "", // dataSourceName
                 print(peopleEqImpact) // peopleEqImpact
@@ -126,7 +126,7 @@ public interface ImpactToCsvRecord {
                 evaluateReportBO.getTaskId().toString(),
                 impact.getEtapeACV(),
                 CriteriaUtils.transformCriteriaKeyToCriteriaName(StringUtils.snakeToKebabCase(impact.getCritere())),
-                context.getOrganizationId().toString(),
+                context.getWorkspaceId().toString(),
                 "", // dataSourceName
                 application.getName(),
                 application.getEnvironment(),
@@ -143,7 +143,7 @@ public interface ImpactToCsvRecord {
                 print(impact.getUnite()),
                 print(impact.getConsoElecMoyenne()),
                 now.toLocalDate().toString(),
-                context.getOrganizationId().toString(), // organizationName (actually organizationId)
+                context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
                 printFirst(application.getCommonFilters()), // entityName
                 "", // dataSourceName
                 print(peopleEqImpact) // peopleEqImpact
@@ -156,7 +156,7 @@ public interface ImpactToCsvRecord {
         return List.of(
                 context.getDigitalServiceName(),
                 context.getDatetime().format(Constants.LOCAL_DATE_TIME_FORMATTER_MS),
-                context.getOrganizationId().toString(),
+                context.getWorkspaceId().toString(),
                 taskId.toString(),
                 impactBO.getLifecycleStep(),
                 impactBO.getCriterion(),

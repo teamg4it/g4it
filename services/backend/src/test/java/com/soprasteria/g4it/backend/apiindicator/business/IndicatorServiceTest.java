@@ -111,15 +111,15 @@ class IndicatorServiceTest {
 
     @Test
     void getPhysicalEquipmentsLowImpactReturnsIndicatorsWhenParametersAreValid() {
-        String subscriber = "subscriber";
-        Long organizationId = 1L;
+        String organization = "organization";
+        Long workspaceId = 1L;
         Long inventoryId = 1L;
         List<PhysicalEquipmentLowImpactBO> lowImpactIndicators = List.of(new PhysicalEquipmentLowImpactBO());
 
-        when(physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId))
+        when(physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId))
                 .thenReturn(lowImpactIndicators);
 
-        List<PhysicalEquipmentLowImpactBO> result = indicatorService.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
+        List<PhysicalEquipmentLowImpactBO> result = indicatorService.getPhysicalEquipmentsLowImpact(organization, workspaceId, inventoryId);
 
         assertNotNull(result);
         assertEquals(lowImpactIndicators, result);

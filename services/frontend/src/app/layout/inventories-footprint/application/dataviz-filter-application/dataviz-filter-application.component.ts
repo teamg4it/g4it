@@ -5,7 +5,14 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, Input, SimpleChanges } from "@angular/core";
+import {
+    Component,
+    computed,
+    inject,
+    Input,
+    OnChanges,
+    SimpleChanges,
+} from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { CheckboxChangeEvent } from "primeng/checkbox";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
@@ -18,7 +25,7 @@ import { Constants } from "src/constants";
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
 })
-export class DatavizFilterApplicationComponent {
+export class DatavizFilterApplicationComponent implements OnChanges {
     @Input() allFilters: Filter<string | TransformedDomain> = {};
     allUnusedFilters: Filter<TransformedDomain> = {};
     private readonly filterService = inject(FilterService);
