@@ -17,6 +17,7 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -43,6 +44,7 @@ import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { OutPhysicalEquipmentsService } from "src/app/core/service/data/in-out/out-physical-equipments.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
+import { ShareDigitalServiceDataService } from "src/app/core/service/data/share-digital-service-data.service";
 import {
     convertToGlobalVision,
     transformOutPhysicalEquipmentsToNetworkData,
@@ -68,6 +70,7 @@ export class DigitalServicesFootprintDashboardComponent
     private readonly outVirtualEquipmentsService = inject(OutVirtualEquipmentsService);
     private readonly digitalServicesAiData = inject(DigitalServicesAiDataService);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly shareDigitalService = inject(ShareDigitalServiceDataService);
     chartType = signal("radial");
     showInconsitencyBtn = false;
     constants = Constants;
@@ -141,6 +144,7 @@ export class DigitalServicesFootprintDashboardComponent
         override integerPipe: IntegerPipe,
         override decimalsPipe: DecimalsPipe,
         private readonly titleService: Title,
+        private readonly router: Router,
     ) {
         super(translate, integerPipe, decimalsPipe, globalStore);
     }
@@ -193,15 +197,26 @@ export class DigitalServicesFootprintDashboardComponent
             }
         }
 
+        const isShared = this.digitalServiceStore.isSharedDS();
+        const [_, _1, sharedToken] = this.router.url.split("/");
+        const physicalEquipments$ = isShared
+            ? this.shareDigitalService.getOutSharedPhysicalEquipments(
+                  this.digitalService.uid,
+                  sharedToken,
+              )
+            : this.outPhysicalEquipmentsService.get(this.digitalService.uid);
+        const virtualEquipments$ = isShared
+            ? this.shareDigitalService.getOutSharedVirtualEquipments(
+                  this.digitalService.uid,
+                  sharedToken,
+              )
+            : this.outVirtualEquipmentsService.getByDigitalService(
+                  this.digitalService.uid,
+              );
+
         const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
-            firstValueFrom(
-                this.outPhysicalEquipmentsService.get(this.digitalService.uid),
-            ),
-            firstValueFrom(
-                this.outVirtualEquipmentsService.getByDigitalService(
-                    this.digitalService.uid,
-                ),
-            ),
+            firstValueFrom(physicalEquipments$),
+            firstValueFrom(virtualEquipments$),
         ]);
         this.outPhysicalEquipments = outPhysicalEquipments;
         this.outVirtualEquipments = outVirtualEquipments;

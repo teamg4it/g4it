@@ -10,6 +10,7 @@ import { addDays, formatDate } from "date-fns";
 import { Observable, ReplaySubject, Subject, firstValueFrom, lastValueFrom } from "rxjs";
 import { removeBlankSpaces } from "../../custom-validators/unique-name.validator";
 import {
+    AiModelConfig,
     DSCriteriaRest,
     DigitalService,
     DigitalServiceServerConfig,
@@ -24,8 +25,6 @@ import { DigitalServiceStoreService } from "../../store/digital-service.store";
 import { InPhysicalEquipmentsService } from "../data/in-out/in-physical-equipments.service";
 import { InVirtualEquipmentsService } from "../data/in-out/in-virtual-equipments.service";
 import { DigitalServicesDataService } from "./../data/digital-services-data.service";
-
-import { AiModelConfig } from "../../interfaces/digital-service.interfaces";
 
 @Injectable({
     providedIn: "root",

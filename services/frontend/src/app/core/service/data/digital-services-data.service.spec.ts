@@ -11,10 +11,12 @@ import {
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 
+import { Constants } from "src/constants";
 import {
     DigitalService,
     Host,
     NetworkType,
+    ShareLinkResp,
     TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "./digital-services-data.service";
@@ -22,6 +24,9 @@ import { DigitalServicesDataService } from "./digital-services-data.service";
 describe("DigitalServicesDataService", () => {
     let service: DigitalServicesDataService;
     let httpMock: HttpTestingController;
+    const dsEndpoint = Constants.ENDPOINTS.digitalServices;
+    const sharedEndpoint = Constants.ENDPOINTS.sharedDs;
+    const dsSegment = Constants.ENDPOINTS.ds;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -297,5 +302,53 @@ describe("DigitalServicesDataService", () => {
         expect(req.request.method).toEqual("GET");
 
         httpMock.verify();
+    });
+
+    it("copyUrl should call /{uid}/share and map to frontEndUrl + response + /footprint", () => {
+        const uid = "ds-123";
+
+        let result: ShareLinkResp | undefined;
+        service.copyUrl(uid).subscribe((res) => (result = res));
+
+        const req = httpMock.expectOne(`${dsEndpoint}/${uid}/share`);
+        expect(req.request.method).toBe("GET");
+    });
+
+    it("validateShareToken should hit shared endpoint and pass boolean through", () => {
+        const token = "tok-abc";
+        const id = "ds-9";
+        let value: boolean | undefined;
+
+        service.validateShareToken(id, token).subscribe((res) => (value = res));
+
+        const req = httpMock.expectOne(
+            `${sharedEndpoint}/${token}/${dsSegment}/${id}/validate`,
+        );
+        expect(req.request.method).toBe("GET");
+        req.flush(true);
+
+        expect(value).toBeTrue();
+    });
+
+    it("getDs should fetch shared DS and push it to digitalService$ subject", (done) => {
+        const token = "tok-xyz";
+        const id = "ds-55";
+        const ds: DigitalService = {
+            uid: id,
+        } as DigitalService;
+
+        // First subscribe to digitalService$ to assert emission
+        service.digitalService$.subscribe((emitted) => {
+            expect(emitted.uid).toBe(id);
+            done();
+        });
+
+        service.getDs(id, token).subscribe((res) => {
+            expect(res.uid).toBe(id);
+        });
+
+        const req = httpMock.expectOne(`${sharedEndpoint}/${token}/${dsSegment}/${id}`);
+        expect(req.request.method).toBe("GET");
+        req.flush(ds);
     });
 });

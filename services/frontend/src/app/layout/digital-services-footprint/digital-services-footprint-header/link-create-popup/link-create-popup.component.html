@@ -1,0 +1,77 @@
+<div class="link-copy-popup">
+    <p-dialog
+        [modal]="true"
+        [(visible)]="displayPopup"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        [style]="{ width: '30vw' }"
+        [draggable]="false"
+        [dismissableMask]="true"
+        (onHide)="closePopup()"
+        id="link-copy"
+        [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
+    >
+        <ng-template pTemplate="header">
+            <h3 class="font-semibold ml-0 text-2xl" id="link-create-popup-title">
+                {{ "digital-services.link-created" | translate }}
+            </h3>
+        </ng-template>
+
+        <div class="share-expiry-paragraph flex">
+            <i class="pi pi-exclamation-circle mt-2 mx-3 font-bold"></i>
+            <p>
+                {{
+                    "digital-services.link-expiry-info"
+                        | translate: { date: (expiryDate() | date: "dd/MM/yyyy") }
+                }}
+            </p>
+        </div>
+
+        <div class="copy-container grid mt-3">
+            @if (!loading) {
+                <input
+                    class="col label-input-div-medium input-width inline-block p-2 mx-1"
+                    pInputText
+                    [value]="sharedLink()"
+                    readonly
+                    [placeholder]="'digital-services.share' | translate"
+                    name="copyLink"
+                    ngDefaultControl
+                    id="copy-link-input"
+                    #linkInput
+                    (focus)="moveCaretToStart(linkInput)"
+                    aria-labelledby="link-create-popup-title"
+                />
+            }
+        </div>
+        <ng-template pTemplate="footer">
+            <div
+                class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
+            >
+                <div class="flex justify-content-start ml-auto">
+                    @if (!loading) {
+                        <p-button
+                            [attr.aria-label]="
+                                'digital-services.save-settings' | translate
+                            "
+                            styleClass="uppercase mr-0"
+                            (onClick)="copyUrl()"
+                            [disabled]="isLinkCopied"
+                            [label]="
+                                (isLinkCopied
+                                    ? 'digital-services.linkCopied'
+                                    : 'digital-services.copyLink'
+                                ) | translate
+                            "
+                        >
+                        </p-button>
+                    } @else {
+                        <p-progressSpinner
+                            styleClass="mr-2 w-4rem h-4rem"
+                            strokeWidth="4"
+                        ></p-progressSpinner>
+                    }
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

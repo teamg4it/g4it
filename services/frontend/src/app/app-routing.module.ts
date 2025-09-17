@@ -9,6 +9,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { environment } from "src/environments/environment";
 import { AuthGuard } from "./guard/auth.gard";
+import { SharedAccessGuard } from "./guard/shared-ds.guard";
 import { ErrorComponent } from "./layout/common/error/error.component";
 import { LandingPageComponent } from "./layout/landing-page/landing-page.component";
 
@@ -19,6 +20,14 @@ const routes: Routes = [
     {
         path: "something-went-wrong/:err",
         component: ErrorComponent,
+    },
+    {
+        path: "shared/:share-token/ds/:id/footprint",
+        loadChildren: () =>
+            import("./layout/share-digital-service/share-digital-service.module").then(
+                (m) => m.ShareDigitalServiceModule,
+            ),
+        canActivate: [SharedAccessGuard],
     },
     {
         path: "",

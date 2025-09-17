@@ -91,6 +91,12 @@ main {
         900px 122%;
 }
 
+.shared-main {
+    height: calc(100vh);
+    width: calc(100vw);
+    margin-top: 0;
+}
+
 /* Color & Background-color classes */
 .color-tertiary {
     color: var(--tertiary-color);

@@ -38,6 +38,8 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             enableDataInconsistency: false,
             networks: [],
         } as DigitalService),
+        copyUrl: () => of({ url: "test", expiryDate: new Date() }),
+        get: () => of({} as DigitalService),
     };
 
     beforeEach(async () => {
@@ -126,5 +128,11 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         component.ngOnInit();
 
         expect(component.selectedWorkspaceName).toBe("OrgName");
+    });
+
+    it("should toggle displayLinkCreatePopup (open)", () => {
+        expect(component.displayLinkCreatePopup).toBeFalse();
+        component.shareDs();
+        expect(component.displayLinkCreatePopup).toBeTrue();
     });
 });
