@@ -49,7 +49,7 @@ public class CheckConstraintService {
         // Check Virtual Equipments
         List<DuplicateEquipmentDTO> duplicateVirtualEqp;
         if(isDigitalService){
-             duplicateVirtualEqp =  checkVirtualEqpRepository.findDuplicateNonCloudVirtualEquipments(taskId);
+             duplicateVirtualEqp =  checkVirtualEqpRepository.findDuplicateDigitalServiceVirtualEqp(taskId);
         }
         else {
            duplicateVirtualEqp = checkVirtualEqpRepository.findDuplicateVirtualEquipments(taskId);
@@ -64,9 +64,11 @@ public class CheckConstraintService {
         List<DuplicateEquipmentDTO> duplicateDatacenters = checkDatacenterRepository.findDuplicateDatacenters(taskId);
         processDuplicates(duplicateDatacenters, duplicatesMap, "datacenter");
 
-        // Check Applications
-        List<DuplicateEquipmentDTO> duplicateApplications = checkApplicationRepository.findDuplicateApplications(taskId);
-        processDuplicates(duplicateApplications, duplicatesMap, "application");
+        if(!isDigitalService) {
+            // Check Applications
+            List<DuplicateEquipmentDTO> duplicateApplications = checkApplicationRepository.findDuplicateApplications(taskId);
+            processDuplicates(duplicateApplications, duplicatesMap, "application");
+        }
 
         return duplicatesMap;
     }

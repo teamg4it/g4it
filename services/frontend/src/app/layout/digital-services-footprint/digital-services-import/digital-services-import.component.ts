@@ -7,6 +7,7 @@ import {
     OnDestroy,
     OnInit,
     Output,
+    signal,
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -43,32 +44,49 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);
     private readonly inDatacentersService = inject(InDatacentersService);
     public readonly digitalServiceStore = inject(DigitalServiceStoreService);
-    importDetails: CustomSidebarMenuForm = {
-        menu: [
+    importDetails: CustomSidebarMenuForm = this.buildImportDetails();
+
+    private buildImportDetails(): CustomSidebarMenuForm {
+        const common = {
+            subTitle: this.translate.instant("common.optional"),
+            description: this.translate.instant("common.no-document-upload"),
+            iconClass: "pi pi-exclamation-circle",
+            optional: true,
+        };
+
+        const menuConfigs: { titleKey: string; textKey: string }[] = [
             {
-                subTitle: this.translate.instant("common.optional"),
-                title: this.translate.instant("digital-services.Server"),
-                description: this.translate.instant("common.no-document-upload"),
-                iconClass: "pi pi-exclamation-circle",
-                optional: true,
+                titleKey: "digital-services-terminals.devices",
+                textKey: "digital-services-import.terminal-text",
             },
             {
-                subTitle: this.translate.instant("common.optional"),
-                title: this.translate.instant("digital-services.CloudService"),
-                description: this.translate.instant("common.no-document-upload"),
-                iconClass: "pi pi-exclamation-circle",
-                optional: true,
-            },
-        ],
-        form: [
-            {
-                name: "nonCloud",
+                titleKey: "digital-services.Network",
+                textKey: "digital-services-import.network-text",
             },
             {
-                name: "cloud",
+                titleKey: "digital-services.Server",
+                textKey: "digital-services-import.non-cloud-text",
             },
-        ],
-    };
+            {
+                titleKey: "digital-services.CloudService",
+                textKey: "digital-services-import.cloud-text",
+            },
+        ];
+
+        return {
+            menu: menuConfigs.map((c) => ({
+                ...common,
+                title: this.translate.instant(c.titleKey),
+                descriptionText: this.translate.instant(c.textKey),
+            })),
+            form: [
+                { name: "terminal" },
+                { name: "network" },
+                { name: "nonCloud" },
+                { name: "cloud" },
+            ],
+        };
+    }
 
     @Output() sidebarVisibleChange: EventEmitter<any> = new EventEmitter();
 
@@ -79,6 +97,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     dsTemplateParam = Constants.TEMPLATE_PARAMS.DS_MODULE;
     digitalServicesId = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
     templateFilesDescription: TemplateFileDescription[] = [];
+    templateFileVisible = signal<TemplateFileDescription[]>([]);
     anyRejectedFiles = false;
     selectedWorkspace!: string;
     selectedOrganization!: string;
@@ -94,6 +113,8 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     ) {}
 
     importForm = new FormGroup({
+        terminal: new FormControl<string | undefined>(undefined),
+        network: new FormControl<string | undefined>(undefined),
         nonCloud: new FormControl<string | undefined>(undefined),
         cloud: new FormControl<string | undefined>(undefined),
     });
@@ -111,7 +132,6 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
             });
         this.getTemplates();
         this.getDigitalServiceStatus();
-        this.selectTab(0);
     }
 
     focusFirstTemplate() {
@@ -149,7 +169,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
                         Constants.FILE_TYPES.indexOf(b.csvFileType ?? "")
                     );
                 });
-
+                this.selectTab(0);
                 setTimeout(() => {
                     this.focusFirstTemplate();
                 }, 100);
@@ -263,9 +283,33 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
 
     selectTab(index: number) {
         this.selectedMenuIndex = index;
+        const files = this.templateFilesDescription;
+        this.templateFileVisible.set(this.getSelectedTemplates(files));
         this.importDetails.menu.forEach((detail, i) => {
             detail.active = i === index;
         });
+    }
+
+    getSelectedTemplates(files: TemplateFileDescription[]): TemplateFileDescription[] {
+        if (this.selectedMenuIndex === 0)
+            return files.filter((file) =>
+                file.name.includes("physical_equipment_terminal"),
+            );
+        else if (this.selectedMenuIndex === 1)
+            return files.filter((file) =>
+                file.name.includes("physical_equipment_network"),
+            );
+        else if (this.selectedMenuIndex === 2)
+            return files.filter(
+                (file) =>
+                    ![
+                        "virtual_equipment_cloud",
+                        "physical_equipment_terminal",
+                        "physical_equipment_network",
+                    ].some((type) => file.name.includes(type)),
+            );
+
+        return files.filter((file) => file.name.includes("virtual_equipment_cloud"));
     }
 
     closeSidebar() {

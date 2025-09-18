@@ -4,6 +4,7 @@
 
 ### Major Changes
 
+- 1402 | Import .csv for terminal and network
 - 1442 | Rename organization to workspace and subscriber to organization
 
 ### Minor Changes

@@ -60,6 +60,7 @@ public interface CsvToInMapper {
                 .cpuCoreNumber(readDouble(csvRecord, "nbCoeur"))
                 .sizeDiskGb(readDouble(csvRecord, "tailleDuDisque"))
                 .electricityConsumption(readDouble(csvRecord, "consoElecAnnuelle"))
+                .numberOfUsers(readDouble(csvRecord, "nombreUtilisateur"))
                 .creationDate(LocalDateTime.now())
                 .filters(List.of(read(csvRecord, "statut", "")))
                 .commonFilters(List.of(read(csvRecord, "nomEntite", "")))

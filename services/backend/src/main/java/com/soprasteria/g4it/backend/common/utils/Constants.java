@@ -117,6 +117,10 @@ public final class Constants {
     public static final String REFERENTIAL_VERSION_CLOUD = "BaseImpact 2011";
     public static final String CLOUD_TYPE = "compute";
 
+    public static final String NETWORK_DATE_PURCHASE = "2020-01-01";
+
+    public static final String NETWORK_DATE_WITHDRAWAL = "2021-01-01";
+
     private Constants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

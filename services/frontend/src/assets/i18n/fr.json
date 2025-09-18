@@ -427,6 +427,8 @@
         "import": "Importer des données",
         "non-cloud-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur l'infrastructure, en particulier les centres de données, les serveurs et les machines virtuelles.",
         "cloud-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur l'infrastructure cloud en tant que service (IaaS).",
+        "network-text": "Veuillez procéder au chargement des fichiers CSV qui contiennent des détails sur la quantité de données circulant sur le réseau.",
+        "terminal-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur les appareils utilisés par l'utilisateur final.",
         "template-text": "Si nécessaire, vous pouvez télécharger le modèle pour vous aider à créer de nouveaux fichiers.",
         "templates": {
             "datacenter-template-file": "Fichier de modèle de centre de données",

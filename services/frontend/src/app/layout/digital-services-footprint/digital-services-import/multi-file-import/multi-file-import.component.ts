@@ -22,36 +22,48 @@ export class MultiFileImportComponent implements OnChanges {
     fileLoading = false;
 
     ngOnChanges(): void {
-        this.fileTypes =
-            this.selectedMenuIndex === 0
-                ? [
-                      {
-                          key: "DATACENTER",
-                          label: this.translate.instant(
-                              "digital-services-import.datacenter",
-                          ),
-                      },
-                      {
-                          key: "EQUIPEMENT_PHYSIQUE",
-                          label: this.translate.instant(
-                              "digital-services-import.physical-equipment",
-                          ),
-                      },
-                      {
-                          key: "EQUIPEMENT_VIRTUEL_1",
-                          label: this.translate.instant(
-                              "digital-services-import.virtual-equipment",
-                          ),
-                      },
-                  ]
-                : [
-                      {
-                          key: "EQUIPEMENT_VIRTUEL_2",
-                          label: this.translate.instant(
-                              "digital-services-import.virtual-equipment",
-                          ),
-                      },
-                  ];
+        this.fileTypes = this.getFileTypes();
+    }
+
+    private getFileTypes(): Array<{ key: string; label: string }> {
+        if (this.selectedMenuIndex === 0 || this.selectedMenuIndex === 1) {
+            return [
+                {
+                    key: `EQUIPEMENT_PHYSIQUE_${this.selectedMenuIndex}`,
+                    label: this.translate.instant(
+                        "digital-services-import.physical-equipment",
+                    ),
+                },
+            ];
+        } else if (this.selectedMenuIndex === 2) {
+            return [
+                {
+                    key: "DATACENTER",
+                    label: this.translate.instant("digital-services-import.datacenter"),
+                },
+                {
+                    key: `EQUIPEMENT_PHYSIQUE_${this.selectedMenuIndex}`,
+                    label: this.translate.instant(
+                        "digital-services-import.physical-equipment",
+                    ),
+                },
+                {
+                    key: "EQUIPEMENT_VIRTUEL_1",
+                    label: this.translate.instant(
+                        "digital-services-import.virtual-equipment",
+                    ),
+                },
+            ];
+        } else {
+            return [
+                {
+                    key: "EQUIPEMENT_VIRTUEL_2",
+                    label: this.translate.instant(
+                        "digital-services-import.virtual-equipment",
+                    ),
+                },
+            ];
+        }
     }
 
     onSelectFile(event: any, key: string): void {
@@ -90,9 +102,12 @@ export class MultiFileImportComponent implements OnChanges {
         Object.entries(this.selectedFiles)
             .filter(([key]) => this.fileTypes.some((type) => type.key === key))
             .forEach(([key, file]) => {
-                const formKey = key.includes("EQUIPEMENT_VIRTUEL")
-                    ? "EQUIPEMENT_VIRTUEL"
-                    : key;
+                let formKey = key;
+                if (key.startsWith("EQUIPEMENT_VIRTUEL")) {
+                    formKey = "EQUIPEMENT_VIRTUEL";
+                } else if (key.startsWith("EQUIPEMENT_PHYSIQUE")) {
+                    formKey = "EQUIPEMENT_PHYSIQUE";
+                }
                 formData.append(formKey, file, file.name);
             });
         return formData;
@@ -100,7 +115,10 @@ export class MultiFileImportComponent implements OnChanges {
 
     private handleUploadSuccess(): void {
         this.fileLoading = false;
-        this.resetForm();
+        // delete selected files after successful upload
+        this.fileTypes.forEach((type) => {
+            delete this.selectedFiles[type.key];
+        });
         this.updateFormValidity();
         this.formSubmit.emit("submit");
     }

@@ -118,9 +118,17 @@ describe("MultiFileImportComponent", () => {
     it("should set fileTypes based on selectedMenuIndex", () => {
         component.selectedMenuIndex = 0;
         component.ngOnChanges();
-        expect(component.fileTypes.length).toBe(3);
+        expect(component.fileTypes.length).toBe(1);
 
         component.selectedMenuIndex = 1;
+        component.ngOnChanges();
+        expect(component.fileTypes.length).toBe(1);
+
+        component.selectedMenuIndex = 2;
+        component.ngOnChanges();
+        expect(component.fileTypes.length).toBe(3);
+
+        component.selectedMenuIndex = 3;
         component.ngOnChanges();
         expect(component.fileTypes.length).toBe(1);
     });
@@ -147,7 +155,6 @@ describe("MultiFileImportComponent", () => {
 
         (component as any).handleUploadSuccess();
 
-        expect(component.resetForm).toHaveBeenCalled();
         expect(component.updateFormValidity).toHaveBeenCalled();
         expect(component.formSubmit.emit).toHaveBeenCalledWith("submit");
     });

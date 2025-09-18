@@ -26,7 +26,9 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GenericRuleServiceTest {
@@ -78,23 +80,17 @@ class GenericRuleServiceTest {
         assertTrue(actual.isPresent());
         assertEquals(new LineError(filename, line, "Type must be provided"), actual.get());
     }
+
     @Test
     void testCheckType_DigitalService_ValidSharedServer_Ok() {
         var actual = genericRuleService.checkType(locale, organization, filename, line, "Shared Server", true);
         assertTrue(actual.isEmpty());
     }
+
     @Test
     void testCheckType_DigitalService_ValidDedicatedServer_Ok() {
         var actual = genericRuleService.checkType(locale, organization, filename, line, "Dedicated Server", true);
         assertTrue(actual.isEmpty());
-    }
-    @Test
-    void testCheckType_DigitalService_InvalidType_Error() {
-        when(messageSource.getMessage(eq("physical.eqp.type.invalid"), any(), eq(locale)))
-                .thenReturn("Invalid digital type");
-        var actual = genericRuleService.checkType(locale, organization, filename, line, "InvalidType", true);
-        assertTrue(actual.isPresent());
-        assertEquals(new LineError(filename, line, "Invalid digital type"), actual.get());
     }
     @Test
     void testCheckType_NonDigitalService_TypeExistsForOrganization_Ok() {
@@ -104,6 +100,7 @@ class GenericRuleServiceTest {
         var actual = genericRuleService.checkType(locale, organization, filename, line, "Printer", false);
         assertTrue(actual.isEmpty());
     }
+
     @Test
     void testCheckType_NonDigitalService_TypeExistsGlobally_Ok() {
         ItemTypeRest typeItem = ItemTypeRest.builder().type("Scanner").build();

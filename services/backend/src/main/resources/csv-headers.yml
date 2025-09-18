@@ -72,6 +72,8 @@ filesystem.config.headers:
       optional: true
     - name: "dureeUtilisation"
       optional: true
+    - name: "nombreUtilisateur"
+      optional: true
   equipementVirtuel:
     - name: "nomEquipementVirtuel"
       optional: false

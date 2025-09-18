@@ -7,6 +7,7 @@ export interface CustomSidebarMenuForm {
         active?: boolean;
         hidden?: boolean;
         optional?: boolean;
+        descriptionText?: string;
     }[];
     form: {
         name: string;

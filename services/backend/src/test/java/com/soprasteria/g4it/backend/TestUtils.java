@@ -323,19 +323,6 @@ public class TestUtils {
                 .build();
     }
 
-//    public static UserBO createUserBONoRole() {
-//        return UserBO.builder()
-//                .email(EMAIL)
-//                .organizations(List.of(
-//                        OrganizationBO.builder()
-//                                .id(1L)
-//                                .roles(Collections.emptyList())
-//                                .workspaces(Collections.emptyList())
-//                                .authorizedDomains("")
-//                                .build()))
-//                .build();
-//    }
-
     public static UserBO createWorkspaceAdminUserBO(Long workspaceId) {
         return UserBO.builder()
                 .email(EMAIL)

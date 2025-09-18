@@ -317,3 +317,14 @@ databaseChangeLog:
             columns:
               - column:
                   name: infrastructure_type
+
+  - changeSet:
+      id: add-type-check_inv_load_physical_equipment
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: check_inv_load_physical_equipment
+            columns:
+              - column:
+                  name: type
+                  type: varchar(255)
