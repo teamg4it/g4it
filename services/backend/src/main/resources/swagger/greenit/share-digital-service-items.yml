@@ -28,8 +28,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/InDatacenterRest"
-        '410':
-          $ref: '#/components/responses/LinkExpiredError'
   /shared/{shareId}/ds/{digitalServiceUid}/inputs/physical-equipments:
     parameters:
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
@@ -49,8 +47,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/InPhysicalEquipmentRest"
-        '410':
-          $ref: '#/components/responses/LinkExpiredError'
   /shared/{shareId}/ds/{digitalServiceUid}/inputs/virtual-equipments:
     parameters:
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
@@ -70,8 +66,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/InVirtualEquipmentRest"
-        '410':
-          $ref: '#/components/responses/LinkExpiredError'
   /shared/{shareId}/ds/referentiel-data:
     parameters:
       - $ref: '#/components/parameters/shareidPathParam'
@@ -88,8 +82,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SharedDigitalServiceReferentielRest"
-        '410':
-          $ref: '#/components/responses/LinkExpiredError'
   /shared/{shareId}/ds/{digitalServiceUid}/outputs/virtual-equipments:
     parameters:
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
@@ -109,8 +101,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OutVirtualEquipmentRest"
-        '410':
-          $ref: '#/components/responses/LinkExpiredError'
   /shared/{shareId}/ds/{digitalServiceUid}/outputs/physical-equipments:
     parameters:
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
@@ -130,5 +120,21 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OutPhysicalEquipmentRest"
-        '410':
-          $ref: '#/components/responses/LinkExpiredError'
+  /shared/{shareId}/ds/{digitalServiceUid}:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Validate shared link for digital service
+      operationId: getSharedDigitalServiceLinkValidation
+      security: []
+      responses:
+        '200':
+          description: return boolean if shared link is valid
+          content:
+            application/json:
+              schema:
+                type: boolean
+

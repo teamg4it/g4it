@@ -201,8 +201,6 @@ components:
       description: Access token is missing or invalid
     NotFoundError:
       description: Object is not found
-    LinkExpiredError:
-      description: The link has expired, please request a new one.
 
   schemas:
     VersionRest:
@@ -1165,19 +1163,19 @@ components:
     SharedDigitalServiceReferentielRest:
       type: object
       properties:
-        networkTypeRef:
+        networkTypes:
           type: array
           items:
             $ref: "#/components/schemas/NetworkTypeRefRest"
-        deviceTypeRef:
+        terminalTypes:
           type: array
           items:
             $ref: "#/components/schemas/DeviceTypeRefRest"
-        serverHostRefTypeCompute:
+        computeServerTypes:
           type: array
           items:
             $ref: "#/components/schemas/ServerHostRefRest"
-        serverHostRefTypeStorage:
+        storageServerTypes:
           type: array
           items:
             $ref: "#/components/schemas/ServerHostRefRest"

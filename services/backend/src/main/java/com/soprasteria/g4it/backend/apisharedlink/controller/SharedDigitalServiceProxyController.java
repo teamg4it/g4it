@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.apisharedlink.controller;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialRestMapper;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
@@ -39,6 +40,7 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
     private InVirtualEquipmentService inVirtualEquipmentService;
     private DigitalServiceReferentialService digitalServiceReferentialService;
     private DigitalServiceReferentialRestMapper digitalServiceReferentialRestMapper;
+    private DigitalServiceService digitalServiceService;
     /**
      * Service to access physical equipment output data.
      */
@@ -82,12 +84,19 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
 
 
     @Override
+    public ResponseEntity<Boolean> getSharedDigitalServiceLinkValidation(String digitalServiceUid,
+                                                                         String shareId) {
+        return ResponseEntity.ok().body(digitalServiceService.validateDigitalServiceSharedLink(digitalServiceUid, shareId));
+    }
+
+
+    @Override
     public ResponseEntity<SharedDigitalServiceReferentielRest> getSharedReferentielData(String shareId) {
         return ResponseEntity.ok().body(SharedDigitalServiceReferentielRest.builder()
-                .deviceTypeRef(digitalServiceReferentialRestMapper.toDeviceTypeDto(digitalServiceReferentialService.getTerminalDeviceType()))
-                .networkTypeRef(digitalServiceReferentialRestMapper.toNetworkTypeDto(digitalServiceReferentialService.getNetworkType()))
-                .serverHostRefTypeCompute(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Compute")))
-                .serverHostRefTypeStorage(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Storage")))
+                .terminalTypes(digitalServiceReferentialRestMapper.toDeviceTypeDto(digitalServiceReferentialService.getTerminalDeviceType()))
+                .networkTypes(digitalServiceReferentialRestMapper.toNetworkTypeDto(digitalServiceReferentialService.getNetworkType()))
+                .computeServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Compute")))
+                .storageServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Storage")))
                 .countries(digitalServiceReferentialService.getBoaviztaCountryMap())
                 .build());
     }
