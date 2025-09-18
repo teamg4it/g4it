@@ -56,6 +56,10 @@ g4it:
       oninit: "false"
       cron: "0 0 0 * * *"
       day: "7"
+  digitalServiceLink:
+    deletion:
+      oninit: "false"
+      cron: "0 0 0 * * *"
   local:
     retention:
       ttl: PT10M
