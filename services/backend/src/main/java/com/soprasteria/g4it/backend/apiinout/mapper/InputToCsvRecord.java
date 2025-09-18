@@ -85,7 +85,8 @@ public interface InputToCsvRecord {
                 print(physicalEquipment.getSizeDiskGb()),
                 print(physicalEquipment.getSizeMemoryGb()),
                 print(physicalEquipment.getCpuType()), // processor type
-                print(physicalEquipment.getDurationHour())
+                print(physicalEquipment.getDurationHour()),
+                print(physicalEquipment.getNumberOfUsers())
         );
     }
 
