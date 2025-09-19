@@ -110,6 +110,16 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
         )));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<String> shareDigitalService(final String organization,
+                                                      final Long workspace,
+                                                      final String digitalServiceUid) {
+        return  ResponseEntity.ok(digitalServiceService.shareDigitalService(organization, workspace, digitalServiceUid,
+                authService.getUser()));
+    }
 }
 
 

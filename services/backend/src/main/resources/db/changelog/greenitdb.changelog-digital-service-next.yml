@@ -77,5 +77,51 @@ databaseChangeLog:
             constraintName: userdigitalserviceshared_unique
             tableName: digital_service_shared
 
+  - changeSet:
+      id: create-digital_service_shared_link-table
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - tableExists:
+                tableName: digital_service_shared_link
+      changes:
+        - createTable:
+            tableName: digital_service_shared_link
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: digital_service_shared_link_pk
+                    valueComputed: UUID()
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: digital_service_shared_link-digitalservice-fk
+                    references: digital_service(uid)
+                    deleteCascade: true
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: digital_service_shared_link-g4it_user-fk
+                    references: g4it_user(id)
+                    onDelete: cascade
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: expiry_date
+                  type: timestamp
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValue: true
+
 
 

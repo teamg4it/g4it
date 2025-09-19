@@ -11,6 +11,8 @@ import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepo
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
@@ -71,6 +73,8 @@ public class DigitalServiceService {
     private InAiParameterRepository inAiParameterRepository;
     @Autowired
     private InAiInfrastructureRepository inAiInfrastructureRepository;
+    @Autowired
+    private DigitalServiceLinkRepository digitalServiceLinkRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
 
@@ -201,6 +205,46 @@ public class DigitalServiceService {
     }
 
     /**
+     * Generate the link to share the digital service
+     *
+     * @param organization   the client organization name.
+     * @param workspaceId    the linked workspace id.
+     * @param digitalServiceUid the digital service id.
+     * @return the url.
+     */
+    public String shareDigitalService(final String organization, final Long workspaceId, final String digitalServiceUid, final UserBO userBO) {
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
+                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, organization, workspaceId))
+        );
+
+        // Get the linked user.
+        final User user = userRepository.findById(userBO.getId()).orElseThrow();
+
+        DigitalServiceSharedLink digitalServiceLink = digitalServiceLinkRepository.findByDigitalService(digitalService);
+
+        if (digitalServiceLink != null) {
+            // Update expiry date to 30 days from now.
+            digitalServiceLink.setExpiryDate(LocalDateTime.now().plusDays(30));
+            digitalServiceLinkRepository.save(digitalServiceLink);
+            return String.format("/share/%s/ds/%s",
+                    digitalServiceLink.getUid() ,digitalServiceUid);
+        } else {
+            // Create a new shared link
+            DigitalServiceSharedLink linkToCreate = DigitalServiceSharedLink.builder()
+                    .digitalService(digitalService)
+                    .createdBy(user)
+                    .isActive(true)
+                    .creationDate(LocalDateTime.now())
+                    .expiryDate(LocalDateTime.now().plusDays(30))
+                    .build();
+            String uid = digitalServiceLinkRepository.save(linkToCreate).getUid();
+            return String.format("/share/%s/ds/%s",
+                    uid ,digitalServiceUid);
+        }
+    }
+
+
+    /**
      * Get a digital service.
      *
      * @param digitalServiceUid the digital service id.
@@ -214,6 +258,7 @@ public class DigitalServiceService {
         return digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
     }
+
 
     /**
      * Returns true if the digital service exists and linked to organization, workspaceId

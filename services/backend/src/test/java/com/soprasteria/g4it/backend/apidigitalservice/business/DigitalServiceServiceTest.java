@@ -11,6 +11,8 @@ import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepo
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
@@ -70,6 +72,8 @@ class DigitalServiceServiceTest {
     private DigitalServiceMapper digitalServiceMapper;
     @Mock
     private DigitalServiceReferentialService digitalServiceReferentialService;
+    @Mock
+    private DigitalServiceLinkRepository digitalServiceLinkRepo;
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Mock
@@ -543,6 +547,68 @@ class DigitalServiceServiceTest {
                         eq(DIGITAL_SERVICE_UID)
                 );
 
+    }
+    @Test
+    void shareDigitalService_existingLink_updatesExpiryAndReturnsUrl() {
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid(DIGITAL_SERVICE_UID);
+
+        final User user = User.builder().id(USER_ID).build();
+        final UserBO userBO = UserBO.builder().id(USER_ID).build();
+
+        DigitalServiceSharedLink existingLink = DigitalServiceSharedLink.builder()
+                .uid("linkUid")
+                .digitalService(digitalService)
+                .expiryDate(LocalDateTime.now().minusDays(1))
+                .build();
+
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(existingLink);
+        when(digitalServiceLinkRepo.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        String result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO);
+
+        assertTrue(result.contains(DIGITAL_SERVICE_UID));
+        assertTrue(result.contains(existingLink.getUid()));
+        verify(digitalServiceLinkRepo).save(existingLink);
+
+        // The expiry date should be updated to approx 30 days from now
+        assertTrue(existingLink.getExpiryDate().isAfter(LocalDateTime.now().plusDays(29)));
+    }
+
+    @Test
+    void shareDigitalService_noExistingLink_createsNewLinkAndReturnsUrl() {
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid(DIGITAL_SERVICE_UID);
+
+        final User user = User.builder().id(USER_ID).build();
+        final UserBO userBO = UserBO.builder().id(USER_ID).build();
+
+        DigitalServiceSharedLink newLink = DigitalServiceSharedLink.builder()
+                .uid("newUid123")
+                .build();
+
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(null);
+        when(digitalServiceLinkRepo.save(any())).thenReturn(newLink);
+
+        String result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO);
+
+        assertTrue(result.contains(DIGITAL_SERVICE_UID));
+        assertTrue(result.contains(newLink.getUid()));
+        verify(digitalServiceLinkRepo).save(any());
+    }
+
+    @Test
+    void shareDigitalService_digitalServiceNotFound_throwsException() {
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, UserBO.builder().id(USER_ID).build()))
+                .hasMessageContaining("Digital service " + DIGITAL_SERVICE_UID +
+                        " not found in " + ORGANIZATION + "/"+ WORKSPACE_ID)
+                .isInstanceOf(G4itRestException.class);
     }
 
 }
