@@ -53,7 +53,8 @@ public class SecurityConfig {
             antMatcher("/api/v3/api-docs"),
             antMatcher("/api/v3/api-docs/swagger-config"),
             antMatcher("/api/swagger-ui/**"),
-            antMatcher("/actuator/**")
+            antMatcher("/actuator/**"),
+            antMatcher("/shared/**")
     };
 
     @Bean
