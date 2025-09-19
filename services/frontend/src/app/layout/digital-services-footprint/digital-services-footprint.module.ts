@@ -10,7 +10,6 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/cor
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { DropdownModule } from "primeng/dropdown";
-import { InplaceModule } from "primeng/inplace";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
 import { RadioButtonModule } from "primeng/radiobutton";
@@ -23,8 +22,8 @@ import { NgxEchartsModule } from "ngx-echarts";
 import { CardModule } from "primeng/card";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DividerModule } from "primeng/divider";
-import { FileUploadModule } from "primeng/fileupload";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { CommonDigitalServicesSharedModule } from "src/app/core/shared/common-digital-services-shared.module";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
@@ -39,11 +38,8 @@ import { PieChartComponent } from "./digital-services-footprint-dashboard/pie-ch
 import { RadialChartComponent } from "./digital-services-footprint-dashboard/radial-chart/radial-chart.component";
 import { SetViewPopupComponent } from "./digital-services-footprint-dashboard/set-view-popup/set-view-popup.component";
 import { DigitalServicesFootprintFooterComponent } from "./digital-services-footprint-footer/digital-services-footprint-footer.component";
-import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header/digital-services-footprint-header.component";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
 import { digitalServicesFootprintRouter } from "./digital-services-footprint.router";
-import { DigitalServicesImportComponent } from "./digital-services-import/digital-services-import.component";
-import { MultiFileImportComponent } from "./digital-services-import/multi-file-import/multi-file-import.component";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
 import { DigitalServicesResourcesComponent } from "./digital-services-resources/digital-services-resources.component";
@@ -60,7 +56,6 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
     declarations: [
         DigitalServicesFootprintComponent,
         DigitalServicesFootprintDashboardComponent,
-        DigitalServicesFootprintHeaderComponent,
         DigitalServicesTerminalsComponent,
         DigitalServicesNetworksComponent,
         DigitalServicesServersComponent,
@@ -82,22 +77,18 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         PanelListVmComponent,
         DigitalServicesAiParametersComponent,
         DigitalServicesAiInfrastructureComponent,
-        DigitalServicesImportComponent,
         DigitalServicesFootprintFooterComponent,
         DigitalServicesEcomindParametersComponent,
-        MultiFileImportComponent,
     ],
     imports: [
         CommonModule,
         FormsModule,
         RouterModule,
-        InplaceModule,
         RadioButtonModule,
         DropdownModule,
         InputNumberModule,
         InputTextModule,
         SharedModule,
-        FileUploadModule,
         TabMenuModule,
         TableModule,
         TagModule,
@@ -113,6 +104,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DividerModule,
         digitalServicesFootprintRouter,
         TableModule,
+        CommonDigitalServicesSharedModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],

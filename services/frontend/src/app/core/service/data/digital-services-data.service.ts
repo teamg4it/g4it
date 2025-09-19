@@ -7,8 +7,9 @@
  */
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, tap } from "rxjs";
+import { map, Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 import {
     AiModelConfig,
     DigitalService,
@@ -130,5 +131,27 @@ export class DigitalServicesDataService {
             `${endpoint}/${digitalServiceUid}`,
             DSCriteria,
         );
+    }
+
+    copyUrl(uid: DigitalService["uid"]): Observable<string> {
+        return this.http
+            .get<string>(`${endpoint}/${uid}/generate-link`, {
+                responseType: "text" as "json",
+            })
+            .pipe(map((response) => environment.frontEndUrl + response));
+    }
+
+    validateShareToken(id: DigitalService["uid"], token: string): Observable<boolean> {
+        return this.http
+            .get(`${endpoint}/share/${token}/ds/${id}/validate-link`, {
+                responseType: "text" as "json",
+            })
+            .pipe(map((res) => res === "true"));
+    }
+
+    getDs(dsId: string): Observable<DigitalService> {
+        return this.http
+            .get<DigitalService>(`${endpoint}/${dsId}`)
+            .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
     }
 }

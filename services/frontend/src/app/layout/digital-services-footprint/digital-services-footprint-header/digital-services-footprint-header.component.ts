@@ -33,11 +33,28 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-digital-services-footprint-header",
+    // standalone: true,
+    // imports: [
+    //     SidebarModule,
+    //     EditorModule,
+    //     ButtonModule,
+    //     ConfirmPopupModule,
+    //     TranslateModule,
+    //     AsyncPipe,
+    //     FormsModule,
+    //     InplaceModule,
+    //     ToastModule,
+    //     CommonModule,
+    //     RouterModule,
+    //     CommonEditorComponent,
+    //     LinkCreatePopupComponent,
+    //     SharedModule,
+    // ],
     templateUrl: "./digital-services-footprint-header.component.html",
     providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
-    private readonly global = inject(GlobalStoreService);
+    protected readonly global = inject(GlobalStoreService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() digitalService: DigitalService = {} as DigitalService;
@@ -54,6 +71,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     isEcoMindEnabledForCurrentOrganization: boolean = false;
     isEcoMindAi = input<boolean>(false);
     showKebabMenu = false;
+    displayLinkCreatePopup = false;
+    shareLink = "";
 
     private readonly destroyRef = inject(DestroyRef);
 
@@ -185,5 +204,24 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     importData(): void {
         this.importSidebarVisible = true;
+    }
+
+    shareDs(): void {
+        this.displayLinkCreatePopup = !this.displayLinkCreatePopup;
+
+        if (!this.shareLink && this.displayLinkCreatePopup) {
+            this.global.setLoading(true);
+            this.digitalServicesData
+                .copyUrl(this.digitalService.uid)
+                .pipe(
+                    takeUntilDestroyed(this.destroyRef),
+                    finalize(() => {
+                        this.global.setLoading(false);
+                    }),
+                )
+                .subscribe((res) => {
+                    this.shareLink = res;
+                });
+        }
     }
 }

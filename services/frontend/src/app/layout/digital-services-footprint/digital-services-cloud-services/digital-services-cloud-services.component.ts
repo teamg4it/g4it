@@ -33,7 +33,13 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     virtualEquipments = signal<InVirtualEquipmentRest[]>([]);
 
     cloudServices = computed(() => {
-        return this.virtualEquipments().map((server: InVirtualEquipmentRest) =>
+        return (
+            this.digitalServiceStore.isSharedDS()
+                ? this.digitalServiceStore
+                      .inVirtualEquipments()
+                      .filter((server) => server.infrastructureType === "CLOUD_SERVICES")
+                : this.virtualEquipments()
+        ).map((server: InVirtualEquipmentRest) =>
             this.toDigitalServiceCloudServiceConfig(
                 server,
                 this.digitalServiceStore.countryMap(),
