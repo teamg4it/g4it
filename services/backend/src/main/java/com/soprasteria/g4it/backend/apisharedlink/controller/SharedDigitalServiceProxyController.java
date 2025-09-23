@@ -11,20 +11,17 @@ package com.soprasteria.g4it.backend.apisharedlink.controller;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialRestMapper;
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
 import com.soprasteria.g4it.backend.server.gen.api.SharedLinkDigitalServiceItemsApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OutPhysicalEquipmentRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.OutVirtualEquipmentRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.SharedDigitalServiceReferentielRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +31,9 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class SharedDigitalServiceProxyController implements SharedLinkDigitalServiceItemsApiDelegate {
+
+    @Autowired
+    private DigitalServiceRestMapper digitalServiceRestMapper;
 
     private InPhysicalEquipmentService inPhysicalEquipmentService;
     private InDatacenterService inDatacenterService;
@@ -91,13 +91,20 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
 
 
     @Override
-    public ResponseEntity<SharedDigitalServiceReferentielRest> getSharedReferentielData(String shareId) {
-        return ResponseEntity.ok().body(SharedDigitalServiceReferentielRest.builder()
+    public ResponseEntity<SharedDigitalServiceReferentialRest> getSharedReferentialData(String digitalServiceUid, String shareId) {
+        return ResponseEntity.ok().body(SharedDigitalServiceReferentialRest.builder()
                 .terminalTypes(digitalServiceReferentialRestMapper.toDeviceTypeDto(digitalServiceReferentialService.getTerminalDeviceType()))
                 .networkTypes(digitalServiceReferentialRestMapper.toNetworkTypeDto(digitalServiceReferentialService.getNetworkType()))
                 .computeServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Compute")))
                 .storageServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Storage")))
                 .countries(digitalServiceReferentialService.getBoaviztaCountryMap())
                 .build());
+    }
+
+
+    @Override
+    public ResponseEntity<DigitalServiceRest> getSharedDigitalServiceLinkMetadata(String digitalServiceUid,
+                                                                                  String shareId) {
+        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.getDigitalService(digitalServiceUid)));
     }
 }

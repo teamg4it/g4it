@@ -31,10 +31,13 @@ public interface DigitalServiceLinkRepository extends JpaRepository<DigitalServi
     int deleteExpiredLinks();
 
     @Query("SELECT d FROM DigitalServiceSharedLink d " +
+            "JOIN FETCH d.digitalService ds " +
             "WHERE d.uid = :shareId " +
-            "AND d.digitalService.uid = :digitalServiceId " +
+            "AND ds.uid = :digitalServiceId " +
             "AND d.expiryDate > CURRENT_TIMESTAMP")
     Optional<DigitalServiceSharedLink> validateLink(@Param("shareId") String shareId,
                                                     @Param("digitalServiceId") String digitalServiceId);
+
+    boolean existsByDigitalService_UidAndIsActiveTrue(String digitalServiceUid);
 
 }

@@ -28,6 +28,7 @@ import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -212,7 +213,7 @@ public class DigitalServiceService {
      * @param digitalServiceUid the digital service id.
      * @return the url.
      */
-    public String shareDigitalService(final String organization, final Long workspaceId, final String digitalServiceUid, final UserBO userBO) {
+    public DigitalServiceShareRest shareDigitalService(final String organization, final Long workspaceId, final String digitalServiceUid, final UserBO userBO) {
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
                 new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, organization, workspaceId))
         );
@@ -229,11 +230,13 @@ public class DigitalServiceService {
 
         if (digitalServiceActiveLink != null) {
 
-            // Update expiry date to 30 days from now.
-            digitalServiceActiveLink.setExpiryDate(LocalDateTime.now().plusDays(30));
+            // Update expiry date to 60 days from now.
+            digitalServiceActiveLink.setExpiryDate(LocalDateTime.now().plusDays(60));
             digitalServiceLinkRepository.save(digitalServiceActiveLink);
-            return String.format("/shared/%s/ds/%s",
-                    digitalServiceActiveLink.getUid(), digitalServiceUid);
+            return DigitalServiceShareRest.builder().url(String.format("/shared/%s/ds/%s",
+                    digitalServiceActiveLink.getUid(), digitalServiceUid))
+                    .expiryDate(digitalServiceActiveLink.getExpiryDate())
+                    .build();
 
 
         } else {
@@ -243,11 +246,15 @@ public class DigitalServiceService {
                     .createdBy(user)
                     .isActive(true)
                     .creationDate(LocalDateTime.now())
-                    .expiryDate(LocalDateTime.now().plusDays(30))
+                    .expiryDate(LocalDateTime.now().plusDays(60))
                     .build();
-            String uid = digitalServiceLinkRepository.save(linkToCreate).getUid();
-            return String.format("/share/%s/ds/%s",
-                    uid, digitalServiceUid);
+
+            DigitalServiceSharedLink savedLink = digitalServiceLinkRepository.save(linkToCreate);
+
+            return DigitalServiceShareRest.builder()
+                    .url(String.format("/shared/%s/ds/%s", savedLink.getUid(), digitalServiceUid))
+                    .expiryDate(savedLink.getExpiryDate())
+                    .build();
         }
     }
 
@@ -259,7 +266,13 @@ public class DigitalServiceService {
      * @return the business object.
      */
     public DigitalServiceBO getDigitalService(final String digitalServiceUid) {
-        return digitalServiceMapper.toFullBusinessObject(getDigitalServiceEntity(digitalServiceUid));
+        DigitalServiceBO digitalServiceBO = digitalServiceMapper.toFullBusinessObject(getDigitalServiceEntity(digitalServiceUid));
+
+        //check shared link presence
+        boolean isShared = digitalServiceLinkRepository.existsByDigitalService_UidAndIsActiveTrue(digitalServiceUid);
+
+        digitalServiceBO.setIsShared(isShared);
+        return digitalServiceBO;
     }
 
     private DigitalService getDigitalServiceEntity(final String digitalServiceUid) {

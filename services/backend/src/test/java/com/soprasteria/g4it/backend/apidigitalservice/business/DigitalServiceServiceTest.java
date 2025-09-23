@@ -31,6 +31,7 @@ import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.model.NoteBO;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,8 +46,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyLong;
@@ -564,7 +564,7 @@ class DigitalServiceServiceTest {
     }
 
     @Test
-    void shareDigitalService_existingLink_updatesExpiryAndReturnsUrl() {
+    void shareDigitalService_existingLink_updatesExpiryAndReturnsRest() {
         DigitalService digitalService = new DigitalService();
         digitalService.setUid(DIGITAL_SERVICE_UID);
 
@@ -585,18 +585,18 @@ class DigitalServiceServiceTest {
         when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(digitalServiceSharedLinks);
         when(digitalServiceLinkRepo.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        String result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO);
+        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO);
 
-        assertTrue(result.contains(DIGITAL_SERVICE_UID));
-        assertTrue(result.contains(existingLink.getUid()));
+        assertNotNull(result);
+        assertTrue(result.getUrl().contains(DIGITAL_SERVICE_UID));
+        assertTrue(result.getUrl().contains(existingLink.getUid()));
         verify(digitalServiceLinkRepo).save(existingLink);
 
-        // The expiry date should be updated to approx 30 days from now
-        assertTrue(existingLink.getExpiryDate().isAfter(LocalDateTime.now().plusDays(29)));
+        assertTrue(result.getExpiryDate().isAfter(LocalDateTime.now().plusDays(59)));
     }
 
     @Test
-    void shareDigitalService_noExistingLink_createsNewLinkAndReturnsUrl() {
+    void shareDigitalService_noExistingLink_createsNewLinkAndReturnsRest() {
         DigitalService digitalService = new DigitalService();
         digitalService.setUid(DIGITAL_SERVICE_UID);
 
@@ -605,6 +605,7 @@ class DigitalServiceServiceTest {
 
         DigitalServiceSharedLink newLink = DigitalServiceSharedLink.builder()
                 .uid("newUid123")
+                .expiryDate(LocalDateTime.now().plusDays(30))
                 .build();
 
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
@@ -612,10 +613,12 @@ class DigitalServiceServiceTest {
         when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(Collections.emptyList());
         when(digitalServiceLinkRepo.save(any())).thenReturn(newLink);
 
-        String result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO);
+        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO);
 
-        assertTrue(result.contains(DIGITAL_SERVICE_UID));
-        assertTrue(result.contains(newLink.getUid()));
+        assertNotNull(result);
+        assertTrue(result.getUrl().contains(DIGITAL_SERVICE_UID));
+        assertTrue(result.getUrl().contains(newLink.getUid()));
+        assertEquals(newLink.getExpiryDate(), result.getExpiryDate());
         verify(digitalServiceLinkRepo).save(any());
     }
 

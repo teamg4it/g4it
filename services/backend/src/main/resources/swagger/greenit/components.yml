@@ -645,9 +645,22 @@ components:
         isAi:
           type: boolean
           description: Indique si le service digital est un service d’IA
+        isShared:
+          type: boolean
+          description: Indique si le service digital est un service d’Shared
         enableDataInconsistency:
           type: boolean
           description: The flag to enable data consistency view
+
+    DigitalServiceShareRest:
+      description: Information of shared Digital Service
+      type: object
+      properties:
+        url:
+          type: string
+        expiryDate:
+          type: string
+          format: date-time
 
     DigitalServiceServerImpactRest:
       type: object
@@ -1160,7 +1173,7 @@ components:
           format: double
           minimum: 0
 
-    SharedDigitalServiceReferentielRest:
+    SharedDigitalServiceReferentialRest:
       type: object
       properties:
         networkTypes:
