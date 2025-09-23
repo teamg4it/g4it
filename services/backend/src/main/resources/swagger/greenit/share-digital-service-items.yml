@@ -66,14 +66,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/InVirtualEquipmentRest"
-  /shared/{shareId}/ds/referentiel-data:
+  /shared/{shareId}/ds/{digitalServiceUid}/referential-data:
     parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:
         - shared-link-digital-service-items
       summary: Get virtual-equipments from one digital service for shared link
-      operationId: getSharedReferentielData
+      operationId: getSharedReferentialData
       security: []
       responses:
         '200':
@@ -81,7 +82,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SharedDigitalServiceReferentielRest"
+                $ref: "#/components/schemas/SharedDigitalServiceReferentialRest"
   /shared/{shareId}/ds/{digitalServiceUid}/outputs/virtual-equipments:
     parameters:
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
@@ -120,7 +121,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OutPhysicalEquipmentRest"
-  /shared/{shareId}/ds/{digitalServiceUid}:
+  /shared/{shareId}/ds/{digitalServiceUid}/validate:
     parameters:
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
@@ -137,4 +138,21 @@ paths:
             application/json:
               schema:
                 type: boolean
+  /shared/{shareId}/ds/{digitalServiceUid}:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Metadata for shared digital service
+      operationId: getSharedDigitalServiceLinkMetadata
+      security: []
+      responses:
+        '200':
+          description: The digital service requested
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigitalServiceRest"
 

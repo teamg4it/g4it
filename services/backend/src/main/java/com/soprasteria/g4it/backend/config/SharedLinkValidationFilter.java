@@ -50,7 +50,7 @@ public class SharedLinkValidationFilter extends OncePerRequestFilter {
             boolean valid = digitalServiceLinkRepository.validateLink(shareId, digitalServiceId).isPresent();
 
             if (!valid) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setStatus(HttpServletResponse.SC_GONE);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\":\"Shared link expired or invalid\"}");
                 response.flushBuffer();

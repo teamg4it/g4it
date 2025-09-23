@@ -129,9 +129,9 @@ paths:
         '200':
           description: The digital service link to share
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                $ref: "#/components/schemas/DigitalServiceShareRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
