@@ -29,7 +29,7 @@ Input :
 -   My Information System / Visualize my inventories / My inventory / Estimate history
 
 **Access Conditions**  
-The connected user must have the write access for that module one the selected organization.
+The connected user must have the write access for that module one the selected workspace.
 
 ## State Diagram
 
@@ -61,11 +61,11 @@ Decision4 -->|Yes|Step6
 
 | Reference | Group                             | Elements  | Sub-Elements   | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | --------- | --------------------------------- | --------- | -------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|           | Estimate History                  |           |                | button | Launch/ Update inventory footprint estimate. [Environmental Footprint Assessment methodology](../../global_concepts/environmental_footprint_assessment_methodology/_index.md)<br>_NB_ : Before launching the first estimate, check that the referential data available for your organization suit your needs. <br><br><li><u>_initialization rules_</u>: The button is available only if a valid physical equipment file is already upload and an integration isn't already running and an estimation isn't already running.<br><br><li><u>_action rules_</u>: Trigger the request of an estimate. |
+|           | Estimate History                  |           |                | button | Launch/ Update inventory footprint estimate. [Environmental Footprint Assessment methodology](../../global_concepts/environmental_footprint_assessment_methodology/_index.md)<br>_NB_ : Before launching the first estimate, check that the referential data available for your workspace suit your needs. <br><br><li><u>_initialization rules_</u>: The button is available only if a valid physical equipment file is already upload and an integration isn't already running and an estimation isn't already running.<br><br><li><u>_action rules_</u>: Trigger the request of an estimate. |
 | 1         |                                   | Estimates |                | List   | <li><u>_initialization rules_</u>: The list is ordered by try date desc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | 2         |                                   |           | Status icon    | Label  | <li><u>_initialization rules_</u>: 4 existing status : <br>Pending (If any other inventory loading or estimation task is in progress)<br> In Progress (Estimation is in progress),<br> Error (Estimation could not be performed),<br> Completed (Inventory have been successfully submitted to NumEcoEval for estimation but it does not mean that the estimation is ready, wait around 10 min to let the compute finish).<br>                                                                                                                                                                                                                                                                                                |
 | 3         |                                   |           | Estimate dates | button |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| 4         | Choose criteria for the inventory |           |                | button | Details of the behaviour is described in [3.2.5 Choose criteria](../uc_administration/uc_administration_manage_organizations/uc5_choose_criteria.md)                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 4         | Choose criteria for the inventory |           |                | button | Details of the behaviour is described in [3.2.5 Choose criteria](../uc_administration/uc_administration_manage_workspaces/uc5_choose_criteria.md)                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
 #### Estimate control and process
 
@@ -90,7 +90,7 @@ participant DataBase
 participant Azure storage
 
 RND ->> front: Click on "Launch estimate" button
-front ->> back: POST /api/{subscriber}/{organization}/inventories/{inventory_id}/evaluating
+front ->> back: POST /api/{organization}/{workspace}/inventories/{inventory_id}/evaluating
 front -->> RND: Display 'pending' button if other task is already in progress
 front -->> back: Resume estimation once no other task is in progress
 back ->> BOAVIZTAPI: Estimate the impact of the cloud services via POST /api/v1/cloud/instance
@@ -100,7 +100,7 @@ NumEcoEval ->> DataBase: Send indicators data in out_physical_equipment table
 NumEcoEval ->> DataBase: Send indicators data in out_virtual_equipment table
 NumEcoEval ->> DataBase: Send cloud indicators data in out_application table
 back -->> Azure storage: Create a zipped file of uploaded data files <br>and their indicators in csv file format and store in the Azure storage
-front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_id}
+front ->> back: GET /api/{organization}/{workspace}/inventories/{inventory_id}
 DataBase ->> back: Get the inventory
 front-->> RND: Display that the estimation is completed
 front->> RND: The 'Equipment' and 'Application' buttons enabled to view footprints

@@ -32,7 +32,7 @@ flowchart LR
     C --> C1
     B1 --> B11
 ```
-{...} : Another part of the url used (/subscribers/{subscriber}/organizations/{organization}).
+{...} : Another part of the url used (/organizations/{organization}/workspaces/{workspace}).
 
 Ecomind is an externally deployed service that is invoked through a client [Ai Modelapi Client](https://github.com/teamg4it/g4it/blob/develop_ecomind/services/backend/src/main/java/com/soprasteria/g4it/backend/external/ecomindai/client/AiModelapiClient.java).
 
@@ -79,6 +79,6 @@ flowchart LR
     A --> A2
     A --> A3
 ```
-{...} : Another part of the url used (/subscribers/{subscriber}/organizations/{organization}).
+{...} : Another part of the url used (/organizations/{organization}/workspaces/{workspace}).
 
 This change updates the "Visualize" tab in the digital service to present the recommendations provided by Ecomind.

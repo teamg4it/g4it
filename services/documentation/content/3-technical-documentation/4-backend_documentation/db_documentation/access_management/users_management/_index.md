@@ -1,6 +1,6 @@
 ---
 title: 'Users Management'
-description: 'These tables present the structure of Subscriber (customer of the plateform), Organization (Subscriber-defined structuring element) and User (Person authorized who accesses G4IT’s modules). Role are put in place : Administrator (at Subcriber level and at Organization level), Read/Write on G4IT’s modules (information system and/or digital services).'
+description: 'These tables present the structure of Subscriber(now renamed as Organization) (customer of the plateform), Organization(now renamed as Workspace) (Subscriber-defined structuring element) and User (Person authorized who accesses G4IT’s modules). Role are put in place : Administrator (at Subcriber level and at Organization level), Read/Write on G4IT’s modules (information system and/or digital services).'
 weight: 1
 ---
 ## Entity relationship diagram 

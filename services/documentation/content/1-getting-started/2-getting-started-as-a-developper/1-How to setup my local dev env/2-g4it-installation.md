@@ -108,9 +108,10 @@ We are going to create a simple example to visualize graphs for digital service 
 
 - On the left menu, click on the icon which looks like @
 - Click on __Evaluate new service__
-- In __Terminals__ tab, add a __Device__ with type __Laptop__
-- In __Networks__ tab, add a __Network__ with type __Fixed FR__
-- In __Servers__ tab, add a __Server__ with defaut settings, the Host available
+- In __Terminals__ table, add a __Device__ with type __Laptop__
+- In __Networks__ table, add a __Network__ with type __Fixed FR__
+- In __Private Infrastructures__ table, add a __non-cloud server__ with default settings, the Host available
+- In __Public Clouds - IaaS__ table, add a __cloud service__ with instance type __a1.medium__ for __aws__ cloud provider
 - Click on CALCULATE
   - It will route to the __Global Vision__
 

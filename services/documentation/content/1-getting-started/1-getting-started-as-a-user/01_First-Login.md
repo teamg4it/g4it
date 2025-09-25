@@ -1,5 +1,5 @@
 ---
-title: "I want to acess to G4IT"
+title: "I want to access to G4IT"
 description: "This section explains how a user logs into the application for the first time."
 weight: 1
 ---
@@ -43,10 +43,10 @@ Open the validation email you received and click the link to confirm your email 
 
 Return to G4IT and log in with your credentials.
 
-⚠ **Important**: At this point, you may see a message indicating that you do not have access to an organization. This is
-expected, as an administrator will need to add you to the organization.
+⚠ **Important**: At this point, you may see a message indicating that you do not have access to a workspace. This is
+expected, as an administrator will need to add you to the workspace.
 
-![Login with Credentials](../images/1_First_Login_Step5.png "Login with your credentials and note the 'no access to organization' message")
+![Login with Credentials](../images/1_First_Login_Step5.png "Login with your credentials and note the 'no access to workspace' message")
 
 For a detailed description of the feature, you can refer to the functional
 documentation [3.1 Manage users](../../../../2-functional-documentation/use_cases/uc_administration/uc_administration_manage_users/_index.md).

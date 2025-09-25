@@ -9,7 +9,7 @@ mermaid: true
 
 | API                                                                                                    | Swagger                                                                                                       | Use Cases                                                                                                  |
 |:-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
-| POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
+| POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchloadInputFiles) | [Load inventory files]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc3_load_files.md" %}}) |
 
 ## Description
 
@@ -31,7 +31,7 @@ D --> E(Return the task id)
 {{</ mermaid >}}
 
 Note that, the loading process is done asynchronous. The user can track the loading process by calling the
-API [`GET /subscribers/{subscriber}/organizations/{organization}/task/{taskId}`](https://saas-g4it.com/api/swagger-ui/index.html#/task/getTask).
+API [`GET /organizations/{organization}/workspaces/{workspace}/task/{taskId}`](https://saas-g4it.com/api/swagger-ui/index.html#/task/getTask).
 
 Attention, to consume small resource the loading process is done by one thread. So if there are two loads
 in the instance, one will wait for the other to finish.

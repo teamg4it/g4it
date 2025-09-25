@@ -15,7 +15,7 @@ mermaid: true
 
 ## Description
 
-This usecase allows a project team to delete one of its digital service
+This use case allows a project team to delete one of its digital service
 
 **Navigation Path**
 
@@ -24,7 +24,7 @@ This usecase allows a project team to delete one of its digital service
 
 **Access Conditions**
 
--   The connected member must have the 'write' role for the digital service module one the selected organization.
+-   The connected member must have the 'write' role for the digital service module one the selected workspace.
 
 ## State Diagram
 
@@ -63,7 +63,7 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "Delete" button
-front ->> back: DELETE /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}
+front ->> back: DELETE /api/{organization}/{workspace}/digital-services/{digitalServiceUid}
 back -> DataBase: Delete the digital service, corresponding data from tables in_physical_equipment,<br> in_virtual_equipment, in_datacenter and tasks
 back ->> front: Remove the digital service in the suited list
 {{</ mermaid >}}

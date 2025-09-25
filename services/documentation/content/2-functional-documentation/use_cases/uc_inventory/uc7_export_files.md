@@ -58,7 +58,7 @@ participant back as G4IT Back-End
 participant azure as Azure storage
 
     RND ->> front: Click on 'export' button on the equipment or application view
-    front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/export/download
+    front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/export/download
    azure ->> back: Retrieve the stored zipped files
     back ->> front: Files downloaded in user's local
     front ->> RND: Exported zipped CSV files

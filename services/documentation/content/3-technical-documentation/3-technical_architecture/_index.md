@@ -17,17 +17,17 @@ And finally, you will find here all the information about the technical architec
 ![technical architecture](./images/g4it_technical_architecture.png)
 
 ### Data segregation and multi-tenancy
-The data must be segregated by subscriber / organisation. Multiple strategies can be used depending on the security requirements of each customer.
+The data must be segregated by organization / workspace. Multiple strategies can be used depending on the security requirements of each customer.
 
 #### Software only strategy
-Fist data are protected by sotware architecture. An api call of authenticated user can only access data of authorized organization.
+Fist data are protected by sotware architecture. An api call of authenticated user can only access data of authorized workspace.
 Data are stored in a shared PostgreSQL database and shared file storage (S3, Azure Blob, etc).
 
 
 #### Infrastructure strategy
 
-A subscriber can have its own database and file storage. This strategy is more secure but more expensive as each repository can has its own encrypted at rest database and file storage.
-The load balancer can be configured to route the request to the right instance depending on the subscriber.
+A organization can have its own database and file storage. This strategy is more secure but more expensive as each repository can has its own encrypted at rest database and file storage.
+The load balancer can be configured to route the request to the right instance depending on the organization.
 
 ### Kubernetes deployment
 

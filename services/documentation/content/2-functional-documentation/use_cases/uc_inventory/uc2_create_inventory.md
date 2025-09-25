@@ -29,7 +29,7 @@ My Information System / Visualize my inventories / New Inventory button
 My Information System / Visualize my inventories / My inventory / Add files
 
 **Access Conditions**  
-The connected user must have the write access for that module on the selected organization.
+The connected user must have the write access for that module on the selected workspace.
 
 ## State Diagram
 
@@ -96,9 +96,9 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on create in the New Inventory view
-front ->> back: Post /api/{subscriber}/{organization}/inventories
+front ->> back: Post /api/{organization}/{workspace}/inventories
 back ->> DataBase: Create the inventory
-front ->> back: Get /api/{subscriber}/{organization}/inventories
+front ->> back: Get /api/{organization}/{workspace}/inventories
 DataBase ->> back: Get the created inventory
 back ->> front: Display the inventory in the suited list
 
@@ -114,11 +114,11 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on create in the New Inventory view
-front ->> back: Post /api/{subscriber}/{organization}/inventories
+front ->> back: Post /api/{organization}/{workspace}/inventories
 back ->> DataBase: Create the inventory
-front ->> back: Post /api/{subscriber}/{organization}/inventories/{inventoryId}
+front ->> back: Post /api/{organization}/{workspace}/inventories/{inventoryId}
 back ->> DataBase: Load the files in the new Inventory
-front ->> back: Get /api/{subscriber}/{organization}/inventories
+front ->> back: Get /api/{organization}/{workspace}/inventories
 DataBase ->> back: Fetch the created inventory
 back ->> front: Display the inventory in the suited list
 
@@ -134,7 +134,7 @@ participant back as G4IT Back-End
 participant azure as Azure file storage
 
 RND ->> front: Click on any download template button in the loading files view
-front ->> back: GET /api/{subscriber}/{organization}/templates-files/{template}
+front ->> back: GET /api/{organization}/{workspace}/templates-files/{template}
 back --> azure: Get the selected template
 back ->> front: Send the select template
 

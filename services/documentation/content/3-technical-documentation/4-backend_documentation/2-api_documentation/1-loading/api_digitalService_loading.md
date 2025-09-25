@@ -9,7 +9,7 @@ mermaid: true
 
 | API                                                                                                    | Swagger                                                                                                       | Use Cases                                                                                            |
 |:-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------|
-| POST /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchLoadInputFilesDigitalService) | [Load digital service files] |
+| POST /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchLoadInputFilesDigitalService) | [Load digital service files] |
 
 ## Description
 
@@ -31,7 +31,7 @@ D --> E(Return the task id)
 {{</ mermaid >}}
 
 Note that, the loading process is done asynchronous. The user can track the loading process by calling the
-API [`/subscribers/{subscriber}/organizations/{organization}/task/{taskId}`](https://saas-g4it.com/api/swagger-ui/index.html#/task/getTask).
+API [`/organizations/{organization}/workspaces/{workspace}/task/{taskId}`](https://saas-g4it.com/api/swagger-ui/index.html#/task/getTask).
 
 Attention, to consume small resource the loading process is done by one thread. So if there are two loads
 in the instance, one will wait for the other to finish.

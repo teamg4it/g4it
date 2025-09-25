@@ -13,7 +13,7 @@ mermaid: true
 
 ## Description
 
-This usecase allows a project team to add Public Cloud - IaaS equipment directly via form, into a digital service previously created.
+This use case allows a project team to add Public Cloud - IaaS equipment directly via form, into a digital service previously created.
 
 **Navigation Path**
 
@@ -21,7 +21,7 @@ This usecase allows a project team to add Public Cloud - IaaS equipment directly
 
 
 **Access Conditions**
-The connected user must have the write access for that module on the selected organization.
+The connected user must have the write access for that module on the selected workspace.
 
 ## Public Cloud - IaaS visualization
 

@@ -21,7 +21,7 @@ This usecase allows a user with write access role to delete an inventory, it can
 My Information System / Visualize my inventories / My inventory / Delete button
 
 **Access Conditions**  
-The connected user must have the read role for that module one the selected organization.
+The connected user must have the read role for that module one the selected workspace.
 
 ## Global view
 
@@ -49,9 +49,9 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "Delete" button
-front ->> back: DELETE /api/{subscriber}/{organization}/inventories/{inventory_id}/indicators
+front ->> back: DELETE /api/{organization}/{workspace}/inventories/{inventory_id}/indicators
 back -> DataBase: Delete the corresponding indicators
-front ->> back: DELETE /api/{subscriber}/{organization}/inventories/{inventory_id}
+front ->> back: DELETE /api/{organization}/{workspace}/inventories/{inventory_id}
 back -> DataBase: Delete the inventory and corresponding data from tables in_physical_equipment,<br> in_virtual_equipment, in_datacenter, in_application and tasks
 back ->> front: Remove the inventory in the suited list
 {{</ mermaid >}}

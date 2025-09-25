@@ -9,7 +9,7 @@ mermaid: true
 
 The digital service data is evaluated using active criteria in
 the [EvaluateService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateService.java).
-Note: active criteria here refers to the criteria set for the a digital service to calculate the impacts for.
+Note: active criteria here refers to the criteria set for a digital service to calculate the impacts for.
 
 ### Impact Calculation
 

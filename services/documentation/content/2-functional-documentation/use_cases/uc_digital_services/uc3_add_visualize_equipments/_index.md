@@ -22,7 +22,7 @@ My Digital Services / My Digital Service /
 
 **Access Conditions**
 
-The connected user must have write access to that module in the selected organization.
+The connected user must have write access to that module in the selected workspace.
 
 ## State Diagram
 {{< mermaid >}}
@@ -63,15 +63,15 @@ participant BoaviztApi
 
 RND ->> front: Choose a type of equipment
 RND ->> front: Click on 'Add' button in Devices table
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/device-type
+front ->> back: GET /api/{organization}/{workspace}/digital-services/device-type
 back ->> front: List of device types
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/country
+front ->> back: GET /api/{organization}/{workspace}/digital-services/country
 back ->> front: List of countries
 RND ->> front: Click on 'Add' button in Networks table
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/network-type
+front ->> back: GET /api/{organization}/{workspace}/digital-services/network-type
 back ->> front: List of network types
 RND ->> front: Click on 'Add' button in Private Infrastructures
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/server-host
+front ->> back: GET /api/{organization}/{workspace}/digital-services/server-host
 back ->> front: List of hosts
 
 RND ->> front: Click on 'Add' button in Public Cloud - IaaS table
@@ -84,10 +84,10 @@ BoaviztApi ->> front: List of instances in Boaviztapi
 
 RND ->> front: Fill the form
 RND ->> front: Click on 'Create' button
-front ->> back: PUT /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}
+front ->> back: PUT /api/{organization}/{workspace}/digital-services/{digitalServiceUid}
 
 back ->> DataBase: Update the service
-back ->> front: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}
+back ->> front: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}
 back ->> front: Display the service in the suited list
 
 {{< /mermaid >}}

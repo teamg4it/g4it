@@ -22,7 +22,7 @@ It means that user can describe all terminals, networks and servers related to a
 My Digital Services / Visualize my digital services
 
 **Access Conditions**
-The connected user must have the write access for that module on the selected organization.
+The connected user must have the write access for that module on the selected workspace.
 
 ## State Diagram
 
@@ -50,7 +50,7 @@ Step9 -->|Click on Add|Step81[Add cloud server view]
 | Reference | Group        | Elements               | Sub-Elements         | Type       | Description                                                                                                                                                                                                                                                 |
 | --------- | ------------ | ---------------------- | -------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |           | Page Header  |                        |                      | group      |                                                                                                                                                                                                                                                             |
-| 1         |              | Title                  |                      | page Title | <li><u>_initialization rules_</u>: The title is concatenated with the current organization selected: "My Digital Services -" + "_current organization_"                                                                                                     |
+| 1         |              | Title                  |                      | page Title | <li><u>_initialization rules_</u>: The title is concatenated with the current workspace selected: "My Digital Services -" + "_current workspace_"                                                                                                     |
 | 2         |              | Evaluation New Service |                      | button     | <li><u>_initialization rules_</u>: Display the button if the connected user have write right.<br><li><u>_action rules_</u>: Details of the behaviour is described in [2.2. Create or Visualize a digital service](uc2_create_visualize_digital_service.md). |
 |           | Page Content |                        |                      | group      |                                                                                                                                                                                                                                                             |
 | 3         |              | Digital Services       |                      | List       | <li><u>_initialization rules_</u>: Digital Services created are listed from the most recent.                                                                                                                                                                |
@@ -70,26 +70,26 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on Evaluate New Service
-front ->> back: POST /api/{subscriber}/{organization}/digital-services
+front ->> back: POST /api/{organization}/{workspace}/digital-services
 back ->> DataBase: Create the service
-back ->> front: /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+back ->> front: /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}
+front ->> back: GET /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 DataBase-->> back: Get indicators from in_physical_equipment table
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
+front ->> back: GET /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
 DataBase-->> back: Get indicators from in_virtual_equipment table
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters
+front ->> back: GET /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters
 DataBase-->> back: Get datacenters from in_datacenter table
-front ->> back: POST /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters
+front ->> back: POST /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters
 back -->> DataBase: Create default datacenter in in_datacenter table
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/{digitalServiceUid}/inputs/datacenters
+front ->> back: GET /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters
 DataBase-->> back: Get datacenters from in_datacenter table
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/network-type
+front ->> back: GET /api/{organization}/{workspace}/digital-services/network-type
 DataBase-->> back: Get networks from ref_network_type table
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/device-type
+front ->> back: GET /api/{organization}/{workspace}/digital-services/device-type
 DataBase-->> back: Get networks from ref_device_type table
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/server-host?type=Compute
+front ->> back: GET /api/{organization}/{workspace}/digital-services/server-host?type=Compute
 DataBase-->> back: Get networks from ref_server_host table in which type is Compute
-front ->> back: GET /api/{subscriber}/{organization}/digital-services/server-host?type=Storage
+front ->> back: GET /api/{organization}/{workspace}/digital-services/server-host?type=Storage
 DataBase-->> back: Get networks from ref_server_host table in which type is Storage
 front ->> back: GET /api/referential/boaviztapi/countries
 DataBase --> back : Get referential countries from boaviztapi

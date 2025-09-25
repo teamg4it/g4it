@@ -1,11 +1,11 @@
 ---
-title: "Migrate a digital service to a chosen organization"
-description: "How to migrate a chosen digital service from his current organization to a chosen organization"
+title: "Migrate a digital service to a chosen workspace"
+description: "How to migrate a chosen digital service from his current workspace to a chosen workspace"
 date: 2025-05-20T14:28:06+01:00
 weight: 5
 ---
 
-## Migrate a chosen digital service from his current organization to a chosen organization
+## Migrate a chosen digital service from his current workspace to a chosen workspace(table g4it_organization)
 
 1. Execute the migrate procedure script :
 ```sql
@@ -99,7 +99,7 @@ end;
 $$
 ```
 
-2. Execute link user to organization function (which is used in procedure script)
+2. Execute link user to workspace function (which is used in procedure script)
 
 ```sql
 create or replace function link_user_to_organization(
@@ -135,7 +135,7 @@ end;
 $$
 ```
 
-3. Execute assign role to user organization function (which is used in procedure script)
+3. Execute assign role to user workspace function (which is used in procedure script)
 
 ```sql
 create or replace function assign_role_to_user_organization(
@@ -173,4 +173,4 @@ call migrate_ds_to_chosen_workspace('6eb6e72f-2348-4057-8a99-78622daf53ec', 2);
 ```
 parameter 1 is the digital_service uid you want to move
 
-parameter 2 is the new organization chosen for the digital_service
+parameter 2 is the new workspace chosen for the digital_service

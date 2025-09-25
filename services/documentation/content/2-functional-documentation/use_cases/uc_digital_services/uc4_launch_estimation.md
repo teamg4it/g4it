@@ -73,7 +73,7 @@ participant DataBase
 participant Azure storage
 
 RND ->> front: Click on "Calculate My impact" button
-front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluating
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/evaluating
 back -> NumEcoEval: Estimate the impact of the terminals, networks, and non-cloud servers via POST /api/entrees/calculs/soumission
 NumEcoEval -->> DataBase: Send indicators data in out_physical_equipment and out_virtual_equipment table
 back ->> BOAVIZTAPI: Estimate the impact of the cloud services via POST /api/v1/cloud/instance
@@ -82,15 +82,15 @@ back -->> Azure storage: Create a zipped file of the terminals, networks, cloud 
 back -->> front: Estimation is finished and "Visualize My Results" button is enabled
 front-->> RND: "Calculate My impact" button is disabled until any update is made in the DS
 front-->> RND: "Export" button is enabled
-front->> back: GET /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}
+front->> back: GET /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}
 DataBase-->> back: Get the Digital Service
 front-->> RND: Redirection to the footprint visualization view.
 
 RND ->> front: Footprint view:click on "Edit Criteria" then "Save" button
-front ->> back: PUT /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluating
+front ->> back: PUT /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/evaluating
 back ->> database: Criteria updated for Digital service
-back ->> front: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}
-front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluating
+back ->> front: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/evaluating
 back ->> front: Same processing as for "Calculate My impact" button
 
 {{< /mermaid >}}

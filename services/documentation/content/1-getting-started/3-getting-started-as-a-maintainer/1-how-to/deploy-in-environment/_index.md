@@ -60,7 +60,7 @@ If G4IT is deployed in a secured environment, don't forget to change passwords.
 
 Once the application in started, automatic setups are executed :
 - user admin@g4it.com is created in database, table g4it_user with super admin rights
-- a subscriber/organization `SUBSCRIBER-DEMO/DEMO` is created
+- an organization/workspace `SUBSCRIBER-DEMO/DEMO` is created
 - open-source referential is uploaded and is located in ref_* tables
 
 ### Manual configuration
