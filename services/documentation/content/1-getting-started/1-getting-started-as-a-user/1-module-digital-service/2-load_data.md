@@ -11,23 +11,28 @@ weight: 20
     * [**Step 2:** Start the Evaluation](#step-2-start-the-evaluation)
   * [Adding the Collected Data](#adding-the-collected-data)
     * [**End-user Devices**](#end-user-devices)
-      * [**Step 3:** Add a New Device](#step-3-add-a-new-device)
-      * [**Step 4:** Complete Device Information](#step-4-complete-device-information)
-      * [**Step 5:** Edit or Delete Devices](#step-5-edit-or-delete-devices)
+      * [**Option A**: Create Device via Form](#option-a-create-device-via-form)
+        * [**Step 3:** Add a New Device](#step-3-add-a-new-device)
+        * [**Step 4:** Complete Device Information](#step-4-complete-device-information)
+        * [**Step 5:** Edit or Delete Devices](#step-5-edit-or-delete-devices)
+      * [**Option B**: Import Device File](#option-b-import-device-file)
     * [**Data Exchange**](#data-exchange)
-      * [**Step 6:** Add a Network](#step-6-add-a-network)
-      * [**Step 7:** Complete Network Information](#step-7-complete-network-information)
+      * [**Option A**: Create Network via Form](#option-a-create-network-via-form)
+        * [**Step 6:** Add a Network](#step-6-add-a-network)
+        * [**Step 7:** Complete Network Information](#step-7-complete-network-information)
+      * [**Option B**: Import Network File](#option-b-import-network-file)
     * [**Private Infrastructures**](#private-infrastructures)
-      * [If You Know the Details About Your Infrastructure Configuration](#if-you-know-the-details-about-your-infrastructure-configuration)
+      * [**Option A**: Create Infrastructure via Form](#option-a-create-infrastructure-via-form)
+        * [If You Know the Details About Your Infrastructure Configuration](#if-you-know-the-details-about-your-infrastructure-configuration)
         * [**Step 8:** Create a Server via form](#step-8-create-a-server-via-form)
         * [**Step 9:** Choose the Type of Server](#step-9-choose-the-type-of-server)
         * [**Step 10:** Complete Server Information](#step-10-complete-server-information)
         * [**Step 11:** Create a New Datacenter](#step-11-create-a-new-datacenter)
         * [**Step 12:** Create a Virtual Machine (VM)](#step-12-create-a-virtual-machine-vm)
-        * [**Step 8:** Import private infrastructure file](#step-8-import-private-infrastructure-file)
-      * [**Cloud Hosting (IaaS - Infrastructure as a Service)**](#cloud-hosting-iaas---infrastructure-as-a-service)
-        * [**Step 13:** Create a Public Cloud - IaaS via form](#step-13-create-a-public-cloud---iaas-via-form)
-        * [**Step 13:** Import Public Cloud - IaaS file](#step-13-import-public-cloud---iaas-file)
+      * [**Option B**: Import Private Infrastructure File](#option-b-import-private-infrastructure-file)
+    * [**Cloud Hosting (IaaS - Infrastructure as a Service)**](#cloud-hosting-iaas---infrastructure-as-a-service)
+      * [**Option A**: Create a Public Cloud - IaaS via form](#option-a-create-a-public-cloud---iaas-via-form)
+      * [**Option B**: Import Public Cloud - IaaS file](#option-b-import-public-cloud---iaas-file)
   * [Scenario Used as an Example](#scenario-used-as-an-example)
   * [Functional Documentation](#functional-documentation)
 <!-- TOC -->
@@ -58,6 +63,8 @@ weight: 20
 
 ### **End-user Devices**
 
+### **Option A**: Create Device via Form
+
 #### **Step 3:** Add a New Device
 
 -   **Action**: Click the "Digital service name" button to rename the digital service.
@@ -85,9 +92,26 @@ weight: 20
 
 ![Screenshot showing the options to edit or delete a device entry, with icons for editing and deleting.](../media/05_edit_device.png "Screenshot showing the options to edit or delete a device entry, with icons for editing and deleting.")
 
+
+### **Option B**: Import Device File
+
+1. **Action:** Action: Click the "Import" button to open the import form.
+
+   ![Import button](../media/3_import-button.png "Import button")
+
+2. **Action:** Navigate to the "Devices" tab to begin the import process.
+3. **Action:** Click the "Browse File" buttons to select and attach the file.
+4. **Action:** Click "Start Upload" to initiate the file upload.
+5. **Action:** Click "Finish Import" to proceed to the digital service view.
+6. **Action:** Go to the "Devices" table to view the imported data.
+
+![Screenshot showing the form to upload devices file.](../media/3_import-devices_physical_equipments.png "Screenshot showing the form to upload devices file.")
+
 ---
 
 ### **Data Exchange**
+
+### **Option A**: Create Network via Form
 
 #### **Step 6:** Add a Network
 
@@ -105,11 +129,27 @@ weight: 20
 
 ![Screenshot showing the form to fill in network details, including network type, location, and data volume.](../media/07_add_network.png "Screenshot showing a form to fill in network details, including network type, location, and data volume.")
 
+### **Option B**: Import Network File
+
+1. **Action:** Action: Click the "Import" button to open the import form.
+
+   ![Import button](../media/3_import-button.png "Import button")
+
+2. **Action:** Navigate to the "Networks" tab to begin the import process.
+3. **Action:** Click the "Browse File" buttons to select and attach the file.
+4. **Action:** Click "Start Upload" to initiate the file upload.
+5. **Action:** Click "Finish Import" to proceed to the digital service view.
+6. **Action:** Go to the "Networks" table to view the imported data.
+
+![Screenshot showing the form to upload networks file.](../media/6_import-networks_physical_equipments.png "Screenshot showing the form to upload networks file.")
+
 ---
 
 ### **Private Infrastructures**
 
-#### If You Know the Details About Your Infrastructure Configuration
+### **Option A**: Create Infrastructure via Form
+
+##### If You Know the Details About Your Infrastructure Configuration
 
 ##### **Step 8:** Create a Server via form
 
@@ -160,7 +200,7 @@ weight: 20
 
 ![Screenshot showing the form to add virtual machine characteristics, including size, quantity, and operating time.](../media/12_add_server_step_3.png "Screenshot showing the form to add virtual machine characteristics, including size, quantity, and operating time.")
 
-**OR**
+### **Option B**: Import Private Infrastructure File
 
 ##### **Step 8:** Import private infrastructure file
 1. **Action:** Action: Click the "Import" button to open the import form.
@@ -178,7 +218,7 @@ weight: 20
 
 #### **Cloud Hosting (IaaS - Infrastructure as a Service)**
 
-##### **Step 13:** Create a Public Cloud - IaaS via form
+##### **Option A**: Create a Public Cloud - IaaS via form
    ***Step1.*** ***Create a Public Cloud - IaaS via form***
 
 -   **Action**: In the ‘Cloud Services’ table under the ‘Visualize my resources’ tab, click the "Add" button to start adding your cloud infrastructure.
@@ -203,7 +243,7 @@ weight: 20
                                                       
   **OR**
 
-##### **Step 13:** Import Public Cloud - IaaS file
+##### **Option B**: Import Public Cloud - IaaS file
 1. **Action:** Action: Click the "Import" button to open the import form.
    ![Import button](../media/8_import-button.png "Import button")
 
