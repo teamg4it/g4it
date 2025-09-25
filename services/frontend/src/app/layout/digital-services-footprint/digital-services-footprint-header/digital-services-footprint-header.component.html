@@ -192,6 +192,7 @@
     <app-link-create-popup
         [displayPopup]="displayLinkCreatePopup"
         (outClose)="displayLinkCreatePopup = false"
+        (outExtendDate)="extendShareLinkDate()"
         [sharedLink]="shareLink"
         [expiryDate]="expiryDate"
     >

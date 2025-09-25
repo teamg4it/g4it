@@ -40,4 +40,7 @@ public interface DigitalServiceLinkRepository extends JpaRepository<DigitalServi
 
     boolean existsByDigitalService_UidAndIsActiveTrue(String digitalServiceUid);
 
+    // Find link by its uid and the related DigitalService uid
+    Optional<DigitalServiceSharedLink> findByUidAndDigitalService_Uid(String shareId, String digitalServiceUid);
+
 }

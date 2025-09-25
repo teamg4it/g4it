@@ -304,11 +304,21 @@ describe("DigitalServicesDataService", () => {
         httpMock.verify();
     });
 
-    it("copyUrl should call /{uid}/share and map to frontEndUrl + response + /footprint", () => {
+    it("copyUrl should call /{uid}/share and map to frontEndUrl + response + /footprint and extendLink=true", () => {
         const uid = "ds-123";
 
         let result: ShareLinkResp | undefined;
-        service.copyUrl(uid).subscribe((res) => (result = res));
+        service.copyUrl(uid, true).subscribe((res) => (result = res));
+
+        const req = httpMock.expectOne(`${dsEndpoint}/${uid}/share?extendLink=true`);
+        expect(req.request.method).toBe("GET");
+    });
+
+    it("copyUrl should call /{uid}/share and map to frontEndUrl + response + /footprint and extendLink=false", () => {
+        const uid = "ds-123";
+
+        let result: ShareLinkResp | undefined;
+        service.copyUrl(uid, false).subscribe((res) => (result = res));
 
         const req = httpMock.expectOne(`${dsEndpoint}/${uid}/share`);
         expect(req.request.method).toBe("GET");

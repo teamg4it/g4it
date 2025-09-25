@@ -137,8 +137,12 @@ export class DigitalServicesDataService {
         );
     }
 
-    copyUrl(uid: DigitalService["uid"]): Observable<ShareLinkResp> {
-        return this.http.get<ShareLinkResp>(`${endpoint}/${uid}/share`).pipe(
+    copyUrl(uid: DigitalService["uid"], extendLink: boolean): Observable<ShareLinkResp> {
+        let params = new HttpParams();
+        if (extendLink) {
+            params = params.set("extendLink", extendLink);
+        }
+        return this.http.get<ShareLinkResp>(`${endpoint}/${uid}/share`, { params }).pipe(
             map((response) => {
                 return {
                     ...response,

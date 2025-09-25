@@ -213,7 +213,9 @@ public class DigitalServiceService {
      * @param digitalServiceUid the digital service id.
      * @return the url.
      */
-    public DigitalServiceShareRest shareDigitalService(final String organization, final Long workspaceId, final String digitalServiceUid, final UserBO userBO) {
+    public DigitalServiceShareRest shareDigitalService(final String organization, final Long workspaceId,
+                                                       final String digitalServiceUid, final UserBO userBO,
+                                                       final Boolean extendLink) {
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
                 new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, organization, workspaceId))
         );
@@ -228,13 +230,20 @@ public class DigitalServiceService {
                 .findFirst()
                 .orElse(null);
 
+        LocalDateTime expiryDate = LocalDateTime.now()
+                .plusDays(60)
+                .withHour(23)
+                .withMinute(59)
+                .withSecond(0)
+                .withNano(0);
         if (digitalServiceActiveLink != null) {
-
             // Update expiry date to 60 days from now.
-            digitalServiceActiveLink.setExpiryDate(LocalDateTime.now().plusDays(60));
-            digitalServiceLinkRepository.save(digitalServiceActiveLink);
+            if (Boolean.TRUE.equals(extendLink)) {
+                digitalServiceActiveLink.setExpiryDate(expiryDate);
+                digitalServiceLinkRepository.save(digitalServiceActiveLink);
+            }
             return DigitalServiceShareRest.builder().url(String.format("/shared/%s/ds/%s",
-                    digitalServiceActiveLink.getUid(), digitalServiceUid))
+                            digitalServiceActiveLink.getUid(), digitalServiceUid))
                     .expiryDate(digitalServiceActiveLink.getExpiryDate())
                     .build();
 

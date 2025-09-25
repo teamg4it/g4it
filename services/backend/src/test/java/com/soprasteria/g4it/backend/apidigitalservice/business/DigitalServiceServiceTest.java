@@ -46,7 +46,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyLong;
@@ -585,7 +588,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(digitalServiceSharedLinks);
         when(digitalServiceLinkRepo.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO);
+        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO, true);
 
         assertNotNull(result);
         assertTrue(result.getUrl().contains(DIGITAL_SERVICE_UID));
@@ -613,7 +616,7 @@ class DigitalServiceServiceTest {
         when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(Collections.emptyList());
         when(digitalServiceLinkRepo.save(any())).thenReturn(newLink);
 
-        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO);
+        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO, true);
 
         assertNotNull(result);
         assertTrue(result.getUrl().contains(DIGITAL_SERVICE_UID));
@@ -626,7 +629,7 @@ class DigitalServiceServiceTest {
     void shareDigitalService_digitalServiceNotFound_throwsException() {
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, UserBO.builder().id(USER_ID).build()))
+        assertThatThrownBy(() -> digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, UserBO.builder().id(USER_ID).build(), true))
                 .hasMessageContaining("Digital service " + DIGITAL_SERVICE_UID +
                         " not found in " + ORGANIZATION + "/" + WORKSPACE_ID)
                 .isInstanceOf(G4itRestException.class);

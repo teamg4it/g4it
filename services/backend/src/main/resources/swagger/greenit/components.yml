@@ -181,6 +181,13 @@ components:
         type: string
       required: true
       description: The shareId for shared link for external users.
+    extendLinkQueryParam:
+      in: query
+      name: extendLink
+      schema:
+        type: boolean
+      required: false
+      description: User needs to extend shared link.
 
   responses:
     InternalServerError:

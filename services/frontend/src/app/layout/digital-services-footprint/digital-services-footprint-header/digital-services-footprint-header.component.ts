@@ -191,26 +191,36 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.importSidebarVisible = true;
     }
 
+    extendShareLinkDate(): void {
+        this.getShareLink(true);
+    }
+
     shareDs(): void {
         this.displayLinkCreatePopup = !this.displayLinkCreatePopup;
 
         if (!this.shareLink && this.displayLinkCreatePopup) {
-            this.global.setLoading(true);
-            this.digitalServicesData
-                .copyUrl(this.digitalService.uid)
-                .pipe(
-                    takeUntilDestroyed(this.destroyRef),
-                    finalize(() => {
-                        this.global.setLoading(false);
-                    }),
-                )
-                .subscribe((res) => {
-                    this.shareLink = res.url;
-                    this.expiryDate = new Date(res.expiryDate.toString() + "Z");
-                    if (!this.digitalService.isShared) {
-                        this.digitalServicesData.get(this.digitalService.uid).subscribe();
-                    }
-                });
+            this.getShareLink();
         }
+    }
+
+    getShareLink(extendLink = false): void {
+        if (!extendLink) {
+            this.global.setLoading(true);
+        }
+        this.digitalServicesData
+            .copyUrl(this.digitalService.uid, extendLink)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => {
+                    this.global.setLoading(false);
+                }),
+            )
+            .subscribe((res) => {
+                this.shareLink = res.url;
+                this.expiryDate = new Date(res.expiryDate.toString() + "Z");
+                if (!this.digitalService.isShared) {
+                    this.digitalServicesData.get(this.digitalService.uid).subscribe();
+                }
+            });
     }
 }

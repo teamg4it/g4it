@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.config;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 public class SharedLinkValidationFilter extends OncePerRequestFilter {
@@ -37,41 +40,39 @@ public class SharedLinkValidationFilter extends OncePerRequestFilter {
             // Example URI: /share/{shareId}/ds/{digitalServiceId}
             String[] urlSplit = request.getRequestURI().split("/");
             if (urlSplit.length < 5) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.setContentType("application/json");
-                response.getWriter().write("{\"error\":\"Invalid shared link format\"}");
-                response.flushBuffer();
+                writeError(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid shared link format");
                 return;
             }
 
             String shareId = urlSplit[2];   // /share/{shareId}
             String digitalServiceId = urlSplit[4]; // /ds/{digitalServiceId}
 
-            boolean valid = digitalServiceLinkRepository.validateLink(shareId, digitalServiceId).isPresent();
+            //boolean valid = digitalServiceLinkRepository.validateLink(shareId, digitalServiceId).isPresent();
+            Optional<DigitalServiceSharedLink> digitalServiceSharedLink = digitalServiceLinkRepository.findByUidAndDigitalService_Uid(shareId, digitalServiceId);
 
-            if (!valid) {
-                response.setStatus(HttpServletResponse.SC_GONE);
-                response.setContentType("application/json");
-                response.getWriter().write("{\"error\":\"Shared link expired or invalid\"}");
-                response.flushBuffer();
+            if (digitalServiceSharedLink.isEmpty()) {
+                writeError(response, HttpServletResponse.SC_NOT_FOUND, "Shared link does not exist");
+                return;
+            } else if (digitalServiceSharedLink.get().getExpiryDate().isBefore(LocalDateTime.now())) {
+                writeError(response, HttpServletResponse.SC_GONE, "Shared link expired");
                 return;
             }
 
         } catch (IllegalArgumentException e) { // invalid UUID
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\":\"Invalid UUID format in shared link\"}");
-            response.flushBuffer();
+            writeError(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid UUID format in shared link");
             return;
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\":\"Unexpected error\"}");
-            response.flushBuffer();
+            writeError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unexpected error");
             return;
         }
 
         filterChain.doFilter(request, response);
     }
 
+    private void writeError(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\":\"" + message + "\"}");
+        response.flushBuffer();
+    }
 }

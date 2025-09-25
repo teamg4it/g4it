@@ -119,6 +119,7 @@ paths:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/extendLinkQueryParam'
     get:
       tags:
         - digital-service
