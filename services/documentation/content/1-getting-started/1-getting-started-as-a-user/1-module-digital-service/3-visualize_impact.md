@@ -35,7 +35,7 @@ weight: 30
 
 -   **Action:**
     -   Click the "Calculate My Impact" button to start the evaluation.
-    -   The first estimation is done for the default criteria chosen by your organization's administrator.
+    -   The first estimation is done for the default criteria chosen by your workspace administrator.
     -   The "Calculate My Impact" button disappears. Once any equipment is added/modified, the button is re-appears.
 
 ![Screenshot showing the "Calculate" and "Settings" buttons for starting the evaluation process.](../media/15_evaluate_the_impact.png)
@@ -45,7 +45,7 @@ weight: 30
 -   **Action:**
     -   Click the 'Edit Criteria' button
     -   From the list of criteria, select the one you want to evaluate for the impact of your digital service.
-    -   If you reset to default, it will select the criteria chosen by your organization's administrator.
+    -   If you reset to default, it will select the criteria chosen by your workspace administrator.
     -   Click 'Save' button. Re-evaluation launches for the selected criteria.
 
 ![Screenshot showing the criteria selection interface with a list of evaluation criteria.](../media/16_choose_criteria.png)

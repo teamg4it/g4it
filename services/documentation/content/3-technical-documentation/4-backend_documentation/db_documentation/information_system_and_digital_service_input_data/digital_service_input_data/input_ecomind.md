@@ -1,6 +1,6 @@
 ---
 title: 'Digital Service input data with Ecomind'
-description: 'These tables present the datas provide by a user for each Digital Service with ecomind (terminals, networks and servers) in order to evaluate its environmental footprint.'
+description: 'These tables present the data provide by a user for each Digital Service with ecomind (terminals, networks and servers) in order to evaluate its environmental footprint.'
 weight: 4
 ---
 ## Entity relationship diagram 

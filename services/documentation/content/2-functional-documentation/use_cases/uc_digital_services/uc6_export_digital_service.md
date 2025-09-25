@@ -23,7 +23,7 @@ My Digital Services / Digital Service view / Export button
 
 **Access Conditions**
 
-The connected member must have the 'write' role for the digital service module one the selected organization.
+The connected member must have the 'write' role for the digital service module one the selected workspace.
 
 ## State Diagram
 
@@ -59,7 +59,7 @@ participant back as G4IT Back-End
 participant Azure storage
 
     RND ->> front: Click on 'Export' button on the digital service view
-    front ->> back: POST /api/GET /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/export
+    front ->> back: POST /api/GET /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/export
     Azure storage -->> back: Retrieve the zipped files
     back ->> front: zip file downloaded in user's local
     front ->> RND: Exported zipped CSV files

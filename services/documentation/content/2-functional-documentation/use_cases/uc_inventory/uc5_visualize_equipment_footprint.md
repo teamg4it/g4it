@@ -47,7 +47,7 @@ Output :
 -   My Information System / Visualize my inventories / My inventory / Equipment footprint page
 
 **Access Conditions**  
-The connected user must have the read role for that module one the selected organization.
+The connected user must have the read role for that module one the selected workspace.
 
 ## State Diagram
 
@@ -72,7 +72,7 @@ Step5-->|New filters selected|Step6[View is updated according to the filters]
 | Reference | Group                      | Elements                                        | Sub-Elements     | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                    |
 | --------- | -------------------------- | ----------------------------------------------- | ---------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |           | Page Header                |                                                 |                  | group  |                                                                                                                                                                                                                                                                                                                                                                                                |
-| 1         |                            | My Information System - <selected organization> |                  | title  | <li><u>_initialization rules_</u>: The title is concatenated with the current organization selected.                                                                                                                                                                                                                                                                                           |
+| 1         |                            | My Information System - <selected workspace> |                  | title  | <li><u>_initialization rules_</u>: The title is concatenated with the current workspace selected.                                                                                                                                                                                                                                                                                           |
 | 2         |                            | IS version or name                              |                  | label  | <li><u>_initialization rules_</u>: The IS version or name of the IS selected for which the user want to visualize equipment footprint. The type of visualization (Equipment) is also shown.                                                                                                                                                                                                    |
 | 3         |                            | Add a note                                      |                  | button | <li><u>_action rules_</u>: Details of the behaviour is described in _to complete_.                                                                                                                                                                                                                                                                                                             |
 | 4         |                            | Download                                        |                  | button | <li><u>_action rules_</u>: Data can be exported at any time . Details of the behaviour is described in [1.7 Export files](./uc7_export_files.md).                                                                                                                                                                                                                                              |
@@ -163,23 +163,23 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant Database
 RND ->> front: Click on "Equipment" button or one of the tab in the view or one the chart of multi-criteria tab
-front ->> back: GET /api/{subscriber}/{organization}/inventories?inventoryId={inventory_id}
+front ->> back: GET /api/{organization}/{workspace}/inventories?inventoryId={inventory_id}
 Database--> back: Get inventory information
 back -->> front: Send the details of selected inventory Id on my view related to my view
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventory_id}/outputs/virtual-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventory_id}/outputs/virtual-equipments
 Database--> back: Get indicators from out_virtual_equipment table
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventory_id}/inputs/virtual-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventory_id}/inputs/virtual-equipments
 Database--> back: Get virtual equipments from in_virtual_equipment table
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventory_id}/indicators/equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventory_id}/indicators/equipments
 Database--> back: Get indicators from out_physical_equipment table
 back -->> front: Indicators aggregated to be displayed
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsElecConsumption
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/physicalEquipmentsElecConsumption
 Database --> back : Get total power consumption of the equipments
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsLowImpact
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/physicalEquipmentsLowImpact
 Database --> back : Get the number of physical equipments which are in low impact
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsAvgAge
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/physicalEquipmentsAvgAge
 Database --> back : Get average Age of physical equipments
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/datacenters
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/datacenters
 Database --> back : Get number of datacenters
 front ->> back: GET /api/referential/boaviztapi/countries
 Database --> back : Get referential countries from boaviztapi

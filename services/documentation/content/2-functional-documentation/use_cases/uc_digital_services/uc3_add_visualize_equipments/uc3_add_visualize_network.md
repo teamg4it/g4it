@@ -22,7 +22,7 @@ This usecase allows a project team to add network equipment into a digital servi
 -   My Digital Services / My Digital Service / Visualize my resources tab /Networks / Modify Network
 
 **Access Conditions**
-The connected user must have the write access for that module on the selected organization.
+The connected user must have the write access for that module on the selected workspace.
 
 ## Network visualization
 
@@ -73,9 +73,9 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "Add" button in the digital service's networks table
-front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 back--> DataBase: Create network record in the in_physical_equipment table
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 DataBase -->> back: Get networks from the in_physical_equipment table of database
 back-->> front: Send the Physical equipments for the network view
 front->> RND : Display the network list view

@@ -1,6 +1,6 @@
 ---
 title: '3.1.3 Delete permissions and roles'
-description: "This use case describes how to delete role and permission to a user on an organization in the administration module"
+description: "This use case describes how to delete role and permission to a user on a workspace in the administration module"
 weight: 30
 mermaid: true
 ---
@@ -14,7 +14,7 @@ mermaid: true
 
 ## Description
 
-This use case allows an administrator to delete the link between a user and an organization
+This use case allows an administrator to delete the link between a user and a workspace
 
 **Navigation Path**  
 Administration panel / Manage users / Delete button from the users list
@@ -30,7 +30,7 @@ Step1[View of the users list] --> |Click on Delete Button<br> for one user|Decis
 Decision1 -->|Delete|Decision2{Is Own Account<br> Administration rights<br> deleted?}
 Decision1 -->|No|Step1
 Decision2 --> |Yes|Step2[Navigate to Home page] --> Step4
-Decision2 --> |No|Step3[Stay on same module] --> Step4[Link between the user and the organization deleted] --> Step1
+Decision2 --> |No|Step3[Stay on same module] --> Step4[Link between the user and the workspace deleted] --> Step1
 {{< /mermaid >}}
 
 ## Mockup
@@ -46,8 +46,8 @@ Decision2 --> |No|Step3[Stay on same module] --> Step4[Link between the user and
 | Reference                 | Elements            | Type    | Description                                                                                                                                                             |
 |---------------------------|---------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Deletion confirmation** |                     | Section |                                                                                                                                                                         |
-|                           | Information message | label   | <li><u>*initialization rules*</u>: The message display is "The user user selected>will no longer have access to this organization. Are-you sure you want to proceed ?". |
-| 1                         | Delete              | Button  | <li><u>*action rules*</u>: A click on the Delete button remove the link between a user and an organization. If the loggedIn user delete the own access then it redirects to home page else it close the message window.                              |
+|                           | Information message | label   | <li><u>*initialization rules*</u>: The message display is "The user user selected>will no longer have access to this workspace. Are-you sure you want to proceed ?". |
+| 1                         | Delete              | Button  | <li><u>*action rules*</u>: A click on the Delete button remove the link between a user and a workspace. If the loggedIn user delete the own access then it redirects to home page else it close the message window.                              |
 | 2                         | Cancel / Close      | Button  | <li><u>*action rules*</u>: A click on the cross don't proceed to the deletion and close the message window.                                                             |
 
 {{% /expand %}}
@@ -64,7 +64,7 @@ participant DataBase
 
 RND ->> front: Click on Delete Button
 RND ->> front: Confirm deletion
-front ->> back: DELETE /api/administrator/organizations/{OrganizationID}/users{UserId} 
+front ->> back: DELETE /api/administrator/workspaces/{WorkspaceID}/users{UserId} 
 back --> DataBase: delete user's permissions and role
 back ->> front: Display the users in the suited list
 

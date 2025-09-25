@@ -18,7 +18,7 @@ mermaid: true
 The use case allows a sustainable IT leader to visualize the application's impact of the Information system, which is
 versioned to track their evolution over time.
 
-By browsing an organization's application portfolio, you can quickly identify the application infrastructures with the
+By browsing a workspace's application portfolio, you can quickly identify the application infrastructures with the
 greatest environmental impact.
 This empowered development teams, focuses on eco-design efforts, and identifies inconsistencies between infrastructure
 sizing and actual application requirements.
@@ -37,7 +37,7 @@ Output :
 -   My Information System / Visualize my inventories / My inventory / Application footprint page
 
 **Access Conditions**  
-The connected user must have the read role for that module one the selected organization.
+The connected user must have the read role for that module one the selected workspace.
 
 ## State Diagram
 
@@ -66,7 +66,7 @@ representing one of the application|Step8[Visualize impact for an application by
 | Reference | Group                      | Elements                  | Sub-Elements     | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | --------- | -------------------------- | ------------------------- | ---------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |           | Page Header                |                           |                  | group  |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| 1         |                            | My Information System -   |                  | title  | <li><u>initialization rules</u>: The title is concatenated with the current organization selected.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 1         |                            | My Information System -   |                  | title  | <li><u>initialization rules</u>: The title is concatenated with the current workspace selected.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | 2         |                            | IS version or name        |                  | label  | <li><u>initialization rules</u>: The IS version or name of the IS selected for which the user want to visualize equipment footprint. The type of visualization (Application) is also shown.                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | 3         |                            | Add a note                |                  | button | <li><u>action rules</u>: Details of the behaviour is described in xxx.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | 4         |                            | Export                    |                  | button | <li><u>action rules</u>: Data can be exported at any time . Details of the behaviour is described in [1.7. Export files](uc7_export_files.md).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -201,10 +201,10 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant Database
 RND ->> front: Click on "Application" button or one of the tab in the view or one the chart of multi-criteria tab
-front ->> back: GET /api/{subscriber}/{organization}/inventories?inventoryId={inventory_id}
+front ->> back: GET /api/{organization}/{workspace}/inventories?inventoryId={inventory_id}
 Database--> back: Get inventory information
 back -->> front: Send the details of selected inventory Id on my view related to my view
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/applications
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications
 Database--> back: Get the indicators from out_application table
 back -->> front: Indicators aggregated to be displayed
 front --> RND: Display the list of filters related to my view

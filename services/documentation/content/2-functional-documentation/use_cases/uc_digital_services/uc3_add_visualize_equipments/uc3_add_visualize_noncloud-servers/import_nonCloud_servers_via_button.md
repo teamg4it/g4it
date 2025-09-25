@@ -111,27 +111,27 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "Import" button in digital service view
-front ->> back: GET /subscribers/{subscriber}/organizations/{organization}/template-files
+front ->> back: GET /organizations/{organization}/workspaces/{workspace}/template-files
 back -->> front: Return the information of template files
 RND ->> front: Click on the template to download.
-front ->> back: GET /subscribers/{subscriber}/organizations/{organization}/template-files/{name}
+front ->> back: GET /organizations/{organization}/workspaces/{workspace}/template-files/{name}
 back -->> front: Template file downloaded in user's local machine
 RND ->> front: Click on "Start Upload" button in the loading files view
-front ->> back: POST /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/load-input-files
+front ->> back: POST /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/load-input-files
 front -->> RND : Display the 'pending' button if another task is in progress
 front -->> back: Resume loading once no other task is in progress
 back -->> DataBase: Validate and load datacenter/s in the in_datacenter table
 back -->> DataBase: Validate and load physical equipment/s in the in_physical_equipment table
 back -->> DataBase: Validate and load virtual equipment/s in the in_virtual_equipment table
 back -->> front: Update the loading history
-front ->> back: GET /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}
+front ->> back: GET /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}
 back-->> front: Get the updated digital service
 back ->> front: Display the updated loading history
 front ->> RND : Display the 'completed' button if all the uploaded data is correct
 front -->> RND : Display the 'failed' button if most of the uploaded data is incorrect or <br> mandatory headers missing
 front ->> RND : Display the 'completed with errors' and 'download' button if some of the uploaded data is incorrect
 RND ->> front : Click the 'completed with errors' button to download the rejected data
-front -->> back: GET /subscribers/{subscriber}/organizations/{organization}/download-reject/{taskId}
+front -->> back: GET /organizations/{organization}/workspaces/{workspace}/download-reject/{taskId}
 back ->> front : Rejected files downloaded to the user's local machine
 
 {{< /mermaid >}}

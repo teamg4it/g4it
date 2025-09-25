@@ -22,7 +22,7 @@ This use case allows a project team to add Terminal equipment into a digital ser
 -   My Digital Services / My Digital Service / Visualize my resources tab / Terminals / Modify Device
 
 **Access Conditions**
-The connected user must have the write access for that module on the selected organization.
+The connected user must have the write access for that module on the selected workspace.
 
 ## Terminals visualization
 
@@ -79,9 +79,9 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "Add" button in the digital service's terminal table
-front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 back--> DataBase: Create terminal record in the in_physical_equipment table
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments
 DataBase -->> back: Get terminals from the in_physical_equipment table of database
 back -->> front: Send the Physical equipments for the terminal view
 front->> RND : Display the terminal list view

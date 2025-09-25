@@ -24,15 +24,15 @@ And G4IT_STORAGE_RETENTION_ONINIT = "true" forces the deletion to be executed wh
 
 Storage retention configurations are located in the database, in **tables** :
 
--   **g4it_subscriber**
--   **g4it_organization**
+-   **g4it_subscriber** (refers to the Organization)
+-   **g4it_organization** (refers to the Workspace)
 
 In **columns** named :
 
 -   **storage_retention_day_export**
 -   **storage_retention_day_output**
 
-Priority of configurations: organization > subscriber > default.
+Priority of configurations: workspace > organization > default.
 
 1. Examples of configuration
 
@@ -70,14 +70,14 @@ And G4IT_DATA_RETENTION_ONINIT = "true" forces the deletion to be executed when 
 
 data retention configurations are located in the database, in **tables** :
 
--   **g4it_subscriber**
--   **g4it_organization**
+-   **g4it_subscriber** (refers to the Organization)
+-   **g4it_organization** (refers to the Workspace)
 
 In **column** named :
 
 -   **data_retention_day**
 
-Priority of configurations: organization > subscriber > default.
+Priority of configurations: workspace > organization > default.
 
 1. Examples of configuration
 

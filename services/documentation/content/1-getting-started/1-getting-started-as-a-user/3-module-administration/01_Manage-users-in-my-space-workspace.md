@@ -1,6 +1,6 @@
 ---
-title: "How to Manage users in my workspace (organization)"
-description: "This procedure explains how to an administrator how to configure users within their organization."
+title: "How to Manage users in my workspace"
+description: "This procedure explains how to an administrator how to configure users within their workspace."
 weight: 10
 ---
 <!-- TOC -->
@@ -11,7 +11,7 @@ weight: 10
   * [Additional Resources](#additional-resources)
 <!-- TOC -->
 
-This guide explains how to add and manage members in your G4IT organization, and how to assign the appropriate access
+This guide explains how to add and manage members in your G4IT workspace, and how to assign the appropriate access
 rights.
 
 ## Prerequisites
@@ -20,7 +20,7 @@ Before you begin:
 
 - The user you want to add must have logged in to G4IT at least once.  
   Refer to the [First Login Guide](../../01_First-Login) for details.
-- You must have administrator rights within your organization.
+- You must have administrator rights within your workspace.
 
 ---
 
@@ -35,7 +35,7 @@ Before you begin:
 
 ## Step 2: Search and Add a User
 
-1. In the administration panel, select your organization from the list.
+1. In the administration panel, select your workspace from the list.
 2. In the **"Search for a referenced user"** field, enter the user's **email address** or **name**.
 3. If the user is found but has not yet been added:
     - Click the **add icon** (a plus sign) in the **"Actions"** column to add them.

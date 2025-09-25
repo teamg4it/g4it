@@ -26,7 +26,7 @@ The key indicators displayed on the radar graph are terminal, network and server
 -   My Digital Services / My Digital Service view / Visualize my results tab
 
 - **Access Conditions**
-  The connected user must have the read access for that module on the selected organization.
+  The connected user must have the read access for that module on the selected workspace.
 
 ## State Diagram
 
@@ -63,7 +63,7 @@ Step8-->|Click on 'Global Vision' button|Step4
 | 2         |                            | Add a note                          |                    | button | <li><u>_action rules_</u>: Details of the behaviour is described in _to complete_.                                                                                                                                                                         |
 | 3         |                            | Import                              |                    | button | <li><u>_action rules_</u>: Click to Upload files to create cloud services or non-cloud services </li>                                                                                                                                                      |
 | 4         |                            | Export                              |                    | button | <li><u>_action rules_</u>: Data can be exported at any time after the first calculation. Details of the behaviour is described in [2.6 Export files](./uc6_export_digital_service.md).                                                                     |
-| 5         |                            | Edit Criteria                       |                    | button | <li><u>_action rules_</u>: Update the criteria for digital service to re-calculate estimates upon. Details of the behaviour is described in [3.2.5 Choose criteria](../../uc_administration/uc_administration_manage_organizations/uc5_choose_criteria.md) |
+| 5         |                            | Edit Criteria                       |                    | button | <li><u>_action rules_</u>: Update the criteria for digital service to re-calculate estimates upon. Details of the behaviour is described in [3.2.5 Choose criteria](../../uc_administration/uc_administration_manage_workspaces/uc5_choose_criteria.md) |
 | 6         |                            | Delete digital service              |                    | button | <li><u>_action rules_</u>: Delete the digital service                                                                                                                                                                                                      |
 |           | Overall view of the impact |                                     |                    | group  |                                                                                                                                                                                                                                                            |
 | 7         |                            | Raw value or People equivalent view |                    | tab    | <li><u>_action rules_</u>: Each tab represents the impact for one specific criterion with the people eq.                                                                                                                                                   |
@@ -103,10 +103,10 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "Visualize my results" button in the digital service view
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/physical-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/outputs/physical-equipments
 DataBase-->> back: Get indicators from out_physical_equipment table
 back-->> front: Send the physical equipment indicators for the multi-criteria view
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/outputs/virtual-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/outputs/virtual-equipments
 DataBase-->> back: Get indicators from out_virtual_equipment table
 back-->> front: Send the virtual equipment indicators for the multi-criteria view
 front->> RND : Display the indicators by equipment type to display on my view related to my view

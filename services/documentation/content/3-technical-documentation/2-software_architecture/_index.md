@@ -47,8 +47,8 @@ In order to have a deeper understunding of the backend architecture and code bas
 
 Concerning framework and library version you can refer to the backend pom.xml file in the [repository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/pom.xml)
 
-The backend must segregate the data by subscriber / organisation. This is done by the caracteristics of the logged user. There is a transversal check of the data access rights done by spring security.
-Indeed, each API path contain information about subscriber and organisation. The backend checks that the logged user has the right to access the data using spring security filters.
+The backend must segregate the data by organization / workspace. This is done by the caracteristics of the logged user. There is a transversal check of the data access rights done by spring security.
+Indeed, each API path contain information about organization and workspace. The backend checks that the logged user has the right to access the data using spring security filters.
 
 The github actions are used to build docker image and push it to [the docker registry](https://hub.docker.com/r/g4it/backend/tags)
 
@@ -61,7 +61,7 @@ The github actions are used to build docker image and push it to [the docker reg
 #### Tools and customizations
 
 In order to secure the application, we use Keycloak as an identity provider.
-We customize the Keycloak login page to match the Green for IT design and we add the library keycloak-home-idp-discovery to route the user automatically to his idp.
+We customize the Keycloak login page to match the Green for IT design, and we add the library keycloak-home-idp-discovery to route the user automatically to his idp.
 
 The produced image of keycloak is pushed to [the docker registry](https://hub.docker.com/r/g4it/keycloak/tags)
 

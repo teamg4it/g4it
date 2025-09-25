@@ -46,9 +46,9 @@ The inventory must be estimated in less than 1 minute.
 
 ### Data segregation
 
-The data must be segregated by subscriber / organisation
-No subscriber can access the data of another subscriber.
-No user organisation can access the data of another organisation.
+The data must be segregated by organisation / workspace
+No organisation can access the data of another organisation.
+No user workspace can access the data of another workspace.
 
 ### High availability and resiliency
 

@@ -7,7 +7,7 @@ weight: 10
 This module, aimed at the information systems department, measures the impact of an information system, which includes
 all employees' digital equipment (their screens, PCs, phones, etc.), shared equipment (televisions in meeting rooms,
 surveillance cameras, etc.), network equipment, and servers.
-The persona associated with this usecase is called the sustainable IT leader, who is in charge of managing an organization's environmental footprint.
+The persona associated with this usecase is called the sustainable IT leader, who is in charge of managing a workspace's environmental footprint.
 
 ## Table of contents
 

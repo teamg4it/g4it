@@ -37,7 +37,7 @@ weight: 30
 **Actions:**
 
 - Select the criteria you wish to apply to your impact evaluation.
-- Use the **Reset to Default** option to revert to your organization’s predefined settings.
+- Use the **Reset to Default** option to revert to your workspace predefined settings.
 
 ![Interface for selecting evaluation criteria, including checkboxes and reset option.](../images/Choose_criteria.png)
 

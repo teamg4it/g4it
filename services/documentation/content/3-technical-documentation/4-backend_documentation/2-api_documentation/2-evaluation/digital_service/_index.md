@@ -7,13 +7,13 @@ mermaid: true
 
 | API                                                                                                         | Swagger                                                                                                              | Use Cases                                                                                                                      |
 |:------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
-| POST /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-evaluating/launchEvaluatingDigitalService) | [Estimate a digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md" %}}) |
+| POST /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/inventory-evaluating/launchEvaluatingDigitalService) | [Estimate a digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc4_launch_estimation.md" %}}) |
 
 ## Description
 
 The use case allows a project team to launch the calculation for the estimation of impacts of the Digital Service whith the use of Ecomind. The
 calculation is based on different indicators that contextualize the impacts observed. The user sends an
-digitalServiceUid as pair as an organisation and subscriber.
+digitalServiceUid as pair as a workspace and organization.
 The user will receive a response with a task id.
 
 ## API Call Processing
@@ -23,7 +23,7 @@ The user will receive a response with a task id.
 flowchart LR
 A[API Call for Evaluation] --> B(Get the active criteria to evaluate impacts on)
 B --> C(Create the evaluating task with status TO_START)
-C --> D(Launch asynchroneous evaluating process)
+C --> D(Launch asynchronous evaluating process)
 D --> E(Return the task id)
 {{</ mermaid >}}
 

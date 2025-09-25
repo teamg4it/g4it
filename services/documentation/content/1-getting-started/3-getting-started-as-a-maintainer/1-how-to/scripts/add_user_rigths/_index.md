@@ -1,11 +1,11 @@
 ---
-title: "Add a subscriber and associated right to users"
+title: "Add an Organization and associated right to users"
 weight: 2
 ---
 
-## Add a subscriber
+## Add a Organization (table g4it_subscriber)
 
-1. Execute the create subscriber procedure script
+1. Execute the create Organization procedure script
 
 ```sql
 create or replace procedure add_subscriber(
@@ -41,9 +41,9 @@ call add_subscriber('SUBSCRIBER-DEMO', 'g4it.com,gmail.com',730,20,'{climate-cha
 drop procedure add_subscriber;
 ```
 
-## Add an organization
+## Add a workspace (table g4it_organization)
 
-1. Execute the create organization procedure script
+1. Execute the create a workspace procedure script
 
 ```sql
 create or replace procedure add_organization(
@@ -76,7 +76,7 @@ call add_organization('SUBSCRIBER-DEMO','DEMO');
 drop procedure add_organization;
 ```
 
-## Add Subscriber's Administrator rights to user.
+## Add Organization's Administrator rights to user.
 
 1. Execute the administrator procedure script
 
@@ -104,7 +104,7 @@ begin
 		select us.id, r.id from g4it_user_subscriber us, g4it_role r
 			where us.user_id = userid
 			and us.subscriber_id = subscriberid
-			and r.name = 'ROLE_SUBSCRIBER_ADMINISTRATOR'
+			and r.name = 'ROLE_ORGANIZATION_ADMINISTRATOR'
 			and not exists (
 			    select urs.user_subscriber_id, urs.role_id from g4it_user_role_subscriber urs where urs.user_subscriber_id = us.id and urs.role_id = r.id
 			);
@@ -166,10 +166,10 @@ call remove_user_role_on_subscriber('admin@g4it.com', 'SUBSCRIBER-DEMO');
 drop procedure remove_user_role_on_subscriber;
 ```
 
-## Add storage account for subscriber
-Each subscriber’s organization has an isolated and dedicated substructure in the platform’s storage container that is specific to the subscriber, in which the G4IT platform deposits.
+## Add storage account for organization
+Each organization’s workspace has an isolated and dedicated substructure in the platform’s storage container that is specific to the organization, in which the G4IT platform deposits.
 
-At infra level make sure to create a storage account for the subscriber. If azure infra is used, follow the steps below:
+At infra level make sure to create a storage account for the organization. If azure infra is used, follow the steps below:
 
 1. update the variable: accounts_config in vars/$env.tfvars file by adding
 ```sql

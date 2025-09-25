@@ -9,15 +9,15 @@ mermaid: true
 
 | API                                                                                              | Swagger                                                                                                | Use Cases                                                                                                          |
 | :----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------- |
-| POST /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/evaluating/launchEvaluating) | [Estimate an inventory]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md" %}}) |
+| POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/evaluating | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/evaluating/launchEvaluating) | [Estimate an inventory]({{% ref "/2-functional-documentation/use_cases/uc_inventory/uc4_launch_estimation.md" %}}) |
 
 ## Description
 
-This api allows the user to evaluate inventory after loading. the user sends an inventoryId as pair as an organisation
-and subscriber.
-This api is an asychronous api, the user will receive a response with a task id, and the status icon displays the
+This api allows the user to evaluate inventory after loading. the user sends an inventoryId as pair as a workspace
+and organization.
+This api is an asynchronous api, the user will receive a response with a task id, and the status icon displays the
 progress percentage of the task by repeatedly calling the api GET
-/subscribers/{subscriber}/organizations/{organization}/inventories until the task is completed or failed.
+/organizations/{organization}/workspaces/{workspace}/inventories until the task is completed or failed.
 
 ## API Call Processing
 
@@ -65,7 +65,7 @@ the [AsyncEvaluatingService class](https://github.com/G4ITTeam/g4it/blob/main/se
 
 The inventory data is evaluated using active criteria in
 the [EvaluateService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateService.java).
-Note: active criteria here refers to the criteria set for the an inventory to calculate the impacts for.
+Note: active criteria here refers to the criteria set for the inventory to calculate the impacts for.
 
 ### Impact Calculation
 

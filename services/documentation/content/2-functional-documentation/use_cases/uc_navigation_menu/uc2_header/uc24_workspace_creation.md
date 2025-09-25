@@ -7,6 +7,7 @@ weight: 5024
 ## Table of Contents
 
 <!-- TOC -->
+<<<<<<< HEAD
   * [Table of Contents](#table-of-contents)
   * [Description](#description)
   * [State Diagram](#state-diagram)
@@ -16,6 +17,18 @@ weight: 5024
     * [Workspace Name Duplicate Error](#workspace-name-duplicate-error)
     * [Workspace Name Space Error](#workspace-name-space-error)
   * [Accessibility in Create New Workspace (Right Panel)](#accessibility-in-create-new-workspace-right-panel)
+=======
+
+-   [Table of Contents](#table-of-contents)
+-   [Description](#description)
+-   [State Diagram](#state-diagram)
+-   [Create New Workspace Button](#create-new-Workspace-button)
+-   [Create a New Workspace (Right Panel)](#create-a-new-Workspace-right-panel)
+-   [Mockup](#mockup)
+    -   [Workspace Name Duplicate Error](#Workspace-name-duplicate-error)
+    -   [Workspace Name Space Error](#Workspace-name-space-error)
+-   [Accessibility in Create New Workspace (Right Panel)](#accessibility-in-create-new-Workspace-right-panel)
+>>>>>>> ad630564 (feat(1442): update documentation for renamed subscriber and org)
 <!-- TOC -->
 
 ## Description
@@ -38,6 +51,7 @@ The "Create New Workspace" search a workspace" buttons are located in the worksp
 
 Upon clicking the 'Create' button, a right panel will appear with a form to be filled out. The form contains two
 fields: "Choose a Workspace" and "Set a Workspace Name."  
+
 The right panel displays the "Choose a Workspace" menu only when more than one workspace is available to select.
 The "Next" button will remain disabled until the workspace field is selected, and the "Create New Workspace" button
 will stay disabled until all mandatory fields are filled.

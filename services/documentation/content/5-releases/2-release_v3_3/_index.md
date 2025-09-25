@@ -81,5 +81,5 @@ To automatically launch the migration script, here is the step-by-step procedure
 
 **Manual launch**
 
-In case you need to manually launch the scripts check this : [digital service migration](../1-getting-started/3-getting-started-as-a-maintainer/1-how-to/migrate_ds_from_demo_workspace_to_new_workspaces/_index.md) and then [rollback script](../1-getting-started/3-getting-started-as-a-maintainer/1-how-to/rollback_ds_migration_from_demo_workspace_to_new_workspaces/_index.md)
+In case you need to manually launch the scripts check this : [digital service migration](./1-migrate_ds_from_demo_workspace_to_new_ones/_index.md) and  [rollback script](./2-rollback_ds_migration_from_demo_workspace_to_new_ones/_index.md)
 

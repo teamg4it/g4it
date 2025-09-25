@@ -39,7 +39,7 @@ Input:
 - My Information System > Visualize my inventories > My inventory > Loading history
 
 **Access Conditions**  
-The connected user must have write access to the selected organization for the module.
+The connected user must have write access to the selected workspace for the module.
 
 ## State Diagram
 
@@ -109,7 +109,7 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "UPLOAD" button in the loading files view
-front ->> back: POST /api/{subscriber}/{organization}/inventories/{inventory_id}/load-input-files
+front ->> back: POST /api/{organization}/{workspace}/inventories/{inventory_id}/load-input-files
 front -->> RND : Display the 'pending' button if another task is in progress
 front -->> back: Resume loading once no other task is in progress
 back -->> DataBase: Validate and load datacenters in the in_datacenter table
@@ -117,13 +117,13 @@ back -->> DataBase: Validate and load physical equipment in the in_physical_equi
 back -->> DataBase: Validate and load virtual equipment in the in_virtual_equipment table
 back -->> DataBase: Validate and load applications in the in_application table
 back -->> front: Update the loading history
-front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_id}
+front ->> back: GET /api/{organization}/{workspace}/inventories/{inventory_id}
 back-->> front: Get the updated inventory
 back ->> front: Display the updated loading history
 front ->> RND : Display the 'completed' button if all the uploaded data is correct
 front -->> RND : Display the 'failed' button if most of the uploaded data is incorrect or <br> mandatory headers missing
 front ->> RND : Display the 'completed with errors' and 'download' button if some of the uploaded data is incorrect
 RND ->> front : Click the 'completed with errors' button to download the rejected data
-front -->> back: GET /subscribers/{subscriber}/organizations/{organization}/download-reject/{taskId}
+front -->> back: GET /organizations/{organization}/workspaces/{workspace}/download-reject/{taskId}
 back ->> front : Rejected files downloaded to the user's local machine
 {{< /mermaid >}}
