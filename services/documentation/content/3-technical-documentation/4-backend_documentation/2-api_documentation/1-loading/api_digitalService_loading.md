@@ -1,5 +1,5 @@
 ---
-title: "1.2- Load Private Infrastructure and Public Cloud - IaaS files in a digital service"
+title: "1.2- Load equipments in a digital service"
 description: "This use case describes how to load files"
 weight: 40
 mermaid: true
@@ -13,8 +13,7 @@ mermaid: true
 
 ## Description
 
-This API allows the user to upload files to the digital service. The user can upload files containing datacenters, physical
-equipments and virtual equipments to create non-cloud servers. And just the virtual equipments file to create cloud services.
+This API allows the user to upload files to the digital service. Users can upload datacenter, physical, and virtual equipment files to create non-cloud servers; only virtual files for cloud services; only physical files for terminals or networks.
 The files are uploaded to the fileStorage and then the loading is done asynchronously.
 
 The API returns the async task id that can be used to track the loading process.
@@ -153,8 +152,13 @@ So each fileToLoad has a file of rejected lines with the same filename but with 
 At the end of processing, these files are uploaded to the file store and the task status is updated.
 
 To know all the rejection cases related to the performed checks, please refer to the
+
+[2.3.4.2. Add Terminal by importing files](../../../../2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_terminals/import_terminal_via_button.md)
+
+[2.3.4.2. Add Network by importing files](../../../../2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_network/import_network_via_button.md)
+
 [2.3.4.2. Add Private Infrastructures by importing files](../../../../2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_noncloud-servers/import_nonCloud_servers_via_button.md)
-and
+
 [2.3.4.2. Add Public Clouds - IaaS by importing files](../../../../2-functional-documentation/use_cases/uc_digital_services/uc3_add_visualize_equipments/uc3_add_visualize_cloud_services/import_cloud_services_via_button.md)
 
 documentation.
