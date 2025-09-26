@@ -43,9 +43,9 @@ Decision2 -->|Shared|Step9[Add server shared specific view] -->|Fill the informa
 
 ## Mockup
 
-[2.3.1 Add or Visualize Terminals](uc3_add_visualize_terminals.md)
+[2.3.1 Add or Visualize Terminals](uc3_add_visualize_terminals)
 
-[2.3.2 Add or Visualize Network](uc3_add_visualize_network.md)
+[2.3.2 Add or Visualize Network](uc3_add_visualize_network)
 
 [2.3.3 Add or Visualize Private Infrastructures](uc3_add_visualize_noncloud_servers.md)
 
