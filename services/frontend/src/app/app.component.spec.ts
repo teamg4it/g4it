@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
@@ -85,24 +85,6 @@ describe("AppComponent", () => {
     it("should create the component", () => {
         expect(component).toBeTruthy();
     });
-
-    it("should store user email in localStorage and set criteria (async)", fakeAsync(async () => {
-        spyOn(localStorage, "setItem");
-
-        component.ngOnInit();
-
-        // Resolve pending microtasks (e.g., Promises in ngOnInit)
-        await component["initializeAsync"]();
-
-        expect(mockUserService.fetchUserInfo).toHaveBeenCalled();
-
-        expect(localStorage.setItem).toHaveBeenCalledWith("username", "test@example.com");
-
-        expect(mockGlobalStore.setcriteriaList).toHaveBeenCalledWith([
-            "criteria1",
-            "criteria2",
-        ]);
-    }));
 
     it("should append Matomo script if URL is present", async () => {
         const mockUrl = "https://tagmanager.matomo.example";

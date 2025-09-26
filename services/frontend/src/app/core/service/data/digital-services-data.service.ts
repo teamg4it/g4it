@@ -7,20 +7,25 @@
  */
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, tap } from "rxjs";
+import { map, Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 import {
     AiModelConfig,
     DigitalService,
     DSCriteriaRest,
     Host,
     NetworkType,
+    ShareLinkResp,
     TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
 import { MapString } from "../../interfaces/generic.interfaces";
 
 const endpoint = Constants.ENDPOINTS.digitalServices;
 const ecomindaiModelConfig = Constants.ENDPOINTS.ecomindaiModelConfig;
+
+const endpointshared = Constants.ENDPOINTS.sharedDs;
+const endpointDs = Constants.ENDPOINTS.ds;
 
 @Injectable({
     providedIn: "root",
@@ -130,5 +135,32 @@ export class DigitalServicesDataService {
             `${endpoint}/${digitalServiceUid}`,
             DSCriteria,
         );
+    }
+
+    copyUrl(uid: DigitalService["uid"], extendLink: boolean): Observable<ShareLinkResp> {
+        let params = new HttpParams();
+        if (extendLink) {
+            params = params.set("extendLink", extendLink);
+        }
+        return this.http.get<ShareLinkResp>(`${endpoint}/${uid}/share`, { params }).pipe(
+            map((response) => {
+                return {
+                    ...response,
+                    url: environment.frontEndUrl + response.url + "/footprint",
+                };
+            }),
+        );
+    }
+
+    validateShareToken(id: DigitalService["uid"], token: string): Observable<boolean> {
+        return this.http
+            .get<boolean>(`${endpointshared}/${token}/${endpointDs}/${id}/validate`)
+            .pipe(map((res) => res));
+    }
+
+    getDs(dsId: string, token: string): Observable<DigitalService> {
+        return this.http
+            .get<DigitalService>(`${endpointshared}/${token}/${endpointDs}/${dsId}`)
+            .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
     }
 }

@@ -62,14 +62,17 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         for (const key in Constants.ERRORS) {
             if (
                 error.status === +key &&
-                error.url.includes("/digital-services") &&
+                (error.url.includes("/digital-services") ||
+                    error.url.includes(Constants.ENDPOINTS.sharedDs)) &&
                 !error.url.includes("/export") &&
-                isDigitalServiceRead
+                (isDigitalServiceRead || error.url.includes(Constants.ENDPOINTS.sharedDs))
             ) {
-                let [_, _1, organization, _2, workspace] = this.router.url.split("/");
-                this.router.navigateByUrl(
-                    `/organizations/${organization}/workspaces/${workspace}/digital-services`,
-                );
+                if (!error.url.includes(Constants.ENDPOINTS.sharedDs)) {
+                    let [_, _1, organization, _2, workspace] = this.router.url.split("/");
+                    this.router.navigateByUrl(
+                        `/organizations/${organization}/workspaces/${workspace}/digital-services`,
+                    );
+                }
                 this.messageService.add({
                     severity: "error",
                     summary: this.translate.instant(

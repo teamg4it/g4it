@@ -1,0 +1,158 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0
+  description: This is a Shared Link based on the OpenAPI 3.0 specification.
+  version: "1.0.0"
+
+tags:
+  - name: shared-link-digital-service-items
+    description: Endpoint for shared link digital service
+
+paths:
+  /shared/{shareId}/ds/{digitalServiceUid}/inputs/datacenters:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Get datacenters from one digital service for shared link
+      operationId: getSharedDigitalServiceInputsDatacentersRest
+      security: []
+      responses:
+        '200':
+          description: return digital service in datacenters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InDatacenterRest"
+  /shared/{shareId}/ds/{digitalServiceUid}/inputs/physical-equipments:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Get physical-equipments from one digital service for shared link
+      operationId: getSharedDigitalServiceInputsPhysicalEquipmentsRest
+      security: []
+      responses:
+        '200':
+          description: return digital service in physical equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InPhysicalEquipmentRest"
+  /shared/{shareId}/ds/{digitalServiceUid}/inputs/virtual-equipments:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Get virtual-equipments from one digital service for shared link
+      operationId: getSharedDigitalServiceInputsVirtualEquipmentsRest
+      security: []
+      responses:
+        '200':
+          description: return digital service in virtual equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InVirtualEquipmentRest"
+  /shared/{shareId}/ds/{digitalServiceUid}/referential-data:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Get virtual-equipments from one digital service for shared link
+      operationId: getSharedReferentialData
+      security: []
+      responses:
+        '200':
+          description: return aggregates information for network type, device type, server host and countries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedDigitalServiceReferentialRest"
+  /shared/{shareId}/ds/{digitalServiceUid}/outputs/virtual-equipments:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Get virtual-equipments from one digital service for shared link
+      operationId: getSharedDigitalServiceOutputsVirtualEquipmentsRest
+      security: []
+      responses:
+        '200':
+          description: return digital service in virtual equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OutVirtualEquipmentRest"
+  /shared/{shareId}/ds/{digitalServiceUid}/outputs/physical-equipments:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Get physical equipments from one digital service for shared link
+      operationId: getSharedDigitalServiceOutputsPhysicalEquipmentsRest
+      security: []
+      responses:
+        '200':
+          description: return digital service in physical equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OutPhysicalEquipmentRest"
+  /shared/{shareId}/ds/{digitalServiceUid}/validate:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Validate shared link for digital service
+      operationId: getSharedDigitalServiceLinkValidation
+      security: []
+      responses:
+        '200':
+          description: return boolean if shared link is valid
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /shared/{shareId}/ds/{digitalServiceUid}:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Metadata for shared digital service
+      operationId: getSharedDigitalServiceLinkMetadata
+      security: []
+      responses:
+        '200':
+          description: The digital service requested
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigitalServiceRest"
+

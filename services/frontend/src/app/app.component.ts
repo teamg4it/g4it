@@ -10,8 +10,9 @@ import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
-import { filter, firstValueFrom, map, of, Subject, switchMap } from "rxjs";
+import { delay, filter, firstValueFrom, map, of, Subject, switchMap } from "rxjs";
 import { environment } from "src/environments/environment";
+import { CustomAuthService } from "./core/service/business/custom-auth.service";
 import { MatomoScriptService } from "./core/service/business/matomo-script.service";
 import { UserDataService } from "./core/service/data/user-data.service";
 import { GlobalStoreService } from "./core/store/global.store";
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit {
         public router: Router,
         private readonly activatedRoute: ActivatedRoute,
         private readonly titleService: Title,
+        private readonly customAuthService: CustomAuthService,
     ) {}
 
     ngOnInit(): void {
@@ -40,7 +42,10 @@ export class AppComponent implements OnInit {
     }
 
     private async initializeAsync(): Promise<void> {
-        if (environment.keycloak.enabled === "true") {
+        const isPublicRoute = this.customAuthService.isPublicRoute(
+            globalThis.location.pathname,
+        );
+        if (environment.keycloak.enabled === "true" && !isPublicRoute) {
             const token = await this.keycloak.getToken();
             if (!token) {
                 const loginHint = localStorage.getItem("username") || "";
@@ -51,7 +56,18 @@ export class AppComponent implements OnInit {
             }
         }
 
-        const user = await firstValueFrom(this.userService.fetchUserInfo());
+        const user = await firstValueFrom(
+            isPublicRoute
+                ? of({
+                      email: "test@test.com",
+                      firstName: "test",
+                      lastName: "test",
+                      id: 1,
+                      organizations: [],
+                      isSuperAdmin: false,
+                  }).pipe(delay(2000))
+                : this.userService.fetchUserInfo(),
+        );
         localStorage.setItem("username", user.email);
 
         this.globalStoreService.setcriteriaList(

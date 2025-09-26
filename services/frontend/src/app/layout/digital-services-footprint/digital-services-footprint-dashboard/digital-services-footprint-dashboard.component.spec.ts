@@ -81,6 +81,7 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         criteriaList: jasmine
             .createSpy("criteriaList")
             .and.returnValue({ CO2: {}, WATER: {} }),
+        isSharedDS: jasmine.createSpy("isSharedDS").and.returnValue(false),
     };
 
     const globalStoreMock = {

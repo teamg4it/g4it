@@ -12,7 +12,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
+import { KeycloakAngularModule } from "keycloak-angular";
 import { MessageService } from "primeng/api";
 import { ProgressBarModule } from "primeng/progressbar";
 import { TableModule } from "primeng/table";
@@ -23,6 +23,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { ApiInterceptor } from "./core/interceptors/api-request.interceptor";
 import { HttpErrorInterceptor } from "./core/interceptors/http-error.interceptor";
+import { CustomAuthService } from "./core/service/business/custom-auth.service";
 
 // Function to load translation files using HttpClient
 export function HttpLoaderFactory(http: HttpClient) {
@@ -34,20 +35,8 @@ function baseHRefFactory() {
     return environment.subpath ? "/" + environment.subpath : "/";
 }
 
-function initializeKeycloak(keycloak: KeycloakService) {
-    return () =>
-        keycloak.init({
-            config: {
-                url: environment.keycloak.issuer,
-                realm: environment.keycloak.realm,
-                clientId: environment.keycloak.clientId,
-            },
-
-            initOptions: {
-                onLoad: "check-sso", // allowed values 'login-required', 'check-sso';
-                flow: "standard", // allowed values 'standard', 'implicit', 'hybrid';
-            },
-        });
+function initializeAuth(authService: CustomAuthService) {
+    return () => authService.init();
 }
 
 @NgModule({
@@ -55,7 +44,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     imports: [
         BrowserModule,
         HttpClientModule,
-        AppRoutingModule,
         BrowserAnimationsModule,
         AppRoutingModule,
         TranslateModule.forRoot({
@@ -71,14 +59,12 @@ function initializeKeycloak(keycloak: KeycloakService) {
         TableModule,
     ],
     providers: [
-        environment.keycloak.enabled === "true"
-            ? {
-                  provide: APP_INITIALIZER,
-                  useFactory: initializeKeycloak,
-                  multi: true,
-                  deps: [KeycloakService],
-              }
-            : [],
+        {
+            provide: APP_INITIALIZER,
+            useFactory: initializeAuth,
+            multi: true,
+            deps: [CustomAuthService],
+        },
         MessageService,
         {
             provide: HTTP_INTERCEPTORS,
@@ -96,7 +82,10 @@ function initializeKeycloak(keycloak: KeycloakService) {
     bootstrap: [AppComponent],
 })
 export class AppModule {
-    constructor(private readonly translate: TranslateService) {
+    constructor(
+        private readonly translate: TranslateService,
+        private readonly authService: CustomAuthService,
+    ) {
         // Set the default language
         let lang = localStorage.getItem("lang") || translate.getBrowserLang() || "en";
         if (!Constants.LANGUAGES.includes(lang)) lang = "en";
@@ -106,5 +95,6 @@ export class AppModule {
         translate.addLangs(Constants.LANGUAGES);
         translate.use(lang);
         document.querySelector("html")!.setAttribute("lang", lang);
+        this.authService.setupRouteGuard();
     }
 }

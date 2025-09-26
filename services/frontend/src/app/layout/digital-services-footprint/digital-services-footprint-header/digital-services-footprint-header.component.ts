@@ -37,10 +37,11 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
-    private readonly global = inject(GlobalStoreService);
+    protected readonly global = inject(GlobalStoreService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() digitalService: DigitalService = {} as DigitalService;
+    @Input() isSharedDs = false;
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     @Output() digitalMobileOptionsChange = new EventEmitter<boolean>();
     isZoom125 = computed(() => this.global.zoomLevel() >= 125);
@@ -54,6 +55,9 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     isEcoMindEnabledForCurrentOrganization: boolean = false;
     isEcoMindAi = input<boolean>(false);
     showKebabMenu = false;
+    displayLinkCreatePopup = false;
+    shareLink = "";
+    expiryDate: Date | null = null;
 
     private readonly destroyRef = inject(DestroyRef);
 
@@ -185,5 +189,38 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     importData(): void {
         this.importSidebarVisible = true;
+    }
+
+    extendShareLinkDate(): void {
+        this.getShareLink(true);
+    }
+
+    shareDs(): void {
+        this.displayLinkCreatePopup = !this.displayLinkCreatePopup;
+
+        if (!this.shareLink && this.displayLinkCreatePopup) {
+            this.getShareLink();
+        }
+    }
+
+    getShareLink(extendLink = false): void {
+        if (!extendLink) {
+            this.global.setLoading(true);
+        }
+        this.digitalServicesData
+            .copyUrl(this.digitalService.uid, extendLink)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => {
+                    this.global.setLoading(false);
+                }),
+            )
+            .subscribe((res) => {
+                this.shareLink = res.url;
+                this.expiryDate = new Date(res.expiryDate.toString() + "Z");
+                if (!this.digitalService.isShared) {
+                    this.digitalServicesData.get(this.digitalService.uid).subscribe();
+                }
+            });
     }
 }

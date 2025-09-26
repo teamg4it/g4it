@@ -41,14 +41,17 @@
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
 <div class="flex justify-content-between align-items-center flex-wrap">
     <div class="block relative w-full lg:w-auto lg:flex align-items-center">
-        <p-button
-            [routerLink]="changePageToDigitalServices()"
-            styleClass="cancel-creation-button uppercase mr-2 mb-2 lg:mb-0"
-            [ariaLabel]="'digital-services.return' | translate"
-            icon="pi pi-arrow-left"
-            [label]="'digital-services.back' | translate"
-            id="return-button"
-        />
+        @if (!isSharedDs) {
+            <p-button
+                [routerLink]="changePageToDigitalServices()"
+                styleClass="cancel-creation-button uppercase mr-2 mb-2 lg:mb-0"
+                [ariaLabel]="'digital-services.return' | translate"
+                icon="pi pi-arrow-left"
+                [label]="'digital-services.back' | translate"
+                id="return-button"
+            />
+        }
+
         @if (isMobile()) {
             <button
                 class="kebab-div"
@@ -130,12 +133,29 @@
                 [label]="'common.note.attached' | translate"
             />
 
-            @if (!isEcoMindAi()) {
+            @if (!isEcoMindAi() && (userService.isAllowedDigitalServiceWrite$ | async)) {
+                <p-button
+                    [ariaLabel]="
+                        (digitalService.isShared
+                            ? 'common.accessibility.shared'
+                            : 'common.accessibility.share'
+                        ) | translate
+                    "
+                    styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
+                    (onClick)="shareDs()"
+                    icon="pi pi-share-alt"
+                    [label]="
+                        (digitalService.isShared
+                            ? 'digital-services.shared'
+                            : 'digital-services.share'
+                        ) | translate
+                    "
+                />
+
                 <p-button
                     [ariaLabel]="'common.accessibility.import' | translate"
                     styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
                     (onClick)="importData()"
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                     icon="pi pi-upload"
                     [label]="'digital-services.import' | translate"
                 />
@@ -167,3 +187,14 @@
         </div>
     }
 </div>
+
+@if (displayLinkCreatePopup && !global.loading()) {
+    <app-link-create-popup
+        [displayPopup]="displayLinkCreatePopup"
+        (outClose)="displayLinkCreatePopup = false"
+        (outExtendDate)="extendShareLinkDate()"
+        [sharedLink]="shareLink"
+        [expiryDate]="expiryDate"
+    >
+    </app-link-create-popup>
+}

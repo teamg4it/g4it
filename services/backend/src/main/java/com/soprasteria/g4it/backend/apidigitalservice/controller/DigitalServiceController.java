@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.common.utils.AuthorizationUtils;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -108,6 +109,18 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
                 digitalServiceRestMapper.toBusinessObject(digitalService), organization, workspace,
                 authService.getUser()
         )));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<DigitalServiceShareRest> shareDigitalService(final String organization,
+                                                                       final Long workspace,
+                                                                       final String digitalServiceUid,
+                                                                       final Boolean extendLink) {
+        return ResponseEntity.ok(digitalServiceService.shareDigitalService(organization, workspace, digitalServiceUid,
+                authService.getUser(), extendLink));
     }
 
 }

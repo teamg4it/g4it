@@ -1,0 +1,95 @@
+<div class="link-copy-popup">
+    <p-dialog
+        [modal]="true"
+        [(visible)]="displayPopup"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        [style]="{ width: '30vw' }"
+        [draggable]="false"
+        [dismissableMask]="true"
+        (onHide)="closePopup()"
+        id="link-copy"
+        [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
+    >
+        <ng-template pTemplate="header">
+            <h3 class="font-semibold ml-0 text-2xl" id="link-create-popup-title">
+                {{ "digital-services.link-created" | translate }}
+            </h3>
+        </ng-template>
+
+        <div class="share-expiry-paragraph flex">
+            <i class="pi pi-exclamation-circle mt-2 mx-3 font-bold"></i>
+            <p>
+                {{ "digital-services.link-expiry-info" | translate }}
+            </p>
+        </div>
+
+        <div class="copy-container grid mt-4">
+            <input
+                class="col label-input-div-medium input-width inline-block mt-0 p-2 mx-1"
+                pInputText
+                [value]="sharedLink()"
+                readonly
+                [placeholder]="'digital-services.share' | translate"
+                name="copyLink"
+                ngDefaultControl
+                id="copy-link-input"
+                #linkInput
+                (focus)="moveCaretToStart(linkInput)"
+                aria-labelledby="link-create-popup-title"
+            />
+            <p-button
+                [attr.aria-label]="
+                    (isLinkCopied
+                        ? 'digital-services.linkCopied'
+                        : 'digital-services.copyLink'
+                    ) | translate
+                "
+                styleClass="p-button-secondary-blue uppercase mr-0 ml-2"
+                (onClick)="copyUrl()"
+                [disabled]="isLinkCopied"
+                [label]="
+                    (isLinkCopied
+                        ? 'digital-services.linkCopied'
+                        : 'digital-services.copyLink'
+                    ) | translate
+                "
+            >
+            </p-button>
+        </div>
+
+        <div class="flex justify-content-between align-items-center mt-3">
+            <p class="text-base">
+                {{
+                    "digital-services.link-valid-para"
+                        | translate: { date: (expiryDate() | date: "dd/MM/yyyy") }
+                }}
+            </p>
+            <p-button
+                [attr.aria-label]="'digital-services.link-extend' | translate"
+                styleClass="p-button-secondary-blue uppercase mr-0"
+                (onClick)="extendDate()"
+                [disabled]="extendLinkDisabled()"
+                [label]="'digital-services.link-extend' | translate"
+            >
+            </p-button>
+        </div>
+
+        <ng-template pTemplate="footer">
+            <div
+                class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
+            >
+                <div class="flex justify-content-start ml-auto">
+                    <p-button
+                        [attr.aria-label]="
+                            'common.accessibility.close-criteria-dialog' | translate
+                        "
+                        styleClass="uppercase mr-0"
+                        (onClick)="closePopup()"
+                        [label]="'digital-services.close' | translate"
+                    >
+                    </p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

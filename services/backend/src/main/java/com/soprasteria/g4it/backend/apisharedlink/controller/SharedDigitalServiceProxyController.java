@@ -1,0 +1,110 @@
+/*
+ * G4IT
+ * Copyright 2023 Sopra Steria
+ *
+ * This product includes software developed by
+ * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
+ */
+
+package com.soprasteria.g4it.backend.apisharedlink.controller;
+
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialRestMapper;
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
+import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
+import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
+import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
+import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
+import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
+import com.soprasteria.g4it.backend.server.gen.api.SharedLinkDigitalServiceItemsApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Slf4j
+@Service
+@AllArgsConstructor
+public class SharedDigitalServiceProxyController implements SharedLinkDigitalServiceItemsApiDelegate {
+
+    @Autowired
+    private DigitalServiceRestMapper digitalServiceRestMapper;
+
+    private InPhysicalEquipmentService inPhysicalEquipmentService;
+    private InDatacenterService inDatacenterService;
+    private InVirtualEquipmentService inVirtualEquipmentService;
+    private DigitalServiceReferentialService digitalServiceReferentialService;
+    private DigitalServiceReferentialRestMapper digitalServiceReferentialRestMapper;
+    private DigitalServiceService digitalServiceService;
+    /**
+     * Service to access physical equipment output data.
+     */
+    private OutPhysicalEquipmentService outPhysicalEquipmentService;
+
+    /**
+     * Service to access virtual equipment output data.
+     */
+    private OutVirtualEquipmentService outVirtualEquipmentService;
+
+
+    @Override
+    public ResponseEntity<List<InDatacenterRest>> getSharedDigitalServiceInputsDatacentersRest(String digitalServiceUid,
+                                                                                               String shareId) {
+        return ResponseEntity.ok().body(inDatacenterService.getByDigitalService(digitalServiceUid));
+    }
+
+    @Override
+    public ResponseEntity<List<InPhysicalEquipmentRest>> getSharedDigitalServiceInputsPhysicalEquipmentsRest(String digitalServiceUid,
+                                                                                                             String shareId) {
+        return ResponseEntity.ok().body(inPhysicalEquipmentService.getByDigitalService(digitalServiceUid));
+    }
+
+    @Override
+    public ResponseEntity<List<InVirtualEquipmentRest>> getSharedDigitalServiceInputsVirtualEquipmentsRest(String digitalServiceUid,
+                                                                                                           String shareId) {
+        return ResponseEntity.ok().body(inVirtualEquipmentService.getByDigitalService(digitalServiceUid));
+    }
+
+    @Override
+    public ResponseEntity<List<OutPhysicalEquipmentRest>> getSharedDigitalServiceOutputsPhysicalEquipmentsRest(String digitalServiceUid,
+                                                                                                               String shareId) {
+        return ResponseEntity.ok().body(outPhysicalEquipmentService.getByDigitalServiceUid(digitalServiceUid));
+    }
+
+    @Override
+    public ResponseEntity<List<OutVirtualEquipmentRest>> getSharedDigitalServiceOutputsVirtualEquipmentsRest(String digitalServiceUid,
+                                                                                                             String shareId) {
+        return ResponseEntity.ok().body(outVirtualEquipmentService.getByDigitalServiceUid(digitalServiceUid));
+    }
+
+
+    @Override
+    public ResponseEntity<Boolean> getSharedDigitalServiceLinkValidation(String digitalServiceUid,
+                                                                         String shareId) {
+        return ResponseEntity.ok().body(digitalServiceService.validateDigitalServiceSharedLink(digitalServiceUid, shareId));
+    }
+
+
+    @Override
+    public ResponseEntity<SharedDigitalServiceReferentialRest> getSharedReferentialData(String digitalServiceUid, String shareId) {
+        return ResponseEntity.ok().body(SharedDigitalServiceReferentialRest.builder()
+                .terminalTypes(digitalServiceReferentialRestMapper.toDeviceTypeDto(digitalServiceReferentialService.getTerminalDeviceType()))
+                .networkTypes(digitalServiceReferentialRestMapper.toNetworkTypeDto(digitalServiceReferentialService.getNetworkType()))
+                .computeServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Compute")))
+                .storageServerTypes(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts("Storage")))
+                .countries(digitalServiceReferentialService.getBoaviztaCountryMap())
+                .build());
+    }
+
+
+    @Override
+    public ResponseEntity<DigitalServiceRest> getSharedDigitalServiceLinkMetadata(String digitalServiceUid,
+                                                                                  String shareId) {
+        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.getDigitalService(digitalServiceUid)));
+    }
+}

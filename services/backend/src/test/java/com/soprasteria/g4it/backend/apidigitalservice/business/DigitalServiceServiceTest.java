@@ -11,6 +11,8 @@ import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepo
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
@@ -19,12 +21,17 @@ import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepos
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.*;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Role;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.model.NoteBO;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,15 +40,27 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceServiceTest {
@@ -70,6 +89,8 @@ class DigitalServiceServiceTest {
     private DigitalServiceMapper digitalServiceMapper;
     @Mock
     private DigitalServiceReferentialService digitalServiceReferentialService;
+    @Mock
+    private DigitalServiceLinkRepository digitalServiceLinkRepo;
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Mock
@@ -543,6 +564,75 @@ class DigitalServiceServiceTest {
                         eq(DIGITAL_SERVICE_UID)
                 );
 
+    }
+
+    @Test
+    void shareDigitalService_existingLink_updatesExpiryAndReturnsRest() {
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid(DIGITAL_SERVICE_UID);
+
+        final User user = User.builder().id(USER_ID).build();
+        final UserBO userBO = UserBO.builder().id(USER_ID).build();
+
+        List<DigitalServiceSharedLink> digitalServiceSharedLinks = new ArrayList<>();
+        DigitalServiceSharedLink existingLink = DigitalServiceSharedLink.builder()
+                .uid("linkUid")
+                .digitalService(digitalService)
+                .expiryDate(LocalDateTime.now().minusDays(1))
+                .isActive(true)
+                .build();
+
+        digitalServiceSharedLinks.add(existingLink);
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(digitalServiceSharedLinks);
+        when(digitalServiceLinkRepo.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO, true);
+
+        assertNotNull(result);
+        assertTrue(result.getUrl().contains(DIGITAL_SERVICE_UID));
+        assertTrue(result.getUrl().contains(existingLink.getUid()));
+        verify(digitalServiceLinkRepo).save(existingLink);
+
+        assertTrue(result.getExpiryDate().isAfter(LocalDateTime.now().plusDays(59)));
+    }
+
+    @Test
+    void shareDigitalService_noExistingLink_createsNewLinkAndReturnsRest() {
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid(DIGITAL_SERVICE_UID);
+
+        final User user = User.builder().id(USER_ID).build();
+        final UserBO userBO = UserBO.builder().id(USER_ID).build();
+
+        DigitalServiceSharedLink newLink = DigitalServiceSharedLink.builder()
+                .uid("newUid123")
+                .expiryDate(LocalDateTime.now().plusDays(30))
+                .build();
+
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(Collections.emptyList());
+        when(digitalServiceLinkRepo.save(any())).thenReturn(newLink);
+
+        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO, true);
+
+        assertNotNull(result);
+        assertTrue(result.getUrl().contains(DIGITAL_SERVICE_UID));
+        assertTrue(result.getUrl().contains(newLink.getUid()));
+        assertEquals(newLink.getExpiryDate(), result.getExpiryDate());
+        verify(digitalServiceLinkRepo).save(any());
+    }
+
+    @Test
+    void shareDigitalService_digitalServiceNotFound_throwsException() {
+        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, UserBO.builder().id(USER_ID).build(), true))
+                .hasMessageContaining("Digital service " + DIGITAL_SERVICE_UID +
+                        " not found in " + ORGANIZATION + "/" + WORKSPACE_ID)
+                .isInstanceOf(G4itRestException.class);
     }
 
 }

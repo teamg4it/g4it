@@ -11,6 +11,8 @@ import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepo
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
@@ -26,6 +28,7 @@ import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,6 +74,8 @@ public class DigitalServiceService {
     private InAiParameterRepository inAiParameterRepository;
     @Autowired
     private InAiInfrastructureRepository inAiInfrastructureRepository;
+    @Autowired
+    private DigitalServiceLinkRepository digitalServiceLinkRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
 
@@ -78,8 +83,8 @@ public class DigitalServiceService {
      * Create a new digital service.
      *
      * @param workspaceId the linked workspace id.
-     * @param userId         the userId.
-     * @param isAi           AI service if true
+     * @param userId      the userId.
+     * @param isAi        AI service if true
      * @return the business object corresponding on the digital service created.
      */
     public DigitalServiceBO createDigitalService(final Long workspaceId, final long userId, final Boolean isAi) {
@@ -128,7 +133,7 @@ public class DigitalServiceService {
      * Get the digital service list linked to a user.
      *
      * @param workspaceId the workspace ID.
-     * @param isAi           AI service if true
+     * @param isAi        AI service if true
      * @return the digital service list.
      */
     public List<DigitalServiceBO> getDigitalServices(final Long workspaceId, final Boolean isAi) {
@@ -160,10 +165,10 @@ public class DigitalServiceService {
      * Update a digital service if user has write access or
      * update enableDataInconsistency
      *
-     * @param digitalService the business object containing data to update.
+     * @param digitalService   the business object containing data to update.
      * @param organizationName the organization name
-     * @param workspaceId the workspace Id
-     * @param user           the user entity
+     * @param workspaceId      the workspace Id
+     * @param user             the user entity
      * @return the updated digital service
      */
     public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final String organizationName,
@@ -201,13 +206,82 @@ public class DigitalServiceService {
     }
 
     /**
+     * Generate the link to share the digital service
+     *
+     * @param organization      the client organization name.
+     * @param workspaceId       the linked workspace id.
+     * @param digitalServiceUid the digital service id.
+     * @return the url.
+     */
+    public DigitalServiceShareRest shareDigitalService(final String organization, final Long workspaceId,
+                                                       final String digitalServiceUid, final UserBO userBO,
+                                                       final Boolean extendLink) {
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
+                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, organization, workspaceId))
+        );
+
+        // Get the linked user.
+        final User user = userRepository.findById(userBO.getId()).orElseThrow();
+
+        List<DigitalServiceSharedLink> digitalServiceLinkList = digitalServiceLinkRepository.findByDigitalService(digitalService);
+
+        DigitalServiceSharedLink digitalServiceActiveLink = digitalServiceLinkList.stream()
+                .filter(DigitalServiceSharedLink::isActive)
+                .findFirst()
+                .orElse(null);
+
+        LocalDateTime expiryDate = LocalDateTime.now()
+                .plusDays(60)
+                .withHour(23)
+                .withMinute(59)
+                .withSecond(0)
+                .withNano(0);
+        if (digitalServiceActiveLink != null) {
+            // Update expiry date to 60 days from now.
+            if (Boolean.TRUE.equals(extendLink)) {
+                digitalServiceActiveLink.setExpiryDate(expiryDate);
+                digitalServiceLinkRepository.save(digitalServiceActiveLink);
+            }
+            return DigitalServiceShareRest.builder().url(String.format("/shared/%s/ds/%s",
+                            digitalServiceActiveLink.getUid(), digitalServiceUid))
+                    .expiryDate(digitalServiceActiveLink.getExpiryDate())
+                    .build();
+
+
+        } else {
+            // Create a new shared link
+            DigitalServiceSharedLink linkToCreate = DigitalServiceSharedLink.builder()
+                    .digitalService(digitalService)
+                    .createdBy(user)
+                    .isActive(true)
+                    .creationDate(LocalDateTime.now())
+                    .expiryDate(LocalDateTime.now().plusDays(60))
+                    .build();
+
+            DigitalServiceSharedLink savedLink = digitalServiceLinkRepository.save(linkToCreate);
+
+            return DigitalServiceShareRest.builder()
+                    .url(String.format("/shared/%s/ds/%s", savedLink.getUid(), digitalServiceUid))
+                    .expiryDate(savedLink.getExpiryDate())
+                    .build();
+        }
+    }
+
+
+    /**
      * Get a digital service.
      *
      * @param digitalServiceUid the digital service id.
      * @return the business object.
      */
     public DigitalServiceBO getDigitalService(final String digitalServiceUid) {
-        return digitalServiceMapper.toFullBusinessObject(getDigitalServiceEntity(digitalServiceUid));
+        DigitalServiceBO digitalServiceBO = digitalServiceMapper.toFullBusinessObject(getDigitalServiceEntity(digitalServiceUid));
+
+        //check shared link presence
+        boolean isShared = digitalServiceLinkRepository.existsByDigitalService_UidAndIsActiveTrue(digitalServiceUid);
+
+        digitalServiceBO.setIsShared(isShared);
+        return digitalServiceBO;
     }
 
     private DigitalService getDigitalServiceEntity(final String digitalServiceUid) {
@@ -215,11 +289,12 @@ public class DigitalServiceService {
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
     }
 
+
     /**
      * Returns true if the digital service exists and linked to organization, workspaceId
      *
-     * @param organizationName    organizationName
-     * @param workspaceId    workspaceId
+     * @param organizationName  organizationName
+     * @param workspaceId       workspaceId
      * @param digitalServiceUid digitalServiceUid
      */
     @Cacheable("digitalServiceExists")
@@ -229,5 +304,13 @@ public class DigitalServiceService {
             return false;
         }
         return digitalServiceRepository.findByWorkspaceAndUid(linkedWorkspace, digitalServiceUid).isPresent();
+    }
+
+
+    public Boolean validateDigitalServiceSharedLink(String digitalServiceUid,
+                                                    String shareId) {
+        return digitalServiceLinkRepository.validateLink(shareId, digitalServiceUid).isPresent();
+
+
     }
 }
