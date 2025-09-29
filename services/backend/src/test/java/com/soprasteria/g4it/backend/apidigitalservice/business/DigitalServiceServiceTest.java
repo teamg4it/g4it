@@ -627,12 +627,16 @@ class DigitalServiceServiceTest {
 
     @Test
     void shareDigitalService_digitalServiceNotFound_throwsException() {
+        final UserBO userBO = UserBO.builder().id(USER_ID).build();
+
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, UserBO.builder().id(USER_ID).build(), true))
+        assertThatThrownBy(() -> digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO, true))
                 .hasMessageContaining("Digital service " + DIGITAL_SERVICE_UID +
                         " not found in " + ORGANIZATION + "/" + WORKSPACE_ID)
                 .isInstanceOf(G4itRestException.class);
+
     }
+
 
 }
