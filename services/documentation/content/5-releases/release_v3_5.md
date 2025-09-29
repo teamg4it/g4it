@@ -26,7 +26,7 @@ The Digital Service View has been redesigned to be more intuitive and user-frien
 
 By default, **data consistency is now disabled** in the Digital Service View. However, users can choose to re-enable it when needed.
 
-This update helps avoid confusion in the results display—especially regarding cloud data—by making the data behavior more transparent.
+This update helps avoid confusion in the result display—especially regarding cloud data—by making the data behavior more transparent.
 
 ### Expanded Criteria for Cloud Evaluation
 
