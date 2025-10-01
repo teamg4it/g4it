@@ -217,8 +217,8 @@ public interface AggregationToOutput {
                 .quantity(agg.getQuantity())
                 .electricityConsumption(agg.getElectricityConsumption())
                 .unit(refShortcutBO.unitMap().get(criterion))
-                .unitImpact(agg.getUnitImpact())
-                .peopleEqImpact(agg.getPeopleEqImpact())
+                .unitImpact(agg.getUnitImpact() < 0 ? 0 : agg.getUnitImpact())
+                .peopleEqImpact(agg.getPeopleEqImpact() < 0 ? 0 : agg.getPeopleEqImpact())
                 .errors(agg.getErrors().isEmpty() ? null : agg.getErrors())
                 .build();
     }
