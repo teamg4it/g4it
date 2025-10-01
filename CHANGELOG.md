@@ -10,6 +10,7 @@
 
 ### Minor Changes
 
+- 1623 | Digital Service Import Rejected files are not available
 - 1487 | Update file location to be available open source
 - 1486 | EcoMindAI - update ecomind version
 - 1403 | Search for a workspace

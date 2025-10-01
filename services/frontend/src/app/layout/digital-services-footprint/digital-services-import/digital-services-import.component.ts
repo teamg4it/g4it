@@ -40,7 +40,7 @@ import { Constants } from "src/constants";
 export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     private readonly userDataService = inject(UserDataService);
     private readonly destroyRef = inject(DestroyRef);
-    protected readonly userService = inject(UserService);
+    private readonly userService = inject(UserService);
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);
     private readonly inDatacentersService = inject(InDatacentersService);
     public readonly digitalServiceStore = inject(DigitalServiceStoreService);
