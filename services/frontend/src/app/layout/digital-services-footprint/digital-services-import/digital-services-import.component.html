@@ -133,10 +133,7 @@
                                     </div>
                                 }
                             </td>
-                            @if (
-                                (userService.isAllowedInventoryWrite$ | async) &&
-                                anyRejectedFiles
-                            ) {
+                            @if (anyRejectedFiles) {
                                 @if (
                                     status.status === "COMPLETED_WITH_ERRORS" ||
                                     status.status === "SKIPPED" ||
