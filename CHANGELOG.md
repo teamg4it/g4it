@@ -1,5 +1,14 @@
 # G4IT
 
+## 3.7.0
+
+### Major Changes
+
+
+### Minor Changes
+
+-1597 | add comma for VM
+
 ## 3.6.0
 
 ### Major Changes
