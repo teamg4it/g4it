@@ -218,6 +218,8 @@ components:
           type: string
         boaviztapi:
           type: string
+        ecomindai:
+          type: string
     UserRest:
       description: User information
       type: object
