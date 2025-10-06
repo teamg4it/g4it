@@ -24,7 +24,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { RadioButton } from "primeng/radiobutton";
-import { Subject, takeUntil } from "rxjs";
+import { delay, Subject, takeUntil } from "rxjs";
 import {
     FileDescription,
     FileType,
@@ -34,7 +34,6 @@ import { CreateInventory, Inventory } from "src/app/core/interfaces/inventory.in
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
-import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
 import { SelectFileComponent } from "./select-file/select-file.component";
 
@@ -169,7 +168,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
         this.uploaderOutpoutHandlerReset$.next();
         this.arrayComponents.forEach(({ instance }, index) => {
             instance.index = index;
-            instance.onDelete
+            instance.outDelete
                 .asObservable()
                 .pipe(takeUntil(this.uploaderOutpoutHandlerReset$))
                 .subscribe(() => {
@@ -238,10 +237,10 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
                 },
                 error: (error) => {},
             });
-        } else {
-            if (bodyLoading.length !== 0) {
-                this.uploadAndLaunchLoading(formData, this.inventoryId);
-            }
+            return;
+        }
+        if (bodyLoading.length !== 0) {
+            this.uploadAndLaunchLoading(formData, this.inventoryId);
         }
     }
 
@@ -257,17 +256,19 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     uploadAndLaunchLoading(formData: FormData, inventoryId: number = 0) {
-        this.loadingService.launchLoadInputFiles(inventoryId, formData).subscribe({
-            next: async () => {
-                await delay(500);
-                this.sidebarVisibleChange.emit(false);
-                this.reloadInventoriesAndLoop.emit(inventoryId);
-                this.close();
-            },
-            error: () => {
-                this.sidebarPurposeChange.emit("upload");
-            },
-        });
+        this.loadingService
+            .launchLoadInputFiles(inventoryId, formData)
+            .pipe(delay(500))
+            .subscribe({
+                next: () => {
+                    this.sidebarVisibleChange.emit(false);
+                    this.reloadInventoriesAndLoop.emit(inventoryId);
+                    this.close();
+                },
+                error: () => {
+                    this.sidebarPurposeChange.emit("upload");
+                },
+            });
     }
 
     clearSidePanel() {

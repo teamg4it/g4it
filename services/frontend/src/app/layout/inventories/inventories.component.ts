@@ -5,7 +5,14 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+    Component,
+    DestroyRef,
+    inject,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+} from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Event, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -83,7 +90,7 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                           .getItem("inventoriesOpen")
                           ?.split(",")
                           .filter((v) => v !== "NaN")
-                          .map((v) => parseInt(v)),
+                          .map((v) => Number.parseInt(v)),
                   )
                 : new Set();
 
@@ -175,9 +182,9 @@ export class InventoriesComponent implements OnInit, OnDestroy {
         const allInventories = await this.inventoryService.getInventories();
 
         this.inventoriesToReload = new Set();
-        allInventories.forEach((inventory) => {
+        for (const inventory of allInventories) {
             this.setInventoryToReload(inventory);
-        });
+        }
 
         this.inventoriesForSimulationsAll = allInventories
             .filter(

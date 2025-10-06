@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -21,8 +21,6 @@ import { SelectFileComponent } from "./select-file.component";
 describe("SelectFileComponent", () => {
     let component: SelectFileComponent;
     let fixture: ComponentFixture<SelectFileComponent>;
-    let type: string = "DATACENTER";
-    let file: File = new File(["file content"], "test.txt");
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -52,10 +50,10 @@ describe("SelectFileComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should emit onDelete if onDeleteButton is called", () => {
-        spyOn(component.onDelete, "emit");
+    it("should emit outDelete if onDeleteButton is called", () => {
+        spyOn(component.outDelete, "emit");
         component.onDeleteButton();
-        expect(component.onDelete.emit).toHaveBeenCalled();
+        expect(component.outDelete.emit).toHaveBeenCalled();
     });
 
     it("should set file when onFileChange is called with selected file", () => {

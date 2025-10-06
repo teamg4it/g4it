@@ -31,7 +31,7 @@ export class BusinessHoursRendererPipe implements PipeTransform {
             if (time) {
                 let hour = time.at(0);
                 if (splitted.at(1) === "PM" && hour) {
-                    hour = (parseInt(hour) + 12).toString();
+                    hour = (Number.parseInt(hour) + 12).toString();
                 }
                 let min = time.at(1);
                 if (hour && min) {

@@ -39,7 +39,6 @@ export class UsersComponent implements OnInit {
     workspacelist: WorkspaceWithOrganization[] = [];
     enableList = false;
     clearForm: any;
-    enableSearchButton: boolean = true;
     membersAndSearchVisible = false;
     organizationsDetails!: any;
     membersList: any;
@@ -141,15 +140,8 @@ export class UsersComponent implements OnInit {
         return this.searchForm.controls;
     }
 
-    checkForValidation() {
-        const searchName = this.searchForm.value.searchName.trim();
-        this.enableSearchButton =
-            searchName.length >= 3 || searchName.length === 0 ? false : true;
-    }
-
     clearSearchField() {
         this.searchForm.controls["searchName"].setValue("");
-        this.enableSearchButton = true;
     }
 
     enrichAdmin(user: any) {

@@ -5,7 +5,15 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, EventEmitter, inject, Input, Output } from "@angular/core";
+import {
+    Component,
+    computed,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { ServerVM } from "src/app/core/interfaces/digital-service.interfaces";
@@ -17,7 +25,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     templateUrl: "./add-vm.component.html",
     providers: [MessageService],
 })
-export class PanelAddVmComponent {
+export class PanelAddVmComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() index: number | undefined;

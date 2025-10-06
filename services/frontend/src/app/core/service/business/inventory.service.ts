@@ -76,7 +76,7 @@ export class InventoryService {
                 inventory.lastTaskLoading = tasksLoading[0];
                 if (inventory.lastTaskLoading) {
                     inventory.lastTaskLoading.progress =
-                        +inventory.lastTaskLoading?.progressPercentage.replace("%", "")!;
+                        +inventory.lastTaskLoading?.progressPercentage.replace("%", "");
                 }
             }
 
@@ -87,7 +87,7 @@ export class InventoryService {
                         +inventory.lastTaskEvaluating?.progressPercentage.replace(
                             "%",
                             "",
-                        )!;
+                        );
                 }
             }
         }
@@ -96,8 +96,8 @@ export class InventoryService {
         if (inventory.type == Constants.INVENTORY_TYPE.INFORMATION_SYSTEM) {
             const elementsOfDate = inventory.name.split("-");
             inventory.date = new Date(
-                parseInt(elementsOfDate[1]),
-                parseInt(elementsOfDate[0]) - 1,
+                Number.parseInt(elementsOfDate[1]),
+                Number.parseInt(elementsOfDate[0]) - 1,
             );
         }
     }

@@ -37,7 +37,8 @@ export class ErrorComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((params) => {
                 const pageType =
-                    this.mapTypes.get(parseInt(params["err"])) || "service-unavailable";
+                    this.mapTypes.get(Number.parseInt(params["err"])) ||
+                    "service-unavailable";
                 this.getPageContent(pageType);
             });
     }

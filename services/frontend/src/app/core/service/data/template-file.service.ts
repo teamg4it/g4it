@@ -115,7 +115,7 @@ export class TemplateFileService {
 
     toKB(bytes: string | undefined) {
         if (bytes === undefined) return 0;
-        return (parseInt(bytes) / 1024).toFixed(2);
+        return (Number.parseInt(bytes) / 1024).toFixed(2);
     }
 
     async getdownloadTemplateFile(selectedFileName: string, isTemplateParam: string) {

@@ -137,11 +137,12 @@ export class CriteriaPopupComponent implements OnChanges {
     saveChanges() {
         this.hasChanged = false;
         switch (this.type) {
-            case "organization":
+            case "organization": {
                 const organizationCriteria = { criteria: this.selectedCriteriaIS };
                 this.outSaveOrganization.emit(organizationCriteria);
                 break;
-            case "workspace":
+            }
+            case "workspace": {
                 const workspaceCriteria = {
                     organizationId: this.workspaceDetails?.organizationId,
                     name: this.workspaceDetails.workspaceName,
@@ -152,7 +153,8 @@ export class CriteriaPopupComponent implements OnChanges {
                 };
                 this.outSaveWorkspace.emit(workspaceCriteria);
                 break;
-            case "inventory":
+            }
+            case "inventory": {
                 const inventoryCriteria = {
                     id: this.inventory.id,
                     name: this.inventory.name,
@@ -161,7 +163,8 @@ export class CriteriaPopupComponent implements OnChanges {
                 };
                 this.outSaveInventory.emit(inventoryCriteria);
                 break;
-            case "ds":
+            }
+            case "ds": {
                 const dsCriteria = {
                     uid: this.ds.uid,
                     name: this.ds.name,
@@ -179,6 +182,7 @@ export class CriteriaPopupComponent implements OnChanges {
                 };
                 this.outSaveDS.emit(dsCriteria);
                 break;
+            }
             default:
                 break;
         }

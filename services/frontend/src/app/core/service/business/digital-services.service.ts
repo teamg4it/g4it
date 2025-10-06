@@ -176,12 +176,12 @@ export class DigitalServiceBusinessService {
     ): string {
         const nameSet = new Set(existingNames?.map((n) => removeBlankSpaces(n)));
         let index = 1;
-        let newString = isNumeric ? index.toString() : String.fromCharCode(64 + index);
+        let newString = isNumeric ? index.toString() : String.fromCodePoint(64 + index);
         let newName = `${removeBlankSpaces(baseName)} ${newString}`; // Start with "Server 1" or "Server A"
 
         while (nameSet.has(removeBlankSpaces(newName))) {
             index++;
-            newString = isNumeric ? index.toString() : String.fromCharCode(64 + index);
+            newString = isNumeric ? index.toString() : String.fromCodePoint(64 + index);
             newName = `${removeBlankSpaces(baseName)} ${newString}`; // Increment to "Server 2", "Server B", etc.
         }
         return newName;

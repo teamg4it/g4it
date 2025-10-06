@@ -28,16 +28,14 @@
             <p class="text-xs uppercase text-left">{{ impactText }}</p>
             @if ((value ?? 0) === 0) {
                 {{ value ? value : "--" }}
-                <span
-                    [innerHTML]="renderHTML(selectedUnit === 'Raw' ? impactUnite : '')"
-                ></span>
+                <span [innerHTML]="selectedUnit === 'Raw' ? impactUnite : ''"></span>
             } @else {
                 <div class="text-xs">
                     {{ selectedUnit === "Raw" ? (value | decimals) : (value | integer) }}
                 </div>
                 <div
                     class="text-xs"
-                    [innerHTML]="renderHTML(selectedUnit === 'Raw' ? impactUnite : '')"
+                    [innerHTML]="selectedUnit === 'Raw' ? impactUnite : ''"
                 ></div>
             }
         </div>

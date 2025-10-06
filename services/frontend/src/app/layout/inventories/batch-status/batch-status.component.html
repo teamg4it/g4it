@@ -20,41 +20,48 @@
                 {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
             </p>
         </ng-template>
-        <span
-            (click)="downloadFile()"
-            *ngIf="
-                (userService.isAllowedInventoryWrite$ | async) &&
-                (batchStatusCode === 'COMPLETED_WITH_ERRORS' ||
-                    batchStatusCode === 'SKIPPED') &&
-                batchLoading
-            "
-            class="cursor-pointer"
-        >
-            <img
-                src="assets/images/icons/icon-download.svg"
-                class="mx-3"
-                alt="{{ 'inventories.download-result' | translate }} {{
-                    localCreateTime | date: 'dd/MM/yyyy HH:mm'
-                }}"
-            />
-        </span>
-        @if (isNumeric(taskId)) {
-            <span
-                (click)="getTaskDetail(taskId)"
-                *ngIf="
-                    (userService.isAllowedInventoryWrite$ | async) &&
-                    batchStatusCode === 'FAILED'
-                "
-                class="cursor-pointer"
+        @if (
+            (userService.isAllowedInventoryWrite$ | async) &&
+            (batchStatusCode === "COMPLETED_WITH_ERRORS" ||
+                batchStatusCode === "SKIPPED") &&
+            batchLoading
+        ) {
+            <p-button
+                styleClass="p-button-text bg-white py-0 my-0"
+                (onClick)="downloadFile()"
             >
                 <img
                     src="assets/images/icons/icon-download.svg"
-                    class="mx-3"
                     alt="{{ 'inventories.download-result' | translate }} {{
                         localCreateTime | date: 'dd/MM/yyyy HH:mm'
                     }}"
+                    ariaLabel="{{ 'inventories.download-result' | translate }} {{
+                        localCreateTime | date: 'dd/MM/yyyy HH:mm'
+                    }}"
                 />
-            </span>
+            </p-button>
+        }
+
+        @if (isNumeric(taskId)) {
+            @if (
+                (userService.isAllowedInventoryWrite$ | async) &&
+                batchStatusCode === "FAILED"
+            ) {
+                <p-button
+                    styleClass="p-button-text bg-white py-0 my-0"
+                    (onClick)="getTaskDetail(taskId)"
+                >
+                    <img
+                        src="assets/images/icons/icon-download.svg"
+                        alt="{{ 'inventories.download-result' | translate }} {{
+                            localCreateTime | date: 'dd/MM/yyyy HH:mm'
+                        }}"
+                        ariaLabel="{{ 'inventories.download-result' | translate }} {{
+                            localCreateTime | date: 'dd/MM/yyyy HH:mm'
+                        }}"
+                    />
+                </p-button>
+            }
         }
     </li>
 </ul>

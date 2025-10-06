@@ -267,7 +267,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         return [
             {
                 label: this.decimalsPipe.transform(this.appCount),
-                value: isNaN(this.appCount) ? undefined : this.appCount,
+                value: Number.isNaN(this.appCount) ? undefined : this.appCount,
                 description: this.translate.instant(
                     "inventories-footprint.application.tooltip.nb-app",
                 ),

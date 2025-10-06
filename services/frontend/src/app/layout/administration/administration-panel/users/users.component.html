@@ -1,7 +1,8 @@
 <div class="pt-4">
-    <span for="workspaceName" role="heading" [ariaLevel]="3"
-        >{{ "administration.user.select-org" | translate }} </span
-    ><br />
+    <h3 for="workspaceName" class="inline m-0">
+        {{ "administration.user.select-org" | translate }}
+    </h3>
+    <br />
     <div
         class="h-2rem border-top-2 border-primary p-0 mt-1"
         style="color: lightgray"
@@ -18,7 +19,6 @@
             membersAndSearchVisible = true;
             getUsersDetails();
             clearSearchField();
-            checkForValidation();
             getSelectedOrganization()
         "
         inputId="workspaceName"
@@ -60,9 +60,9 @@
         (outClose)="displayPopup = false"
     ></app-criteria-popup>
     <form class="mt-3" *ngIf="membersAndSearchVisible" [formGroup]="searchForm">
-        <span for="searchName" role="heading" [ariaLevel]="3"
-            >{{ "administration.user.search-user" | translate }}
-        </span>
+        <h3 for="searchName" class="inline m-0">
+            {{ "administration.user.search-user" | translate }}
+        </h3>
         <div class="h-1rem border-top-2 border-primary p-0 mt-1"></div>
         <input
             class="input-width pl-2"
@@ -211,17 +211,20 @@
                                     }} {{ user.lastName }}"
                                 />
                             </p-button>
-                            <i
-                                *ngIf="user.roles.length === 0"
-                                (click)="
-                                    openSidepanelForAddORUpdateOrg(
-                                        user,
-                                        isEcoMindEnabledForCurrentOrganizationSelected
-                                    )
-                                "
-                                class="pi pi-plus bg-tertiary text-white p-2 border-round cursor-pointer"
-                                id="actions-button"
-                            ></i>
+                            @if (user.roles.length === 0) {
+                                <p-button
+                                    (onClick)="
+                                        openSidepanelForAddORUpdateOrg(
+                                            user,
+                                            isEcoMindEnabledForCurrentOrganizationSelected
+                                        )
+                                    "
+                                    icon="pi pi-plus"
+                                    styleClass="p-2"
+                                    id="actions-button"
+                                >
+                                </p-button>
+                            }
                         </div>
                     </td>
                 </tr>

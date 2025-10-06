@@ -70,7 +70,7 @@
                 [title]="'Note - ' + inventory.name"
                 [showButtons]="userService.isAllowedInventoryWrite$ | async"
                 (saveValue)="noteSaveValue($event)"
-                (close)="sidebarVisible = $event"
+                (outClose)="sidebarVisible = $event"
                 (delete)="noteDelete($event); sidebarVisible = $event"
                 styleClass="mx-7"
             >

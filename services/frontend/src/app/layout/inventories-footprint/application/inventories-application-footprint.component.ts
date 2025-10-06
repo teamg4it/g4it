@@ -93,7 +93,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         this.footprintStore.setApplicationCriteria(criteria || Constants.MUTLI_CRITERIA);
 
         this.footprint = footprint;
-        this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
+        this.allUnmodifiedFootprint = structuredClone(footprint);
         this.footprint = this.footprint.map((footprintData) => ({
             ...footprintData,
             unit: this.translate.instant(`criteria.${footprintData.criteria}.unite`),
@@ -156,9 +156,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
 
     private mapCriteres(footprint: ApplicationFootprint[]): void {
         this.showTabMenu = true;
-        const applicationFootprints: ApplicationFootprint[] = JSON.parse(
-            JSON.stringify(footprint),
-        );
+        const applicationFootprints: ApplicationFootprint[] = structuredClone(footprint);
         applicationFootprints?.sort((a, b) => {
             return (
                 this.criteriakeys.indexOf(a.criteria) -
@@ -221,8 +219,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         }
         if (graphType === "application") {
             // copy the footprint so that reference doesnot change the original
-            const applicationFootprint: ApplicationFootprint[] = JSON.parse(
-                JSON.stringify(this.allUnmodifiedFootprint),
+            const applicationFootprint: ApplicationFootprint[] = structuredClone(
+                this.allUnmodifiedFootprint,
             );
             let criteriaFootprint = applicationFootprint.find(
                 (item) => item.criteria === this.footprintStore.applicationCriteria(),

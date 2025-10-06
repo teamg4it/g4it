@@ -48,7 +48,11 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
         private readonly messageService: MessageService,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit(): void {
+        this.onInitData();
+    }
+
+    private async onInitData(): Promise<void> {
         await this.initInventory();
         this.userService.currentOrganization$
             .pipe(takeUntil(this.ngUnsubscribe))

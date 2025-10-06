@@ -24,7 +24,7 @@ export class CommonEditorComponent implements OnChanges {
     @Input() title = "Note";
     escape: boolean = false;
 
-    @Output() close: EventEmitter<any> = new EventEmitter();
+    @Output() outClose: EventEmitter<any> = new EventEmitter();
     @Output() delete: EventEmitter<any> = new EventEmitter();
     @Output() saveValue: EventEmitter<string> = new EventEmitter();
 
@@ -95,7 +95,7 @@ export class CommonEditorComponent implements OnChanges {
             message: this.translate.instant("common.cancelConfirmMsgForEditor"),
             accept: () => {
                 this.editorTextValue = this.editorTextValueUnmodified;
-                this.close.emit();
+                this.outClose.emit();
             },
             reject: () => {},
         });

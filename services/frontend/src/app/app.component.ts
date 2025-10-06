@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
             if (!token) {
                 const loginHint = localStorage.getItem("username") || "";
                 await this.keycloak.login({
-                    redirectUri: window.location.href,
+                    redirectUri: globalThis.location.href,
                     loginHint,
                 });
             }
