@@ -32,17 +32,18 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
      */
     List<CheckVirtualEquipment> findByTaskId(Long taskId);
 
-   /**
-    * Retrieve duplicate virtual equipment with details by task id.
-    *
-    * @param taskId the task id
-    * @return List of DuplicateEquipmentDTO containing virtual equipment names and their file name and line number
-   */
+    /**
+     * Retrieve duplicate virtual equipment with details by task id.
+     *
+     * @param taskId the task id
+     * @return List of DuplicateEquipmentDTO containing virtual equipment names and their file name and line number
+     */
     @Query(nativeQuery = true, value = """
             SELECT ve.virtual_equipment_name as equipmentName,
                        STRING_AGG(ve.filename || ':' || ve.line_nb, ',') as filenameLineInfo
                 FROM check_inv_load_virtual_equipment ve
-                WHERE ve.task_id = :taskId
+                WHERE ve.task_id = :taskId 
+                  AND ve.virtual_equipment_name IS NOT NULL
                 GROUP BY ve.virtual_equipment_name
                 HAVING COUNT(*) > 1
                 LIMIT 50000
@@ -61,7 +62,8 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
                               FROM
                                   check_inv_load_virtual_equipment ve
                               WHERE
-                                  ve.task_id = :taskId
+                                  ve.task_id = :taskId AND
+                                  ve.virtual_equipment_name IS NOT NULL
                               GROUP BY
                                   CASE
                                       WHEN ve.infrastructure_type = 'NON_CLOUD_SERVERS'
@@ -72,7 +74,7 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
                               HAVING
                                   COUNT(*) > 1
                               LIMIT 50000
-                           
+            
             """)
     List<DuplicateEquipmentDTO> findDuplicateDigitalServiceVirtualEqp(@Param("taskId") Long taskId);
 
@@ -85,9 +87,9 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
             where cilve.infrastructure_type != 'CLOUD_SERVICES'
             and cilve.physical_equipment_name is null
             and cilve.task_id = :taskId
-                        
+            
             UNION
-                        
+            
             select filename,
                    line_nb as lineNb,
                    physical_equipment_name as parentEquipmentName,
@@ -103,7 +105,7 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
                   OR
                   (:digitalServiceUid IS NOT NULL AND ipe.digital_service_uid = :digitalServiceUid)
                 )
-                
+            
                 and cilve.physical_equipment_name = ipe.name
             )
             and not exists (
@@ -115,7 +117,7 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
             )
             and cilve.physical_equipment_name is not null
             and cilve.task_id = :taskId
-                        
+            
             """)
     List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId, @Param("inventoryId") Long inventoryId,
                                                              @Param("digitalServiceUid") String digitalServiceUid,
@@ -130,9 +132,9 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
              where cilve.infrastructure_type != 'CLOUD_SERVICES'
              and cilve.physical_equipment_name is null
              and cilve.task_id = :taskId
-             
+            
              UNION
-             
+            
              select filename,
                     line_nb as lineNb,
                     physical_equipment_name as parentEquipmentName,
@@ -157,9 +159,10 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
              )
              and cilve.physical_equipment_name is not null
              and cilve.task_id = :taskId
-             
-            """)    List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId,
-                                                                             @Param("inventoryId") Long inventoryId,
-                                                                             @Param("digitalServiceUid") String digitalServiceUid);
+            
+            """)
+    List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId,
+                                                             @Param("inventoryId") Long inventoryId,
+                                                             @Param("digitalServiceUid") String digitalServiceUid);
 
 }

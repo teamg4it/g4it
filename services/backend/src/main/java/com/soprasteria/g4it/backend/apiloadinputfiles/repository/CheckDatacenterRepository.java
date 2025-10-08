@@ -35,8 +35,9 @@ public interface CheckDatacenterRepository extends JpaRepository<CheckDatacenter
             SELECT cd.datacenter_name  as equipmentName,
                                    STRING_AGG(cd.filename || ':' || cd.line_nb, ',') as filenameLineInfo
                             FROM check_inv_load_datacenter cd
-                            WHERE cd.task_id = :taskId
-                            GROUP BY cd.datacenter_name 
+                            WHERE cd.task_id = :taskId 
+                              AND cd.datacenter_name IS NOT NULL
+                            GROUP BY cd.datacenter_name
                             HAVING COUNT(*) > 1
                             LIMIT 50000
             """)
