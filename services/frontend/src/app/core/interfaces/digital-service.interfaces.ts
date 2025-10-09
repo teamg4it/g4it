@@ -331,6 +331,7 @@ export interface ServerVM {
     disk: number;
     quantity: number;
     annualOperatingTime: number;
+    electricityConsumption: number;
 }
 
 export interface ServerDC {

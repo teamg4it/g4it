@@ -41,12 +41,14 @@ export class PanelAddVmComponent implements OnInit {
     vcpuControl = this._formBuilder.control(0, [Validators.required]);
     diskControl = this._formBuilder.control(0, [Validators.required]);
     quantityControl = this._formBuilder.control(0, [Validators.required]);
+    electricityConsumptionControl = this._formBuilder.control(0, [Validators.required]);
     addVmForm = this._formBuilder.group({
         name: ["", Validators.required],
         vcpu: this.vcpuControl,
         disk: this.diskControl,
         quantity: this.quantityControl,
         opratingTime: [0, [Validators.required]],
+        electricityConsumption: this.electricityConsumptionControl,
     });
 
     isValueTooHigh: boolean = false;
@@ -66,6 +68,7 @@ export class PanelAddVmComponent implements OnInit {
                 disk: 0,
                 quantity: 1,
                 annualOperatingTime: 8760,
+                electricityConsumption: 1,
             };
         } else {
             this.vm = { ...this.server().vm[this.index] };
@@ -114,6 +117,31 @@ export class PanelAddVmComponent implements OnInit {
         } else {
             delete this.quantityControl.errors?.["isQuantityTooLow"];
             this.quantityControl.updateValueAndValidity();
+        }
+    }
+
+    verifyElectricityValue() {
+        const totalAnnualElecCons = this.server().annualElectricConsumption || 0;
+        const value = this.addVmForm.value;
+        const sum = this.server()
+            .vm.filter(({ name }) => name !== this.vm.name)
+            .reduce(
+                (total, { electricityConsumption }) =>
+                    total + (electricityConsumption || 0),
+                0,
+            );
+
+        const isElecValueTooHigh =
+            (value.electricityConsumption ?? 0) + sum > totalAnnualElecCons;
+
+        if (isElecValueTooHigh) {
+            this.electricityConsumptionControl.setErrors({
+                ...this.electricityConsumptionControl?.errors,
+                isElecValueTooHigh,
+            });
+        } else {
+            delete this.electricityConsumptionControl.errors?.["isElecValueTooHigh"];
+            this.electricityConsumptionControl.updateValueAndValidity();
         }
     }
 
