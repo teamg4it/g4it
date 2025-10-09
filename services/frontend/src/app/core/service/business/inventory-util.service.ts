@@ -185,7 +185,7 @@ export class InventoryUtilService {
         return [
             {
                 label: this.decimalsPipe.transform(count),
-                value: isNaN(count) ? undefined : count,
+                value: Number.isNaN(Number(count)) ? undefined : count,
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.nb-cloud",
                 ),
@@ -206,7 +206,7 @@ export class InventoryUtilService {
         return [
             {
                 label: this.decimalsPipe.transform(count),
-                value: isNaN(count) ? undefined : count,
+                value: Number.isNaN(Number(count)) ? undefined : count,
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.nb-eq",
                 ),
@@ -214,7 +214,7 @@ export class InventoryUtilService {
             },
             {
                 label: this.decimalsPipe.transform(avgAge),
-                value: isNaN(avgAge) ? undefined : avgAge,
+                value: Number.isNaN(Number(avgAge)) ? undefined : avgAge,
                 unit: this.translate.instant("inventories-footprint.global.years"),
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.ave-age",
@@ -223,7 +223,7 @@ export class InventoryUtilService {
             },
             {
                 label: `${this.integerPipe.transform(lowImpact)}`,
-                value: isNaN(lowImpact) ? undefined : lowImpact,
+                value: Number.isNaN(Number(lowImpact)) ? undefined : lowImpact,
                 unit: "%",
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.low-impact",
@@ -233,7 +233,9 @@ export class InventoryUtilService {
             {
                 label: `${this.decimalsPipe.transform(elecConsumption)}`,
                 unit: this.translate.instant("inventories-footprint.global.kwh"),
-                value: isNaN(elecConsumption) ? undefined : Math.round(elecConsumption),
+                value: Number.isNaN(Number(elecConsumption))
+                    ? undefined
+                    : Math.round(elecConsumption),
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.elec-consumption",
                 ),
@@ -363,7 +365,7 @@ export class InventoryUtilService {
         return [
             {
                 label: this.decimalsPipe.transform(count),
-                value: isNaN(count) ? undefined : count,
+                value: Number.isNaN(Number(count)) ? undefined : count,
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.nb-dc",
                 ),
@@ -371,7 +373,7 @@ export class InventoryUtilService {
             },
             {
                 label: this.decimalsPipe.transform(avgPue),
-                value: isNaN(avgPue) ? undefined : avgPue,
+                value: Number.isNaN(Number(avgPue)) ? undefined : avgPue,
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.ave-pue",
                 ),

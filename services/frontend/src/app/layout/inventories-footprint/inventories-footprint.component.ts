@@ -96,7 +96,11 @@ export class InventoriesFootprintComponent implements OnInit {
         private readonly digitalBusinessService: DigitalServiceBusinessService,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit() {
+        this.getOnInitData();
+    }
+
+    async getOnInitData() {
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
         const currentWorkspaceName = (
             await firstValueFrom(this.userService.currentWorkspace$)
@@ -198,7 +202,7 @@ export class InventoriesFootprintComponent implements OnInit {
             PhysicalEquipmentsElecConsumption[],
         ],
     ) {
-        this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
+        this.allUnmodifiedFootprint = structuredClone(footprint);
         this.allUnmodifiedDatacenters = datacenters;
         this.allUnmodifiedEquipments = physicalEquipments;
         this.allUnmodifiedFilters = {};

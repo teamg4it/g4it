@@ -1,7 +1,7 @@
 export function generateColor(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        hash = str.codePointAt(i)! + ((hash << 5) - hash);
     }
     const color = (hash & 0x00ffffff).toString(16).toUpperCase();
     return "#" + "00000".substring(0, 6 - color.length) + color;
@@ -9,9 +9,9 @@ export function generateColor(str: string): string {
 
 export function chooseTextContrast(bgColor: string): string {
     const color = bgColor.startsWith("#") ? bgColor.substring(1, 7) : bgColor;
-    const r = parseInt(color.substring(0, 2), 16); // hexToR
-    const g = parseInt(color.substring(2, 4), 16); // hexToG
-    const b = parseInt(color.substring(4, 6), 16); // hexToB
+    const r = Number.parseInt(color.substring(0, 2), 16); // hexToR
+    const g = Number.parseInt(color.substring(2, 4), 16); // hexToG
+    const b = Number.parseInt(color.substring(4, 6), 16); // hexToB
     const uicolors = [r / 255, g / 255, b / 255];
     const c = uicolors.map((col) => {
         if (col <= 0.03928) {

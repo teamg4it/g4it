@@ -29,18 +29,16 @@
             .p-card-title {
                 color: var(--tints-black-80);
             }
+
+            .custom-icon {
+                background-color: #888a88;
+            }
         }
 
         &:not(.disabled):hover {
             .p-card-title {
                 color: var(--blue-color);
             }
-        }
-    }
-
-    .selection-card-container.disabled {
-        .custom-icon {
-            background-color: #888a88;
         }
     }
 

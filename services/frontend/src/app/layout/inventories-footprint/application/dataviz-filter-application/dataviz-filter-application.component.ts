@@ -56,7 +56,9 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     selectedFilters() {
-        this.allUnusedFilters = JSON.parse(JSON.stringify(this.allFilters));
+        this.allUnusedFilters = structuredClone(
+            this.allFilters,
+        ) as Filter<TransformedDomain>;
         this.footprintStore.setApplicationSelectedFilters(this.allUnusedFilters);
     }
 

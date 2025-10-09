@@ -63,7 +63,7 @@
             [title]="'Note - ' + selectedDigitalService.name"
             [showButtons]="userService.isAllowedDigitalServiceWrite$ | async"
             (saveValue)="noteSaveValue($event)"
-            (close)="sidebarVisible = $event"
+            (outClose)="sidebarVisible = $event"
             (delete)="noteDelete(); sidebarVisible = $event"
             styleClass="mx-7"
         >

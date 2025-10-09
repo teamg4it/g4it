@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
@@ -24,7 +24,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
     templateUrl: "./digital-services-terminals-side-panel.component.html",
     providers: [MessageService],
 })
-export class DigitalServicesTerminalsSidePanelComponent {
+export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);
     @Input() sidebarVisible: boolean = true;
     @Input() terminal: DigitalServiceTerminalConfig = {} as DigitalServiceTerminalConfig;
@@ -49,18 +49,23 @@ export class DigitalServicesTerminalsSidePanelComponent {
         public userService: UserService,
     ) {}
 
-    async ngOnInit() {
+    ngOnInit() {
+        this.onInitData();
+    }
+
+    private async onInitData() {
         this.isNew = this.terminal.idFront === undefined;
         this.initForm();
         await this.getTerminalsReferentials();
         if (!this.terminal.idFront) {
             this.resetTerminal();
-        } else {
-            if (this.terminal.typeCode) {
-                this.terminal.type = this.terminalDeviceTypes.find(
-                    (item) => item.value === this.terminal.typeCode,
-                )!;
-            }
+            return;
+        }
+
+        if (this.terminal.typeCode) {
+            this.terminal.type = this.terminalDeviceTypes.find(
+                (item) => item.value === this.terminal.typeCode,
+            )!;
         }
     }
 

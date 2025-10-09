@@ -17,7 +17,7 @@ import { FileEmitter } from "src/app/core/model/file-emitter.model";
 export class SelectFileComponent {
     @Input() fileTypes: FileType[] = [];
     @Input() allowedFileExtensions: string[] = [];
-    @Output() onDelete: EventEmitter<FileEmitter> = new EventEmitter();
+    @Output() outDelete: EventEmitter<FileEmitter> = new EventEmitter();
     @Output() fileSelected = new EventEmitter();
     public index: number = 0;
     type: FileType = { value: "", text: "" };
@@ -36,6 +36,6 @@ export class SelectFileComponent {
     }
 
     onDeleteButton() {
-        this.onDelete.emit();
+        this.outDelete.emit();
     }
 }

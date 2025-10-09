@@ -12,6 +12,7 @@ import {
     DestroyRef,
     ElementRef,
     inject,
+    OnInit,
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -34,7 +35,7 @@ import { TopHeaderComponent } from "../header/header-siderbar/top-header/top-hea
         LeftSidebarComponent,
     ],
 })
-export class LandingPageComponent {
+export class LandingPageComponent implements OnInit {
     private readonly globalStore = inject(GlobalStoreService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly workspaceService = inject(WorkspaceService);

@@ -23,7 +23,7 @@ import { Constants } from "src/constants";
 })
 export class ApplicationCriteriaPieChartComponent {
     protected footprintStore = inject(FootprintStoreService);
-    private filterService = inject(FilterService);
+    private readonly filterService = inject(FilterService);
     isSip: boolean = true;
     selectedCriteria = input({
         name: "",

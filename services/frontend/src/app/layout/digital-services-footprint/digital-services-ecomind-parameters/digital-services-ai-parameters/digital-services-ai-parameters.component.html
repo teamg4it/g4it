@@ -6,9 +6,8 @@
 <div class="form-container mb-3">
     <form [formGroup]="terminalsForm" (ngSubmit)="submitFormData()">
         <div class="form-section">
-            <label class="section-label">
-                <h3>{{ "digital-services-ai-parameter.devices" | translate }}</h3>
-            </label>
+            <h3>{{ "digital-services-ai-parameter.devices" | translate }}</h3>
+
             <div class="form-row">
                 <!-- Model -->
                 <div class="label-input-div-form">
@@ -101,9 +100,7 @@
         </div>
 
         <div class="form-section">
-            <label class="section-label"
-                ><h3>{{ "digital-services-ai-parameter.stages" | translate }}</h3></label
-            >
+            <h3>{{ "digital-services-ai-parameter.stages" | translate }}</h3>
             <div class="form-row">
                 <!-- Inference -->
                 <div class="checkbox-item">
@@ -138,11 +135,9 @@
         </div>
         @if (isInference) {
             <div class="form-section">
-                <label class="section-label"
-                    ><h3>
-                        {{ "digital-services-ai-parameter.inference" | translate }}
-                    </h3></label
-                >
+                <h3>
+                    {{ "digital-services-ai-parameter.inference" | translate }}
+                </h3>
                 <div class="form-row">
                     <!-- number of users -->
                     <div class="label-input-div-form">

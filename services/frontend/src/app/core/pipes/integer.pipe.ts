@@ -8,7 +8,7 @@ export class IntegerPipe implements PipeTransform {
         if (value === undefined) return "";
 
         if (typeof value === "string") {
-            value = parseFloat(value);
+            value = Number.parseFloat(value);
         }
         if (value === 0) {
             return "0";

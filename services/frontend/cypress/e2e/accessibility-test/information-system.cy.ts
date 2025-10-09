@@ -47,7 +47,7 @@ describe("Information System", () => {
         });
 
         // add new inventory
-        cy.get('[id="add-new-inventory"]').click({ force: true });
+        cy.get("#add-new-inventory button").click({ force: true });
 
         // access to equipment view
         cy.then(() => setPage("Equipment multicriteria page"));
@@ -126,7 +126,7 @@ describe("Information System", () => {
         cy.get('[id="my-is-return-button"]').click();
 
         // delete test data after cypress testing
-        cy.get('[id="delete-inventory"]').click({ force: true });
+        cy.get("#delete-inventory button").click({ force: true });
         cy.contains("Yes").click();
     });
 });

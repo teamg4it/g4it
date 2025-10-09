@@ -6,7 +6,6 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({
@@ -25,14 +24,7 @@ export class ImpactButtonComponent implements OnInit {
     impactImage: string = "";
     selectedLang: string = "en";
 
-    constructor(
-        private readonly sanitizer: DomSanitizer,
-        private readonly translate: TranslateService,
-    ) {}
-
-    renderHTML(html: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(html);
-    }
+    constructor(private readonly translate: TranslateService) {}
 
     ngOnInit(): void {
         if (this.impact === "...") {

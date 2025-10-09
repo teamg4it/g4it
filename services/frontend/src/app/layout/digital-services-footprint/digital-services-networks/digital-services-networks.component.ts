@@ -67,7 +67,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
     });
 
     constructor(
-        private digitalServicesData: DigitalServicesDataService,
+        private readonly digitalServicesData: DigitalServicesDataService,
         public userService: UserService,
     ) {}
 

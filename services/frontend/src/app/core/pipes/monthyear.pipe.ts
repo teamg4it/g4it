@@ -19,8 +19,9 @@ export class MonthYearPipe implements PipeTransform {
         if (!value) {
             return "";
         }
-
-        if (!value.match(/\d{2}-\d{4}/)) {
+        // Check if the value is in the format MM-YYYY
+        const regex = /\d{2}-\d{4}/;
+        if (!regex.exec(value)) {
             return value;
         }
         const [month, year] = value.split("-");

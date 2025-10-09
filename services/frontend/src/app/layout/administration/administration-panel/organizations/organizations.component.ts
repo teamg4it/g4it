@@ -64,7 +64,7 @@ export class OrganizationsComponent implements OnInit {
     init(organization: string | undefined = undefined) {
         this.administrationService.getOrganizations().subscribe((res: Organization[]) => {
             this.organizationsDetails = res;
-            this.unmodifiedOrganizationsDetails = JSON.parse(JSON.stringify(res));
+            this.unmodifiedOrganizationsDetails = structuredClone(res);
             if (organization) {
                 this.organization = this.unmodifiedOrganizationsDetails.find(
                     (s) => s.name === organization,

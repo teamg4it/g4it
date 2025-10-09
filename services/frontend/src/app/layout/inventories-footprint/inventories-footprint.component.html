@@ -5,13 +5,7 @@
 <p-scrollPanel [style]="{ width: '100%', height: '88%' }">
     <dataviz-filter [allFilters]="allUnmodifiedFilters"></dataviz-filter>
     @if (showTabMenu) {
-        <p-tabMenu
-            [model]="criteres!"
-            [scrollable]="true"
-            class="footprint-tabmenu"
-            role="heading"
-            [ariaLevel]="2"
-        >
+        <p-tabMenu [model]="criteres!" [scrollable]="true" class="footprint-tabmenu">
         </p-tabMenu>
     }
 
