@@ -377,12 +377,11 @@ public class EvaluateService {
 
                 } else {
                     Double totalVcpuCoreNumber = evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
-                    Integer totalVpcuCore = totalVcpuCoreNumber == null ? null : totalVcpuCoreNumber.intValue();
                     Double totalStorage = evaluateNumEcoEvalService.getTotalDiskSize(virtualEquipments);
 
                     impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
                             virtualEquipment, impactEquipementPhysiqueList,
-                            virtualEquipments.size(), totalVpcuCore, totalStorage
+                            virtualEquipments.size(), totalVcpuCoreNumber, totalStorage
                     );
                 }
                 String location = isCloudService ? codeToCountryMap.get(virtualEquipment.getLocation()) : virtualEquipment.getLocation();
