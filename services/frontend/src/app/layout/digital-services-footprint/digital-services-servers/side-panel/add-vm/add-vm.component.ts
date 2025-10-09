@@ -38,10 +38,12 @@ export class PanelAddVmComponent implements OnInit {
 
     vm: ServerVM = {} as ServerVM;
 
-    vcpuControl = this._formBuilder.control(0, [Validators.required]);
+    vcpuControl = this._formBuilder.control(1, [Validators.required]);
     diskControl = this._formBuilder.control(0, [Validators.required]);
     quantityControl = this._formBuilder.control(0, [Validators.required]);
-    electricityConsumptionControl = this._formBuilder.control(0, [Validators.required]);
+    electricityConsumptionControl = this._formBuilder.control<number | undefined>(
+        undefined,
+    );
     addVmForm = this._formBuilder.group({
         name: ["", Validators.required],
         vcpu: this.vcpuControl,
@@ -64,11 +66,11 @@ export class PanelAddVmComponent implements OnInit {
             this.vm = {
                 uid: "",
                 name: "VM " + num,
-                vCpu: 0,
+                vCpu: 1,
                 disk: 0,
                 quantity: 1,
                 annualOperatingTime: 8760,
-                electricityConsumption: 1,
+                electricityConsumption: undefined as any,
             };
         } else {
             this.vm = { ...this.server().vm[this.index] };

@@ -142,13 +142,13 @@
                 }}</label>
                 <p-inputNumber
                     formControlName="electricityConsumption"
-                    [required]="true"
                     [min]="0"
                     styleClass="inputnumber-medium"
                     (onInput)="verifyElectricityValue()"
                     [(ngModel)]="vm.electricityConsumption"
                     name="electricityConsumption"
                     id="electricityConsumption"
+                    [placeholder]="'common.optional' | translate"
                     ngDefaultControl
                     locale="fr-FR"
                 />
