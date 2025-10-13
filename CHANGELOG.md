@@ -1,5 +1,15 @@
 # G4IT
 
+## 3.6.1
+
+### Minor Changes
+
+- 1622 | Evaluation is stuck at 78%
+- 1661 | Bug on the Average Workload for Cloud when i import
+- 1676 | bad calculation of terminal in import file
+- 1678 | Change the terminal template to import in DS module
+
+
 ## 3.6.0
 
 ### Major Changes
