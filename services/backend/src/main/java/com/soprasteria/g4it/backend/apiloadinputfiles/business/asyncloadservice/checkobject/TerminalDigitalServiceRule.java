@@ -55,7 +55,7 @@ public class TerminalDigitalServiceRule extends AbstractDigitalServiceRule {
                             locale))).get());
         } else if (physicalEquipment.getDurationHour() != null && physicalEquipment.getDurationHour() > 0) {
             //calculate the quantity (quantity = nbUser * durationHour/8760)
-            double quantity = Math.ceil(physicalEquipment.getNumberOfUsers() * physicalEquipment.getDurationHour() / 8760);
+            double quantity = (physicalEquipment.getNumberOfUsers() * physicalEquipment.getDurationHour() / 8760);
             physicalEquipment.setQuantity(quantity);
         }
 
@@ -73,7 +73,7 @@ public class TerminalDigitalServiceRule extends AbstractDigitalServiceRule {
 
     private Optional<LineError> checkDigitalServiceModel(Locale locale, String filename, int line, String model) {
         //Consistent with the list of model available in ref_device_type.reference
-        Optional<DeviceTypeRef> refDeviceType =  deviceTypeRefRepository.findByReference(model);
+        Optional<DeviceTypeRef> refDeviceType = deviceTypeRefRepository.findByReference(model);
         if (refDeviceType.isEmpty()) {
             return Optional.of(new LineError(
                     filename,
