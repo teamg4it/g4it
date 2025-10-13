@@ -102,7 +102,7 @@ public interface InputToCsvRecord {
                 print(virtualEquipment.getCloudProvider()), //cloudProvider
                 print(virtualEquipment.getInstanceType()), //InstanceType
                 print(location), //location
-                print(virtualEquipment.getWorkload()), //averageWorkload
+                print(virtualEquipment.getWorkload() != null ?  virtualEquipment.getWorkload() * 100 :  null), //averageWorkload
                 print(virtualEquipment.getUsageDuration()), //annualUsageDuration
                 print(virtualEquipment.getPhysicalEquipmentName()),
                 "", //nomSourceDonneeEquipementPhysique

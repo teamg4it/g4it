@@ -71,7 +71,7 @@ class TerminalDigitalServiceRuleTest {
 
         assertNotNull(errors);
         assertTrue(errors.isEmpty());
-        assertEquals(Math.ceil(10.0 * 8760.0 / 8760), physicalEquipment.getQuantity());
+        assertEquals(10.0 * 8760.0 / 8760, physicalEquipment.getQuantity());
     }
 
     @Test
@@ -146,7 +146,7 @@ class TerminalDigitalServiceRuleTest {
         List<LineError> errors = terminalDigitalServiceRule.validate(locale, physicalEquipment, filename, line);
 
         assertTrue(errors.isEmpty());
-        assertEquals(Math.ceil(5.0 * 4380.0 / 8760), physicalEquipment.getQuantity());
+        assertEquals(5.0 * 4380.0 / 8760, physicalEquipment.getQuantity());
     }
 
     @Test
