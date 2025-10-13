@@ -79,14 +79,12 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         const currentWorkspaceName = (
             await firstValueFrom(this.userService.currentWorkspace$)
         ).name;
-        [footprint] = await Promise.all([
-            firstValueFrom(
-                this.footprintService.initApplicationFootprint(
-                    this.inventoryId,
-                    currentWorkspaceName,
-                ),
+        footprint = await firstValueFrom(
+            this.footprintService.initApplicationFootprint(
+                this.inventoryId,
+                currentWorkspaceName,
             ),
-        ]);
+        );
 
         this.mapCriteres(footprint);
 
@@ -273,14 +271,14 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         },
     ) {
         modifiedFilter[filter.field] = [
-            filter.field !== "domain"
-                ? Constants.ALL
-                : {
+            filter.field === "domain"
+                ? {
                       label: Constants.ALL,
                       checked: true,
                       visible: true,
                       children: [],
-                  },
+                  }
+                : Constants.ALL,
             ...this.getValues(uniqueFilters, filter),
         ];
     }

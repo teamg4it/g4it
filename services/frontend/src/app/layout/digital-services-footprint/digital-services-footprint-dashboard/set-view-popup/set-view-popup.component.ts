@@ -9,7 +9,7 @@ import { DigitalService } from "src/app/core/interfaces/digital-service.interfac
 export class SetViewPopupComponent implements OnInit {
     @Input() displayPopup: boolean = false;
     @Input() digitalService!: DigitalService;
-    @Output() onClose = new EventEmitter<void>();
+    @Output() outClose = new EventEmitter<void>();
     formGroup!: FormGroup;
     intitalDataState: boolean = false;
     ngOnInit() {
@@ -25,6 +25,6 @@ export class SetViewPopupComponent implements OnInit {
     }
 
     closePopup(): void {
-        this.onClose.emit();
+        this.outClose.emit();
     }
 }

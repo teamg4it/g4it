@@ -100,8 +100,8 @@ export class UsersComponent implements OnInit {
             this.organizationsDetails = res;
 
             const list: WorkspaceWithOrganization[] = [];
-            this.organizationsDetails.forEach((organization: Organization) => {
-                organization.workspaces.forEach((workspace) => {
+            for (const organization of this.organizationsDetails) {
+                for (const workspace of organization.workspaces) {
                     const roles = this.userService.getRoles(organization, workspace);
                     if (
                         workspace.status === Constants.WORKSPACE_STATUSES.ACTIVE &&
@@ -121,8 +121,8 @@ export class UsersComponent implements OnInit {
                             authorizedDomains: organization.authorizedDomains,
                         });
                     }
-                });
-            });
+                }
+            }
 
             this.workspacelist = list;
             if (updateOrganization && this.workspace.workspaceId) {
@@ -252,7 +252,6 @@ export class UsersComponent implements OnInit {
                             .pipe(take(1))
                             .subscribe(() => {
                                 this.router.navigateByUrl(Constants.WELCOME_PAGE);
-                                return;
                             });
                     } else {
                         this.searchList();

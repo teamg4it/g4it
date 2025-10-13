@@ -38,9 +38,9 @@ describe("SetViewPopupComponent", () => {
     });
 
     it("should emit onClose event when closePopup is called", () => {
-        spyOn(component.onClose, "emit");
+        spyOn(component.outClose, "emit");
         component.closePopup();
-        expect(component.onClose.emit).toHaveBeenCalled();
+        expect(component.outClose.emit).toHaveBeenCalled();
     });
 
     it("should initialize dataConsistencyCheckbox to false if enableDataInconsistency is undefined", () => {

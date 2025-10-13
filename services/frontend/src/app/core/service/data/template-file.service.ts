@@ -60,7 +60,7 @@ export class TemplateFileService {
         let xlsxFile: TemplateFileDescription = {} as TemplateFileDescription;
         const csvFiles: TemplateFileDescription[] = [];
 
-        templateFiles.forEach((res: FileDescription) => {
+        for (const res of templateFiles) {
             let templateFileDescription = { ...res } as TemplateFileDescription;
             templateFileDescription.name = extractFileName(templateFileDescription.name);
 
@@ -88,7 +88,7 @@ export class TemplateFileService {
             }
             if (res.name.includes("csv")) {
                 templateFileDescription.type = "csv";
-                Constants.FILE_TYPES.forEach((csvFileType) => {
+                for (const csvFileType of Constants.FILE_TYPES) {
                     if (res.name.includes(csvFileType)) {
                         templateFileDescription.displayFileName = this.translate.instant(
                             `inventories.templates.${csvFileType}-template-file`,
@@ -99,11 +99,11 @@ export class TemplateFileService {
                         );
                         templateFileDescription.csvFileType = csvFileType;
                     }
-                });
+                }
 
                 csvFiles.push(templateFileDescription);
             }
-        });
+        }
 
         csvFiles.sort(
             (a, b) =>

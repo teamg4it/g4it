@@ -113,7 +113,9 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     ngAfterViewInit(): void {
-        this.fileTypes.forEach((type) => this.addComponent(type));
+        for (const type of this.fileTypes) {
+            this.addComponent(type);
+        }
     }
 
     ngOnChanges(changes: SimpleChanges) {

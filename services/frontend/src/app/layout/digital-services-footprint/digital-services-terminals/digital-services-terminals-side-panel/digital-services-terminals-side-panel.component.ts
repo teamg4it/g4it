@@ -71,7 +71,7 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
 
     initForm() {
         this.existingNames = this.terminalData
-            .filter((c) => (!this.isNew ? this.terminal.name !== c.name : true))
+            .filter((c) => (this.isNew ? true : this.terminal.name !== c.name))
             .map((cloud) => cloud.name);
         this.terminalsForm = this._formBuilder.group({
             name: [

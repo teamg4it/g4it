@@ -211,7 +211,7 @@
 @if (displaySetViewPopup) {
     <app-set-view-popup
         [displayPopup]="displaySetViewPopup"
-        (onClose)="displaySetViewPopup = false; updateDataConsistencyInDS($event)"
+        (outClose)="displaySetViewPopup = false; updateDataConsistencyInDS($event)"
         [digitalService]="digitalService"
     ></app-set-view-popup>
 }

@@ -84,7 +84,9 @@ export class DatavizFilterApplicationComponent implements OnChanges {
         if (item.label === Constants.ALL) {
             this.allUnusedFilters["domain"].forEach((domain) => {
                 domain.checked = event.checked;
-                domain["children"]?.forEach((child) => (child.checked = event.checked));
+                for (const child of domain["children"] ?? []) {
+                    child.checked = event.checked;
+                }
             });
         } else {
             item["children"]?.forEach((child) => (child.checked = event.checked));

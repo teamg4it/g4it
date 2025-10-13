@@ -39,8 +39,7 @@ export const convertToGlobalVision = (
     virtualEquipments: OutVirtualEquipmentRest[],
 ): DigitalServiceFootprint[] => {
     const globalVision: DigitalServiceFootprint[] = [];
-
-    ["Terminal", "Network"].forEach((tier) => {
+    for (const tier of ["Terminal", "Network"]) {
         const data = physicalEquipments.filter((pe) => pe.equipmentType === tier);
         if (data.length > 0) {
             globalVision.push({
@@ -48,7 +47,7 @@ export const convertToGlobalVision = (
                 impacts: aggregateAndMap(data),
             });
         }
-    });
+    }
     const data = physicalEquipments.filter((pe) =>
         ["Dedicated Server"].includes(pe.equipmentType),
     );
@@ -279,7 +278,7 @@ const aggregateImpacts = (arr: any[], keyFields: string[]) => {
                     (obj.statusIndicator === "OK" ? obj.countValue : 0) +
                     acc[key].statusCount.ok,
                 error:
-                    (obj.statusIndicator !== "OK" ? obj.countValue : 0) +
+                    (obj.statusIndicator === "OK" ? 0 : obj.countValue) +
                     acc[key].statusCount.error,
                 total: obj.countValue + acc[key].statusCount.total,
             },
@@ -336,9 +335,9 @@ const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: str
                     ? obj.countValue
                     : 0;
             existingACVStep.statusCount.error +=
-                obj.statusIndicator !== Constants.DATA_QUALITY_STATUS.ok
-                    ? obj.countValue
-                    : 0;
+                obj.statusIndicator === Constants.DATA_QUALITY_STATUS.ok
+                    ? 0
+                    : obj.countValue;
             existingACVStep.statusCount.total += obj.countValue;
             existingACVStep.status =
                 existingACVStep.statusCount.error > 0
@@ -362,9 +361,9 @@ const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: str
                             ? obj.countValue
                             : 0,
                     error:
-                        obj.statusIndicator !== Constants.DATA_QUALITY_STATUS.ok
-                            ? obj.countValue
-                            : 0,
+                        obj.statusIndicator === Constants.DATA_QUALITY_STATUS.ok
+                            ? 0
+                            : obj.countValue,
                     total: obj.countValue,
                 },
             });
@@ -397,7 +396,7 @@ const getImpactsForTerminal = (data: OutPhysicalEquipmentRest[], projection: str
                     const isOk = i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok;
                     return {
                         ok: acc.ok + (isOk ? i.countValue : 0),
-                        error: acc.error + (!isOk ? i.countValue : 0),
+                        error: acc.error + (isOk ? 0 : i.countValue),
                         total: acc.total + (i.countValue ?? 0),
                     };
                 },
@@ -440,7 +439,7 @@ const getImpactsForCloud = (
             provider: obj.provider,
             statusCount: {
                 ok: obj.statusIndicator === "OK" ? obj.countValue : 0,
-                error: obj.statusIndicator !== "OK" ? obj.countValue : 0,
+                error: obj.statusIndicator === "OK" ? 0 : obj.countValue,
                 total: obj.countValue,
             },
         });
@@ -485,7 +484,7 @@ const getImpactsForCloud = (
                 const isOk = i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok;
                 return {
                     ok: acc.ok + (isOk ? i.countValue : 0),
-                    error: acc.error + (!isOk ? i.countValue : 0),
+                    error: acc.error + (isOk ? 0 : i.countValue),
                     total: acc.total + (i.countValue ?? 0),
                 };
             },
