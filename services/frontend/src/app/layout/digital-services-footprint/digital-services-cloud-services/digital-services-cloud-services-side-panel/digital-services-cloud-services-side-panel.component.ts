@@ -114,7 +114,7 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
 
     initForm() {
         this.existingNames = this.cloudServices
-            .filter((c) => (!this.isNew ? this.cloud.name !== c.name : true))
+            .filter((c) => (this.isNew ? true : this.cloud.name !== c.name))
             .map((cloud) => cloud.name);
         this.cloudForm = this._formBuilder.group({
             name: [

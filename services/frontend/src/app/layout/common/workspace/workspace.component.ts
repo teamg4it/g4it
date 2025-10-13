@@ -111,7 +111,7 @@ export class WorkspaceComponent implements OnInit {
     }
 
     spaceDuplicateValidator(control: AbstractControl) {
-        if (control && control?.value?.includes(" ")) {
+        if (control?.value?.includes(" ")) {
             return { spaceNotAllowed: true };
         } else if (control?.value) {
             const getSpaceName =
@@ -146,9 +146,9 @@ export class WorkspaceComponent implements OnInit {
             return;
         }
         this.selectedMenuIndex = index;
-        this.spaceDetails.menu.forEach((detail, i) => {
+        for (const [i, detail] of this.spaceDetails.menu.entries()) {
             detail.active = i === index;
-        });
+        }
     }
 
     async getDomainOrganizationsList() {

@@ -105,8 +105,8 @@ describe("InventoryUtilService", () => {
         });
 
         it("should return an array with undefined values if count and avgPue are NaN", () => {
-            const count = NaN;
-            const avgPue = NaN;
+            const count = Number.NaN;
+            const avgPue = Number.NaN;
 
             const result = service.getDatacenterStats(count, avgPue);
 

@@ -60,8 +60,8 @@ export class DatavizFilterComponent implements OnChanges {
         );
     }
 
-    async onFilterSelected(selectedValues: string[], tab: string, selection: string) {
-        const updatedFilter = await this.filterService.getUpdateSelectedValues(
+    onFilterSelected(selectedValues: string[], tab: string, selection: string) {
+        const updatedFilter = this.filterService.getUpdateSelectedValues(
             selectedValues,
             this.allFilters[tab],
             selection,

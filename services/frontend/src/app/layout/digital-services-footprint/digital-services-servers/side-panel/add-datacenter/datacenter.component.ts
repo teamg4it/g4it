@@ -60,7 +60,7 @@ export default class PanelDatacenterComponent {
         this.isToLow = this.datacenterForm.value.pue! < 1;
     }
     onInputCheck() {
-        this.disableButton = this.datacenterForm.value.name?.trim() === "" ? true : false;
+        this.disableButton = this.datacenterForm.value.name?.trim() === "";
     }
 
     submitFormData() {

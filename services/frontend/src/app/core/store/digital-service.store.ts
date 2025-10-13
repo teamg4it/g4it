@@ -98,9 +98,9 @@ export class DigitalServiceStoreService {
 
     readonly inDatacenters = computed(() => this._store().inDatacenters);
     setInDatacenters(inDatacenters: InDatacenterRest[]) {
-        inDatacenters.forEach((data) => {
+        for (const data of inDatacenters) {
             data.displayLabel = `${data.name.split("|")[0]} (${data.location} - PUE = ${data.pue})`;
-        });
+        }
         this._store.update((s) => ({ ...s, inDatacenters }));
     }
 

@@ -171,7 +171,9 @@ export class InventoryUtilService {
         filterFields: string[],
     ): InventoryFilterSet {
         const filtersSet: InventoryFilterSet = {};
-        filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
+        for (const field of filterFields) {
+            filtersSet[field] = new Set(filters[field]);
+        }
         return filtersSet;
     }
 
@@ -181,7 +183,7 @@ export class InventoryUtilService {
         );
     }
 
-    getCloudStats(count: number = NaN) {
+    getCloudStats(count: number = Number.NaN) {
         return [
             {
                 label: this.decimalsPipe.transform(count),
@@ -198,10 +200,10 @@ export class InventoryUtilService {
     }
 
     getEquipmentStats(
-        count: number = NaN,
-        avgAge: number = NaN,
-        lowImpact: number = NaN,
-        elecConsumption: number = NaN,
+        count: number = Number.NaN,
+        avgAge: number = Number.NaN,
+        lowImpact: number = Number.NaN,
+        elecConsumption: number = Number.NaN,
     ) {
         return [
             {
@@ -266,8 +268,7 @@ export class InventoryUtilService {
         let datacenterPhysicalEquipmentCount = 0;
         let datacenterSum = 0;
         const datacenterNames = new Set<string>();
-
-        filteredDatacenters.forEach((datacenter) => {
+        for (const datacenter of filteredDatacenters) {
             let { dataCenterName, physicalEquipmentCount, pue } = datacenter;
 
             pue = pue || 0;
@@ -277,7 +278,7 @@ export class InventoryUtilService {
             datacenterPhysicalEquipmentCount += physicalEquipmentCount;
             datacenterSum += physicalEquipmentCount * pue;
             datacenterNames.add(dataCenterName);
-        });
+        }
 
         return this.getDatacenterStats(
             datacenterNames.size,
@@ -361,7 +362,7 @@ export class InventoryUtilService {
         }
     }
 
-    getDatacenterStats(count: number = NaN, avgPue: number = NaN) {
+    getDatacenterStats(count: number = Number.NaN, avgPue: number = Number.NaN) {
         return [
             {
                 label: this.decimalsPipe.transform(count),

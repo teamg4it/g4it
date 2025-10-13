@@ -70,7 +70,7 @@ export class UsefulInformationComponent implements OnInit {
     }
 
     composeEmail() {
-        window.location.href = this.userService.composeEmail(
+        globalThis.location.href = this.userService.composeEmail(
             this.currentOrganization,
             this.selectedWorkspace,
         );

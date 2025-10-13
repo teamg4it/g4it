@@ -21,7 +21,6 @@ import {
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
     ImpactACVStep,
-    ImpactNetworkNames,
     ImpactSipValue,
     ServerImpact,
     ServersType,
@@ -140,7 +139,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         );
         let xAxis: any[] = [];
         const yAxis: any[] = [];
-        seriesData.forEach((impact: ImpactNetworkNames) => {
+        for (const impact of seriesData) {
             networkMap[impact.networkType] = {
                 ...impact,
                 status: {
@@ -174,7 +173,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                     },
                 });
             });
-        });
+        }
         this.xAxisInput = xAxis;
         this.criteriaMap = networkMap;
         return {
@@ -441,7 +440,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         okMap: StatusCountMap,
         isTerminals: boolean,
     ): StatusCountMap {
-        seriesData.forEach((impact: any) => {
+        for (const impact of seriesData) {
             okMap[impact.name] = {
                 status: {
                     ok: impact.status.ok ?? 0,
@@ -478,7 +477,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                     },
                 });
             });
-        });
+        }
         return okMap;
     }
 
@@ -490,14 +489,14 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         isTerminals: boolean,
     ): StatusCountMap {
         let childData;
-        if (!isTerminals) {
-            childData = seriesData
-                .find((item: any) => item.name === this.selectedDetailParam)
-                .clouds.find((c: any) => c.name === this.selectedDetailName);
-        } else {
+        if (isTerminals) {
             childData = seriesData
                 .find((item: any) => item.name === this.selectedDetailParam)
                 .terminals.find((term: any) => term.name === this.selectedDetailName);
+        } else {
+            childData = seriesData
+                .find((item: any) => item.name === this.selectedDetailParam)
+                .clouds.find((c: any) => c.name === this.selectedDetailName);
         }
 
         const stepKey = "acvStep";
@@ -575,9 +574,9 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                     error: impactVmDisk.reduce(
                         (acc, i) =>
                             acc +
-                            (i.status !== Constants.DATA_QUALITY_STATUS.ok
-                                ? i.countValue
-                                : 0),
+                            (i.status === Constants.DATA_QUALITY_STATUS.ok
+                                ? 0
+                                : i.countValue),
                         0,
                     ),
                     total: impactVmDisk.reduce((acc, i) => acc + i.countValue, 0),

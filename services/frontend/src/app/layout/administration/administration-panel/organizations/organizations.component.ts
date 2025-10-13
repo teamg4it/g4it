@@ -160,15 +160,15 @@ export class OrganizationsComponent implements OnInit {
     }
 
     saveWorkspaces(workspaces: Workspace[]) {
-        workspaces
-            .filter((workspace) => workspace.uiStatus === "OK")
-            .forEach((workspace) => {
+        for (const workspace of workspaces) {
+            if (workspace.uiStatus === "OK") {
                 this.updateWorkspace(workspace.id, {
                     organizationId: this.organization?.id,
                     name: workspace.name,
                     status: workspace.status,
                 });
-            });
+            }
+        }
     }
 
     addWorkplace(workspace: Workspace) {

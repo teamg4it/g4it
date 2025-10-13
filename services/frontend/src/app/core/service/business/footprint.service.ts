@@ -62,9 +62,9 @@ export class FootprintService {
 
     setUnspecifiedData(footprint: ApplicationFootprint[]) {
         footprint.forEach((element) => {
-            element.impacts.forEach((impact) => {
+            for (const impact of element.impacts) {
                 this.setUnspecifiedDataImpact(impact);
-            });
+            }
         });
         return footprint;
     }
@@ -336,9 +336,9 @@ export class FootprintService {
         }
 
         if (fieldObj.children) {
-            fieldObj.children.forEach((child) => {
+            for (const child of fieldObj.children) {
                 fieldSet[criteriaImpact[fieldObj.field]].add(criteriaImpact[child.field]);
-            });
+            }
         } else {
             fieldSet.add(criteriaImpact[fieldObj.field]);
         }

@@ -170,8 +170,7 @@ export class InventoriesCritereFootprintComponent
         const otherData: any = [];
 
         const total = this.getTotal(unit, criteriaCalculated);
-
-        criteriaCalculated.footprints.forEach((item) => {
+        for (const item of criteriaCalculated.footprints) {
             const sumValue =
                 unit === Constants.PEOPLEEQ ? item.total.sip : item.total.impact;
             const translated = lifecycleMap.get(item.data);
@@ -183,7 +182,7 @@ export class InventoriesCritereFootprintComponent
             let percent = (sumValue / total) * 100;
             if (percent < 1) v.percent = percent;
             percent < 1 ? otherData.push(v) : echartsData.push(v);
-        });
+        }
 
         // Push the single data entry for multiple entities with impact less than 1%.
         if (otherData.length > 0) {
@@ -234,9 +233,9 @@ export class InventoriesCritereFootprintComponent
                 ? this.translate.instant("common.empty")
                 : (this.translate.instant("acvStep")[data.name] ?? data.name),
         );
-        errorEchartsData.forEach((data) => {
+        for (const data of errorEchartsData) {
             this.checkDataStatus(data);
-        });
+        }
         this.allErrorData = echartsData?.every((f) => !f.status.ok);
         return {
             height: 700,

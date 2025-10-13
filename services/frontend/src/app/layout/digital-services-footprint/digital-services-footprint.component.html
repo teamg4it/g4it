@@ -19,8 +19,6 @@
             [model]="tabItems"
             [activeItem]="selectedTab"
             (activeItemChange)="onMenuTabChange($event)"
-            role="heading"
-            [ariaLevel]="2"
             [attr.aria-label]="'common.ds-menu' | translate"
         ></p-tabMenu>
     } @else {
