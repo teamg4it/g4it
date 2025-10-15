@@ -1,29 +1,24 @@
-<div class="w-full px-2">
+<div class="w-full">
     <p-button
         [styleClass]="
             selectedCriteria === impact
-                ? 'w-full force-bg-white  letter-spacing-2 h-5rem border-left-3 border-tertiary'
-                : 'w-full force-bg-white letter-spacing-2 h-5rem '
+                ? 'w-full letter-spacing-2 h-5rem bg-light-green border-noround'
+                : 'w-full force-bg-white letter-spacing-2 h-5rem border-noround bg-light-gray border-bottom-gray'
         "
         (onClick)="changeCritere(impact)"
         [disabled]="value === null || value === 0 || disabled"
     >
-        <div class="bg-gray-100 border-circle p-3 h-4rem">
-            <img src="{{ impactImage }}" alt="" width="30" />
+        <div
+            [ngClass]="selectedCriteria === impact ? 'bg-tertiary' : 'bg-gray-100'"
+            class="border-circle p-3 h-4rem"
+        >
+            <img
+                [ngClass]="{ 'selected-img-white': selectedCriteria === impact }"
+                src="{{ impactImage }}"
+                alt=""
+                width="30"
+            />
         </div>
-        @if (selectedCriteria === impact) {
-            <img
-                class="check-icon-corner"
-                src="assets/images/icons/icon-check.svg"
-                alt="{{ 'common.selected' | translate }}"
-            />
-        } @else {
-            <img
-                class="check-icon-corner"
-                src="assets/images/icons/icon-not-check.svg"
-                alt="{{ 'common.not-selected' | translate }}"
-            />
-        }
         <div class="flex flex-column align-items-start ml-2 pr-4">
             <p class="text-xs uppercase text-left">{{ impactText }}</p>
             @if ((value ?? 0) === 0) {
@@ -39,5 +34,9 @@
                 ></div>
             }
         </div>
+        <span
+            [ngClass]="{ 'light-green-color': selectedCriteria !== impact }"
+            class="pi pi-chevron-right absolute right-1rem font-bold"
+        ></span>
     </p-button>
 </div>

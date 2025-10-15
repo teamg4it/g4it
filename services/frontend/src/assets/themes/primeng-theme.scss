@@ -9089,3 +9089,28 @@ app-digital-services-ecomind-parameters {
         }
     }
 }
+
+app-impact-button {
+    padding: 1px;
+}
+
+.right-1rem {
+    right: 1rem;
+}
+
+.selected-img-white {
+    filter: invert(100%) sepia(100%) saturate(0%) brightness(100%);
+}
+
+.light-green-color {
+    color: var(--light-green-color);
+}
+
+.impact-buttons-div {
+    height: 98%;
+    width: 95%;
+}
+
+.border-bottom-gray {
+    border-bottom: 2px solid var(--gray-300);
+}
