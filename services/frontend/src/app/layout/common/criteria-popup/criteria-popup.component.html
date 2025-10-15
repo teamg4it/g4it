@@ -140,25 +140,26 @@
                 >
                     <div class="flex justify-content-start mr-auto">
                         <p-button
-                            styleClass="reset-button"
-                            (onClick)="resetToDefault()"
-                            aria-label="Reset"
-                            class="m-0"
+                            styleClass="cancel-creation-button uppercase mb-2 sm:mb-0"
+                            (onClick)="closePopup()"
+                            aria-label="Cancel"
+                            id="criteria-cancel"
                         >
-                            <i class="pi pi-refresh icon mr-2"></i>
-                            {{ "common.reset" | translate }}
+                            {{ "common.cancel" | translate }}
                         </p-button>
                     </div>
                     <p-button
-                        styleClass="white-button"
-                        (onClick)="closePopup()"
-                        aria-label="Cancel"
-                        id="criteria-cancel"
+                        styleClass="p-button-secondary-blue uppercase"
+                        (onClick)="resetToDefault()"
+                        aria-label="Reset"
+                        class="m-0"
                     >
-                        {{ "common.cancel" | translate }}
+                        <i class="pi pi-refresh icon mr-2"></i>
+                        {{ "common.reset" | translate }}
                     </p-button>
+
                     <p-button
-                        styleClass="black-button"
+                        styleClass="uppercase"
                         (onClick)="saveChanges()"
                         [disabled]="
                             (type === 'workspace' &&
