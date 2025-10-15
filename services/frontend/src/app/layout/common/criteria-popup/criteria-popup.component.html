@@ -12,7 +12,7 @@
             [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
         >
             <ng-template pTemplate="header">
-                <h4 class="font-bold">
+                <h3 class="font-semibold ml-0 text-2xl">
                     {{
                         type === "organization"
                             ? ("administration.user.choose-criteria"
@@ -30,7 +30,7 @@
                                 : ("digital-services.choose-criteria"
                                   | translate: { digitalServiceName: ds.name })
                     }}
-                </h4>
+                </h3>
             </ng-template>
 
             @if (type !== "workspace") {

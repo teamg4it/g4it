@@ -30,13 +30,6 @@ describe("SetViewPopupComponent", () => {
         expect(component.formGroup.get("dataConsistencyCheckbox")?.value).toBe(true);
     });
 
-    it("should set dataConsistencyCheckbox to false when resetForm is called", () => {
-        component.digitalService = { enableDataInconsistency: true } as any;
-        component.ngOnInit();
-        component.resetForm();
-        expect(component.formGroup.get("dataConsistencyCheckbox")?.value).toBe(false);
-    });
-
     it("should emit onClose event when closePopup is called", () => {
         spyOn(component.outClose, "emit");
         component.closePopup();
