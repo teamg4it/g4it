@@ -212,7 +212,7 @@ public class EvaluateNumEcoEvalService {
     public List<ImpactEquipementVirtuel> calculateVirtualEquipment(final InVirtualEquipment virtualEquipment,
                                                                    final List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
                                                                    Integer virtualEquipmentNumber,
-                                                                   Integer totalVcpuNumber,
+                                                                   Double totalVcpuNumber,
                                                                    Double totalStorage) {
 
         if (impactEquipementPhysiqueList.isEmpty()) return new ArrayList<>();
