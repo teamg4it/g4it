@@ -20,9 +20,6 @@ export class SetViewPopupComponent implements OnInit {
             ),
         });
     }
-    resetForm(): void {
-        this.formGroup.get("dataConsistencyCheckbox")?.setValue(false);
-    }
 
     closePopup(): void {
         this.outClose.emit();
