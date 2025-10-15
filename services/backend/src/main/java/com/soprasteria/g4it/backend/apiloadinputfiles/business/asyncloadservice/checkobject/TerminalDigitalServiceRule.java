@@ -55,7 +55,7 @@ public class TerminalDigitalServiceRule extends AbstractDigitalServiceRule {
                             locale))).get());
         } else if (physicalEquipment.getDurationHour() != null && physicalEquipment.getDurationHour() > 0) {
             //calculate the quantity (quantity = nbUser * durationHour/8760)
-            double quantity = Math.ceil(physicalEquipment.getNumberOfUsers() * physicalEquipment.getDurationHour() / 8760);
+            double quantity = physicalEquipment.getNumberOfUsers() * physicalEquipment.getDurationHour() / 8760;
             physicalEquipment.setQuantity(quantity);
         }
 
