@@ -49,6 +49,7 @@ public interface CheckApplicationRepository extends JpaRepository<CheckApplicati
                     STRING_AGG(CONCAT(ca.filename, ':', ca.line_nb), ',') as filenameLineInfo
                 FROM check_inv_load_application ca
                 WHERE ca.task_id = :taskId
+                  AND ca.application_name IS NOT NULL 
                 GROUP BY ca.application_name, ca.environment_type, ca.virtual_equipment_name
                 HAVING COUNT(*) > 1
                 LIMIT 50000
