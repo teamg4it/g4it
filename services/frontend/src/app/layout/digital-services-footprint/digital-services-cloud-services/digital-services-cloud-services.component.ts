@@ -34,11 +34,9 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
 
     cloudServices = computed(() => {
         return (
-            this.digitalServiceStore.isSharedDS()
-                ? this.digitalServiceStore
+                this.digitalServiceStore
                       .inVirtualEquipments()
                       .filter((server) => server.infrastructureType === "CLOUD_SERVICES")
-                : this.virtualEquipments()
         ).map((server: InVirtualEquipmentRest) =>
             this.toDigitalServiceCloudServiceConfig(
                 server,
@@ -68,12 +66,7 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     }
 
     async getCloudServices() {
-        const result = await firstValueFrom(
-            this.inVirtualEquipmentsService.getByDigitalService(this.digitalServiceUid),
-        );
-        this.virtualEquipments.set(
-            result.filter((server) => server.infrastructureType === "CLOUD_SERVICES"),
-        );
+        this.digitalServiceStore.initInVirtualEquipments(this.digitalServiceUid);
     }
 
     changeSidebar(event: boolean) {
