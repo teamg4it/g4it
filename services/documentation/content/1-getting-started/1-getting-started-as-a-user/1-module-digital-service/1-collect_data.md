@@ -79,6 +79,8 @@ service performance.
 
 -   **Operating Time**: The total uptime of virtual machines throughout the year, measured in hours.
 
+-   **Electricity Consumption(Optional)**: Annual electrical consumption of the equipment, measured in kilowatts per hour (kWh).
+
 ---
 
 #### **Cloud Hosting (IaaS - Infrastructure as a Service)**

@@ -26,6 +26,14 @@
 
 ### Major Changes
 
+### Major Changes
+
+- 1598 | [AFNIC] NumEcoEval - Electricity consumption of a Virtual Machine
+
+## 3.6.0
+
+### Major Changes
+
 - 1406 | Visualize a digital service without any account
 - 1402 | Import .csv for terminal and network
 - 1442 | Rename organization to workspace and subscriber to organization
