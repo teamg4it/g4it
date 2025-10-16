@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.7.0
+
+### Major Changes
+
+### Minor Changes
+
+- 1598 | [AFNIC] NumEcoEval - Electricity consumption of a Virtual Machine
+
 ## 3.6.1
 
 ### Minor Changes

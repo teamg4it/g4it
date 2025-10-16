@@ -28,8 +28,20 @@ export class PanelListVmComponent {
     headerFields = computed(() => {
         const { type } = this.digitalServiceStore.server();
         return type === "Compute"
-            ? ["name", "quantity", "vCpu", "annualOperatingTime"]
-            : ["name", "quantity", "disk", "annualOperatingTime"];
+            ? [
+                  "name",
+                  "quantity",
+                  "vCpu",
+                  "annualOperatingTime",
+                  "electricityConsumption",
+              ]
+            : [
+                  "name",
+                  "quantity",
+                  "disk",
+                  "annualOperatingTime",
+                  "electricityConsumption",
+              ];
     });
     vmData = computed(() => {
         return [...this.digitalServiceStore.server().vm];
