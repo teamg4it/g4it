@@ -9,7 +9,6 @@ export interface AIInfrastructureForm {
     ramSize: number;
     location: string;
     pue: number;
-    complementaryPue: number;
 }
 
 export interface AIParametersForm {

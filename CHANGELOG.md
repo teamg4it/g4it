@@ -1,5 +1,10 @@
 # G4IT
 
+## 3.7.0
+
+### Minor Changes
+- 1511 | Remove Complementary PUE field from Ecomind
+
 ## 3.6.1
 
 ### Minor Changes

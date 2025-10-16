@@ -97,10 +97,6 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
                     [Validators.required, Validators.min(0)],
                 ],
                 pue: [null, [Validators.required, Validators.min(1)]],
-                complementaryPue: [
-                    { value: 1, disabled: true },
-                    [Validators.required, Validators.min(1)],
-                ],
                 location: [null, Validators.required],
             });
 
@@ -143,7 +139,6 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
                 gpuMemory: defaultInfrastructureType.defaultGpuMemory,
                 ramSize: defaultInfrastructureType.defaultRamSize,
                 pue: defaultInfrastructureType.defaultDatacenterPue,
-                complementaryPue: 1,
                 location: "France",
             };
             //to get it only one time
