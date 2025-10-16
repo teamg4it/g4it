@@ -172,7 +172,6 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
             "gpuMemory",
             "ramSize",
             "pue",
-            "complementaryPue",
             "location",
         ] as const;
 

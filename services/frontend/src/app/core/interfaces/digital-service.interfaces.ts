@@ -102,7 +102,6 @@ export interface DigitalServicesAiInfrastructure {
     ramSize: number;
     location: string;
     pue: number;
-    complementaryPue: number;
 }
 
 export interface DigitalServiceNetworkConfig {

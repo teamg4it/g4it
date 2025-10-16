@@ -98,7 +98,6 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
             gpuMemory: 32,
             ramSize: 64,
             pue: 1.5,
-            complementaryPue: 1.1,
             location: "Germany",
             infrastructureType: {
                 value: "Server",
@@ -133,7 +132,6 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
             gpuMemory: 32,
             ramSize: 64,
             pue: 1.5,
-            complementaryPue: 1.1,
             location: "Germany",
             infrastructureType: apiInfrastructureType,
         };

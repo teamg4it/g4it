@@ -172,7 +172,6 @@ describe("DigitalServicesFootprintFooterComponent", () => {
             gpuMemory: 16,
             ramSize: 32,
             pue: 1.2,
-            complementaryPue: 1.1,
             location: "IN",
         });
         mockDigitalServicesAiData.saveAiInfrastructure.and.returnValue(of({}) as any);
