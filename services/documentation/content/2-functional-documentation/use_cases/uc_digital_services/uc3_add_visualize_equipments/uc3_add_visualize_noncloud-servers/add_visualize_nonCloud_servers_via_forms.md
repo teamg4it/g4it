@@ -118,7 +118,7 @@ _example:_
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group      | Elements                     | Type      | Description                                                                                                                                                              |
-| --------- | ---------- | ---------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|-----------| ---------- | ---------------------------- | --------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |           | Header     |                              | group     |                                                                                                                                                                          |
 | 1         |            | Server Name                  | title     |                                                                                                                                                                          |
 | 2         |            | Server options               | sub-title |                                                                                                                                                                          |
@@ -130,9 +130,10 @@ _example:_
 | 5         |            | Quantity (+VMs)              | column    |                                                                                                                                                                          |
 | 6         |            | vCPU                         | column    |                                                                                                                                                                          |
 | 7         |            | Annual Operating time (hour) | column    |                                                                                                                                                                          |
-| 8         |            | Cancel                       | button    | <li><u>_action rules_</u>: That button open the window Servers details.                                                                                                  |
-| 9         |            | Previous                     | button    | <li><u>_action rules_</u>: Come back to the previous screen                                                                                                              |
-| 10        |            | Create                       | button    | <li><u>_action rules_</u>: Create the non cloud servers from the current Digital Service.<br>Note : The user must click on Calculate to update the footprint estimation. |
+| 8         |            |Electricity consumption (kwH) | column    | Optional                                                                                                                                                                 |
+| 9         |            | Cancel                       | button    | <li><u>_action rules_</u>: That button open the window Servers details.                                                                                                  |
+| 10        |            | Previous                     | button    | <li><u>_action rules_</u>: Come back to the previous screen                                                                                                              |
+| 11        |            | Create                       | button    | <li><u>_action rules_</u>: Create the non cloud servers from the current Digital Service.<br>Note : The user must click on Calculate to update the footprint estimation. |
 
 {{% /expand %}}
 
@@ -144,7 +145,7 @@ _example:_
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group                 | Elements                     | Type                | Description                                                             |
-| --------- | --------------------- | ---------------------------- | ------------------- | ----------------------------------------------------------------------- |
+|-----------| --------------------- | ---------------------------- | ------------------- | ----------------------------------------------------------------------- |
 |           | Header                |                              | group               |                                                                         |
 | 1         |                       | Add VM                       | title               |                                                                         |
 | 2         |                       | Name                         | label input         |                                                                         |
@@ -152,8 +153,9 @@ _example:_
 |           | Additional Parameters |                              |                     |                                                                         |
 | 4         |                       | Quantity                     | Entire number input |                                                                         |
 | 5         |                       | Annual operating time (hour) | Entire number input |                                                                         |
-| 6         |                       | Cancel                       | button              | <li><u>_action rules_</u>: That button open the window Network details. |
-| 7         |                       | Add VM                       | button              |                                                                         |
+| 6         |                       | Electricity consumption (kwH)| Entire number input |                                                                         |
+| 7         |                       | Cancel                       | button              | <li><u>_action rules_</u>: That button open the window Network details. |
+| 8         |                       | Add VM                       | button              |                                                                         |
 
 {{% /expand %}}
 

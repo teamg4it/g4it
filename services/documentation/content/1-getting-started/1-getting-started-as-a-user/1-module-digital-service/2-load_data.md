@@ -195,6 +195,7 @@ weight: 20
     - **Quantity**
     - **Size**: The resource allocation for each virtual machine (e.g., CPU cores, storage).
     - **Operating Time**: The total uptime of virtual machines throughout the year, measured in hours.
+    - **Electricity consumption(Optional)**: Annual electrical consumption of the equipment, measured in kilowatts per hour (kWh).
 2. **Action:** Edit or delete the VM as needed.
 3. **Action:** Finalize the creation of the server and associated virtual machine.
 
