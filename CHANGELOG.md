@@ -4,6 +4,7 @@
 
 ### Minor Changes
 - 1511 | Remove Complementary PUE field from Ecomind
+- 1548 | New design for Visualize my results
 
 ## 3.6.1
 
