@@ -53,7 +53,7 @@ public interface InputToCsvRecord {
     default List<String> toCsv(InAiInfrastructure inAiInfrastructure) {
         return List.of(
                 inAiInfrastructure.getDigitalServiceUid(),
-                inAiInfrastructure.getComplementaryPue().toString(),
+                inAiInfrastructure.getComplementaryPue() != null ? inAiInfrastructure.getComplementaryPue().toString() : "",
                 inAiInfrastructure.getNbGpu().toString(),
                 inAiInfrastructure.getGpuMemory().toString()
         );
