@@ -2,11 +2,18 @@
     <div
         class="py-3 w-full border-0 outline-0 flex justify-content-between align-items-center"
     >
-        <h3 class="m-0 text-2xl font-semibold">Graph Description</h3>
+        <h3 class="m-0 text-2xl font-semibold">
+            {{ "ds-description-heading.graph-description" | translate }}
+        </h3>
         <p-button
             styleClass="cancel-creation-button"
             [icon]="contentVisible ? 'pi pi-angle-up' : 'pi pi-angle-down'"
             (onClick)="toggleContentVisibility()"
+            [ariaLabel]="
+                contentVisible
+                    ? ('ds-description-heading.aria-collapse-graph' | translate)
+                    : ('ds-description-heading.aria-expand-graph' | translate)
+            "
         >
         </p-button>
     </div>

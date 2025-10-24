@@ -21,4 +21,16 @@ describe("GraphDescriptionComponent", () => {
     it("should create", () => {
         expect(component).toBeTruthy();
     });
+
+    it("should toggle contentVisible from false to true", () => {
+        expect(component.contentVisible).toBeFalse();
+        component.toggleContentVisibility();
+        expect(component.contentVisible).toBeTrue();
+    });
+
+    it("should toggle contentVisible from true to false", () => {
+        component.contentVisible = true;
+        component.toggleContentVisibility();
+        expect(component.contentVisible).toBeFalse();
+    });
 });
