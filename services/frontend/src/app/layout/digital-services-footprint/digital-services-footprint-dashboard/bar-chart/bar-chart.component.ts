@@ -696,7 +696,9 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                 const unit = items?.[0]?.impactStep?.[0]?.unit ?? "";
 
                 return {
-                    name: item.mutualizationType + " " + item.serverType,
+                    name: this.translate.instant(
+                        `digital-services-servers.server-type.${item.mutualizationType}-${item.serverType}`,
+                    ),
                     totalSipValue,
                     totalRawValue,
                     unit,

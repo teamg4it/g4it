@@ -416,10 +416,12 @@ export class DigitalServicesFootprintDashboardComponent
             } else if (isBarChartChild && isCloudService) {
                 translationKey = "digital-services-cards.cloud-lifecycle.";
             } else {
-                translationKey = `digital-services-cards.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}.`;
+                translationKey = `digital-services-cards.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}.`;
             }
         } else {
-            const criteriaKey = this.selectedCriteria.toLowerCase().replace(/\s+/g, "-");
+            const criteriaKey = this.selectedCriteria
+                .toLowerCase()
+                .replaceAll(/\s+/g, "-");
             if (
                 !Object.keys(this.globalStore.criteriaList()).includes(
                     this.selectedCriteria,
@@ -454,17 +456,17 @@ export class DigitalServicesFootprintDashboardComponent
             if (!isBarChartChild && isServer) {
                 translationKey = `ds-graph-description.server.`;
             } else if (isBarChartChild && isServer) {
-                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}-${this.barChartComponents?.first?.serversRadioButtonSelected}.`;
+                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.serversRadioButtonSelected}.`;
             } else if (!isBarChartChild && isCloudService) {
-                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
+                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
             } else if (isBarChartChild && isCloudService) {
                 translationKey = "ds-graph-description.cloud-lifecycle.";
             } else if (!isBarChartChild && isTerminal) {
-                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
+                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
             } else if (isBarChartChild && isTerminal) {
                 translationKey = "ds-graph-description.terminal-lifecycle.";
             } else {
-                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}.`;
+                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}.`;
             }
             for (const [index, impact] of this.barChartTopThreeImpact.entries()) {
                 if (index === 0) {
@@ -472,41 +474,41 @@ export class DigitalServicesFootprintDashboardComponent
                         `${translationKey}text-description`,
                         {
                             cloudInstanceName: this.selectedDetailName,
-                            impact: impact.name,
-                            sipValue: this.integerPipe.transform(impact.totalSipValue),
-                            rawValue: this.decimalsPipe.transform(impact.totalRawValue),
-                            unit: impact.unit,
                         },
                     );
-                } else {
-                    textDescription +=
-                        "<br />" +
-                        this.translate.instant(
-                            `${translationKey}text-description-iterate`,
-                            {
-                                impact: impact.name,
-                                sipValue: this.integerPipe.transform(
-                                    impact.totalSipValue,
-                                ),
-                                rawValue: this.decimalsPipe.transform(
-                                    impact.totalRawValue,
-                                ),
-                                unit: impact.unit,
-                            },
-                        ) +
-                        (index < 2 ? "," : "");
                 }
+                textDescription +=
+                    "<br />" +
+                    this.translate.instant(`${translationKey}text-description-iterate`, {
+                        impact: impact.name,
+                        sipValue: this.integerPipe.transform(impact.totalSipValue),
+                        rawValue: this.decimalsPipe.transform(impact.totalRawValue),
+                        unit: impact.unit,
+                    }) +
+                    (index < 2 ? "," : "");
             }
         } else {
-            const criteriaKey = this.selectedCriteria.toLowerCase().replace(/\s+/g, "-");
+            const criteriaKey = this.selectedCriteria
+                .toLowerCase()
+                .replaceAll(/\s+/g, "-");
             if (isIncludeCriteria) {
                 //Criteria View
                 translationKey = "ds-graph-description.criteria.";
-                console.log(this.topPieThreeImpacts);
                 for (const [index, impact] of this.topPieThreeImpacts.entries()) {
                     if (index === 0) {
                         textDescription += this.translate.instant(
                             `${translationKey}text-description`,
+                            {
+                                resource: this.translate.instant(
+                                    `criteria.${criteriaKey}.title`,
+                                ),
+                            },
+                        );
+                    }
+                    textDescription +=
+                        "<br />" +
+                        this.translate.instant(
+                            `${translationKey}text-description-iterate`,
                             {
                                 criteria: impact.name,
                                 criteriaValue: this.integerPipe.transform(impact.value),
@@ -519,31 +521,8 @@ export class DigitalServicesFootprintDashboardComponent
                                 rawValue: this.decimalsPipe.transform(impact.unitValue),
                                 unit: impact.unit,
                             },
-                        );
-                    } else {
-                        textDescription +=
-                            "<br />" +
-                            this.translate.instant(
-                                `${translationKey}text-description-iterate`,
-                                {
-                                    criteria: impact.name,
-                                    criteriaValue: this.integerPipe.transform(
-                                        impact.value,
-                                    ),
-                                    resource: this.translate.instant(
-                                        `criteria.${criteriaKey}.title`,
-                                    ),
-                                    resourceValue: this.integerPipe.transform(
-                                        impact.percentage,
-                                    ),
-                                    rawValue: this.decimalsPipe.transform(
-                                        impact.unitValue,
-                                    ),
-                                    unit: impact.unit,
-                                },
-                            ) +
-                            (index < 2 ? "," : "");
-                    }
+                        ) +
+                        (index < 2 ? "," : "");
                 }
             } else {
                 // Global Vision
@@ -552,6 +531,12 @@ export class DigitalServicesFootprintDashboardComponent
                     if (index === 0) {
                         textDescription += this.translate.instant(
                             `${translationKey}text-description`,
+                        );
+                    }
+                    textDescription +=
+                        "<br />" +
+                        this.translate.instant(
+                            `${translationKey}text-description-iterate`,
                             {
                                 criteria: impact.title,
                                 criteriaValue: this.integerPipe.transform(
@@ -561,6 +546,7 @@ export class DigitalServicesFootprintDashboardComponent
                                 resourceValue: this.integerPipe.transform(
                                     impact.maxCriteria.peopleeq,
                                 ),
+
                                 rawValue: this.decimalsPipe.transform(impact.raw),
                                 unit: impact.unite,
                                 resourceRawValue: this.decimalsPipe.transform(
@@ -568,37 +554,13 @@ export class DigitalServicesFootprintDashboardComponent
                                 ),
                                 resourceUnit: impact.unite,
                             },
-                        );
-                    } else {
-                        textDescription +=
-                            "<br />" +
-                            this.translate.instant(
-                                `${translationKey}text-description-iterate`,
-                                {
-                                    criteria: impact.title,
-                                    criteriaValue: this.integerPipe.transform(
-                                        impact.peopleeq,
-                                    ),
-                                    resource: impact.maxCriteria.name,
-                                    resourceValue: this.integerPipe.transform(
-                                        impact.maxCriteria.peopleeq,
-                                    ),
-
-                                    rawValue: this.decimalsPipe.transform(impact.raw),
-                                    unit: impact.unite,
-                                    resourceRawValue: this.decimalsPipe.transform(
-                                        impact.maxCriteria.raw,
-                                    ),
-                                    resourceUnit: impact.unite,
-                                },
-                            ) +
-                            (index < 2 ? "," : "");
-                    }
+                        ) +
+                        (index < 2 ? "," : "");
                 }
             }
         }
         const key =
-            "criteria." + this.selectedCriteria.toLowerCase().replace(/ /g, "-") + ".";
+            "criteria." + this.selectedCriteria.toLowerCase().replaceAll(" ", "-") + ".";
 
         return {
             description: this.translate.instant(`${translationKey}description`, {
@@ -614,12 +576,13 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     getTranslationKey(param: string, textType: string) {
-        const key = "criteria." + param.toLowerCase().replace(/ /g, "-") + "." + textType;
+        const key =
+            "criteria." + param.toLowerCase().replaceAll(" ", "-") + "." + textType;
         return key;
     }
 
     getTranslationKeyNew(param: string) {
-        const key = "criteria." + param.toLowerCase().replace(/ /g, "-") + ".";
+        const key = "criteria." + param.toLowerCase().replaceAll(" ", "-") + ".";
         const translationKey = "ds-graph-description.criteria.";
         return {
             description: this.translate.instant(`${translationKey}description`, {
