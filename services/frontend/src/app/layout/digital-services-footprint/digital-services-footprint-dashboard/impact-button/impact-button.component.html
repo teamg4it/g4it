@@ -5,8 +5,10 @@
                 ? 'w-full letter-spacing-2 h-5rem bg-light-green border-noround'
                 : 'w-full force-bg-white letter-spacing-2 h-5rem border-noround bg-light-gray border-bottom-gray'
         "
-        (onClick)="changeCritere(impact)"
-        [disabled]="value === null || value === 0 || disabled"
+        [ngClass]="{ 'pointer-events-none': value === null || value === 0 || disabled }"
+        (onClick)="
+            value === null || value === 0 || disabled ? null : changeCritere(impact)
+        "
     >
         <div
             [ngClass]="selectedCriteria === impact ? 'bg-tertiary' : 'bg-gray-100'"

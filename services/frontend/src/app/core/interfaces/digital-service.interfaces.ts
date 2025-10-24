@@ -264,6 +264,7 @@ export interface ServersType {
 export interface ServerImpact {
     name: string;
     totalSipValue: number;
+    totalRawValue?: number;
     hostingEfficiency?: string;
     impactVmDisk: ImpactSipValue[];
     impactStep: ImpactACVStep[];
@@ -391,4 +392,12 @@ export interface AiRecommendation {
 export interface ShareLinkResp {
     url: string;
     expiryDate: Date;
+}
+
+export interface GraphDescriptionContent {
+    description: string;
+    scale: string;
+    textDescription: string;
+    analysis: string;
+    toGoFurther: string;
 }

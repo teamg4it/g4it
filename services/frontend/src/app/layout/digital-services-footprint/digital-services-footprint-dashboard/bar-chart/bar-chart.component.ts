@@ -53,6 +53,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
     @Output() barChartChildChange: EventEmitter<any> = new EventEmitter();
     @Output() selectedDetailParamChange: EventEmitter<any> = new EventEmitter();
     @Output() selectedDetailNameChange: EventEmitter<any> = new EventEmitter();
+    @Output() barChartTopThreeImpact: EventEmitter<any[]> = new EventEmitter();
     showInconsitency = input<boolean>();
     options: EChartsOption = {};
 
@@ -176,6 +177,30 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         }
         this.xAxisInput = xAxis;
         this.criteriaMap = networkMap;
+        const topThree = [...seriesData]
+            .map((item) => {
+                const totalSipValue =
+                    item.items?.reduce(
+                        (sum: number, t: any) => sum + (t.sipValue ?? 0),
+                        0,
+                    ) ?? 0;
+                const totalRawValue =
+                    item.items?.reduce(
+                        (sum: number, t: any) => sum + (t.rawValue ?? 0),
+                        0,
+                    ) ?? 0;
+                const unit = item.items?.[0]?.unit ?? "";
+
+                return {
+                    name: item.networkType,
+                    totalSipValue,
+                    totalRawValue,
+                    unit,
+                };
+            })
+            .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
+            .slice(0, 3); // top 3
+        this.barChartTopThreeImpact.emit(topThree);
         return {
             tooltip: {
                 show: true,
@@ -251,6 +276,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             impactLocation,
             isTerminal,
         );
+
         let okMap = this.processParentOrChildData(seriesData, xAxis, yAxis, type);
 
         this.xAxisInput = xAxis;
@@ -478,6 +504,30 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                 });
             });
         }
+
+        const topThree = [...seriesData]
+            .map((item) => {
+                const items = isTerminals ? item.terminals : item.clouds;
+                const totalSipValue =
+                    items?.reduce(
+                        (sum: number, t: any) => sum + (t.totalSipValue ?? 0),
+                        0,
+                    ) ?? 0;
+                const totalRawValue =
+                    items?.reduce((sum: number, t: any) => sum + (t.rawValue ?? 0), 0) ??
+                    0;
+                const unit = items?.[0]?.unit ?? "";
+
+                return {
+                    name: item.name,
+                    totalSipValue,
+                    totalRawValue,
+                    unit,
+                };
+            })
+            .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
+            .slice(0, 3); // top 3
+        this.barChartTopThreeImpact.emit(topThree);
         return okMap;
     }
 
@@ -540,6 +590,18 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                     statusCount: impact.statusCount,
                 });
             });
+            const topThree = [...childData.impact]
+                .map((item) => {
+                    return {
+                        name: this.existingTranslation(item[stepKey], "acvStep"),
+                        totalSipValue: item.sipValue,
+                        totalRawValue: item.rawValue,
+                        unit: item.unit,
+                    };
+                })
+                .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
+                .slice(0, 3); // top 3
+            this.barChartTopThreeImpact.emit(topThree);
         }
         return okMap;
     }
@@ -617,6 +679,34 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                 });
             });
         });
+
+        const topThree = [...data4Criteria]
+            .map((item) => {
+                const items = item.servers;
+                const totalSipValue =
+                    items?.reduce(
+                        (sum: number, t: any) => sum + (t.totalSipValue ?? 0),
+                        0,
+                    ) ?? 0;
+                const totalRawValue =
+                    items?.reduce(
+                        (sum: number, t: any) => sum + (t.totalRawValue ?? 0),
+                        0,
+                    ) ?? 0;
+                const unit = items?.[0]?.impactStep?.[0]?.unit ?? "";
+
+                return {
+                    name: this.translate.instant(
+                        `digital-services-servers.server-type.${item.mutualizationType}-${item.serverType}`,
+                    ),
+                    totalSipValue,
+                    totalRawValue,
+                    unit,
+                };
+            })
+            .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
+            .slice(0, 3); // top 3
+        this.barChartTopThreeImpact.emit(topThree);
 
         this.xAxisInput = xAxisData;
         this.criteriaMap = serverOkmap;
@@ -785,6 +875,30 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         }
         this.xAxisInput = xAxis;
         this.criteriaMap = serverChildOkmap;
+
+        const itemData =
+            this.serversRadioButtonSelected === "lifecycle"
+                ? selectedServer.impactStep
+                : selectedServer.impactVmDisk;
+        const topThree = [...itemData]
+            .map((item) => {
+                return {
+                    name:
+                        this.serversRadioButtonSelected === "lifecycle"
+                            ? this.existingTranslation(
+                                  (item as ImpactACVStep).acvStep,
+                                  "acvStep",
+                              )
+                            : (item as ImpactSipValue).name,
+                    totalSipValue: item.sipValue,
+                    totalRawValue: item.rawValue,
+                    unit: item.unit,
+                };
+            })
+            .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
+            .slice(0, 3); // top 3
+        this.barChartTopThreeImpact.emit(topThree);
+
         return {
             tooltip: {
                 show: true,
