@@ -804,10 +804,10 @@
             "to-go-further": "Il est généralement préférable de favoriser la sollicitation d'un réseau fixe qui est moins impactant que le réseau mobile si on ramène l'impact au nombre de Go échangés (voir <a href='https://www.greenit.fr/wp-content/uploads/2021/12/EU-Study-LCA-7-DEC-EN.pdf' target='_blank'>cette étude sur les technologies numériques en Europe</a> et <a href='https://www.arcep.fr/uploads/tx_gspublication/enquete-PNS-edition2022-infographie_avril2022.pdf' target='_blank'>cette enquête sur le numérique soutenable</a>). ​<br /><br />Pour réduire cet impact, réduisez au maximum la quantité de données échangées en :​<br /><br />- Questionnant le besoin (<a href='https://theshiftproject.org/article/climat-insoutenable-usage-video/' target='_blank'>la présence d'une vidéo est-elle nécessaire?</a> Un texte peut-il remplacer une image? La HD est-elle indispensable? ​<br /><br />- Optimisant les formats (taille et compression des images) ​<br /><br />- <a href='https://gr491.isit-europe.org/en/?tag=VOL&famille=contents' target='_blank'>Respectant les bonnes pratiques concernant la volumétrie</a> (ne pas lancer automatiquement les vidéos, éviter le défilement infini des pages, utiliser des polices de caractères standard, etc.)"
         },
         "server": {
-            "description": "Ce graphique correspond à la répartition des différentes instances de vos serveurs non cloud.",
+            "description": "Ce graphique correspond à la répartition des différentes instances de vos Infrastructures privées.",
             "text-description": "Les instances non cloud les plus impactantes dans l'utilisation du service dans l'ordre décroissant sont :<br />",
             "text-description-iterate": "- {{impact}} avec {{sipValue}} people eq. ({{rawValue}} {{unit}})",
-            "analysis": "Ce graphique vous permet de detecter les serveurs non cloud sur lesquels vous devez focaliser votre attention.",
+            "analysis": "Ce graphique vous permet de detecter les Infrastructures privées sur lesquels vous devez focaliser votre attention.",
             "to-go-further": "Pour réduire l'impact des serveurs, vos leviers d'actions sont relatifs à :​<br /><br />- L'équipement physique mobilisé : remplacement du serveur dédié par l'un des VM pour mutualiser les ressources, ajuster au plus près des besoins les caractéristiques du serveur telles que sa puissance de calcul, sa RAM, sa capacité de stockage, etc. ​<br /><br />- La manière dont vous les utilisez : arrêt en dehors des plages d'utilisation, autoscaling, taux de charge (même s'il n'est pas encore pris en compte dans le calcul), durée de conservation des datas, l'utilisation de caches, etc. ​<br /><br />- La manière dont il est maintenu par les équipes de l'infrastructure : durée de vie du matériel, mutualisation des ressources, efficience du centre de données, etc."
         },
         "server-lifecycle": {
@@ -851,7 +851,10 @@
         "scale": "L'échelle",
         "text-description": "La description textuelle",
         "analysis": "L'analyse",
-        "to_go_further": "Aller plus loin"
+        "to_go_further": "Aller plus loin",
+        "graph-description": "Description du graphique",
+        "aria-expand-graph": "Cliquez pour développer la section de description du graphique",
+        "aria-collapse-graph": "Cliquez pour réduire la section de description du graphique"
     },
     "acvStep": {
         "TRANSPORTATION": "Distribution",

@@ -807,10 +807,10 @@
             "to-go-further": "It is generally preferable to use a fixed network, which has less impact than the mobile network if you reduce the impact to the number of GB exchanged (see <a href='https://www.greenit.fr/wp-content/uploads/2021/12/EU-Study-LCA-7-DEC-EN.pdf' target='_blank'>this study on digital technologies in Europe</a> and <a href='https://www.arcep.fr/uploads/tx_gspublication/enquete-PNS-edition2022-infographie_avril2022.pdf' target='_blank'>this survey on sustainable digital</a>). ​<br> <br> To reduce this impact, reduce the amount of data exchanged as much as possible by:​ <br> <br> - Questioning the need (<a href='https://theshiftproject.org/article/climat-insoutenable-usage-video/' target='_blank'>is the presence of a video necessary?</a> Can text replace an image? Is HD essential?) ​<br> <br> - Optimizing formats (image size and compression) ​<br> <br> - <a href='https://gr491.isit-europe.org/en/?tag=VOL&famille=contents' target='_blank'>Respecting best practice about volumetry</a> (not automatically launching videos, avoiding infinite page scrolling, using standard fonts, etc.)"
         },
         "server": {
-            "description": "This graph shows the distribution of the different instances of your non-cloud servers.",
-            "text-description": "The non-cloud instances with the greatest impact on service usage, in descending order, are: <br />",
+            "description": "This graph shows the distribution of the different instances of your Private Infrastructures.",
+            "text-description": "The Private Infrastructures with the greatest impact on service usage, in descending order, are: <br />",
             "text-description-iterate": "- {{impact}} with {{sipValue}} people eq. ({{rawValue}} {{unit}})",
-            "analysis": "This graph allows you to detect non-cloud servers that require your attention.",
+            "analysis": "This graph allows you to detect Private Infrastructures that require your attention.",
             "to-go-further": "To reduce the impact of servers, you can take action in the following areas:<br /><br />- Physical equipment used: replace dedicated servers with VMs to pool resources, adjust server characteristics such as computing power, RAM, storage capacity, etc. as closely as possible to requirements <br /><br />- How you use them: shutting down outside of usage periods, autoscaling, load rates (even if not yet included in the calculation), data retention periods, use of caches, etc.<br /><br />- How it is maintained by infrastructure teams: hardware lifespan, resource pooling, data center efficiency, etc. "
         },
         "server-lifecycle": {
@@ -854,7 +854,10 @@
         "scale": "Scale",
         "text-description": "Text Description",
         "analysis": "Analysis",
-        "to_go_further": "To go further"
+        "to_go_further": "To go further",
+        "graph-description": "Description of the graph",
+        "aria-expand-graph": "Click to Expand the graph description section",
+        "aria-collapse-graph": "Click to Collapse the graph description section"
     },
     "acvStep": {
         "TRANSPORTATION": "Transportation",
