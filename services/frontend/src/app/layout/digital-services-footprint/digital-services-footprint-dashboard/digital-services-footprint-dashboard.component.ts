@@ -12,8 +12,10 @@ import {
     inject,
     OnDestroy,
     OnInit,
+    QueryList,
     Signal,
     signal,
+    ViewChildren,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
@@ -30,6 +32,7 @@ import {
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
     DSCriteriaRest,
+    GraphDescriptionContent,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     OutPhysicalEquipmentRest,
@@ -56,10 +59,12 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
+import { BarChartComponent } from "./bar-chart/bar-chart.component";
 
 @Component({
     selector: "app-digital-services-footprint-dashboard",
     templateUrl: "./digital-services-footprint-dashboard.component.html",
+    styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard
@@ -93,6 +98,9 @@ export class DigitalServicesFootprintDashboardComponent
     content = "";
 
     impacts: any[] = [];
+    topThreeImpacts: any[] = [];
+    topPieThreeImpacts: any[] = [];
+    barChartTopThreeImpact: any[] = [];
 
     globalVisionChartData: DigitalServiceFootprint[] | undefined;
 
@@ -102,6 +110,7 @@ export class DigitalServicesFootprintDashboardComponent
     displayCriteriaPopup = false;
     workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
     organization!: Organization;
+    @ViewChildren(BarChartComponent) barChartComponents?: QueryList<BarChartComponent>;
 
     cloudData = computed(() => {
         if (this.outVirtualEquipments === undefined) return [];
@@ -290,7 +299,14 @@ export class DigitalServicesFootprintDashboardComponent
             return;
         }
 
-        const criteriaMap = new Map<string, { raw: number; peopleeq: number }>();
+        const criteriaMap = new Map<
+            string,
+            {
+                raw: number;
+                peopleeq: number;
+                maxCriteria: { name: string; peopleeq: number; raw: number };
+            }
+        >();
 
         globalFootprintData.forEach((tierData) => {
             tierData.impacts.forEach((impactData) => {
@@ -298,15 +314,24 @@ export class DigitalServicesFootprintDashboardComponent
                 if (criteriaMap.has(criteria)) {
                     criteriaMap.get(criteria)!.raw += unitValue;
                     criteriaMap.get(criteria)!.peopleeq += sipValue;
+                    if (sipValue > criteriaMap.get(criteria)!.maxCriteria.peopleeq) {
+                        criteriaMap.get(criteria)!.maxCriteria.name = tierData.tier;
+                        criteriaMap.get(criteria)!.maxCriteria.peopleeq = sipValue;
+                        criteriaMap.get(criteria)!.maxCriteria.raw = unitValue;
+                    }
                 } else {
                     criteriaMap.set(criteria, {
                         raw: unitValue,
                         peopleeq: sipValue,
+                        maxCriteria: {
+                            name: tierData.tier,
+                            peopleeq: sipValue,
+                            raw: unitValue,
+                        },
                     });
                 }
             });
         });
-
         this.impacts.forEach((impact) => {
             const criteria = impact.name;
             impact.title = this.translate.instant(`criteria.${criteria}.title`);
@@ -314,8 +339,21 @@ export class DigitalServicesFootprintDashboardComponent
             if (criteriaMap.has(criteria)) {
                 impact.raw = criteriaMap.get(criteria)!.raw;
                 impact.peopleeq = criteriaMap.get(criteria)!.peopleeq;
+                impact.maxCriteria = criteriaMap.get(criteria)!.maxCriteria;
             }
         });
+        this.topThreeImpacts = [...this.impacts]
+            .map((impact) => ({
+                ...impact,
+                maxCriteria: {
+                    ...impact.maxCriteria,
+                    name: this.translate.instant(
+                        `digital-services.${impact.maxCriteria.name}`,
+                    ),
+                },
+            }))
+            .sort((a, b) => b.peopleeq - a.peopleeq)
+            .slice(0, 3);
     }
 
     getTitleOrContent(textType: string) {
@@ -400,9 +438,198 @@ export class DigitalServicesFootprintDashboardComponent
         );
     }
 
+    getContentText(): GraphDescriptionContent {
+        this.selectedLang = this.translate.currentLang;
+        const isBarChart = this.chartType() === "bar";
+        const isServer = this.selectedParam === "Server";
+        const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
+        const isTerminal = this.selectedParam === Constants.TERMINAL;
+        const isBarChartChild = this.barChartChild === true;
+        const isIncludeCriteria = Object.keys(this.globalStore.criteriaList()).includes(
+            this.selectedCriteria,
+        );
+        let translationKey: string;
+        let textDescription: string = "";
+        if (isBarChart) {
+            if (!isBarChartChild && isServer) {
+                translationKey = `ds-graph-description.server.`;
+            } else if (isBarChartChild && isServer) {
+                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}-${this.barChartComponents?.first?.serversRadioButtonSelected}.`;
+            } else if (!isBarChartChild && isCloudService) {
+                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
+            } else if (isBarChartChild && isCloudService) {
+                translationKey = "ds-graph-description.cloud-lifecycle.";
+            } else if (!isBarChartChild && isTerminal) {
+                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
+            } else if (isBarChartChild && isTerminal) {
+                translationKey = "ds-graph-description.terminal-lifecycle.";
+            } else {
+                translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}.`;
+            }
+            for (const [index, impact] of this.barChartTopThreeImpact.entries()) {
+                if (index === 0) {
+                    textDescription += this.translate.instant(
+                        `${translationKey}text-description`,
+                        {
+                            cloudInstanceName: this.selectedDetailName,
+                            impact: impact.name,
+                            sipValue: this.integerPipe.transform(impact.totalSipValue),
+                            rawValue: this.decimalsPipe.transform(impact.totalRawValue),
+                            unit: impact.unit,
+                        },
+                    );
+                } else {
+                    textDescription +=
+                        "<br />" +
+                        this.translate.instant(
+                            `${translationKey}text-description-iterate`,
+                            {
+                                impact: impact.name,
+                                sipValue: this.integerPipe.transform(
+                                    impact.totalSipValue,
+                                ),
+                                rawValue: this.decimalsPipe.transform(
+                                    impact.totalRawValue,
+                                ),
+                                unit: impact.unit,
+                            },
+                        ) +
+                        (index < 2 ? "," : "");
+                }
+            }
+        } else {
+            const criteriaKey = this.selectedCriteria.toLowerCase().replace(/\s+/g, "-");
+            if (isIncludeCriteria) {
+                //Criteria View
+                translationKey = "ds-graph-description.criteria.";
+                console.log(this.topPieThreeImpacts);
+                for (const [index, impact] of this.topPieThreeImpacts.entries()) {
+                    if (index === 0) {
+                        textDescription += this.translate.instant(
+                            `${translationKey}text-description`,
+                            {
+                                criteria: impact.name,
+                                criteriaValue: this.integerPipe.transform(impact.value),
+                                resource: this.translate.instant(
+                                    `criteria.${criteriaKey}.title`,
+                                ),
+                                resourceValue: this.integerPipe.transform(
+                                    impact.percentage,
+                                ),
+                                rawValue: this.decimalsPipe.transform(impact.unitValue),
+                                unit: impact.unit,
+                            },
+                        );
+                    } else {
+                        textDescription +=
+                            "<br />" +
+                            this.translate.instant(
+                                `${translationKey}text-description-iterate`,
+                                {
+                                    criteria: impact.name,
+                                    criteriaValue: this.integerPipe.transform(
+                                        impact.value,
+                                    ),
+                                    resource: this.translate.instant(
+                                        `criteria.${criteriaKey}.title`,
+                                    ),
+                                    resourceValue: this.integerPipe.transform(
+                                        impact.percentage,
+                                    ),
+                                    rawValue: this.decimalsPipe.transform(
+                                        impact.unitValue,
+                                    ),
+                                    unit: impact.unit,
+                                },
+                            ) +
+                            (index < 2 ? "," : "");
+                    }
+                }
+            } else {
+                // Global Vision
+                translationKey = `ds-graph-description.${criteriaKey}.`;
+                for (const [index, impact] of this.topThreeImpacts.entries()) {
+                    if (index === 0) {
+                        textDescription += this.translate.instant(
+                            `${translationKey}text-description`,
+                            {
+                                criteria: impact.title,
+                                criteriaValue: this.integerPipe.transform(
+                                    impact.peopleeq,
+                                ),
+                                resource: impact.maxCriteria.name,
+                                resourceValue: this.integerPipe.transform(
+                                    impact.maxCriteria.peopleeq,
+                                ),
+                                rawValue: this.decimalsPipe.transform(impact.raw),
+                                unit: impact.unite,
+                                resourceRawValue: this.decimalsPipe.transform(
+                                    impact.maxCriteria.raw,
+                                ),
+                                resourceUnit: impact.unite,
+                            },
+                        );
+                    } else {
+                        textDescription +=
+                            "<br />" +
+                            this.translate.instant(
+                                `${translationKey}text-description-iterate`,
+                                {
+                                    criteria: impact.title,
+                                    criteriaValue: this.integerPipe.transform(
+                                        impact.peopleeq,
+                                    ),
+                                    resource: impact.maxCriteria.name,
+                                    resourceValue: this.integerPipe.transform(
+                                        impact.maxCriteria.peopleeq,
+                                    ),
+
+                                    rawValue: this.decimalsPipe.transform(impact.raw),
+                                    unit: impact.unite,
+                                    resourceRawValue: this.decimalsPipe.transform(
+                                        impact.maxCriteria.raw,
+                                    ),
+                                    resourceUnit: impact.unite,
+                                },
+                            ) +
+                            (index < 2 ? "," : "");
+                    }
+                }
+            }
+        }
+        const key =
+            "criteria." + this.selectedCriteria.toLowerCase().replace(/ /g, "-") + ".";
+
+        return {
+            description: this.translate.instant(`${translationKey}description`, {
+                criteria: this.impacts.flatMap((impact) => impact.title).join(", "),
+            }),
+            scale: isIncludeCriteria
+                ? this.translate.instant(`${key}scale`)
+                : this.translate.instant(`${translationKey}scale`),
+            textDescription: textDescription,
+            analysis: this.translate.instant(`${translationKey}analysis`),
+            toGoFurther: this.translate.instant(`${translationKey}to-go-further`),
+        };
+    }
+
     getTranslationKey(param: string, textType: string) {
         const key = "criteria." + param.toLowerCase().replace(/ /g, "-") + "." + textType;
         return key;
+    }
+
+    getTranslationKeyNew(param: string) {
+        const key = "criteria." + param.toLowerCase().replace(/ /g, "-") + ".";
+        const translationKey = "ds-graph-description.criteria.";
+        return {
+            description: this.translate.instant(`${translationKey}description`, {
+                criteria: this.impacts.flatMap((impact) => impact.title).join(", "),
+            }),
+            scale: this.translate.instant(`${key}scale`),
+            textDescription: this.translate.instant(`${translationKey}text-description`),
+            analysis: this.translate.instant(`${translationKey}analysis`),
+            toGoFurther: this.translate.instant(`${translationKey}to-go-further`),
+        };
     }
 
     getTNSTranslation(input: string) {

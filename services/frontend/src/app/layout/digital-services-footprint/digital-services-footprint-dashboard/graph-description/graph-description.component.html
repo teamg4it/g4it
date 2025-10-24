@@ -1,46 +1,49 @@
-<!-- <div
-    class="bg-gray-100 flex justify-content-between align-items-center p-4 mb-4 rounded-md"
-    (click)="toggleContentVisibility()"
->
-    <button>
-    <h3>Graph Description</h3>
-    <button class="px-2 border-1 border-200 rounded">
-        <i class="pi pi-angle-down"></i>
-    </button>
+<div class="bg-lightest-gray-color p-4 m-3">
+    <div
+        class="py-3 w-full border-0 outline-0 flex justify-content-between align-items-center"
+    >
+        <h3 class="m-0 text-2xl font-semibold">Graph Description</h3>
+        <p-button
+            styleClass="cancel-creation-button"
+            [icon]="contentVisible ? 'pi pi-angle-up' : 'pi pi-angle-down'"
+            (onClick)="toggleContentVisibility()"
+        >
+        </p-button>
+    </div>
 
-</div> -->
-
-<button
-    class="w-full border-0 outline-0 flex justify-content-between align-items-center bg-gray-100 p-4"
-    (click)="toggleContentVisibility()"
-    [attr.aria-expanded]="contentVisible"
-    [attr.aria-controls]="'accordion-content'"
->
-    <h3 class="m-0 text-lg font-semibold">Graph Description</h3>
-    <i
-        class="pi"
-        [ngClass]="{
-            'pi-angle-down': !contentVisible,
-            'pi-angle-up': contentVisible,
-        }"
-    ></i>
-</button>
-
-@if (contentVisible) {
-    <section class="p-4 border">
-        <h4 class="mb-0">Graph Overview</h4>
-        <p>This section provides an overview of the graph's key insights and trends.</p>
-        <hr />
-        <h4 class="mb-0">Graph Overview</h4>
-        <p>This section provides an overview of the graph's key insights and trends.</p>
-        <hr />
-        <h4 class="mb-0">Graph Overview</h4>
-        <p>This section provides an overview of the graph's key insights and trends.</p>
-        <hr />
-        <h4 class="mb-0">Graph Overview</h4>
-        <p>This section provides an overview of the graph's key insights and trends.</p>
-        <hr />
-        <h4 class="mb-0">Graph Overview</h4>
-        <p>This section provides an overview of the graph's key insights and trends.</p>
-    </section>
-}
+    @if (contentVisible) {
+        <section class="p-4 border bg-gray-color">
+            @if (isAi()) {
+                <h4 class="mb-0 font-semibold">
+                    {{ title() | translate }}
+                </h4>
+                <p [innerHTML]="content()"></p>
+            } @else {
+                <h4 class="mb-0 font-semibold">
+                    {{ "ds-description-heading.description" | translate }}
+                </h4>
+                <p [innerHTML]="contentText()?.description"></p>
+                <hr />
+                <h4 class="mb-0 font-semibold">
+                    {{ "ds-description-heading.scale" | translate }}
+                </h4>
+                <p [innerHTML]="contentText()?.scale"></p>
+                <hr />
+                <h4 class="mb-0 font-semibold">
+                    {{ "ds-description-heading.text-description" | translate }}
+                </h4>
+                <p [innerHTML]="contentText()?.textDescription"></p>
+                <hr />
+                <h4 class="mb-0 font-semibold">
+                    {{ "ds-description-heading.analysis" | translate }}
+                </h4>
+                <p [innerHTML]="contentText()?.analysis"></p>
+                <hr />
+                <h4 class="mb-0 font-semibold">
+                    {{ "ds-description-heading.to_go_further" | translate }}
+                </h4>
+                <p [innerHTML]="contentText()?.toGoFurther"></p>
+            }
+        </section>
+    }
+</div>

@@ -19,9 +19,9 @@
     </div>
     <div class="footprint-digital-dashboard-container grid px-2">
         <div class="col-12 lg:col-4 bg-white">
-            <div class="bg-gray-100 impact-buttons-div mx-auto mb-4 border-round-lg">
+            <div class="bg-gray-color impact-buttons-div mx-auto mb-4 border-round-lg">
                 <h3
-                    class="border-bottom-2 border-primary text-base font-medium p-1 text-center mt-2 mb-1 uppercase"
+                    class="border-bottom-2 border-primary text-base font-medium p-2 pt-3 text-center mt-2 mb-1 uppercase"
                 >
                     {{ "digital-services.impacts" | translate }}
                 </h3>
@@ -85,7 +85,7 @@
                 </div>
             </div>
         </div>
-        <div class="digital-service-chart-container col-12 lg:col-8 mt-3 bg-gray-100">
+        <div class="digital-service-chart-container col-12 lg:col-8 mt-3 bg-gray-color">
             <div class="bg-white m-3">
                 <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
                 <ng-container [ngSwitch]="chartType()">
@@ -160,6 +160,7 @@
                         [showInconsitency]="showInconsitency"
                         (selectedParamChange)="selectedParam = $event"
                         (chartTypeChange)="chartType.set($event)"
+                        (topPieThreeImpacts)="topPieThreeImpacts = $event"
                         [enableDataInconsistency]="digitalService.enableDataInconsistency"
                     ></app-pie-chart>
                     <app-bar-chart
@@ -178,17 +179,23 @@
                         (barChartChildChange)="barChartChild = $event"
                         (selectedDetailParamChange)="selectedDetailParam = $event"
                         (selectedDetailNameChange)="selectedDetailName = $event"
+                        (barChartTopThreeImpact)="barChartTopThreeImpact = $event"
                     ></app-bar-chart>
                 </ng-template>
-
-                <app-graph-description></app-graph-description>
-
-                <app-information-card
+            </div>
+            @if (digitalService.isAi) {
+                <app-graph-description
+                    [isAi]="true"
                     [title]="getTitleOrContent('digital-services-card-title')"
                     [content]="getTitleOrContent('digital-services-card-content')"
-                    class="m-5 block"
-                ></app-information-card>
-            </div>
+                ></app-graph-description>
+            } @else {
+                <app-graph-description
+                    [isAi]="false"
+                    [contentText]="getContentText()"
+                    [digitalService]="digitalService"
+                ></app-graph-description>
+            }
         </div>
     </div>
     <ng-template #dataConsistencyRef>

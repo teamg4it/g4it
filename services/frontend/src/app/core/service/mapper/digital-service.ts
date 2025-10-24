@@ -583,6 +583,7 @@ const getImpactsForServer = (
                 name: serverName,
                 hostingEfficiency,
                 totalSipValue: sumByProperty(impactStep, "sipValue"),
+                totalRawValue: sumByProperty(impactStep, "rawValue"),
                 impactVmDisk,
                 impactStep,
             });
