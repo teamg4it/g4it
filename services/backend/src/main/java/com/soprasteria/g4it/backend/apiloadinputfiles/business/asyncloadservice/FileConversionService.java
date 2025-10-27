@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,8 +56,19 @@ public class FileConversionService {
     public File convertFileToCsv(File file, String originalFilename) throws IOException, RuntimeException {
         String extension = StringUtils.getFilenameExtension(originalFilename == null ? "" : originalFilename).toLowerCase();
 
+
+        Path originalPath = file.getCanonicalFile().toPath().normalize();
+        Path parentDir = originalPath.getParent();
+        if (parentDir == null || !Files.isDirectory(parentDir)) {
+            throw new IOException("Invalid parent directory for file: " + file);
+        }
+
+
         String convertedFileName = "converted_" + file.getName() + Constants.CSV;
-        Path convertedFilePath = file.toPath().resolveSibling(convertedFileName);
+        Path convertedFilePath = parentDir.resolve(convertedFileName).normalize();
+        if (!convertedFilePath.startsWith(parentDir)) {
+            throw new SecurityException("Potential path traversal detected");
+        }
         File convertedFile = convertedFilePath.toFile();
 
         log.info("Converting '{}' to '{}' separated csv format", originalFilename, CsvUtils.DELIMITER);
