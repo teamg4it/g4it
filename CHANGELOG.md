@@ -2,6 +2,10 @@
 
 ## 3.7.0
 
+## Major changes
+
+- 1461 | Digital Service Modification of graph Description
+
 ### Minor Changes
 
 - 1511 | Remove Complementary PUE field from Ecomind

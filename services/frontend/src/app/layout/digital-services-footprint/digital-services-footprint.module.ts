@@ -33,6 +33,7 @@ import { DigitalServicesAiParametersComponent } from "./digital-services-ecomind
 import { DigitalServicesEcomindParametersComponent } from "./digital-services-ecomind-parameters/digital-services-ecomind-parameters.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
+import { GraphDescriptionComponent } from "./digital-services-footprint-dashboard/graph-description/graph-description.component";
 import { ImpactButtonComponent } from "./digital-services-footprint-dashboard/impact-button/impact-button.component";
 import { PieChartComponent } from "./digital-services-footprint-dashboard/pie-chart/pie-chart.component";
 import { RadialChartComponent } from "./digital-services-footprint-dashboard/radial-chart/radial-chart.component";
@@ -79,6 +80,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesAiInfrastructureComponent,
         DigitalServicesFootprintFooterComponent,
         DigitalServicesEcomindParametersComponent,
+        GraphDescriptionComponent,
     ],
     imports: [
         CommonModule,

@@ -12,8 +12,10 @@ import {
     inject,
     OnDestroy,
     OnInit,
+    QueryList,
     Signal,
     signal,
+    ViewChildren,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
@@ -30,6 +32,7 @@ import {
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
     DSCriteriaRest,
+    GraphDescriptionContent,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     OutPhysicalEquipmentRest,
@@ -56,10 +59,12 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
+import { BarChartComponent } from "./bar-chart/bar-chart.component";
 
 @Component({
     selector: "app-digital-services-footprint-dashboard",
     templateUrl: "./digital-services-footprint-dashboard.component.html",
+    styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard
@@ -93,6 +98,9 @@ export class DigitalServicesFootprintDashboardComponent
     content = "";
 
     impacts: any[] = [];
+    topThreeImpacts: any[] = [];
+    topPieThreeImpacts: any[] = [];
+    barChartTopThreeImpact: any[] = [];
 
     globalVisionChartData: DigitalServiceFootprint[] | undefined;
 
@@ -102,6 +110,7 @@ export class DigitalServicesFootprintDashboardComponent
     displayCriteriaPopup = false;
     workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
     organization!: Organization;
+    @ViewChildren(BarChartComponent) barChartComponents?: QueryList<BarChartComponent>;
 
     cloudData = computed(() => {
         if (this.outVirtualEquipments === undefined) return [];
@@ -290,7 +299,14 @@ export class DigitalServicesFootprintDashboardComponent
             return;
         }
 
-        const criteriaMap = new Map<string, { raw: number; peopleeq: number }>();
+        const criteriaMap = new Map<
+            string,
+            {
+                raw: number;
+                peopleeq: number;
+                maxCriteria: { name: string; peopleeq: number; raw: number };
+            }
+        >();
 
         globalFootprintData.forEach((tierData) => {
             tierData.impacts.forEach((impactData) => {
@@ -298,15 +314,24 @@ export class DigitalServicesFootprintDashboardComponent
                 if (criteriaMap.has(criteria)) {
                     criteriaMap.get(criteria)!.raw += unitValue;
                     criteriaMap.get(criteria)!.peopleeq += sipValue;
+                    if (sipValue > criteriaMap.get(criteria)!.maxCriteria.peopleeq) {
+                        criteriaMap.get(criteria)!.maxCriteria.name = tierData.tier;
+                        criteriaMap.get(criteria)!.maxCriteria.peopleeq = sipValue;
+                        criteriaMap.get(criteria)!.maxCriteria.raw = unitValue;
+                    }
                 } else {
                     criteriaMap.set(criteria, {
                         raw: unitValue,
                         peopleeq: sipValue,
+                        maxCriteria: {
+                            name: tierData.tier,
+                            peopleeq: sipValue,
+                            raw: unitValue,
+                        },
                     });
                 }
             });
         });
-
         this.impacts.forEach((impact) => {
             const criteria = impact.name;
             impact.title = this.translate.instant(`criteria.${criteria}.title`);
@@ -314,94 +339,263 @@ export class DigitalServicesFootprintDashboardComponent
             if (criteriaMap.has(criteria)) {
                 impact.raw = criteriaMap.get(criteria)!.raw;
                 impact.peopleeq = criteriaMap.get(criteria)!.peopleeq;
+                impact.maxCriteria = criteriaMap.get(criteria)!.maxCriteria;
             }
         });
+        this.topThreeImpacts = [...this.impacts]
+            .map((impact) => ({
+                ...impact,
+                maxCriteria: {
+                    ...impact.maxCriteria,
+                    name: this.translate.instant(
+                        `digital-services.${impact.maxCriteria.name}`,
+                    ),
+                },
+            }))
+            .sort((a, b) => b.peopleeq - a.peopleeq)
+            .slice(0, 3);
     }
 
-    getTitleOrContent(textType: string) {
-        this.selectedLang = this.translate.currentLang;
-        const isBarChart = this.chartType() === "bar";
+    getAiBarChartTranslateKey(): string {
         const isServer = this.selectedParam === "Server";
         const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
         const isBarChartChild = this.barChartChild === true;
 
-        let translationKey: string;
+        let translationKey = "";
+        if (isBarChartChild && isServer) {
+            translationKey = "digital-services-cards.server-lifecycle.";
+        } else if (isBarChartChild && isCloudService) {
+            translationKey = "digital-services-cards.cloud-lifecycle.";
+        } else {
+            translationKey = `digital-services-cards.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}.`;
+        }
 
-        if (this.digitalService.isAi) {
-            if (textType === "digital-services-card-title") {
-                translationKey = "digital-services-cards.global-vision-ai";
-            } else if (
-                textType === "digital-services-card-content" &&
-                this.aiRecommendation != null &&
-                this.aiRecommendation.recommendations != null
-            ) {
-                try {
-                    const recommendationsArr = JSON.parse(
-                        this.aiRecommendation.recommendations,
-                    );
-                    if (
-                        !Array.isArray(recommendationsArr) ||
-                        recommendationsArr.length === 0
-                    )
-                        return "";
-                    // Dynamic titles
-                    const headers = Object.keys(recommendationsArr[0]);
-                    // HTML table generation for recommendation
-                    let table = `
+        return translationKey;
+    }
+
+    getEcomindContent(textType: string): string {
+        if (
+            textType === "digital-services-card-content" &&
+            this.aiRecommendation != null &&
+            this.aiRecommendation.recommendations != null
+        ) {
+            try {
+                const recommendationsArr = JSON.parse(
+                    this.aiRecommendation.recommendations,
+                );
+                if (!Array.isArray(recommendationsArr) || recommendationsArr.length === 0)
+                    return "";
+                // Dynamic titles
+                const headers = Object.keys(recommendationsArr[0]);
+                // HTML table generation for recommendation
+                let table = `
                     <div style='overflow-x:auto;'>
                     <h4 style='font-weight:bold; margin-top:0px; font-size:1rem;'>Recommendations</h4>
                     <table style='width:100%;border-collapse:collapse;min-width:600px;'>
                     <thead><tr>`;
+                headers.forEach((h) => {
+                    table += `<th style='padding:14px 18px;text-align:center;font-size:1rem;'>${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
+                });
+                table += `</tr></thead><tbody>`;
+                recommendationsArr.forEach((rec: any) => {
+                    table += `<tr>`;
                     headers.forEach((h) => {
-                        table += `<th style='padding:14px 18px;text-align:center;font-size:1rem;'>${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
+                        table += `<td style='padding:14px 18px;font-size:0.98rem;text-align:center;'>${rec[h]}</td>`;
                     });
-                    table += `</tr></thead><tbody>`;
-                    recommendationsArr.forEach((rec: any) => {
-                        table += `<tr>`;
-                        headers.forEach((h) => {
-                            table += `<td style='padding:14px 18px;font-size:0.98rem;text-align:center;'>${rec[h]}</td>`;
-                        });
-                        table += `</tr>`;
-                    });
-                    table += `</tbody></table></div>`;
-                    return table;
-                } catch (error) {
-                    console.error("Error parsing AI recommendations:", error);
-                    return "";
-                }
+                    table += `</tr>`;
+                });
+                table += `</tbody></table></div>`;
+                return table;
+            } catch (error) {
+                console.error("Error parsing AI recommendations:", error);
+                return "";
             }
+        }
+        return "";
+    }
+
+    getTitleOrContent(textType: string) {
+        const isBarChart = this.chartType() === "bar";
+
+        let translationKey: string;
+
+        if (this.digitalService.isAi) {
+            return this.getEcomindContent(textType);
         }
 
         if (isBarChart) {
-            if (isBarChartChild && isServer) {
-                translationKey = "digital-services-cards.server-lifecycle.";
-            } else if (isBarChartChild && isCloudService) {
-                translationKey = "digital-services-cards.cloud-lifecycle.";
-            } else {
-                translationKey = `digital-services-cards.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}.`;
-            }
+            translationKey = this.getAiBarChartTranslateKey();
         } else {
-            const criteriaKey = this.selectedCriteria.toLowerCase().replace(/\s+/g, "-");
+            const criteriaKey = this.selectedCriteria
+                .toLowerCase()
+                .replaceAll(/\s+/g, "-");
             if (
-                !Object.keys(this.globalStore.criteriaList()).includes(
+                Object.keys(this.globalStore.criteriaList()).includes(
                     this.selectedCriteria,
                 )
             ) {
-                translationKey = `digital-services-cards.${criteriaKey}.`;
-            } else {
                 return this.translate.instant(
                     this.getTranslationKey(this.selectedCriteria, textType),
                 );
+            } else {
+                translationKey = `digital-services-cards.${criteriaKey}.`;
             }
         }
-
         return this.translate.instant(
             `${translationKey}${textType === "digital-services-card-title" ? "title" : "content"}`,
         );
     }
 
+    getBarTranslateKey(): string {
+        const isServer = this.selectedParam === "Server";
+        const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
+        const isTerminal = this.selectedParam === Constants.TERMINAL;
+        const isBarChartChild = this.barChartChild === true;
+
+        let translationKey = "";
+        if (!isBarChartChild && isServer) {
+            translationKey = `ds-graph-description.server.`;
+        } else if (isBarChartChild && isServer) {
+            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.serversRadioButtonSelected}.`;
+        } else if (!isBarChartChild && isCloudService) {
+            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.cloudRadioButtonSelected}.`;
+        } else if (isBarChartChild && isCloudService) {
+            translationKey = "ds-graph-description.cloud-lifecycle.";
+        } else if (!isBarChartChild && isTerminal) {
+            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}-${this.barChartComponents?.first?.terminalsRadioButtonSelected}.`;
+        } else if (isBarChartChild && isTerminal) {
+            translationKey = "ds-graph-description.terminal-lifecycle.";
+        } else {
+            translationKey = `ds-graph-description.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}.`;
+        }
+        return translationKey;
+    }
+
+    getContentText(): GraphDescriptionContent {
+        const isBarChart = this.chartType() === "bar";
+        const isIncludeCriteria = Object.keys(this.globalStore.criteriaList()).includes(
+            this.selectedCriteria,
+        );
+        let translationKey: string;
+        let textDescription: string = "";
+        if (isBarChart) {
+            translationKey = this.getBarTranslateKey();
+            textDescription = this.getBarChartTextDescription(translationKey);
+        } else {
+            const criteriaKey = this.selectedCriteria
+                .toLowerCase()
+                .replaceAll(/\s+/g, "-");
+            if (isIncludeCriteria) {
+                //Criteria View
+                translationKey = "ds-graph-description.criteria.";
+                textDescription = this.getCriteriaTextDescription(
+                    translationKey,
+                    criteriaKey,
+                );
+            } else {
+                // Global Vision
+                translationKey = `ds-graph-description.${criteriaKey}.`;
+                textDescription = this.getGlobalVisionTextDescription(translationKey);
+            }
+        }
+        const key =
+            "criteria." + this.selectedCriteria.toLowerCase().replaceAll(" ", "-") + ".";
+
+        return {
+            description: this.translate.instant(`${translationKey}description`, {
+                criteria: this.impacts.flatMap((impact) => impact.title).join(", "),
+            }),
+            scale: isIncludeCriteria
+                ? this.translate.instant(`${key}scale`)
+                : this.translate.instant(`${translationKey}scale`),
+            textDescription: textDescription,
+            analysis: this.translate.instant(`${translationKey}analysis`),
+            toGoFurther: this.translate.instant(`${translationKey}to-go-further`),
+        };
+    }
+
+    getBarChartTextDescription(translationKey: string): string {
+        let textDescription = "";
+        for (const [index, impact] of this.barChartTopThreeImpact.entries()) {
+            if (index === 0) {
+                textDescription += this.translate.instant(
+                    `${translationKey}text-description`,
+                    {
+                        cloudInstanceName: this.selectedDetailName,
+                    },
+                );
+            }
+            textDescription +=
+                "<br />" +
+                this.translate.instant(`${translationKey}text-description-iterate`, {
+                    impactName: impact.name,
+                    impactValue: this.integerPipe.transform(impact.totalSipValue),
+                    rawValue: this.decimalsPipe.transform(impact.totalRawValue),
+                    unit: impact.unit,
+                }) +
+                (index < 2 ? "," : "");
+        }
+        return textDescription;
+    }
+
+    getGlobalVisionTextDescription(translationKey: string): string {
+        let textDescription = "";
+
+        for (const [index, impact] of this.topThreeImpacts.entries()) {
+            if (index === 0) {
+                textDescription += this.translate.instant(
+                    `${translationKey}text-description`,
+                );
+            }
+            textDescription +=
+                "<br />" +
+                this.translate.instant(`${translationKey}text-description-iterate`, {
+                    impactName: impact.title,
+                    impactValue: this.integerPipe.transform(impact.peopleeq),
+                    resource: impact.maxCriteria.name,
+                    resourceValue: this.integerPipe.transform(
+                        impact.maxCriteria.peopleeq,
+                    ),
+
+                    rawValue: this.decimalsPipe.transform(impact.raw),
+                    unit: impact.unite,
+                    resourceRawValue: this.decimalsPipe.transform(impact.maxCriteria.raw),
+                    resourceUnit: impact.unite,
+                }) +
+                (index < 2 ? "," : "");
+        }
+        return textDescription;
+    }
+
+    getCriteriaTextDescription(translationKey: string, criteriaKey: string): string {
+        let textDescription = "";
+        for (const [index, impact] of this.topPieThreeImpacts.entries()) {
+            if (index === 0) {
+                textDescription += this.translate.instant(
+                    `${translationKey}text-description`,
+                    {
+                        resource: this.translate.instant(`criteria.${criteriaKey}.title`),
+                    },
+                );
+            }
+            textDescription +=
+                "<br />" +
+                this.translate.instant(`${translationKey}text-description-iterate`, {
+                    impactName: impact.name,
+                    impactValue: this.integerPipe.transform(impact.value),
+                    resource: this.translate.instant(`criteria.${criteriaKey}.title`),
+                    resourceValue: this.integerPipe.transform(impact.percentage),
+                    rawValue: this.decimalsPipe.transform(impact.unitValue),
+                    unit: impact.unit,
+                }) +
+                (index < 2 ? "," : "");
+        }
+        return textDescription;
+    }
+
     getTranslationKey(param: string, textType: string) {
-        const key = "criteria." + param.toLowerCase().replace(/ /g, "-") + "." + textType;
+        const key =
+            "criteria." + param.toLowerCase().replaceAll(" ", "-") + "." + textType;
         return key;
     }
 

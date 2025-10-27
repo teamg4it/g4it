@@ -16,6 +16,7 @@ import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/ou
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { Constants } from "src/constants";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard.component";
 
 describe("DigitalServicesFootprintDashboardComponent", () => {
@@ -224,5 +225,212 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         await component.updateDataConsistencyInDS(true);
         expect(component.digitalService.enableDataInconsistency).toBeTrue();
         expect(component.showInconsitency).toBeTrue();
+    });
+
+    it("should return server-lifecycle key when barChartChild is true and selectedParam is 'Server'", () => {
+        component.selectedParam = "Server";
+        component.barChartChild = true;
+        const result = component.getAiBarChartTranslateKey();
+        expect(result).toBe("digital-services-cards.server-lifecycle.");
+    });
+
+    it("should return cloud-lifecycle key when barChartChild is true and selectedParam is CLOUD_SERVICE", () => {
+        component.selectedParam = Constants.CLOUD_SERVICE;
+        component.barChartChild = true;
+        const result = component.getAiBarChartTranslateKey();
+        expect(result).toBe("digital-services-cards.cloud-lifecycle.");
+    });
+
+    it("should return generic key when barChartChild is false", () => {
+        component.selectedParam = "Some Param";
+        component.barChartChild = false;
+        const result = component.getAiBarChartTranslateKey();
+        expect(result).toBe("digital-services-cards.some-param.");
+    });
+
+    it("should return generic key when barChartChild is true and selectedParam is not Server or CLOUD_SERVICE", () => {
+        component.selectedParam = "Other Param";
+        component.barChartChild = true;
+        const result = component.getAiBarChartTranslateKey();
+        expect(result).toBe("digital-services-cards.other-param.");
+    });
+
+    it("should return empty string if textType is not 'digital-services-card-content'", () => {
+        component.aiRecommendation = { recommendations: "[]" } as any;
+        const result = component.getEcomindContent("digital-services-card-title");
+        expect(result).toBe("");
+    });
+
+    it("should return empty string if aiRecommendation is null", () => {
+        component.aiRecommendation = null as any;
+        const result = component.getEcomindContent("digital-services-card-content");
+        expect(result).toBe("");
+    });
+
+    it("should return empty string if recommendations is null", () => {
+        component.aiRecommendation = { recommendations: null } as any;
+        const result = component.getEcomindContent("digital-services-card-content");
+        expect(result).toBe("");
+    });
+
+    it("should return empty string if recommendations is not an array", () => {
+        component.aiRecommendation = { recommendations: "{}" } as any;
+        const result = component.getEcomindContent("digital-services-card-content");
+        expect(result).toBe("");
+    });
+
+    it("should return empty string if recommendations array is empty", () => {
+        component.aiRecommendation = { recommendations: "[]" } as any;
+        const result = component.getEcomindContent("digital-services-card-content");
+        expect(result).toBe("");
+    });
+
+    it("should return HTML table if recommendations array is valid", () => {
+        const recommendations = [
+            { action: "Reduce usage", impact: "High" },
+            { action: "Switch provider", impact: "Medium" },
+        ];
+        component.aiRecommendation = {
+            recommendations: JSON.stringify(recommendations),
+        } as any;
+        const result = component.getEcomindContent("digital-services-card-content");
+        expect(result).toContain("<table");
+        expect(result).toContain("Reduce usage");
+        expect(result).toContain("Switch provider");
+        expect(result).toContain("Recommendations");
+    });
+
+    it("should return empty string and log error if JSON.parse throws", () => {
+        spyOn(console, "error");
+        component.aiRecommendation = { recommendations: "not-a-json" } as any;
+        const result = component.getEcomindContent("digital-services-card-content");
+        expect(result).toBe("");
+        expect(console.error).toHaveBeenCalled();
+    });
+
+    it("should return 'ds-graph-description.server.' when not barChartChild and selectedParam is 'Server'", () => {
+        component.selectedParam = "Server";
+        component.barChartChild = false;
+        const result = component.getBarTranslateKey();
+        expect(result).toBe("ds-graph-description.server.");
+    });
+
+    it("should return 'ds-graph-description.cloud-lifecycle.' when barChartChild and selectedParam is CLOUD_SERVICE", () => {
+        component.selectedParam = Constants.CLOUD_SERVICE;
+        component.barChartChild = true;
+        const result = component.getBarTranslateKey();
+        expect(result).toBe("ds-graph-description.cloud-lifecycle.");
+    });
+    it("should return 'ds-graph-description.terminal-lifecycle.' when barChartChild and selectedParam is TERMINAL", () => {
+        component.selectedParam = Constants.TERMINAL;
+        component.barChartChild = true;
+        const result = component.getBarTranslateKey();
+        expect(result).toBe("ds-graph-description.terminal-lifecycle.");
+    });
+
+    it("should return generic key for other params", () => {
+        component.selectedParam = "Other Param";
+        component.barChartChild = false;
+        const result = component.getBarTranslateKey();
+        expect(result).toBe("ds-graph-description.other-param.");
+    });
+
+    it("should return empty string if no impacts", () => {
+        component.barChartTopThreeImpact = [];
+        const result = component.getBarChartTextDescription("prefix.");
+        expect(result).toBe("");
+    });
+
+    describe("getGlobalVisionTextDescription", () => {
+        it("should return empty string if topThreeImpacts is empty", () => {
+            component.topThreeImpacts = [];
+            const result = component.getGlobalVisionTextDescription("prefix.");
+            expect(result).toBe("");
+        });
+    });
+
+    describe("getCriteriaTextDescription", () => {
+        it("should return empty string if topPieThreeImpacts is empty", () => {
+            component.topPieThreeImpacts = [];
+            const result = component.getCriteriaTextDescription(
+                "prefix.",
+                "criteria-key",
+            );
+            expect(result).toBe("");
+        });
+    });
+
+    it("should getContentText to be defined", () => {
+        const result = component.getContentText();
+        expect(component.getContentText()).toBeDefined();
+    });
+
+    it("should getContentText to be defined", () => {
+        const result = component.getTitleOrContent("title");
+        expect(component.getTitleOrContent).toBeDefined();
+    });
+
+    it("should call initImpacts and return if globalFootprintData is empty", () => {
+        const spy = spyOn(component, "initImpacts");
+        component.setCriteriaButtons([]);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it("should return formatted description for barChartTopThreeImpact", () => {
+        component.barChartTopThreeImpact = [
+            { name: "Impact1", totalSipValue: 10, totalRawValue: 5, unit: "kg" },
+            { name: "Impact2", totalSipValue: 20, totalRawValue: 15, unit: "g" },
+            { name: "Impact3", totalSipValue: 30, totalRawValue: 25, unit: "t" },
+        ];
+        const result = component.getBarChartTextDescription(
+            "ds-graph-description.terminal-type.",
+        );
+        expect(result).toContain("<br />");
+        expect(result).toContain(",");
+    });
+
+    it("should return formatted description for barChartTopThreeImpact", () => {
+        component.topThreeImpacts = [
+            {
+                name: "Impact1",
+                totalSipValue: 10,
+                totalRawValue: 5,
+                unit: "kg",
+                maxCriteria: { name: "Test1" },
+            },
+            {
+                name: "Impact2",
+                totalSipValue: 20,
+                totalRawValue: 15,
+                unit: "g",
+                maxCriteria: { name: "test1" },
+            },
+            {
+                name: "Impact3",
+                totalSipValue: 30,
+                totalRawValue: 25,
+                unit: "t",
+                maxCriteria: { name: "Test2" },
+            },
+        ];
+        const result = component.getGlobalVisionTextDescription(
+            "ds-graph-description.global-vision.",
+        );
+        expect(result).toContain("<br />");
+        expect(result).toContain(",");
+    });
+
+    it("should return formatted description for barChartTopThreeImpact", () => {
+        component.topPieThreeImpacts = [
+            { name: "Impact1", totalSipValue: 10, totalRawValue: 5, unit: "kg" },
+            { name: "Impact2", totalSipValue: 20, totalRawValue: 15, unit: "g" },
+            { name: "Impact3", totalSipValue: 30, totalRawValue: 25, unit: "t" },
+        ];
+        const result = component.getCriteriaTextDescription(
+            "ds-graph-description.criteria.",
+            "climate-change",
+        );
+        expect(result).toContain("<br />");
+        expect(result).toContain(",");
     });
 });

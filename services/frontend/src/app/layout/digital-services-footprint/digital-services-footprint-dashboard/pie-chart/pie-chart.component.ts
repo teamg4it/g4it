@@ -35,6 +35,7 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
     @Input() enableDataInconsistency: boolean = false;
     @Output() selectedParamChange: EventEmitter<any> = new EventEmitter();
     @Output() chartTypeChange: EventEmitter<any> = new EventEmitter();
+    @Output() topPieThreeImpacts: EventEmitter<any[]> = new EventEmitter();
 
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
@@ -116,6 +117,18 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
         });
         this.xAxisInput = seriesData.map((item) => item.name);
         this.criteriaMap = dsTierOkmap;
+        const topThreeImpacts = [...seriesData]
+            .sort((a, b) => b.value - a.value)
+            .map((series) => ({
+                ...series,
+                percentage: (
+                    (series.value /
+                        seriesData.reduce((acc, curr) => acc + curr.value, 0)) *
+                    100
+                ).toFixed(0),
+            }))
+            .slice(0, 3);
+        this.topPieThreeImpacts.emit(topThreeImpacts);
         return {
             tooltip: {
                 show: true,
