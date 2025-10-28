@@ -9,7 +9,7 @@ import { GraphDescriptionContent } from "src/app/core/interfaces/digital-service
 })
 export class GraphDescriptionComponent {
     private readonly translate = inject(TranslateService);
-    contentVisible = false;
+    contentVisible = true;
     contentText = input<GraphDescriptionContent>();
     isAi = input<boolean>(false);
     title = input<string>("");

@@ -526,14 +526,14 @@ export class DigitalServicesFootprintDashboardComponent
                 );
             }
             textDescription +=
-                "<br />" +
+                (index === 0 ? "" : "<br />") +
                 this.translate.instant(`${translationKey}text-description-iterate`, {
                     impactName: impact.name,
                     impactValue: this.integerPipe.transform(impact.totalSipValue),
                     rawValue: this.decimalsPipe.transform(impact.totalRawValue),
                     unit: impact.unit,
                 }) +
-                (index < 2 ? "," : "");
+                (index < 2 ? "," : ".");
         }
         return textDescription;
     }
@@ -541,14 +541,24 @@ export class DigitalServicesFootprintDashboardComponent
     getGlobalVisionTextDescription(translationKey: string): string {
         let textDescription = "";
 
+        const firstPrefix = this.translate.instant(
+            `${translationKey}text-description-first-prefix`,
+        );
+        const iteratePrefix = this.translate.instant(
+            `${translationKey}text-description-iterate-prefix`,
+        );
+
         for (const [index, impact] of this.topThreeImpacts.entries()) {
+            const prefix = index === 0 ? firstPrefix : iteratePrefix;
+
             if (index === 0) {
                 textDescription += this.translate.instant(
                     `${translationKey}text-description`,
                 );
             }
             textDescription +=
-                "<br />" +
+                (index === 0 ? "" : "<br />") +
+                prefix +
                 this.translate.instant(`${translationKey}text-description-iterate`, {
                     impactName: impact.title,
                     impactValue: this.integerPipe.transform(impact.peopleeq),
@@ -556,14 +566,14 @@ export class DigitalServicesFootprintDashboardComponent
                     resourceValue: this.integerPipe.transform(
                         impact.maxCriteria.peopleeq,
                     ),
-
                     rawValue: this.decimalsPipe.transform(impact.raw),
                     unit: impact.unite,
                     resourceRawValue: this.decimalsPipe.transform(impact.maxCriteria.raw),
                     resourceUnit: impact.unite,
                 }) +
-                (index < 2 ? "," : "");
+                (index < 2 ? "," : ".");
         }
+
         return textDescription;
     }
 
@@ -579,7 +589,7 @@ export class DigitalServicesFootprintDashboardComponent
                 );
             }
             textDescription +=
-                "<br />" +
+                (index === 0 ? "" : "<br />") +
                 this.translate.instant(`${translationKey}text-description-iterate`, {
                     impactName: impact.name,
                     impactValue: this.integerPipe.transform(impact.value),
@@ -588,7 +598,7 @@ export class DigitalServicesFootprintDashboardComponent
                     rawValue: this.decimalsPipe.transform(impact.unitValue),
                     unit: impact.unit,
                 }) +
-                (index < 2 ? "," : "");
+                (index < 2 ? "," : ".");
         }
         return textDescription;
     }
