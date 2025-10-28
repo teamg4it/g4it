@@ -53,7 +53,6 @@ public interface InputToCsvRecord {
     default List<String> toCsv(InAiInfrastructure inAiInfrastructure) {
         return List.of(
                 inAiInfrastructure.getDigitalServiceUid(),
-                inAiInfrastructure.getComplementaryPue() != null ? inAiInfrastructure.getComplementaryPue().toString() : "",
                 inAiInfrastructure.getNbGpu().toString(),
                 inAiInfrastructure.getGpuMemory().toString()
         );
@@ -102,7 +101,7 @@ public interface InputToCsvRecord {
                 print(virtualEquipment.getCloudProvider()), //cloudProvider
                 print(virtualEquipment.getInstanceType()), //InstanceType
                 print(location), //location
-                print(virtualEquipment.getWorkload() != null ?  virtualEquipment.getWorkload() * 100 :  null), //averageWorkload
+                print(virtualEquipment.getWorkload() != null ? virtualEquipment.getWorkload() * 100 : null), //averageWorkload
                 print(virtualEquipment.getUsageDuration()), //annualUsageDuration
                 print(virtualEquipment.getPhysicalEquipmentName()),
                 "", //nomSourceDonneeEquipementPhysique
