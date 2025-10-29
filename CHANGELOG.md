@@ -12,6 +12,7 @@
 - 1548 | New design for Visualize my results
 - 1549 | [Digital service] Same design for the pop up in the visualization
 - 1597 | add comma for VM
+- 1598 | [AFNIC] NumEcoEval - Electricity consumption of a Virtual Machine
 
 ## 3.6.1
 

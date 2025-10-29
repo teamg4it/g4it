@@ -136,6 +136,41 @@
                     {{ "common.mandatory" | translate }}
                 </p>
             </div>
+            <div class="label-input-div-medium">
+                <label for="electricityConsumption">{{
+                    "digital-services-servers.electricityConsumption" | translate
+                }}</label>
+                <p-inputNumber
+                    formControlName="electricityConsumption"
+                    [min]="0"
+                    styleClass="inputnumber-medium"
+                    (onInput)="verifyElectricityValue()"
+                    [(ngModel)]="vm.electricityConsumption"
+                    name="electricityConsumption"
+                    id="electricityConsumption"
+                    [placeholder]="'common.optional' | translate"
+                    ngDefaultControl
+                    locale="fr-FR"
+                />
+                <p class="error-text">
+                    @if (electricityConsumptionControl.hasError("required")) {
+                        {{
+                            "digital-services-servers.electricityConsumption" | translate
+                        }}
+                        {{ "common.mandatory" | translate }}
+                    }
+                    @if (electricityConsumptionControl.hasError("isElecValueTooHigh")) {
+                        {{
+                            "digital-services-servers.error.electricityConsumption"
+                                | translate
+                        }}
+                        ({{ server().annualElectricConsumption }}
+                        {{
+                            "digital-services-servers.electricityConsumption" | translate
+                        }})
+                    }
+                </p>
+            </div>
         </div>
         <div class="button-bottom-right">
             <p-button styleClass="white-button" (onClick)="close()">{{
