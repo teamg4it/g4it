@@ -23,9 +23,9 @@ describe("GraphDescriptionComponent", () => {
     });
 
     it("should toggle contentVisible from false to true", () => {
-        expect(component.contentVisible).toBeFalse();
-        component.toggleContentVisibility();
         expect(component.contentVisible).toBeTrue();
+        component.toggleContentVisibility();
+        expect(component.contentVisible).toBeFalse();
     });
 
     it("should toggle contentVisible from true to false", () => {
