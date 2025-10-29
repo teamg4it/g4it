@@ -516,6 +516,7 @@ export class DigitalServicesFootprintDashboardComponent
 
     getBarChartTextDescription(translationKey: string): string {
         let textDescription = "";
+        const totalImpacts = this.barChartTopThreeImpact.length;
         for (const [index, impact] of this.barChartTopThreeImpact.entries()) {
             if (index === 0) {
                 textDescription += this.translate.instant(
@@ -533,14 +534,14 @@ export class DigitalServicesFootprintDashboardComponent
                     rawValue: this.decimalsPipe.transform(impact.totalRawValue),
                     unit: impact.unit,
                 }) +
-                (index < 2 ? "," : ".");
+                this.getCommaOrDot(totalImpacts, index);
         }
         return textDescription;
     }
 
     getGlobalVisionTextDescription(translationKey: string): string {
         let textDescription = "";
-
+        const totalImpacts = this.topThreeImpacts.length;
         const firstPrefix = this.translate.instant(
             `${translationKey}text-description-first-prefix`,
         );
@@ -571,7 +572,7 @@ export class DigitalServicesFootprintDashboardComponent
                     resourceRawValue: this.decimalsPipe.transform(impact.maxCriteria.raw),
                     resourceUnit: impact.unite,
                 }) +
-                (index < 2 ? "," : ".");
+                this.getCommaOrDot(totalImpacts, index);
         }
 
         return textDescription;
@@ -579,6 +580,7 @@ export class DigitalServicesFootprintDashboardComponent
 
     getCriteriaTextDescription(translationKey: string, criteriaKey: string): string {
         let textDescription = "";
+        const totalImpacts = this.topPieThreeImpacts.length;
         for (const [index, impact] of this.topPieThreeImpacts.entries()) {
             if (index === 0) {
                 textDescription += this.translate.instant(
@@ -598,9 +600,13 @@ export class DigitalServicesFootprintDashboardComponent
                     rawValue: this.decimalsPipe.transform(impact.unitValue),
                     unit: impact.unit,
                 }) +
-                (index < 2 ? "," : ".");
+                this.getCommaOrDot(totalImpacts, index);
         }
         return textDescription;
+    }
+
+    getCommaOrDot(totalImpacts: number, index: number): string {
+        return totalImpacts === 1 || index === totalImpacts - 1 ? "." : ",";
     }
 
     getTranslationKey(param: string, textType: string) {
