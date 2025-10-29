@@ -365,12 +365,11 @@ public class EvaluateAiService {
         while (!virtualEquipments.isEmpty()) {
             for (InVirtualEquipment virtualEquipment : virtualEquipments) {
                 Double totalVcpuCoreNumber = evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
-                Integer totalVpcuCore = totalVcpuCoreNumber == null ? null : totalVcpuCoreNumber.intValue();
                 Double totalStorage = evaluateNumEcoEvalService.getTotalDiskSize(virtualEquipments);
 
                 List<ImpactEquipementVirtuel> impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
                         virtualEquipment, impactEquipementPhysiqueList,
-                        virtualEquipments.size(), totalVpcuCore, totalStorage
+                        virtualEquipments.size(), totalVcpuCoreNumber, totalStorage
                 );
 
                 String location = virtualEquipment.getLocation();

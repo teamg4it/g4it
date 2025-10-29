@@ -27,6 +27,8 @@
                 }}</label>
                 <p-inputNumber
                     formControlName="vcpu"
+                    mode="decimal"
+                    [minFractionDigits]="1"
                     [required]="true"
                     [min]="0"
                     styleClass="inputnumber-medium"
@@ -55,6 +57,8 @@
                 }}</label>
                 <p-inputNumber
                     formControlName="disk"
+                    mode="decimal"
+                    [minFractionDigits]="1"
                     [required]="true"
                     [min]="0"
                     styleClass="inputnumber-medium"
