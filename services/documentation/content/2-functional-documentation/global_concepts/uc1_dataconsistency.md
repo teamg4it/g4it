@@ -74,7 +74,7 @@ A click on the button 'Data Consistency' will change the visualization to displa
 By default, data consistency view is disable in the Digital service footprint view.
 ![uc1_data_consistency_off.png](../images/uc1_data_consistency_off.png)
 
-To activate the data consistency view: click on the 'Configure the view' button.
+To activate the data consistency view: click on the 'ENABLE DATA CONSISTENCY' button.
 
 _Action:_
 A pop-up window will appear with an option labeled 'I want to enable data consistency.'

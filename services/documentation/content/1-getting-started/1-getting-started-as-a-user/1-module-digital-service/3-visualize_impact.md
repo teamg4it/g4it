@@ -68,7 +68,7 @@ visualize the impact of your digital service.
        the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md)
        documentation.
     5. **Action:** This button allows you to see inconsistencies in the graph. If you cannot see this button in the view,
-       you can enable it from the 'Configure the view' button You can learn more about this in
+       you can enable it from the 'ENABLE DATA CONSISTENCY' button You can learn more about this in
        the [Data Consistency](../../../../2-functional-documentation/global_concepts/uc1_dataconsistency.md)
 
     **Action:** Access this view by clicking the "Visualize my results in the" tab in the digital service view.
