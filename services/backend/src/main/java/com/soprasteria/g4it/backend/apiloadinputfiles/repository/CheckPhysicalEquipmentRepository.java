@@ -48,6 +48,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                             LIMIT 50000
             """)
     List<DuplicateEquipmentDTO> findDuplicatePhysicalEquipments(@Param("taskId") Long taskId);
+
     @Query(nativeQuery = true, value = """
             select filename,
                    line_nb as lineNb,
@@ -57,9 +58,9 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
             where cilpe.datacenter_name is null
             and cilpe.type IN ('Dedicated Server', 'Shared Server')
             and cilpe.task_id = :taskId
-                        
+            
             UNION
-                        
+            
             select filename,
                    line_nb as lineNb,
                    datacenter_name as parentEquipmentName,
@@ -70,7 +71,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                 from in_datacenter idc
                 where
                 idc.digital_service_uid = :digitalServiceUid
-               
+            
                 and cilpe.datacenter_name =  idc.name
             )
             and not exists (
@@ -83,11 +84,11 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
             and cilpe.datacenter_name is not null
             and cilpe.type IN ('Dedicated Server', 'Shared Server')
             and cilpe.task_id = :taskId
-                        
+            
             """)
     List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,
-                                                             @Param("digitalServiceUid") String digitalServiceUid,
-                                                             @Param("parentDuplicates") List<String> parentDuplicates);
+                                                              @Param("digitalServiceUid") String digitalServiceUid,
+                                                              @Param("parentDuplicates") List<String> parentDuplicates);
 
     @Query(nativeQuery = true, value = """
              select filename,
@@ -98,9 +99,9 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
              where cilpe.datacenter_name is null
              and cilpe.type IN ('Dedicated Server', 'Shared Server')
              and cilpe.task_id = :taskId
-             
+            
              UNION
-             
+            
              select filename,
                     line_nb as lineNb,
                     datacenter_name as parentEquipmentName,
@@ -111,7 +112,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                  from in_datacenter idc
                  where
                  idc.digital_service_uid = :digitalServiceUid
-                
+            
                  and cilpe.datacenter_name = idc.name
              )
              and not exists (
@@ -123,8 +124,47 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
              and cilpe.datacenter_name is not null
              and cilpe.type IN ('Dedicated Server', 'Shared Server')
              and cilpe.task_id = :taskId
-             
-            """)    List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,
-                                                                             @Param("digitalServiceUid") String digitalServiceUid);
+            
+            """)
+    List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,
+                                                              @Param("digitalServiceUid") String digitalServiceUid);
+
+    @Query(nativeQuery = true, value = """
+             select filename,
+                    line_nb as lineNb,
+                    datacenter_name as parentEquipmentName,
+                    physical_equipment_name as equipmentName
+             from check_inv_load_physical_equipment cilpe
+             where cilpe.datacenter_name is null
+             and cilpe.type IN ('Dedicated Server', 'Shared Server')
+             and cilpe.task_id = :taskId
+            
+             UNION
+            
+             select filename,
+                    line_nb as lineNb,
+                    datacenter_name as parentEquipmentName,
+                    physical_equipment_name as equipmentName
+             from check_inv_load_physical_equipment cilpe
+             where not exists (
+                 select datacenter_name
+                 from in_datacenter idc
+                 where
+                 idc.inventory_id = :inventoryId
+            
+                 and cilpe.datacenter_name = idc.name
+             )
+             and not exists (
+                 select datacenter_name
+                 from check_inv_load_datacenter cild
+                 where cild.task_id = cilpe.task_id
+                 and cilpe.datacenter_name = cild.datacenter_name
+             )
+             and cilpe.datacenter_name is not null
+             and cilpe.type IN ('Dedicated Server', 'Shared Server')
+             and cilpe.task_id = :taskId
+            
+            """)
+    List<CoherenceParentDTO> findIncoherentPhysicalEquipmentsForInventory(Long taskId, Long inventoryId);
 }
 
