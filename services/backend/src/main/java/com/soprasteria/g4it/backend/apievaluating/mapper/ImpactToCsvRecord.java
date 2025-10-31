@@ -56,7 +56,7 @@ public interface ImpactToCsvRecord {
                 impact.getStatutIndicateur(),
                 verbose ? impact.getTrace() : "",
                 "1.0", // calculationVersion
-                print(impact.getConsoElecMoyenne()),
+                print(impact.getConsoElecMoyenne() == null ? null :impact.getConsoElecMoyenne() * impact.getQuantite()),
                 print(impact.getImpactUnitaire()),
                 print(impact.getQuantite()),
                 printFirst(physicalEquipment.getFilters()), // status
