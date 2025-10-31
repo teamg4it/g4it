@@ -42,6 +42,12 @@ public class InAiInfrastructure {
     private String digitalServiceUid;
 
     /**
+     * Linked Digital Service Version UID
+     */
+    @Column(name = "digital_service_version_uid")
+    private String digitalServiceVersionUid;
+
+    /**
      * Complementary Pue
      */
     private Double complementaryPue;

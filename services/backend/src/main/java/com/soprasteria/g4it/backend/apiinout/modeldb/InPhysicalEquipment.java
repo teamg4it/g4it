@@ -47,6 +47,12 @@ public class InPhysicalEquipment {
      */
     private String digitalServiceUid;
 
+    /**
+     * Linked Digital Service Version UID
+     */
+    @Column(name = "digital_service_version_uid")
+    private String digitalServiceVersionUid;
+
     private String datacenterName;
     private String location;
 

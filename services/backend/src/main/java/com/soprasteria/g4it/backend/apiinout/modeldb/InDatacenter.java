@@ -43,6 +43,12 @@ public class InDatacenter {
      */
     private String digitalServiceUid;
 
+    /**
+     * Linked Digital Service Version UID
+     */
+    @Column(name = "digital_service_version_uid")
+    private String digitalServiceVersionUid;
+
     private String fullName;
 
     @NotNull
