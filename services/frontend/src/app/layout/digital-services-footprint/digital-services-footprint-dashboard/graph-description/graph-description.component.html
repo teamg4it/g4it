@@ -21,9 +21,6 @@
     @if (contentVisible) {
         <section class="p-4 border bg-gray-color">
             @if (isAi()) {
-                <h4 class="mb-0 font-semibold">
-                    {{ title() | translate }}
-                </h4>
                 <p [innerHTML]="content()"></p>
             } @else {
                 <h4 class="mb-0 font-semibold">
