@@ -48,11 +48,10 @@ public class CheckConstraintService {
 
         // Check Virtual Equipments
         List<DuplicateEquipmentDTO> duplicateVirtualEqp;
-        if(isDigitalService){
-             duplicateVirtualEqp =  checkVirtualEqpRepository.findDuplicateDigitalServiceVirtualEqp(taskId);
-        }
-        else {
-           duplicateVirtualEqp = checkVirtualEqpRepository.findDuplicateVirtualEquipments(taskId);
+        if (isDigitalService) {
+            duplicateVirtualEqp = checkVirtualEqpRepository.findDuplicateDigitalServiceVirtualEqp(taskId);
+        } else {
+            duplicateVirtualEqp = checkVirtualEqpRepository.findDuplicateVirtualEquipments(taskId);
         }
         processDuplicates(duplicateVirtualEqp, duplicatesMap, "virtual equipment");
 
@@ -64,7 +63,7 @@ public class CheckConstraintService {
         List<DuplicateEquipmentDTO> duplicateDatacenters = checkDatacenterRepository.findDuplicateDatacenters(taskId);
         processDuplicates(duplicateDatacenters, duplicatesMap, "datacenter");
 
-        if(!isDigitalService) {
+        if (!isDigitalService) {
             // Check Applications
             List<DuplicateEquipmentDTO> duplicateApplications = checkApplicationRepository.findDuplicateApplications(taskId);
             processDuplicates(duplicateApplications, duplicatesMap, "application");
@@ -135,10 +134,10 @@ public class CheckConstraintService {
     public Map<String, Map<Integer, List<LineError>>> checkCoherence(Long taskId, Long inventoryId, String digitalServiceUid, Map<String, Map<Integer, List<LineError>>> unicityMap) {
         Map<String, Map<Integer, List<LineError>>> coherenceMap = new HashMap<>();
 
-        // Check physical equipment references to datacenter for digital service
-        if(digitalServiceUid != null) {
-            checkPhysicalEquipmentCoherence(taskId, digitalServiceUid, unicityMap, coherenceMap);
-        }
+        // Check physical equipment references to datacenter for digital service and inventory
+
+        checkPhysicalEquipmentCoherence(taskId, digitalServiceUid, unicityMap, coherenceMap, inventoryId);
+
         // Check virtual equipment references to physical equipment
         checkVirtualEquipmentCoherence(taskId, inventoryId, digitalServiceUid, unicityMap, coherenceMap);
 
@@ -154,8 +153,8 @@ public class CheckConstraintService {
      * @param taskId the task id
      */
     private void checkPhysicalEquipmentCoherence(Long taskId, String digitalServiceUid,
-                                                Map<String, Map<Integer, List<LineError>>> unicityMap,
-                                                Map<String, Map<Integer, List<LineError>>> coherenceMap) {
+                                                 Map<String, Map<Integer, List<LineError>>> unicityMap,
+                                                 Map<String, Map<Integer, List<LineError>>> coherenceMap, Long inventoryId) {
 
         //Refactor in order to request digital service non-cloud equipement which don't have parent in checkCoherence table (the parent must not be in the list of duplicated parents)
         // and does not have parent in the digital service for this given digitalServiceUid
@@ -171,14 +170,28 @@ public class CheckConstraintService {
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
+
         List<CoherenceParentDTO> incoherentPhysicalEquipement = new ArrayList<>();
+        boolean noErrors = errorenousDatacenter.isEmpty();
 
-        if (errorenousDatacenter.isEmpty()) {
-            incoherentPhysicalEquipement = checkPhysicalEqpRepository.findIncoherentPhysicalEquipments(taskId, digitalServiceUid);
+        if (digitalServiceUid != null) {
+            if (noErrors) {
+                incoherentPhysicalEquipement = checkPhysicalEqpRepository
+                        .findIncoherentPhysicalEquipments(taskId, digitalServiceUid);
+            } else {
+                incoherentPhysicalEquipement = checkPhysicalEqpRepository
+                        .findIncoherentPhysicalEquipments(taskId, digitalServiceUid, errorenousDatacenter);
+            }
         } else {
-            incoherentPhysicalEquipement = checkPhysicalEqpRepository.findIncoherentPhysicalEquipments(taskId, digitalServiceUid, errorenousDatacenter);
-        }
+            if (noErrors) {
 
+                incoherentPhysicalEquipement = checkPhysicalEqpRepository
+                        .findIncoherentPhysicalEquipmentsInventory(taskId, inventoryId);
+            } else {
+                incoherentPhysicalEquipement = checkPhysicalEqpRepository
+                        .findIncoherentPhysicalEquipmentsInventory(taskId, inventoryId, errorenousDatacenter);
+            }
+        }
 
         for (CoherenceParentDTO coherenceParentDTO : incoherentPhysicalEquipement) {
 
@@ -191,7 +204,9 @@ public class CheckConstraintService {
             addError(coherenceMap, coherenceParentDTO.getFilename(), coherenceParentDTO.getLineNb(), errorMessage);
 
         }
-    }    /**
+    }
+
+    /**
      * Check the metadata virtual equipment files
      *
      * @param taskId the task id

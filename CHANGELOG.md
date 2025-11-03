@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.8.0
+
+## Major changes
+
+### Minor Changes
+
+- 1693 | [IS module] Control on the default DC for physical equipment
+
 ## 3.7.0
 
 ## Major changes
