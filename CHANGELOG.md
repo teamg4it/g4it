@@ -19,6 +19,8 @@
 
 - 1714 | Graph Description must be activated on the module EcoMindIA
   
+- 1693 | [IS module] Control on the default DC for physical equipment
+
 ## 3.7.0
 
 ## Major changes
