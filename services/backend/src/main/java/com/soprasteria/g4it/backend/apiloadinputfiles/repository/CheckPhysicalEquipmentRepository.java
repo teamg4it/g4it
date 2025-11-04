@@ -86,8 +86,8 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                         
             """)
     List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,
-                                                             @Param("digitalServiceUid") String digitalServiceUid,
-                                                             @Param("parentDuplicates") List<String> parentDuplicates);
+                                                              @Param("digitalServiceUid") String digitalServiceUid,
+                                                              @Param("parentDuplicates") List<String> parentDuplicates);
 
     @Query(nativeQuery = true, value = """
              select filename,
@@ -124,7 +124,68 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
              and cilpe.type IN ('Dedicated Server', 'Shared Server')
              and cilpe.task_id = :taskId
              
-            """)    List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,
-                                                                             @Param("digitalServiceUid") String digitalServiceUid);
+            """)
+    List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,
+                                                              @Param("digitalServiceUid") String digitalServiceUid);
+    @Query(nativeQuery = true, value = """
+             SELECT filename,
+                    line_nb AS lineNb,
+                    datacenter_name AS parentEquipmentName,
+                    physical_equipment_name AS equipmentName
+             FROM check_inv_load_physical_equipment cilpe
+             WHERE cilpe.datacenter_name IS NOT NULL
+               AND cilpe.task_id = :taskId
+               AND NOT (
+                   EXISTS (
+                       SELECT datacenter_name
+                       FROM in_datacenter idc
+                       WHERE idc.inventory_id = :inventoryId
+                         AND cilpe.datacenter_name = idc.name
+                   )
+                   OR EXISTS (
+                       SELECT datacenter_name
+                       FROM check_inv_load_datacenter cild
+                       WHERE cild.task_id = cilpe.task_id
+                         AND cilpe.datacenter_name = cild.datacenter_name
+                   )
+               );
+             
+            
+            """)
+    List<CoherenceParentDTO> findIncoherentPhysicalEquipmentsInventory(@Param("taskId") Long taskId,
+                                                              @Param("inventoryId") Long inventoryId);
+
+    @Query(nativeQuery = true, value = """
+             SELECT filename,
+                    line_nb AS lineNb,
+                    datacenter_name AS parentEquipmentName,
+                    physical_equipment_name AS equipmentName
+             FROM check_inv_load_physical_equipment cilpe
+             WHERE cilpe.datacenter_name IS NOT NULL
+               AND cilpe.task_id = :taskId
+               AND NOT (
+                   EXISTS (
+                       SELECT datacenter_name
+                       FROM in_datacenter idc
+                       WHERE idc.inventory_id = :inventoryId
+                         AND cilpe.datacenter_name = idc.name
+                   )
+                   OR EXISTS (
+                       SELECT datacenter_name
+                       FROM check_inv_load_datacenter cild
+                       WHERE cild.task_id = cilpe.task_id
+                         AND cilpe.datacenter_name = cild.datacenter_name
+                         AND cild.datacenter_name NOT IN (:parentDuplicates)
+                   )
+               );
+             
+            
+            """)
+    List<CoherenceParentDTO> findIncoherentPhysicalEquipmentsInventory(@Param("taskId") Long taskId,
+                                                              @Param("inventoryId") Long inventoryId,
+                                                                       @Param("parentDuplicates") List<String> parentDuplicates);
+
+
+
 }
 
