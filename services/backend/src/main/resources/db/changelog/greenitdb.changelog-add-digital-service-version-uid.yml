@@ -1,0 +1,84 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-digital-service-version-uid-in-application
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_application
+            columns:
+              - column:
+                  name: digital_service_version_uid
+                  type: varchar(255)
+                  remarks: "Foreign key to the Digital Service Version"
+
+  - changeSet:
+      id: add-digital-service-version-uid-in-datacenter
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_datacenter
+            columns:
+              - column:
+                  name: digital_service_version_uid
+                  type: varchar(255)
+                  remarks: "Foreign key to the Digital Service Version"
+
+  - changeSet:
+      id: add-digital-service-version-uid-in-physical-equipment
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_physical_equipment
+            columns:
+              - column:
+                  name: digital_service_version_uid
+                  type: varchar(255)
+                  remarks: "Foreign key to the Digital Service Version"
+
+  - changeSet:
+      id: add-digital-service-version-uid-in-virtual-equipment
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_virtual_equipment
+            columns:
+              - column:
+                  name: digital_service_version_uid
+                  type: varchar(255)
+                  remarks: "Foreign key to the Digital Service Version"
+
+  - changeSet:
+      id: add-digital-service-version-uid-in-ai-parameters
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_ai_parameters
+            columns:
+              - column:
+                  name: digital_service_version_uid
+                  type: varchar(255)
+                  remarks: "Foreign key to the Digital Service Version"
+
+  - changeSet:
+      id: add-digital-service-version-uid-in-ai-infrastructure
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_ai_infrastructure
+            columns:
+              - column:
+                  name: digital_service_version_uid
+                  type: varchar(255)
+                  remarks: "Foreign key to the Digital Service Version"
+
+  - changeSet:
+      id: add-digital-service-version-uid-in-shared-link
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service_shared_link
+            columns:
+              - column:
+                  name: digital_service_version_uid
+                  type: varchar(255)
+                  remarks: "Foreign key to the Digital Service Version"

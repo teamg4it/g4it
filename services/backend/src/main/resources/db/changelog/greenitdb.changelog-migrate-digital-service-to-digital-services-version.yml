@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-migration-procedure
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: false
+            sql: |
+              CREATE OR REPLACE PROCEDURE migrate_digital_service_to_version()
+              AS $$
+              DECLARE
+                ds RECORD;
+                new_version_uid UUID;
+              BEGIN
+                RAISE NOTICE 'Migration started';
+                FOR ds IN SELECT * FROM digital_service LOOP
+                  new_version_uid := gen_random_uuid();
+                  RAISE NOTICE 'Processing digital_service_uid: %', ds.uid;
+                  INSERT INTO digital_service_version (
+                    uid, description, last_calculation_date, creation_date, last_update_date, item_id, version_type, note_id, criteria, created_by, task_id
+                  ) VALUES (
+                    new_version_uid, 'version 1', ds.last_calculation_date, ds.creation_date, ds.last_update_date, ds.uid, 'current', ds.note_id, ds.criteria, ds.user_id, NULL
+                  );
+                END LOOP;
+                RAISE NOTICE 'Migration completed';
+              END;
+              $$ LANGUAGE plpgsql;
+  
+
+  - changeSet:
+      id: run-migration-procedure
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql: CALL migrate_digital_service_to_version();
+
