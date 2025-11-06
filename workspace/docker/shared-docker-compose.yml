@@ -58,7 +58,7 @@ services:
           memory: 300M
 
   keycloak:
-    image: bitnami/keycloak:26.0.7
+    image: bitnamilegacy/keycloak:26.0.7
     container_name: keycloak
     ports:
       - "8180:8180"
