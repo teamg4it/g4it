@@ -88,8 +88,8 @@ public class FileSystemService {
     /**
      * List files of organization and workspace in INPUT directory
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
+     * @param organization the organization
+     * @param workspaceId  the workspace id
      * @return the list of files
      */
     public List<FileDescriptionRest> listFiles(final String organization, final Long workspaceId) throws IOException {
@@ -99,8 +99,8 @@ public class FileSystemService {
     /**
      * List files of organization and workspace in INPUT directory
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
+     * @param organization the organization
+     * @param workspaceId  the workspace id
      * @return the list of files
      */
     public List<FileDescriptionRest> listFiles(final String organization, final Long workspaceId, final FileFolder fileFolder) throws IOException {
@@ -113,24 +113,19 @@ public class FileSystemService {
      * @return the list of files
      */
     @Cacheable("listTemplatesFiles")
-    public List<FileDescriptionRest> listTemplatesFiles(String module) throws IOException {
+    public List<FileDescriptionRest> listTemplatesFiles() throws IOException {
 
-        if (FileFolder.DS_TEMPLATE.getFolderName().equals(module)) {
-            return fileDescriptionRestMapper.toDto(
-                    fetchStorage(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE))
-                            .listFiles(FileFolder.DS_TEMPLATE)
-            );
-        } else return fileDescriptionRestMapper.toDto(
+        return fileDescriptionRestMapper.toDto(
                 fetchStorage(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE))
-                        .listFiles(FileFolder.IS_TEMPLATE)
+                        .listFiles(FileFolder.TEMPLATES)
         );
     }
 
     /**
      * List files of organization and workspace in INPUT directory
      *
-     * @param organization     the organization
-     * @param workspaceId the workspaceId
+     * @param organization the organization
+     * @param workspaceId  the workspaceId
      * @return the list of files
      */
     public InputStream downloadFile(final String organization, final Long workspaceId, final FileFolder fileFolder, final String filename) throws IOException {
@@ -143,9 +138,9 @@ public class FileSystemService {
      * - get fileStorage
      * - upload each file into fileStorage
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
-     * @param files          the list of file
+     * @param organization the organization
+     * @param workspaceId  the workspace id
+     * @param files        the list of file
      * @return the fileName list uploaded
      */
     public List<String> manageFilesAndRename(final String organization, final Long workspaceId,
@@ -187,8 +182,8 @@ public class FileSystemService {
     /**
      * Retrieve the storage associated with workspace
      *
-     * @param organization   the client organization.
-     * @param workspace the workspace as known by G4IT
+     * @param organization the client organization.
+     * @param workspace    the workspace as known by G4IT
      * @return the filestorage associated with this organization
      * @throws ResponseStatusException Not Found if storage is unknown
      */
@@ -277,10 +272,10 @@ public class FileSystemService {
     /**
      * Delete file for organization, workspace, fileFolder
      *
-     * @param organization     the organization
-     * @param workspaceId the workspaceId
-     * @param fileFolder     the fileFolder
-     * @param fileUrl        the fileUrl
+     * @param organization the organization
+     * @param workspaceId  the workspaceId
+     * @param fileFolder   the fileFolder
+     * @param fileUrl      the fileUrl
      */
     public String deleteFile(String organization, Long workspaceId, FileFolder fileFolder, String fileUrl) {
         String fileName = getFilenameFromUrl(fileUrl, 0);
