@@ -266,9 +266,9 @@ export class DigitalServicesFootprintDashboardComponent
             );
 
         if (this.globalVisionChartData.length > 0) {
-            this.globalVisionChartData[0].impacts.forEach((impact) => {
+            for (const impact of this.globalVisionChartData[0].impacts) {
                 this.calculatedCriteriaList.push(impact.criteria);
-            });
+            }
         }
         this.initImpacts();
         this.setCriteriaButtons(this.globalVisionChartData);
@@ -308,8 +308,8 @@ export class DigitalServicesFootprintDashboardComponent
             }
         >();
 
-        globalFootprintData.forEach((tierData) => {
-            tierData.impacts.forEach((impactData) => {
+        for (const tierData of globalFootprintData) {
+            for (const impactData of tierData.impacts) {
                 const { criteria, unitValue, sipValue } = impactData;
                 if (criteriaMap.has(criteria)) {
                     criteriaMap.get(criteria)!.raw += unitValue;
@@ -330,9 +330,9 @@ export class DigitalServicesFootprintDashboardComponent
                         },
                     });
                 }
-            });
-        });
-        this.impacts.forEach((impact) => {
+            }
+        }
+        for (const impact of this.impacts) {
             const criteria = impact.name;
             impact.title = this.translate.instant(`criteria.${criteria}.title`);
             impact.unite = this.translate.instant(`criteria.${criteria}.unite`);
@@ -341,7 +341,7 @@ export class DigitalServicesFootprintDashboardComponent
                 impact.peopleeq = criteriaMap.get(criteria)!.peopleeq;
                 impact.maxCriteria = criteriaMap.get(criteria)!.maxCriteria;
             }
-        });
+        }
         this.topThreeImpacts = [...this.impacts]
             .map((impact) => ({
                 ...impact,
@@ -393,17 +393,17 @@ export class DigitalServicesFootprintDashboardComponent
                     <h4 style='font-weight:bold; margin-top:0px; font-size:1rem;'>Recommendations</h4>
                     <table style='width:100%;border-collapse:collapse;min-width:600px;'>
                     <thead><tr>`;
-                headers.forEach((h) => {
+                for (const h of headers) {
                     table += `<th style='padding:14px 18px;text-align:center;font-size:1rem;'>${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
-                });
+                }
                 table += `</tr></thead><tbody>`;
-                recommendationsArr.forEach((rec: any) => {
+                for (const rec of recommendationsArr) {
                     table += `<tr>`;
-                    headers.forEach((h) => {
+                    for (const h of headers) {
                         table += `<td style='padding:14px 18px;font-size:0.98rem;text-align:center;'>${rec[h]}</td>`;
-                    });
+                    }
                     table += `</tr>`;
-                });
+                }
                 table += `</tbody></table></div>`;
                 return table;
             } catch (error) {

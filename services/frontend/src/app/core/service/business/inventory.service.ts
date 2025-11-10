@@ -49,10 +49,9 @@ export class InventoryService {
             this.inventoryRepo.setInventories([]);
             return [];
         }
-
-        inventories.forEach((inventory: Inventory) => {
+        for (const inventory of inventories) {
             this.enrichInventory(inventory);
-        });
+        }
         this.inventoryRepo.setInventories(inventories);
         return inventories;
     }

@@ -59,13 +59,13 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         );
 
         // sort footprint by criteria
-        footprintCalculated.forEach((data) => {
+        for (const data of footprintCalculated) {
             data.impacts.sort(
                 (a, b) =>
                     this.criteriakeys.indexOf(a.criteria) -
                     this.criteriakeys.indexOf(b.criteria),
             );
-        });
+        }
         // sort statusIndicator key by criteria
         const sortedCriteriaCountMap: StatusCountMap = Object.keys(criteriaCountMap)
             .sort((a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b))

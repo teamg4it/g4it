@@ -50,8 +50,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
     }
 
     getCriteriaMap(radialChartData: DigitalServiceFootprint[]): void {
-        radialChartData?.forEach((data) => {
-            data.impacts.forEach((impact) => {
+        for (const data of radialChartData) {
+            for (const impact of data.impacts) {
                 const translatedCriteria = this.getCriteriaTranslation(
                     impact.criteria.split(" ").slice(0, 2).join(" "),
                 );
@@ -72,8 +72,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                             impact.countValue,
                     },
                 };
-            });
-        });
+            }
+        }
     }
 
     onChartClick(params: any) {
@@ -87,12 +87,12 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         radialChartData.sort((a: any, b: any) => {
             return order.indexOf(a.tier) - order.indexOf(b.tier);
         });
-        radialChartData.forEach((data) => {
+        for (const data of radialChartData) {
             data.impacts.sort(
                 (a, b) =>
                     criteriaOrder.indexOf(a.criteria) - criteriaOrder.indexOf(b.criteria),
             );
-        });
+        }
         this.getCriteriaMap(radialChartData);
         const noErrorRadialChartData: DigitalServiceFootprint[] = radialChartData.map(
             (item) => {

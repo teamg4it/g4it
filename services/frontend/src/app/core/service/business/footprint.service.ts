@@ -50,22 +50,22 @@ export class FootprintService {
             ),
             tap((footprint) => {
                 footprint = this.setUnspecifiedData(footprint);
-                footprint.forEach((indicateur) => {
+                for (const indicateur of footprint) {
                     indicateur.criteriaTitle = this.translate.instant(
                         `criteria.${indicateur.criteria}.title`,
                     );
                     indicateur.id = inventoryId;
-                });
+                }
             }),
         );
     }
 
     setUnspecifiedData(footprint: ApplicationFootprint[]) {
-        footprint.forEach((element) => {
+        for (const element of footprint) {
             for (const impact of element.impacts) {
                 this.setUnspecifiedDataImpact(impact);
             }
-        });
+        }
         return footprint;
     }
 
@@ -147,7 +147,9 @@ export class FootprintService {
         const lifeCycleMap = LifeCycleUtils.getLifeCycleMap();
 
         const filtersSet: any = {};
-        filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
+        for (const field of filterFields) {
+            filtersSet[field] = new Set(filters[field]);
+        }
 
         const hasAllFilters = Object.keys(filtersSet).every((item) =>
             filtersSet[item].has(Constants.ALL),
@@ -278,14 +280,14 @@ export class FootprintService {
         let equipmentFootprint: any = [];
 
         // Initialize sets for each field
-        if (!isEquipment) {
-            (appConstant as ConstantApplicationFilter[]).forEach((fieldObj) => {
-                uniqueValues[fieldObj.field] = new Set<string>();
-            });
-        } else {
-            (appConstant as string[]).forEach((fieldObj) => {
+        if (isEquipment) {
+            for (const fieldObj of appConstant as string[]) {
                 uniqueValues[fieldObj] = new Set<string>();
-            });
+            }
+        } else {
+            for (const fieldObj of appConstant as ConstantApplicationFilter[]) {
+                uniqueValues[fieldObj.field] = new Set<string>();
+            }
         }
         if (isEquipment) {
             equipmentFootprint = Object.keys(footprint as Criterias).map((key) => ({
@@ -294,22 +296,22 @@ export class FootprintService {
             }));
         }
         // Populate sets with unique values
-        (
-            (!isEquipment ? footprint : equipmentFootprint) as ApplicationFootprint[]
-        ).forEach((criteria) => {
-            criteria.impacts.forEach((impact) => {
+        for (const criteria of (isEquipment
+            ? equipmentFootprint
+            : footprint) as ApplicationFootprint[]) {
+            for (const impact of criteria.impacts) {
                 const criteriaImpact = impact as any;
-                if (!isEquipment) {
-                    (appConstant as ConstantApplicationFilter[]).forEach((fieldObj) => {
-                        this.populateSets(uniqueValues, fieldObj, criteriaImpact);
-                    });
-                } else {
-                    (appConstant as string[]).forEach((fieldObj) => {
+                if (isEquipment) {
+                    for (const fieldObj of appConstant as string[]) {
                         uniqueValues[fieldObj].add(criteriaImpact[fieldObj] ?? "");
-                    });
+                    }
+                } else {
+                    for (const fieldObj of appConstant as ConstantApplicationFilter[]) {
+                        this.populateSets(uniqueValues, fieldObj, criteriaImpact);
+                    }
                 }
-            });
-        });
+            }
+        }
         // Convert sets to arrays
         const result: { [key: string]: string[] | TransformedDomain[] } = {};
         for (const key in uniqueValues) {
@@ -360,7 +362,7 @@ export class FootprintService {
                 collapsed: true,
             };
 
-            domainObject[domain].forEach((subDomain) => {
+            for (const subDomain of domainObject[domain]) {
                 domainEntry.children.push({
                     field: "subDomain",
                     label: subDomain,
@@ -368,7 +370,7 @@ export class FootprintService {
                     checked: true,
                     visible: true,
                 });
-            });
+            }
 
             result.push(domainEntry);
         }

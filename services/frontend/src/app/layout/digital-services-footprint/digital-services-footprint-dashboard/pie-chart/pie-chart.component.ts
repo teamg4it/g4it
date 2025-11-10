@@ -58,7 +58,7 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
     loadPieChartOption(chartData: DigitalServiceFootprint[]): EChartsOption {
         const order = Constants.DIGITAL_SERVICES_CHART_ORDER;
         const dsTierOkmap: StatusCountMap = {};
-        chartData.forEach((chart) => {
+        for (const chart of chartData) {
             dsTierOkmap[this.existingTranslation(chart.tier, "digital-services")] = {
                 status: {
                     ok: chart.impacts
@@ -83,7 +83,7 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             chart.impacts
                 .filter((i) => i.criteria === this.selectedCriteria)
                 .every((impact) => impact.status === Constants.DATA_QUALITY_STATUS.ok);
-        });
+        }
         const seriesData = chartData.map((item) => {
             const selectedImpact = item.impacts.find(
                 (impact: any) =>

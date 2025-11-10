@@ -179,7 +179,7 @@ export class InventoriesFootprintComponent implements OnInit {
             this.transformOutVirtualEquipment(outVirtualEquipments);
         this.tranformAcvStepFootprint(footprint);
 
-        transformedOutVirtualEquipments.forEach((equipment) => {
+        for (const equipment of transformedOutVirtualEquipments) {
             const matchedFootprint = footprint[equipment.criteria];
 
             if (matchedFootprint) {
@@ -191,7 +191,7 @@ export class InventoriesFootprintComponent implements OnInit {
                     impacts: [equipment],
                 };
             }
-        });
+        }
     }
     initializeFootprintData(
         footprint: Criterias,
@@ -213,14 +213,14 @@ export class InventoriesFootprintComponent implements OnInit {
             true,
         );
 
-        Constants.EQUIPMENT_FILTERS.forEach((field) => {
+        for (const field of Constants.EQUIPMENT_FILTERS) {
             this.allUnmodifiedFilters[field] = [
                 Constants.ALL,
                 ...uniqueFilterSet[field]
                     .map((item: any) => (item ? item : Constants.EMPTY))
                     .sort(),
             ];
-        });
+        }
 
         this.global.setLoading(false);
     }
