@@ -117,13 +117,13 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         this.xAxisInput = [];
         this.criteriaMap = {};
 
-        barChartData.forEach((data) => {
+        for (const data of barChartData) {
             const translatedTitle = this.translate.instant(
                 `criteria.${data.criteria}`,
             ).title;
             let sumSip = 0;
             let sumUnit = 0;
-            data.impacts.forEach((impact) => {
+            for (const impact of data.impacts) {
                 if (!impact.impact) {
                     impact.impact = 0;
                     impact.sip = 0;
@@ -150,21 +150,21 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                         };
                     }
                 }
-            });
+            }
             impactOrder.push({
                 criteria: data.criteriaTitle,
                 unit: data.unit,
                 sipImpact: sumSip,
                 unitImpact: sumUnit,
             });
-        });
+        }
         impactOrder.sort(sortByProperty("sipImpact", "desc"));
-        impactOrder.forEach((impact) => {
+        for (const impact of impactOrder) {
             xAxis.push(impact.criteria);
             yAxis.push(impact.sipImpact);
             unitImpact.push(impact.unitImpact);
             unit.push(impact.unit);
-        });
+        }
         this.xAxisInput = xAxis;
         // sort statusIndicator key by criteria
         this.criteriaMap = Object.keys(this.criteriaMap)
@@ -250,8 +250,8 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         applications = applications || [];
         let applicationCount = 0;
         let appNameList: string[] = [];
-        applications.forEach((application) => {
-            application.impacts.forEach((impact) => {
+        for (const application of applications) {
+            for (const impact of application.impacts) {
                 let { applicationName } = impact;
                 if (
                     this.filterService.getFilterincludes(filters, impact) &&
@@ -260,8 +260,8 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                     appNameList.push(applicationName);
                     applicationCount += 1;
                 }
-            });
-        });
+            }
+        }
 
         this.appCount = applicationCount;
         return [

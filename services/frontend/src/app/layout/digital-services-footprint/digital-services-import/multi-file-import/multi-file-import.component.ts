@@ -99,26 +99,29 @@ export class MultiFileImportComponent implements OnChanges {
 
     private createFormData(): FormData {
         const formData = new FormData();
-        Object.entries(this.selectedFiles)
-            .filter(([key]) => this.fileTypes.some((type) => type.key === key))
-            .forEach(([key, file]) => {
-                let formKey = key;
-                if (key.startsWith("EQUIPEMENT_VIRTUEL")) {
-                    formKey = "EQUIPEMENT_VIRTUEL";
-                } else if (key.startsWith("EQUIPEMENT_PHYSIQUE")) {
-                    formKey = "EQUIPEMENT_PHYSIQUE";
-                }
-                formData.append(formKey, file, file.name);
-            });
+        for (const [key, file] of Object.entries(this.selectedFiles).filter(([key]) =>
+            this.fileTypes.some((type) => type.key === key),
+        )) {
+            let formKey = key;
+
+            if (key.startsWith("EQUIPEMENT_VIRTUEL")) {
+                formKey = "EQUIPEMENT_VIRTUEL";
+            } else if (key.startsWith("EQUIPEMENT_PHYSIQUE")) {
+                formKey = "EQUIPEMENT_PHYSIQUE";
+            }
+
+            formData.append(formKey, file, file.name);
+        }
+
         return formData;
     }
 
     private handleUploadSuccess(): void {
         this.fileLoading = false;
         // delete selected files after successful upload
-        this.fileTypes.forEach((type) => {
+        for (const type of this.fileTypes) {
             delete this.selectedFiles[type.key];
-        });
+        }
         this.updateFormValidity();
         this.formSubmit.emit("submit");
     }

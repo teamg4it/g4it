@@ -121,9 +121,9 @@ export class CriteriaStatsComponent {
         let count = 0;
         let appNameList: Set<string> = new Set();
 
-        this.footprint().forEach((application) => {
+        for (const application of this.footprint()) {
             if (application.criteria === this.footprintStore.applicationCriteria()) {
-                application.impacts.forEach((impact: ApplicationImpact) => {
+                for (const impact of application.impacts) {
                     const domain = (
                         this.footprintStore.applicationSelectedFilters() as Filter<TransformedDomain>
                     )["domain"].find((d) => d?.label === impact.domain);
@@ -175,9 +175,9 @@ export class CriteriaStatsComponent {
                                 break;
                         }
                     }
-                });
+                }
             }
-        });
+        }
 
         let appCount = appNameList.size;
         let averageImpactSip = 0;

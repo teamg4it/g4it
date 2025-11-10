@@ -123,8 +123,8 @@ export class TopHeaderComponent implements OnInit {
                     email: user.email,
                 };
                 this.workspaces = [];
-                user.organizations.forEach((organization) => {
-                    organization.workspaces.forEach((workspace) => {
+                for (const organization of user.organizations) {
+                    for (const workspace of organization.workspaces) {
                         this.workspaces.push({
                             color: generateColor(workspace.name + organization.name),
                             id: workspace.id,
@@ -132,8 +132,8 @@ export class TopHeaderComponent implements OnInit {
                             workspace,
                             organization: organization,
                         });
-                    });
-                });
+                    }
+                }
                 this.userService.currentWorkspace$
                     .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe((workspace: Workspace) => {

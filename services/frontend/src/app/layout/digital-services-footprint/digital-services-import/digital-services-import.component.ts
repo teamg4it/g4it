@@ -151,11 +151,11 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
                 }
                 this.templateFilesDescription =
                     this.templateFileService.transformTemplateFiles(templateFiles, true);
-                this.templateFilesDescription.forEach((file: TemplateFileDescription) => {
+                for (const file of this.templateFilesDescription) {
                     file.displayFileName = this.translate.instant(
                         `digital-services-import.templates.${file.csvFileType}-template-file`,
                     );
-                });
+                }
                 this.templateFilesDescription.sort((a, b) => {
                     if (a.csvFileType === "virtual" && b.csvFileType === "virtual") {
                         return (
@@ -285,9 +285,9 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
         this.selectedMenuIndex = index;
         const files = this.templateFilesDescription;
         this.templateFileVisible.set(this.getSelectedTemplates(files));
-        this.importDetails.menu.forEach((detail, i) => {
+        for (const [i, detail] of this.importDetails.menu.entries()) {
             detail.active = i === index;
-        });
+        }
     }
 
     getSelectedTemplates(files: TemplateFileDescription[]): TemplateFileDescription[] {

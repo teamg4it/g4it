@@ -153,11 +153,11 @@ export class PanelAddVmComponent implements OnInit {
 
         const field = type === "Compute" ? "vCpu" : "disk";
 
-        this.server().vm.forEach((vm) => {
+        for (const vm of this.server().vm) {
             if (this.vm.name !== vm.name) {
                 sum += vm[field] * vm.quantity;
             }
-        });
+        }
         return sum;
     }
 

@@ -99,8 +99,8 @@ export class LeftSidebarComponent implements OnInit {
                     email: user.email,
                 };
                 this.workspaces = [];
-                user.organizations.forEach((organization) => {
-                    organization.workspaces.forEach((workspace) => {
+                for (const organization of user.organizations) {
+                    for (const workspace of organization.workspaces) {
                         this.workspaces.push({
                             color: generateColor(workspace.name + organization.name),
                             id: workspace.id,
@@ -108,8 +108,8 @@ export class LeftSidebarComponent implements OnInit {
                             workspace,
                             organization,
                         });
-                    });
-                });
+                    }
+                }
                 this.isAdminOnWorkspaceOrOrganization =
                     this.userService.hasAnyAdminRole(user);
             });

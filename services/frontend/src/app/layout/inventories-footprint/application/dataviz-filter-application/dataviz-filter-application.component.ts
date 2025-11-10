@@ -82,14 +82,16 @@ export class DatavizFilterApplicationComponent implements OnChanges {
 
     onTreeChange(event: CheckboxChangeEvent, item: TransformedDomain) {
         if (item.label === Constants.ALL) {
-            this.allUnusedFilters["domain"].forEach((domain) => {
+            for (const domain of this.allUnusedFilters["domain"]) {
                 domain.checked = event.checked;
                 for (const child of domain["children"] ?? []) {
                     child.checked = event.checked;
                 }
-            });
+            }
         } else {
-            item["children"]?.forEach((child) => (child.checked = event.checked));
+            for (const child of item["children"] ?? []) {
+                child.checked = event.checked;
+            }
         }
         this.setAllCheckBox();
         const f = this.footprintStore.applicationSelectedFilters();

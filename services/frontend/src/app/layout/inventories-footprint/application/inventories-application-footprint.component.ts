@@ -104,7 +104,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         );
 
         let unmodifyFilter: Filter<string | TransformedDomain> = {};
-        Constants.APPLICATION_FILTERS.forEach((filter) => {
+        for (const filter of Constants.APPLICATION_FILTERS) {
             unmodifyFilter[filter.field] = [
                 filter.field !== "domain"
                     ? Constants.ALL
@@ -116,7 +116,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
                       },
                 ...this.getValues(uniqueFilterSet, filter),
             ];
-        });
+        }
         this.allUnmodifiedFilters.set(unmodifyFilter);
         if ((this.allUnmodifiedFilters() as any).domain.length <= 2) {
             if ((this.allUnmodifiedFilters() as any).domain[1].children.length <= 1) {
@@ -239,9 +239,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
                     false,
                 );
                 let modifiedFilter: Filter<string | TransformedDomain> = {};
-                appFilterConstant.forEach((filter) => {
+                for (const filter of appFilterConstant) {
                     this.pushFilter(filter, modifiedFilter, uniqueFilters);
-                });
+                }
                 nonModifyFilter = { ...nonModifyFilter, ...modifiedFilter };
             }
         }
@@ -326,7 +326,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         const lifecyclesList = Array.from(lifecycleMap.keys());
 
         return footprint?.map((element) => {
-            element?.impacts?.forEach((impact) => {
+            for (const impact of element?.impacts || []) {
                 if (
                     impact.lifeCycle !== Constants.ALL &&
                     impact.lifeCycle !== Constants.UNSPECIFIED &&
@@ -336,7 +336,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
                         "acvStep." + lifecycleMap.get(impact.lifeCycle),
                     );
                 }
-            });
+            }
             return element;
         });
     }
@@ -347,8 +347,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         const lifecycleMap = LifeCycleUtils.getLifeCycleMap();
         const lifecyclesList = Array.from(lifecycleMap.keys());
 
-        footprint.forEach((element) => {
-            element.impacts.forEach((impact) => {
+        for (const element of footprint) {
+            for (const impact of element.impacts) {
                 if (
                     impact.lifeCycle !== Constants.ALL &&
                     impact.lifeCycle !== Constants.UNSPECIFIED &&
@@ -358,8 +358,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
                         "acvStep." + lifecycleMap.get(impact.lifeCycle),
                     );
                 }
-            });
-        });
+            }
+        }
         return footprint;
     }
 }

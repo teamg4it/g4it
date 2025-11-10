@@ -103,12 +103,12 @@ describe("RadialChartComponent", () => {
                 angleAxisData = [];
             }
         }
-        angleAxisData.forEach((dataObj: any) => {
+        for (const dataObj of angleAxisData) {
             const value = dataObj.value;
             expect(dataObj.textStyle.color).toBe(
                 getColorFormatter(!!criteriaMap[value]?.status?.error, true),
             );
-        });
+        }
         let axisLabelFormatter: ((criteria: string) => string) | undefined;
         if (option.angleAxis) {
             if (Array.isArray(option.angleAxis)) {
@@ -122,10 +122,10 @@ describe("RadialChartComponent", () => {
             }
         }
         expect(axisLabelFormatter).toBeDefined();
-        Object.keys(criteriaMap).forEach((criteria) => {
+        for (const criteria of Object.keys(criteriaMap)) {
             expect(axisLabelFormatter!(criteria)).toBe(
                 getLabelFormatter(!!criteriaMap[criteria]?.status?.error, true, criteria),
             );
-        });
+        }
     });
 });
