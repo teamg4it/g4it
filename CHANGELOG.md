@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.8.0
+
+## Major changes
+
+### Minor Changes
+
+- 1400 | find a simpler solution to save electricity consumption in out_physical_equipment
+
 ## 3.7.0
 
 ## Major changes
