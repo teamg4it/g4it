@@ -1,13 +1,18 @@
+/*
+ * G4IT
+ * Copyright 2023 Sopra Steria
+ *
+ * This product includes software developed by
+ * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -16,6 +21,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Digital Service Version Entity
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
@@ -25,6 +33,9 @@ import java.util.List;
 @Table(name = "digital_service_version")
 public class DigitalServiceVersion {
 
+    /**
+     * Primary Key : uid.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String uid;
@@ -64,6 +75,9 @@ public class DigitalServiceVersion {
             foreignKey = @ForeignKey(name = "digital_service_version_item_id_fk"))
     private DigitalService digitalService;
 
-    @Column(name = "task_id")
-    private Long taskId;
+    @Builder.Default
+    @ToString.Exclude
+    @OneToMany(mappedBy = "digitalServiceVersion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Task> tasks = new ArrayList<>();
+
 }
