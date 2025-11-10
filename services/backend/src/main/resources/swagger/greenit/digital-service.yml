@@ -51,6 +51,35 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+    post:
+      tags:
+        - digital-service
+      summary: Create a new digital service version
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
+      operationId: createDigitalServiceVersion
+      requestBody:
+        description: digitalServiceVersion
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InDigitalServiceVersionRest"
+      responses:
+        '201':
+          description: Return the digital service version created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigitalServiceVersionRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
   /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'

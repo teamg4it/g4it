@@ -62,6 +62,7 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "digital_service_version_uid")
     private DigitalServiceVersion digitalServiceVersion;
+
     /**
      * Type.
      */
