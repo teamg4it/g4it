@@ -669,6 +669,17 @@ components:
           type: string
           format: date-time
 
+    InDigitalServiceVersionRest:
+      description: Information of a Digital Service Version
+      type: object
+      properties:
+        dsName:
+          type: string
+        versionName:
+          type: string
+        isAI:
+          type: boolean
+
     DigitalServiceServerImpactRest:
       type: object
       properties:
