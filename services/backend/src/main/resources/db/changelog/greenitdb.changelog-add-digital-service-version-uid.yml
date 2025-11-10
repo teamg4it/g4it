@@ -94,4 +94,3 @@ databaseChangeLog:
                   name: digital_service_version_uid
                   type: varchar(255)
                   remarks: "Foreign key to the Digital Service Version"
-

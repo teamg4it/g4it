@@ -10,6 +10,7 @@ import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.persistence.*;
 
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
@@ -72,7 +73,6 @@ public class DigitalServiceVersion {
             insertable = false, updatable = false,
             foreignKey = @ForeignKey(name = "digital_service_version_item_id_fk"))
     private DigitalService digitalService;
-
 
     @Builder.Default
     @ToString.Exclude
