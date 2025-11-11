@@ -175,7 +175,7 @@ public class DigitalServiceService {
                 .description(inDigitalServiceVersionRest.getVersionName())
                 .itemId(savedDigitalService.getUid())
                 .versionType("draft") // Initial version type
-                .createdBy(user.getEmail() != null ? user.getEmail() : String.valueOf(userId))
+                .createdBy(savedDigitalService.getUser().getId())
                 .creationDate(savedDigitalService.getCreationDate())
                 .lastUpdateDate(savedDigitalService.getLastUpdateDate())
                 .lastCalculationDate(savedDigitalService.getLastCalculationDate())

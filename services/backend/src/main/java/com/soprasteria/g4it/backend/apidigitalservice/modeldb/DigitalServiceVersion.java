@@ -60,7 +60,7 @@ public class DigitalServiceVersion {
     /**
      * Version creator.
      */
-    private String createdBy;
+    private Long createdBy;
 
     /**
      * The Criteria key.
