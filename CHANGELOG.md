@@ -6,6 +6,7 @@
 
 ### Minor Changes
 
+- 1611 | Add the ecomindAI version on the Useful Information page
 - 1400 | find a simpler solution to save electricity consumption in out_physical_equipment
 
 ## 3.7.0
