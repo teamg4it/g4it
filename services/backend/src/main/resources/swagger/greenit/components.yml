@@ -659,6 +659,48 @@ components:
           type: boolean
           description: The flag to enable data consistency view
 
+    DigitalServiceVersionRest:
+      description: Information of a Digital Service Version
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+        lastCalculationDate:
+          type: string
+          format: date-time
+        criteria:
+          type: array
+          items:
+            type: string
+        note:
+          type: object
+          $ref: "#/components/schemas/NoteRest"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskRest"
+        isAi:
+          type: boolean
+          description: Indique si le service digital est un service d’IA
+        isShared:
+          type: boolean
+          description: Indique si le service digital est un service d’Shared
+        enableDataInconsistency:
+          type: boolean
+          description: The flag to enable data consistency view
+        versionType:
+          type: string
+        description:
+          type: string
+
     DigitalServiceShareRest:
       description: Information of shared Digital Service
       type: object
