@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: migrate-digital-service-to-version
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO digital_service_version (
+                uid,
+                description,
+                last_calculation_date,
+                creation_date,
+                last_update_date,
+                item_id,
+                version_type,
+                note_id,
+                criteria,
+                created_by,
+                task_id
+              )
+              SELECT
+                gen_random_uuid(),
+                'version 1',
+                ds.last_calculation_date,
+                ds.creation_date,
+                ds.last_update_date,
+                ds.uid,
+                'active',
+                ds.note_id,
+                ds.criteria,
+                ds.user_id,
+                NULL
+              FROM digital_service ds
+              WHERE ds.uid NOT IN (
+                SELECT item_id FROM digital_service_version
+              );
