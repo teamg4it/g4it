@@ -22,8 +22,16 @@
                         class="flex justify-content-between flex-wrap text-base"
                         *ngFor="let software of versions"
                     >
-                        <span>{{ software.name | uppercase }}</span>
-                        <span>{{ software.version }}</span>
+                        @if (
+                            ((userService.isAllowedEcoMindAiRead$ | async) &&
+                                currentOrganization.ecomindai &&
+                                isEcoMindModuleEnabled &&
+                                software.name === "ecomindai") ||
+                            software.name !== "ecomindai"
+                        ) {
+                            <span>{{ software.name | uppercase }}</span>
+                            <span>{{ software.version }}</span>
+                        }
                     </li>
                 </ul>
             </div>

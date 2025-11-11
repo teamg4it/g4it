@@ -10,6 +10,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
 import { VersionDataService } from "src/app/core/service/data/version-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { environment } from "src/environments/environment";
 @Component({
     selector: "app-useful-information",
     standalone: true,
@@ -22,13 +23,14 @@ export class UsefulInformationComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);
 
     private readonly versionDataService = inject(VersionDataService);
-    private readonly userService = inject(UserService);
+    protected readonly userService = inject(UserService);
     private readonly title = inject(Title);
     currentOrganization: Organization = {} as Organization;
     selectedWorkspace: Workspace = {} as Workspace;
     versions: Version[] = [];
     businessHoursData: BusinessHours[] = [];
     selectedLanguage: string = "en";
+    isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
     constructor(private readonly titleService: Title) {}
     ngOnInit() {
         this.translate.get("common.useful-info").subscribe((translatedTitle: string) => {
