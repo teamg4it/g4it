@@ -9,11 +9,16 @@ package com.soprasteria.g4it.backend.apidigitalservice.business;
 
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersionStatus;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
@@ -29,6 +34,7 @@ import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,6 +63,8 @@ public class DigitalServiceService {
     @Autowired
     private DigitalServiceMapper digitalServiceMapper;
     @Autowired
+    private DigitalServiceVersionMapper digitalServiceVersionMapper;
+    @Autowired
     private RoleService roleService;
     @Autowired
     private WorkspaceService workspaceService;
@@ -78,6 +86,9 @@ public class DigitalServiceService {
     private DigitalServiceLinkRepository digitalServiceLinkRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
+    @Autowired
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
+
 
     /**
      * Create a new digital service.
@@ -128,6 +139,55 @@ public class DigitalServiceService {
         // Return the business object.
         return digitalServiceMapper.toBusinessObject(digitalServiceSaved);
     }
+
+    /**
+     * Create a new digital service version.
+     *
+     * @param workspaceId                 the linked workspace id.
+     * @param userId                      the userId.
+     * @param inDigitalServiceVersionRest the digital service version request data
+     * @return the business object corresponding to the digital service created.
+     */
+    public DigitalServiceVersionBO createDigitalServiceVersion(final Long workspaceId,
+                                                               final long userId,
+                                                               final InDigitalServiceVersionRest inDigitalServiceVersionRest) {
+        // Get the linked workspace
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
+
+        // Get the linked user
+        final User user = userRepository.findById(userId).orElseThrow();
+
+        final LocalDateTime now = LocalDateTime.now();
+
+        // Step 1: Create the Digital Service
+        final DigitalService digitalService = DigitalService.builder()
+                .name(inDigitalServiceVersionRest.getDsName())
+                .user(user)
+                .workspace(linkedWorkspace)
+                .isAi(inDigitalServiceVersionRest.getIsAI())
+                .creationDate(now)
+                .lastUpdateDate(now)
+                .build();
+
+        final DigitalService savedDigitalService = digitalServiceRepository.save(digitalService);
+
+        // Step 2: Create the Digital Service Version
+        final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
+                .description(inDigitalServiceVersionRest.getVersionName())
+                .digitalService(DigitalService.builder().uid(savedDigitalService.getUid()).build())
+                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
+                .createdBy(savedDigitalService.getUser().getId())
+                .creationDate(savedDigitalService.getCreationDate())
+                .lastUpdateDate(savedDigitalService.getLastUpdateDate())
+                .lastCalculationDate(savedDigitalService.getLastCalculationDate())
+                .build();
+
+        final DigitalServiceVersion savedDigitalServiceVersion = digitalServiceVersionRepository.save(digitalServiceVersion);
+
+        // Return the business object
+        return digitalServiceVersionMapper.toBusinessObject(savedDigitalServiceVersion, savedDigitalService);
+    }
+
 
     /**
      * Get the digital service list linked to a user.
@@ -313,4 +373,6 @@ public class DigitalServiceService {
 
 
     }
+
+
 }
