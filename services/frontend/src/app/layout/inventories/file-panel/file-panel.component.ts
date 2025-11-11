@@ -76,7 +76,6 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     arrayComponents: Array<ComponentRef<SelectFileComponent>> = [];
 
     templateFiles: TemplateFileDescription[] = [];
-    isTemplateParam = Constants.TEMPLATE_PARAMS.IS_MODULE;
     constructor(
         private readonly inventoryService: InventoryDataService,
         private readonly loadingService: LoadingDataService,
@@ -131,9 +130,12 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
 
     getTemplateFiles() {
         this.templateFileService
-            .getTemplateFiles(this.isTemplateParam)
+            .getTemplateFiles()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((templateFiles: FileDescription[]) => {
+                templateFiles = templateFiles.filter(
+                    (file) => !file.name.includes("ds_"),
+                );
                 if (templateFiles.length === 0) {
                     this.templateFiles = [];
                     return;
@@ -294,10 +296,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     downloadTemplateFile(selectedFileName: string) {
-        this.templateFileService.getdownloadTemplateFile(
-            selectedFileName,
-            this.isTemplateParam,
-        );
+        this.templateFileService.getdownloadTemplateFile(selectedFileName);
     }
 
     ngOnDestroy() {

@@ -84,11 +84,6 @@ export abstract class Constants {
         ds: "ds",
     };
 
-    static readonly TEMPLATE_PARAMS = {
-        IS_MODULE: "is_template",
-        DS_MODULE: "ds_template",
-    };
-
     static readonly ERRORS: any = {
         404: "not-found",
         410: "expired",

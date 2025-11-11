@@ -444,11 +444,13 @@
         "network-text": "Please proceed with loading the CSV files that contain details about the amount of data circulating on the network.",
         "terminal-text": "Please proceed with loading the CSV files that contain details about the devices used by the end-user.",
         "template-text": "If required, you may download the template to assist you in creating new files.",
+        "data-model-text": "This file provides you with all the necessary instructions to create new items in your digital service.",
         "templates": {
             "datacenter-template-file": "Datacenter template file",
             "physical-template-file": "Physical equipment template file",
             "virtual-template-file": "Virtual equipment template file",
-            "type-size": "({{type}}, {{size}} KB)"
+            "type-size": "({{type}}, {{size}} KB)",
+            "data-model": "Data model"
         },
         "add-files": "Add files",
         "loading-history": "Loading history",

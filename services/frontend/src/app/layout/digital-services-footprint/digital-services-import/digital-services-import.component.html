@@ -34,7 +34,7 @@
                 <ng-template #templateFile let-template>
                     <div>
                         <span
-                            class="pi pi-file-pdf mr-2 font-bold light-black-color"
+                            class="pi pi-file-excel mr-2 font-bold light-black-color"
                         ></span>
                         <a
                             class="font-bold cursor-pointer light-black-color"
@@ -57,13 +57,26 @@
                                 | translate
                                     : {
                                           type: template.type,
-                                          size: template.metadata.size,
+                                          size: templateFileService.toKB(
+                                              template.metadata.size
+                                          ),
                                       }
                         }}
                     </div>
                 </ng-template>
-                <p class="mb-3">
+                <p class="mb-2">
                     {{ "digital-services-import.template-text" | translate }}
+                </p>
+                @if (dataModel) {
+                    <ng-container
+                        *ngTemplateOutlet="
+                            templateFile;
+                            context: { $implicit: dataModel }
+                        "
+                    ></ng-container>
+                }
+                <p class="mb-3">
+                    {{ "digital-services-import.data-model-text" | translate }}
                 </p>
                 <hr />
 
