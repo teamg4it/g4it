@@ -31,6 +31,12 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-clean-old-digital-service.yml
   - include:
       file: db/changelog/greenitdb.changelog-clean-old-inventory.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-ai-parameter-input.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-ai_infrastructure-changelog.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-ai-output-reco.yml
   - includeAll:
       path: db/changelog/in-out/
       endsWithFilter: .yml
@@ -42,4 +48,8 @@ databaseChangeLog:
       file: db/changelog/test-greenitdb.changelog-sequences.yml
   - include:
       file: db/changelog/test-greenitdb.changelog-migrate-digital-service-to-digital-services-version.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-add-digital-service-version-uid.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-migrate-digital-service-uid-to-digital-services-version-uid.yml
 

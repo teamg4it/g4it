@@ -40,9 +40,15 @@ public class InApplication {
     private Long inventoryId;
 
     /**
-     * Linked Digital Service. Temporary field
+     * Deprecated: Linked Digital Service. Temporary field
      */
     private String digitalServiceUid;
+
+
+    /**
+     * Linked Digital Service Version UID
+     */
+    private String digitalServiceVersionUid;
 
     private String physicalEquipmentName;
     private String virtualEquipmentName;
@@ -58,4 +64,6 @@ public class InApplication {
 
     @EqualsAndHashCode.Exclude
     private LocalDateTime lastUpdateDate;
+
+
 }
