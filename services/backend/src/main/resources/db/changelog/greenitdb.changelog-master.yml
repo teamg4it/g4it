@@ -14,6 +14,10 @@ databaseChangeLog:
   - include:
       file: db/changelog/greenitdb.changelog-migrate-digital-service-to-digital-services-version.yml
   - include:
+      file: db/changelog/greenitdb.changelog-add-digital-service-version-uid.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-migrate-digital-service-uid-to-digital-services-version-uid.yml
+  - include:
       file: db/changelog/greenitdb.changelog-security-multi-orga.yml
   - include:
       file: db/changelog/greenitdb.changelog-security-user-after.yml

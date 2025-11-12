@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.common.task.modeldb;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import jakarta.persistence.*;
@@ -56,6 +57,11 @@ public class Task {
     @JoinColumn(name = "digital_service_uid")
     private DigitalService digitalService;
 
+
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "digital_service_version_uid")
+    private DigitalServiceVersion digitalServiceVersion;
     /**
      * Type.
      */
