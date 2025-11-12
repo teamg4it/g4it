@@ -185,19 +185,10 @@
                     ></app-bar-chart>
                 </ng-template>
             </div>
-            @if (digitalService.isAi) {
-                <app-graph-description
-                    [isAi]="true"
-                    [title]="getTitleOrContent('digital-services-card-title')"
-                    [content]="getTitleOrContent('digital-services-card-content')"
-                ></app-graph-description>
-            } @else {
-                <app-graph-description
-                    [isAi]="false"
-                    [contentText]="getContentText()"
-                    [digitalService]="digitalService"
-                ></app-graph-description>
-            }
+            <app-graph-description
+                [ecoMindRecomendation]="getEcoMindRecomendation()"
+                [contentText]="getContentText()"
+            ></app-graph-description>
         </div>
     </div>
     <ng-template #dataConsistencyRef>

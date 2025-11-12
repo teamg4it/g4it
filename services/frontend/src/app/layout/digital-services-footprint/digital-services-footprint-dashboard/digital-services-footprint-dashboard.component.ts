@@ -356,29 +356,8 @@ export class DigitalServicesFootprintDashboardComponent
             .slice(0, 3);
     }
 
-    getAiBarChartTranslateKey(): string {
-        const isServer = this.selectedParam === "Server";
-        const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
-        const isBarChartChild = this.barChartChild === true;
-
-        let translationKey = "";
-        if (isBarChartChild && isServer) {
-            translationKey = "digital-services-cards.server-lifecycle.";
-        } else if (isBarChartChild && isCloudService) {
-            translationKey = "digital-services-cards.cloud-lifecycle.";
-        } else {
-            translationKey = `digital-services-cards.${this.selectedParam.toLowerCase().replaceAll(/\s+/g, "-")}.`;
-        }
-
-        return translationKey;
-    }
-
-    getEcomindContent(textType: string): string {
-        if (
-            textType === "digital-services-card-content" &&
-            this.aiRecommendation != null &&
-            this.aiRecommendation.recommendations != null
-        ) {
+    getEcoMindRecomendation(): string {
+        if (this.aiRecommendation?.recommendations != null && this.digitalService.isAi) {
             try {
                 const recommendationsArr = JSON.parse(
                     this.aiRecommendation.recommendations,
@@ -390,8 +369,7 @@ export class DigitalServicesFootprintDashboardComponent
                 // HTML table generation for recommendation
                 let table = `
                     <div style='overflow-x:auto;'>
-                    <h4 style='font-weight:bold; margin-top:0px; font-size:1rem;'>Recommendations</h4>
-                    <table style='width:100%;border-collapse:collapse;min-width:600px;'>
+                     <table style='width:100%;border-collapse:collapse;min-width:600px;'>
                     <thead><tr>`;
                 for (const h of headers) {
                     table += `<th style='padding:14px 18px;text-align:center;font-size:1rem;'>${h.charAt(0).toUpperCase() + h.slice(1)}</th>`;
@@ -412,38 +390,6 @@ export class DigitalServicesFootprintDashboardComponent
             }
         }
         return "";
-    }
-
-    getTitleOrContent(textType: string) {
-        const isBarChart = this.chartType() === "bar";
-
-        let translationKey: string;
-
-        if (this.digitalService.isAi) {
-            return this.getEcomindContent(textType);
-        }
-
-        if (isBarChart) {
-            translationKey = this.getAiBarChartTranslateKey();
-        } else {
-            const criteriaKey = this.selectedCriteria
-                .toLowerCase()
-                .replaceAll(/\s+/g, "-");
-            if (
-                Object.keys(this.globalStore.criteriaList()).includes(
-                    this.selectedCriteria,
-                )
-            ) {
-                return this.translate.instant(
-                    this.getTranslationKey(this.selectedCriteria, textType),
-                );
-            } else {
-                translationKey = `digital-services-cards.${criteriaKey}.`;
-            }
-        }
-        return this.translate.instant(
-            `${translationKey}${textType === "digital-services-card-title" ? "title" : "content"}`,
-        );
     }
 
     getBarTranslateKey(): string {
@@ -609,18 +555,8 @@ export class DigitalServicesFootprintDashboardComponent
         return totalImpacts === 1 || index === totalImpacts - 1 ? "." : ",";
     }
 
-    getTranslationKey(param: string, textType: string) {
-        const key =
-            "criteria." + param.toLowerCase().replaceAll(" ", "-") + "." + textType;
-        return key;
-    }
-
     getTNSTranslation(input: string) {
         return this.translate.instant("digital-services." + input);
-    }
-
-    updateInconsistent(event: any): void {
-        this.showInconsitencyBtn = event;
     }
 
     displayPopupFct() {

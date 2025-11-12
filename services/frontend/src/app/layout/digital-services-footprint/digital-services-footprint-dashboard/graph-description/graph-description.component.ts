@@ -11,9 +11,7 @@ export class GraphDescriptionComponent {
     private readonly translate = inject(TranslateService);
     contentVisible = true;
     contentText = input<GraphDescriptionContent>();
-    isAi = input<boolean>(false);
-    title = input<string>("");
-    content = input<string>("");
+    ecoMindRecomendation = input<string>("");
 
     toggleContentVisibility() {
         this.contentVisible = !this.contentVisible;

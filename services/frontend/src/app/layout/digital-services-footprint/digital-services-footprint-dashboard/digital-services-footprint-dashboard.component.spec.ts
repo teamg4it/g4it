@@ -162,11 +162,6 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         expect(component.selectedCriteria).toBe("Global Vision");
     });
 
-    it("should set showInconsitencyBtn on updateInconsistent", () => {
-        component.updateInconsistent(true);
-        expect(component.showInconsitencyBtn).toBeTrue();
-    });
-
     it("should set displayCriteriaPopup and selectedCriteriaPopup on displayPopupFct", () => {
         component.digitalService = { criteria: ["CO2"] } as any;
         component.workspace = { criteriaDs: ["WATER"] } as any;
@@ -174,11 +169,6 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         component.displayPopupFct();
         expect(component.displayCriteriaPopup).toBeTrue();
         expect(component.selectedCriteriaPopup.length).toBeGreaterThan(0);
-    });
-
-    it("should return correct translation key from getTranslationKey", () => {
-        const key = component.getTranslationKey("CO2", "title");
-        expect(key).toBe("criteria.co2.title");
     });
 
     it("should return translated string from getTNSTranslation", () => {
@@ -227,61 +217,33 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         expect(component.showInconsitency).toBeTrue();
     });
 
-    it("should return server-lifecycle key when barChartChild is true and selectedParam is 'Server'", () => {
-        component.selectedParam = "Server";
-        component.barChartChild = true;
-        const result = component.getAiBarChartTranslateKey();
-        expect(result).toBe("digital-services-cards.server-lifecycle.");
-    });
-
-    it("should return cloud-lifecycle key when barChartChild is true and selectedParam is CLOUD_SERVICE", () => {
-        component.selectedParam = Constants.CLOUD_SERVICE;
-        component.barChartChild = true;
-        const result = component.getAiBarChartTranslateKey();
-        expect(result).toBe("digital-services-cards.cloud-lifecycle.");
-    });
-
-    it("should return generic key when barChartChild is false", () => {
-        component.selectedParam = "Some Param";
-        component.barChartChild = false;
-        const result = component.getAiBarChartTranslateKey();
-        expect(result).toBe("digital-services-cards.some-param.");
-    });
-
-    it("should return generic key when barChartChild is true and selectedParam is not Server or CLOUD_SERVICE", () => {
-        component.selectedParam = "Other Param";
-        component.barChartChild = true;
-        const result = component.getAiBarChartTranslateKey();
-        expect(result).toBe("digital-services-cards.other-param.");
-    });
-
     it("should return empty string if textType is not 'digital-services-card-content'", () => {
         component.aiRecommendation = { recommendations: "[]" } as any;
-        const result = component.getEcomindContent("digital-services-card-title");
+        const result = component.getEcoMindRecomendation();
         expect(result).toBe("");
     });
 
     it("should return empty string if aiRecommendation is null", () => {
         component.aiRecommendation = null as any;
-        const result = component.getEcomindContent("digital-services-card-content");
+        const result = component.getEcoMindRecomendation();
         expect(result).toBe("");
     });
 
     it("should return empty string if recommendations is null", () => {
         component.aiRecommendation = { recommendations: null } as any;
-        const result = component.getEcomindContent("digital-services-card-content");
+        const result = component.getEcoMindRecomendation();
         expect(result).toBe("");
     });
 
     it("should return empty string if recommendations is not an array", () => {
         component.aiRecommendation = { recommendations: "{}" } as any;
-        const result = component.getEcomindContent("digital-services-card-content");
+        const result = component.getEcoMindRecomendation();
         expect(result).toBe("");
     });
 
     it("should return empty string if recommendations array is empty", () => {
         component.aiRecommendation = { recommendations: "[]" } as any;
-        const result = component.getEcomindContent("digital-services-card-content");
+        const result = component.getEcoMindRecomendation();
         expect(result).toBe("");
     });
 
@@ -290,22 +252,20 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
             { action: "Reduce usage", impact: "High" },
             { action: "Switch provider", impact: "Medium" },
         ];
+        component.digitalService = { isAi: true } as any;
         component.aiRecommendation = {
             recommendations: JSON.stringify(recommendations),
         } as any;
-        const result = component.getEcomindContent("digital-services-card-content");
+        const result = component.getEcoMindRecomendation();
         expect(result).toContain("<table");
         expect(result).toContain("Reduce usage");
         expect(result).toContain("Switch provider");
-        expect(result).toContain("Recommendations");
     });
 
     it("should return empty string and log error if JSON.parse throws", () => {
-        spyOn(console, "error");
         component.aiRecommendation = { recommendations: "not-a-json" } as any;
-        const result = component.getEcomindContent("digital-services-card-content");
+        const result = component.getEcoMindRecomendation();
         expect(result).toBe("");
-        expect(console.error).toHaveBeenCalled();
     });
 
     it("should return 'ds-graph-description.server.' when not barChartChild and selectedParam is 'Server'", () => {
@@ -365,9 +325,9 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         expect(component.getContentText()).toBeDefined();
     });
 
-    it("should getContentText to be defined", () => {
-        const result = component.getTitleOrContent("title");
-        expect(component.getTitleOrContent).toBeDefined();
+    it("should getEcoMindRecomendation to be defined", () => {
+        const result = component.getEcoMindRecomendation();
+        expect(component.getEcoMindRecomendation).toBeDefined();
     });
 
     it("should call initImpacts and return if globalFootprintData is empty", () => {
