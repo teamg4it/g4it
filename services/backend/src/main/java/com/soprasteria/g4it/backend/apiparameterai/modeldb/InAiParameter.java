@@ -31,9 +31,14 @@ public class InAiParameter {
     private Long id;
 
     /**
-     * Linked Digital Service. Temporary field
+     * Deprecated: Linked Digital Service. Temporary field
      */
     private String digitalServiceUid;
+
+    /**
+     * Linked Digital Service Version UID
+     */
+    private String digitalServiceVersionUid;
 
     /**
      * Model Name
