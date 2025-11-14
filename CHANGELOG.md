@@ -8,7 +8,7 @@
 
 - 1611 | Add the ecomindAI version on the Useful Information page
 - 1400 | find a simpler solution to save electricity consumption in out_physical_equipment
-- 1677 | Update the datamodel to include the specificities of Digital Service Import167
+- 1677 | Update the datamodel to include the specificities of Digital Service Import
 
 - 1662 | Issue to start G4IT locally | update keycloak image
 
