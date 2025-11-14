@@ -72,6 +72,9 @@ public class SharedLinkValidationFilter extends OncePerRequestFilter {
     private void writeError(HttpServletResponse response, int status, String message) throws IOException {
         response.setStatus(status);
         response.setContentType("application/json");
+        if (response.getHeader("Strict-Transport-Security") == null) {
+            response.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        }
         response.getWriter().write("{\"error\":\"" + message + "\"}");
         response.flushBuffer();
     }
