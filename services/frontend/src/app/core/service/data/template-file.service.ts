@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
@@ -21,34 +21,26 @@ export class TemplateFileService {
     private readonly messageService = inject(MessageService);
     constructor(private readonly http: HttpClient) {}
 
-    getTemplateFiles(module: string): Observable<FileDescription[]> {
-        let params = new HttpParams();
-        params = params.set("module", module);
-
-        return this.http.get<FileDescription[]>(endpoint, { params });
+    getTemplateFiles(): Observable<FileDescription[]> {
+        return this.http.get<FileDescription[]>(endpoint);
     }
 
-    downloadTemplateFile(fileName: string, module: string): Observable<any> {
-        let params = new HttpParams();
-        params = params.set("module", module);
+    downloadTemplateFile(fileName: string): Observable<any> {
         if (fileName.includes(".xlsx")) {
             return this.http.get(`${endpoint}/${fileName}`, {
                 responseType: "blob",
                 headers: { Accept: "application/vnd.ms-excel" },
-                params,
             });
         }
         if (fileName.includes(".zip")) {
             return this.http.get(`${endpoint}/${fileName}`, {
                 responseType: "blob",
                 headers: { Accept: "application/zip" },
-                params,
             });
         }
         return this.http.get(`${endpoint}/${fileName}`, {
             responseType: "blob",
             headers: { Accept: "text/csv" },
-            params,
         });
     }
 
@@ -75,7 +67,7 @@ export class TemplateFileService {
                 );
                 zipFile = templateFileDescription;
             }
-            if (res.name.includes("xlsx") && !isDs) {
+            if (res.name.includes("xlsx")) {
                 templateFileDescription.type = "xlsx";
                 templateFileDescription.displayFileName = this.translate.instant(
                     "inventories.templates.data-model",
@@ -110,7 +102,7 @@ export class TemplateFileService {
                 Constants.FILE_TYPES.indexOf(a.csvFileType ?? "") -
                 Constants.FILE_TYPES.indexOf(b.csvFileType ?? ""),
         );
-        return isDs ? [...csvFiles] : [zipFile, ...csvFiles, xlsxFile];
+        return isDs ? [...csvFiles, xlsxFile] : [zipFile, ...csvFiles, xlsxFile];
     }
 
     toKB(bytes: string | undefined) {
@@ -118,10 +110,10 @@ export class TemplateFileService {
         return (Number.parseInt(bytes) / 1024).toFixed(2);
     }
 
-    async getdownloadTemplateFile(selectedFileName: string, isTemplateParam: string) {
+    async getdownloadTemplateFile(selectedFileName: string) {
         try {
             const blob: Blob = await firstValueFrom(
-                this.downloadTemplateFile(selectedFileName, isTemplateParam),
+                this.downloadTemplateFile(selectedFileName),
             );
             saveAs(blob, selectedFileName);
         } catch (err) {

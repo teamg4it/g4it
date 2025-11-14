@@ -151,13 +151,6 @@ components:
         format: int64
       required: true
       description: The physical equipment id
-    moduleQueryParam:
-      in: query
-      name: module
-      schema:
-        type: string
-      required: true
-      description: The module name.
     typePathParam:
       in: path
       name: type

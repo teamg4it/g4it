@@ -120,7 +120,6 @@ describe("DigitalServicesImportComponent", () => {
         component.downloadTemplateFile("template.csv");
         expect(mockTemplateFileService.getdownloadTemplateFile).toHaveBeenCalledWith(
             "template.csv",
-            component.dsTemplateParam,
         );
     });
 

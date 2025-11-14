@@ -49,8 +49,8 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
     @Override
     public ResponseEntity<Resource> downloadTemplatesFile(String organization,
                                                           Long workspaceId,
-                                                          String name, final String module) {
-        FileFolder templateFolder =  FileFolder.IS_TEMPLATE.getFolderName().equals(module) ? FileFolder.IS_TEMPLATE : FileFolder.DS_TEMPLATE;
+                                                          String name) {
+        FileFolder templateFolder = FileFolder.TEMPLATES;
         final String filePath = String.join(File.separator, String.valueOf(Constants.INTERNAL_WORKSPACE), templateFolder.getFolderName(), name);
         try {
             InputStream inputStream = fileSystemService.downloadFile(Constants.INTERNAL_ORGANIZATION, Constants.INTERNAL_WORKSPACE, templateFolder, name);
@@ -74,10 +74,9 @@ public class TemplateFileController implements TemplateFileSystemApiDelegate {
      */
     @Override
     public ResponseEntity<List<FileDescriptionRest>> getTemplateFiles(final String organization,
-                                                                      final Long workspaceId,
-                                                                      final String module) {
+                                                                      final Long workspaceId) {
         try {
-            return ResponseEntity.ok().body(fileSystemService.listTemplatesFiles(module));
+            return ResponseEntity.ok().body(fileSystemService.listTemplatesFiles());
         } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while get file: " + e.getMessage());
         }

@@ -441,11 +441,13 @@
         "network-text": "Veuillez procéder au chargement des fichiers CSV qui contiennent des détails sur la quantité de données circulant sur le réseau.",
         "terminal-text": "Veuillez procéder au chargement des fichiers CSV contenant des détails sur les appareils utilisés par l'utilisateur final.",
         "template-text": "Si nécessaire, vous pouvez télécharger le modèle pour vous aider à créer de nouveaux fichiers.",
+        "data-model-text": "Ce fichier contient l'ensemble des informations permettant la création de nouveaux éléments sur un service numérique.",
         "templates": {
             "datacenter-template-file": "Fichier de modèle de centre de données",
             "physical-template-file": "Fichier modèle d'équipement physique",
             "virtual-template-file": "Fichier de modèle d'équipement virtuel",
-            "type-size": "({{type}}, {{size}} Ko )"
+            "type-size": "({{type}}, {{size}} Ko )",
+            "data-model": "Modèle de données"
         },
         "add-files": "Ajouter fichiers",
         "loading-history": "Historique des chargements",

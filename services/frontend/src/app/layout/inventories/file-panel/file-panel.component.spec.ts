@@ -55,19 +55,17 @@ describe("FilePanelComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should initialize fileTypes and inventoriesForm on ngOnInit", async () => {
+    it("should initialize fileTypes and inventoriesForm on ngOnInit", () => {
         mockTemplateFileService.getTemplateFiles.and.returnValue(of([]));
-        await component.ngOnInit();
+        component.ngOnInit();
         expect(component.fileTypes.length).toBeGreaterThan(0);
         expect(component.inventoriesForm).toBeDefined();
     });
 
     it("should call getdownloadTemplateFile on downloadTemplateFile", () => {
-        component.isTemplateParam = "is_template";
         component.downloadTemplateFile("template.csv");
         expect(mockTemplateFileService.getdownloadTemplateFile).toHaveBeenCalledWith(
             "template.csv",
-            "is_template",
         );
     });
 });
