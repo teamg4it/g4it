@@ -20,34 +20,37 @@
 
     @if (contentVisible) {
         <section class="p-4 border bg-gray-color">
-            @if (isAi()) {
-                <p [innerHTML]="content()"></p>
-            } @else {
-                <h4 class="mb-0 font-semibold">
-                    {{ "ds-description-heading.description" | translate }}
-                </h4>
-                <p [innerHTML]="contentText()?.description"></p>
+            <h4 class="mb-0 font-semibold">
+                {{ "ds-description-heading.description" | translate }}
+            </h4>
+            <p [innerHTML]="contentText()?.description"></p>
+            <div class="section-hr"></div>
+            <h4 class="mb-0 font-semibold">
+                {{ "ds-description-heading.scale" | translate }}
+            </h4>
+            <p [innerHTML]="contentText()?.scale"></p>
+            <div class="section-hr"></div>
+            <h4 class="mb-0 font-semibold">
+                {{ "ds-description-heading.text-description" | translate }}
+            </h4>
+            <p [innerHTML]="contentText()?.textDescription"></p>
+            <div class="section-hr"></div>
+            <h4 class="mb-0 font-semibold">
+                {{ "ds-description-heading.analysis" | translate }}
+            </h4>
+            <p [innerHTML]="contentText()?.analysis"></p>
+
+            @if (ecoMindRecomendation()) {
                 <div class="section-hr"></div>
-                <h4 class="mb-0 font-semibold">
-                    {{ "ds-description-heading.scale" | translate }}
-                </h4>
-                <p [innerHTML]="contentText()?.scale"></p>
-                <div class="section-hr"></div>
-                <h4 class="mb-0 font-semibold">
-                    {{ "ds-description-heading.text-description" | translate }}
-                </h4>
-                <p [innerHTML]="contentText()?.textDescription"></p>
-                <div class="section-hr"></div>
-                <h4 class="mb-0 font-semibold">
-                    {{ "ds-description-heading.analysis" | translate }}
-                </h4>
-                <p [innerHTML]="contentText()?.analysis"></p>
-                <div class="section-hr"></div>
-                <h4 class="mb-0 font-semibold">
-                    {{ "ds-description-heading.to_go_further" | translate }}
-                </h4>
-                <p [innerHTML]="contentText()?.toGoFurther"></p>
+                <h4 class="mb-0 font-semibold">Recommendations</h4>
+                <p [innerHTML]="ecoMindRecomendation()"></p>
             }
+
+            <div class="section-hr"></div>
+            <h4 class="mb-0 font-semibold">
+                {{ "ds-description-heading.to_go_further" | translate }}
+            </h4>
+            <p [innerHTML]="contentText()?.toGoFurther"></p>
         </section>
     }
 </div>
