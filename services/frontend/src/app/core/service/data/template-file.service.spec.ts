@@ -56,24 +56,22 @@ describe("TemplateFileService", () => {
             { name: "file1.csv", type: "csv", metadata: { size: "1024" } },
         ];
 
-        service.getTemplateFiles("module1").subscribe((files) => {
+        service.getTemplateFiles().subscribe((files) => {
             expect(files.length).toBe(1);
             expect(files[0].name).toBe("file1.csv");
         });
 
-        const req = httpMock.expectOne(
-            `${Constants.ENDPOINTS.templateFiles}?module=module1`,
-        );
+        const req = httpMock.expectOne(`${Constants.ENDPOINTS.templateFiles}`);
         expect(req.request.method).toBe("GET");
         req.flush(dummyFiles);
     });
 
     it("should download .csv file with correct headers", () => {
         const fileName = "file.csv";
-        service.downloadTemplateFile(fileName, "mod1").subscribe();
+        service.downloadTemplateFile(fileName).subscribe();
 
         const req = httpMock.expectOne(
-            `${Constants.ENDPOINTS.templateFiles}/${fileName}?module=mod1`,
+            `${Constants.ENDPOINTS.templateFiles}/${fileName}`,
         );
         expect(req.request.method).toBe("GET");
         expect(req.request.headers.get("Accept")).toBe("text/csv");
@@ -83,10 +81,10 @@ describe("TemplateFileService", () => {
 
     it("should download .xlsx file with correct headers", () => {
         const fileName = "file.xlsx";
-        service.downloadTemplateFile(fileName, "mod1").subscribe();
+        service.downloadTemplateFile(fileName).subscribe();
 
         const req = httpMock.expectOne(
-            `${Constants.ENDPOINTS.templateFiles}/${fileName}?module=mod1`,
+            `${Constants.ENDPOINTS.templateFiles}/${fileName}`,
         );
         expect(req.request.headers.get("Accept")).toBe("application/vnd.ms-excel");
         expect(req.request.responseType).toBe("blob");
@@ -95,10 +93,10 @@ describe("TemplateFileService", () => {
 
     it("should download .zip file with correct headers", () => {
         const fileName = "file.zip";
-        service.downloadTemplateFile(fileName, "mod1").subscribe();
+        service.downloadTemplateFile(fileName).subscribe();
 
         const req = httpMock.expectOne(
-            `${Constants.ENDPOINTS.templateFiles}/${fileName}?module=mod1`,
+            `${Constants.ENDPOINTS.templateFiles}/${fileName}`,
         );
         expect(req.request.headers.get("Accept")).toBe("application/zip");
         req.flush(new Blob());
@@ -115,7 +113,7 @@ describe("TemplateFileService", () => {
         spyOn(service, "downloadTemplateFile").and.returnValue(of(blob));
         spyOn(FileSaver, "saveAs");
 
-        await service.getdownloadTemplateFile("test.csv", "mod1");
+        await service.getdownloadTemplateFile("test.csv");
 
         expect(FileSaver.saveAs).toHaveBeenCalledWith(blob, "test.csv");
     });
@@ -126,7 +124,7 @@ describe("TemplateFileService", () => {
         );
         translateSpy.instant.and.returnValue("File not available");
 
-        await service.getdownloadTemplateFile("fail.csv", "mod1");
+        await service.getdownloadTemplateFile("fail.csv");
 
         expect(messageServiceSpy.add).toHaveBeenCalledWith({
             severity: "error",
