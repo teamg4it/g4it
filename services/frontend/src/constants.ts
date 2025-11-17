@@ -67,6 +67,7 @@ export abstract class Constants {
     static readonly ENDPOINTS = {
         inventories: "inventories",
         digitalServices: "digital-services",
+        digitalServicesVersions: "digital-service-version",
         referential: "referential",
         users: "users",
         organizations: "administrator/organizations",

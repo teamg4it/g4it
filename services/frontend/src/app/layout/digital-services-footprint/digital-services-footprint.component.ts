@@ -68,7 +68,7 @@ export class DigitalServicesFootprintComponent
         this.setMobileView();
         this.global.setLoading(true);
 
-        const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
+        const uid = this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
         const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
         // If the digital service is not found, 404 is catched by the interceptor.
         // Therefore we can continue without those verifications.
@@ -230,8 +230,12 @@ export class DigitalServicesFootprintComponent
             this.digitalServicesData.update(this.digitalService),
         );
 
-        this.digitalServiceStore.initInPhysicalEquipments(this.digitalService.uid);
-        this.digitalServiceStore.initInVirtualEquipments(this.digitalService.uid);
+        this.digitalServiceStore.initInPhysicalEquipments(
+            this.digitalService.activeDsvUid,
+        );
+        this.digitalServiceStore.initInVirtualEquipments(
+            this.digitalService.activeDsvUid,
+        );
         this.updateTabItems();
     }
 }

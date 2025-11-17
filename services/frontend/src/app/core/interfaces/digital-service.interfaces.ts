@@ -27,6 +27,7 @@ export interface DigitalService {
     isShared?: boolean;
     tasks?: TaskRest[];
     enableDataInconsistency: boolean;
+    activeDsvUid: string;
 }
 
 export interface DigitalServiceUserInfo {

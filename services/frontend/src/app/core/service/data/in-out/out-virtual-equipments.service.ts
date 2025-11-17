@@ -24,7 +24,7 @@ export class OutVirtualEquipmentsService {
         digitalServiceUid: string,
     ): Observable<OutVirtualEquipmentRest[]> {
         return this.http.get<OutVirtualEquipmentRest[]>(
-            `${Constants.ENDPOINTS.digitalServices}/${digitalServiceUid}/outputs/${this.API}`,
+            `${Constants.ENDPOINTS.digitalServicesVersions}/${digitalServiceUid}/outputs/${this.API}`,
         );
     }
 

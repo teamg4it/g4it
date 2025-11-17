@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
 import { OutPhysicalEquipmentRest } from "src/app/core/interfaces/output.interface";
 import { Constants } from "src/constants";
 
-const endpoint = Constants.ENDPOINTS.digitalServices;
+const endpoint = Constants.ENDPOINTS.digitalServicesVersions;
 
 @Injectable({
     providedIn: "root",

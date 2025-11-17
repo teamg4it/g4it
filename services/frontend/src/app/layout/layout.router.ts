@@ -31,19 +31,25 @@ const routes: Routes = [
             },
 
             {
-                path: "eco-mind-ai/:digitalServiceId/footprint",
+                path: "eco-mind-ai/:digitalServiceVersionId/footprint",
                 loadChildren: () =>
                     import(
                         "./digital-services-footprint/digital-services-footprint.module"
                     ).then((modules) => modules.DigitalServicesFootprintModule),
             },
-
             {
-                path: "digital-services/:digitalServiceId/footprint",
+                path: "digital-service-version/:digitalServiceVersionId/footprint",
                 loadChildren: () =>
                     import(
                         "./digital-services-footprint/digital-services-footprint.module"
                     ).then((modules) => modules.DigitalServicesFootprintModule),
+            },
+            {
+                path: "digital-service-version/:digitalServiceVersionId/manage-versions",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-manage-versions/digital-services-manage-versions.module"
+                    ).then((modules) => modules.DigitalServicesManageVersionsModule),
             },
             {
                 path: "inventories",

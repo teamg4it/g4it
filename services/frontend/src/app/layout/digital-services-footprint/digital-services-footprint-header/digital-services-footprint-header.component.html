@@ -74,29 +74,29 @@
         }
 
         <div class="input-title flex align-items-center">
-            <h1
+            <h2
                 *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
-                class="text-4xl px-2"
+                class="text-4xl px-2 color-black-seventy"
             >
                 {{ digitalService.name }}
-            </h1>
+            </h2>
             <p-inplace
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 [closable]="true"
                 [closeAriaLabel]="'digital-services.save-inplace' | translate"
                 [preventClick]="digitalService.name === ''"
                 (onDeactivate)="onNameUpdate(digitalService.name)"
-                styleClass="inline-block w-auto lg:w-30rem"
+                styleClass="inline-block w-auto color-black-seventy lg:w-18rem"
             >
                 <ng-template pTemplate="display">
-                    <h1 class="text-4xl px-2">
+                    <h2 class="text-4xl px-2 color-black-seventy">
                         {{ digitalService.name }}
-                    </h1>
+                    </h2>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <input
                         type="text"
-                        class="text-4xl font-semibold px-2 mr-2 w-11"
+                        class="text-4xl font-semibold color-black-seventy px-2 mr-2 w-9"
                         pInputText
                         [(ngModel)]="digitalService.name"
                         [required]="true"
@@ -107,9 +107,64 @@
                 </ng-template>
             </p-inplace>
         </div>
+        <i class="pi pi-angle-right text-2xl"></i>
+
+        @if (!isManageVersions()) {
+            <app-version-type-tag
+                [versionType]="digitalServiceVersionType.ACTIVE"
+            ></app-version-type-tag>
+
+            <div class="input-title flex align-items-center">
+                <h2
+                    *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
+                    class="text-4xl px-2"
+                >
+                    {{ digitalService.name }}
+                </h2>
+                <p-inplace
+                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                    [closable]="true"
+                    [closeAriaLabel]="'digital-services.save-inplace' | translate"
+                    [preventClick]="digitalService.name === ''"
+                    (onDeactivate)="onNameUpdate(digitalService.name)"
+                    styleClass="inline-block w-auto  lg:w-18rem"
+                >
+                    <ng-template pTemplate="display">
+                        <h2 class="text-4xl px-2">
+                            {{ digitalService.name }}
+                        </h2>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <input
+                            type="text"
+                            class="text-4xl font-semibold px-2 mr-2 w-9"
+                            pInputText
+                            [(ngModel)]="digitalService.name"
+                            [required]="true"
+                        />
+                    </ng-template>
+                    <ng-template pTemplate="closeicon">
+                        <i class="pi pi-check"></i>
+                    </ng-template>
+                </p-inplace>
+            </div>
+        } @else {
+            <h2 class="ml-3">
+                {{ "digital-services.version.versions-management" | translate }}
+            </h2>
+        }
     </div>
-    @if (showKebabMenu || !isMobile()) {
+    @if ((showKebabMenu || !isMobile()) && !isManageVersions()) {
         <div class="mr-3 block align-items-center lg:flex">
+            <p-button
+                (onClick)="goToManageVersions()"
+                styleClass="cancel-creation-button uppercase ml-1 mb-3 lg:mb-0"
+                [ariaLabel]="'digital-services.version.manage-versions' | translate"
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                icon="pi pi-file"
+                [label]="'digital-services.version.manage-versions' | translate"
+                id="manage-versions"
+            />
             <p-button
                 (onClick)="sidebarVisible = true"
                 styleClass="cancel-creation-button uppercase ml-1 mb-3 lg:mb-0"
@@ -172,6 +227,18 @@
                 icon="pi pi-download"
                 [label]="'inventories-footprint.header.export' | translate"
             />
+
+            <p-button
+                styleClass="header-blue-btn ml-2 mb-3 lg:mb-0"
+                icon="pi pi-clone"
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                id="duplicate-version"
+                [pTooltip]="'digital-services.version.duplicate-version' | translate"
+                tooltipPosition="bottom"
+                [ariaLabel]="'digital-services.version.duplicate-version' | translate"
+                (onClick)="duplicateDigitalServiceVersion()"
+            >
+            </p-button>
 
             <p-button
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"

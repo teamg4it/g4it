@@ -14,7 +14,7 @@ import { LoadingBody } from "../../interfaces/file-system.interfaces";
 import { TaskIdRest } from "../../interfaces/task.interfaces";
 
 const endpoint = Constants.ENDPOINTS.inventories;
-const endpointDS = Constants.ENDPOINTS.digitalServices;
+const endpointDS = Constants.ENDPOINTS.digitalServicesVersions;
 @Injectable({
     providedIn: "root",
 })
