@@ -37,13 +37,19 @@ const routes: Routes = [
                         "./digital-services-footprint/digital-services-footprint.module"
                     ).then((modules) => modules.DigitalServicesFootprintModule),
             },
-
             {
                 path: "digital-services/:digitalServiceId/footprint",
                 loadChildren: () =>
                     import(
                         "./digital-services-footprint/digital-services-footprint.module"
                     ).then((modules) => modules.DigitalServicesFootprintModule),
+            },
+            {
+                path: "digital-services/:digitalServiceId/manage-versions",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-manage-versions/digital-services-manage-versions.module"
+                    ).then((modules) => modules.DigitalServicesManageVersionsModule),
             },
             {
                 path: "inventories",

@@ -228,7 +228,34 @@
         "back": "Retour",
         "hide-menu-buttons": "Cacher les options du service numérique",
         "show-menu-buttons": "Montrer les options du service numérique",
-        "save-inplace": "Sauvegarder le nom du service numérique"
+        "save-inplace": "Sauvegarder le nom du service numérique",
+        "version": {
+            "ds-name": "Nom du service numérique",
+            "active-version-name": "Nom de la version active",
+            "version-name": "Nom de la version",
+            "add-ds": "Ajouter un service numérique",
+            "ds-text": "Envie de créer un service numérique utile et responsable ? Intégrez dès le départ l’ajout de vos ressources et faites le calcul de l’impact environnemental. C’est l’occasion de concevoir un service plus sobre, plus transparent et plus respectueux de la planète.",
+            "ds-name-placeholder": "Saisir un nom de service numérique",
+            "ds-version-name-placeholder": "Saisir un nom de version",
+            "ds-version-text": "Vous pourrez faire <strong>plusieurs versions</strong> de votre service numérique.<br> Chaque version capture un état précis, ce qui permet suivre vos progrès, de tester différentes hypothèses et de comparer leurs effets sans compromettre la version stable. Si vous êtes satisfait d’une version, faites la devenir votre version active, l’ancienne version sera automatiquement <strong>archivée</strong>.",
+            "active-text": "Cette version sera active par défaut",
+            "cancel-creation": "Annuler la création",
+            "validate-creation": "Valider la création",
+            "required-field": "Champ obligatoire",
+            "tags": {
+                "active": "Active",
+                "draft": "Brouillon",
+                "archived": "Archivée"
+            },
+            "manage-versions": "Gérer les versions",
+            "versions-management": "Gestion des versions",
+            "status": "Statut",
+            "actions": "Actions",
+            "select": "Sélectionner",
+            "versions": "Versions",
+            "duplicate-version": "Dupliquer la version"
+        },
+        "error.digital-service-already-exists": "Le service numérique existe déjà"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",

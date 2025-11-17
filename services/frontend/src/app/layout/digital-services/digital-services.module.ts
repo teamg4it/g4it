@@ -12,12 +12,17 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { PaginatorModule } from "primeng/paginator";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { CreateDigitalServicesSidebarComponent } from "./create-digital-services-sidebar/create-digital-services-sidebar.component";
 import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
 import { DigitalServicesComponent } from "./digital-services.component";
 import { digitalServicesRouter } from "./digital-services.router";
 
 @NgModule({
-    declarations: [DigitalServicesComponent, DigitalServicesItemComponent],
+    declarations: [
+        DigitalServicesComponent,
+        DigitalServicesItemComponent,
+        CreateDigitalServicesSidebarComponent,
+    ],
     imports: [
         ButtonModule,
         ScrollPanelModule,

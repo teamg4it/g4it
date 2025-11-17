@@ -10,6 +10,7 @@ import { Injectable } from "@angular/core";
 import { map, Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+import { DigitalServiceVersionRequestBody } from "../../interfaces/digital-service-version.interface";
 import {
     AiModelConfig,
     DigitalService,
@@ -46,16 +47,8 @@ export class DigitalServicesDataService {
         return this.http.get<DigitalService[]>(`${endpoint}`, { params });
     }
 
-    create(isAi?: boolean): Observable<DigitalService> {
-        let params = new HttpParams();
-        if (isAi !== undefined) {
-            params = params.set("isAi", isAi);
-        }
-        return this.http.post<DigitalService>(
-            `${endpoint}`,
-            {},
-            { headers: this.HEADERS, params: params },
-        );
+    create(requestBody: DigitalServiceVersionRequestBody): Observable<DigitalService> {
+        return this.http.post<DigitalService>(`${endpoint}`, requestBody);
     }
 
     update(digitalService: DigitalService): Observable<DigitalService> {

@@ -118,9 +118,12 @@ export class ShareDigitalServiceComponent implements OnInit {
     }
 
     private setSelectedTabFromRoute(): void {
+        console.log(this.tabItems);
         if (!this.tabItems) return;
         // Find the tab whose routerLink matches the last segment of the current route
         const currentSegment = this.route.snapshot.firstChild?.routeConfig?.path;
+        console.log(this.tabItems.find((tab) => tab.routerLink === currentSegment));
+        console.log(this.tabItems);
         this.selectedTab =
             this.tabItems.find((tab) => tab.routerLink === currentSegment) ||
             this.tabItems[0];
