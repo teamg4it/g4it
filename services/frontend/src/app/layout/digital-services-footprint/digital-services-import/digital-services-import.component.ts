@@ -28,7 +28,6 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
-import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { Constants } from "src/constants";
 
@@ -38,7 +37,6 @@ import { Constants } from "src/constants";
     styleUrl: "./digital-services-import.component.scss",
 })
 export class DigitalServicesImportComponent implements OnInit, OnDestroy {
-    private readonly userDataService = inject(UserDataService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly userService = inject(UserService);
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);

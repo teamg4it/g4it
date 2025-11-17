@@ -1,0 +1,65 @@
+<p-table
+    [value]="versionData"
+    [scrollable]="true"
+    sortField="name"
+    [sortOrder]="1"
+    [rows]="6"
+    [paginator]="true"
+    styleClass="my-3"
+>
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+            <div class="table-head">
+                {{ "digital-services.version.versions" | translate }}
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <caption class="visually-hidden">
+            {{
+                "digital-services.version.versions" | translate
+            }}
+        </caption>
+        <tr>
+            <th scope="col" id="status" pSortableColumn="status">
+                {{ "digital-services.version.status" | translate }}
+                <p-sortIcon field="status"></p-sortIcon>
+            </th>
+
+            <th scope="col" id="name" pSortableColumn="name">
+                {{ "digital-services.version.version-name" | translate }}
+                <p-sortIcon field="name"></p-sortIcon>
+            </th>
+            <th scope="col" id="lastName">
+                {{ "digital-services.version.actions" | translate }}
+            </th>
+            <th scope="col" id="select">
+                {{ "digital-services.version.select" | translate }}
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-version let-rowIndex="rowIndex">
+        <tr>
+            <td>
+                <app-version-type-tag
+                    [versionType]="version.status"
+                ></app-version-type-tag>
+            </td>
+            <td>{{ version.name }}</td>
+            <td>
+                <p-button
+                    class="mx-1 p-1 pt-2"
+                    icon="pi pi-clone"
+                    [text]="true"
+                    [plain]="true"
+                    [rounded]="true"
+                    (onClick)="duplicateDigitalServiceVersion(version.id)"
+                    [pTooltip]="'digital-services.version.duplicate-version' | translate"
+                    tooltipPosition="bottom"
+                    [ariaLabel]="'digital-services.version.duplicate-version' | translate"
+                ></p-button>
+            </td>
+            <td></td>
+        </tr>
+    </ng-template>
+</p-table>

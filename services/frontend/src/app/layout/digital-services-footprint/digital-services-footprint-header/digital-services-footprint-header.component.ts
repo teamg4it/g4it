@@ -17,11 +17,12 @@ import {
     Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { finalize, lastValueFrom } from "rxjs";
+import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-service-version.interface";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
@@ -39,9 +40,11 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly route = inject(ActivatedRoute);
 
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Input() isSharedDs = false;
+    isManageVersions = input<boolean>(false);
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     @Output() digitalMobileOptionsChange = new EventEmitter<boolean>();
     isZoom125 = computed(() => this.global.zoomLevel() >= 125);
@@ -58,6 +61,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     displayLinkCreatePopup = false;
     shareLink = "";
     expiryDate: Date | null = null;
+    digitalServiceVersionType = DigitalServiceVersionType;
 
     private readonly destroyRef = inject(DestroyRef);
 
@@ -203,6 +207,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         }
     }
 
+    goToManageVersions() {
+        this.router.navigate(["../manage-versions"], { relativeTo: this.route });
+    }
+
     getShareLink(extendLink = false): void {
         if (!extendLink) {
             this.global.setLoading(true);
@@ -223,4 +231,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 }
             });
     }
+
+    duplicateDigitalServiceVersion(): void {}
 }

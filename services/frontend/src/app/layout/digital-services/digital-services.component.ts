@@ -32,6 +32,7 @@ export class DigitalServicesComponent implements OnInit {
     digitalServices: DigitalService[] = [];
     selectedDigitalService: DigitalService = {} as DigitalService;
     sidebarVisible = false;
+    newDsSidebarVisible = false;
 
     allDigitalServices: DigitalService[] = [];
     paginatedDigitalServices: DigitalService[] = [];
@@ -127,17 +128,25 @@ export class DigitalServicesComponent implements OnInit {
         this.updatePaginatedItems();
     }
 
-    async createNewDigitalService() {
+    async createNewDigitalServices(event: { dsName: string; versionName: string }) {
         if (
             this.isEcoMindAi &&
             this.isAllowedEcoMindAiService &&
             this.isEcoMindEnabledForCurrentOrganization &&
             this.isEcoMindModuleEnabled
         ) {
-            const { uid } = await lastValueFrom(this.digitalServicesData.create(true));
+            const req = {
+                ...event,
+                isAi: true,
+            };
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
             this.goToDigitalServiceFootprint(uid);
         } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
-            const { uid } = await lastValueFrom(this.digitalServicesData.create(false));
+            const req = {
+                ...event,
+                isAi: false,
+            };
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
             this.goToDigitalServiceFootprint(uid);
         }
     }
