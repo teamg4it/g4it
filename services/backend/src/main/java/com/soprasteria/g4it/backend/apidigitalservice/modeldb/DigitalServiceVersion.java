@@ -75,7 +75,13 @@ public class DigitalServiceVersion {
 
     @Builder.Default
     @ToString.Exclude
-    @OneToMany(mappedBy = "digitalServiceVersion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "digital_service_version_tasks",
+            joinColumns = @JoinColumn(name = "digital_service_version_uid"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
     private List<Task> tasks = new ArrayList<>();
+
 
 }
