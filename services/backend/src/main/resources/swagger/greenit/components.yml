@@ -45,6 +45,13 @@ components:
         type: string
       required: true
       description: The digital service uid.
+    digitalServiceVersionUidPathParam:
+      in: path
+      name: digitalServiceVersionUid
+      schema:
+        type: string
+      required: true
+      description: The digital service version uid.
     noteUidPathParam:
       in: path
       name: noteId
@@ -700,7 +707,7 @@ components:
           description: The flag to enable data consistency view
         versionType:
           type: string
-        description:
+        versionName:
           type: string
 
     DigitalServiceShareRest:

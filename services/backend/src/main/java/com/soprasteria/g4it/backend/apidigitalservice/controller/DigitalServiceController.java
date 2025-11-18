@@ -9,6 +9,7 @@ package com.soprasteria.g4it.backend.apidigitalservice.controller;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
@@ -57,6 +58,10 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
 
     @Autowired
     private AuthorizationUtils authorizationUtils;
+    /**
+     * DigitalServiceVersionRest Mapper.
+     */
+    private DigitalServiceVersionMapper digitalServiceVersionMapper;
 
     /**
      * {@inheritDoc}
@@ -152,6 +157,22 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
                                                                        final Boolean extendLink) {
         return ResponseEntity.ok(digitalServiceService.shareDigitalService(organization, workspace, digitalServiceUid,
                 authService.getUser(), extendLink));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<DigitalServiceVersionRest> duplicateDigitalServiceVersion(
+            final String organization,
+            final Long workspace,
+            final String digitalServiceVersionUid) {
+
+        final DigitalServiceVersionBO duplicatedVersion =
+                digitalServiceService.duplicateDigitalServiceVersion(digitalServiceVersionUid);
+
+        final DigitalServiceVersionRest digitalServiceVersionDTO = digitalServiceVersionRestMapper.toDto(duplicatedVersion);
+        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", duplicatedVersion.getDsvUid())))).body(digitalServiceVersionDTO);
     }
 
 }

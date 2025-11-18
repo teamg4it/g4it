@@ -62,6 +62,7 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     @Transactional
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
+
     @Transactional
     @Modifying
     void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
@@ -82,4 +83,20 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     @Transactional
     @Modifying
     void deleteByDigitalServiceUid(String digitalServiceUid);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            INSERT INTO in_datacenter (
+                name, inventory_id, digital_service_uid, full_name, location, pue,
+                creation_date, last_update_date, common_filters, digital_service_version_uid
+            )
+            SELECT
+                name, inventory_id, digital_service_uid, full_name, location, pue,
+                NOW(), NOW(), common_filters, :newUid
+            FROM in_datacenter
+            WHERE digital_service_version_uid = :oldUid
+            """, nativeQuery = true)
+    void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
+
 }
