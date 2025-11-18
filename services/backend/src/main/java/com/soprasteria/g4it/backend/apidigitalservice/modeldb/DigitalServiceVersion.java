@@ -10,8 +10,6 @@ package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.persistence.*;
-
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
@@ -41,7 +39,7 @@ public class DigitalServiceVersion {
     private String uid;
 
     @Column(name = "description", nullable = false)
-    private String description;
+    private String versionName;
 
     @Column(name = "last_calculation_date")
     private LocalDateTime lastCalculationDate;
@@ -71,13 +69,19 @@ public class DigitalServiceVersion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", referencedColumnName = "uid",
-            insertable = false, updatable = false,
+            updatable = false,
             foreignKey = @ForeignKey(name = "digital_service_version_item_id_fk"))
     private DigitalService digitalService;
 
     @Builder.Default
     @ToString.Exclude
-    @OneToMany(mappedBy = "digitalServiceVersion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "digital_service_version_tasks",
+            joinColumns = @JoinColumn(name = "digital_service_version_uid"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
     private List<Task> tasks = new ArrayList<>();
+
 
 }

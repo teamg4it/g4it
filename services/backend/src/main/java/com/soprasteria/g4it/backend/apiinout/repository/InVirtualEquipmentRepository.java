@@ -140,6 +140,7 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     @Transactional
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
+
     @Transactional
     @Modifying
     void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
@@ -192,4 +193,24 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
             @Param("inventoryId") Long inventoryId,
             @Param("names") Collection<String> virtualEquipmentNames
     );
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            INSERT INTO in_virtual_equipment (
+                name, inventory_id, digital_service_uid, datacenter_name, physical_equipment_name,
+                quantity, infrastructure_type, instance_type, type, provider, location, duration_hour,
+                workload, electricity_consumption, vcpu_core_number, size_memory_gb, size_disk_gb,
+                allocation_factor, common_filters, filters, creation_date, last_update_date, digital_service_version_uid
+            )
+            SELECT
+                name, inventory_id, digital_service_uid, datacenter_name, physical_equipment_name,
+                quantity, infrastructure_type, instance_type, type, provider, location, duration_hour,
+                workload, electricity_consumption, vcpu_core_number, size_memory_gb, size_disk_gb,
+                allocation_factor, common_filters, filters, NOW(), NOW(), :newUid
+            FROM in_virtual_equipment
+            WHERE digital_service_version_uid = :oldUid
+            """, nativeQuery = true)
+    void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
+
 }

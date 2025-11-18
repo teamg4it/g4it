@@ -44,7 +44,7 @@ public class DigitalServiceVersionBO {
     /**
      * Description / Version name.
      */
-    private String description;
+    private String versionName;
 
     /**
      * Name of user who created the digital service.

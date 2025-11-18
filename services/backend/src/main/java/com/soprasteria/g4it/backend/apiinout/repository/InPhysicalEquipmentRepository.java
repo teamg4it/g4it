@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -78,6 +79,7 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
     @Transactional
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
+
     @Transactional
     @Modifying
     void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
@@ -98,4 +100,25 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
     @Transactional
     @Modifying
     void deleteByDigitalServiceUid(String digitalServiceUid);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            INSERT INTO in_physical_equipment (
+                name,digital_service_uid,datacenter_name,location,quantity,type,model,manufacturer,
+                date_purchase,date_withdrawal,cpu_type,cpu_core_number,size_disk_gb,size_memory_gb,
+                source,quality,electricity_consumption,common_filters,filters,creation_date,last_update_date,
+                duration_hour,description,nb_user,digital_service_version_uid
+            )
+            SELECT
+                name, digital_service_uid,datacenter_name,location,quantity,type,model,manufacturer,
+                date_purchase,date_withdrawal,cpu_type,cpu_core_number,size_disk_gb,size_memory_gb,
+                source,quality,electricity_consumption,common_filters,filters,NOW(), NOW(),
+                duration_hour,description,nb_user,:newUid
+            FROM in_physical_equipment
+            WHERE digital_service_version_uid = :oldUid
+            """, nativeQuery = true)
+    void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
+
+
 }

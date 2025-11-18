@@ -40,6 +40,8 @@ public abstract class DigitalServiceVersionMapper {
         bo.setIsAi(digitalService.isAi());
         bo.setEnableDataInconsistency(digitalService.isEnableDataInconsistency());
         bo.setIsShared(false); // Default value, can be set later
+        bo.setVersionName(version.getVersionName());
+
 
         return bo;
     }
