@@ -662,7 +662,7 @@ class DigitalServiceServiceTest {
 
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(DIGITAL_SERVICE_VERSION_UID)
-                .description(inDigitalServiceVersionRest.getVersionName())
+                .versionName(inDigitalServiceVersionRest.getVersionName())
                 .digitalService(DigitalService.builder().uid(digitalServiceSaved.getUid()).build())
                 .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
                 .createdBy(digitalServiceSaved.getUser().getId())
@@ -674,7 +674,7 @@ class DigitalServiceServiceTest {
 
         DigitalServiceVersionBO expectedBO = DigitalServiceVersionBO.builder()
                 .dsvUid(DIGITAL_SERVICE_VERSION_UID)
-                .description(VERSION_NAME)
+                .versionName(VERSION_NAME)
                 .versionType(VERSION_TYPE)
                 .build();
 
@@ -708,7 +708,7 @@ class DigitalServiceServiceTest {
         // --- Mock original version ---
         DigitalServiceVersion originalVersion = DigitalServiceVersion.builder()
                 .uid(originalUid)
-                .description(VERSION_NAME)
+                .versionName(VERSION_NAME)
                 .versionType(DigitalServiceVersionStatus.DRAFT.name())
                 .createdBy(USER_ID)
                 .build();
@@ -716,7 +716,7 @@ class DigitalServiceServiceTest {
         // --- Mock duplicated version ---
         DigitalServiceVersion duplicatedVersion = DigitalServiceVersion.builder()
                 .uid(newUid)
-                .description(VERSION_NAME + " (1)")
+                .versionName(VERSION_NAME + " (1)")
                 .versionType(DigitalServiceVersionStatus.DRAFT.name())
                 .createdBy(USER_ID)
                 .build();
@@ -724,7 +724,7 @@ class DigitalServiceServiceTest {
         // --- Expected business object ---
         DigitalServiceVersionBO expectedBO = DigitalServiceVersionBO.builder()
                 .dsvUid(newUid)
-                .description(VERSION_NAME + " (1)")
+                .versionName(VERSION_NAME + " (1)")
                 .versionType(DigitalServiceVersionStatus.DRAFT.name())
                 .build();
 
