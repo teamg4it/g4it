@@ -200,11 +200,11 @@ export class ApplicationCriteriaFootprintComponent
     checkIfNoData(selectedFilters: Filter) {
         this.appComponent.formatLifecycleImpact([this.footprint]);
         let hasNoData = true;
-        this.footprint?.impacts?.forEach((impact: ApplicationImpact) => {
+        for (const impact of this.footprint?.impacts || []) {
             if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                 hasNoData = false;
             }
-        });
+        }
 
         return hasNoData;
     }
@@ -215,9 +215,9 @@ export class ApplicationCriteriaFootprintComponent
         selectedCriteria: string,
     ) {
         let result: any = {};
-        barChartData.forEach((data) => {
+        for (const data of barChartData) {
             if (data.criteria === selectedCriteria) {
-                data.impacts.forEach((impact: ApplicationImpact) => {
+                for (const impact of data.impacts) {
                     if (!impact.impact) {
                         impact.impact = 0;
                         impact.sip = 0;
@@ -260,9 +260,9 @@ export class ApplicationCriteriaFootprintComponent
                                 break;
                         }
                     }
-                });
+                }
             }
-        });
+        }
         result = this.initGraphData(this.impactOrder);
         return result;
     }
@@ -338,7 +338,7 @@ export class ApplicationCriteriaFootprintComponent
         const environmentList: string[] = [];
         const clusterList: string[] = [];
         const status: StatusCountMap = {};
-        impactOrder.forEach((impact) => {
+        for (const impact of impactOrder) {
             let subdomainList: string[] = [];
             let appList: string[] = [];
             switch (this.footprintStore.appGraphType()) {
@@ -347,16 +347,16 @@ export class ApplicationCriteriaFootprintComponent
                     yAxis.push(impact.sipImpact);
                     unitImpact.push(impact.unitImpact);
                     status[impact.domain] = { status: impact.status };
-                    impact.subdomains.forEach((subdomain: string) => {
+                    for (const subdomain of impact.subdomains) {
                         if (!subdomainList.includes(subdomain)) {
                             subdomainList.push(subdomain);
                         }
-                    });
-                    impact.apps.forEach((app: string) => {
+                    }
+                    for (const app of impact.apps) {
                         if (!appList.includes(app)) {
                             appList.push(app);
                         }
-                    });
+                    }
                     subdomainCount.push(subdomainList.length);
                     appCount.push(appList.length);
                     break;
@@ -365,11 +365,11 @@ export class ApplicationCriteriaFootprintComponent
                     yAxis.push(impact.sipImpact);
                     unitImpact.push(impact.unitImpact);
                     status[impact.subdomain] = { status: impact.status };
-                    impact.apps.forEach((app: string) => {
+                    for (const app of impact.apps) {
                         if (!appList.includes(app)) {
                             appList.push(app);
                         }
-                    });
+                    }
                     appCount.push(appList.length);
                     break;
                 case "subdomain":
@@ -388,7 +388,7 @@ export class ApplicationCriteriaFootprintComponent
                     status[impact.virtualEquipmentName] = { status: impact.status };
                     break;
             }
-        });
+        }
         return {
             xAxis,
             yAxis,

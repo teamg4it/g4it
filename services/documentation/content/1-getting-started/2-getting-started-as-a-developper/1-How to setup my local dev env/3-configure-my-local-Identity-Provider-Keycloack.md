@@ -21,12 +21,12 @@ __Tree folder:__
 - __extensions__ : home-idp-discovery extension
 - __imports__ : auto-import the g4it realm with default configuration
 - __themes__: custom theme for login
-- __Dockerfile__: container build, it uses official image bitnami/keycloak
+- __Dockerfile__: container build, it uses official image bitnamilegacy/keycloak
 
 ## Install the docker image
 
 The __local dev environment__ uses podman-compose to start the keycloak instance (in `workspace/numecoeval/docker-compose.yml`)
-- Docker image used: bitnami/keycloak
+- Docker image used: bitnamilegacy/keycloak
 - URL : http://localhost:8180/auth
 - It uses this [extension](https://github.com/sventorben/keycloak-home-idp-discovery) located in `extensions` folder
 

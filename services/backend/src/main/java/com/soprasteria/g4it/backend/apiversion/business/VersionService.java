@@ -26,6 +26,8 @@ public class VersionService {
 
     @Value("${boaviztapi.version}")
     private String boaviztaVersion;
+    @Value("${ecomindaimodule.version}")
+    private String ecomindai;
 
     /**
      * Get the NumEcoEval version
@@ -37,6 +39,7 @@ public class VersionService {
         return VersionRest.builder()
                 .boaviztapi(boaviztaVersion)
                 .g4it(version)
+                .ecomindai(ecomindai)
                 .build();
     }
 }

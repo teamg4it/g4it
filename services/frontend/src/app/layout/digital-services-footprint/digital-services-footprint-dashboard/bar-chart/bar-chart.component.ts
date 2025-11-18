@@ -150,7 +150,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                 },
             };
             xAxis.push(impact.networkType);
-            impact.items.forEach((item: any, index: number) => {
+            for (const [index, item] of impact.items.entries()) {
                 const data = [
                     impact.networkType,
                     item.sipValue < 1 ? item.sipValue : item.sipValue.toFixed(0),
@@ -173,7 +173,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                         ),
                     },
                 });
-            });
+            }
         }
         this.xAxisInput = xAxis;
         this.criteriaMap = networkMap;
@@ -477,7 +477,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             xAxis.push(impact.name);
 
             const items = isTerminals ? impact.terminals : impact.clouds;
-            items.forEach((item: any, index: number) => {
+            for (const [index, item] of items.entries()) {
                 const data = [
                     impact.name,
                     item.totalSipValue < 1
@@ -502,7 +502,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                         color: this.createStackBarGradientColor(index, items.length),
                     },
                 });
-            });
+            }
         }
 
         const topThree = [...seriesData]
@@ -554,17 +554,17 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         if (childData) {
             const order = LifeCycleUtils.getLifeCycleList();
 
-            childData.impact.forEach((impact: any) => {
+            for (const impact of childData.impact) {
                 impact[stepKey] =
                     LifeCycleUtils.getLifeCycleMap().get(impact[stepKey]) ||
                     impact[stepKey];
-            });
+            }
 
             childData.impact.sort((a: any, b: any) => {
                 return order.indexOf(a[stepKey]) - order.indexOf(b[stepKey]);
             });
 
-            childData.impact.forEach((impact: any) => {
+            for (const impact of childData.impact) {
                 okMap[this.existingTranslation(impact[stepKey], "acvStep")] = {
                     status: {
                         ok: impact.statusCount?.ok ?? 0,
@@ -589,7 +589,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                     unit: impact.unit,
                     statusCount: impact.statusCount,
                 });
-            });
+            }
             const topThree = [...childData.impact]
                 .map((item) => {
                     return {
@@ -617,7 +617,8 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             this.selectedCriteria,
         );
         let serverOkmap: StatusCountMap = {};
-        data4Criteria.forEach((impact: ServersType) => {
+        let impact: ServersType;
+        for (impact of data4Criteria) {
             let serverType = this.translate.instant(
                 `digital-services-servers.server-type.${impact.mutualizationType}-${impact.serverType}`,
             );
@@ -644,7 +645,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                     total: impactVmDisk.reduce((acc, i) => acc + i.countValue, 0),
                 },
             };
-            impact.servers.forEach((server: ServerImpact, index: any) => {
+            for (const [index, server] of impact.servers.entries()) {
                 detailServers.push({
                     name: server.name,
                     vmList: server.impactVmDisk,
@@ -677,8 +678,8 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                         ),
                     },
                 });
-            });
-        });
+            }
+        }
 
         const topThree = [...data4Criteria]
             .map((item) => {
@@ -807,17 +808,17 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         if (this.serversRadioButtonSelected === "lifecycle") {
             const order = LifeCycleUtils.getLifeCycleList();
             const lifecycleMap = LifeCycleUtils.getLifeCycleMap();
-            selectedServer.impactStep.forEach(
-                (impact) =>
-                    (impact.acvStep = lifecycleMap.get(impact.acvStep) || impact.acvStep),
-            );
+
+            for (const impact of selectedServer.impactStep) {
+                impact.acvStep = lifecycleMap.get(impact.acvStep) || impact.acvStep;
+            }
 
             selectedServer.impactStep.sort((a, b) => {
                 return order.indexOf(a.acvStep) - order.indexOf(b.acvStep);
             });
             serverChildOkmap = {};
 
-            selectedServer.impactStep.forEach((lifecycle: ImpactACVStep) => {
+            for (const lifecycle of selectedServer.impactStep) {
                 const acvStep = this.existingTranslation(lifecycle.acvStep, "acvStep");
                 xAxis.push(acvStep);
                 serverChildOkmap[acvStep] = {
@@ -843,11 +844,11 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                     rawValue: lifecycle.rawValue,
                     unit: lifecycle.unit,
                 });
-            });
+            }
         } else if (this.serversRadioButtonSelected === "vm") {
             selectedServer.impactVmDisk.sort((a, b) => a.name.localeCompare(b.name));
             serverChildOkmap = {};
-            selectedServer.impactVmDisk.forEach((vm: ImpactSipValue) => {
+            for (const vm of selectedServer.impactVmDisk) {
                 xAxis.push(vm.name);
                 serverChildOkmap[vm.name] = {
                     status: {
@@ -871,7 +872,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                     unit: vm.unit,
                     quantity: vm.quantity,
                 });
-            });
+            }
         }
         this.xAxisInput = xAxis;
         this.criteriaMap = serverChildOkmap;

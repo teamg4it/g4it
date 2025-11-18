@@ -9,10 +9,7 @@ import { Component, computed, inject, input, Signal } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { Filter } from "src/app/core/interfaces/filter.interface";
-import {
-    ApplicationFootprint,
-    ApplicationImpact,
-} from "src/app/core/interfaces/footprint.interface";
+import { ApplicationFootprint } from "src/app/core/interfaces/footprint.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { Constants } from "src/constants";
@@ -94,7 +91,7 @@ export class ApplicationCriteriaPieChartComponent {
         );
 
         if (criteriaFootprint) {
-            criteriaFootprint.impacts.forEach((impact: any) => {
+            for (const impact of criteriaFootprint.impacts) {
                 if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                     switch (this.footprintStore.appGraphType()) {
                         case "global":
@@ -111,7 +108,7 @@ export class ApplicationCriteriaPieChartComponent {
                             break;
                     }
                 }
-            });
+            }
         }
 
         return {
@@ -141,7 +138,7 @@ export class ApplicationCriteriaPieChartComponent {
         );
 
         if (criteriaFootprint) {
-            criteriaFootprint.impacts.forEach((impact: ApplicationImpact) => {
+            for (const impact of criteriaFootprint.impacts) {
                 if (
                     selectedFilters["environment"]?.includes(impact.environment) &&
                     selectedFilters["equipmentType"]?.includes(impact.equipmentType) &&
@@ -159,7 +156,7 @@ export class ApplicationCriteriaPieChartComponent {
                         data[index].value += impact.sip;
                     }
                 }
-            });
+            }
         }
 
         return {

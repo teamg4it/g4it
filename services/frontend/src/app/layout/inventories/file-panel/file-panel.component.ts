@@ -76,7 +76,6 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     arrayComponents: Array<ComponentRef<SelectFileComponent>> = [];
 
     templateFiles: TemplateFileDescription[] = [];
-    isTemplateParam = Constants.TEMPLATE_PARAMS.IS_MODULE;
     constructor(
         private readonly inventoryService: InventoryDataService,
         private readonly loadingService: LoadingDataService,
@@ -120,20 +119,23 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
 
     ngOnChanges(changes: SimpleChanges) {
         this.invalidDates = [];
-        this.inventories?.forEach((inventory) => {
+        for (const inventory of this.inventories) {
             const month = inventory.date!.getMonth();
             let year = inventory.date!.getFullYear();
             for (let day = 1; day < 32; day++) {
                 this.invalidDates.push(new Date(year, month, day));
             }
-        });
+        }
     }
 
     getTemplateFiles() {
         this.templateFileService
-            .getTemplateFiles(this.isTemplateParam)
+            .getTemplateFiles()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((templateFiles: FileDescription[]) => {
+                templateFiles = templateFiles.filter(
+                    (file) => !file.name.includes("ds_"),
+                );
                 if (templateFiles.length === 0) {
                     this.templateFiles = [];
                     return;
@@ -158,7 +160,9 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     deleteComponent(index: number) {
         this.arrayComponents.at(index)?.destroy();
         this.arrayComponents.splice(index, 1);
-        this.arrayComponents.forEach(({ instance }, index) => (instance.index = index));
+        for (const [index, { instance }] of this.arrayComponents.entries()) {
+            instance.index = index;
+        }
     }
 
     addComponent(type = this.fileTypes[0]) {
@@ -168,7 +172,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
         componentRef.instance.type = type;
         this.arrayComponents.push(componentRef);
         this.uploaderOutpoutHandlerReset$.next();
-        this.arrayComponents.forEach(({ instance }, index) => {
+        for (const [index, { instance }] of this.arrayComponents.entries()) {
             instance.index = index;
             instance.outDelete
                 .asObservable()
@@ -183,7 +187,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
                 .subscribe(() => {
                     this.checkfileUploaded();
                 });
-        });
+        }
     }
 
     checkfileUploaded() {
@@ -201,7 +205,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
         let formData = new FormData();
         let bodyLoading: FileDescription[] = [];
 
-        this.arrayComponents.forEach(({ instance }) => {
+        for (const { instance } of this.arrayComponents) {
             const { type, file } = instance;
             if (file) {
                 formData.append(type.value, file, file.name);
@@ -213,7 +217,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
                     },
                 });
             }
-        });
+        }
         if (this.purpose === "new") {
             const creationObj: CreateInventory = {
                 name: this.name,
@@ -274,11 +278,13 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     clearSidePanel() {
-        this.arrayComponents.forEach((component) => {
+        for (const component of this.arrayComponents) {
             component.destroy();
-        });
+        }
         this.arrayComponents = [];
-        this.fileTypes.forEach((type) => this.addComponent(type));
+        for (const type of this.fileTypes) {
+            this.addComponent(type);
+        }
     }
 
     close() {
@@ -290,10 +296,7 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     downloadTemplateFile(selectedFileName: string) {
-        this.templateFileService.getdownloadTemplateFile(
-            selectedFileName,
-            this.isTemplateParam,
-        );
+        this.templateFileService.getdownloadTemplateFile(selectedFileName);
     }
 
     ngOnDestroy() {

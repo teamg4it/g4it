@@ -94,10 +94,10 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
 
     tasks: TaskRest[] = [];
     tableTasks: TaskRest[] = [];
-    dsTemplateParam = Constants.TEMPLATE_PARAMS.DS_MODULE;
     digitalServicesId = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
     templateFilesDescription: TemplateFileDescription[] = [];
     templateFileVisible = signal<TemplateFileDescription[]>([]);
+    dataModel: TemplateFileDescription | undefined;
     anyRejectedFiles = false;
     selectedWorkspace!: string;
     selectedOrganization!: string;
@@ -107,7 +107,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     @ViewChild("addFocus", { static: false }) addFocusElement!: ElementRef;
     constructor(
         private readonly translate: TranslateService,
-        private readonly templateFileService: TemplateFileService,
+        protected readonly templateFileService: TemplateFileService,
         private readonly route: ActivatedRoute,
         private readonly digitalServicesData: DigitalServicesDataService,
     ) {}
@@ -142,20 +142,29 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
 
     getTemplates() {
         this.templateFileService
-            .getTemplateFiles(this.dsTemplateParam)
+            .getTemplateFiles()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((templateFiles: FileDescription[]) => {
+                templateFiles = templateFiles.filter(
+                    (file) => !file.name.includes("inv_"),
+                );
                 if (templateFiles.length === 0) {
                     this.templateFilesDescription = [];
                     return;
                 }
                 this.templateFilesDescription =
                     this.templateFileService.transformTemplateFiles(templateFiles, true);
-                this.templateFilesDescription.forEach((file: TemplateFileDescription) => {
-                    file.displayFileName = this.translate.instant(
-                        `digital-services-import.templates.${file.csvFileType}-template-file`,
-                    );
-                });
+                for (const file of this.templateFilesDescription) {
+                    if (file.type === "csv") {
+                        file.displayFileName = this.translate.instant(
+                            `digital-services-import.templates.${file.csvFileType}-template-file`,
+                        );
+                    } else {
+                        file.displayFileName = this.translate.instant(
+                            "digital-services-import.templates.data-model",
+                        );
+                    }
+                }
                 this.templateFilesDescription.sort((a, b) => {
                     if (a.csvFileType === "virtual" && b.csvFileType === "virtual") {
                         return (
@@ -169,6 +178,9 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
                         Constants.FILE_TYPES.indexOf(b.csvFileType ?? "")
                     );
                 });
+                this.dataModel = this.templateFilesDescription.find((file) =>
+                    file.name?.toLowerCase()?.includes("datamodel"),
+                );
                 this.selectTab(0);
                 setTimeout(() => {
                     this.focusFirstTemplate();
@@ -177,10 +189,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     }
 
     downloadTemplateFile(selectedFileName: string) {
-        this.templateFileService.getdownloadTemplateFile(
-            selectedFileName,
-            this.dsTemplateParam,
-        );
+        this.templateFileService.getdownloadTemplateFile(selectedFileName);
     }
 
     async getDigitalServiceStatus() {
@@ -285,9 +294,9 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
         this.selectedMenuIndex = index;
         const files = this.templateFilesDescription;
         this.templateFileVisible.set(this.getSelectedTemplates(files));
-        this.importDetails.menu.forEach((detail, i) => {
+        for (const [i, detail] of this.importDetails.menu.entries()) {
             detail.active = i === index;
-        });
+        }
     }
 
     getSelectedTemplates(files: TemplateFileDescription[]): TemplateFileDescription[] {
@@ -306,7 +315,8 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
                         "virtual_equipment_cloud",
                         "physical_equipment_terminal",
                         "physical_equipment_network",
-                    ].some((type) => file.name.includes(type)),
+                        "datamodel",
+                    ].some((type) => file.name?.toLowerCase()?.includes(type)),
             );
 
         return files.filter((file) => file.name.includes("virtual_equipment_cloud"));
