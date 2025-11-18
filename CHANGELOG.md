@@ -6,6 +6,8 @@
 
 ### Minor Changes
 
+- 1693 | [IS module] Control on the default DC for physical equipment
+
 - 1611 | Add the ecomindAI version on the Useful Information page
 - 1400 | find a simpler solution to save electricity consumption in out_physical_equipment
 - 1677 | Update the datamodel to include the specificities of Digital Service Import
