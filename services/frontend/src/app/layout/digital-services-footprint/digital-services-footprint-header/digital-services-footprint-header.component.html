@@ -73,43 +73,44 @@
             </button>
         }
 
-        <div class="input-title flex align-items-center">
-            <h2
-                *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
-                class="text-4xl px-2 color-black-seventy"
-            >
-                {{ digitalService.name }}
-            </h2>
-            <p-inplace
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                [closable]="true"
-                [closeAriaLabel]="'digital-services.save-inplace' | translate"
-                [preventClick]="digitalService.name === ''"
-                (onDeactivate)="onNameUpdate(digitalService.name)"
-                styleClass="inline-block w-auto color-black-seventy lg:w-18rem"
-            >
-                <ng-template pTemplate="display">
-                    <h2 class="text-4xl px-2 color-black-seventy">
-                        {{ digitalService.name }}
-                    </h2>
-                </ng-template>
-                <ng-template pTemplate="content">
-                    <input
-                        type="text"
-                        class="text-4xl font-semibold color-black-seventy px-2 mr-2 w-9"
-                        pInputText
-                        [(ngModel)]="digitalService.name"
-                        [required]="true"
-                    />
-                </ng-template>
-                <ng-template pTemplate="closeicon">
-                    <i class="pi pi-check"></i>
-                </ng-template>
-            </p-inplace>
-        </div>
-        <i class="pi pi-angle-right text-2xl"></i>
-
-        @if (!isManageVersions()) {
+        @if (!isCompareVersions()) {
+            <div class="input-title flex align-items-center">
+                <h2
+                    *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
+                    class="text-4xl px-2 color-black-seventy"
+                >
+                    {{ digitalService.name }}
+                </h2>
+                <p-inplace
+                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                    [closable]="true"
+                    [closeAriaLabel]="'digital-services.save-inplace' | translate"
+                    [preventClick]="digitalService.name === ''"
+                    (onDeactivate)="onNameUpdate(digitalService.name)"
+                    styleClass="inline-block w-auto color-black-seventy lg:w-18rem"
+                >
+                    <ng-template pTemplate="display">
+                        <h2 class="text-4xl px-2 color-black-seventy">
+                            {{ digitalService.name }}
+                        </h2>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <input
+                            type="text"
+                            class="text-4xl font-semibold color-black-seventy px-2 mr-2 w-9"
+                            pInputText
+                            [(ngModel)]="digitalService.name"
+                            [required]="true"
+                        />
+                    </ng-template>
+                    <ng-template pTemplate="closeicon">
+                        <i class="pi pi-check"></i>
+                    </ng-template>
+                </p-inplace>
+            </div>
+            <i class="pi pi-angle-right text-2xl"></i>
+        }
+        @if (!isManageVersions() && !isCompareVersions()) {
             <app-version-type-tag
                 [versionType]="digitalServiceVersionType.ACTIVE"
             ></app-version-type-tag>
@@ -148,13 +149,18 @@
                     </ng-template>
                 </p-inplace>
             </div>
-        } @else {
-            <h2 class="ml-3">
-                {{ "digital-services.version.versions-management" | translate }}
-            </h2>
         }
+
+        <h2 class="ml-3">
+            @if (isManageVersions()) {
+                {{ "digital-services.version.versions-management" | translate }}
+            }
+            @if (isCompareVersions()) {
+                {{ "digital-services.version.compare-versions-title" | translate }}
+            }
+        </h2>
     </div>
-    @if ((showKebabMenu || !isMobile()) && !isManageVersions()) {
+    @if ((showKebabMenu || !isMobile()) && !isManageVersions() && !isCompareVersions()) {
         <div class="mr-3 block align-items-center lg:flex">
             <p-button
                 (onClick)="goToManageVersions()"

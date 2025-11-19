@@ -52,6 +52,13 @@ const routes: Routes = [
                     ).then((modules) => modules.DigitalServicesManageVersionsModule),
             },
             {
+                path: "digital-services/:digitalServiceId/compare-versions",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-compare-versions/digital-services-compare-versions.module"
+                    ).then((modules) => modules.DigitalServicesCompareVersionsModule),
+            },
+            {
                 path: "inventories",
                 loadChildren: () =>
                     import("./inventories/inventories.module").then(
