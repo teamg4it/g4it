@@ -255,7 +255,9 @@
             "actions": "Actions",
             "select": "Select",
             "versions": "Versions",
-            "duplicate-version": "Duplicate Version"
+            "duplicate-version": "Duplicate Version",
+            "compare-versions": "Compare two versions",
+            "compare-version-tooltip": "Select two versions to compare their results. The versions must have calculated impact criteria."
         },
         "error.digital-service-already-exists": "Digital Service already exists"
     },
