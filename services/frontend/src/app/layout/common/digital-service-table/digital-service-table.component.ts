@@ -23,6 +23,7 @@ export class DigitalServiceTableComponent {
     @Input() headerFields: string[] = [];
     @Input() showId = true;
     @Input() addButtonId = "add-button";
+    @Input() isVM = false;
 
     @Output() sidebar: EventEmitter<boolean> = new EventEmitter();
     @Output() resetItem: EventEmitter<boolean> = new EventEmitter();
@@ -55,16 +56,20 @@ export class DigitalServiceTableComponent {
     }
 
     confirmDelete(event: Event, item: any, index: number) {
-        this.confirmationService.confirm({
-            closeOnEscape: true,
-            target: event.target as EventTarget,
-            acceptLabel: this.translate.instant("common.yes"),
-            rejectLabel: this.translate.instant("common.no"),
-            message: this.translate.instant("common.resourcesPopup.delete-question"),
-            icon: "pi pi-exclamation-triangle",
-            accept: () => {
-                this.doDeleteItem(item, index);
-            },
-        });
+        if (this.isVM) {
+            this.doDeleteItem(item, index);
+        } else {
+            this.confirmationService.confirm({
+                closeOnEscape: true,
+                target: event.target as EventTarget,
+                acceptLabel: this.translate.instant("common.yes"),
+                rejectLabel: this.translate.instant("common.no"),
+                message: this.translate.instant("common.resourcesPopup.delete-question"),
+                icon: "pi pi-exclamation-triangle",
+                accept: () => {
+                    this.doDeleteItem(item, index);
+                },
+            });
+        }
     }
 }
