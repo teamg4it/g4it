@@ -46,6 +46,9 @@
         "lastName": "Nom",
         "email": "Email",
         "disconnect": "Se déconnecter",
+        "resourcesPopup": {
+            "delete-question": "Voulez-vous vraiment supprimer cette ressource ?"
+        },
         "week": {
             "monday": "Lundi",
             "tuesday": "Mardi",
