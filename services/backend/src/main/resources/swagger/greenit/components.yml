@@ -45,6 +45,15 @@ components:
         type: string
       required: true
       description: The digital service uid.
+
+    digitalServiceVersionUidPathParam:
+      in: path
+      name: digitalServiceVersionUid
+      schema:
+        type: string
+      required: true
+      description: The digital service version uid.
+
     noteUidPathParam:
       in: path
       name: noteId
@@ -703,6 +712,19 @@ components:
         description:
           type: string
 
+    DigitalServiceVersionsListRest:
+      description: List of Digital Service Versions
+      type: object
+      properties:
+        digitalServiceUid:
+          type: string
+        digitalServiceVersionUid:
+          type: string
+        versionName:
+          type: string
+        versionType:
+          type: string
+
     DigitalServiceShareRest:
       description: Information of shared Digital Service
       type: object
@@ -999,15 +1021,15 @@ components:
         end_time:
           type: string
 
-#    SubscribertRest:
-#      type: object
-#      properties:
-#        name:
-#          type: string
-#        impactStep:
-#          type: array
-#          items:
-#            $ref: "#/components/schemas/OrganizationRest"
+    #    SubscribertRest:
+    #      type: object
+    #      properties:
+    #        name:
+    #          type: string
+    #        impactStep:
+    #          type: array
+    #          items:
+    #            $ref: "#/components/schemas/OrganizationRest"
 
     WorkspaceUpsertRest:
       description: Workspace update

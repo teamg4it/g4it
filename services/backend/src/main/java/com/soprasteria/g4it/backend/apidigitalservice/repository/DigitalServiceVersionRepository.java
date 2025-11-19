@@ -11,11 +11,15 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVers
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Digital Service repository.
  */
 @Repository
 public interface DigitalServiceVersionRepository extends JpaRepository<DigitalServiceVersion, String> {
+
+    List<DigitalServiceVersion> findByDigitalServiceUid(String uid);
 
 
 }
