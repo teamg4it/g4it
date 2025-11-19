@@ -49,6 +49,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Input() isSharedDs = false;
     isManageVersions = input<boolean>(false);
+    isCompareVersions = input<boolean>(false);
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     @Output() digitalMobileOptionsChange = new EventEmitter<boolean>();
     isZoom125 = computed(() => this.global.zoomLevel() >= 125);

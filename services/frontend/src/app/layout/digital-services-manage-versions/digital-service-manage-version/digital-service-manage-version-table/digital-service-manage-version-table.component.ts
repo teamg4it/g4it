@@ -16,6 +16,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly router = inject(Router);
     versionData: DigitalServiceVersionResponse[] = [];
     dsVersionUid: string = "";
+    selectedVersions: string[] = [];
 
     ngOnInit() {
         this.dsVersionUid =
@@ -32,6 +33,18 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
             ["digital-service-version", version, "footprint", "resources"],
             { relativeTo: this.route.parent?.parent },
         );
+    }
+    compareVersions(): void {
+        if (this.selectedVersions.length === 2) {
+            // Implement your comparison logic here
+            this.router.navigate(["../compare-versions"], {
+                relativeTo: this.route,
+                queryParams: {
+                    version1: this.selectedVersions[0],
+                    version2: this.selectedVersions[1],
+                },
+            });
+        }
     }
 
     duplicateDigitalServiceVersion(dsvUid: string): void {
