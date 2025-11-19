@@ -32,6 +32,11 @@ public class DigitalServiceBO {
     private String uid;
 
     /**
+     * Unique identifier for active digitalServiceVersion
+     */
+    private String activeDsvUid;
+
+    /**
      * Name.
      */
     private String name;

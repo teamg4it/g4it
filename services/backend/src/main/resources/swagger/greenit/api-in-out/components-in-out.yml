@@ -23,6 +23,9 @@ components:
         digitalServiceUid:
           type: string
           maxLength: 255
+        digitalServiceVersionUid:
+          type: string
+          maxLength: 255
         fullName:
           type: string
           maxLength: 255
@@ -61,6 +64,9 @@ components:
           type: integer
           format: int64
         digitalServiceUid:
+          type: string
+          maxLength: 255
+        digitalServiceVersionUid:
           type: string
           maxLength: 255
         datacenterName:
@@ -159,6 +165,9 @@ components:
           type: integer
           format: int64
         digitalServiceUid:
+          type: string
+          maxLength: 255
+        digitalServiceVersionUid:
           type: string
           maxLength: 255
         datacenterName:

@@ -30,11 +30,11 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     /**
      * Find virtual equipment by the functionally unique fields
      *
-     * @param digitalServiceUid digital service Identifier
+     * @param digitalServiceVersionUid digital service Identifier
      * @param id                virtual equipment id
      * @return return a virtual equipment
      */
-    Optional<InVirtualEquipment> findByDigitalServiceUidAndId(String digitalServiceUid, Long id);
+    Optional<InVirtualEquipment> findByDigitalServiceVersionUidAndId(String digitalServiceVersionUid, Long id);
 
     /**
      * Find virtual equipments of one digital service
@@ -45,12 +45,20 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     List<InVirtualEquipment> findByDigitalServiceUid(String digitalServiceUid);
 
     /**
-     * Find virtual equipments of one digital service order by name
+     * Find virtual equipments of one digital service
      *
-     * @param digitalServiceUid digital service Identifier
+     * @param digitalServiceVersionUid digital service Identifier
      * @return return a list of virtual equipments
      */
-    List<InVirtualEquipment> findByDigitalServiceUidOrderByName(String digitalServiceUid);
+    List<InVirtualEquipment> findByDigitalServiceVersionUid(String digitalServiceVersionUid);
+
+    /**
+     * Find virtual equipments of one digital service order by name
+     *
+     * @param digitalServiceVersionUid digital service Identifier
+     * @return return a list of virtual equipments
+     */
+    List<InVirtualEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
 
     /**
      * Find virtual equipment by the functionally unique fields
@@ -81,20 +89,20 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     /**
      * Find virtual equipments of one inventory and one physical equipment name
      *
-     * @param digitalServiceUid     digitalServiceUid
+     * @param digitalServiceVersionUid     digitalServiceUid
      * @param physicalEquipmentName physicalEquipmentName
      * @return return a list of virtual equipments
      */
-    List<InVirtualEquipment> findByDigitalServiceUidAndPhysicalEquipmentName(String digitalServiceUid, String physicalEquipmentName, Pageable pageable);
+    List<InVirtualEquipment> findByDigitalServiceVersionUidAndPhysicalEquipmentName(String digitalServiceVersionUid, String physicalEquipmentName, Pageable pageable);
 
     /**
      * Find virtual equipments of one inventory and one physical equipment name
      *
-     * @param digitalServiceUid     digitalServiceUid
+     * @param digitalServiceVersionUid     digitalServiceUid
      * @param physicalEquipmentName physicalEquipmentName
      * @return return a list of virtual equipments
      */
-    List<InVirtualEquipment> findByDigitalServiceUidAndPhysicalEquipmentName(String digitalServiceUid, String physicalEquipmentName);
+    List<InVirtualEquipment> findByDigitalServiceVersionUidAndPhysicalEquipmentName(String digitalServiceVersionUid, String physicalEquipmentName);
 
     /**
      * Count virtual equipments linked to an inventory
@@ -179,6 +187,10 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     @Transactional
     @Modifying
     void deleteByInventoryIdAndInfrastructureType(final Long inventoryId, final String infrastructureType);
+
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
     /**
      * Find virtual equipments of one inventory and virtual equipment names

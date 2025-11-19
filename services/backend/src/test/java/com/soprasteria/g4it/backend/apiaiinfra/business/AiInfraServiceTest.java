@@ -6,11 +6,15 @@ import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.EcomindTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
@@ -52,6 +56,9 @@ class AiInfraServiceTest {
     private DigitalServiceRepository digitalServiceRepository;
 
     @Mock
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
+
+    @Mock
     private InDatacenterMapper inDatacenterMapper;
 
     @Mock
@@ -71,6 +78,9 @@ class AiInfraServiceTest {
 
     @Mock
     private DigitalServiceService digitalServiceService;
+
+    @Mock
+    private DigitalServiceVersionService digitalServiceVersionService;
 
     @Mock
     private InAiInfrastructureRepository inAiInfrastructureRepository;
@@ -179,9 +189,9 @@ class AiInfraServiceTest {
     void testGetDigitalServiceInputsAiInfraRest_shouldReturnCorrectData() {
         String uid = "ds-123";
 
-        DigitalServiceBO mockDigitalService = DigitalServiceBO.builder()
-                .uid("ds-123")
-                .name("Test Service")
+        DigitalServiceVersionBO mockDigitalServiceVersion = DigitalServiceVersionBO.builder()
+                .dsvUid("ds-123")
+                .description("Test Service")
                 .userName("tester")
                 .isAi(true)
                 .build();
@@ -201,12 +211,12 @@ class AiInfraServiceTest {
         ecomindTypeRef.setLifespan(5.0);
         ecomindTypeRef.setDescription("Laptop");
 
-        when(digitalServiceService.getDigitalService(uid)).thenReturn(mockDigitalService);
-        when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(entity);
-        when(inDatacenterService.getByDigitalService(uid)).thenReturn(List.of(dc));
-        when(inPhysicalEquipmentService.getByDigitalService(uid)).thenReturn(List.of(pe));
+        when(digitalServiceVersionService.getDigitalServiceVersion(uid)).thenReturn(mockDigitalServiceVersion);
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid(uid)).thenReturn(entity);
+        when(inDatacenterService.getByDigitalServiceVersion(uid)).thenReturn(List.of(dc));
+        when(inPhysicalEquipmentService.getByDigitalServiceVersion(uid)).thenReturn(List.of(pe));
         when(digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode())).thenReturn(ecomindTypeRef);
-        when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(inAiInfrastructure);
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid(uid)).thenReturn(inAiInfrastructure);
         when(inAiInfrastructureMapper.entityToBO(inAiInfrastructure)).thenReturn(inAiInfrastructureBO);
 
         InAiInfrastructureBO result = inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(uid);
@@ -220,7 +230,7 @@ class AiInfraServiceTest {
     @Test
     void testGetDigitalServiceInputsAiInfraRest_shouldThrowIfDigitalServiceNotFound() {
         String uid = "ds-404";
-        when(digitalServiceService.getDigitalService(uid)).thenReturn(null);
+        when(digitalServiceVersionService.getDigitalServiceVersion(uid)).thenReturn(null);
 
         G4itRestException ex = assertThrows(G4itRestException.class, () ->
                 inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(uid)
@@ -245,8 +255,8 @@ class AiInfraServiceTest {
                 .build();
 
         // Mock DigitalService exists
-        when(digitalServiceRepository.findById(uid))
-                .thenReturn(Optional.of(new DigitalService()));
+        when(digitalServiceVersionRepository.findById(uid))
+                .thenReturn(Optional.of(new DigitalServiceVersion()));
 
         // Mock mapping BO
         EcomindTypeBO ecomindTypeBO = new EcomindTypeBO();
@@ -265,24 +275,24 @@ class AiInfraServiceTest {
         // Mock existing AI infra entity
         InAiInfrastructure entity = new InAiInfrastructure();
         entity.setId(42L);
-        when(inAiInfrastructureRepository.findByDigitalServiceUid(uid)).thenReturn(entity);
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid(uid)).thenReturn(entity);
         when(inAiInfrastructureMapper.toEntity(inRest)).thenReturn(entity);
 
         // Mock datacenter
         InDatacenterRest datacenterRest = new InDatacenterRest();
         datacenterRest.setId(1L);
-        when(inDatacenterService.getByDigitalService(uid)).thenReturn(List.of(datacenterRest));
+        when(inDatacenterService.getByDigitalServiceVersion(uid)).thenReturn(List.of(datacenterRest));
 
         // Mock physical equipment
         InPhysicalEquipmentRest physicalRest = new InPhysicalEquipmentRest();
         physicalRest.setId(2L);
         physicalRest.setName("PhysicalNode-1");
-        when(inPhysicalEquipmentService.getByDigitalService(uid)).thenReturn(List.of(physicalRest));
+        when(inPhysicalEquipmentService.getByDigitalServiceVersion(uid)).thenReturn(List.of(physicalRest));
 
         // Mock virtual equipment
         InVirtualEquipmentRest virtualRest = new InVirtualEquipmentRest();
         virtualRest.setId(3L);
-        when(inVirtualEquipmentService.getByDigitalService(uid)).thenReturn(List.of(virtualRest));
+        when(inVirtualEquipmentService.getByDigitalServiceVersion(uid)).thenReturn(List.of(virtualRest));
 
         // Act
         InPhysicalEquipmentRest result = inAiInfrastructureService.updateDigitalServiceInputsAiInfraRest(uid, inRest);
@@ -303,7 +313,7 @@ class AiInfraServiceTest {
     @Test
     void testUpdateDigitalServiceInputsAiInfraRest_shouldThrowIfDigitalServiceNotFound() {
         String uid = "ds-404";
-        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.empty());
 
         // Input REST object
         InAiInfrastructureRest inRest = InAiInfrastructureRest.builder()

@@ -55,31 +55,31 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
     @Override
     public ResponseEntity<List<InDatacenterRest>> getSharedDigitalServiceInputsDatacentersRest(String digitalServiceUid,
                                                                                                String shareId) {
-        return ResponseEntity.ok().body(inDatacenterService.getByDigitalService(digitalServiceUid));
+        return ResponseEntity.ok().body(inDatacenterService.getByDigitalServiceVersion(digitalServiceUid));
     }
 
     @Override
-    public ResponseEntity<List<InPhysicalEquipmentRest>> getSharedDigitalServiceInputsPhysicalEquipmentsRest(String digitalServiceUid,
+    public ResponseEntity<List<InPhysicalEquipmentRest>> getSharedDigitalServiceInputsPhysicalEquipmentsRest(String digitalServiceVersionUid,
                                                                                                              String shareId) {
-        return ResponseEntity.ok().body(inPhysicalEquipmentService.getByDigitalService(digitalServiceUid));
+        return ResponseEntity.ok().body(inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceVersionUid));
     }
 
     @Override
-    public ResponseEntity<List<InVirtualEquipmentRest>> getSharedDigitalServiceInputsVirtualEquipmentsRest(String digitalServiceUid,
+    public ResponseEntity<List<InVirtualEquipmentRest>> getSharedDigitalServiceInputsVirtualEquipmentsRest(String digitalServiceVersionUid,
                                                                                                            String shareId) {
-        return ResponseEntity.ok().body(inVirtualEquipmentService.getByDigitalService(digitalServiceUid));
+        return ResponseEntity.ok().body(inVirtualEquipmentService.getByDigitalServiceVersion(digitalServiceVersionUid));
     }
 
     @Override
-    public ResponseEntity<List<OutPhysicalEquipmentRest>> getSharedDigitalServiceOutputsPhysicalEquipmentsRest(String digitalServiceUid,
+    public ResponseEntity<List<OutPhysicalEquipmentRest>> getSharedDigitalServiceOutputsPhysicalEquipmentsRest(String digitalServiceVersionUid,
                                                                                                                String shareId) {
-        return ResponseEntity.ok().body(outPhysicalEquipmentService.getByDigitalServiceUid(digitalServiceUid));
+        return ResponseEntity.ok().body(outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 
     @Override
-    public ResponseEntity<List<OutVirtualEquipmentRest>> getSharedDigitalServiceOutputsVirtualEquipmentsRest(String digitalServiceUid,
+    public ResponseEntity<List<OutVirtualEquipmentRest>> getSharedDigitalServiceOutputsVirtualEquipmentsRest(String digitalServiceVersionUid,
                                                                                                              String shareId) {
-        return ResponseEntity.ok().body(outVirtualEquipmentService.getByDigitalServiceUid(digitalServiceUid));
+        return ResponseEntity.ok().body(outVirtualEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 
 
