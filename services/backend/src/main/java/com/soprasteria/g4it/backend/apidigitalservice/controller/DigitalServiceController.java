@@ -15,10 +15,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersio
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.common.utils.AuthorizationUtils;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -152,6 +149,17 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
                                                                        final Boolean extendLink) {
         return ResponseEntity.ok(digitalServiceService.shareDigitalService(organization, workspace, digitalServiceUid,
                 authService.getUser(), extendLink));
+    }
+
+    @Override
+    public ResponseEntity<List<DigitalServiceVersionsListRest>> getDigitalServiceVersions(final String organization,
+                                                                                          final Long workspace,
+                                                                                          final String digitalServiceVersionUid, Boolean isAi) {
+        if (isAi != null && isAi) {
+            authorizationUtils.checkEcomindAuthorization();
+            authorizationUtils.checkEcomindEnabledForOrganization(organization);
+        }
+        return ResponseEntity.ok(digitalServiceService.getDigitalServiceVersions(digitalServiceVersionUid, isAi));
     }
 
 }

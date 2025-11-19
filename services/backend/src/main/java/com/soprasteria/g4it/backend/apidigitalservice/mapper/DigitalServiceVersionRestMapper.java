@@ -11,6 +11,8 @@ import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersio
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionRest;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 /**
  * DigitalServiceRest Mapper.
  */
@@ -25,6 +27,8 @@ public interface DigitalServiceVersionRestMapper {
      * @return the DigitalServiceVersionRest.
      */
     DigitalServiceVersionRest toDto(final DigitalServiceVersionBO businessObject);
+
+    List<DigitalServiceVersionRest> toDto(final List<DigitalServiceVersionBO> businessObjects);
 
 
 }
