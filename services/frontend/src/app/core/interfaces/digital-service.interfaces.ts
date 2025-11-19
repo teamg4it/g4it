@@ -399,6 +399,6 @@ export interface GraphDescriptionContent {
     description: string;
     scale: string;
     textDescription: string;
-    analysis: string;
-    toGoFurther: string;
+    analysis?: string;
+    toGoFurther?: string;
 }

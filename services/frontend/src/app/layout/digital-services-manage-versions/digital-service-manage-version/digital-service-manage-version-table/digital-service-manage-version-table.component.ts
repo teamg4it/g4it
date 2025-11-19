@@ -1,4 +1,5 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-service-version.interface";
 
 @Component({
@@ -7,6 +8,9 @@ import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-servi
     styleUrl: "./digital-service-manage-version-table.component.scss",
 })
 export class DigitalServiceManageVersionTableComponent {
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
+
     versionData = [
         {
             id: "1",
@@ -47,7 +51,13 @@ export class DigitalServiceManageVersionTableComponent {
     compareVersions(): void {
         if (this.selectedVersions.length === 2) {
             // Implement your comparison logic here
-            console.log("Comparing versions:", this.selectedVersions);
+            this.router.navigate(["../compare-versions"], {
+                relativeTo: this.route,
+                queryParams: {
+                    version1: this.selectedVersions[0],
+                    version2: this.selectedVersions[1],
+                },
+            });
         }
     }
 
