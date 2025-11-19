@@ -52,12 +52,12 @@ public class EvaluatingController implements EvaluatingApiDelegate {
     @Override
     public ResponseEntity<TaskIdRest> launchEvaluatingDigitalService(final String organization,
                                                                      final Long workspace,
-                                                                     final String digitalServiceUid,
+                                                                     final String digitalServiceVersionUid,
                                                                      String acceptLanguage
     ) {
         return ResponseEntity.ok(taskMapper.mapTaskId(
                 evaluatingService.evaluatingDigitalService(
-                         organization, workspace, digitalServiceUid
+                         organization, workspace, digitalServiceVersionUid
                 )
         ));
     }

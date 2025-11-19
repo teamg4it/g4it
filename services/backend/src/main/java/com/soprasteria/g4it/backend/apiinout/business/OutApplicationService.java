@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutApplicationMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -27,7 +29,7 @@ import java.util.Optional;
 public class OutApplicationService {
 
     private OutApplicationRepository outApplicationRepository;
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private TaskRepository taskRepository;
     private OutApplicationMapper outApplicationMapper;
 
@@ -57,13 +59,13 @@ public class OutApplicationService {
      * Get virtual  equipments by digital service uid
      * Find by last task
      *
-     * @param digitalServiceUid the digital service uid
+     * @param digitalServiceVersionUid the digital service uid
      * @return list of aggregated virtual equipments
      */
-    public List<OutApplicationRest> getByDigitalServiceUid(final String digitalServiceUid) {
+    public List<OutApplicationRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
 
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
-        Optional<Task> task = taskRepository.findByDigitalService(digitalService);
+        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
+        Optional<Task> task = taskRepository.findByDigitalServiceVersion(digitalServiceVersion);
 
         if (task.isEmpty()) {
             return List.of();

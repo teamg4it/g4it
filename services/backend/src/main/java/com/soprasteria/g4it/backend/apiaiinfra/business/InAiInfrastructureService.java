@@ -6,10 +6,14 @@ import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
+import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.EcomindTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
@@ -79,6 +83,12 @@ public class InAiInfrastructureService {
 
     @Autowired
     InAiInfrastructureRepository inAiInfrastructureRepository;
+
+    @Autowired
+    DigitalServiceVersionService digitalServiceVersionService;
+
+    @Autowired
+    DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     /**
      * Saves inAiInfrastructureRest information in tables InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure.
@@ -153,18 +163,18 @@ public class InAiInfrastructureService {
     /**
      * Get the InAiInfrastructureBO that was in InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure.
      *
-     * @param digitalServiceUid - The digital service uid
+     * @param digitalServiceVersionUid - The digital service uid
      * @return The InAiInfrastructureBO with all the information
      */
-    public InAiInfrastructureBO getDigitalServiceInputsAiInfraRest(String digitalServiceUid) {
-        DigitalServiceBO digitalService = digitalServiceService.getDigitalService(digitalServiceUid);
+    public InAiInfrastructureBO getDigitalServiceInputsAiInfraRest(String digitalServiceVersionUid) {
+        DigitalServiceVersionBO digitalServiceVersion = digitalServiceVersionService.getDigitalServiceVersion(digitalServiceVersionUid);
 
-        if (digitalService == null) {
-            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
+        if (digitalServiceVersion == null) {
+            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionService));
         }
 
 
-        InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceUid(digitalServiceUid);
+        InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid);
 
         InAiInfrastructureBO inAiInfrastructureBO = inAiInfrastructureMapper.entityToBO(inAiInfrastructure);
         if (inAiInfrastructure != null) {
@@ -172,12 +182,12 @@ public class InAiInfrastructureService {
             EcomindTypeRef ecomindTypeRef = digitalServiceReferentialService.getEcomindDeviceType(inAiInfrastructureBO.getInfrastructureType().getCode());
             inAiInfrastructureBO.getInfrastructureType().setValue(ecomindTypeRef.getDescription());
             inAiInfrastructureBO.getInfrastructureType().setLifespan(ecomindTypeRef.getLifespan());
-            List<InDatacenterRest> InDatacenter = inDatacenterService.getByDigitalService(digitalServiceUid);
+            List<InDatacenterRest> InDatacenter = inDatacenterService.getByDigitalServiceVersion(digitalServiceVersionUid);
             for (InDatacenterRest inDatacenterRest : InDatacenter) {
                 inAiInfrastructureBO.setPue(inDatacenterRest.getPue());
                 inAiInfrastructureBO.setLocation(inDatacenterRest.getLocation());
             }
-            List<InPhysicalEquipmentRest> inPhysicalEquipments = inPhysicalEquipmentService.getByDigitalService(digitalServiceUid);
+            List<InPhysicalEquipmentRest> inPhysicalEquipments = inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceVersionUid);
             for (InPhysicalEquipmentRest inPhysicalEquipmentRest : inPhysicalEquipments) {
                 inAiInfrastructureBO.setNbCpuCores(Optional.ofNullable(inPhysicalEquipmentRest.getCpuCoreNumber()).map(Double::longValue).orElse(0L));
                 inAiInfrastructureBO.setRamSize(Optional.ofNullable(inPhysicalEquipmentRest.getSizeMemoryGb()).map(Double::longValue).orElse(0L));
@@ -190,35 +200,35 @@ public class InAiInfrastructureService {
     /**
      * Update inAiInfrastructureRest information in tables InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure
      *
-     * @param digitalServiceUid      - The digital service uid
+     * @param digitalServiceVersionUid      - The digital service uid
      * @param inAiInfrastructureRest - The Rest object of the inAiInfrastructure
      * @return The new physical equipment
      */
-    public InPhysicalEquipmentRest updateDigitalServiceInputsAiInfraRest(String digitalServiceUid, InAiInfrastructureRest inAiInfrastructureRest) {
-        Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
+    public InPhysicalEquipmentRest updateDigitalServiceInputsAiInfraRest(String digitalServiceVersionUid, InAiInfrastructureRest inAiInfrastructureRest) {
+        Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
 
-        if (digitalService.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
+        if (digitalServiceVersion.isEmpty()) {
+            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
         final LocalDateTime now = LocalDateTime.now();
 
         InAiInfrastructureBO inAiInfrastructureBO = inAiInfrastructureMapper.toBO(inAiInfrastructureRest);
 
-        Long idInAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceUid(digitalServiceUid).getId();
+        Long idInAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid).getId();
         InAiInfrastructure inAiInfrastructure = inAiInfrastructureMapper.toEntity(inAiInfrastructureRest);
-        inAiInfrastructure.setDigitalServiceUid(digitalServiceUid);
+        inAiInfrastructure.setDigitalServiceUid(digitalServiceVersionUid);
         inAiInfrastructure.setId(idInAiInfrastructure);
         inAiInfrastructureRepository.save(inAiInfrastructure);
 
-        List<InDatacenterRest> inDatacenter = inDatacenterService.getByDigitalService(digitalServiceUid);
+        List<InDatacenterRest> inDatacenter = inDatacenterService.getByDigitalServiceVersion(digitalServiceVersionUid);
         // because there is only one datacenter in this case
         InDatacenterRest inDatacenterRest = inDatacenter.getFirst();
         inDatacenterRest.setLocation(inAiInfrastructureBO.getLocation());
         inDatacenterRest.setPue(inAiInfrastructureBO.getPue());
         inDatacenterRest.setLastUpdateDate(now);
-        inDatacenterService.updateInDatacenter(digitalServiceUid, inDatacenterRest.getId(), inDatacenterRest);
+        inDatacenterService.updateInDatacenter(digitalServiceVersionUid, inDatacenterRest.getId(), inDatacenterRest);
 
-        List<InPhysicalEquipmentRest> inPhysicalEquipments = inPhysicalEquipmentService.getByDigitalService(digitalServiceUid);
+        List<InPhysicalEquipmentRest> inPhysicalEquipments = inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceVersionUid);
         // because there is only one InPhysicalEquipmentRest in this case
         InPhysicalEquipmentRest inPhysicalEquipmentRest = inPhysicalEquipments.getFirst();
 
@@ -232,9 +242,9 @@ public class InAiInfrastructureService {
         inPhysicalEquipmentRest.setLocation(inDatacenterRest.getLocation());
         inPhysicalEquipmentRest.setSizeMemoryGb(Optional.ofNullable(inAiInfrastructureBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
         inPhysicalEquipmentRest.setLastUpdateDate(now);
-        inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceUid, inPhysicalEquipmentRest.getId(), inPhysicalEquipmentRest);
+        inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceVersionUid, inPhysicalEquipmentRest.getId(), inPhysicalEquipmentRest);
 
-        List<InVirtualEquipmentRest> inVirtualEquipments = inVirtualEquipmentService.getByDigitalService(digitalServiceUid);
+        List<InVirtualEquipmentRest> inVirtualEquipments = inVirtualEquipmentService.getByDigitalServiceVersion(digitalServiceVersionUid);
         // because there is only one InPhysicalEquipmentRest in this case
         InVirtualEquipmentRest inVirtualEquipmentRest = inVirtualEquipments.getFirst();
         inVirtualEquipmentRest.setLocation(inAiInfrastructureBO.getLocation());
@@ -244,7 +254,7 @@ public class InAiInfrastructureService {
         inVirtualEquipmentRest.setSizeMemoryGb(Optional.ofNullable(inAiInfrastructureBO.getRamSize()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentRest.setVcpuCoreNumber(Optional.ofNullable(inAiInfrastructureBO.getNbCpuCores()).map(Long::doubleValue).orElse(0.0));
         inVirtualEquipmentRest.setLastUpdateDate(now);
-        inVirtualEquipmentService.updateInVirtualEquipment(digitalServiceUid, inVirtualEquipmentRest.getId(), inVirtualEquipmentRest);
+        inVirtualEquipmentService.updateInVirtualEquipment(digitalServiceVersionUid, inVirtualEquipmentRest.getId(), inVirtualEquipmentRest);
 
         return inPhysicalEquipmentRest;
     }
