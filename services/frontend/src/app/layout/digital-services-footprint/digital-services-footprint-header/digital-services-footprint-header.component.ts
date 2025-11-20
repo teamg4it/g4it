@@ -62,6 +62,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     shareLink = "";
     expiryDate: Date | null = null;
     digitalServiceVersionType = DigitalServiceVersionType;
+    digitalServiceVersionUid =
+        this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
 
     private readonly destroyRef = inject(DestroyRef);
 
@@ -125,7 +127,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.global.setLoading(true);
 
                 this.digitalServicesData
-                    .delete(this.digitalService.uid)
+                    .delete(this.digitalServiceVersionUid)
                     .pipe(
                         takeUntilDestroyed(this.destroyRef),
                         finalize(() => {
@@ -180,7 +182,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         try {
             const filename = `g4it_${this.selectedOrganizationName}_${this.selectedWorkspaceName}_${this.digitalService.uid}_export-result-files`;
             const blob: Blob = await lastValueFrom(
-                this.digitalServicesData.downloadFile(this.digitalService.uid),
+                this.digitalServicesData.downloadFile(this.digitalServiceVersionUid),
             );
             saveAs(blob, filename);
         } catch (err) {

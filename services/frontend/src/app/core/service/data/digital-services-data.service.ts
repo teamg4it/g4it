@@ -71,11 +71,11 @@ export class DigitalServicesDataService {
     }
 
     getDsTasks(uid: DigitalService["uid"]): Observable<DigitalService> {
-        return this.http.get<DigitalService>(`${endpoint}/${uid}`);
+        return this.http.get<DigitalService>(`${endpointDsVersions}/${uid}`);
     }
 
     delete(uid: DigitalService["uid"]): Observable<string> {
-        return this.http.delete<string>(`${endpoint}/${uid}`);
+        return this.http.delete<string>(`${endpointDsVersions}/${uid}`);
     }
 
     getDeviceReferential(): Observable<TerminalsType[]> {
@@ -111,11 +111,11 @@ export class DigitalServicesDataService {
     }
 
     launchEvaluating(uid: DigitalService["uid"]): Observable<string> {
-        return this.http.post<string>(`${endpoint}/${uid}/evaluating`, {});
+        return this.http.post<string>(`${endpointDsVersions}/${uid}/evaluating`, {});
     }
 
     downloadFile(uid: DigitalService["uid"]): Observable<any> {
-        return this.http.get(`${endpoint}/${uid}/export`, {
+        return this.http.get(`${endpointDsVersions}/${uid}/export`, {
             responseType: "blob",
             headers: { Accept: "application/zip" },
         });
