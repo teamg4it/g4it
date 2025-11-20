@@ -17,14 +17,14 @@
                 {{ "common.versions" | translate }}
             </div>
 
-            <div class="w-20rem">
+            <div class="w-25rem">
                 <div
-                    class="flex justify-content-between flex-wrap text-base"
+                    class="flex justify-content-between gap-1 flex-wrap text-base"
                     *ngFor="let software of versions"
                 >
-                    <span>{{ software.name | uppercase }}</span>
-                    <span>{{ software.version }}</span>
-                    <span
+                    <span class="flex w-7rem">{{ software.name | uppercase }}</span>
+                    <span class="flex">{{ software.version }}</span>
+                    <span class="flex"
                         ><a
                             [href]="repoUrls[software.name]"
                             target="_blank"
@@ -50,15 +50,15 @@
                 {{ "useful-information.computing-engines" | translate }}
             </div>
 
-            <div class="w-20rem">
+            <div class="w-25rem">
                 <ul aria-labelledby="openVersion">
                     <li
-                        class="flex justify-content-between flex-wrap text-base"
+                        class="flex justify-content-between gap-1 flex-wrap text-base"
                         *ngFor="let software of externalVersions"
                     >
-                        <span>{{ software.name | uppercase }}</span>
-                        <span>{{ software.version }}</span>
-                        <span
+                        <span class="flex w-7rem">{{ software.name | uppercase }}</span>
+                        <span class="flex">{{ software.version }}</span>
+                        <span class="flex"
                             ><a
                                 [href]="repoUrls[software.name]"
                                 target="_blank"
@@ -76,7 +76,7 @@
                 {{ "common.open-hours" | translate }}
             </div>
 
-            <div class="w-16rem">
+            <div class="w-20rem">
                 <ul aria-labelledby="openTitle">
                     <li
                         class="flex justify-content-between flex-wrap text-base"
