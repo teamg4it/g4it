@@ -156,7 +156,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.digitalService.note = {
             content: event,
         } as Note;
-
+        console.log(this.digitalService);
         this.digitalServicesData.update(this.digitalService).subscribe((res) => {
             this.sidebarVisible = false;
             this.messageService.add({

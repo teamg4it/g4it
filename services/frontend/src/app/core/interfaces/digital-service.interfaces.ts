@@ -28,6 +28,8 @@ export interface DigitalService {
     tasks?: TaskRest[];
     enableDataInconsistency: boolean;
     activeDsvUid: string;
+    versionType?: string;
+    description?: string;
 }
 
 export interface DigitalServiceUserInfo {

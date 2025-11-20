@@ -139,19 +139,15 @@ export class DigitalServicesComponent implements OnInit {
                 ...event,
                 isAi: true,
             };
-            const { activeDsvUid } = await lastValueFrom(
-                this.digitalServicesData.create(req),
-            );
-            this.goToDigitalServiceFootprint(activeDsvUid);
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
+            this.goToDigitalServiceFootprint(uid);
         } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
             const req = {
                 ...event,
                 isAi: false,
             };
-            const { activeDsvUid } = await lastValueFrom(
-                this.digitalServicesData.create(req),
-            );
-            this.goToDigitalServiceFootprint(activeDsvUid);
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
+            this.goToDigitalServiceFootprint(uid);
         }
     }
 
