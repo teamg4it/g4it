@@ -9,8 +9,6 @@ package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.persistence.*;
-
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
@@ -70,7 +68,7 @@ public class DigitalServiceVersion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", referencedColumnName = "uid",
-            insertable = false, updatable = false,
+            updatable = false,
             foreignKey = @ForeignKey(name = "digital_service_version_item_id_fk"))
     private DigitalService digitalService;
 

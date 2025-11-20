@@ -7,10 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiinout.controller;
 
-import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
-import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceInputsPhysicalEquipmentApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionInputsPhysicalEquipmentApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import lombok.AllArgsConstructor;
@@ -51,8 +49,8 @@ public class InPhysicalEquipmentDigitalServiceVersionController implements Digit
      */
     @Override
     public ResponseEntity<List<InPhysicalEquipmentRest>> getDigitalServiceVersionInputsPhysicalEquipmentsRest(String organization,
-                                                                                                       Long workspace,
-                                                                                                       String digitalServiceVersionUid) {
+                                                                                                              Long workspace,
+                                                                                                              String digitalServiceVersionUid) {
         return ResponseEntity.ok().body(inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceVersionUid));
     }
 
@@ -61,9 +59,9 @@ public class InPhysicalEquipmentDigitalServiceVersionController implements Digit
      */
     @Override
     public ResponseEntity<InPhysicalEquipmentRest> getDigitalServiceVersionInputsPhysicalEquipmentRest(String organization,
-                                                                                                Long workspace,
-                                                                                                String digitalServiceUid,
-                                                                                                Long id) {
+                                                                                                       Long workspace,
+                                                                                                       String digitalServiceUid,
+                                                                                                       Long id) {
         return ResponseEntity.ok().body(inPhysicalEquipmentService.getByDigitalServiceVersionAndId(digitalServiceUid, id));
     }
 
@@ -82,9 +80,9 @@ public class InPhysicalEquipmentDigitalServiceVersionController implements Digit
      */
     @Override
     public ResponseEntity<InPhysicalEquipmentRest> putDigitalServiceVersionInputsPhysicalEquipmentRest(final String organization,
-                                                                                                final Long workspace, final String digitalServiceUid, final Long id,
-                                                                                                final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
-        digitalServiceVersionService.updateLastUpdateDate(digitalServiceUid);
-        return new ResponseEntity<>(inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceUid, id, inPhysicalEquipmentRest), HttpStatus.OK);
+                                                                                                       final Long workspace, final String digitalServiceVersionUid, final Long id,
+                                                                                                       final InPhysicalEquipmentRest inPhysicalEquipmentRest) {
+        digitalServiceVersionService.updateLastUpdateDate(digitalServiceVersionUid);
+        return new ResponseEntity<>(inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceVersionUid, id, inPhysicalEquipmentRest), HttpStatus.OK);
     }
 }

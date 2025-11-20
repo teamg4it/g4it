@@ -10,8 +10,17 @@ package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
 public enum DigitalServiceVersionStatus {
 
-        ACTIVE,
-        ARCHIVED,
-        DRAFT
+    ACTIVE("active"),
+    ARCHIVED("archived"),
+    DRAFT("draft");
 
+    private final String value;
+
+    DigitalServiceVersionStatus(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

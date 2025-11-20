@@ -8,9 +8,7 @@
 
 package com.soprasteria.g4it.backend.apiinout.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -53,7 +51,7 @@ public class InPhysicalEquipmentService {
      * Retrieving a physical equipment for a digital service and a physical equipment id.
      *
      * @param digitalServiceVersionUid the digital service UID.
-     * @param id                the physical equipment id
+     * @param id                       the physical equipment id
      * @return InPhysicalEquipmentBO
      */
     public InPhysicalEquipmentRest getByDigitalServiceVersionAndId(final String digitalServiceVersionUid, Long id) {
@@ -72,8 +70,8 @@ public class InPhysicalEquipmentService {
     /**
      * Create a new in physical equipment for a specific digital service.
      *
-     * @param digitalServiceVersionUid      the digitalServiceVersionUid.
-     * @param inVirtualEquipmentRest the inVirtualEquipmentRest.
+     * @param digitalServiceVersionUid the digitalServiceVersionUid.
+     * @param inVirtualEquipmentRest   the inVirtualEquipmentRest.
      * @return the business object corresponding on physical equipment created.
      */
     public InPhysicalEquipmentRest createInPhysicalEquipmentDigitalServiceVersion(final String digitalServiceVersionUid, final InPhysicalEquipmentRest inVirtualEquipmentRest) {
@@ -97,7 +95,7 @@ public class InPhysicalEquipmentService {
     /**
      * Update a physical equipment.
      *
-     * @param digitalServiceVersionUid            the digitalServiceUid.
+     * @param digitalServiceVersionUid     the digitalServiceUid.
      * @param id                           the physical equipment's id
      * @param inVirtualEquipmentUpdateRest the inVirtualEquipmentUpdateRest.
      * @return InventoryBO
@@ -105,11 +103,11 @@ public class InPhysicalEquipmentService {
     public InPhysicalEquipmentRest updateInPhysicalEquipment(final String digitalServiceVersionUid, final Long id, final InPhysicalEquipmentRest inVirtualEquipmentUpdateRest) {
         final Optional<InPhysicalEquipment> inVirtualEquipment = inPhysicalEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceVersionUid, id);
         if (inVirtualEquipment.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service uid provided: %s has no physical equipment with id : %s", digitalServiceVersionUid, id));
+            throw new G4itRestException("404", String.format("the digital service version uid provided: %s has no physical equipment with id : %s", digitalServiceVersionUid, id));
         }
 
-        if (!Objects.equals(digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this physical equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
+        if (!Objects.equals(digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid())) {
+            throw new G4itRestException("409", String.format("the digital service version uid provided: %s is not compatible with the digital uid : %s linked to this physical equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
         }
 
         final InPhysicalEquipment objectToUpdate = inVirtualEquipment.get();
@@ -207,7 +205,7 @@ public class InPhysicalEquipmentService {
      * Delete the physical equipment of a digital service
      *
      * @param digitalServiceVersionUid the digital service uid
-     * @param id                the physical equipment id.
+     * @param id                       the physical equipment id.
      */
     public void deleteInPhysicalEquipment(final String digitalServiceVersionUid, final Long id) {
         inPhysicalEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceVersionUid, id)

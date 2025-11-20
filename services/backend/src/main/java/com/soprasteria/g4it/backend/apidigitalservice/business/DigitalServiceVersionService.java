@@ -10,7 +10,6 @@ package com.soprasteria.g4it.backend.apidigitalservice.business;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionMapper;
-import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
@@ -35,16 +34,13 @@ import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -102,7 +98,6 @@ public class DigitalServiceVersionService {
      */
     public DigitalServiceVersionBO createDigitalServiceVersion(final Long workspaceId,
                                                                final long userId,
-                                                               final Boolean isAi,
                                                                final InDigitalServiceVersionRest inDigitalServiceVersionRest) {
         // Get the linked workspace
         final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
@@ -117,7 +112,7 @@ public class DigitalServiceVersionService {
                 .name(inDigitalServiceVersionRest.getDsName())
                 .user(user)
                 .workspace(linkedWorkspace)
-                .isAi(isAi)
+                .isAi(inDigitalServiceVersionRest.getIsAi())
                 .creationDate(now)
                 .lastUpdateDate(now)
                 .build();
@@ -128,7 +123,7 @@ public class DigitalServiceVersionService {
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .description(inDigitalServiceVersionRest.getVersionName())
                 .digitalService(DigitalService.builder().uid(savedDigitalService.getUid()).build())
-                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
+                .versionType(DigitalServiceVersionStatus.ACTIVE.getValue()) // Initial version type
                 .createdBy(savedDigitalService.getUser().getId())
                 .creationDate(savedDigitalService.getCreationDate())
                 .lastUpdateDate(savedDigitalService.getLastUpdateDate())
@@ -163,14 +158,14 @@ public class DigitalServiceVersionService {
      * Update a digital service if user has write access or
      * update enableDataInconsistency
      *
-     * @param digitalServiceVersion   the business object containing data to update.
-     * @param organizationName the organization name
-     * @param workspaceId      the workspace Id
-     * @param user             the user entity
+     * @param digitalServiceVersion the business object containing data to update.
+     * @param organizationName      the organization name
+     * @param workspaceId           the workspace Id
+     * @param user                  the user entity
      * @return the updated digital service
      */
     public DigitalServiceVersionBO updateDigitalServiceVersion(final DigitalServiceVersionBO digitalServiceVersion, final String organizationName,
-                                                 final Long workspaceId, final UserBO user) {
+                                                               final Long workspaceId, final UserBO user) {
 
         // Check if digital service exist.
         final DigitalServiceVersion digitalServiceVersionToUpdate = getDigitalServiceVersionEntity(digitalServiceVersion.getDsvUid());
