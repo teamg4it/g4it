@@ -16,6 +16,7 @@ import { environment } from "src/environments/environment";
     standalone: true,
     imports: [SharedModule],
     templateUrl: "./useful-information.component.html",
+    styleUrls: ["./useful-information.component.scss"],
 })
 export class UsefulInformationComponent implements OnInit {
     private readonly translate = inject(TranslateService);
@@ -28,9 +29,11 @@ export class UsefulInformationComponent implements OnInit {
     currentOrganization: Organization = {} as Organization;
     selectedWorkspace: Workspace = {} as Workspace;
     versions: Version[] = [];
+    externalVersions: Version[] = [];
     businessHoursData: BusinessHours[] = [];
     selectedLanguage: string = "en";
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
+    repoUrls: { [key: string]: string } = {};
     constructor(private readonly titleService: Title) {}
     ngOnInit() {
         this.translate.get("common.useful-info").subscribe((translatedTitle: string) => {
@@ -50,14 +53,18 @@ export class UsefulInformationComponent implements OnInit {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((version: VersionRest) => {
                 this.versions.push({ name: "g4it", version: version["g4it"] });
-                const externalVersions = [];
+                this.repoUrls = {
+                    g4it: `https://github.com/teamg4it/g4it/releases/tag/${version["g4it"]}`,
+                    ecomindai: `https://github.com/sustain4ai/ecomindai/releases/tag/${version["ecomindai"]}`,
+                    boaviztapi: `https://github.com/Boavizta/boaviztapi/releases/tag/${version["boaviztapi"]}`,
+                    numecoeval: `https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval/-/tree/${version["numecoeval"]}`,
+                };
                 for (const key in version) {
                     if (key !== "g4it") {
-                        externalVersions.push({ name: key, version: version[key] });
+                        this.externalVersions.push({ name: key, version: version[key] });
                     }
                 }
-                externalVersions.sort(sortByProperty("name", "asc"));
-                this.versions.push(...externalVersions);
+                this.externalVersions.sort(sortByProperty("name", "asc"));
             });
 
         this.userService.currentOrganization$

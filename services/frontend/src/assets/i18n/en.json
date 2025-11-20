@@ -170,6 +170,12 @@
         "actions": "Actions",
         "nav-panel": "Show the navigation panel"
     },
+    "useful-information": {
+        "computing-engines": "Computing engines",
+        "g4it-line": "Please consult the detail of the content of that version on the online",
+        "documentation": "documentation",
+        "link-to-github": "link to github repository"
+    },
     "errors": {
         "error-occurred": "An error occurred"
     },

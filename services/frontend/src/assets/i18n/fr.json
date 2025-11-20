@@ -169,6 +169,12 @@
         "actions": "Actions",
         "nav-panel": "Ouvrir le menu de navigation"
     },
+    "useful-information": {
+        "computing-engines": "Moteurs de calcul",
+        "g4it-line": "Veuillez consulter le détail du contenu de cette version dans la <a class='ext-link' href='https://saas-g4it.com/documentation/5-releases/index.html' target='_blank' rel='noopener noreferrer'>documentation</a> en ligne.",
+        "documentation": "documentation",
+        "link-to-github": "lien vers le repertoire github"
+    },
     "errors": {
         "error-occurred": "Une erreur est survenue"
     },
