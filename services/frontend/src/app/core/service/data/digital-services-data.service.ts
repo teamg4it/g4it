@@ -54,9 +54,13 @@ export class DigitalServicesDataService {
 
     update(digitalService: DigitalService): Observable<DigitalService> {
         return this.http
-            .put<DigitalService>(`${endpoint}/${digitalService.uid}`, digitalService, {
-                headers: this.HEADERS,
-            })
+            .put<DigitalService>(
+                `${endpointDsVersions}/${digitalService.uid}`,
+                digitalService,
+                {
+                    headers: this.HEADERS,
+                },
+            )
             .pipe(
                 tap((res: DigitalService) => {
                     this.digitalServiceSubject.next(res);
@@ -136,14 +140,16 @@ export class DigitalServicesDataService {
         if (extendLink) {
             params = params.set("extendLink", extendLink);
         }
-        return this.http.get<ShareLinkResp>(`${endpoint}/${uid}/share`, { params }).pipe(
-            map((response) => {
-                return {
-                    ...response,
-                    url: environment.frontEndUrl + response.url + "/footprint",
-                };
-            }),
-        );
+        return this.http
+            .get<ShareLinkResp>(`${endpointDsVersions}/${uid}/share`, { params })
+            .pipe(
+                map((response) => {
+                    return {
+                        ...response,
+                        url: environment.frontEndUrl + response.url + "/footprint",
+                    };
+                }),
+            );
     }
 
     validateShareToken(id: DigitalService["uid"], token: string): Observable<boolean> {
