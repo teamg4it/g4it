@@ -10,9 +10,10 @@ package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.persistence.*;
-
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -71,13 +72,12 @@ public class DigitalServiceVersion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", referencedColumnName = "uid",
-            insertable = false, updatable = false,
+            updatable = false,
             foreignKey = @ForeignKey(name = "digital_service_version_item_id_fk"))
     private DigitalService digitalService;
 
-    @Builder.Default
-    @ToString.Exclude
-    @OneToMany(mappedBy = "digitalServiceVersion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "digital_service_version_uid")
     private List<Task> tasks = new ArrayList<>();
 
 }

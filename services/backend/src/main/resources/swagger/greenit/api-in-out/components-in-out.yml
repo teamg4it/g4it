@@ -524,3 +524,43 @@ components:
         lastUpdateDate:
           type: string
           format: date-time
+    DigitalServiceVersionUidRest:
+      description: Digital Service Version Uids
+      type: object
+      properties:
+        digitalServiceVersionUid1:
+          type: string
+        digitalServiceVersionUid2:
+          type: string
+
+    DigitalServiceVersionComparison:
+      type: object
+      description: "Comparison data of a single digital service version"
+      properties:
+        versionId:
+          type: string
+        versionName:
+          type: string
+        physicalEquipment:
+          type: array
+          items:
+            $ref: "#/components/schemas/OutPhysicalEquipmentRest"
+        virtualEquipment:
+          type: array
+          items:
+            $ref: "#/components/schemas/OutVirtualEquipmentRest"
+
+    DigitalServiceVersionComparisonRest:
+      type: array
+      minItems: 2
+      maxItems: 2
+      items:
+        $ref: "#/components/schemas/DigitalServiceVersionComparison"
+
+    digitalServiceVersionUidPathParam:
+      in: path
+      name: digitalServiceVersionUid
+      schema:
+        type: string
+      required: true
+      description: The digital service version uid.
