@@ -123,7 +123,7 @@ public class DigitalServiceVersionService {
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .description(inDigitalServiceVersionRest.getVersionName())
                 .digitalService(DigitalService.builder().uid(savedDigitalService.getUid()).build())
-                .versionType(DigitalServiceVersionStatus.DRAFT.getValue())// Initial version type
+                .versionType(DigitalServiceVersionStatus.ACTIVE.getValue()) // Initial version type
                 .createdBy(savedDigitalService.getUser().getId())
                 .creationDate(savedDigitalService.getCreationDate())
                 .lastUpdateDate(savedDigitalService.getLastUpdateDate())
