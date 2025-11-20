@@ -5,7 +5,15 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, OnInit, signal, ViewChild } from "@angular/core";
+import {
+    Component,
+    computed,
+    inject,
+    input,
+    OnInit,
+    signal,
+    ViewChild,
+} from "@angular/core";
 import { addYears } from "date-fns";
 import { MessageService } from "primeng/api";
 import { firstValueFrom } from "rxjs";
@@ -30,6 +38,8 @@ export class DigitalServicesNetworksComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);
     inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);
+
+    dsVersionUid = input("");
 
     @ViewChild("networkSidePanel", { static: false })
     networkSidePanel!: DigitalServicesNetworksSidePanelComponent;
@@ -97,10 +107,10 @@ export class DigitalServicesNetworksComponent implements OnInit {
         await firstValueFrom(
             this.inPhysicalEquipmentsService.delete({
                 id: event.id,
-                digitalServiceUid: this.digitalService.uid,
+                digitalServiceVersionUid: this.dsVersionUid(),
             } as InPhysicalEquipmentRest),
         );
-        await this.digitalServiceStore.initInPhysicalEquipments(this.digitalService.uid);
+        await this.digitalServiceStore.initInPhysicalEquipments(this.dsVersionUid());
         this.digitalServiceStore.setEnableCalcul(true);
     }
 
@@ -138,7 +148,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
         const dateWithdrawal = addYears(datePurchase, 1);
 
         const elementToSave = {
-            digitalServiceUid: this.digitalService.uid,
+            digitalServiceVersionUid: this.dsVersionUid(),
             name: network.name,
             type: "Network",
             model: network.type.code,
@@ -157,7 +167,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
         } else {
             await firstValueFrom(this.inPhysicalEquipmentsService.create(elementToSave));
         }
-        await this.digitalServiceStore.initInPhysicalEquipments(this.digitalService.uid);
+        await this.digitalServiceStore.initInPhysicalEquipments(this.dsVersionUid());
         this.digitalServiceStore.setEnableCalcul(true);
     }
 

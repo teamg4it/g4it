@@ -92,7 +92,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
 
     tasks: TaskRest[] = [];
     tableTasks: TaskRest[] = [];
-    digitalServicesId = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
+    digitalServicesId = this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
     templateFilesDescription: TemplateFileDescription[] = [];
     templateFileVisible = signal<TemplateFileDescription[]>([]);
     dataModel: TemplateFileDescription | undefined;

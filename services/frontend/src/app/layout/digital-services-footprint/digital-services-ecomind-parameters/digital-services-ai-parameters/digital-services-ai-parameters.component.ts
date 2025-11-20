@@ -174,7 +174,7 @@ export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
 
     private async loadAiParameterIfNeeded() {
         const uid = this.route.pathFromRoot
-            .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
+            .map((r) => r.snapshot.paramMap.get("digitalServiceVersionId"))
             .find((v) => v !== null);
 
         if (!this.aiFormsStore.getParameterChange() && uid) {

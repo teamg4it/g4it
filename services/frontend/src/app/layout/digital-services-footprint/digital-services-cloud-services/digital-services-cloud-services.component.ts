@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, input, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -25,6 +25,8 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
     protected digitalServiceStore = inject(DigitalServiceStoreService);
 
+    dsVersionUid = input("");
+
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
     cloud: DigitalServiceCloudServiceConfig = {} as DigitalServiceCloudServiceConfig;
@@ -33,16 +35,15 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     virtualEquipments = signal<InVirtualEquipmentRest[]>([]);
 
     cloudServices = computed(() => {
-        return (
-                this.digitalServiceStore
-                      .inVirtualEquipments()
-                      .filter((server) => server.infrastructureType === "CLOUD_SERVICES")
-        ).map((server: InVirtualEquipmentRest) =>
-            this.toDigitalServiceCloudServiceConfig(
-                server,
-                this.digitalServiceStore.countryMap(),
-            ),
-        );
+        return this.digitalServiceStore
+            .inVirtualEquipments()
+            .filter((server) => server.infrastructureType === "CLOUD_SERVICES")
+            .map((server: InVirtualEquipmentRest) =>
+                this.toDigitalServiceCloudServiceConfig(
+                    server,
+                    this.digitalServiceStore.countryMap(),
+                ),
+            );
     });
 
     headerFields = [
@@ -83,7 +84,7 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
 
     async deleteItem(event: DigitalServiceCloudServiceConfig) {
         await firstValueFrom(
-            this.inVirtualEquipmentsService.delete(event.id, this.digitalServiceUid),
+            this.inVirtualEquipmentsService.delete(event.id, this.dsVersionUid()),
         );
         await this.getCloudServices();
         this.digitalServiceStore.setEnableCalcul(true);
@@ -132,6 +133,7 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
         return {
             id: cloud.id,
             digitalServiceUid: cloud.digitalServiceUid,
+            digitalServiceVersionUid: this.dsVersionUid(),
             name: cloud.name,
             infrastructureType: "CLOUD_SERVICES",
             quantity: cloud.quantity,
@@ -149,7 +151,7 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     ): DigitalServiceCloudServiceConfig {
         return {
             id: virtualEq.id,
-            digitalServiceUid: virtualEq.digitalServiceUid,
+            digitalServiceUid: virtualEq.digitalServiceUid!,
             name: virtualEq.name,
             quantity: virtualEq.quantity,
             cloudProvider: virtualEq.provider!,

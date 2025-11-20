@@ -19,7 +19,7 @@ export class DigitalServiceManageVersionComponent implements OnInit {
     }
 
     async getDigitalService(): Promise<void> {
-        const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
+        const uid = this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
         this.digitalService = await lastValueFrom(
             this.digitalServicesDataService.get(uid),
         );

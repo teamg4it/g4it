@@ -23,6 +23,7 @@ import {
 import { MapString } from "../../interfaces/generic.interfaces";
 
 const endpoint = Constants.ENDPOINTS.digitalServices;
+const endpointDsVersions = Constants.ENDPOINTS.digitalServicesVersions;
 const ecomindaiModelConfig = Constants.ENDPOINTS.ecomindaiModelConfig;
 
 const endpointshared = Constants.ENDPOINTS.sharedDs;
@@ -48,7 +49,7 @@ export class DigitalServicesDataService {
     }
 
     create(requestBody: DigitalServiceVersionRequestBody): Observable<DigitalService> {
-        return this.http.post<DigitalService>(`${endpoint}`, requestBody);
+        return this.http.post<DigitalService>(`${endpointDsVersions}`, requestBody);
     }
 
     update(digitalService: DigitalService): Observable<DigitalService> {
@@ -65,7 +66,7 @@ export class DigitalServicesDataService {
 
     get(uid: DigitalService["uid"]): Observable<DigitalService> {
         return this.http
-            .get<DigitalService>(`${endpoint}/${uid}`)
+            .get<DigitalService>(`${endpointDsVersions}/${uid}`)
             .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
     }
 

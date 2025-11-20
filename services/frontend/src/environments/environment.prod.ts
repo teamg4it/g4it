@@ -12,6 +12,7 @@ export const environment = {
     securedEndpoints: [
         "inventories",
         "digital-services",
+        "digital-service-version",
         "eco-mind-ai",
         "template-files",
         "download-reject",

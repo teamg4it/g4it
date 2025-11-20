@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 import { InPhysicalEquipmentRest } from "../../../interfaces/input.interface";
 
-const endpoint = Constants.ENDPOINTS.digitalServices;
+const endpoint = Constants.ENDPOINTS.digitalServicesVersions;
 
 @Injectable({
     providedIn: "root",
@@ -33,7 +33,7 @@ export class InPhysicalEquipmentsService {
 
     update(equipment: InPhysicalEquipmentRest): Observable<InPhysicalEquipmentRest> {
         return this.http.put<InPhysicalEquipmentRest>(
-            `${endpoint}/${equipment.digitalServiceUid}/inputs/${this.API}/${equipment.id}`,
+            `${endpoint}/${equipment.digitalServiceVersionUid}/inputs/${this.API}/${equipment.id}`,
             equipment,
             {
                 headers: this.HEADERS,
@@ -43,7 +43,7 @@ export class InPhysicalEquipmentsService {
 
     create(equipment: InPhysicalEquipmentRest): Observable<InPhysicalEquipmentRest> {
         return this.http.post<InPhysicalEquipmentRest>(
-            `${endpoint}/${equipment.digitalServiceUid}/inputs/${this.API}`,
+            `${endpoint}/${equipment.digitalServiceVersionUid}/inputs/${this.API}`,
             equipment,
             { headers: this.HEADERS },
         );
@@ -51,7 +51,7 @@ export class InPhysicalEquipmentsService {
 
     delete(equipment: InPhysicalEquipmentRest): Observable<InPhysicalEquipmentRest> {
         return this.http.delete<InPhysicalEquipmentRest>(
-            `${endpoint}/${equipment.digitalServiceUid}/inputs/${this.API}/${equipment.id}`,
+            `${endpoint}/${equipment.digitalServiceVersionUid}/inputs/${this.API}/${equipment.id}`,
         );
     }
 }

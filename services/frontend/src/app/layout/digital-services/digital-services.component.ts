@@ -139,15 +139,19 @@ export class DigitalServicesComponent implements OnInit {
                 ...event,
                 isAi: true,
             };
-            const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
-            this.goToDigitalServiceFootprint(uid);
+            const { activeDsvUid } = await lastValueFrom(
+                this.digitalServicesData.create(req),
+            );
+            this.goToDigitalServiceFootprint(activeDsvUid);
         } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
             const req = {
                 ...event,
                 isAi: false,
             };
-            const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
-            this.goToDigitalServiceFootprint(uid);
+            const { activeDsvUid } = await lastValueFrom(
+                this.digitalServicesData.create(req),
+            );
+            this.goToDigitalServiceFootprint(activeDsvUid);
         }
     }
 
@@ -166,13 +170,19 @@ export class DigitalServicesComponent implements OnInit {
 
     goToDigitalServiceFootprint(uid: string) {
         if (this.isEcoMindAi) {
-            this.router.navigate([`${uid}/footprint/ecomind-parameters`], {
-                relativeTo: this.route,
-            });
+            this.router.navigate(
+                [`../digital-service-version/${uid}/footprint/ecomind-parameters`],
+                {
+                    relativeTo: this.route,
+                },
+            );
         } else {
-            this.router.navigate([`${uid}/footprint/resources`], {
-                relativeTo: this.route,
-            });
+            this.router.navigate(
+                [`../digital-service-version/${uid}/footprint/resources`],
+                {
+                    relativeTo: this.route,
+                },
+            );
         }
     }
 
@@ -217,17 +227,19 @@ export class DigitalServicesComponent implements OnInit {
 
     noteDelete() {
         // Get digital services data.
-        this.digitalServicesData.get(this.selectedDigitalService.uid).subscribe((res) => {
-            // update note
-            res.note = undefined;
-            this.digitalServicesData.update(res).subscribe(() => {
-                this.messageService.add({
-                    severity: "success",
-                    summary: this.translate.instant("common.note.delete"),
-                    sticky: false,
+        this.digitalServicesData
+            .get(this.selectedDigitalService.activeDsvUid)
+            .subscribe((res) => {
+                // update note
+                res.note = undefined;
+                this.digitalServicesData.update(res).subscribe(() => {
+                    this.messageService.add({
+                        severity: "success",
+                        summary: this.translate.instant("common.note.delete"),
+                        sticky: false,
+                    });
                 });
             });
-        });
         this.selectedDigitalService.note = undefined;
     }
 }

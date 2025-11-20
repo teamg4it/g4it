@@ -113,16 +113,16 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
         if (urlSegments.length > 3) {
             const organization = urlSegments[1];
             const workspace = urlSegments[3];
-            // Ensure digitalServiceId is not undefined or null
-            const digitalServiceId = this.digitalService?.uid;
+            // Ensure digitalServiceVersionId is not undefined or null
+            const digitalServiceVersionId = this.digitalService?.activeDsvUid;
 
-            if (digitalServiceId) {
+            if (digitalServiceVersionId) {
                 if (this.isEcoMindAi()) {
                     this.router
                         .navigateByUrl("/", { skipLocationChange: true })
                         .then(() => {
                             this.router.navigate([
-                                `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai/${digitalServiceId}/footprint/dashboard`,
+                                `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai/${digitalServiceVersionId}/footprint/dashboard`,
                             ]);
                         });
                 } else {
@@ -130,7 +130,7 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
                         .navigateByUrl("/", { skipLocationChange: true })
                         .then(() => {
                             this.router.navigate([
-                                `/organizations/${organization}/workspaces/${workspace}/digital-services/${digitalServiceId}/footprint/dashboard`,
+                                `/organizations/${organization}/workspaces/${workspace}/digital-services/${digitalServiceVersionId}/footprint/dashboard`,
                             ]);
                         });
                 }

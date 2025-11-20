@@ -89,7 +89,7 @@ export class MultiFileImportComponent implements OnChanges {
 
         this.fileLoading = true;
         const formData = this.createFormData();
-        const dsId = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
+        const dsId = this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
 
         this.loadingService.launchLoadInputFiles(dsId, formData, true).subscribe({
             next: () => this.handleUploadSuccess(),

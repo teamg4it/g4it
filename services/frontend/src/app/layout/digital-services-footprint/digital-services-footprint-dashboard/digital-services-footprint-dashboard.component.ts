@@ -19,7 +19,7 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -76,6 +76,7 @@ export class DigitalServicesFootprintDashboardComponent
     private readonly digitalServicesAiData = inject(DigitalServicesAiDataService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly shareDigitalService = inject(ShareDigitalServiceDataService);
+    private readonly route = inject(ActivatedRoute);
     chartType = signal("radial");
     showInconsitencyBtn = false;
     constants = Constants;
@@ -165,7 +166,8 @@ export class DigitalServicesFootprintDashboardComponent
         this.digitalService = await firstValueFrom(
             this.digitalServicesDataService.digitalService$,
         );
-
+        const params = await firstValueFrom(this.route.parent?.paramMap!);
+        const dsVersionUid = params.get("digitalServiceVersionId");
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((organization: Organization) => {
@@ -213,15 +215,13 @@ export class DigitalServicesFootprintDashboardComponent
                   this.digitalService.uid,
                   sharedToken,
               )
-            : this.outPhysicalEquipmentsService.get(this.digitalService.uid);
+            : this.outPhysicalEquipmentsService.get(dsVersionUid!);
         const virtualEquipments$ = isShared
             ? this.shareDigitalService.getOutSharedVirtualEquipments(
                   this.digitalService.uid,
                   sharedToken,
               )
-            : this.outVirtualEquipmentsService.getByDigitalService(
-                  this.digitalService.uid,
-              );
+            : this.outVirtualEquipmentsService.getByDigitalService(dsVersionUid!);
 
         const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
             firstValueFrom(physicalEquipments$),
