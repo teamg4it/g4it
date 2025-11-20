@@ -28,19 +28,19 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     /**
      * Find datacenter by the functionally unique fields
      *
-     * @param digitalServiceUid digital service Identifier
+     * @param digitalServiceVersionUid digital service Identifier
      * @param id                datacenter id
      * @return return a datacenter
      */
-    Optional<InDatacenter> findByDigitalServiceUidAndId(String digitalServiceUid, Long id);
+    Optional<InDatacenter> findByDigitalServiceVersionUidAndId(String digitalServiceVersionUid, Long id);
 
     /**
      * Find datacenters of one digital service
      *
-     * @param digitalServiceUid digital service Identifier
+     * @param digitalServiceVersionUid digital service Identifier
      * @return return a list of datacenters
      */
-    List<InDatacenter> findByDigitalServiceUid(String digitalServiceUid);
+    List<InDatacenter> findByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
     /**
      * Find datacenter by the functionally unique fields
@@ -65,6 +65,11 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     @Transactional
     @Modifying
     void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
+
+
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
     /**
      * Count distinct datacenter name by inventory id.

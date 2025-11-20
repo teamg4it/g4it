@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.EvaluatingService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
@@ -51,6 +53,7 @@ class EvaluatingServiceTest {
     static final Long WORKSPACE_ID = 1L;
     static final Long INVENTORY_ID = 2L;
     static final String DIGITAL_SERVICE_UID = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
+    static final String DIGITAL_SERVICE_VERSION_UID = "90651485-3f8b-49dd-a7be-753e4fe1fd36";
     static final List<String> CRITERIA = List.of("criteria1", "criteria2");
 
     @InjectMocks
@@ -64,6 +67,8 @@ class EvaluatingServiceTest {
     private InventoryRepository inventoryRepository;
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
+    @Mock
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -122,11 +127,11 @@ class EvaluatingServiceTest {
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(USER_ID).firstName("fname").build();
         User user = User.builder().id(USER_ID).build();
         DigitalService digitalService = mock(DigitalService.class);
+        DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
         CriteriaByType criteriaByType = mock(CriteriaByType.class);
 
-        when(criteriaByType.active()).thenReturn(CRITERIA);
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
-        when(digitalService.getName()).thenReturn("digitalService");
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.of(digitalServiceVersion));
+        when(digitalServiceVersion.getDigitalService()).thenReturn(digitalService);
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(work);
         when(work.getName()).thenReturn(WORKSPACE);
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any())).thenReturn(criteriaByType);
@@ -134,9 +139,7 @@ class EvaluatingServiceTest {
         when(authService.getUser()).thenReturn(userBO);
         when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        when(digitalService.getCriteria()).thenReturn(null);
-
-        Task result = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID);
+        Task result = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
 
         assertNotNull(result);
         verify(asyncEvaluatingService).execute(any(Context.class), any(Task.class));
@@ -151,10 +154,11 @@ class EvaluatingServiceTest {
         User user = User.builder().id(USER_ID).build();
         DigitalService digitalService = mock(DigitalService.class);
         CriteriaByType criteriaByType = mock(CriteriaByType.class);
+        DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
 
         when(criteriaByType.active()).thenReturn(CRITERIA);
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
-        when(digitalService.getName()).thenReturn("digitalService");
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.of(digitalServiceVersion));
+        when(digitalServiceVersion.getDigitalService()).thenReturn(digitalService);
         when(digitalService.isAi()).thenReturn(true);
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(work);
         when(work.getName()).thenReturn(WORKSPACE);
@@ -163,9 +167,9 @@ class EvaluatingServiceTest {
         when(authService.getUser()).thenReturn(userBO);
         when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        when(digitalService.getCriteria()).thenReturn(null);
+        when(digitalServiceVersion.getCriteria()).thenReturn(null);
 
-        Task result = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID);
+        Task result = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
 
         assertNotNull(result);
         verify(asyncEvaluatingService).execute(any(Context.class), any(Task.class));

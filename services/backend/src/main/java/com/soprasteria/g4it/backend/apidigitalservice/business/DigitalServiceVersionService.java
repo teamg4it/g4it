@@ -35,25 +35,25 @@ import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Digital-Service service.
  */
 @Service
 @Slf4j
-public class DigitalServiceService {
+public class DigitalServiceVersionService {
 
     private static final String DEFAULT_NAME_PREFIX = "Digital Service";
     @Autowired
@@ -93,133 +93,96 @@ public class DigitalServiceService {
 
 
     /**
-     * Create a new digital service.
+     * Create a new digital service version.
      *
-     * @param workspaceId the linked workspace id.
-     * @param userId      the userId.
-     * @param isAi        AI service if true
-     * @return the business object corresponding on the digital service created.
+     * @param workspaceId                 the linked workspace id.
+     * @param userId                      the userId.
+     * @param inDigitalServiceVersionRest the digital service version request data
+     * @return the business object corresponding to the digital service created.
      */
-    public DigitalServiceBO createDigitalService(final Long workspaceId, final long userId, final Boolean isAi) {
-        // Get the linked workspace.
+    public DigitalServiceVersionBO createDigitalServiceVersion(final Long workspaceId,
+                                                               final long userId,
+                                                               final Boolean isAi,
+                                                               final InDigitalServiceVersionRest inDigitalServiceVersionRest) {
+        // Get the linked workspace
         final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
 
-        // Get last index to create digital service.
-
-        String regex = "^" + DEFAULT_NAME_PREFIX + " (\\d+)" + (isAi ? " AI" : "") + "$";
-
-        final List<DigitalService> orgDigitalServices = digitalServiceRepository.findByWorkspaceAndIsAi(linkedWorkspace, isAi);
-        final Integer lastDigitalServiceDefaultNumber = orgDigitalServices
-                .stream()
-                .map(DigitalService::getName)
-                .filter(name -> name.matches(regex))
-                .map(name -> name.replace(DEFAULT_NAME_PREFIX + " ", "")
-                        .replace(isAi ? " AI" : "", "").trim())
-                .map(Integer::valueOf)
-                .max(Comparator.naturalOrder())
-                .orElse(0);
-
-        // Get the linked user.
+        // Get the linked user
         final User user = userRepository.findById(userId).orElseThrow();
 
-        // Save the digital service with +1 on index name.
         final LocalDateTime now = LocalDateTime.now();
 
-        String dsName = DEFAULT_NAME_PREFIX + " " + (lastDigitalServiceDefaultNumber + 1) + (isAi ? " AI" : "");
-
-        final DigitalService digitalServiceToSave = DigitalService
-                .builder()
-                .name(dsName)
+        // Step 1: Create the Digital Service
+        final DigitalService digitalService = DigitalService.builder()
+                .name(inDigitalServiceVersionRest.getDsName())
                 .user(user)
                 .workspace(linkedWorkspace)
                 .isAi(isAi)
                 .creationDate(now)
                 .lastUpdateDate(now)
                 .build();
-        final DigitalService digitalServiceSaved = digitalServiceRepository.save(digitalServiceToSave);
 
-        // Return the business object.
-        return digitalServiceMapper.toBusinessObject(digitalServiceSaved);
-    }
+        final DigitalService savedDigitalService = digitalServiceRepository.save(digitalService);
 
+        // Step 2: Create the Digital Service Version
+        final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
+                .description(inDigitalServiceVersionRest.getVersionName())
+                .digitalService(DigitalService.builder().uid(savedDigitalService.getUid()).build())
+                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
+                .createdBy(savedDigitalService.getUser().getId())
+                .creationDate(savedDigitalService.getCreationDate())
+                .lastUpdateDate(savedDigitalService.getLastUpdateDate())
+                .lastCalculationDate(savedDigitalService.getLastCalculationDate())
+                .build();
 
-    /**
-     * Get the digital service list linked to a user.
-     *
-     * @param workspaceId the workspace ID.
-     * @param isAi        AI service if true
-     * @return the digital service list.
-     */
-    public List<DigitalServiceBO> getDigitalServices(final Long workspaceId, final Boolean isAi) {
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
-        List<DigitalService> filterDigitalService = digitalServiceRepository.findByWorkspace(linkedWorkspace).stream()
-                .filter(ds -> ds.isAi() == isAi)
-                .toList();
-        // Step 1: Extract DS UIDs
-        List<String> dsUids = filterDigitalService.stream()
-                .map(DigitalService::getUid)
-                .toList();
+        final DigitalServiceVersion savedDigitalServiceVersion = digitalServiceVersionRepository.save(digitalServiceVersion);
 
-        // Step 2: Fetch all active DSVs in ONE query
-        List<DigitalServiceVersion> activeDSVersions =
-                digitalServiceVersionRepository.findActiveDigitalServiceVersion(dsUids);
-
-        // Step 3: Convert to map (dsUid → activeDsvUid)
-        Map<String, String> activeDsvMap = activeDSVersions.stream()
-                .collect(Collectors.toMap(
-                        dsv -> dsv.getDigitalService().getUid(),
-                        DigitalServiceVersion::getUid
-                ));
-
-        return filterDigitalService.stream().map(ds -> {
-            DigitalServiceBO bo = digitalServiceMapper.toBusinessObject(ds);
-            bo.setActiveDsvUid(activeDsvMap.get(ds.getUid())); // add the dsv uid
-            return bo;
-        }).toList();
+        // Return the business object
+        return digitalServiceVersionMapper.toBusinessObject(savedDigitalServiceVersion, savedDigitalService);
     }
 
     /**
      * Delete a digital service.
      *
-     * @param digitalServiceUid the digital service UID.
+     * @param digitalServiceVersionUid the digital service UID.
      */
-    public void deleteDigitalService(final String digitalServiceUid) {
-        inVirtualEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
-        inPhysicalEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
-        inDatacenterRepository.deleteByDigitalServiceUid(digitalServiceUid);
-        inAiParameterRepository.deleteByDigitalServiceUid(digitalServiceUid);
-        inAiInfrastructureRepository.deleteByDigitalServiceUid(digitalServiceUid);
-        digitalServiceRepository.deleteById(digitalServiceUid);
+    public void deleteDigitalServiceVersion(final String digitalServiceVersionUid) {
+        inVirtualEquipmentRepository.deleteByDigitalServiceVersionUid(digitalServiceVersionUid);
+        inPhysicalEquipmentRepository.deleteByDigitalServiceVersionUid(digitalServiceVersionUid);
+        inDatacenterRepository.deleteByDigitalServiceVersionUid(digitalServiceVersionUid);
+        inAiParameterRepository.deleteByDigitalServiceVersionUid(digitalServiceVersionUid);
+        inAiInfrastructureRepository.deleteByDigitalServiceVersionUid(digitalServiceVersionUid);
+        digitalServiceVersionRepository.deleteById(digitalServiceVersionUid);
     }
 
-    public void updateLastUpdateDate(final String digitalServiceUid) {
-        digitalServiceRepository.updateLastUpdateDate(LocalDateTime.now(), digitalServiceUid);
+    public void updateLastUpdateDate(final String digitalServiceVersionUid) {
+        digitalServiceVersionRepository.updateLastUpdateDate(LocalDateTime.now(), digitalServiceVersionUid);
     }
 
     /**
      * Update a digital service if user has write access or
      * update enableDataInconsistency
      *
-     * @param digitalService   the business object containing data to update.
+     * @param digitalServiceVersion   the business object containing data to update.
      * @param organizationName the organization name
      * @param workspaceId      the workspace Id
      * @param user             the user entity
      * @return the updated digital service
      */
-    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final String organizationName,
+    public DigitalServiceVersionBO updateDigitalServiceVersion(final DigitalServiceVersionBO digitalServiceVersion, final String organizationName,
                                                  final Long workspaceId, final UserBO user) {
 
         // Check if digital service exist.
-        final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalService.getUid());
+        final DigitalServiceVersion digitalServiceVersionToUpdate = getDigitalServiceVersionEntity(digitalServiceVersion.getDsvUid());
 
         // Check if digital service was updated.
-        final DigitalServiceBO digitalServiceToUpdateBO = digitalServiceMapper.toFullBusinessObject(digitalServiceToUpdate);
-        if (digitalService.equals(digitalServiceToUpdateBO)) {
-            return digitalServiceToUpdateBO;
+        final DigitalServiceVersionBO digitalServiceVersionToUpdateBO = digitalServiceVersionMapper.toBusinessObject(digitalServiceVersionToUpdate);
+        if (digitalServiceVersion.equals(digitalServiceVersionToUpdateBO)) {
+            return digitalServiceVersionToUpdateBO;
         }
 
-        boolean changeDataInconsistency = !Objects.equals(digitalService.getEnableDataInconsistency(),
-                digitalServiceToUpdate.isEnableDataInconsistency()
+        boolean changeDataInconsistency = !Objects.equals(digitalServiceVersion.getEnableDataInconsistency(),
+                digitalServiceVersionToUpdate.getDigitalService().isEnableDataInconsistency()
         );
         Long userId = user.getId();
         boolean isAdmin = roleService.hasAdminRightOnOrganizationOrWorkspace
@@ -234,10 +197,10 @@ public class DigitalServiceService {
             }
         }
         // Merge digital service.
-        digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService, User.builder().id(user.getId()).build());
+        digitalServiceVersionMapper.mergeEntity(digitalServiceVersionToUpdate, digitalServiceVersion, digitalServiceReferentialService, User.builder().id(user.getId()).build());
 
         // Save the updated digital service.
-        return digitalServiceMapper.toFullBusinessObject(digitalServiceRepository.save(digitalServiceToUpdate));
+        return digitalServiceVersionMapper.toFullBusinessObject(digitalServiceVersionRepository.save(digitalServiceVersionToUpdate));
     }
 
     /**
@@ -306,22 +269,22 @@ public class DigitalServiceService {
     /**
      * Get a digital service.
      *
-     * @param digitalServiceUid the digital service id.
+     * @param digitalServiceVersionUid the digital service id.
      * @return the business object.
      */
-    public DigitalServiceBO getDigitalService(final String digitalServiceUid) {
-        DigitalServiceBO digitalServiceBO = digitalServiceMapper.toFullBusinessObject(getDigitalServiceEntity(digitalServiceUid));
+    public DigitalServiceVersionBO getDigitalServiceVersion(final String digitalServiceVersionUid) {
+        DigitalServiceVersionBO digitalServiceVersioneBO = digitalServiceVersionMapper.toFullBusinessObject(getDigitalServiceVersionEntity(digitalServiceVersionUid));
 
         //check shared link presence
-        boolean isShared = digitalServiceLinkRepository.existsByDigitalService_UidAndIsActiveTrue(digitalServiceUid);
+        boolean isShared = digitalServiceLinkRepository.existsByDigitalService_UidAndIsActiveTrue(digitalServiceVersionUid);
 
-        digitalServiceBO.setIsShared(isShared);
-        return digitalServiceBO;
+        digitalServiceVersioneBO.setIsShared(isShared);
+        return digitalServiceVersioneBO;
     }
 
-    private DigitalService getDigitalServiceEntity(final String digitalServiceUid) {
-        return digitalServiceRepository.findById(digitalServiceUid)
-                .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
+    private DigitalServiceVersion getDigitalServiceVersionEntity(final String digitalServiceVersionUid) {
+        return digitalServiceVersionRepository.findById(digitalServiceVersionUid)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceVersionUid)));
     }
 
 

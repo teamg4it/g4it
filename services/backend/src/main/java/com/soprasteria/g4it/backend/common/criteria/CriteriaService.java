@@ -82,10 +82,10 @@ public class CriteriaService {
      *
      * @param organization              the organization
      * @param workspaceId          the workspace id
-     * @param digitalServiceCriteria the digital service criteria
+     * @param digitalServiceVersionCriteria the digital service criteria
      * @return the criteria by type
      */
-    public CriteriaByType getSelectedCriteriaForDigitalService(String organization, Long workspaceId, List<String> digitalServiceCriteria) {
+    public CriteriaByType getSelectedCriteriaForDigitalService(String organization, Long workspaceId, List<String> digitalServiceVersionCriteria) {
 
         List<String> organizationCriteria = organizationRepository.findByName(organization)
                 .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, organization))).getCriteria();
@@ -95,14 +95,14 @@ public class CriteriaService {
         List<String> workspaceCriteriaDs = workspace.getCriteriaDs();
 
         List<String> activeCriteria = null;
-        if (digitalServiceCriteria != null) {
-            activeCriteria = digitalServiceCriteria;
+        if (digitalServiceVersionCriteria != null) {
+            activeCriteria = digitalServiceVersionCriteria;
         } else if (workspaceCriteriaDs != null) {
             activeCriteria = workspaceCriteriaDs;
         } else if (organizationCriteria != null) {
             activeCriteria = organizationCriteria;
         }
 
-        return new CriteriaByType(activeCriteria, organizationCriteria, null, workspaceCriteriaDs, null, digitalServiceCriteria);
+        return new CriteriaByType(activeCriteria, organizationCriteria, null, workspaceCriteriaDs, null, digitalServiceVersionCriteria);
     }
 }

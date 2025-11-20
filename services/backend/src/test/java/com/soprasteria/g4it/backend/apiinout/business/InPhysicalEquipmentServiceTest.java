@@ -10,7 +10,9 @@ package com.soprasteria.g4it.backend.apiinout.business;
 
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
@@ -45,6 +47,9 @@ class InPhysicalEquipmentServiceTest {
 
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
+
+    @Mock
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Mock
     private InventoryRepository inventoryRepository;
@@ -195,31 +200,31 @@ class InPhysicalEquipmentServiceTest {
     void getByDigitalService_returnsEmptyList_whenNoPhysicalEquipmentExists() {
         String digitalServiceUid = "service-123";
 
-        when(inPhysicalEquipmentRepository.findByDigitalServiceUidOrderByName(digitalServiceUid)).thenReturn(List.of());
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidOrderByName(digitalServiceUid)).thenReturn(List.of());
 
-        List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByDigitalService(digitalServiceUid);
+        List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
 
         assertEquals(0, result.size());
-        verify(inPhysicalEquipmentRepository).findByDigitalServiceUidOrderByName(digitalServiceUid);
+        verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidOrderByName(digitalServiceUid);
     }
 
     @Test
     void getByDigitalServiceAndId() {
         String digitalServiceUid = "test-exception";
         Long id = 1L;
-        InPhysicalEquipment inPhysicalEquipment = InPhysicalEquipment.builder().digitalServiceUid("dummy_id").id(31L).build();
+        InPhysicalEquipment inPhysicalEquipment = InPhysicalEquipment.builder().digitalServiceVersionUid("dummy_id").id(31L).build();
         G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
-                inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
+                inPhysicalEquipmentService.getByDigitalServiceVersionAndId(digitalServiceUid, id));
 
         assertEquals("404", exception1.getCode());
-        when(inPhysicalEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(inPhysicalEquipment));
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(inPhysicalEquipment));
         G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
-                inPhysicalEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
+                inPhysicalEquipmentService.getByDigitalServiceVersionAndId(digitalServiceUid, id));
 
         assertEquals("409", exception2.getCode());
-        when(inPhysicalEquipmentRepository.findByDigitalServiceUidAndId(inPhysicalEquipment.getDigitalServiceUid(), inPhysicalEquipment.getId())).thenReturn(Optional.of(inPhysicalEquipment));
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidAndId(inPhysicalEquipment.getDigitalServiceVersionUid(), inPhysicalEquipment.getId())).thenReturn(Optional.of(inPhysicalEquipment));
         when(inPhysicalEquipmentMapper.toRest(Mockito.any(InPhysicalEquipment.class))).thenReturn(new InPhysicalEquipmentRest());
-        InPhysicalEquipmentRest response = inPhysicalEquipmentService.getByDigitalServiceAndId(inPhysicalEquipment.getDigitalServiceUid(), inPhysicalEquipment.getId());
+        InPhysicalEquipmentRest response = inPhysicalEquipmentService.getByDigitalServiceVersionAndId(inPhysicalEquipment.getDigitalServiceVersionUid(), inPhysicalEquipment.getId());
         assertNotNull(response);
     }
 
@@ -228,14 +233,14 @@ class InPhysicalEquipmentServiceTest {
         String digitalServiceUid = "service-123";
         InPhysicalEquipmentRest equipmentRest = new InPhysicalEquipmentRest();
 
-        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(digitalServiceUid)).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                inPhysicalEquipmentService.createInPhysicalEquipmentDigitalService(digitalServiceUid, equipmentRest));
+                inPhysicalEquipmentService.createInPhysicalEquipmentDigitalServiceVersion(digitalServiceUid, equipmentRest));
 
         assertEquals("404", exception.getCode());
-        assertEquals("the digital service of uid : service-123, doesn't exist", exception.getMessage());
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        assertEquals("the digital service version of uid : service-123, doesn't exist", exception.getMessage());
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
     }
 
     @Test
@@ -244,16 +249,16 @@ class InPhysicalEquipmentServiceTest {
         Long id = 1L;
         InPhysicalEquipmentRest equipmentUpdateRest = new InPhysicalEquipmentRest();
         InPhysicalEquipment existingEquipment = new InPhysicalEquipment();
-        existingEquipment.setDigitalServiceUid("service-456");
+        existingEquipment.setDigitalServiceVersionUid("service-456");
 
-        when(inPhysicalEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(existingEquipment));
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(existingEquipment));
 
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
                 inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceUid, id, equipmentUpdateRest));
 
         assertEquals("409", exception.getCode());
         assertEquals("the digital service uid provided: service-123 is not compatible with the digital uid : service-456 linked to this physical equipment id: 1", exception.getMessage());
-        verify(inPhysicalEquipmentRepository).findByDigitalServiceUidAndId(digitalServiceUid, id);
+        verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidAndId(digitalServiceUid, id);
     }
 
     @Test
@@ -308,19 +313,25 @@ class InPhysicalEquipmentServiceTest {
                 .name("DS_Name")
                 .workspace(organization)
                 .build();
+
+        var digitalServiceVersion = DigitalServiceVersion.builder()
+                .description("DS_Name_1")
+                .digitalService(digitalService)
+                .build();
+
         InPhysicalEquipmentRest inVirtualEquipmentRest = InPhysicalEquipmentRest.builder().datacenterName("default").name("MyPE").name("MyVE").id(1L).digitalServiceUid("dummyid").electricityConsumption(22.0).build();
         InPhysicalEquipment inVirtualEquipment = InPhysicalEquipment.builder().id(1L).name("MyVE").name("MyPE")
                 .datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).quantity(12.0).sizeDiskGb(234.0).
                 sizeMemoryGb(3.0).location("France").build();
 
-        when(digitalServiceRepository.findById(digitalServiceId)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(digitalServiceId)).thenReturn(Optional.empty());
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                inPhysicalEquipmentService.createInPhysicalEquipmentDigitalService(digitalServiceId, inVirtualEquipmentRest));
+                inPhysicalEquipmentService.createInPhysicalEquipmentDigitalServiceVersion(digitalServiceId, inVirtualEquipmentRest));
         assertEquals("404", exception.getCode());
-        when(digitalServiceRepository.findById(digitalServiceId)).thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceId)).thenReturn(Optional.of(digitalServiceVersion));
         when(inPhysicalEquipmentMapper.toEntity(inVirtualEquipmentRest)).thenReturn(inVirtualEquipment);
         when(inPhysicalEquipmentMapper.toRest(inVirtualEquipment)).thenReturn(inVirtualEquipmentRest);
-        InPhysicalEquipmentRest responseRest = inPhysicalEquipmentService.createInPhysicalEquipmentDigitalService(digitalServiceId, inVirtualEquipmentRest);
+        InPhysicalEquipmentRest responseRest = inPhysicalEquipmentService.createInPhysicalEquipmentDigitalServiceVersion(digitalServiceId, inVirtualEquipmentRest);
         assertNotNull(responseRest);
     }
 

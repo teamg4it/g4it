@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -30,7 +32,7 @@ import java.util.Optional;
 public class OutPhysicalEquipmentService {
 
     private OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private TaskRepository taskRepository;
     private OutPhysicalEquipmentMapper outPhysicalEquipmentMapper;
 
@@ -38,13 +40,13 @@ public class OutPhysicalEquipmentService {
      * Get physical equipments by digital service uid
      * Find by last task
      *
-     * @param digitalServiceUid the digital service uid
+     * @param digitalServiceVersionUid the digital service uid
      * @return the list of aggregated physical equipments
      */
-    public List<OutPhysicalEquipmentRest> getByDigitalServiceUid(final String digitalServiceUid) {
+    public List<OutPhysicalEquipmentRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
 
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
-        Optional<Task> task = taskRepository.findByDigitalServiceAndLastCreationDate(digitalService);
+        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
+        Optional<Task> task = taskRepository.findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion);
         if (task.isEmpty()) {
             return List.of();
         }

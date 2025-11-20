@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InVirtualEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
@@ -36,36 +38,36 @@ public class InVirtualEquipmentService {
 
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     private InVirtualEquipmentMapper inVirtualEquipmentMapper;
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private InventoryRepository inventoryRepository;
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
 
     /**
      * Get the virtual equipments list linked to a digital service.
      *
-     * @param digitalServiceUid the digital service UID.
+     * @param digitalServiceVersionUid the digital service UID.
      * @return the virtual equipment list.
      */
-    public List<InVirtualEquipmentRest> getByDigitalService(final String digitalServiceUid) {
-        final List<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByDigitalServiceUidOrderByName(digitalServiceUid);
+    public List<InVirtualEquipmentRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
+        final List<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByDigitalServiceVersionUidOrderByName(digitalServiceVersionUid);
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment);
     }
 
     /**
      * Retrieving a virtual equipment for a digital service and a virtual equipment id.
      *
-     * @param digitalServiceUid the digital service UID.
+     * @param digitalServiceVersionUid the digital service UID.
      * @param id                the virtual equipment id
      * @return InVirtualEquipmentBO
      */
-    public InVirtualEquipmentRest getByDigitalServiceAndId(final String digitalServiceUid, Long id) {
-        final Optional<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id);
+    public InVirtualEquipmentRest getByDigitalServiceVersionAndId(final String digitalServiceVersionUid, Long id) {
+        final Optional<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceVersionUid, id);
         if (inVirtualEquipment.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service uid provided: %s has no virtual equipment with id : %s", digitalServiceUid, id));
+            throw new G4itRestException("404", String.format("the digital service uid provided: %s has no virtual equipment with id : %s", digitalServiceVersionUid, id));
         }
 
-        if (!Objects.equals(digitalServiceUid, inVirtualEquipment.get().getDigitalServiceUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceUid, inVirtualEquipment.get().getDigitalServiceUid(), id));
+        if (!Objects.equals(digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid())) {
+            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceUid(), id));
         }
 
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment.get());
@@ -74,21 +76,22 @@ public class InVirtualEquipmentService {
     /**
      * Create a new in virtual equipment for a specific digital service.
      *
-     * @param digitalServiceUid      the digitalServiceUid.
+     * @param digitalServiceVersionUid      the digitalServiceUid.
      * @param inVirtualEquipmentRest the inVirtualEquipmentRest.
      * @return the business object corresponding on virtual equipment created.
      */
-    public InVirtualEquipmentRest createInVirtualEquipmentDigitalService(final String digitalServiceUid, final InVirtualEquipmentRest inVirtualEquipmentRest) {
-        Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
+    public InVirtualEquipmentRest createInVirtualEquipmentDigitalServiceVersion(final String digitalServiceVersionUid, final InVirtualEquipmentRest inVirtualEquipmentRest) {
+        Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
 
-        if (digitalService.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
+        if (digitalServiceVersion.isEmpty()) {
+            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
 
         final InVirtualEquipment inVirtualEquipmentToCreate = inVirtualEquipmentMapper.toEntity(inVirtualEquipmentRest);
         inVirtualEquipmentToCreate.setId(null);
         final LocalDateTime now = LocalDateTime.now();
-        inVirtualEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
+        inVirtualEquipmentToCreate.setDigitalServiceVersionUid(digitalServiceVersionUid);
+        inVirtualEquipmentToCreate.setDigitalServiceUid(digitalServiceVersion.get().getDigitalService().getUid());
         inVirtualEquipmentToCreate.setCreationDate(now);
         inVirtualEquipmentToCreate.setLastUpdateDate(now);
 
@@ -99,19 +102,19 @@ public class InVirtualEquipmentService {
     /**
      * Update a virtual equipment.
      *
-     * @param digitalServiceUid            the digitalServiceUid.
+     * @param digitalServiceVersionUid            the digitalServiceUid.
      * @param id                           the virtual equipment's id
      * @param inVirtualEquipmentUpdateRest the inVirtualEquipmentUpdateRest.
      * @return InventoryBO
      */
-    public InVirtualEquipmentRest updateInVirtualEquipment(final String digitalServiceUid, final Long id, final InVirtualEquipmentRest inVirtualEquipmentUpdateRest) {
-        final Optional<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id);
+    public InVirtualEquipmentRest updateInVirtualEquipment(final String digitalServiceVersionUid, final Long id, final InVirtualEquipmentRest inVirtualEquipmentUpdateRest) {
+        final Optional<InVirtualEquipment> inVirtualEquipment = inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceVersionUid, id);
         if (inVirtualEquipment.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service uid provided: %s has no virtual equipment with id : %s", digitalServiceUid, id));
+            throw new G4itRestException("404", String.format("the digital service uid provided: %s has no virtual equipment with id : %s", digitalServiceVersionUid, id));
         }
 
-        if (!Objects.equals(digitalServiceUid, inVirtualEquipment.get().getDigitalServiceUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceUid, inVirtualEquipment.get().getDigitalServiceUid(), id));
+        if (!Objects.equals(digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid())) {
+            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceUid(), id));
         }
 
         final InVirtualEquipment objectToUpdate = inVirtualEquipment.get();
@@ -122,7 +125,7 @@ public class InVirtualEquipmentService {
         return inVirtualEquipmentMapper.toRest(objectToUpdate);
     }
 
-    public List<InVirtualEquipmentRest> updateOrDeleteInVirtualEquipments(final String digitalServiceUid,
+    public List<InVirtualEquipmentRest> updateOrDeleteInVirtualEquipments(final String digitalServiceVersionUid,
                                                                           final Long physicalEqpId,
                                                                           final List<InVirtualEquipmentRest> inVirtualEquipmentList) {
 
@@ -130,13 +133,13 @@ public class InVirtualEquipmentService {
         InPhysicalEquipment physicalEqpEntity = inPhysicalEquipmentRepository.findById(physicalEqpId)
                 .orElseThrow(() -> new G4itRestException("404", String.format(
                         "The digitalService id provided: %s has no physical equipment with id: %s",
-                        digitalServiceUid, physicalEqpId
+                        digitalServiceVersionUid, physicalEqpId
                 )));
         String physicalEqpName = physicalEqpEntity.getName();
 
         // All the vms related to a server are deleted
         if (inVirtualEquipmentList.isEmpty()) {
-            List<InVirtualEquipment> virtualEqpToDelete = inVirtualEquipmentRepository.findByDigitalServiceUidAndPhysicalEquipmentName(digitalServiceUid, physicalEqpName);
+            List<InVirtualEquipment> virtualEqpToDelete = inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentName(digitalServiceVersionUid, physicalEqpName);
             if (!virtualEqpToDelete.isEmpty()) {
                 inVirtualEquipmentRepository.deleteAll(virtualEqpToDelete);
             }
@@ -145,8 +148,8 @@ public class InVirtualEquipmentService {
 
         // Get existing equipment from repository
         List<InVirtualEquipment> existingEquipments = inVirtualEquipmentRepository
-                .findByDigitalServiceUidAndPhysicalEquipmentName(
-                        digitalServiceUid,
+                .findByDigitalServiceVersionUidAndPhysicalEquipmentName(
+                        digitalServiceVersionUid,
                         physicalEqpName
                 );
 
@@ -168,7 +171,7 @@ public class InVirtualEquipmentService {
         // Updates the other equipments
         for (InVirtualEquipmentRest inVirtualEquipment : inVirtualEquipmentList) {
             InVirtualEquipmentRest inVirtualEquipmentRest = updateInVirtualEquipment(
-                    digitalServiceUid,
+                    digitalServiceVersionUid,
                     inVirtualEquipment.getId(),
                     inVirtualEquipment
             );
@@ -264,12 +267,12 @@ public class InVirtualEquipmentService {
     /**
      * Delete the virtual equipment of a digital service
      *
-     * @param digitalServiceUid the digital service uid
+     * @param digitalServiceVersionUid the digital service uid
      * @param id                the virtual equipment id.
      */
-    public void deleteInVirtualEquipment(final String digitalServiceUid, final Long id) {
-        inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)
-                .orElseThrow(() -> new G4itRestException("404", String.format("Virtual equipment %d not found in digital service %s", id, digitalServiceUid)));
+    public void deleteInVirtualEquipment(final String digitalServiceVersionUid, final Long id) {
+        inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceVersionUid, id)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Virtual equipment %d not found in digital service %s", id, digitalServiceVersionUid)));
         inVirtualEquipmentRepository.deleteById(id);
     }
 

@@ -1,68 +1,56 @@
 openapi: "3.0.3"
 info:
-  title: Swagger GreenIT - Open API 3.0 - Digital Service
+  title: Swagger GreenIT - Open API 3.0 - Digital Service Version
   description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
   version: '1.0.0'
 
 tags:
-  - name: digital-service
-    description: All endpoint for digital service
-  - name: digital-service referential
-    description: All endpoint for digital service referential
+  - name: digital-service-version
+    description: All endpoint for digital service version
+  - name: digital-service-version referential
+    description: All endpoint for digital service version referential
 paths:
-  /organizations/{organization}/workspaces/{workspace}/digital-services:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/isAiPathParam'
     post:
       tags:
-        - digital-service
-      summary: Create a new digital service
+        - digital-service-version
+      summary: Create a new digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
-      operationId: createDigitalService
+      operationId: createDigitalServiceVersion
+      requestBody:
+        description: digitalServiceVersion
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InDigitalServiceVersionRest"
       responses:
         '201':
-          description: Return the digital service created
+          description: Return the digital service version created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DigitalServiceRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
-    get:
-      tags:
-        - digital-service
-      summary: Get the digital service list
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
-      operationId: getDigitalServices
-      responses:
-        '200':
-          description: Return the digital service list for connected user
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DigitalServiceRest"
+                $ref: "#/components/schemas/DigitalServiceVersionRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
     delete:
       tags:
-        - digital-service
-      summary: Delete a digital service
+        - digital-service-version
+      summary: Delete a digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: deleteDigitalService
+      operationId: deleteDigitalServiceVersion
       responses:
         '204':
           description: No content
@@ -72,17 +60,17 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     get:
       tags:
-        - digital-service
-      summary: Get a digital service
+        - digital-service-version
+      summary: Get a digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
-      operationId: getDigitalService
+      operationId: getDigitalServiceVersion
       responses:
         '200':
-          description: The digital service requested
+          description: The digital service version requested
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DigitalServiceRest"
+                $ref: "#/components/schemas/DigitalServiceVersionRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
@@ -90,24 +78,24 @@ paths:
 
     put:
       tags:
-        - digital-service
-      summary: Update a digital service
+        - digital-service-version
+      summary: Update a digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: updateDigitalService
+      operationId: updateDigitalServiceVersion
       requestBody:
-        description: Mandatory digital service to update.
+        description: Mandatory digital service version to update.
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DigitalServiceRest"
+              $ref: "#/components/schemas/DigitalServiceVersionRest"
       responses:
         '200':
-          description: The updated digital service list for connected user
+          description: The updated digital service version list for connected user
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DigitalServiceRest"
+                $ref: "#/components/schemas/DigitalServiceVersionRest"
         '400':
           $ref: "#/components/responses/BadRequestError"
         '401':
@@ -115,21 +103,21 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/share:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/share:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/extendLinkQueryParam'
     get:
       tags:
-        - digital-service
-      summary: Share a digital service
+        - digital-service-version
+      summary: Share a digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: shareDigitalService
+      operationId: shareDigitalServiceVersion
       responses:
         '200':
-          description: The digital service link to share
+          description: The digital service version link to share
           content:
             application/json:
               schema:

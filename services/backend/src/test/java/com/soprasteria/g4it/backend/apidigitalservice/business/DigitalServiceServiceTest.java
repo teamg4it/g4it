@@ -12,8 +12,10 @@ import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMappe
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
@@ -103,6 +105,8 @@ class DigitalServiceServiceTest {
     private InAiInfrastructureRepository inAiInfrastructureRepository;
     @InjectMocks
     private DigitalServiceService digitalServiceService;
+    @Mock
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Test
     void shouldCreateNewDigitalService_first() {
@@ -212,19 +216,22 @@ class DigitalServiceServiceTest {
         User creator = User.builder().id(1L).firstName("first").lastName("last").build();
 
         DigitalService digitalService = DigitalService.builder().name("name").isAi(IS_AI).user(creator).build();
+        DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().uid("dsvUid").digitalService(digitalService).build();
         final DigitalServiceBO digitalServiceBo = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
 
-        when(digitalServiceMapper.toBusinessObject(anyList())).thenReturn(List.of(digitalServiceBo));
+        when(digitalServiceMapper.toBusinessObject(any(DigitalService.class)))
+                .thenReturn(digitalServiceBo);
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
         when(digitalServiceRepository.findByWorkspace(linkedWorkspace)).thenReturn(List.of(digitalService));
+        when(digitalServiceVersionRepository.findActiveDigitalServiceVersion(anyList())).thenReturn(List.of(digitalServiceVersion));
 
         List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(WORKSPACE_ID, IS_AI);
         assertThat(result).isEqualTo(List.of(digitalServiceBo));
 
         verify(digitalServiceRepository, times(1)).findByWorkspace(linkedWorkspace);
         verify(workspaceService, times(1)).getWorkspaceById(WORKSPACE_ID);
-        verify(digitalServiceMapper, times(1)).toBusinessObject(anyList());
+        verify(digitalServiceMapper).toBusinessObject(any(DigitalService.class));
 
     }
 

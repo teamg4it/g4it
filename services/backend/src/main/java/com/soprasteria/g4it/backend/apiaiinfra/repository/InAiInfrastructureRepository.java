@@ -22,7 +22,13 @@ public interface InAiInfrastructureRepository extends JpaRepository<InAiInfrastr
      */
     InAiInfrastructure findByDigitalServiceUid(final String digitalServiceUid);
 
+    InAiInfrastructure findByDigitalServiceVersionUid(final String digitalServiceVersionUid);
+
     @Transactional
     @Modifying
     void deleteByDigitalServiceUid(String digitalServiceUid);
+
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceVersionUid(String digitalServiceVersionUid);
 }
