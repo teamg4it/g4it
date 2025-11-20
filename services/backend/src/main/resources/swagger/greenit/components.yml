@@ -723,7 +723,7 @@ components:
           type: string
         versionName:
           type: string
-        isAI:
+        isAi:
           type: boolean
 
     DigitalServiceServerImpactRest:
