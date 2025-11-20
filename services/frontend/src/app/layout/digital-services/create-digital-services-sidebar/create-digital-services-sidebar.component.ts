@@ -14,6 +14,7 @@ import { DigitalServiceBusinessService } from "src/app/core/service/business/dig
 })
 export class CreateDigitalServicesSidebarComponent implements OnInit {
     allDigitalServices = input<DigitalService[]>([]);
+    isEcoMindAi = input<boolean>(false);
     @Output() sidebarVisibleChange: EventEmitter<any> = new EventEmitter();
     @Output() submitCreateDsForm: EventEmitter<any> = new EventEmitter();
     private readonly translate = inject(TranslateService);
@@ -46,7 +47,9 @@ export class CreateDigitalServicesSidebarComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const existingNames = this.allDigitalServices().map((ds) => ds.name);
+        const existingNames = this.allDigitalServices().map((ds) =>
+            this.isEcoMindAi() ? ds.name.replace(" AI", "") : ds.name,
+        );
         this.createForm = new FormGroup({
             dsName: new FormControl<string | undefined>(
                 this.digitalServicesBusiness.getNextAvailableName(
@@ -54,7 +57,7 @@ export class CreateDigitalServicesSidebarComponent implements OnInit {
                     "Digital Service",
                     true,
                     false,
-                ),
+                ) + (this.isEcoMindAi() ? " AI" : ""),
                 [
                     Validators.required,
                     uniqueNameValidator(existingNames),

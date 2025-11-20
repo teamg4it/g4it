@@ -111,7 +111,7 @@
 
         @if (!isManageVersions()) {
             <app-version-type-tag
-                [versionType]="digitalServiceVersionType.ACTIVE"
+                [versionType]="digitalService.versionType"
             ></app-version-type-tag>
 
             <div class="input-title flex align-items-center">
@@ -119,19 +119,19 @@
                     *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
                     class="text-4xl px-2"
                 >
-                    {{ digitalService.name }}
+                    {{ digitalService.description }}
                 </h2>
                 <p-inplace
                     *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                     [closable]="true"
                     [closeAriaLabel]="'digital-services.save-inplace' | translate"
-                    [preventClick]="digitalService.name === ''"
-                    (onDeactivate)="onNameUpdate(digitalService.name)"
+                    [preventClick]="digitalService.description === ''"
+                    (onDeactivate)="onNameUpdate(digitalService.description!)"
                     styleClass="inline-block w-auto  lg:w-18rem"
                 >
                     <ng-template pTemplate="display">
                         <h2 class="text-4xl px-2">
-                            {{ digitalService.name }}
+                            {{ digitalService.description }}
                         </h2>
                     </ng-template>
                     <ng-template pTemplate="content">
@@ -139,7 +139,7 @@
                             type="text"
                             class="text-4xl font-semibold px-2 mr-2 w-9"
                             pInputText
-                            [(ngModel)]="digitalService.name"
+                            [(ngModel)]="digitalService.description"
                             [required]="true"
                         />
                     </ng-template>
