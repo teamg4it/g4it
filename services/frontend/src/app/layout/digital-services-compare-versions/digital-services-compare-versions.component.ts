@@ -980,35 +980,6 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
     }
 
     getContentText(): GraphDescriptionContent {
-        // const isBarChart = this.chartType() === "bar";
-        // const isIncludeCriteria = Object.keys(this.globalStore.criteriaList()).includes(
-        //     this.selectedCriteria,
-        // );
-        // let translationKey: string;
-        // let textDescription: string = "";
-        // if (isBarChart) {
-        //     translationKey = this.getBarTranslateKey();
-        //     textDescription = this.getBarChartTextDescription(translationKey);
-        // } else {
-        //     const criteriaKey = this.selectedCriteria
-        //         .toLowerCase()
-        //         .replaceAll(/\s+/g, "-");
-        //     if (isIncludeCriteria) {
-        //         //Criteria View
-        //         translationKey = "ds-graph-description.criteria.";
-        //         textDescription = this.getCriteriaTextDescription(
-        //             translationKey,
-        //             criteriaKey,
-        //         );
-        //     } else {
-        //         // Global Vision
-        //         translationKey = `ds-graph-description.${criteriaKey}.`;
-        //         textDescription = this.getGlobalVisionTextDescription(translationKey);
-        //     }
-        // }
-        // const key =
-        //     "criteria." + this.selectedCriteria.toLowerCase().replaceAll(" ", "-") + ".";
-
         return {
             description: this.translate.instant(
                 `digital-services.comparison.description`,
@@ -1020,16 +991,37 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                 },
             ),
             scale: this.translate.instant(`digital-services.comparison.scale`),
-            textDescription: this.translate.instant(
-                `digital-services.comparison.text-description`,
-            ),
-            // description: this.translate.instant(`${translationKey}description`, {
-            //     criteria: this.impacts.flatMap((impact) => impact.title).join(", "),
-            // }),
-            // scale: isIncludeCriteria
-            //     ? this.translate.instant(`${key}scale`)
-            //     : this.translate.instant(`${translationKey}scale`),
-            // textDescription: textDescription,
+            textDescription:
+                this.translate.instant(`digital-services.comparison.text-description`) +
+                this.getTableDescription(),
         };
+    }
+
+    getTableDescription(): string {
+        const headers = ["", "Version" + "1", "Version" + "2"];
+        const criteriaValueArr = [
+            {
+                criteria: "CLIMATE CHANGE",
+                rawValue: "1",
+                unit: "kg CO2 eq",
+            },
+        ];
+        let table = `
+                    <div style='overflow-x:auto;'>
+                     <table style='width:100%;border-collapse:collapse;min-width:600px;'>
+                    <thead><tr>`;
+        for (const h of headers) {
+            table += `<th style='padding:14px 18px;text-align:center;font-size:1rem;'>${h}</th>`;
+        }
+        table += `</tr></thead><tbody>`;
+        for (const rec of criteriaValueArr) {
+            table += `<tr>`;
+            table += `<th>${rec.criteria}</th>`;
+            table += `<td style='padding:14px 18px;font-size:0.98rem;text-align:center;'>${rec.rawValue}</td>`;
+            table += `<td style='padding:14px 18px;font-size:0.98rem;text-align:center;'>${rec.unit}</td>`;
+            table += `</tr>`;
+        }
+        table += `</tbody></table></div>`;
+        return table;
     }
 }
