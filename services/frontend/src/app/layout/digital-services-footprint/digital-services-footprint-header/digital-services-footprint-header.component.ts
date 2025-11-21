@@ -105,9 +105,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         }
     }
 
-    onNameUpdate(digitalServiceName: string) {
+    onNameUpdate(digitalServiceName: string, isName: boolean) {
         if (digitalServiceName != "") {
-            this.digitalService.name = digitalServiceName;
+            if (isName) {
+                this.digitalService.name = digitalServiceName;
+            } else {
+                this.digitalService.description = digitalServiceName;
+            }
             this.digitalServiceChange.emit(this.digitalService);
         }
     }
@@ -142,13 +146,18 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let [_, _1, organization, _2, workspace, serviceType] =
+        let [_, _1, organization, _2, workspace, serviceType, dsVId, footprint] =
             this.router.url.split("/");
-        // serviceType can be 'digital-services' or 'eco-mind-ai'
-        if (serviceType === "eco-mind-ai") {
-            return `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai`;
+
+        if (footprint === "footprint") {
+            // serviceType can be 'digital-services' or 'eco-mind-ai'
+            if (serviceType === "eco-mind-ai") {
+                return `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai`;
+            } else {
+                return `/organizations/${organization}/workspaces/${workspace}/digital-services`;
+            }
         } else {
-            return `/organizations/${organization}/workspaces/${workspace}/digital-services`;
+            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/footprint/resources`;
         }
     }
 
@@ -156,7 +165,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.digitalService.note = {
             content: event,
         } as Note;
-        console.log(this.digitalService);
         this.digitalServicesData.update(this.digitalService).subscribe((res) => {
             this.sidebarVisible = false;
             this.messageService.add({
