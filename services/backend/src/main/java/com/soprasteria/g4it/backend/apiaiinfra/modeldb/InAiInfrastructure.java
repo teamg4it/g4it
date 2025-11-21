@@ -37,9 +37,14 @@ public class InAiInfrastructure {
     private Long id;
 
     /**
-     * Digital Service uid
+     * Deprecated: Digital Service uid
      */
     private String digitalServiceUid;
+
+    /**
+     * Linked Digital Service Version UID
+     */
+    private String digitalServiceVersionUid;
 
     /**
      * Complementary Pue

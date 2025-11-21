@@ -39,9 +39,14 @@ public class InDatacenter {
     private Long inventoryId;
 
     /**
-     * Linked Digital Service. Temporary field
+     * Deprecated: Linked Digital Service. Temporary field
      */
     private String digitalServiceUid;
+
+    /**
+     * Linked Digital Service Version UID
+     */
+    private String digitalServiceVersionUid;
 
     private String fullName;
 
