@@ -121,7 +121,12 @@ export class UserService {
 
         if (
             page !== undefined &&
-            ["inventories", "digital-services", "eco-mind-ai"].includes(page)
+            [
+                "inventories",
+                "digital-services",
+                "digital-service-version",
+                "eco-mind-ai",
+            ].includes(page)
         ) {
             return this.handlePageRouting(
                 currentUser,
@@ -188,7 +193,11 @@ export class UserService {
         }
 
         if (organization && workspace) {
-            for (const type of ["inventories", "digital-services"]) {
+            for (const type of [
+                "inventories",
+                "digital-services",
+                "digital-service-version",
+            ]) {
                 if (this.checkIfAllowed(organization, workspace, type)) {
                     this.setOrganizationAndWorkspace(organization, workspace);
                     this.router.navigateByUrl(
@@ -315,6 +324,13 @@ export class UserService {
         }
 
         if (
+            uri === "digital-service-version" &&
+            roles.includes(Role.DigitalServiceRead)
+        ) {
+            return true;
+        }
+
+        if (
             uri === "eco-mind-ai" &&
             roles.includes(Role.EcoMindAiRead) &&
             organization.ecomindai
@@ -351,6 +367,7 @@ export class UserService {
             if (
                 page === "inventories" ||
                 page === "digital-services" ||
+                page === "digital-service-version" ||
                 page === "eco-mind-ai"
             ) {
                 this.router.navigateByUrl(

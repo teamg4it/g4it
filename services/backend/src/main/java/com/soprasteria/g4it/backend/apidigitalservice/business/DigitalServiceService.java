@@ -44,7 +44,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Digital-Service service.
@@ -140,54 +142,6 @@ public class DigitalServiceService {
         return digitalServiceMapper.toBusinessObject(digitalServiceSaved);
     }
 
-    /**
-     * Create a new digital service version.
-     *
-     * @param workspaceId                 the linked workspace id.
-     * @param userId                      the userId.
-     * @param inDigitalServiceVersionRest the digital service version request data
-     * @return the business object corresponding to the digital service created.
-     */
-    public DigitalServiceVersionBO createDigitalServiceVersion(final Long workspaceId,
-                                                               final long userId,
-                                                               final InDigitalServiceVersionRest inDigitalServiceVersionRest) {
-        // Get the linked workspace
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
-
-        // Get the linked user
-        final User user = userRepository.findById(userId).orElseThrow();
-
-        final LocalDateTime now = LocalDateTime.now();
-
-        // Step 1: Create the Digital Service
-        final DigitalService digitalService = DigitalService.builder()
-                .name(inDigitalServiceVersionRest.getDsName())
-                .user(user)
-                .workspace(linkedWorkspace)
-                .isAi(inDigitalServiceVersionRest.getIsAI())
-                .creationDate(now)
-                .lastUpdateDate(now)
-                .build();
-
-        final DigitalService savedDigitalService = digitalServiceRepository.save(digitalService);
-
-        // Step 2: Create the Digital Service Version
-        final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
-                .description(inDigitalServiceVersionRest.getVersionName())
-                .digitalService(DigitalService.builder().uid(savedDigitalService.getUid()).build())
-                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
-                .createdBy(savedDigitalService.getUser().getId())
-                .creationDate(savedDigitalService.getCreationDate())
-                .lastUpdateDate(savedDigitalService.getLastUpdateDate())
-                .lastCalculationDate(savedDigitalService.getLastCalculationDate())
-                .build();
-
-        final DigitalServiceVersion savedDigitalServiceVersion = digitalServiceVersionRepository.save(digitalServiceVersion);
-
-        // Return the business object
-        return digitalServiceVersionMapper.toBusinessObject(savedDigitalServiceVersion, savedDigitalService);
-    }
-
 
     /**
      * Get the digital service list linked to a user.
@@ -198,9 +152,30 @@ public class DigitalServiceService {
      */
     public List<DigitalServiceBO> getDigitalServices(final Long workspaceId, final Boolean isAi) {
         final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
-        List<DigitalService> filterDigitalService = digitalServiceRepository.findByWorkspace(linkedWorkspace).stream().filter(ds -> ds.isAi() == isAi)
+        List<DigitalService> filterDigitalService = digitalServiceRepository.findByWorkspace(linkedWorkspace).stream()
+                .filter(ds -> ds.isAi() == isAi)
                 .toList();
-        return digitalServiceMapper.toBusinessObject(filterDigitalService);
+        // Step 1: Extract DS UIDs
+        List<String> dsUids = filterDigitalService.stream()
+                .map(DigitalService::getUid)
+                .toList();
+
+        // Step 2: Fetch all active DSVs in ONE query
+        List<DigitalServiceVersion> activeDSVersions =
+                digitalServiceVersionRepository.findActiveDigitalServiceVersion(dsUids);
+
+        // Step 3: Convert to map (dsUid → activeDsvUid)
+        Map<String, String> activeDsvMap = activeDSVersions.stream()
+                .collect(Collectors.toMap(
+                        dsv -> dsv.getDigitalService().getUid(),
+                        DigitalServiceVersion::getUid
+                ));
+
+        return filterDigitalService.stream().map(ds -> {
+            DigitalServiceBO bo = digitalServiceMapper.toBusinessObject(ds);
+            bo.setActiveDsvUid(activeDsvMap.get(ds.getUid())); // add the dsv uid
+            return bo;
+        }).toList();
     }
 
     /**

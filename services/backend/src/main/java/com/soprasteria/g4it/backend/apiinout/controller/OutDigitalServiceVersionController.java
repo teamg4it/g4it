@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apiinout.business.OutApplicationService;
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceOutputsApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionOutputsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutVirtualEquipmentRest;
@@ -27,7 +28,7 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class OutDigitalServiceController implements DigitalServiceOutputsApiDelegate {
+public class OutDigitalServiceVersionController implements DigitalServiceVersionOutputsApiDelegate {
 
     /**
      * Service to access physical equipment output data.
@@ -48,29 +49,29 @@ public class OutDigitalServiceController implements DigitalServiceOutputsApiDele
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutPhysicalEquipmentRest>> getDigitalServiceOutputsPhysicalEquipmentsRest(String organization,
+    public ResponseEntity<List<OutPhysicalEquipmentRest>> getDigitalServiceVersionOutputsPhysicalEquipmentsRest(String organization,
                                                                                                          Long workspace,
-                                                                                                         String digitalServiceUid) {
-        return ResponseEntity.ok().body(outPhysicalEquipmentService.getByDigitalServiceUid(digitalServiceUid));
+                                                                                                         String digitalServiceVersionUid) {
+        return ResponseEntity.ok().body(outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutVirtualEquipmentRest>> getDigitalServiceOutputsVirtualEquipmentsRest(String organization,
+    public ResponseEntity<List<OutVirtualEquipmentRest>> getDigitalServiceVersionOutputsVirtualEquipmentsRest(String organization,
                                                                                                        Long workspace,
-                                                                                                       String digitalServiceUid) {
-        return ResponseEntity.ok().body(outVirtualEquipmentService.getByDigitalServiceUid(digitalServiceUid));
+                                                                                                       String digitalServiceVersionUid) {
+        return ResponseEntity.ok().body(outVirtualEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<OutApplicationRest>> getDigitalServiceOutputsApplicationsRest(String organization,
+    public ResponseEntity<List<OutApplicationRest>> getDigitalServiceVersionOutputsApplicationsRest(String organization,
                                                                                              Long workspace,
-                                                                                             String digitalServiceUid) {
-        return ResponseEntity.ok().body(outApplicationService.getByDigitalServiceUid(digitalServiceUid));
+                                                                                             String digitalServiceVersionUid) {
+        return ResponseEntity.ok().body(outApplicationService.getByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 }

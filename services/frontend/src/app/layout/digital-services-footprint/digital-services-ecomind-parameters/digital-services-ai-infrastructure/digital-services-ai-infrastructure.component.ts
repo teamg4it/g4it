@@ -129,7 +129,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
 
             //get the digital service uid with the activatedRoute
             const uid = this.route.pathFromRoot
-                .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
+                .map((r) => r.snapshot.paramMap.get("digitalServiceVersionId"))
                 .find((v) => v !== null);
             // default value for the form
             const defaultData = {

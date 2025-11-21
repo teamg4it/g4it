@@ -10,7 +10,7 @@
     </h1>
     <p-button
         styleClass="black-button"
-        (onClick)="createNewDigitalService()"
+        (onClick)="newDsSidebarVisible = true"
         *ngIf="
             ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
             ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
@@ -68,5 +68,25 @@
             styleClass="mx-7"
         >
         </app-common-editor>
+    </p-sidebar>
+}
+
+@if (newDsSidebarVisible) {
+    <p-sidebar
+        [(visible)]="newDsSidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-10"
+        [showCloseIcon]="true"
+        (onHide)="newDsSidebarVisible = false"
+        ariaCloseLabel="Close"
+    >
+        <ng-template pTemplate="headless">
+            <app-create-digital-services-sidebar
+                [allDigitalServices]="allDigitalServices"
+                (sidebarVisibleChange)="newDsSidebarVisible = $event"
+                (submitCreateDsForm)="createNewDigitalServices($event)"
+                [isEcoMindAi]="isEcoMindAi"
+            />
+        </ng-template>
     </p-sidebar>
 }

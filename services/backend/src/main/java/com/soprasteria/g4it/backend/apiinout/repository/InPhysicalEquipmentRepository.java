@@ -28,11 +28,11 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
     /**
      * Find physical equipment by the functionally unique fields
      *
-     * @param digitalServiceUid digital service Identifier
+     * @param digitalServiceVersionUid digital service Identifier
      * @param id                physical equipment id
      * @return return a physical equipment
      */
-    Optional<InPhysicalEquipment> findByDigitalServiceUidAndId(String digitalServiceUid, Long id);
+    Optional<InPhysicalEquipment> findByDigitalServiceVersionUidAndId(String digitalServiceVersionUid, Long id);
 
     /**
      * Find physical equipments of one digital service
@@ -42,15 +42,17 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      */
     List<InPhysicalEquipment> findByDigitalServiceUid(String digitalServiceUid);
 
+    List<InPhysicalEquipment> findByDigitalServiceVersionUid(String digitalServiceVersionUid);
+
     List<InPhysicalEquipment> findByDigitalServiceUid(String digitalServiceUid, Pageable pageable);
 
     /**
      * Find physical equipments of one digital service order by name
      *
-     * @param digitalServiceUid digital service Identifier
+     * @param digitalServiceVersionUid digital service Identifier
      * @return return a list of physical equipments
      */
-    List<InPhysicalEquipment> findByDigitalServiceUidOrderByName(String digitalServiceUid);
+    List<InPhysicalEquipment> findByDigitalServiceVersionUidOrderByName(String digitalServiceVersionUid);
 
     /**
      * Find physical equipment by the functionally unique fields
@@ -98,4 +100,8 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
     @Transactional
     @Modifying
     void deleteByDigitalServiceUid(String digitalServiceUid);
+
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceVersionUid(String digitalServiceVersionUid);
 }

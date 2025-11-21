@@ -9,6 +9,7 @@ import { FormGroup } from "@angular/forms";
 export class FormNavComponent {
     @Input() spaceDetails: any;
     @Input() spaceForm!: FormGroup;
+    @Input() onlyOneNav = false;
     @Output() tabSelected = new EventEmitter<number>();
     selectTab(index: number): void {
         this.tabSelected.emit(index);

@@ -34,7 +34,7 @@ public class DigitalServiceVersionBO {
     /**
      * Digital Service Version unique identifier.
      */
-    private String dsvUid;
+    private String uid;
 
     /**
      * Name.

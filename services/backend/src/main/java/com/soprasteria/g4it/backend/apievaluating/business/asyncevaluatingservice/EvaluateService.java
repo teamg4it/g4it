@@ -126,7 +126,7 @@ public class EvaluateService {
 
         // Get datacenters by name (name, InDatacenter)
         final Map<String, InDatacenter> datacenterByNameMap = context.getInventoryId() == null ?
-                inDatacenterRepository.findByDigitalServiceUid(context.getDigitalServiceUid()).stream()
+                inDatacenterRepository.findByDigitalServiceVersionUid(context.getDigitalServiceUid()).stream()
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity())) :
                 inDatacenterRepository.findByInventoryId(context.getInventoryId()).stream()
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity()));
@@ -355,7 +355,7 @@ public class EvaluateService {
         while (true) {
             Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, Sort.by("name"));
             List<InVirtualEquipment> virtualEquipments = context.getInventoryId() == null ?
-                    inVirtualEquipmentRepository.findByDigitalServiceUidAndPhysicalEquipmentName(context.getDigitalServiceUid(), physicalEquipmentName, page) :
+                    inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentName(context.getDigitalServiceVersionUid(), physicalEquipmentName, page) :
                     inVirtualEquipmentRepository.findByInventoryIdAndPhysicalEquipmentName(context.getInventoryId(), physicalEquipmentName, page);
 
             if (virtualEquipments.isEmpty()) {

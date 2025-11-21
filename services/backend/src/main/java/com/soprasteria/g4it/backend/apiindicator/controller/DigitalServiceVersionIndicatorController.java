@@ -10,7 +10,9 @@ package com.soprasteria.g4it.backend.apiindicator.controller;
 import com.azure.storage.blob.models.BlobErrorCode;
 import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -18,6 +20,7 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceIndicatorApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionIndicatorApiDelegate;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,14 +39,14 @@ import java.nio.file.Path;
  * Digital Service Indicator Rest Service.
  */
 @Service
-public class DigitalServiceIndicatorController implements DigitalServiceIndicatorApiDelegate {
+public class DigitalServiceVersionIndicatorController implements DigitalServiceVersionIndicatorApiDelegate {
 
     @Value("${local.working.folder}")
     private String localWorkingFolder;
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
     @Autowired
     private FileSystemService fileSystemService;
 
@@ -55,12 +58,12 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Resource> getDigitalServiceIndicatorsExportResult(String organization,
+    public ResponseEntity<Resource> getDigitalServiceVersionIndicatorsExportResult(String organization,
                                                                             Long workspace,
-                                                                            String digitalServiceUid) {
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
+                                                                            String digitalServiceVersionUid) {
+        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
 
-        Task task = taskRepository.findByDigitalServiceAndLastCreationDate(digitalService)
+        Task task = taskRepository.findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion)
                 .orElseThrow(() -> new G4itRestException("404", "Digital service task not found"));
         String filename = task.getId() + Constants.ZIP;
 

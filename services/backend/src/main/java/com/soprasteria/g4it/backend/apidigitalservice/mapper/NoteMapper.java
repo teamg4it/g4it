@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 public interface NoteMapper {
 
     Note toEntity(NoteBO noteBO);
+
+    NoteBO toBusinessObject(Note note);
 }

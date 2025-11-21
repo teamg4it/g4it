@@ -1,0 +1,12 @@
+<span
+    class="status-tag mx-2"
+    [class.draft-brown-color]="versionType() === digitalServiceVersionType.DRAFT"
+    [class.archived-yellow-color]="versionType() === digitalServiceVersionType.ARCHIVED"
+>
+    @if (versionType() === digitalServiceVersionType.ACTIVE) {
+        <i class="pi pi-star"></i>
+    }
+    @if (versionType()) {
+        {{ "digital-services.version.tags." + versionType() | translate }}
+    }
+</span>

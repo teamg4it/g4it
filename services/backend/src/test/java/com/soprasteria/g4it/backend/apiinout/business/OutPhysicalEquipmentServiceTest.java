@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -38,7 +40,7 @@ class OutPhysicalEquipmentServiceTest {
     @Mock
     private TaskRepository taskRepository;
     @Mock
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Mock
     private OutPhysicalEquipmentMapper outPhysicalEquipmentMapper;
@@ -48,37 +50,37 @@ class OutPhysicalEquipmentServiceTest {
 
     @Test
     void getByDigitalServiceUid_returnsEmptyList_whenTaskNotFound() {
-        String digitalServiceUid = "nonexistent-uid";
-        final DigitalService digitalService = mock(DigitalService.class);
+        String digitalServiceVersionUid = "nonexistent-uid";
+        final DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
 
-        when(taskRepository.findByDigitalServiceAndLastCreationDate(digitalService)).thenReturn(Optional.empty());
-        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
+        when(taskRepository.findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid)).thenReturn(Optional.of(digitalServiceVersion));
 
-        List<OutPhysicalEquipmentRest> result = outPhysicalEquipmentService.getByDigitalServiceUid(digitalServiceUid);
+        List<OutPhysicalEquipmentRest> result = outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
 
         assertTrue(result.isEmpty());
-        verify(taskRepository).findByDigitalServiceAndLastCreationDate(digitalService);
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(taskRepository).findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion);
+        verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
         verifyNoInteractions(outPhysicalEquipmentRepository, outPhysicalEquipmentMapper);
     }
 
     @Test
     void getByDigitalServiceUid_returnsMappedList_whenTaskFound() {
-        String digitalServiceUid = "valid-uid";
+        String digitalServiceVersionUid = "valid-uid";
         Task task = new Task();
         task.setId(1L);
-        final DigitalService digitalService = mock(DigitalService.class);
+        final DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
 
-        when(taskRepository.findByDigitalServiceAndLastCreationDate(digitalService)).thenReturn(Optional.of(task));
-        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
+        when(taskRepository.findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion)).thenReturn(Optional.of(task));
+        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid)).thenReturn(Optional.of(digitalServiceVersion));
         when(outPhysicalEquipmentRepository.findByTaskId(task.getId())).thenReturn(List.of());
         when(outPhysicalEquipmentMapper.toRest(anyList())).thenReturn(List.of(OutPhysicalEquipmentRest.builder().build()));
 
-        List<OutPhysicalEquipmentRest> result = outPhysicalEquipmentService.getByDigitalServiceUid(digitalServiceUid);
+        List<OutPhysicalEquipmentRest> result = outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
 
         assertFalse(result.isEmpty());
-        verify(taskRepository).findByDigitalServiceAndLastCreationDate(digitalService);
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(taskRepository).findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion);
+        verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
         verify(outPhysicalEquipmentRepository).findByTaskId(task.getId());
         verify(outPhysicalEquipmentMapper).toRest(anyList());
     }

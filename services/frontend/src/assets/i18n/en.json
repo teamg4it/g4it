@@ -230,7 +230,34 @@
         "back": "Back",
         "hide-menu-buttons": "Hide option for the digital service",
         "show-menu-buttons": "Show option for the digital service",
-        "save-inplace": "Save the digital service name"
+        "save-inplace": "Save the digital service name",
+        "version": {
+            "ds-name": "Digital Service Name",
+            "active-version-name": "Active Version Name",
+            "version-name": "Version Name",
+            "add-ds": "Add a digital service",
+            "ds-text": "Want to build a digital service that’s both useful and responsible? Start by adding your resources and calculating the environmental impact of your project. It’s your chance to design a leaner, more transparent, and planet-friendly solution.",
+            "ds-name-placeholder": "Type the name of your digital service here",
+            "ds-version-name-placeholder": "Type a version name",
+            "ds-version-text": "You will be able to create and edit <strong>many versions</strong> of your Digital Service.<br /> Each version captures a specific state, allowing you to track your progress, test different hypotheses and compare their effects without affecting the active version. Once you’re satisfied with a version, you can make it your active one, the previous active version will be automatically <strong>archived</strong>.",
+            "active-text": "This version will be active",
+            "cancel-creation": "Cancel Creation",
+            "validate-creation": "Validate creation",
+            "required-field": "Required field",
+            "tags": {
+                "active": "Active",
+                "draft": "Draft",
+                "archived": "Archived"
+            },
+            "manage-versions": "Manage Versions",
+            "versions-management": "Versions Management",
+            "status": "Status",
+            "actions": "Actions",
+            "select": "Select",
+            "versions": "Versions",
+            "duplicate-version": "Duplicate Version"
+        },
+        "error.digital-service-already-exists": "Digital Service already exists"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

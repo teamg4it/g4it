@@ -13,6 +13,7 @@ export interface InPhysicalEquipmentRest {
     name: string;
     inventoryId?: number;
     digitalServiceUid: string;
+    digitalServiceVersionUid?: string;
     datacenterName?: string;
     quantity: number;
     location: string;
@@ -40,7 +41,8 @@ export interface InVirtualEquipmentRest {
     id: number;
     name: string;
     inventoryId?: number;
-    digitalServiceUid: string;
+    digitalServiceUid?: string;
+    digitalServiceVersionUid?: string;
     datacenterName?: string;
     physicalEquipmentName?: string;
     quantity: number;

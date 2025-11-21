@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apievaluating.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.AsyncEvaluatingService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
@@ -57,6 +59,10 @@ public class EvaluatingService {
 
     @Autowired
     DigitalServiceRepository digitalServiceRepository;
+
+    @Autowired
+    DigitalServiceVersionRepository digitalServiceVersionRepository;
+
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -140,32 +146,35 @@ public class EvaluatingService {
      *
      * @param organization        the organization
      * @param workspaceId    the workspace id
-     * @param digitalServiceUid digitalServiceUid
+     * @param digitalServiceVersionUid digitalServiceUid
      * @return the Task created
      */
     public Task evaluatingDigitalService(final String organization,
                                          final Long workspaceId,
-                                         final String digitalServiceUid) {
+                                         final String digitalServiceVersionUid) {
 
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid)
-                .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
+        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceVersionUid)));
 
-        manageDigitalServiceTasks(organization, workspaceId, digitalService);
+        DigitalService digitalService = digitalServiceVersion.getDigitalService();
+        manageDigitalServiceTasks(organization, workspaceId, digitalServiceVersion);
 
         Context context = Context.builder()
                 .organization(organization)
                 .workspaceId(workspaceId)
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
-                .digitalServiceUid(digitalServiceUid)
-                .digitalServiceName(digitalService.getName())
+                .digitalServiceUid(digitalServiceVersion.getDigitalService().getUid())
+                .digitalServiceName(digitalServiceVersion.getDigitalService().getName())
+                .digitalServiceVersionUid(digitalServiceVersionUid)
+                .digitalServiceVersionName(digitalServiceVersion.getDescription())
                 .locale(LocaleContextHolder.getLocale())
                 .datetime(LocalDateTime.now())
                 .hasVirtualEquipments(true)
                 .hasApplications(false)
-                .isAi(digitalService.isAi())
+                .isAi(digitalServiceVersion.getDigitalService().isAi())
                 .build();
 
-        List<String> activeCriteria = criteriaService.getSelectedCriteriaForDigitalService(organization, workspaceId, digitalService.getCriteria())
+        List<String> activeCriteria = criteriaService.getSelectedCriteriaForDigitalService(organization, workspaceId, digitalServiceVersion.getCriteria())
                 .active();
 
         // evaluate impacts on 5 default criteria if no activeCriteria
@@ -183,7 +192,7 @@ public class EvaluatingService {
                 .progressPercentage("0%")
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
-                .digitalService(digitalService)
+                .digitalServiceVersion(digitalServiceVersion)
                 .criteria(criteriaToSet)
                 .createdBy(user)
                 .build();
@@ -196,6 +205,8 @@ public class EvaluatingService {
         digitalService.setLastCalculationDate(LocalDateTime.now());
         digitalServiceRepository.save(digitalService);
 
+        digitalServiceVersion.setLastCalculationDate(LocalDateTime.now());
+        digitalServiceVersionRepository.save(digitalServiceVersion);
         return task;
     }
 
@@ -276,12 +287,12 @@ public class EvaluatingService {
      *
      * @param organization     the organization
      * @param workspaceId the workspace id
-     * @param digitalService the digitalService
+     * @param digitalServiceVersion the digitalService
      */
-    private void manageDigitalServiceTasks(String organization, Long workspaceId, DigitalService digitalService) {
+    private void manageDigitalServiceTasks(String organization, Long workspaceId, DigitalServiceVersion digitalServiceVersion) {
 
         // clean old tasks
-        taskRepository.findByDigitalServiceAndType(digitalService, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
+        taskRepository.findByDigitalServiceVersionAndType(digitalServiceVersion, TaskType.EVALUATING_DIGITAL_SERVICE.toString())
                 .stream()
                 .sorted(Comparator.comparing(Task::getId).reversed())
                 .skip(2)

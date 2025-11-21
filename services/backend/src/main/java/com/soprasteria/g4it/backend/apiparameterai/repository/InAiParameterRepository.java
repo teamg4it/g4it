@@ -17,9 +17,21 @@ public interface InAiParameterRepository extends JpaRepository<InAiParameter, Bi
      */
     InAiParameter findByDigitalServiceUid(final String digitalServiceUid);
 
+    /**
+     * Find by organization name and userId.
+     *
+     * @return DigitalService list.
+     */
+    InAiParameter findByDigitalServiceVersionUid(final String digitalServiceVersionUid);
+
     @Transactional
     @Modifying
     void deleteByDigitalServiceUid(String digitalServiceUid);
+
+
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
 }
 
