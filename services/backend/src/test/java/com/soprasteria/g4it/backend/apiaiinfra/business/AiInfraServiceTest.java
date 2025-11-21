@@ -7,7 +7,6 @@ import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepo
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
-import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
@@ -190,7 +189,7 @@ class AiInfraServiceTest {
         String uid = "ds-123";
 
         DigitalServiceVersionBO mockDigitalServiceVersion = DigitalServiceVersionBO.builder()
-                .dsvUid("ds-123")
+                .uid("ds-123")
                 .description("Test Service")
                 .userName("tester")
                 .isAi(true)

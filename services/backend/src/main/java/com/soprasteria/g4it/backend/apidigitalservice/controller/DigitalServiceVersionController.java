@@ -75,8 +75,7 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
         );
 
         DigitalServiceVersionRest digitalServiceVersionDTO = digitalServiceVersionRestMapper.toDto(digitalServiceVersionBO);
-        digitalServiceVersionDTO.setUid(digitalServiceVersionBO.getDsvUid());
-        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", digitalServiceVersionBO.getDsvUid())))).body(digitalServiceVersionDTO);
+        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", digitalServiceVersionBO.getUid())))).body(digitalServiceVersionDTO);
     }
 
 

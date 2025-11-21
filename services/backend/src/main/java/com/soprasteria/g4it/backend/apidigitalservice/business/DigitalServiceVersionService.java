@@ -168,7 +168,7 @@ public class DigitalServiceVersionService {
                                                                final Long workspaceId, final UserBO user) {
 
         // Check if digital service exist.
-        final DigitalServiceVersion digitalServiceVersionToUpdate = getDigitalServiceVersionEntity(digitalServiceVersion.getDsvUid());
+        final DigitalServiceVersion digitalServiceVersionToUpdate = getDigitalServiceVersionEntity(digitalServiceVersion.getUid());
 
         // Check if digital service was updated.
         final DigitalServiceVersionBO digitalServiceVersionToUpdateBO = digitalServiceVersionMapper.toBusinessObject(digitalServiceVersionToUpdate);
