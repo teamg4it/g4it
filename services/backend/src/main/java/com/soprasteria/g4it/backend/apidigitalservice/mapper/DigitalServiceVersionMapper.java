@@ -111,9 +111,11 @@ public abstract class DigitalServiceVersionMapper {
             return;
         }
 
+
         target.setDescription(source.getDescription());
         target.getDigitalService().setEnableDataInconsistency(source.getEnableDataInconsistency());
-
+        target.getDigitalService().setName(source.getName());
+        target.setVersionType(source.getVersionType());
         List<String> sourceCriteria = source.getCriteria();
         List<String> targetCriteria = target.getCriteria();
         if (!Objects.equals(sourceCriteria, targetCriteria)) {

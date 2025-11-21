@@ -167,10 +167,10 @@ public class DigitalServiceVersionService {
     public DigitalServiceVersionBO updateDigitalServiceVersion(final DigitalServiceVersionBO digitalServiceVersion, final String organizationName,
                                                                final Long workspaceId, final UserBO user) {
 
-        // Check if digital service exist.
+        // Check if digital service version exist.
         final DigitalServiceVersion digitalServiceVersionToUpdate = getDigitalServiceVersionEntity(digitalServiceVersion.getUid());
 
-        // Check if digital service was updated.
+        // Check if digital service version was updated.
         final DigitalServiceVersionBO digitalServiceVersionToUpdateBO = digitalServiceVersionMapper.toBusinessObject(digitalServiceVersionToUpdate);
         if (digitalServiceVersion.equals(digitalServiceVersionToUpdateBO)) {
             return digitalServiceVersionToUpdateBO;
