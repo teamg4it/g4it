@@ -13,6 +13,7 @@
         [data]="vmData()"
         (resetItem)="resetIndex()"
         [showId]="false"
+        [isVM]="true"
         (setItem)="setIndex($event.index - 1)"
         (deleteItem)="deleteVm($event.index - 1)"
     ></app-digital-service-table>
