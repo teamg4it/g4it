@@ -130,7 +130,7 @@ export class DigitalServicesDataService {
         DSCriteria: DSCriteriaRest,
     ): Observable<DSCriteriaRest> {
         return this.http.put<DSCriteriaRest>(
-            `${endpoint}/${digitalServiceUid}`,
+            `${endpointDsVersions}/${digitalServiceUid}`,
             DSCriteria,
         );
     }
