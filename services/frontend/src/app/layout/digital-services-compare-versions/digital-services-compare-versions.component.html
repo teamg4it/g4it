@@ -4,28 +4,26 @@
     <div class="bg-white p-5 mt-3">
         <div class="h-full bg-gray-color p-4 pt-5">
             <div class="h-full bg-white grid">
-                <div class="col-12 lg:col-6">
-                    <h3 class="text-center">Version 1</h3>
-                    @if (globalVisionChartData) {
-                        <app-radial-chart
-                            [globalVisionChartData]="globalVisionChartData"
-                            [selectedCriteria]="'Global Vision'"
-                            [showInconsitency]="false"
-                            [enableDataInconsistency]="false"
-                        ></app-radial-chart>
-                    }
-                </div>
-                <div class="col-12 lg:col-6">
-                    <h3 class="text-center">Version 2</h3>
-                    @if (globalVisionChartData) {
-                        <app-pie-chart
-                            [globalVisionChartData]="globalVisionChartData"
-                            [selectedCriteria]="'climate-change'"
-                            [showInconsitency]="false"
-                            [enableDataInconsistency]="false"
-                        ></app-pie-chart>
-                    }
-                </div>
+                @for (version of compareApi; track $index) {
+                    <div class="col-12 lg:col-6">
+                        <h3 class="text-center">{{ version.versionName }}</h3>
+                        @if ((version.convertToChartData?.[0])!.impacts!.length > 1) {
+                            <app-radial-chart
+                                [globalVisionChartData]="version.convertToChartData"
+                                [selectedCriteria]="'Global Vision'"
+                                [showInconsitency]="false"
+                                [enableDataInconsistency]="false"
+                            ></app-radial-chart>
+                        } @else {
+                            <app-pie-chart
+                                [globalVisionChartData]="globalVisionChartData"
+                                [selectedCriteria]="'climate-change'"
+                                [showInconsitency]="false"
+                                [enableDataInconsistency]="false"
+                            ></app-pie-chart>
+                        }
+                    </div>
+                }
             </div>
             <app-graph-description
                 [contentText]="getContentText()"

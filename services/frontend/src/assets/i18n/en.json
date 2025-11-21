@@ -38,6 +38,7 @@
         "min": "must be greater than or equal to 1",
         "peopleeq": "People eq.",
         "peopleeq-min": "people. eq.",
+        "peopleeq-full": "people equivalent",
         "no-data": "No results available",
         "loading": "Loading in progress",
         "choose-file": "Choose a file",

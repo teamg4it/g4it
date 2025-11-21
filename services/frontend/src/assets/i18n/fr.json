@@ -38,6 +38,7 @@
         "min": "doit être supérieure ou égale à 1",
         "peopleeq": "Hab. eq.",
         "peopleeq-min": "hab. eq.",
+        "peopleeq-full": "habitant équivalent",
         "no-data": "Aucun résultats disponibles",
         "loading": "Chargement en cours",
         "choose-file": "Importer un fichier",

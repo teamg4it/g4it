@@ -1,10 +1,13 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
+import { CompareVersion } from "src/app/core/interfaces/digital-service-version.interface";
 import {
     DigitalServiceFootprint,
     GraphDescriptionContent,
 } from "src/app/core/interfaces/digital-service.interfaces";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { convertToGlobalVision } from "src/app/core/service/mapper/digital-service";
 
 @Component({
@@ -14,6 +17,8 @@ import { convertToGlobalVision } from "src/app/core/service/mapper/digital-servi
 })
 export class DigitalServicesCompareVersionsComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
+    protected readonly integerPipe = inject(IntegerPipe);
+    protected readonly decimalsPipe = inject(DecimalsPipe);
     version1Id: string = "";
     version2Id: string = "";
     globalVisionChartData: DigitalServiceFootprint[] | undefined;
@@ -963,7 +968,941 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
             filters: [""],
         },
     ] as any;
+
+    outPhysicalEquipments2 = [
+        {
+            name: "Terminal 1",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg CO2 eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 0.0067260564075433795,
+            peopleEqImpact: 7.901387850271223e-6,
+            electricityConsumption: 0.0,
+            quantity: 0.0018264840182648401,
+            numberOfUsers: 4.0,
+            lifespan: 0.0091324200913242,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 2",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg CO2 eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 4.0872868024507367e-4,
+            peopleEqImpact: 4.801511662203508e-7,
+            electricityConsumption: 0.0,
+            quantity: 7.575757575757576e-4,
+            numberOfUsers: 0.0,
+            lifespan: 7.596513075965131e-4,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 2",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg CO2 eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 1.3515981735159817e-4,
+            peopleEqImpact: 1.5877805268910212e-7,
+            electricityConsumption: 0.0,
+            quantity: 4.5662100456621003e-4,
+            numberOfUsers: 2.0,
+            lifespan: 0.00228310502283105,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server B",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg Sb eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 6.9906547728e-7,
+            peopleEqImpact: 2.5536638439452056e-5,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server A",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg CO2 eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 18.4141233447525,
+            peopleEqImpact: 0.021631862960061674,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server B",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg CO2 eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 18.4141233447525,
+            peopleEqImpact: 0.021631862960061674,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 1",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg CO2 eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 0.016719556470750983,
+            peopleEqImpact: 1.9641182344494546e-5,
+            electricityConsumption: 180.924217704336,
+            quantity: 0.0011363636363636363,
+            numberOfUsers: 0.0,
+            lifespan: 0.0011394769613947697,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 1",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg CO2 eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 6.130930203676105e-4,
+            peopleEqImpact: 7.202267493305263e-7,
+            electricityConsumption: 0.0,
+            quantity: 0.0011363636363636363,
+            numberOfUsers: 0.0,
+            lifespan: 0.0011394769613947697,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 1",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg Sb eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 2.636090129680365e-10,
+            peopleEqImpact: 9.629552985133754e-9,
+            electricityConsumption: 0.0,
+            quantity: 0.0018264840182648401,
+            numberOfUsers: 4.0,
+            lifespan: 0.0091324200913242,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server A",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg Sb eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 0.016298416,
+            peopleEqImpact: 0.5953759269406392,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 1",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg CO2 eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 0.11251141552511415,
+            peopleEqImpact: 1.3217200061687418e-4,
+            electricityConsumption: 0.0,
+            quantity: 0.0018264840182648401,
+            numberOfUsers: 4.0,
+            lifespan: 0.0091324200913242,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 1",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg Sb eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 9.987798080946707e-9,
+            peopleEqImpact: 3.64851071450108e-7,
+            electricityConsumption: 180.924217704336,
+            quantity: 0.0011363636363636363,
+            numberOfUsers: 0.0,
+            lifespan: 0.0011394769613947697,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server B",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg CO2 eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 1342.8784425000001,
+            peopleEqImpact: 1.5775370837004408,
+            electricityConsumption: 16513.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 1",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg Sb eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 4.383561643835616e-6,
+            peopleEqImpact: 1.601301057108901e-4,
+            electricityConsumption: 0.0,
+            quantity: 0.0018264840182648401,
+            numberOfUsers: 4.0,
+            lifespan: 0.0091324200913242,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 2",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg CO2 eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 0.011146370980500656,
+            peopleEqImpact: 1.3094121562996365e-5,
+            electricityConsumption: 180.924217704336,
+            quantity: 7.575757575757576e-4,
+            numberOfUsers: 0.0,
+            lifespan: 7.596513075965131e-4,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server B",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg Sb eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 8.021982374e-4,
+            peopleEqImpact: 0.029304045201826483,
+            electricityConsumption: 16513.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 1",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg CO2 eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 0.004322346575342466,
+            peopleEqImpact: 5.077646490857522e-6,
+            electricityConsumption: 29.1,
+            quantity: 0.0018264840182648401,
+            numberOfUsers: 4.0,
+            lifespan: 0.0091324200913242,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 1",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg Sb eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 1.7098155737704914e-13,
+            peopleEqImpact: 6.2459016393442606e-12,
+            electricityConsumption: 0.0,
+            quantity: 0.0011363636363636363,
+            numberOfUsers: 0.0,
+            lifespan: 0.0011394769613947697,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 2",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg Sb eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 6.590225324200913e-11,
+            peopleEqImpact: 2.4073882462834384e-9,
+            electricityConsumption: 0.0,
+            quantity: 4.5662100456621003e-4,
+            numberOfUsers: 2.0,
+            lifespan: 0.00228310502283105,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 2",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg CO2 eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 0.008763868190097697,
+            peopleEqImpact: 1.0295293028014915e-5,
+            electricityConsumption: 0.0,
+            quantity: 7.575757575757576e-4,
+            numberOfUsers: 0.0,
+            lifespan: 7.596513075965131e-4,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 1",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg Sb eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 2.582049643835616e-9,
+            peopleEqImpact: 9.43214481766435e-8,
+            electricityConsumption: 29.1,
+            quantity: 0.0018264840182648401,
+            numberOfUsers: 4.0,
+            lifespan: 0.0091324200913242,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server A",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg Sb eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 6.9906547728e-7,
+            peopleEqImpact: 2.5536638439452056e-5,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 2",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg Sb eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 6.658532053964471e-9,
+            peopleEqImpact: 2.432340476334053e-7,
+            electricityConsumption: 180.924217704336,
+            quantity: 7.575757575757576e-4,
+            numberOfUsers: 0.0,
+            lifespan: 7.596513075965131e-4,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server A",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg Sb eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 5.085164e-6,
+            peopleEqImpact: 1.8575941552511415e-4,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 2",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg Sb eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 3.4977168949771686e-10,
+            peopleEqImpact: 1.2777048018181438e-8,
+            electricityConsumption: 0.0,
+            quantity: 4.5662100456621003e-4,
+            numberOfUsers: 2.0,
+            lifespan: 0.00228310502283105,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server A",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg CO2 eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 3.4044280000000002,
+            peopleEqImpact: 0.003999328046989721,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server B",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg Sb eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 5.085164e-6,
+            peopleEqImpact: 1.8575941552511415e-4,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 2",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg Sb eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 1.095890410958904e-6,
+            peopleEqImpact: 4.0032526427722525e-5,
+            electricityConsumption: 0.0,
+            quantity: 4.5662100456621003e-4,
+            numberOfUsers: 2.0,
+            lifespan: 0.00228310502283105,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 2",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg CO2 eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 2.9015052160953797e-6,
+            peopleEqImpact: 3.4085230145026486e-9,
+            electricityConsumption: 0.0,
+            quantity: 7.575757575757576e-4,
+            numberOfUsers: 0.0,
+            lifespan: 7.596513075965131e-4,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 2",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg Sb eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 1.118148700115913e-6,
+            peopleEqImpact: 4.0845614616106415e-5,
+            electricityConsumption: 0.0,
+            quantity: 7.575757575757576e-4,
+            numberOfUsers: 0.0,
+            lifespan: 7.596513075965131e-4,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 2",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg CO2 eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 0.0016815141018858449,
+            peopleEqImpact: 1.975346962567806e-6,
+            electricityConsumption: 0.0,
+            quantity: 4.5662100456621003e-4,
+            numberOfUsers: 2.0,
+            lifespan: 0.00228310502283105,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 1",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg Sb eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 1.6772230501738696e-6,
+            peopleEqImpact: 6.126842192415962e-5,
+            electricityConsumption: 0.0,
+            quantity: 0.0011363636363636363,
+            numberOfUsers: 0.0,
+            lifespan: 0.0011394769613947697,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 1",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg CO2 eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 4.352257824143069e-6,
+            peopleEqImpact: 5.1127845217539725e-9,
+            electricityConsumption: 0.0,
+            quantity: 0.0011363636363636363,
+            numberOfUsers: 0.0,
+            lifespan: 0.0011394769613947697,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server B",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg CO2 eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 3.4044280000000002,
+            peopleEqImpact: 0.003999328046989721,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 2",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg CO2 eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 0.028127853881278538,
+            peopleEqImpact: 3.3043000154218545e-5,
+            electricityConsumption: 0.0,
+            quantity: 4.5662100456621003e-4,
+            numberOfUsers: 2.0,
+            lifespan: 0.00228310502283105,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 1",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg Sb eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 9.961345007451563e-10,
+            peopleEqImpact: 3.638847491306507e-8,
+            electricityConsumption: 0.0,
+            quantity: 0.0011363636363636363,
+            numberOfUsers: 0.0,
+            lifespan: 0.0011394769613947697,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server A",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg CO2 eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 1342.8784425000001,
+            peopleEqImpact: 1.5775370837004408,
+            electricityConsumption: 16513.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server A",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg CO2 eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 1495.26784,
+            peopleEqImpact: 1.7565554654919235,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server B",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg Sb eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 0.016298416,
+            peopleEqImpact: 0.5953759269406392,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server A",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg Sb eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 8.021982374e-4,
+            peopleEqImpact: 0.029304045201826483,
+            electricityConsumption: 16513.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 2",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg Sb eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 6.640896671634375e-10,
+            peopleEqImpact: 2.4258983275376715e-8,
+            electricityConsumption: 0.0,
+            quantity: 7.575757575757576e-4,
+            numberOfUsers: 0.0,
+            lifespan: 7.596513075965131e-4,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 2",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "TRANSPORTATION",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg Sb eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 1.139877049180328e-13,
+            peopleEqImpact: 4.163934426229508e-12,
+            electricityConsumption: 0.0,
+            quantity: 7.575757575757576e-4,
+            numberOfUsers: 0.0,
+            lifespan: 7.596513075965131e-4,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Server B",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Dedicated Server",
+            unit: "kg CO2 eq",
+            reference: "rack-server--30",
+            countValue: 1,
+            unitImpact: 1495.26784,
+            peopleEqImpact: 1.7565554654919235,
+            electricityConsumption: 0.0,
+            quantity: 1.0,
+            numberOfUsers: 0.0,
+            lifespan: 5.0,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Network 1",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "MANUFACTURING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Network",
+            unit: "kg CO2 eq",
+            reference: "fixed-line-network-1",
+            countValue: 1,
+            unitImpact: 0.013145802285146545,
+            peopleEqImpact: 1.5442939542022374e-5,
+            electricityConsumption: 0.0,
+            quantity: 0.0011363636363636363,
+            numberOfUsers: 0.0,
+            lifespan: 0.0011394769613947697,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 2",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg Sb eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 6.45512410958904e-10,
+            peopleEqImpact: 2.3580362044160876e-8,
+            electricityConsumption: 29.1,
+            quantity: 4.5662100456621003e-4,
+            numberOfUsers: 2.0,
+            lifespan: 0.00228310502283105,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 2",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "USING",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg CO2 eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 0.0010805866438356165,
+            peopleEqImpact: 1.2694116227143805e-6,
+            electricityConsumption: 29.1,
+            quantity: 4.5662100456621003e-4,
+            numberOfUsers: 2.0,
+            lifespan: 0.00228310502283105,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 1",
+            criterion: "CLIMATE_CHANGE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg CO2 eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 5.406392694063927e-4,
+            peopleEqImpact: 6.351122107564085e-7,
+            electricityConsumption: 0.0,
+            quantity: 0.0018264840182648401,
+            numberOfUsers: 4.0,
+            lifespan: 0.0091324200913242,
+            commonFilters: [""],
+            filters: [""],
+        },
+        {
+            name: "Terminal 1",
+            criterion: "RESOURCE_USE",
+            lifecycleStep: "END_OF_LIFE",
+            statusIndicator: "OK",
+            location: "France",
+            equipmentType: "Terminal",
+            unit: "kg Sb eq",
+            reference: "laptop-3",
+            countValue: 1,
+            unitImpact: 1.3990867579908674e-9,
+            peopleEqImpact: 5.110819207272575e-8,
+            electricityConsumption: 0.0,
+            quantity: 0.0018264840182648401,
+            numberOfUsers: 4.0,
+            lifespan: 0.0091324200913242,
+            commonFilters: [""],
+            filters: [""],
+        },
+    ] as any;
     outVirtualEquipments = [];
+
+    outVirtualEquipments2 = [];
+
+    compareApi: CompareVersion[] = [
+        {
+            versionId: "v1",
+            versionName: "Version 1",
+            physicalEquipment: this.outPhysicalEquipments,
+            virtualEquipment: this.outVirtualEquipments,
+        },
+        {
+            versionId: "v2",
+            versionName: "Version 2",
+            physicalEquipment: this.outPhysicalEquipments2,
+            virtualEquipment: this.outVirtualEquipments2,
+        },
+    ];
+    uniqueCriteria: string[] = [];
+    transformedVersionDataObj: any = {};
 
     private readonly translate = inject(TranslateService);
     ngOnInit(): void {
@@ -973,63 +1912,157 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
             // Load and compare the versions using these IDs
         });
 
-        this.globalVisionChartData = convertToGlobalVision(
-            this.outPhysicalEquipments,
-            this.outVirtualEquipments,
-        );
+        this.compareApi = this.compareApi.map((version) => ({
+            ...version,
+            convertToChartData: convertToGlobalVision(
+                version.physicalEquipment,
+                version.virtualEquipment,
+            ),
+        }));
+
+        // const criteria1 = this.compareApi[0]?.convertToChartData?.[0]?.impacts.flatMap(
+        //     (impact: any) => impact.criteria,
+        // );
+        // const criteria2 = this.compareApi[1]?.convertToChartData?.[0]?.impacts.flatMap(
+        //     (impact: any) => impact.criteria,
+        // );
+        // this.uniqueCriteria = [...new Set([...criteria1, ...criteria2])];
+
+        for (let version of this.compareApi) {
+            // Ensure version bucket exists
+            if (!this.transformedVersionDataObj[version.versionName]) {
+                this.transformedVersionDataObj[version.versionName] = {};
+            }
+
+            for (let chartData of version.convertToChartData ?? []) {
+                for (let impact of chartData.impacts ?? []) {
+                    const existing =
+                        this.transformedVersionDataObj[version.versionName][
+                            impact.criteria
+                        ];
+
+                    if (existing) {
+                        // If exists → accumulate
+                        existing.unitValue += impact.unitValue;
+                        existing.sipValue += impact.sipValue;
+                        existing.unit = this.translate.instant(
+                            `criteria.${impact.criteria.toLowerCase()}.unite`,
+                        );
+                    } else {
+                        // If not exists → create entry
+                        this.transformedVersionDataObj[version.versionName][
+                            impact.criteria
+                        ] = {
+                            unitValue: impact.unitValue,
+                            sipValue: impact.sipValue,
+                            unit: this.translate.instant(
+                                `criteria.${impact.criteria.toLowerCase()}.unite`,
+                            ),
+                        };
+                    }
+                }
+            }
+        }
+
+        console.log(this.compareApi);
+        console.log(this.uniqueCriteria);
+        console.log(this.transformedVersionDataObj);
     }
 
     getContentText(): GraphDescriptionContent {
-        // const isBarChart = this.chartType() === "bar";
-        // const isIncludeCriteria = Object.keys(this.globalStore.criteriaList()).includes(
-        //     this.selectedCriteria,
-        // );
-        // let translationKey: string;
-        // let textDescription: string = "";
-        // if (isBarChart) {
-        //     translationKey = this.getBarTranslateKey();
-        //     textDescription = this.getBarChartTextDescription(translationKey);
-        // } else {
-        //     const criteriaKey = this.selectedCriteria
-        //         .toLowerCase()
-        //         .replaceAll(/\s+/g, "-");
-        //     if (isIncludeCriteria) {
-        //         //Criteria View
-        //         translationKey = "ds-graph-description.criteria.";
-        //         textDescription = this.getCriteriaTextDescription(
-        //             translationKey,
-        //             criteriaKey,
-        //         );
-        //     } else {
-        //         // Global Vision
-        //         translationKey = `ds-graph-description.${criteriaKey}.`;
-        //         textDescription = this.getGlobalVisionTextDescription(translationKey);
-        //     }
-        // }
-        // const key =
-        //     "criteria." + this.selectedCriteria.toLowerCase().replaceAll(" ", "-") + ".";
-
+        const versionName = Object.keys(this.transformedVersionDataObj);
         return {
             description: this.translate.instant(
                 `digital-services.comparison.description`,
                 {
-                    version1Name: "A",
-                    version2Name: "B",
-                    impactsV1: "V1",
-                    impactsV2: "V2",
+                    version1Name: versionName[0],
+                    version2Name: versionName[1],
+                    impactsV1: Object.keys(this.transformedVersionDataObj[versionName[0]])
+                        .map((key) =>
+                            this.translate.instant(`criteria.${key.toLowerCase()}.title`),
+                        )
+                        .join(", "),
+                    impactsV2: Object.keys(this.transformedVersionDataObj[versionName[1]])
+                        .map((key) =>
+                            this.translate.instant(`criteria.${key.toLowerCase()}.title`),
+                        )
+                        .join(", "),
                 },
             ),
             scale: this.translate.instant(`digital-services.comparison.scale`),
-            textDescription: this.translate.instant(
-                `digital-services.comparison.text-description`,
-            ),
-            // description: this.translate.instant(`${translationKey}description`, {
-            //     criteria: this.impacts.flatMap((impact) => impact.title).join(", "),
-            // }),
-            // scale: isIncludeCriteria
-            //     ? this.translate.instant(`${key}scale`)
-            //     : this.translate.instant(`${translationKey}scale`),
-            // textDescription: textDescription,
+            textDescription:
+                this.translate.instant(`digital-services.comparison.text-description`) +
+                this.getTableDescription(),
         };
+    }
+
+    getTableDescription(): string {
+        const versionData = this.transformedVersionDataObj;
+
+        // 1️⃣ Get all version names
+        const versionNames = Object.keys(versionData);
+
+        // 2️⃣ Get all unique criteria across all versions
+        const allCriteria = new Set<string>();
+
+        for (const v of versionNames) {
+            const criteria = Object.keys(versionData[v]);
+            criteria.forEach((c) => allCriteria.add(c));
+        }
+
+        const criteriaList = [...allCriteria];
+
+        // 3️⃣ Build table headers
+        let table = `
+        <div style='overflow-x:auto;'>
+        <table style='width:100%;border-collapse:collapse;min-width:600px;'>
+        <thead><tr>
+            <th style='padding:14px 18px;text-align:center;font-size:1rem;'>Criteria</th>
+    `;
+
+        for (const version of versionNames) {
+            table += `<th style='padding:14px 18px;text-align:center;font-size:1rem;'>${version}</th>`;
+        }
+
+        table += `</tr></thead><tbody>`;
+
+        // 4️⃣ Build rows for each criteria
+        for (const criteriaKey of criteriaList) {
+            const translationKey = criteriaKey.toLowerCase();
+
+            const criteriaTitle = this.translate.instant(
+                `criteria.${translationKey}.title`,
+            );
+
+            table += `<tr>
+            <th style='padding:14px 18px;text-align:left;font-weight:600;'>${criteriaTitle}</th>
+        `;
+
+            // 5️⃣ Add column for each version
+            for (const version of versionNames) {
+                const entry = versionData[version]?.[criteriaKey];
+
+                const unitValue = entry?.unitValue ?? "-";
+                const sipValue = entry?.sipValue ?? "-";
+                const unit = entry?.unit ?? "";
+
+                table += `
+                <td style='padding:14px 18px;font-size:0.95rem;text-align:center; margin: 0px 10px'>
+                &nbsp;&nbsp;
+                    ${this.decimalsPipe.transform(unitValue)}
+                    <span style='font-size:0.85rem;color:#666;'>${unit}</span>
+                    (${this.integerPipe.transform(sipValue)}
+                    ${this.translate.instant(`common.peopleeq-full`)})
+                    &nbsp;&nbsp;
+
+                </td>
+            `;
+            }
+
+            table += `</tr>`;
+        }
+
+        table += `</tbody></table></div>`;
+        return table;
     }
 }

@@ -6,12 +6,19 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { RouterModule, Routes } from "@angular/router";
+import { TitleResolver } from "../common/title-resolver.service";
 import { DigitalServicesCompareVersionsComponent } from "./digital-services-compare-versions.component";
 
 const routes: Routes = [
     {
         path: "",
         component: DigitalServicesCompareVersionsComponent,
+        resolve: {
+            title: TitleResolver,
+        },
+        data: {
+            titleKey: "digital-services.version.compare-versions-title",
+        },
     },
 ];
 
