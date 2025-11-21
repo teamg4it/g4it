@@ -79,7 +79,8 @@ export class PanelServerParametersComponent {
         const datacenters = this.datacenterOptions();
         const serverTypes = this.digitalServiceStore.serverTypes();
 
-        if (srv.id === undefined && srv.host === undefined) {
+        const hostfound = this.serverTypes().find((st) => st.value === srv.host?.value);
+        if ((srv.id === undefined && srv.host === undefined) || !hostfound) {
             if (srv.type === "Compute") {
                 srv.host =
                     serverTypes[
