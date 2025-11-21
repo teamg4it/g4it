@@ -16,22 +16,56 @@
             <div class="text-4xl font-semibold">
                 {{ "common.versions" | translate }}
             </div>
-            <div class="w-10rem">
+
+            <div class="w-25rem">
+                <div
+                    class="flex justify-content-between gap-1 flex-wrap text-base"
+                    *ngFor="let software of versions"
+                >
+                    <span class="flex w-7rem">{{ software.name | uppercase }}</span>
+                    <span class="flex">{{ software.version }}</span>
+                    <span class="flex"
+                        ><a
+                            [href]="repoUrls[software.name]"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{{ "useful-information.link-to-github" | translate }}</a
+                        ></span
+                    >
+                </div>
+            </div>
+            <p>
+                {{ "useful-information.g4it-line" | translate }}
+                <a
+                    href="https://saas-g4it.com/documentation/5-releases/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >{{ "useful-information.documentation" | translate }}</a
+                >.
+            </p>
+        </div>
+
+        <div class="my-4">
+            <div class="text-4xl font-semibold">
+                {{ "useful-information.computing-engines" | translate }}
+            </div>
+
+            <div class="w-25rem">
                 <ul aria-labelledby="openVersion">
                     <li
-                        class="flex justify-content-between flex-wrap text-base"
-                        *ngFor="let software of versions"
+                        class="flex justify-content-between gap-1 flex-wrap text-base"
+                        *ngFor="let software of externalVersions"
                     >
-                        @if (
-                            ((userService.isAllowedEcoMindAiRead$ | async) &&
-                                currentOrganization.ecomindai &&
-                                isEcoMindModuleEnabled &&
-                                software.name === "ecomindai") ||
-                            software.name !== "ecomindai"
-                        ) {
-                            <span>{{ software.name | uppercase }}</span>
-                            <span>{{ software.version }}</span>
-                        }
+                        <span class="flex w-7rem">{{ software.name | uppercase }}</span>
+                        <span class="flex">{{ software.version }}</span>
+                        <span class="flex"
+                            ><a
+                                [href]="repoUrls[software.name]"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >{{ "useful-information.link-to-github" | translate }}</a
+                            ></span
+                        >
                     </li>
                 </ul>
             </div>
@@ -42,7 +76,7 @@
                 {{ "common.open-hours" | translate }}
             </div>
 
-            <div class="w-16rem">
+            <div class="w-20rem">
                 <ul aria-labelledby="openTitle">
                     <li
                         class="flex justify-content-between flex-wrap text-base"

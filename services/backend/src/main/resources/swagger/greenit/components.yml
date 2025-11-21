@@ -213,6 +213,8 @@ components:
           type: string
         ecomindai:
           type: string
+        numecoeval:
+          type: string
     UserRest:
       description: User information
       type: object

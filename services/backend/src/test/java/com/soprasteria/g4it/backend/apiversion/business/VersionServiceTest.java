@@ -29,11 +29,15 @@ class VersionServiceTest {
     void getVersionReturnsCorrectVersionDetails() {
         ReflectionTestUtils.setField(versionService, "version", "1.0.0");
         ReflectionTestUtils.setField(versionService, "boaviztaVersion", "2.0.0");
+        ReflectionTestUtils.setField(versionService, "ecomindai", "1.1.0");
+        ReflectionTestUtils.setField(versionService, "numecoeval", "2.1.0");
         VersionRest result = versionService.getVersion();
 
         assertNotNull(result);
         assertEquals("1.0.0", result.getG4it());
         assertEquals("2.0.0", result.getBoaviztapi());
+        assertEquals("1.1.0", result.getEcomindai());
+        assertEquals("2.1.0", result.getNumecoeval());
     }
 
 }
