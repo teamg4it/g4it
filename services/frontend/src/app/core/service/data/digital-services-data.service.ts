@@ -135,18 +135,28 @@ export class DigitalServicesDataService {
         );
     }
 
-    copyUrl(uid: DigitalService["uid"], extendLink: boolean): Observable<ShareLinkResp> {
+    copyUrl(
+        uid: DigitalService["uid"],
+        digitalService: DigitalService,
+        extendLink: boolean,
+    ): Observable<ShareLinkResp> {
         let params = new HttpParams();
         if (extendLink) {
             params = params.set("extendLink", extendLink);
         }
         return this.http
-            .get<ShareLinkResp>(`${endpointDsVersions}/${uid}/share`, { params })
+            .get<ShareLinkResp>(`${endpointDsVersions}/${digitalService.uid}/share`, {
+                params,
+            })
             .pipe(
                 map((response) => {
                     return {
                         ...response,
-                        url: environment.frontEndUrl + response.url + "/footprint",
+                        url:
+                            environment.frontEndUrl +
+                            response.url +
+                            "/footprint" +
+                            (digitalService?.lastCalculationDate ? "/dashboard" : ""),
                     };
                 }),
             );

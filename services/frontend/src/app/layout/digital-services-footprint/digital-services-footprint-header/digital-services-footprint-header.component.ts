@@ -235,7 +235,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.global.setLoading(true);
         }
         this.digitalServicesData
-            .copyUrl(this.digitalServiceVersionUid, extendLink)
+            .copyUrl(this.digitalServiceVersionUid, this.digitalService, extendLink)
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
                 finalize(() => {
