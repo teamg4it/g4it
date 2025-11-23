@@ -12,6 +12,7 @@
 
 - 1710 | Change Server type from Compute to Storage is not taken into account
 - 1693 | [IS module] Control on the default DC for physical equipment
+- 1641 | Share functionality to display page result by default 
 - 1697 | Warning message when deleting a line in digital services resources
 - 1611 | Add the ecomindAI version on the Useful Information page
 - 1400 | find a simpler solution to save electricity consumption in out_physical_equipment
