@@ -224,8 +224,8 @@ class DigitalServiceVersionServiceTest {
         final UserWorkspace userWorkspace = UserWorkspace.builder().id(1).roles(
                 List.of(Role.builder().name("ROLE_DIGITAL_SERVICE_WRITE").build())).build();
 
-        final DigitalServiceVersionBO inputDigitalServiceVersionBO = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).name("name").build();
-        final DigitalServiceVersionBO digitalServiceVersionBO = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).build();
+        final DigitalServiceVersionBO inputDigitalServiceVersionBO = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).name("name").build();
+        final DigitalServiceVersionBO digitalServiceVersionBO = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build();
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().uid(DIGITAL_SERVICE_VERSION_UID).digitalService(digitalService).build();
         final DigitalServiceVersion digitalServiceVersionUpdated = DigitalServiceVersion.builder().uid(DIGITAL_SERVICE_VERSION_UID).digitalService(digitalService).description("name").build();
@@ -247,7 +247,7 @@ class DigitalServiceVersionServiceTest {
                 .updateDigitalServiceVersion(inputDigitalServiceVersionBO, ORGANIZATION, WORKSPACE_ID, userBO);
 
         assertThat(result).isEqualTo(inputDigitalServiceVersionBO);
-        verify(digitalServiceVersionRepository, times(1)).findById(digitalServiceVersionBO.getDsvUid());
+        verify(digitalServiceVersionRepository, times(1)).findById(digitalServiceVersionBO.getUid());
         verify(digitalServiceVersionMapper, times(1)).toFullBusinessObject(digitalServiceVersionUpdated);
         verify(digitalServiceVersionMapper, times(1)).mergeEntity(digitalServiceVersion, inputDigitalServiceVersionBO, digitalServiceReferentialService, user);
         verify(digitalServiceVersionRepository, times(1)).save(digitalServiceVersion);
@@ -264,10 +264,10 @@ class DigitalServiceVersionServiceTest {
         final UserWorkspace userWorkspace = UserWorkspace.builder().id(1).roles(
                 List.of(Role.builder().name("ROLE_DIGITAL_SERVICE_WRITE").build())).build();
 
-        final DigitalServiceVersionBO inputDigitalServiceBO = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).name("name").enableDataInconsistency(false).build();
+        final DigitalServiceVersionBO inputDigitalServiceBO = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).name("name").enableDataInconsistency(false).build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).build();
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().uid(DIGITAL_SERVICE_VERSION_UID).digitalService(digitalService).build();
-        final DigitalServiceVersionBO digitalServiceBO = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).build();
+        final DigitalServiceVersionBO digitalServiceBO = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).build();
         final DigitalServiceVersion digitalServiceUpdated = DigitalServiceVersion.builder().uid(DIGITAL_SERVICE_VERSION_UID).description("name").build();
         Organization organizationObj = Organization.builder().id(ORGANIZATION_ID).name(ORGANIZATION).build();
 
@@ -284,7 +284,7 @@ class DigitalServiceVersionServiceTest {
         final DigitalServiceVersionBO result = digitalServiceVersionService.updateDigitalServiceVersion(inputDigitalServiceBO, ORGANIZATION, WORKSPACE_ID, userBO);
 
         assertThat(result).isEqualTo(inputDigitalServiceBO);
-        verify(digitalServiceVersionRepository, times(1)).findById(digitalServiceBO.getDsvUid());
+        verify(digitalServiceVersionRepository, times(1)).findById(digitalServiceBO.getUid());
         verify(digitalServiceVersionMapper, times(1)).mergeEntity(digitalServiceVersion, inputDigitalServiceBO, digitalServiceReferentialService, user);
         verify(digitalServiceVersionRepository, times(1)).save(digitalServiceVersion);
         verify(digitalServiceVersionMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
@@ -295,7 +295,7 @@ class DigitalServiceVersionServiceTest {
 
     @Test
     void whenNoChange_thenDigitalServiceEntityNotChange() {
-        final DigitalServiceVersionBO digitalServiceVersionBO = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).build();
+        final DigitalServiceVersionBO digitalServiceVersionBO = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build();
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().digitalService(digitalService).uid(DIGITAL_SERVICE_VERSION_UID).build();
 
@@ -305,7 +305,7 @@ class DigitalServiceVersionServiceTest {
         final DigitalServiceVersionBO result = digitalServiceVersionService.updateDigitalServiceVersion(digitalServiceVersionBO, ORGANIZATION, WORKSPACE_ID, null);
 
         assertThat(result).isEqualTo(digitalServiceVersionBO);
-        verify(digitalServiceVersionRepository, times(1)).findById(digitalServiceVersionBO.getDsvUid());
+        verify(digitalServiceVersionRepository, times(1)).findById(digitalServiceVersionBO.getUid());
         verify(digitalServiceVersionMapper, times(1)).toBusinessObject(digitalServiceVersion);
     }
 
@@ -314,7 +314,7 @@ class DigitalServiceVersionServiceTest {
     void whenUpdateNotExistDigitalService_thenThrow() {
         when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.empty());
 
-        final DigitalServiceVersionBO bo = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).build();
+        final DigitalServiceVersionBO bo = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).build();
         assertThatThrownBy(() -> digitalServiceVersionService.updateDigitalServiceVersion(bo, ORGANIZATION, WORKSPACE_ID, null))
                 .hasMessageContaining("Digital Service " + DIGITAL_SERVICE_VERSION_UID + " not found.")
                 .isInstanceOf(G4itRestException.class);
@@ -327,11 +327,11 @@ class DigitalServiceVersionServiceTest {
     @Test
     void shouldUpdateWhenUser_IsAdmin() {
         final UserBO userBO = UserBO.builder().id(USER_ID).build();
-        final DigitalServiceVersionBO inputDigitalServiceVersionBO = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).name("name").build();
+        final DigitalServiceVersionBO inputDigitalServiceVersionBO = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).name("name").build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).name("name").enableDataInconsistency(false).build();
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().uid(DIGITAL_SERVICE_VERSION_UID).digitalService(digitalService).build();
         final DigitalServiceVersion digitalServiceVersionUpdated = DigitalServiceVersion.builder().uid(DIGITAL_SERVICE_VERSION_UID).description("name").digitalService(digitalService).build();
-        final DigitalServiceVersionBO digitalServiceVersionBO = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).build();
+        final DigitalServiceVersionBO digitalServiceVersionBO = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).build();
         Organization organizationObj = Organization.builder().id(ORGANIZATION_ID).name(ORGANIZATION).build();
 
         when(organizationRepository.findByName(ORGANIZATION)).thenReturn(Optional.of(organizationObj));
@@ -364,7 +364,7 @@ class DigitalServiceVersionServiceTest {
     void shouldThrowIfNotAuthorized_NoRoleAndNoInconsistencyChange() {
         final UserBO userBO = UserBO.builder().id(USER_ID).build();
         final DigitalServiceVersionBO digitalServiceVersionBO = DigitalServiceVersionBO.builder()
-                .dsvUid(DIGITAL_SERVICE_VERSION_UID).note(NoteBO.builder().content("note").build()).enableDataInconsistency(false).build();
+                .uid(DIGITAL_SERVICE_VERSION_UID).note(NoteBO.builder().content("note").build()).enableDataInconsistency(false).build();
         final DigitalService digitalService = DigitalService.builder()
                 .uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build();
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
@@ -397,7 +397,7 @@ class DigitalServiceVersionServiceTest {
         final User user = User.builder().id(USER_ID).build();
 
         final DigitalServiceVersionBO digitalServiceVersionBO = DigitalServiceVersionBO.builder()
-                .dsvUid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(true).build();
+                .uid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(true).build();
         final DigitalService digitalService = DigitalService.builder()
                 .uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build();
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
@@ -417,7 +417,7 @@ class DigitalServiceVersionServiceTest {
 
         when(digitalServiceVersionRepository.findById(digitalServiceVersion.getUid())).thenReturn(Optional.of(digitalServiceVersion));
         when(digitalServiceVersionMapper.toFullBusinessObject(digitalServiceVersion)).thenReturn(
-                DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).build());
+                DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).build());
         when(userWorkspaceRepository.findByWorkspaceIdAndUserId(WORKSPACE_ID, USER_ID))
                 .thenReturn(Optional.of(userOrg));
         // Data inconsistency value is different
@@ -435,7 +435,7 @@ class DigitalServiceVersionServiceTest {
         final UserBO userBO = UserBO.builder().id(USER_ID).build();
         final User user = User.builder().id(USER_ID).build();
 
-        final DigitalServiceVersionBO inputDigitalServiceVersionBO = DigitalServiceVersionBO.builder().dsvUid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).name("service").build();
+        final DigitalServiceVersionBO inputDigitalServiceVersionBO = DigitalServiceVersionBO.builder().uid(DIGITAL_SERVICE_VERSION_UID).enableDataInconsistency(false).name("service").build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build();
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().uid(DIGITAL_SERVICE_VERSION_UID).digitalService(digitalService).build();
         final DigitalService digitalServiceUpdated = DigitalService.builder().uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).name("service").build();

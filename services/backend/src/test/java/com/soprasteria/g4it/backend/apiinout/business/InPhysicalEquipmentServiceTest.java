@@ -257,7 +257,7 @@ class InPhysicalEquipmentServiceTest {
                 inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceUid, id, equipmentUpdateRest));
 
         assertEquals("409", exception.getCode());
-        assertEquals("the digital service uid provided: service-123 is not compatible with the digital uid : service-456 linked to this physical equipment id: 1", exception.getMessage());
+        assertEquals("the digital service version uid provided: service-123 is not compatible with the digital uid : service-456 linked to this physical equipment id: 1", exception.getMessage());
         verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidAndId(digitalServiceUid, id);
     }
 
