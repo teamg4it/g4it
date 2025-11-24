@@ -40,7 +40,7 @@
 
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
 <div class="flex justify-content-between align-items-center flex-wrap">
-    <div class="block relative w-full lg:w-auto lg:flex align-items-center">
+    <div class="block relative w-full lg:w-auto md:flex align-items-center">
         @if (!isSharedDs) {
             <p-button
                 [routerLink]="changePageToDigitalServices()"
@@ -76,7 +76,7 @@
         <div class="input-title flex align-items-center">
             <h2
                 *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
-                class="text-4xl px-2 color-black-seventy"
+                class="text-xl px-2 color-black-seventy lg:text-4xl"
             >
                 {{ digitalService.name }}
             </h2>
@@ -86,38 +86,43 @@
                 [closeAriaLabel]="'digital-services.save-inplace' | translate"
                 [preventClick]="digitalService.name === ''"
                 (onDeactivate)="onNameUpdate(digitalService.name, true)"
-                styleClass="inline-block w-auto color-black-seventy lg:w-18rem"
+                styleClass="inline-block w-auto color-black-seventy lg:w-24rem md:w-15rem"
             >
                 <ng-template pTemplate="display">
-                    <h2 class="text-4xl px-2 color-black-seventy">
+                    <h2 class="text-xl px-2 color-black-seventy lg:text-4xl">
                         {{ digitalService.name }}
                     </h2>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <input
                         type="text"
-                        class="text-4xl font-semibold color-black-seventy px-2 mr-2 w-9"
+                        class="text-xl font-semibold color-black-seventy px-2 mr-2 w-11 lg:text-4xl"
                         pInputText
                         [(ngModel)]="digitalService.name"
                         [required]="true"
                     />
                 </ng-template>
+
                 <ng-template pTemplate="closeicon">
                     <i class="pi pi-check"></i>
                 </ng-template>
             </p-inplace>
         </div>
-        <i class="pi pi-angle-right text-2xl"></i>
+        @if (digitalService.name) {
+            <i class="pi pi-angle-right text-2xl"></i>
+        }
 
         @if (!isManageVersions()) {
-            <app-version-type-tag
-                [versionType]="digitalService.versionType"
-            ></app-version-type-tag>
+            @if (digitalService.versionType) {
+                <app-version-type-tag
+                    [versionType]="digitalService.versionType"
+                ></app-version-type-tag>
+            }
 
             <div class="input-title flex align-items-center">
                 <h2
                     *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
-                    class="text-4xl px-2"
+                    class="text-xl px-2 lg:text-4xl"
                 >
                     {{ digitalService.description }}
                 </h2>
@@ -127,17 +132,17 @@
                     [closeAriaLabel]="'digital-services.save-inplace' | translate"
                     [preventClick]="digitalService.description === ''"
                     (onDeactivate)="onNameUpdate(digitalService.description!, false)"
-                    styleClass="inline-block w-auto  lg:w-18rem"
+                    styleClass="inline-block w-auto  lg:w-24rem md:w-15rem"
                 >
                     <ng-template pTemplate="display">
-                        <h2 class="text-4xl px-2">
+                        <h2 class="text-xl px-2 lg:text-4xl">
                             {{ digitalService.description }}
                         </h2>
                     </ng-template>
                     <ng-template pTemplate="content">
                         <input
                             type="text"
-                            class="text-4xl font-semibold px-2 mr-2 w-9"
+                            class="text-xl font-semibold px-2 mr-2 w-11 lg:text-4xl"
                             pInputText
                             [(ngModel)]="digitalService.description"
                             [required]="true"
