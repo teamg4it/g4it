@@ -94,9 +94,6 @@ databaseChangeLog:
               - column:
                   name: created_by
                   type: bigint
-              - column:
-                  name: task_id
-                  type: bigint
               - addUniqueConstraint:
                   columnNames: item_id, description
                   constraintName: digital_service_version_unique
