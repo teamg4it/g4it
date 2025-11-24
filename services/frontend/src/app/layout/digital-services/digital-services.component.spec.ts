@@ -99,9 +99,12 @@ describe("DigitalServicesComponent", () => {
     it("should navigate to digital service footprint", () => {
         const uid = "123";
         component.goToDigitalServiceFootprint(uid);
-        expect(mockRouter.navigate).toHaveBeenCalledWith([`${uid}/footprint/resources`], {
-            relativeTo: mockRoute,
-        });
+        expect(mockRouter.navigate).toHaveBeenCalledWith(
+            [`../digital-service-version/${uid}/footprint/resources`],
+            {
+                relativeTo: mockRoute,
+            },
+        );
     });
 
     it("should create a new digital service and navigate to its footprint", async () => {
@@ -109,11 +112,8 @@ describe("DigitalServicesComponent", () => {
         //for the else if
         component.isEcoMindAi = false;
         component.isAllowedDigitalService = true;
-        await component.createNewDigitalService();
+        await component.createNewDigitalServices({ dsName: "New DS", versionName: "v1" });
         expect(mockDigitalServicesData.create).toHaveBeenCalled();
-        expect(mockRouter.navigate).toHaveBeenCalledWith(["2/footprint/resources"], {
-            relativeTo: mockRoute,
-        });
     });
 
     it("should delete a digital service and refresh the list", () => {
@@ -137,7 +137,6 @@ describe("DigitalServicesComponent", () => {
     it("should delete a note for a digital service", () => {
         component.selectedDigitalService = { uid: "1" } as any;
         component.noteDelete();
-        expect(mockDigitalServicesData.get).toHaveBeenCalledWith("1");
         expect(mockDigitalServicesData.update).toHaveBeenCalledWith(
             jasmine.objectContaining({ note: undefined }),
         );

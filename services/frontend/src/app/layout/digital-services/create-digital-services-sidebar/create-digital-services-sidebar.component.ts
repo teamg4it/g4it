@@ -65,7 +65,7 @@ export class CreateDigitalServicesSidebarComponent implements OnInit {
                 ],
             ),
             dsVersionName: new FormControl<string | undefined>(
-                "Version 1.0",
+                "Version 1",
                 Validators.required,
             ),
         });
