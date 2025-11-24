@@ -10,8 +10,11 @@ package com.soprasteria.g4it.backend.apisharedlink.controller;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionRestMapper;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
@@ -41,6 +44,8 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
     private DigitalServiceReferentialService digitalServiceReferentialService;
     private DigitalServiceReferentialRestMapper digitalServiceReferentialRestMapper;
     private DigitalServiceService digitalServiceService;
+    private DigitalServiceVersionService digitalServiceVersionService;
+    private DigitalServiceVersionRestMapper digitalServiceVersionRestMapper;
     /**
      * Service to access physical equipment output data.
      */
@@ -84,9 +89,9 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
 
 
     @Override
-    public ResponseEntity<Boolean> getSharedDigitalServiceLinkValidation(String digitalServiceUid,
+    public ResponseEntity<Boolean> getSharedDigitalServiceLinkValidation(String digitalServiceVersionUid,
                                                                          String shareId) {
-        return ResponseEntity.ok().body(digitalServiceService.validateDigitalServiceSharedLink(digitalServiceUid, shareId));
+        return ResponseEntity.ok().body(digitalServiceVersionService.validateDigitalServiceSharedLink(digitalServiceVersionUid, shareId));
     }
 
 
@@ -103,8 +108,8 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
 
 
     @Override
-    public ResponseEntity<DigitalServiceRest> getSharedDigitalServiceLinkMetadata(String digitalServiceUid,
+    public ResponseEntity<DigitalServiceVersionRest> getSharedDigitalServiceLinkMetadata(String digitalServiceVersionUid,
                                                                                   String shareId) {
-        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.getDigitalService(digitalServiceUid)));
+        return ResponseEntity.ok(digitalServiceVersionRestMapper.toDto(digitalServiceVersionService.getDigitalServiceVersion(digitalServiceVersionUid)));
     }
 }

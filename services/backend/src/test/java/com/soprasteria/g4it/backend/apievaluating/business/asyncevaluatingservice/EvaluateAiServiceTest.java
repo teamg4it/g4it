@@ -127,25 +127,25 @@ class EvaluateAiServiceTest {
         when(context.getDigitalServiceName()).thenReturn("Digital Service 1");
         when(context.log()).thenReturn("context-log");
         when(context.isHasVirtualEquipments()).thenReturn(true);
-        when(context.getDigitalServiceVersionUid()).thenReturn("dsvuid");
+        when(context.getDigitalServiceVersionUid()).thenReturn("uid");
         when(context.getDigitalServiceVersionName()).thenReturn("Digital Service Version 1");
 
         when(task.getId()).thenReturn(99L);
         when(task.getCriteria()).thenReturn(List.of("CLIMATE_CHANGE"));
 
         InAiParameter aiParam = mockAiParameter();
-        when(inAIParameterRepository.findByDigitalServiceVersionUid("dsvuid")).thenReturn(aiParam);
-        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("dsvuid")).thenReturn(mock(InAiInfrastructure.class));
+        when(inAIParameterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(aiParam);
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid")).thenReturn(mock(InAiInfrastructure.class));
 
         InDatacenter datacenter = mockDatacenter("DC1", "FR");
-        when(inDatacenterRepository.findByDigitalServiceVersionUid("dsvuid")).thenReturn(List.of(datacenter));
+        when(inDatacenterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(List.of(datacenter));
 
         InPhysicalEquipment physicalEquipment = mock(InPhysicalEquipment.class);
         when(physicalEquipment.getDatacenterName()).thenReturn("DC1");
-        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid("dsvuid")).thenReturn(new ArrayList<>(List.of(physicalEquipment)));
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new ArrayList<>(List.of(physicalEquipment)));
 
         InVirtualEquipment virtualEquipment = mock(InVirtualEquipment.class);
-        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("dsvuid")).thenReturn(new ArrayList<>(List.of(virtualEquipment)));
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new ArrayList<>(List.of(virtualEquipment)));
         when(virtualEquipment.getLocation()).thenReturn("FR");
         when(virtualEquipment.getQuantity()).thenReturn(1.0);
         when(virtualEquipment.getDurationHour()).thenReturn(10.0);

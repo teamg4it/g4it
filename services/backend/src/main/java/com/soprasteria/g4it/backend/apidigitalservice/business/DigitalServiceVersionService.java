@@ -167,10 +167,10 @@ public class DigitalServiceVersionService {
     public DigitalServiceVersionBO updateDigitalServiceVersion(final DigitalServiceVersionBO digitalServiceVersion, final String organizationName,
                                                                final Long workspaceId, final UserBO user) {
 
-        // Check if digital service exist.
-        final DigitalServiceVersion digitalServiceVersionToUpdate = getDigitalServiceVersionEntity(digitalServiceVersion.getDsvUid());
+        // Check if digital service version exist.
+        final DigitalServiceVersion digitalServiceVersionToUpdate = getDigitalServiceVersionEntity(digitalServiceVersion.getUid());
 
-        // Check if digital service was updated.
+        // Check if digital service version was updated.
         final DigitalServiceVersionBO digitalServiceVersionToUpdateBO = digitalServiceVersionMapper.toBusinessObject(digitalServiceVersionToUpdate);
         if (digitalServiceVersion.equals(digitalServiceVersionToUpdateBO)) {
             return digitalServiceVersionToUpdateBO;
@@ -203,20 +203,20 @@ public class DigitalServiceVersionService {
      *
      * @param organization      the client organization name.
      * @param workspaceId       the linked workspace id.
-     * @param digitalServiceUid the digital service id.
+     * @param digitalServiceVersionUid the digital service id.
      * @return the url.
      */
     public DigitalServiceShareRest shareDigitalService(final String organization, final Long workspaceId,
-                                                       final String digitalServiceUid, final UserBO userBO,
+                                                       final String digitalServiceVersionUid, final UserBO userBO,
                                                        final Boolean extendLink) {
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
-                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, organization, workspaceId))
+        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow(() ->
+                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceVersionUid, organization, workspaceId))
         );
 
         // Get the linked user.
         final User user = userRepository.findById(userBO.getId()).orElseThrow();
 
-        List<DigitalServiceSharedLink> digitalServiceLinkList = digitalServiceLinkRepository.findByDigitalService(digitalService);
+        List<DigitalServiceSharedLink> digitalServiceLinkList = digitalServiceLinkRepository.findByDigitalServiceVersion(digitalServiceVersion);
 
         DigitalServiceSharedLink digitalServiceActiveLink = digitalServiceLinkList.stream()
                 .filter(DigitalServiceSharedLink::isActive)
@@ -235,8 +235,8 @@ public class DigitalServiceVersionService {
                 digitalServiceActiveLink.setExpiryDate(expiryDate);
                 digitalServiceLinkRepository.save(digitalServiceActiveLink);
             }
-            return DigitalServiceShareRest.builder().url(String.format("/shared/%s/ds/%s",
-                            digitalServiceActiveLink.getUid(), digitalServiceUid))
+            return DigitalServiceShareRest.builder().url(String.format("/shared/%s/dsv/%s",
+                            digitalServiceActiveLink.getUid(), digitalServiceVersionUid))
                     .expiryDate(digitalServiceActiveLink.getExpiryDate())
                     .build();
 
@@ -244,7 +244,7 @@ public class DigitalServiceVersionService {
         } else {
             // Create a new shared link
             DigitalServiceSharedLink linkToCreate = DigitalServiceSharedLink.builder()
-                    .digitalService(digitalService)
+                    .digitalServiceVersion(digitalServiceVersion)
                     .createdBy(user)
                     .isActive(true)
                     .creationDate(LocalDateTime.now())
@@ -254,7 +254,7 @@ public class DigitalServiceVersionService {
             DigitalServiceSharedLink savedLink = digitalServiceLinkRepository.save(linkToCreate);
 
             return DigitalServiceShareRest.builder()
-                    .url(String.format("/shared/%s/ds/%s", savedLink.getUid(), digitalServiceUid))
+                    .url(String.format("/shared/%s/dsv/%s", savedLink.getUid(), digitalServiceVersionUid))
                     .expiryDate(savedLink.getExpiryDate())
                     .build();
         }
@@ -271,7 +271,7 @@ public class DigitalServiceVersionService {
         DigitalServiceVersionBO digitalServiceVersioneBO = digitalServiceVersionMapper.toFullBusinessObject(getDigitalServiceVersionEntity(digitalServiceVersionUid));
 
         //check shared link presence
-        boolean isShared = digitalServiceLinkRepository.existsByDigitalService_UidAndIsActiveTrue(digitalServiceVersionUid);
+        boolean isShared = digitalServiceLinkRepository.existsByDigitalServiceVersion_UidAndIsActiveTrue(digitalServiceVersionUid);
 
         digitalServiceVersioneBO.setIsShared(isShared);
         return digitalServiceVersioneBO;
@@ -300,9 +300,9 @@ public class DigitalServiceVersionService {
     }
 
 
-    public Boolean validateDigitalServiceSharedLink(String digitalServiceUid,
+    public Boolean validateDigitalServiceSharedLink(String digitalServiceVersionUid,
                                                     String shareId) {
-        return digitalServiceLinkRepository.validateLink(shareId, digitalServiceUid).isPresent();
+        return digitalServiceLinkRepository.validateLink(shareId, digitalServiceVersionUid).isPresent();
 
 
     }

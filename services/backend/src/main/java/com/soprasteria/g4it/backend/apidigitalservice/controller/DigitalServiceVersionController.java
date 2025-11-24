@@ -75,8 +75,7 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
         );
 
         DigitalServiceVersionRest digitalServiceVersionDTO = digitalServiceVersionRestMapper.toDto(digitalServiceVersionBO);
-        digitalServiceVersionDTO.setUid(digitalServiceVersionBO.getDsvUid());
-        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", digitalServiceVersionBO.getDsvUid())))).body(digitalServiceVersionDTO);
+        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", digitalServiceVersionBO.getUid())))).body(digitalServiceVersionDTO);
     }
 
 
@@ -120,9 +119,9 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
     @Override
     public ResponseEntity<DigitalServiceShareRest> shareDigitalServiceVersion(final String organization,
                                                                               final Long workspace,
-                                                                              final String digitalServiceUid,
+                                                                              final String digitalServiceVersionUid,
                                                                               final Boolean extendLink) {
-        return ResponseEntity.ok(digitalServiceVersionService.shareDigitalService(organization, workspace, digitalServiceUid,
+        return ResponseEntity.ok(digitalServiceVersionService.shareDigitalService(organization, workspace, digitalServiceVersionUid,
                 authService.getUser(), extendLink));
     }
 

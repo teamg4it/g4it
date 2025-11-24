@@ -23,11 +23,7 @@ import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepos
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Role;
-import com.soprasteria.g4it.backend.apiuser.modeldb.User;
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
@@ -48,21 +44,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.anyList;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.argThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceServiceTest {
@@ -108,33 +92,6 @@ class DigitalServiceServiceTest {
     @Mock
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
-    @Test
-    void shouldCreateNewDigitalService_first() {
-
-        final Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).build();
-
-        final User user = User.builder().id(USER_ID).build();
-        final DigitalServiceBO expectedBo = DigitalServiceBO.builder().build();
-        final String expectedName = "Digital Service 1";
-        final List<DigitalService> existingDigitalService = new ArrayList<>();
-
-        final DigitalService digitalServiceToSave = DigitalService.builder().workspace(linkedWorkspace).user(user).name(expectedName).build();
-        when(digitalServiceRepository.findByWorkspaceAndIsAi(linkedWorkspace, false)).thenReturn(existingDigitalService);
-        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
-        when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
-        when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(WORKSPACE_ID, USER_ID, IS_AI);
-
-        assertThat(result).isEqualTo(expectedBo);
-
-        verify(workspaceService, times(1)).getWorkspaceById(WORKSPACE_ID);
-        verify(digitalServiceRepository, times(1)).findByWorkspaceAndIsAi(linkedWorkspace, false);
-        verify(digitalServiceRepository, times(1)).save(any());
-        verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
-        verify(userRepository, times(1)).findById(USER_ID);
-    }
 
     @Test
     void shouldCreateNewDigitalService_withExistingDigitalService() {
@@ -216,7 +173,7 @@ class DigitalServiceServiceTest {
         User creator = User.builder().id(1L).firstName("first").lastName("last").build();
 
         DigitalService digitalService = DigitalService.builder().name("name").isAi(IS_AI).user(creator).build();
-        DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().uid("dsvUid").digitalService(digitalService).build();
+        DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().uid("uid").digitalService(digitalService).build();
         final DigitalServiceBO digitalServiceBo = DigitalServiceBO.builder().uid(DIGITAL_SERVICE_UID).build();
 
         when(digitalServiceMapper.toBusinessObject(any(DigitalService.class)))
@@ -572,78 +529,4 @@ class DigitalServiceServiceTest {
                 );
 
     }
-
-    @Test
-    void shareDigitalService_existingLink_updatesExpiryAndReturnsRest() {
-        DigitalService digitalService = new DigitalService();
-        digitalService.setUid(DIGITAL_SERVICE_UID);
-
-        final User user = User.builder().id(USER_ID).build();
-        final UserBO userBO = UserBO.builder().id(USER_ID).build();
-
-        List<DigitalServiceSharedLink> digitalServiceSharedLinks = new ArrayList<>();
-        DigitalServiceSharedLink existingLink = DigitalServiceSharedLink.builder()
-                .uid("linkUid")
-                .digitalService(digitalService)
-                .expiryDate(LocalDateTime.now().minusDays(1))
-                .isActive(true)
-                .build();
-
-        digitalServiceSharedLinks.add(existingLink);
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-        when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(digitalServiceSharedLinks);
-        when(digitalServiceLinkRepo.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
-        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO, true);
-
-        assertNotNull(result);
-        assertTrue(result.getUrl().contains(DIGITAL_SERVICE_UID));
-        assertTrue(result.getUrl().contains(existingLink.getUid()));
-        verify(digitalServiceLinkRepo).save(existingLink);
-
-        assertTrue(result.getExpiryDate().isAfter(LocalDateTime.now().plusDays(59)));
-    }
-
-    @Test
-    void shareDigitalService_noExistingLink_createsNewLinkAndReturnsRest() {
-        DigitalService digitalService = new DigitalService();
-        digitalService.setUid(DIGITAL_SERVICE_UID);
-
-        final User user = User.builder().id(USER_ID).build();
-        final UserBO userBO = UserBO.builder().id(USER_ID).build();
-
-        DigitalServiceSharedLink newLink = DigitalServiceSharedLink.builder()
-                .uid("newUid123")
-                .expiryDate(LocalDateTime.now().plusDays(30))
-                .build();
-
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-        when(digitalServiceLinkRepo.findByDigitalService(digitalService)).thenReturn(Collections.emptyList());
-        when(digitalServiceLinkRepo.save(any())).thenReturn(newLink);
-
-        DigitalServiceShareRest result = digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO, true);
-
-        assertNotNull(result);
-        assertTrue(result.getUrl().contains(DIGITAL_SERVICE_UID));
-        assertTrue(result.getUrl().contains(newLink.getUid()));
-        assertEquals(newLink.getExpiryDate(), result.getExpiryDate());
-        verify(digitalServiceLinkRepo).save(any());
-    }
-
-    @Test
-    void shareDigitalService_digitalServiceNotFound_throwsException() {
-        final UserBO userBO = UserBO.builder().id(USER_ID).build();
-
-        when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> digitalServiceService.shareDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_UID, userBO, true))
-                .hasMessageContaining("Digital service " + DIGITAL_SERVICE_UID +
-                        " not found in " + ORGANIZATION + "/" + WORKSPACE_ID)
-                .isInstanceOf(G4itRestException.class);
-
-    }
-
-
 }

@@ -8,12 +8,12 @@
 package com.soprasteria.g4it.backend.apidigitalservice.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
-import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.task.mapper.TaskBOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,9 @@ public abstract class DigitalServiceVersionMapper {
     @Autowired
     private NoteMapper noteMapper;
 
+    @Autowired
+    private TaskBOMapper taskBOMapper;
+
 
     public abstract DigitalServiceVersionBO toBusinessObject(final DigitalServiceVersion entity);
 
@@ -45,7 +48,6 @@ public abstract class DigitalServiceVersionMapper {
      */
     public abstract List<DigitalServiceVersionBO> toBusinessObject(final List<DigitalServiceVersion> source);
 
-
     /**
      * Map to Business Object.
      *
@@ -53,7 +55,31 @@ public abstract class DigitalServiceVersionMapper {
      * @return the DigitalServiceBO.
      */
     @Named("fullMapping")
-    public abstract DigitalServiceVersionBO toFullBusinessObject(final DigitalServiceVersion entity);
+    public DigitalServiceVersionBO toFullBusinessObject(final DigitalServiceVersion entity) {
+        if (entity == null) return null;
+
+        DigitalService digitalService = entity.getDigitalService();
+
+        DigitalServiceVersionBO boBuilder = DigitalServiceVersionBO.builder()
+                .uid(entity.getUid())
+                .description(entity.getDescription())
+                .versionType(entity.getVersionType())
+                .creationDate(entity.getCreationDate())
+                .lastUpdateDate(entity.getLastUpdateDate())
+                .lastCalculationDate(entity.getLastCalculationDate())
+                .criteria(entity.getCriteria())
+                .note(noteMapper.toBusinessObject(entity.getNote()))
+                .tasks(taskBOMapper.toBOList(entity.getTasks())) // map Tasks → TaskBO
+                .isShared(false)
+                .name(digitalService.getName())
+                .isAi(digitalService.isAi())
+                .enableDataInconsistency(digitalService.isEnableDataInconsistency())
+                .itemId(digitalService.getUid()).build();
+
+
+        return boBuilder;
+    }
+
 
     /**
      * Map DigitalServiceVersion and DigitalService to DigitalServiceVersionBO
@@ -63,7 +89,7 @@ public abstract class DigitalServiceVersionMapper {
         DigitalServiceVersionBO bo = toBusinessObject(version);
 
         // Add DigitalService fields
-        bo.setDsvUid(version.getUid());
+        bo.setUid(version.getUid());
         bo.setName(digitalService.getName());
         bo.setIsAi(digitalService.isAi());
         bo.setEnableDataInconsistency(digitalService.isEnableDataInconsistency());
@@ -85,9 +111,11 @@ public abstract class DigitalServiceVersionMapper {
             return;
         }
 
+
         target.setDescription(source.getDescription());
         target.getDigitalService().setEnableDataInconsistency(source.getEnableDataInconsistency());
-
+        target.getDigitalService().setName(source.getName());
+        target.setVersionType(source.getVersionType());
         List<String> sourceCriteria = source.getCriteria();
         List<String> targetCriteria = target.getCriteria();
         if (!Objects.equals(sourceCriteria, targetCriteria)) {

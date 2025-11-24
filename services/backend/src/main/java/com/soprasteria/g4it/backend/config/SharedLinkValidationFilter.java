@@ -45,10 +45,10 @@ public class SharedLinkValidationFilter extends OncePerRequestFilter {
             }
 
             String shareId = urlSplit[2];   // /share/{shareId}
-            String digitalServiceId = urlSplit[4]; // /ds/{digitalServiceId}
+            String digitalServiceVersionId = urlSplit[4]; // /dsv/{digitalServiceVersionId}
 
             //boolean valid = digitalServiceLinkRepository.validateLink(shareId, digitalServiceId).isPresent();
-            Optional<DigitalServiceSharedLink> digitalServiceSharedLink = digitalServiceLinkRepository.findByUidAndDigitalService_Uid(shareId, digitalServiceId);
+            Optional<DigitalServiceSharedLink> digitalServiceSharedLink = digitalServiceLinkRepository.findByUidAndDigitalServiceVersion_Uid(shareId, digitalServiceVersionId);
 
             if (digitalServiceSharedLink.isEmpty()) {
                 writeError(response, HttpServletResponse.SC_NOT_FOUND, "Shared link does not exist");

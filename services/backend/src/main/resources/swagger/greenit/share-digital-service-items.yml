@@ -9,9 +9,9 @@ tags:
     description: Endpoint for shared link digital service
 
 paths:
-  /shared/{shareId}/ds/{digitalServiceUid}/inputs/datacenters:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/inputs/datacenters:
     parameters:
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:
@@ -28,9 +28,9 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/InDatacenterRest"
-  /shared/{shareId}/ds/{digitalServiceUid}/inputs/physical-equipments:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/inputs/physical-equipments:
     parameters:
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:
@@ -47,9 +47,9 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/InPhysicalEquipmentRest"
-  /shared/{shareId}/ds/{digitalServiceUid}/inputs/virtual-equipments:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/inputs/virtual-equipments:
     parameters:
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:
@@ -66,9 +66,9 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/InVirtualEquipmentRest"
-  /shared/{shareId}/ds/{digitalServiceUid}/referential-data:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/referential-data:
     parameters:
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:
@@ -83,7 +83,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SharedDigitalServiceReferentialRest"
-  /shared/{shareId}/ds/{digitalServiceUid}/outputs/virtual-equipments:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/outputs/virtual-equipments:
     parameters:
       - $ref: '#/components/parameters/digitalServiceUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
@@ -102,9 +102,9 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OutVirtualEquipmentRest"
-  /shared/{shareId}/ds/{digitalServiceUid}/outputs/physical-equipments:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/outputs/physical-equipments:
     parameters:
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:
@@ -121,9 +121,9 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OutPhysicalEquipmentRest"
-  /shared/{shareId}/ds/{digitalServiceUid}/validate:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/validate:
     parameters:
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:
@@ -138,9 +138,9 @@ paths:
             application/json:
               schema:
                 type: boolean
-  /shared/{shareId}/ds/{digitalServiceUid}:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}:
     parameters:
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:
@@ -150,9 +150,9 @@ paths:
       security: []
       responses:
         '200':
-          description: The digital service requested
+          description: The digital service version requested
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DigitalServiceRest"
+                $ref: "#/components/schemas/DigitalServiceVersionRest"
 
