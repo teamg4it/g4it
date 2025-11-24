@@ -82,7 +82,7 @@ export abstract class Constants {
         downloadReject: "download-reject",
         task: "task",
         sharedDs: "shared",
-        ds: "ds",
+        dsv: "dsv",
     };
 
     static readonly ERRORS: any = {

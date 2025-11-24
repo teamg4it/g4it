@@ -27,7 +27,7 @@ const endpointDsVersions = Constants.ENDPOINTS.digitalServicesVersions;
 const ecomindaiModelConfig = Constants.ENDPOINTS.ecomindaiModelConfig;
 
 const endpointshared = Constants.ENDPOINTS.sharedDs;
-const endpointDs = Constants.ENDPOINTS.ds;
+const endpointDs = Constants.ENDPOINTS.dsv;
 
 @Injectable({
     providedIn: "root",

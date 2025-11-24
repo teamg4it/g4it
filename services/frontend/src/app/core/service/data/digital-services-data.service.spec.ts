@@ -26,7 +26,7 @@ describe("DigitalServicesDataService", () => {
     let httpMock: HttpTestingController;
     const dsEndpoint = Constants.ENDPOINTS.digitalServices;
     const sharedEndpoint = Constants.ENDPOINTS.sharedDs;
-    const dsSegment = Constants.ENDPOINTS.ds;
+    const dsSegment = Constants.ENDPOINTS.dsv;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
