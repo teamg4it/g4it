@@ -85,7 +85,7 @@ paths:
                 $ref: "#/components/schemas/SharedDigitalServiceReferentialRest"
   /shared/{shareId}/dsv/{digitalServiceVersionUid}/outputs/virtual-equipments:
     parameters:
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
     get:
       tags:

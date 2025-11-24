@@ -37,7 +37,7 @@ public interface DigitalServiceLinkRepository extends JpaRepository<DigitalServi
             "AND dsv.uid = :digitalServiceVersionId " +
             "AND d.expiryDate > CURRENT_TIMESTAMP")
     Optional<DigitalServiceSharedLink> validateLink(@Param("shareId") String shareId,
-                                                    @Param("digitalServiceId") String digitalServiceVersionId);
+                                                    @Param("digitalServiceVersionId") String digitalServiceVersionId);
 
     boolean existsByDigitalServiceVersion_UidAndIsActiveTrue(String digitalServiceVersionUid);
 

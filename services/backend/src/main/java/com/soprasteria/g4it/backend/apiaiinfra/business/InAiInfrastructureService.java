@@ -93,22 +93,22 @@ public class InAiInfrastructureService {
     /**
      * Saves inAiInfrastructureRest information in tables InDatacenter, InPhysicalEquipment, InVirtualEquipment and InAiInfrastructure.
      *
-     * @param digitalServiceUid      - The digital Service uid
+     * @param digitalServiceVersionUid      - The digital Service uid
      * @param inAiInfrastructureRest - The Rest object of the inAiInfrastructure
      * @return The new physical equipment
      */
-    public InPhysicalEquipmentRest postDigitalServiceInputsAiInfra(String digitalServiceUid, InAiInfrastructureRest inAiInfrastructureRest) {
-        Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
+    public InPhysicalEquipmentRest postDigitalServiceInputsAiInfra(String digitalServiceVersionUid, InAiInfrastructureRest inAiInfrastructureRest) {
+        Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
 
-        if (digitalService.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
+        if (digitalServiceVersion.isEmpty()) {
+            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
         final LocalDateTime now = LocalDateTime.now();
 
         InAiInfrastructureBO inAiInfrastructureBO = inAiInfrastructureMapper.toBO(inAiInfrastructureRest);
 
         final InDatacenter inDatacenterToCreate = inDatacenterMapper.toEntity(InDatacenterRest.builder().build());
-        inDatacenterToCreate.setDigitalServiceUid(digitalServiceUid);
+        inDatacenterToCreate.setDigitalServiceVersionUid(digitalServiceVersionUid);
         inDatacenterToCreate.setLocation(inAiInfrastructureBO.getLocation());
         inDatacenterToCreate.setPue(inAiInfrastructureBO.getPue());
         inDatacenterToCreate.setName("Datacenter");
@@ -117,7 +117,7 @@ public class InAiInfrastructureService {
         inDatacenterRepository.save(inDatacenterToCreate);
 
         final InPhysicalEquipment inPhysicalEquipmentToCreate = inPhysicalEquipmentMapper.toEntity(InPhysicalEquipmentRest.builder().build());
-        inPhysicalEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
+        inPhysicalEquipmentToCreate.setDigitalServiceVersionUid(digitalServiceVersionUid);
         inPhysicalEquipmentToCreate.setName("Physical equipment");
         inPhysicalEquipmentToCreate.setModel(inAiInfrastructureBO.getInfrastructureType().getCode());
         inPhysicalEquipmentToCreate.setType("Dedicated Server");
@@ -140,7 +140,7 @@ public class InAiInfrastructureService {
         inPhysicalEquipmentRepository.save(inPhysicalEquipmentToCreate);
 
         final InVirtualEquipment inVirtualEquipmentToCreate = inVirtualEquipmentMapper.toEntity(InVirtualEquipmentRest.builder().build());
-        inVirtualEquipmentToCreate.setDigitalServiceUid(digitalServiceUid);
+        inVirtualEquipmentToCreate.setDigitalServiceVersionUid(digitalServiceVersionUid);
         inVirtualEquipmentToCreate.setName("Virtual equipment");
         inVirtualEquipmentToCreate.setPhysicalEquipmentName(inPhysicalEquipmentToCreate.getName());
         inVirtualEquipmentToCreate.setInfrastructureType(inAiInfrastructureBO.getInfrastructureType().getCode());
@@ -154,7 +154,7 @@ public class InAiInfrastructureService {
         inVirtualEquipmentRepository.save(inVirtualEquipmentToCreate);
 
         final InAiInfrastructure inAiInfrastructure = inAiInfrastructureMapper.toEntity(inAiInfrastructureRest);
-        inAiInfrastructure.setDigitalServiceUid(digitalServiceUid);
+        inAiInfrastructure.setDigitalServiceVersionUid(digitalServiceVersionUid);
         inAiInfrastructureRepository.save(inAiInfrastructure);
 
         return inPhysicalEquipmentMapper.toRest(inPhysicalEquipmentToCreate);
@@ -216,7 +216,7 @@ public class InAiInfrastructureService {
 
         Long idInAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid).getId();
         InAiInfrastructure inAiInfrastructure = inAiInfrastructureMapper.toEntity(inAiInfrastructureRest);
-        inAiInfrastructure.setDigitalServiceUid(digitalServiceVersionUid);
+        inAiInfrastructure.setDigitalServiceVersionUid(digitalServiceVersionUid);
         inAiInfrastructure.setId(idInAiInfrastructure);
         inAiInfrastructureRepository.save(inAiInfrastructure);
 

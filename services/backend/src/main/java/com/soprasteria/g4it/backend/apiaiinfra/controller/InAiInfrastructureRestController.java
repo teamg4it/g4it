@@ -39,10 +39,10 @@ public class InAiInfrastructureRestController implements AiInfraInputsApiDelegat
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
+    public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceVersionUid, InAiInfrastructureRest aiInfraRest) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
-        return new ResponseEntity<>(inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest), HttpStatus.CREATED);
+        return new ResponseEntity<>(inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceVersionUid, aiInfraRest), HttpStatus.CREATED);
     }
 
     /**

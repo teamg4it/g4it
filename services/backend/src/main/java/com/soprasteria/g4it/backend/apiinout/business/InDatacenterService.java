@@ -108,7 +108,7 @@ public class InDatacenterService {
             throw new G4itRestException("404", String.format("the digital service version uid provided: %s has no datacenter with id : %s", digitalServiceVersionUid, id));
         }
 
-        if (!Objects.equals(digitalServiceVersionUid, inDatacenter.get().getDigitalServiceUid())) {
+        if (!Objects.equals(digitalServiceVersionUid, inDatacenter.get().getDigitalServiceVersionUid())) {
             throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceVersionUid, inDatacenter.get().getDigitalServiceUid(), id));
         }
 

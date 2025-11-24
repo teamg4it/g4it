@@ -55,3 +55,20 @@ databaseChangeLog:
               FROM digital_service_version dsv
               WHERE sl.digital_service_uid = dsv.item_id
                 AND sl.digital_service_version_uid IS NULL;
+
+  - changeSet:
+      id: update-task-digital-service-version-uid
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: false
+            sql: |
+              -- Update task.digital_service_version_uid based on conditions
+              UPDATE task t
+              SET digital_service_version_uid = (
+                SELECT dsv.uid
+                FROM digital_service_version dsv
+                WHERE dsv.item_id = t.digital_service_uid
+              )
+              WHERE t.digital_service_uid IS NOT NULL;
