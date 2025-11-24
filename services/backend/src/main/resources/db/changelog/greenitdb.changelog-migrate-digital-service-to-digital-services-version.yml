@@ -34,3 +34,20 @@ databaseChangeLog:
               WHERE ds.uid NOT IN (
                 SELECT item_id FROM digital_service_version
               );
+
+  - changeSet:
+      id: populate-digital-service-version-task-id
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: false
+            sql: |
+              -- Populate task_id in digital_service_version from task table
+              
+              UPDATE digital_service_version dsv
+              SET task_id = t.id
+              FROM task t
+              WHERE dsv.item_id = t.digital_service_uid
+                AND dsv.task_id IS NULL
+                AND t.digital_service_version_uid IS NULL;
