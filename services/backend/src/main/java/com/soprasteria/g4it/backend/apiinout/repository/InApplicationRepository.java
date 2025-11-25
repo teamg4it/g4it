@@ -80,4 +80,6 @@ public interface InApplicationRepository extends JpaRepository<InApplication, Lo
     @Transactional
     @Modifying
     void deleteByInventoryId(Long inventoryId);
+
+    List<InApplication> findByInventoryIdAndPhysicalEquipmentNameIsNull(Long inventoryId);
 }

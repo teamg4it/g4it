@@ -147,6 +147,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
                 }
             }
 
+
             boolean hasRejectedFile = fileLoadingUtils.handelRejectedFiles(context.getOrganization(), context.getWorkspaceId(),
                     context.getInventoryId(), context.getDigitalServiceUid(), task.getId(), filenames);
 
@@ -172,6 +173,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
 
         taskRepository.save(task);
         if (isInventory) {
+            loadFileService.linkApplicationsToVirtualEquipments(context.getInventoryId()); // fix app table links
             loadFileService.setInventoryCounts(context.getInventoryId());
         } else {
             digitalServiceService.updateLastUpdateDate(context.getDigitalServiceUid());
