@@ -99,7 +99,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
             //Load Metadata files
             asyncLoadMetadataService.loadInputMetadata(context);
 
-            Map<String, Map<Integer, List<LineError>>> coherenceErrors = checkMetadataInventoryFileService.checkMetadataInventoryFile(task.getId(), context.getInventoryId(), context.getDigitalServiceUid());
+            Map<String, Map<Integer, List<LineError>>> coherenceErrors = checkMetadataInventoryFileService.checkMetadataInventoryFile(task.getId(), context.getInventoryId(), context.getDigitalServiceVersionUid());
 
             //  Check if any file is exceeding the error threshold before processing any files.
             for (FileToLoad fileToLoad : context.getFilesToLoad()) {
@@ -149,7 +149,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
             }
 
             boolean hasRejectedFile = fileLoadingUtils.handelRejectedFiles(context.getOrganization(), context.getWorkspaceId(),
-                    context.getInventoryId(), context.getDigitalServiceUid(), task.getId(), filenames);
+                    context.getInventoryId(), context.getDigitalServiceVersionUid(), task.getId(), filenames);
 
             fileLoadingUtils.cleanConvertedFiles(context);
 

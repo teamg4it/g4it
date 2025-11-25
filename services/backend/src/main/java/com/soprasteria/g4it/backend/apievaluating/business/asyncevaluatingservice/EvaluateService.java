@@ -126,7 +126,7 @@ public class EvaluateService {
 
         // Get datacenters by name (name, InDatacenter)
         final Map<String, InDatacenter> datacenterByNameMap = context.getInventoryId() == null ?
-                inDatacenterRepository.findByDigitalServiceVersionUid(context.getDigitalServiceUid()).stream()
+                inDatacenterRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid()).stream()
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity())) :
                 inDatacenterRepository.findByInventoryId(context.getInventoryId()).stream()
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity()));
@@ -180,17 +180,17 @@ public class EvaluateService {
 
         long totalPhysicalEquipments =
                 context.getInventoryId() == null ?
-                        inPhysicalEquipmentRepository.countByDigitalServiceUid(context.getDigitalServiceUid()) :
+                        inPhysicalEquipmentRepository.countByDigitalServiceVersionUid(context.getDigitalServiceVersionUid()) :
                         inPhysicalEquipmentRepository.countByInventoryId(context.getInventoryId());
 
         long totalCloudVirtualEquipments = context.getInventoryId() == null ?
-                inVirtualEquipmentRepository.countByDigitalServiceUidAndInfrastructureType(context.getDigitalServiceUid(), CLOUD_SERVICES.name()) :
+                inVirtualEquipmentRepository.countByDigitalServiceVersionUidAndInfrastructureType(context.getDigitalServiceVersionUid(), CLOUD_SERVICES.name()) :
                 inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(context.getInventoryId(), CLOUD_SERVICES.name());
 
         long totalEquipments = totalPhysicalEquipments + totalCloudVirtualEquipments;
-        FileType physicalEquipmentIndicator = context.getDigitalServiceUid() == null ? FileType.PHYSICAL_EQUIPMENT_INDICATOR :
+        FileType physicalEquipmentIndicator = context.getDigitalServiceVersionUid() == null ? FileType.PHYSICAL_EQUIPMENT_INDICATOR :
                 FileType.PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE;
-        FileType virtualEquipmentIndicator = context.getDigitalServiceUid() == null ? FileType.VIRTUAL_EQUIPMENT_INDICATOR :
+        FileType virtualEquipmentIndicator = context.getDigitalServiceVersionUid() == null ? FileType.VIRTUAL_EQUIPMENT_INDICATOR :
                 FileType.VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE;
         try (CSVPrinter csvPhysicalEquipment = csvFileService.getPrinter(physicalEquipmentIndicator, exportDirectory);
              CSVPrinter csvVirtualEquipment = csvFileService.getPrinter(virtualEquipmentIndicator, exportDirectory);
@@ -218,7 +218,7 @@ public class EvaluateService {
                 Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, Sort.by("name"));
                 final List<InPhysicalEquipment> physicalEquipments =
                         context.getInventoryId() == null ?
-                                inPhysicalEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid(), page) :
+                                inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid(), page) :
                                 inPhysicalEquipmentRepository.findByInventoryId(context.getInventoryId(), page);
 
                 if (physicalEquipments.isEmpty()) {

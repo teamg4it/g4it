@@ -69,7 +69,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                 select datacenter_name
                 from in_datacenter idc
                 where
-                idc.digital_service_uid = :digitalServiceUid
+                idc.digital_service_version_uid = :digitalServiceVersionUid
                
                 and cilpe.datacenter_name =  idc.name
             )
@@ -86,7 +86,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                         
             """)
     List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,
-                                                              @Param("digitalServiceUid") String digitalServiceUid,
+                                                              @Param("digitalServiceVersionUid") String digitalServiceVersionUid,
                                                               @Param("parentDuplicates") List<String> parentDuplicates);
 
     @Query(nativeQuery = true, value = """
@@ -110,7 +110,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
                  select datacenter_name
                  from in_datacenter idc
                  where
-                 idc.digital_service_uid = :digitalServiceUid
+                 idc.digital_service_version_uid = :digitalServiceVersionUid
                 
                  and cilpe.datacenter_name = idc.name
              )
@@ -126,7 +126,7 @@ public interface CheckPhysicalEquipmentRepository extends JpaRepository<CheckPhy
              
             """)
     List<CoherenceParentDTO> findIncoherentPhysicalEquipments(@Param("taskId") Long taskId,
-                                                              @Param("digitalServiceUid") String digitalServiceUid);
+                                                              @Param("digitalServiceVersionUid") String digitalServiceVersionUid);
     @Query(nativeQuery = true, value = """
              SELECT filename,
                     line_nb AS lineNb,

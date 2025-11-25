@@ -151,13 +151,13 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
 
     @Transactional
     @Modifying
-    void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
+    void deleteByDigitalServiceVersionUidAndNameIn(String digitalServiceVersionUid, Set<String> names);
 
     List<InVirtualEquipment> findByDigitalServiceUid(final String digitalServiceUid, final Pageable pageable);
 
-    long countByDigitalServiceUid(final String digitalServiceUid);
+    long countByDigitalServiceVersionUid(final String digitalServiceVersionUid);
 
-    long countByDigitalServiceUidAndInfrastructureType(final String digitalServiceUid, final String infrastructureType);
+    long countByDigitalServiceVersionUidAndInfrastructureType(final String digitalServiceVersionUid, final String infrastructureType);
 
     long countByInventoryIdAndInfrastructureType(final Long inventoryId, final String infrastructureType);
 

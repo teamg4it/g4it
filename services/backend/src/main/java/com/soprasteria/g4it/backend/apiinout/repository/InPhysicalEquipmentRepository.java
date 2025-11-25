@@ -45,7 +45,7 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
 
     List<InPhysicalEquipment> findByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
-    List<InPhysicalEquipment> findByDigitalServiceUid(String digitalServiceUid, Pageable pageable);
+    List<InPhysicalEquipment> findByDigitalServiceVersionUid(String digitalServiceVersionUid, Pageable pageable);
 
     /**
      * Find physical equipments of one digital service order by name
@@ -76,7 +76,7 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
 
     long countByInventoryId(Long inventoryId);
 
-    long countByDigitalServiceUid(String digitalServiceUid);
+    long countByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
     @Transactional
     @Modifying
@@ -84,7 +84,7 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
 
     @Transactional
     @Modifying
-    void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
+    void deleteByDigitalServiceVersionUidAndNameIn(String digitalServiceVersionUid, Set<String> names);
 
     /**
      * Count physical equipments linked to an inventory

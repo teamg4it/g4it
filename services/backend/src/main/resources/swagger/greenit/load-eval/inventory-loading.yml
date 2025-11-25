@@ -69,11 +69,11 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/load-input-files:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/load-input-files:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - in: header
         name: Accept-Language
         schema:

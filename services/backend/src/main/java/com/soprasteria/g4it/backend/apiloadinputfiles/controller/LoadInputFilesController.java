@@ -59,7 +59,7 @@ public class LoadInputFilesController implements LoadingFilesApiDelegate {
     @Override
     public ResponseEntity<TaskIdRest> launchLoadInputFilesDigitalService(String organization,
                                                                          Long workspace,
-                                                                         String  digitalServiceUid,
+                                                                         String  digitalServiceVersionUid,
                                                                          String acceptLanguage,
                                                                          List<MultipartFile> datacenters,
                                                                          List<MultipartFile> physicalEquipments,
@@ -67,7 +67,7 @@ public class LoadInputFilesController implements LoadingFilesApiDelegate {
 
             return ResponseEntity.ok(taskMapper.mapTaskId(
                     loadInputFilesService.loadDigitalServiceFiles(
-                            organization, workspace, digitalServiceUid,
+                            organization, workspace, digitalServiceVersionUid,
                             datacenters, physicalEquipments, virtualEquipments)
             ));
 
