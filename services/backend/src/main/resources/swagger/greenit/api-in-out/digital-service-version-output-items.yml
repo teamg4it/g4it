@@ -83,3 +83,39 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/compare-versions:
+    parameters:
+      - $ref: "#/components/parameters/organizationPathParam"
+      - $ref: "#/components/parameters/workspacePathParam"
+      - name: digitalServiceVersionUid1
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The first digital service version UID
+      - name: digitalServiceVersionUid2
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The second digital service version UID
+    get:
+      tags:
+        - digital-service-version-outputs
+      summary: Compare two digital service versions outputs
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
+      operationId: getDigitalServiceVersionComparison
+      responses:
+        "200":
+          description: Return comparison data of two digital service versions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DigitalServiceVersionComparison"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
