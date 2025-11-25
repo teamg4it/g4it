@@ -147,7 +147,7 @@ describe("DigitalServicesAiInfrastructureComponent", () => {
         await component.ngOnInit();
         await fixture.whenStable();
 
-        expect(component.infrastructureForm.value.location).toBe("Germany");
+        expect(component.infrastructureForm.value.location).toBe("France");
     });
 
     it("should disable form if user is not allowed", fakeAsync(() => {

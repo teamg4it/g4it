@@ -45,6 +45,13 @@ components:
         type: string
       required: true
       description: The digital service uid.
+    digitalServiceVersionUidPathParam:
+      in: path
+      name: digitalServiceVersionUid
+      schema:
+        type: string
+      required: true
+      description: The digital service version uid.
     noteUidPathParam:
       in: path
       name: noteId
@@ -624,6 +631,8 @@ components:
       properties:
         uid:
           type: string
+        activeDsvUid:
+          type: string
         name:
           type: string
         creationDate:
@@ -716,7 +725,7 @@ components:
           type: string
         versionName:
           type: string
-        isAI:
+        isAi:
           type: boolean
 
     DigitalServiceServerImpactRest:

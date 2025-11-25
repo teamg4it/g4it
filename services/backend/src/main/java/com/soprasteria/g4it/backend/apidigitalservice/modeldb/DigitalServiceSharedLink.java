@@ -56,8 +56,7 @@ public class DigitalServiceSharedLink {
     /**
      * The shared digital service's uid.
      */
-    @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "digital_service_uid", referencedColumnName = "uid")
     private DigitalService digitalService;
 

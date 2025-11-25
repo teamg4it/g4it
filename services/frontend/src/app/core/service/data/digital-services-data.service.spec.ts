@@ -25,8 +25,10 @@ describe("DigitalServicesDataService", () => {
     let service: DigitalServicesDataService;
     let httpMock: HttpTestingController;
     const dsEndpoint = Constants.ENDPOINTS.digitalServices;
+
+    const endpointDsVersions = Constants.ENDPOINTS.digitalServicesVersions;
     const sharedEndpoint = Constants.ENDPOINTS.sharedDs;
-    const dsSegment = Constants.ENDPOINTS.ds;
+    const dsSegment = Constants.ENDPOINTS.dsv;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -49,6 +51,7 @@ describe("DigitalServicesDataService", () => {
                 terminals: [],
                 isAi: false,
                 enableDataInconsistency: false,
+                activeDsvUid: "1",
             },
         ];
 
@@ -77,13 +80,19 @@ describe("DigitalServicesDataService", () => {
             terminals: [],
             isAi: false,
             enableDataInconsistency: false,
+            activeDsvUid: "1",
         };
 
-        service.create().subscribe((res) => {
-            expect(res.name).toBe("Digital Service#1");
-        });
+        service
+            .create({
+                dsName: "1",
+                versionName: "2",
+            })
+            .subscribe((res) => {
+                expect(res.name).toBe("Digital Service#1");
+            });
 
-        const req = httpMock.expectOne(`digital-services`);
+        const req = httpMock.expectOne(`digital-service-version`);
         expect(req.request.method).toEqual("POST");
 
         req.flush(newDigitalService);
@@ -103,13 +112,14 @@ describe("DigitalServicesDataService", () => {
             terminals: [],
             isAi: false,
             enableDataInconsistency: false,
+            activeDsvUid: "1",
         };
 
         service.update(updatedDigitalService).subscribe((res) => {
             expect(res.name).toBe("Digital Service#1");
         });
 
-        const req = httpMock.expectOne(`digital-services/ds-uuid`);
+        const req = httpMock.expectOne(`${endpointDsVersions}/ds-uuid`);
         expect(req.request.method).toEqual("PUT");
 
         req.flush(updatedDigitalService);
@@ -129,13 +139,14 @@ describe("DigitalServicesDataService", () => {
             terminals: [],
             isAi: false,
             enableDataInconsistency: false,
+            activeDsvUid: "1",
         };
 
         service.get(digitalService.uid).subscribe((res) => {
             expect(res.name).toBe(digitalService.name);
         });
 
-        const req = httpMock.expectOne(`digital-services/ds-uuid`);
+        const req = httpMock.expectOne(`${endpointDsVersions}/ds-uuid`);
         expect(req.request.method).toEqual("GET");
 
         req.flush(digitalService);
@@ -155,13 +166,14 @@ describe("DigitalServicesDataService", () => {
             terminals: [],
             isAi: false,
             enableDataInconsistency: false,
+            activeDsvUid: "1",
         };
 
         service.getDsTasks(digitalService.uid).subscribe((res) => {
             expect(res.name).toBe(digitalService.name);
         });
 
-        const req = httpMock.expectOne(`digital-services/ds-uuid`);
+        const req = httpMock.expectOne(`${endpointDsVersions}/ds-uuid`);
         expect(req.request.method).toEqual("GET");
 
         req.flush(digitalService);
@@ -181,6 +193,7 @@ describe("DigitalServicesDataService", () => {
             terminals: [],
             isAi: false,
             enableDataInconsistency: false,
+            activeDsvUid: "1",
         };
 
         service.delete(digitalService.uid).subscribe();
@@ -310,7 +323,9 @@ describe("DigitalServicesDataService", () => {
         let result: ShareLinkResp | undefined;
         service.copyUrl(uid, true).subscribe((res) => (result = res));
 
-        const req = httpMock.expectOne(`${dsEndpoint}/${uid}/share?extendLink=true`);
+        const req = httpMock.expectOne(
+            `${endpointDsVersions}/${uid}/share?extendLink=true`,
+        );
         expect(req.request.method).toBe("GET");
     });
 
@@ -320,7 +335,7 @@ describe("DigitalServicesDataService", () => {
         let result: ShareLinkResp | undefined;
         service.copyUrl(uid, false).subscribe((res) => (result = res));
 
-        const req = httpMock.expectOne(`${dsEndpoint}/${uid}/share`);
+        const req = httpMock.expectOne(`${endpointDsVersions}/${uid}/share`);
         expect(req.request.method).toBe("GET");
     });
 

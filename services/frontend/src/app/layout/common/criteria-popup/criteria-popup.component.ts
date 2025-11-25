@@ -179,6 +179,8 @@ export class CriteriaPopupComponent implements OnChanges {
                     networks: this.ds.networks,
                     note: this.ds.note,
                     enableDataInconsistency: this.ds.enableDataInconsistency,
+                    description: this.ds.description,
+                    versionType: this.ds.versionType,
                 };
                 this.outSaveDS.emit(dsCriteria);
                 break;

@@ -73,27 +73,6 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
         return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-services", digitalServiceBO.getUid())))).body(digitalServiceDTO);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<DigitalServiceVersionRest> createDigitalServiceVersion(final String organization,
-                                                                                 final Long workspace,
-                                                                                 final InDigitalServiceVersionRest inDigitalServiceVersionRest) {
-        if (inDigitalServiceVersionRest.getIsAI() != null && inDigitalServiceVersionRest.getIsAI()) {
-            authorizationUtils.checkEcomindAuthorization();
-            authorizationUtils.checkEcomindEnabledForOrganization(organization);
-        }
-
-        final DigitalServiceVersionBO digitalServiceVersionBO = digitalServiceService.createDigitalServiceVersion(
-                workspace,
-                authService.getUser().getId(),
-                inDigitalServiceVersionRest
-        );
-
-        final DigitalServiceVersionRest digitalServiceVersionDTO = digitalServiceVersionRestMapper.toDto(digitalServiceVersionBO);
-        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", digitalServiceVersionBO.getDsvUid())))).body(digitalServiceVersionDTO);
-    }
 
     /**
      * {@inheritDoc}
@@ -140,18 +119,6 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
                 digitalServiceRestMapper.toBusinessObject(digitalService), organization, workspace,
                 authService.getUser()
         )));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<DigitalServiceShareRest> shareDigitalService(final String organization,
-                                                                       final Long workspace,
-                                                                       final String digitalServiceUid,
-                                                                       final Boolean extendLink) {
-        return ResponseEntity.ok(digitalServiceService.shareDigitalService(organization, workspace, digitalServiceUid,
-                authService.getUser(), extendLink));
     }
 
 }

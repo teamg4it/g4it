@@ -127,5 +127,13 @@ databaseChangeLog:
             constraintName: shareddigitalserviceuid_unique
             tableName: digital_service_shared_link
 
+  - changeSet:
+      id: alter-digital-service-uid-nullable
+      author: G4IT Dev Team
+      changes:
+         - dropNotNullConstraint:
+            tableName: digital_service_shared_link
+            columnName: digital_service_uid
+            columnDataType: varchar(255)
 
 

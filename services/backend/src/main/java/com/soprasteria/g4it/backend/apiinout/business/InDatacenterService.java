@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InDatacenterMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
@@ -33,35 +35,35 @@ public class InDatacenterService {
 
     private InDatacenterRepository inDatacenterRepository;
     private InDatacenterMapper inDatacenterMapper;
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private InventoryRepository inventoryRepository;
 
     /**
      * Get the datacenters list linked to a digital service.
      *
-     * @param digitalServiceUid the digital service UID.
+     * @param digitalServiceVersionUid the digital service UID.
      * @return the datacenter list.
      */
-    public List<InDatacenterRest> getByDigitalService(final String digitalServiceUid) {
-        final List<InDatacenter> inDatacenters = inDatacenterRepository.findByDigitalServiceUid(digitalServiceUid);
+    public List<InDatacenterRest> getByDigitalServiceVersion(final String digitalServiceVersionUid) {
+        final List<InDatacenter> inDatacenters = inDatacenterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid);
         return inDatacenterMapper.toRest(inDatacenters);
     }
 
     /**
      * Retrieving a datacenter for a digital service and a datacenter id.
      *
-     * @param digitalServiceUid the digital service UID.
+     * @param digitalServiceVersionUid the digital service UID.
      * @param id                the datacenter id
      * @return InDatacenterBO
      */
-    public InDatacenterRest getByDigitalServiceAndId(final String digitalServiceUid, Long id) {
-        final Optional<InDatacenter> inDatacenter = inDatacenterRepository.findByDigitalServiceUidAndId(digitalServiceUid, id);
+    public InDatacenterRest getByDigitalServiceVersionAndId(final String digitalServiceVersionUid, Long id) {
+        final Optional<InDatacenter> inDatacenter = inDatacenterRepository.findByDigitalServiceVersionUidAndId(digitalServiceVersionUid, id);
         if (inDatacenter.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service uid provided: %s has no datacenter with id : %s", digitalServiceUid, id));
+            throw new G4itRestException("404", String.format("the digital service version uid provided: %s has no datacenter with id : %s", digitalServiceVersionUid, id));
         }
 
-        if (!Objects.equals(digitalServiceUid, inDatacenter.get().getDigitalServiceUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceUid, inDatacenter.get().getDigitalServiceUid(), id));
+        if (!Objects.equals(digitalServiceVersionUid, inDatacenter.get().getDigitalServiceVersionUid())) {
+            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceVersionUid, inDatacenter.get().getDigitalServiceUid(), id));
         }
 
         return inDatacenterMapper.toRest(inDatacenter.get());
@@ -70,20 +72,21 @@ public class InDatacenterService {
     /**
      * Create a new in datacenter for a specific digital service.
      *
-     * @param digitalServiceUid the digitalServiceUid.
+     * @param digitalServiceVersionUid the digitalServiceUid.
      * @param inDatacenterRest  the inDatacenterRest.
      * @return the business object corresponding on datacenter created.
      */
-    public InDatacenterRest createInDatacenterDigitalService(final String digitalServiceUid, final InDatacenterRest inDatacenterRest) {
-        Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
+    public InDatacenterRest createInDatacenterDigitalServiceVersion(final String digitalServiceVersionUid, final InDatacenterRest inDatacenterRest) {
+        Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
 
-        if (digitalService.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
+        if (digitalServiceVersion.isEmpty()) {
+            throw new G4itRestException("404", String.format("the digital service version of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
 
         final InDatacenter inDatacenterToCreate = inDatacenterMapper.toEntity(inDatacenterRest);
         final LocalDateTime now = LocalDateTime.now();
-        inDatacenterToCreate.setDigitalServiceUid(digitalServiceUid);
+        inDatacenterToCreate.setDigitalServiceUid(digitalServiceVersion.get().getDigitalService().getUid());
+        inDatacenterToCreate.setDigitalServiceVersionUid(digitalServiceVersionUid);
         inDatacenterToCreate.setCreationDate(now);
         inDatacenterToCreate.setLastUpdateDate(now);
 
@@ -94,19 +97,19 @@ public class InDatacenterService {
     /**
      * Update a datacenter.
      *
-     * @param digitalServiceUid      the digitalServiceUid.
+     * @param digitalServiceVersionUid      the digitalServiceUid.
      * @param id                     the datacenter's id
      * @param inDatacenterUpdateRest the inDatacenterUpdateRest.
      * @return InventoryBO
      */
-    public InDatacenterRest updateInDatacenter(final String digitalServiceUid, final Long id, final InDatacenterRest inDatacenterUpdateRest) {
-        final Optional<InDatacenter> inDatacenter = inDatacenterRepository.findByDigitalServiceUidAndId(digitalServiceUid, id);
+    public InDatacenterRest updateInDatacenter(final String digitalServiceVersionUid, final Long id, final InDatacenterRest inDatacenterUpdateRest) {
+        final Optional<InDatacenter> inDatacenter = inDatacenterRepository.findByDigitalServiceVersionUidAndId(digitalServiceVersionUid, id);
         if (inDatacenter.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service uid provided: %s has no datacenter with id : %s", digitalServiceUid, id));
+            throw new G4itRestException("404", String.format("the digital service version uid provided: %s has no datacenter with id : %s", digitalServiceVersionUid, id));
         }
 
-        if (!Objects.equals(digitalServiceUid, inDatacenter.get().getDigitalServiceUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceUid, inDatacenter.get().getDigitalServiceUid(), id));
+        if (!Objects.equals(digitalServiceVersionUid, inDatacenter.get().getDigitalServiceVersionUid())) {
+            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceVersionUid, inDatacenter.get().getDigitalServiceUid(), id));
         }
 
         final InDatacenter objectToUpdate = inDatacenter.get();

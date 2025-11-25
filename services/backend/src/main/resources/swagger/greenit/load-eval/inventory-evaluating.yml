@@ -37,12 +37,12 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/evaluating:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/evaluating:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
       - in: path
-        name: digitalServiceUid
+        name: digitalServiceVersionUid
         schema:
           type: string
         required: true

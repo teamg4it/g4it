@@ -60,7 +60,7 @@ describe("LoadingDataService", () => {
         const req = httpMock.expectOne(
             (req) =>
                 req.method === "POST" &&
-                req.url === "digital-services/99/load-input-files",
+                req.url === "digital-service-version/99/load-input-files",
         );
         expect(req.request.body).toBe(formData);
         req.flush(mockResponse);

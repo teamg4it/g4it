@@ -29,20 +29,20 @@ public class InAiInfrastructureRestController implements AiInfraInputsApiDelegat
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InAiInfrastructureRest> getDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceUid) {
+    public ResponseEntity<InAiInfrastructureRest> getDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceVersionUid) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
-        return new ResponseEntity<>(inAiInfrastructureMapper.toRest(inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(digitalServiceUid)), HttpStatus.OK);
+        return new ResponseEntity<>(inAiInfrastructureMapper.toRest(inAiInfrastructureService.getDigitalServiceInputsAiInfraRest(digitalServiceVersionUid)), HttpStatus.OK);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceUid, InAiInfrastructureRest aiInfraRest) {
+    public ResponseEntity<InPhysicalEquipmentRest> postDigitalServiceInputsAiInfraRest(String organization, Long workspace, String digitalServiceVersionUid, InAiInfrastructureRest aiInfraRest) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
-        return new ResponseEntity<>(inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceUid, aiInfraRest), HttpStatus.CREATED);
+        return new ResponseEntity<>(inAiInfrastructureService.postDigitalServiceInputsAiInfra(digitalServiceVersionUid, aiInfraRest), HttpStatus.CREATED);
     }
 
     /**

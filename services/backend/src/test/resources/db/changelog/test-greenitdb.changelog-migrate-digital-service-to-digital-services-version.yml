@@ -15,8 +15,7 @@ databaseChangeLog:
                 version_type,
                 note_id,
                 criteria,
-                created_by,
-                task_id
+                created_by
               )
               SELECT
                 RANDOM_UUID(),
@@ -28,8 +27,7 @@ databaseChangeLog:
                 'active',
                 ds.note_id,
                 ds.criteria,
-                ds.user_id,
-                NULL
+                ds.user_id
               FROM digital_service ds
               WHERE ds.uid NOT IN (
                 SELECT item_id FROM digital_service_version

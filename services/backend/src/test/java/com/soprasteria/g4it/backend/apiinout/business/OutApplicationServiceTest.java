@@ -10,7 +10,9 @@ package com.soprasteria.g4it.backend.apiinout.business;
 
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutApplicationMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -41,7 +43,7 @@ class OutApplicationServiceTest {
     @Mock
     private TaskRepository taskRepository;
     @Mock
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Mock
     private OutApplicationMapper outApplicationMapper;
@@ -76,37 +78,37 @@ class OutApplicationServiceTest {
 
     @Test
     void getByDigitalServiceUid_returnsEmptyList_whenNoTaskFound() {
-        String digitalServiceUid = "uid123";
-        DigitalService digitalService = new DigitalService();
-        digitalService.setUid(digitalServiceUid);
-        when(taskRepository.findByDigitalService(digitalService)).thenReturn(Optional.empty());
-        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
+        String digitalServiceVersionUid = "uid123";
+        DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
+        digitalServiceVersion.setUid(digitalServiceVersionUid);
+        when(taskRepository.findByDigitalServiceVersion(digitalServiceVersion)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid)).thenReturn(Optional.of(digitalServiceVersion));
 
-        List<OutApplicationRest> result = outApplicationService.getByDigitalServiceUid(digitalServiceUid);
+        List<OutApplicationRest> result = outApplicationService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
 
         assertEquals(List.of(), result);
-        verify(taskRepository).findByDigitalService(digitalService);
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(taskRepository).findByDigitalServiceVersion(digitalServiceVersion);
+        verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
 
     }
 
     @Test
     void getByDigitalServiceUid_returnsMappedApplications_whenTaskFound() {
-        String digitalServiceUid = "uid123";
+        String digitalServiceVersionUid = "uid123";
         Task task = new Task();
         task.setId(1L);
-        DigitalService digitalService = new DigitalService();
-        digitalService.setUid(digitalServiceUid);
-        when(taskRepository.findByDigitalService(digitalService)).thenReturn(Optional.of(task));
-        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
+        DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
+        digitalServiceVersion.setUid(digitalServiceVersionUid);
+        when(taskRepository.findByDigitalServiceVersion(digitalServiceVersion)).thenReturn(Optional.of(task));
+        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid)).thenReturn(Optional.of(digitalServiceVersion));
         when(outApplicationRepository.findByTaskId(1L)).thenReturn(List.of());
         when(outApplicationMapper.toRest(List.of())).thenReturn(List.of(OutApplicationRest.builder().build()));
 
-        List<OutApplicationRest> result = outApplicationService.getByDigitalServiceUid(digitalServiceUid);
+        List<OutApplicationRest> result = outApplicationService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
 
         assertEquals(1, result.size());
-        verify(taskRepository).findByDigitalService(digitalService);
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(taskRepository).findByDigitalServiceVersion(digitalServiceVersion);
+        verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
         verify(outApplicationRepository).findByTaskId(1L);
         verify(outApplicationMapper).toRest(List.of());
     }

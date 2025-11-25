@@ -44,7 +44,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Digital-Service service.
@@ -140,54 +142,6 @@ public class DigitalServiceService {
         return digitalServiceMapper.toBusinessObject(digitalServiceSaved);
     }
 
-    /**
-     * Create a new digital service version.
-     *
-     * @param workspaceId                 the linked workspace id.
-     * @param userId                      the userId.
-     * @param inDigitalServiceVersionRest the digital service version request data
-     * @return the business object corresponding to the digital service created.
-     */
-    public DigitalServiceVersionBO createDigitalServiceVersion(final Long workspaceId,
-                                                               final long userId,
-                                                               final InDigitalServiceVersionRest inDigitalServiceVersionRest) {
-        // Get the linked workspace
-        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
-
-        // Get the linked user
-        final User user = userRepository.findById(userId).orElseThrow();
-
-        final LocalDateTime now = LocalDateTime.now();
-
-        // Step 1: Create the Digital Service
-        final DigitalService digitalService = DigitalService.builder()
-                .name(inDigitalServiceVersionRest.getDsName())
-                .user(user)
-                .workspace(linkedWorkspace)
-                .isAi(inDigitalServiceVersionRest.getIsAI())
-                .creationDate(now)
-                .lastUpdateDate(now)
-                .build();
-
-        final DigitalService savedDigitalService = digitalServiceRepository.save(digitalService);
-
-        // Step 2: Create the Digital Service Version
-        final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
-                .description(inDigitalServiceVersionRest.getVersionName())
-                .digitalService(DigitalService.builder().uid(savedDigitalService.getUid()).build())
-                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
-                .createdBy(savedDigitalService.getUser().getId())
-                .creationDate(savedDigitalService.getCreationDate())
-                .lastUpdateDate(savedDigitalService.getLastUpdateDate())
-                .lastCalculationDate(savedDigitalService.getLastCalculationDate())
-                .build();
-
-        final DigitalServiceVersion savedDigitalServiceVersion = digitalServiceVersionRepository.save(digitalServiceVersion);
-
-        // Return the business object
-        return digitalServiceVersionMapper.toBusinessObject(savedDigitalServiceVersion, savedDigitalService);
-    }
-
 
     /**
      * Get the digital service list linked to a user.
@@ -198,9 +152,30 @@ public class DigitalServiceService {
      */
     public List<DigitalServiceBO> getDigitalServices(final Long workspaceId, final Boolean isAi) {
         final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
-        List<DigitalService> filterDigitalService = digitalServiceRepository.findByWorkspace(linkedWorkspace).stream().filter(ds -> ds.isAi() == isAi)
+        List<DigitalService> filterDigitalService = digitalServiceRepository.findByWorkspace(linkedWorkspace).stream()
+                .filter(ds -> ds.isAi() == isAi)
                 .toList();
-        return digitalServiceMapper.toBusinessObject(filterDigitalService);
+        // Step 1: Extract DS UIDs
+        List<String> dsUids = filterDigitalService.stream()
+                .map(DigitalService::getUid)
+                .toList();
+
+        // Step 2: Fetch all active DSVs in ONE query
+        List<DigitalServiceVersion> activeDSVersions =
+                digitalServiceVersionRepository.findActiveDigitalServiceVersion(dsUids);
+
+        // Step 3: Convert to map (dsUid → activeDsvUid)
+        Map<String, String> activeDsvMap = activeDSVersions.stream()
+                .collect(Collectors.toMap(
+                        dsv -> dsv.getDigitalService().getUid(),
+                        DigitalServiceVersion::getUid
+                ));
+
+        return filterDigitalService.stream().map(ds -> {
+            DigitalServiceBO bo = digitalServiceMapper.toBusinessObject(ds);
+            bo.setActiveDsvUid(activeDsvMap.get(ds.getUid())); // add the dsv uid
+            return bo;
+        }).toList();
     }
 
     /**
@@ -266,69 +241,6 @@ public class DigitalServiceService {
     }
 
     /**
-     * Generate the link to share the digital service
-     *
-     * @param organization      the client organization name.
-     * @param workspaceId       the linked workspace id.
-     * @param digitalServiceUid the digital service id.
-     * @return the url.
-     */
-    public DigitalServiceShareRest shareDigitalService(final String organization, final Long workspaceId,
-                                                       final String digitalServiceUid, final UserBO userBO,
-                                                       final Boolean extendLink) {
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
-                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, organization, workspaceId))
-        );
-
-        // Get the linked user.
-        final User user = userRepository.findById(userBO.getId()).orElseThrow();
-
-        List<DigitalServiceSharedLink> digitalServiceLinkList = digitalServiceLinkRepository.findByDigitalService(digitalService);
-
-        DigitalServiceSharedLink digitalServiceActiveLink = digitalServiceLinkList.stream()
-                .filter(DigitalServiceSharedLink::isActive)
-                .findFirst()
-                .orElse(null);
-
-        LocalDateTime expiryDate = LocalDateTime.now()
-                .plusDays(60)
-                .withHour(23)
-                .withMinute(59)
-                .withSecond(0)
-                .withNano(0);
-        if (digitalServiceActiveLink != null) {
-            // Update expiry date to 60 days from now.
-            if (Boolean.TRUE.equals(extendLink)) {
-                digitalServiceActiveLink.setExpiryDate(expiryDate);
-                digitalServiceLinkRepository.save(digitalServiceActiveLink);
-            }
-            return DigitalServiceShareRest.builder().url(String.format("/shared/%s/ds/%s",
-                            digitalServiceActiveLink.getUid(), digitalServiceUid))
-                    .expiryDate(digitalServiceActiveLink.getExpiryDate())
-                    .build();
-
-
-        } else {
-            // Create a new shared link
-            DigitalServiceSharedLink linkToCreate = DigitalServiceSharedLink.builder()
-                    .digitalService(digitalService)
-                    .createdBy(user)
-                    .isActive(true)
-                    .creationDate(LocalDateTime.now())
-                    .expiryDate(LocalDateTime.now().plusDays(60))
-                    .build();
-
-            DigitalServiceSharedLink savedLink = digitalServiceLinkRepository.save(linkToCreate);
-
-            return DigitalServiceShareRest.builder()
-                    .url(String.format("/shared/%s/ds/%s", savedLink.getUid(), digitalServiceUid))
-                    .expiryDate(savedLink.getExpiryDate())
-                    .build();
-        }
-    }
-
-
-    /**
      * Get a digital service.
      *
      * @param digitalServiceUid the digital service id.
@@ -338,7 +250,7 @@ public class DigitalServiceService {
         DigitalServiceBO digitalServiceBO = digitalServiceMapper.toFullBusinessObject(getDigitalServiceEntity(digitalServiceUid));
 
         //check shared link presence
-        boolean isShared = digitalServiceLinkRepository.existsByDigitalService_UidAndIsActiveTrue(digitalServiceUid);
+        boolean isShared = digitalServiceLinkRepository.existsByDigitalServiceVersion_UidAndIsActiveTrue(digitalServiceUid);
 
         digitalServiceBO.setIsShared(isShared);
         return digitalServiceBO;
