@@ -1,7 +1,9 @@
 package com.soprasteria.g4it.backend.apiparameterai.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiparameterai.mapper.InAiParameterMapper;
 import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
@@ -33,7 +35,7 @@ class InAiParameterServiceTest {
     private InAiParameterMapper inAiParameterMapper;
 
     @Mock
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @InjectMocks
     private InAiParameterService inAiParameterService;
@@ -42,7 +44,7 @@ class InAiParameterServiceTest {
     private AiParameterRest aiParameterRest;
     private InAiParameter inAiParameterEntity;
     private InAiParameter savedInAiParameterEntity;
-    private DigitalService digitalService;
+    private DigitalServiceVersion digitalServiceVersion;
     private AiParameterRest expectedResult;
 
     @BeforeEach
@@ -96,8 +98,8 @@ class InAiParameterServiceTest {
         savedInAiParameterEntity.setLastUpdateDate(LocalDateTime.now());
 
         // Setup DigitalService
-        digitalService = new DigitalService();
-        digitalService.setUid(digitalServiceUid);
+        digitalServiceVersion = new DigitalServiceVersion();
+        digitalServiceVersion.setUid(digitalServiceUid);
 
         // Setup expected result
         expectedResult = new AiParameterRest();
@@ -119,7 +121,7 @@ class InAiParameterServiceTest {
     void getAiParameter_shouldThrowIfDigitalServiceNotFound() {
         String uid = "non-existent-uid";
 
-        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.empty());
 
         G4itRestException ex = assertThrows(G4itRestException.class,
                 () -> inAiParameterService.getAiParameter(uid));
@@ -127,7 +129,7 @@ class InAiParameterServiceTest {
         assertEquals("404", ex.getCode());
         assertTrue(ex.getMessage().contains(uid));
 
-        verify(digitalServiceRepository).findById(uid);
+        verify(digitalServiceVersionRepository).findById(uid);
         verifyNoInteractions(inAiParameterRepository, inAiParameterMapper);
     }
 
@@ -135,13 +137,13 @@ class InAiParameterServiceTest {
     void getAiParameter_shouldReturnAiParameterRestIfFound() {
         String uid = "existing-uid";
 
-        DigitalService ds = new DigitalService();
+        DigitalServiceVersion dsv = new DigitalServiceVersion();
         InAiParameter inAiParameter= new InAiParameter();
         AiParameterRest aiParameter = AiParameterRest.builder()
                 .type("LLM")
                 .build();
 
-        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.of(ds));
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.of(dsv));
         when(inAiParameterRepository.findByDigitalServiceUid(uid)).thenReturn(inAiParameter);
         when(inAiParameterMapper.toBusinessObject(inAiParameter)).thenReturn(aiParameter);
 
@@ -150,7 +152,7 @@ class InAiParameterServiceTest {
         assertNotNull(result);
         assertEquals("LLM", result.getType());
 
-        verify(digitalServiceRepository).findById(uid);
+        verify(digitalServiceVersionRepository).findById(uid);
         verify(inAiParameterRepository).findByDigitalServiceUid(uid);
         verify(inAiParameterMapper).toBusinessObject(inAiParameter);
     }
@@ -160,7 +162,7 @@ class InAiParameterServiceTest {
         String uid = "non-existent-uid";
         AiParameterRest inputDto = AiParameterRest.builder().type("LLM").build();
 
-        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.empty());
 
         G4itRestException ex = assertThrows(G4itRestException.class,
                 () -> inAiParameterService.updateAiParameter(uid, inputDto));
@@ -168,7 +170,7 @@ class InAiParameterServiceTest {
         assertEquals("404", ex.getCode());
         assertTrue(ex.getMessage().contains(uid));
 
-        verify(digitalServiceRepository).findById(uid);
+        verify(digitalServiceVersionRepository).findById(uid);
         verifyNoMoreInteractions(inAiParameterRepository, inAiParameterMapper);
     }
 
@@ -176,12 +178,12 @@ class InAiParameterServiceTest {
     void updateAiParameter_shouldUpdateAndReturnUpdatedEntity() {
         String uid = "existing-uid";
 
-        DigitalService ds = new DigitalService();
+        DigitalServiceVersion dsv = new DigitalServiceVersion();
         AiParameterRest inputDto = AiParameterRest.builder().type("LLM").build();
         InAiParameter entity = new InAiParameter();
 
-        when(digitalServiceRepository.findById(uid)).thenReturn(Optional.of(ds));
-        when(inAiParameterRepository.findByDigitalServiceUid(uid)).thenReturn(entity);
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.of(dsv));
+        when(inAiParameterRepository.findByDigitalServiceVersionUid(uid)).thenReturn(entity);
 
         doNothing().when(inAiParameterMapper).updateEntityFromDto(inputDto, entity);
         when(inAiParameterRepository.save(entity)).thenReturn(entity);
@@ -192,8 +194,8 @@ class InAiParameterServiceTest {
         assertNotNull(result);
         assertEquals("LLM", result.getType());
 
-        verify(digitalServiceRepository).findById(uid);
-        verify(inAiParameterRepository).findByDigitalServiceUid(uid);
+        verify(digitalServiceVersionRepository).findById(uid);
+        verify(inAiParameterRepository).findByDigitalServiceVersionUid(uid);
         verify(inAiParameterMapper).updateEntityFromDto(inputDto, entity);
         verify(inAiParameterRepository).save(entity);
         verify(inAiParameterMapper).toBusinessObject(entity);
@@ -202,8 +204,8 @@ class InAiParameterServiceTest {
     @Test
     void createAiParameter_Success() {
         // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(aiParameterRest))
                 .thenReturn(inAiParameterEntity);
         when(inAiParameterRepository.save(any(InAiParameter.class)))
@@ -219,7 +221,7 @@ class InAiParameterServiceTest {
         assertEquals(expectedResult, result);
 
         // Verify repository interactions
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
         verify(inAiParameterRepository).save(any(InAiParameter.class));
 
         // Verify mapper interactions
@@ -230,7 +232,7 @@ class InAiParameterServiceTest {
     @Test
     void createAiParameter_DigitalServiceNotFound_ThrowsException() {
         // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
                 .thenReturn(Optional.empty());
 
         // When & Then
@@ -242,15 +244,15 @@ class InAiParameterServiceTest {
                 exception.getMessage());
 
         // Verify only digitalServiceRepository was called
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
         verifyNoInteractions(inAiParameterMapper, inAiParameterRepository);
     }
 
     @Test
     void createAiParameter_VerifyEntitySetup() {
         // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(aiParameterRest))
                 .thenReturn(inAiParameterEntity);
         when(inAiParameterRepository.save(any(InAiParameter.class)))
@@ -267,7 +269,7 @@ class InAiParameterServiceTest {
         verify(inAiParameterRepository).save(entityCaptor.capture());
         InAiParameter capturedEntity = entityCaptor.getValue();
 
-        assertEquals(digitalServiceUid, capturedEntity.getDigitalServiceUid());
+        assertEquals(digitalServiceUid, capturedEntity.getDigitalServiceVersionUid());
         assertNotNull(capturedEntity.getCreationDate());
         assertNotNull(capturedEntity.getLastUpdateDate());
         assertEquals(capturedEntity.getCreationDate(), capturedEntity.getLastUpdateDate());
@@ -276,8 +278,8 @@ class InAiParameterServiceTest {
     @Test
     void createAiParameter_WithNullParameterRest_ThrowsException() {
         // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(null))
                 .thenThrow(new IllegalArgumentException("Parameter cannot be null"));
 
@@ -285,7 +287,7 @@ class InAiParameterServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> inAiParameterService.createAiParameter(digitalServiceUid, null));
 
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
         verify(inAiParameterMapper).toEntity(null);
         verifyNoInteractions(inAiParameterRepository);
     }
@@ -296,15 +298,15 @@ class InAiParameterServiceTest {
         assertThrows(Exception.class,
                 () -> inAiParameterService.createAiParameter(null, aiParameterRest));
 
-        verify(digitalServiceRepository).findById(any());
+        verify(digitalServiceVersionRepository).findById(any());
         verifyNoInteractions(inAiParameterMapper, inAiParameterRepository);
     }
 
     @Test
     void createAiParameter_MapperToEntityException_PropagatesException() {
         // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(aiParameterRest))
                 .thenThrow(new RuntimeException("Mapping error"));
 
@@ -312,7 +314,7 @@ class InAiParameterServiceTest {
         assertThrows(RuntimeException.class,
                 () -> inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
 
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
         verify(inAiParameterMapper).toEntity(aiParameterRest);
         verifyNoInteractions(inAiParameterRepository);
     }
@@ -320,8 +322,8 @@ class InAiParameterServiceTest {
     @Test
     void createAiParameter_RepositorySaveException_PropagatesException() {
         // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(aiParameterRest))
                 .thenReturn(inAiParameterEntity);
         when(inAiParameterRepository.save(any(InAiParameter.class)))
@@ -331,7 +333,7 @@ class InAiParameterServiceTest {
         assertThrows(RuntimeException.class,
                 () -> inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
 
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
         verify(inAiParameterMapper).toEntity(aiParameterRest);
         verify(inAiParameterRepository).save(any(InAiParameter.class));
     }
@@ -339,8 +341,8 @@ class InAiParameterServiceTest {
     @Test
     void createAiParameter_MapperToBusinessObjectException_PropagatesException() {
         // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(aiParameterRest))
                 .thenReturn(inAiParameterEntity);
         when(inAiParameterRepository.save(any(InAiParameter.class)))
@@ -352,7 +354,7 @@ class InAiParameterServiceTest {
         assertThrows(RuntimeException.class,
                 () -> inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest));
 
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
         verify(inAiParameterMapper).toEntity(aiParameterRest);
         verify(inAiParameterRepository).save(any(InAiParameter.class));
         verify(inAiParameterMapper).toBusinessObject(savedInAiParameterEntity);
@@ -387,8 +389,8 @@ class InAiParameterServiceTest {
         boundaryParameterEntity.setIsInference(true);
         boundaryParameterEntity.setIsFinetuning(true);
 
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(boundaryParameterRest))
                 .thenReturn(boundaryParameterEntity);
         when(inAiParameterRepository.save(any(InAiParameter.class)))
@@ -421,8 +423,8 @@ class InAiParameterServiceTest {
         invalidParameterRest.setIsFinetuning(false);
 
 
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
 
         // When & Then
         assertThrows(NullPointerException.class,
@@ -462,8 +464,8 @@ class InAiParameterServiceTest {
             boundaryParameterEntity.setIsFinetuning(true);
 
 
-            when(digitalServiceRepository.findById(digitalServiceUid))
-                    .thenReturn(Optional.of(digitalService));
+            when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                    .thenReturn(Optional.of(digitalServiceVersion));
             when(inAiParameterMapper.toEntity(boundaryParameterRest))
                     .thenReturn(boundaryParameterEntity);
             when(inAiParameterRepository.save(any(InAiParameter.class)))
@@ -478,7 +480,7 @@ class InAiParameterServiceTest {
             assertNotNull(result);
 
             // Reset mocks for next iteration
-            reset(digitalServiceRepository, inAiParameterMapper, inAiParameterRepository);
+            reset(digitalServiceVersionRepository, inAiParameterMapper, inAiParameterRepository);
         }
     }
 
@@ -487,8 +489,8 @@ class InAiParameterServiceTest {
         // Given
         LocalDateTime beforeCall = LocalDateTime.now().minusSeconds(1);
 
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(aiParameterRest))
                 .thenReturn(inAiParameterEntity);
         when(inAiParameterRepository.save(any(InAiParameter.class)))
@@ -516,8 +518,8 @@ class InAiParameterServiceTest {
     @Test
     void createAiParameter_VerifyMethodCallOrder() {
         // Given
-        when(digitalServiceRepository.findById(digitalServiceUid))
-                .thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(inAiParameterMapper.toEntity(aiParameterRest))
                 .thenReturn(inAiParameterEntity);
         when(inAiParameterRepository.save(any(InAiParameter.class)))
@@ -529,8 +531,8 @@ class InAiParameterServiceTest {
         inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
 
         // Then - Verify call order using InOrder
-        var inOrder = inOrder(digitalServiceRepository, inAiParameterMapper, inAiParameterRepository);
-        inOrder.verify(digitalServiceRepository).findById(digitalServiceUid);
+        var inOrder = inOrder(digitalServiceVersionRepository, inAiParameterMapper, inAiParameterRepository);
+        inOrder.verify(digitalServiceVersionRepository).findById(digitalServiceUid);
         inOrder.verify(inAiParameterMapper).toEntity(aiParameterRest);
         inOrder.verify(inAiParameterRepository).save(any(InAiParameter.class));
         inOrder.verify(inAiParameterMapper).toBusinessObject(savedInAiParameterEntity);

@@ -21,7 +21,7 @@ import {
 } from "../../interfaces/output.interface";
 
 const endpoint = Constants.ENDPOINTS.sharedDs;
-const endpointDs = Constants.ENDPOINTS.ds;
+const endpointDs = Constants.ENDPOINTS.dsv;
 @Injectable({
     providedIn: "root",
 })

@@ -10,6 +10,7 @@ import { Injectable } from "@angular/core";
 import { map, Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+import { DigitalServiceVersionRequestBody } from "../../interfaces/digital-service-version.interface";
 import {
     AiModelConfig,
     DigitalService,
@@ -22,10 +23,11 @@ import {
 import { MapString } from "../../interfaces/generic.interfaces";
 
 const endpoint = Constants.ENDPOINTS.digitalServices;
+const endpointDsVersions = Constants.ENDPOINTS.digitalServicesVersions;
 const ecomindaiModelConfig = Constants.ENDPOINTS.ecomindaiModelConfig;
 
 const endpointshared = Constants.ENDPOINTS.sharedDs;
-const endpointDs = Constants.ENDPOINTS.ds;
+const endpointDs = Constants.ENDPOINTS.dsv;
 
 @Injectable({
     providedIn: "root",
@@ -46,23 +48,19 @@ export class DigitalServicesDataService {
         return this.http.get<DigitalService[]>(`${endpoint}`, { params });
     }
 
-    create(isAi?: boolean): Observable<DigitalService> {
-        let params = new HttpParams();
-        if (isAi !== undefined) {
-            params = params.set("isAi", isAi);
-        }
-        return this.http.post<DigitalService>(
-            `${endpoint}`,
-            {},
-            { headers: this.HEADERS, params: params },
-        );
+    create(requestBody: DigitalServiceVersionRequestBody): Observable<DigitalService> {
+        return this.http.post<DigitalService>(`${endpointDsVersions}`, requestBody);
     }
 
     update(digitalService: DigitalService): Observable<DigitalService> {
         return this.http
-            .put<DigitalService>(`${endpoint}/${digitalService.uid}`, digitalService, {
-                headers: this.HEADERS,
-            })
+            .put<DigitalService>(
+                `${endpointDsVersions}/${digitalService.uid}`,
+                digitalService,
+                {
+                    headers: this.HEADERS,
+                },
+            )
             .pipe(
                 tap((res: DigitalService) => {
                     this.digitalServiceSubject.next(res);
@@ -72,12 +70,12 @@ export class DigitalServicesDataService {
 
     get(uid: DigitalService["uid"]): Observable<DigitalService> {
         return this.http
-            .get<DigitalService>(`${endpoint}/${uid}`)
+            .get<DigitalService>(`${endpointDsVersions}/${uid}`)
             .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
     }
 
     getDsTasks(uid: DigitalService["uid"]): Observable<DigitalService> {
-        return this.http.get<DigitalService>(`${endpoint}/${uid}`);
+        return this.http.get<DigitalService>(`${endpointDsVersions}/${uid}`);
     }
 
     delete(uid: DigitalService["uid"]): Observable<string> {
@@ -117,11 +115,11 @@ export class DigitalServicesDataService {
     }
 
     launchEvaluating(uid: DigitalService["uid"]): Observable<string> {
-        return this.http.post<string>(`${endpoint}/${uid}/evaluating`, {});
+        return this.http.post<string>(`${endpointDsVersions}/${uid}/evaluating`, {});
     }
 
     downloadFile(uid: DigitalService["uid"]): Observable<any> {
-        return this.http.get(`${endpoint}/${uid}/export`, {
+        return this.http.get(`${endpointDsVersions}/${uid}/export`, {
             responseType: "blob",
             headers: { Accept: "application/zip" },
         });
@@ -132,7 +130,7 @@ export class DigitalServicesDataService {
         DSCriteria: DSCriteriaRest,
     ): Observable<DSCriteriaRest> {
         return this.http.put<DSCriteriaRest>(
-            `${endpoint}/${digitalServiceUid}`,
+            `${endpointDsVersions}/${digitalServiceUid}`,
             DSCriteria,
         );
     }
@@ -142,14 +140,16 @@ export class DigitalServicesDataService {
         if (extendLink) {
             params = params.set("extendLink", extendLink);
         }
-        return this.http.get<ShareLinkResp>(`${endpoint}/${uid}/share`, { params }).pipe(
-            map((response) => {
-                return {
-                    ...response,
-                    url: environment.frontEndUrl + response.url + "/footprint",
-                };
-            }),
-        );
+        return this.http
+            .get<ShareLinkResp>(`${endpointDsVersions}/${uid}/share`, { params })
+            .pipe(
+                map((response) => {
+                    return {
+                        ...response,
+                        url: environment.frontEndUrl + response.url + "/footprint",
+                    };
+                }),
+            );
     }
 
     validateShareToken(id: DigitalService["uid"], token: string): Observable<boolean> {

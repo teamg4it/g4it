@@ -1,0 +1,39 @@
+openapi: 3.0.3
+info:
+  title: Swagger GreenIT - Open API 3.0 - Digital Service Indicators
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: 1.0.0
+
+tags:
+  - name: digital-service-version indicators
+    description: All endpoint for digital service indicators
+
+paths:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/export:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+    get:
+      summary: endpoint to download digital service indicators export results
+      description: endpoint to download digital service indicators export results
+      tags:
+        - digital-service-version-indicator
+      operationId: getDigitalServiceVersionIndicatorsExportResult
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_READ')"
+      responses:
+        "200":
+          description: return zip file contains all the indicators results
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'

@@ -37,6 +37,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             servers: [],
             enableDataInconsistency: false,
             networks: [],
+            activeDsvUid: "1",
         } as DigitalService),
         copyUrl: () => of({ url: "test", expiryDate: new Date() }),
         get: () => of({} as DigitalService),
@@ -77,7 +78,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
     it("should emit event on digital service name change", () => {
         const newDigitalServiceName = "New name";
         spyOn(component.digitalServiceChange, "emit");
-        component.onNameUpdate(newDigitalServiceName);
+        component.onNameUpdate(newDigitalServiceName, true);
         fixture.detectChanges();
         const emittedObject = { name: newDigitalServiceName };
         expect(component.digitalServiceChange.emit).toHaveBeenCalledWith(
@@ -100,6 +101,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             servers: [],
             networks: [],
             enableDataInconsistency: false,
+            activeDsvUid: "1",
         } as DigitalService;
 
         // Patch the observable to emit a new value

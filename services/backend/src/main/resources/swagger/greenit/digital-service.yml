@@ -51,6 +51,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+
   /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
@@ -114,27 +115,4 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/share:
-    parameters:
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
-      - $ref: '#/components/parameters/extendLinkQueryParam'
-    get:
-      tags:
-        - digital-service
-      summary: Share a digital service
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: shareDigitalService
-      responses:
-        '200':
-          description: The digital service link to share
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DigitalServiceShareRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
 

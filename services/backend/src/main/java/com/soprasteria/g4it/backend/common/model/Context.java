@@ -26,6 +26,8 @@ public class Context {
     private Long inventoryId;
     private String digitalServiceUid;
     private String digitalServiceName;
+    private String digitalServiceVersionUid;
+    private String digitalServiceVersionName;
     private Locale locale;
     private LocalDateTime datetime;
     private boolean hasVirtualEquipments;
