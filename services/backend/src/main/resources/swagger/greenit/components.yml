@@ -1264,3 +1264,16 @@ components:
       type: object
       additionalProperties:
         type: string
+
+    DigitalServiceVersionsListRest:
+      description: List of Digital Service Versions
+      type: object
+      properties:
+        digitalServiceUid:
+          type: string
+        digitalServiceVersionUid:
+          type: string
+        versionName:
+          type: string
+        versionType:
+          type: string

@@ -58,4 +58,6 @@ public interface DigitalServiceVersionRestMapper {
      * @return the Business Object.
      */
     DigitalServiceVersionBO toBusinessObject(final DigitalServiceVersionRest dto);
+
+    
 }

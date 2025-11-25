@@ -16,12 +16,14 @@ import com.soprasteria.g4it.backend.common.utils.AuthorizationUtils;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
+import java.util.List;
 
 /**
  * Digital Service endpoints.
@@ -123,6 +125,14 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
                                                                               final Boolean extendLink) {
         return ResponseEntity.ok(digitalServiceVersionService.shareDigitalService(organization, workspace, digitalServiceVersionUid,
                 authService.getUser(), extendLink));
+    }
+
+    @Override
+    public ResponseEntity<List<DigitalServiceVersionsListRest>> getDigitalServiceVersions(final String organization,
+                                                                                          final Long workspace,
+                                                                                          final String digitalServiceVersionUid) {
+        
+        return ResponseEntity.ok(digitalServiceVersionService.getDigitalServiceVersions(digitalServiceVersionUid));
     }
 
 }
