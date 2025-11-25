@@ -34,6 +34,23 @@
                 {{ "ds-description-heading.text-description" | translate }}
             </h4>
             <p [innerHTML]="contentText()?.textDescription"></p>
+            <ul>
+                @for (impactText of textDescriptionImpacts(); track $index) {
+                    <li>
+                        <span [innerHTML]="impactText.text"></span>
+                        @if (chartType() !== "bar") {
+                            <button
+                                class="blue-link"
+                                (click)="impactClick(impactText.impactName)"
+                            >
+                                <i class="pi pi-arrow-right inline"></i> &nbsp;&nbsp;
+                                access to detail impact on
+                                {{ impactText.impactNameVisible }} axis
+                            </button>
+                        }
+                    </li>
+                }
+            </ul>
             <div class="section-hr"></div>
             <h4 class="mb-0 font-semibold">
                 {{ "ds-description-heading.analysis" | translate }}
