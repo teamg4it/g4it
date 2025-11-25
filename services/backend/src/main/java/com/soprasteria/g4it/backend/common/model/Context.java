@@ -52,7 +52,7 @@ public class Context {
 
     public String log(String delim) {
         if (inventoryId == null) {
-            return String.join(delim, organization, workspaceId.toString(), digitalServiceUid);
+            return String.join(delim, organization, workspaceId.toString(), digitalServiceVersionUid);
         }
         return String.join(delim, organization, workspaceId.toString(), inventoryId.toString());
     }
