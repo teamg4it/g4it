@@ -111,6 +111,11 @@ export class DigitalServicesFootprintDashboardComponent
     displayCriteriaPopup = false;
     workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
     organization!: Organization;
+    textDescriptionImpacts: {
+        text: string;
+        impactName: string;
+        impactNameVisible: string;
+    }[] = [];
     @ViewChildren(BarChartComponent) barChartComponents?: QueryList<BarChartComponent>;
 
     cloudData = computed(() => {
@@ -462,6 +467,7 @@ export class DigitalServicesFootprintDashboardComponent
 
     getBarChartTextDescription(translationKey: string): string {
         let textDescription = "";
+        let textImpacts = [];
         const totalImpacts = this.barChartTopThreeImpact.length;
         for (const [index, impact] of this.barChartTopThreeImpact.entries()) {
             if (index === 0) {
@@ -472,21 +478,27 @@ export class DigitalServicesFootprintDashboardComponent
                     },
                 );
             }
-            textDescription +=
-                (index === 0 ? "" : "<br />") +
-                this.translate.instant(`${translationKey}text-description-iterate`, {
-                    impactName: impact.name,
-                    impactValue: this.integerPipe.transform(impact.totalSipValue),
-                    rawValue: this.decimalsPipe.transform(impact.totalRawValue),
-                    unit: impact.unit,
-                }) +
-                this.getCommaOrDot(totalImpacts, index);
+            textImpacts.push({
+                text:
+                    (index === 0 ? "" : "<br />") +
+                    this.translate.instant(`${translationKey}text-description-iterate`, {
+                        impactName: impact.name,
+                        impactValue: this.integerPipe.transform(impact.totalSipValue),
+                        rawValue: this.decimalsPipe.transform(impact.totalRawValue),
+                        unit: impact.unit,
+                    }) +
+                    this.getCommaOrDot(totalImpacts, index),
+                impactName: impact.name,
+                impactNameVisible: impact.name,
+            });
         }
+        this.textDescriptionImpacts = textImpacts;
         return textDescription;
     }
 
     getGlobalVisionTextDescription(translationKey: string): string {
         let textDescription = "";
+        let textImpacts = [];
         const totalImpacts = this.topThreeImpacts.length;
         const firstPrefix = this.translate.instant(
             `${translationKey}text-description-first-prefix`,
@@ -494,7 +506,6 @@ export class DigitalServicesFootprintDashboardComponent
         const iteratePrefix = this.translate.instant(
             `${translationKey}text-description-iterate-prefix`,
         );
-
         for (const [index, impact] of this.topThreeImpacts.entries()) {
             const prefix = index === 0 ? firstPrefix : iteratePrefix;
 
@@ -503,29 +514,37 @@ export class DigitalServicesFootprintDashboardComponent
                     `${translationKey}text-description`,
                 );
             }
-            textDescription +=
-                (index === 0 ? "" : "<br />") +
-                prefix +
-                this.translate.instant(`${translationKey}text-description-iterate`, {
-                    impactName: impact.title,
-                    impactValue: this.integerPipe.transform(impact.peopleeq),
-                    resource: impact.maxCriteria.name,
-                    resourceValue: this.integerPipe.transform(
-                        impact.maxCriteria.peopleeq,
-                    ),
-                    rawValue: this.decimalsPipe.transform(impact.raw),
-                    unit: impact.unite,
-                    resourceRawValue: this.decimalsPipe.transform(impact.maxCriteria.raw),
-                    resourceUnit: impact.unite,
-                }) +
-                this.getCommaOrDot(totalImpacts, index);
-        }
 
+            textImpacts.push({
+                text:
+                    (index === 0 ? "" : "<br />") +
+                    prefix +
+                    this.translate.instant(`${translationKey}text-description-iterate`, {
+                        impactName: impact.title,
+                        impactValue: this.integerPipe.transform(impact.peopleeq),
+                        resource: impact.maxCriteria.name,
+                        resourceValue: this.integerPipe.transform(
+                            impact.maxCriteria.peopleeq,
+                        ),
+                        rawValue: this.decimalsPipe.transform(impact.raw),
+                        unit: impact.unite,
+                        resourceRawValue: this.decimalsPipe.transform(
+                            impact.maxCriteria.raw,
+                        ),
+                        resourceUnit: impact.unite,
+                    }) +
+                    this.getCommaOrDot(totalImpacts, index),
+                impactName: impact.name,
+                impactNameVisible: impact.title,
+            });
+        }
+        this.textDescriptionImpacts = textImpacts;
         return textDescription;
     }
 
     getCriteriaTextDescription(translationKey: string, criteriaKey: string): string {
         let textDescription = "";
+        let textImpacts = [];
         const totalImpacts = this.topPieThreeImpacts.length;
         for (const [index, impact] of this.topPieThreeImpacts.entries()) {
             if (index === 0) {
@@ -536,18 +555,23 @@ export class DigitalServicesFootprintDashboardComponent
                     },
                 );
             }
-            textDescription +=
-                (index === 0 ? "" : "<br />") +
-                this.translate.instant(`${translationKey}text-description-iterate`, {
-                    impactName: impact.name,
-                    impactValue: this.integerPipe.transform(impact.value),
-                    resource: this.translate.instant(`criteria.${criteriaKey}.title`),
-                    resourceValue: this.integerPipe.transform(impact.percentage),
-                    rawValue: this.decimalsPipe.transform(impact.unitValue),
-                    unit: impact.unit,
-                }) +
-                this.getCommaOrDot(totalImpacts, index);
+            textImpacts.push({
+                text:
+                    (index === 0 ? "" : "<br />") +
+                    this.translate.instant(`${translationKey}text-description-iterate`, {
+                        impactName: impact.name,
+                        impactValue: this.integerPipe.transform(impact.value),
+                        resource: this.translate.instant(`criteria.${criteriaKey}.title`),
+                        resourceValue: this.integerPipe.transform(impact.percentage),
+                        rawValue: this.decimalsPipe.transform(impact.unitValue),
+                        unit: impact.unit,
+                    }) +
+                    this.getCommaOrDot(totalImpacts, index),
+                impactName: impact.tier,
+                impactNameVisible: impact.name,
+            });
         }
+        this.textDescriptionImpacts = textImpacts;
         return textDescription;
     }
 
@@ -593,6 +617,27 @@ export class DigitalServicesFootprintDashboardComponent
             this.digitalService = await lastValueFrom(
                 this.digitalServicesDataService.update(this.digitalService),
             );
+        }
+    }
+
+    handleImpactClick(impactName: string) {
+        console.log(impactName);
+        console.log(this.chartType());
+        if (this.chartType() == "radial") {
+            this.handleChartChange(impactName);
+            return;
+        }
+        if (this.chartType() == "pie") {
+            this.selectedParam = impactName;
+            this.chartType.set("bar");
+            this.barChartChild = false;
+            return;
+        }
+        if (this.chartType() == "bar") {
+            if (this.selectedParam === "Terminal") {
+                this.selectedDetailParam = impactName;
+                this.barChartChild = true;
+            }
         }
     }
 

@@ -52,6 +52,7 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
 
     onChartClick(params: any) {
         this.chartTypeChange.emit("bar");
+        console.log(params.data.tier);
         this.selectedParamChange.emit(params.data.tier);
     }
 
