@@ -161,17 +161,15 @@
     </div>
     @if ((showKebabMenu || !isMobile()) && !isManageVersions()) {
         <div class="mr-3 block align-items-center lg:flex">
-            @if (false) {
-                <p-button
-                    (onClick)="goToManageVersions()"
-                    styleClass="cancel-creation-button uppercase ml-1 mr-2 mb-3 lg:mb-0"
-                    [ariaLabel]="'digital-services.version.manage-versions' | translate"
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    icon="pi pi-file"
-                    [label]="'digital-services.version.manage-versions' | translate"
-                    id="manage-versions"
-                />
-            }
+            <p-button
+                (onClick)="goToManageVersions()"
+                styleClass="cancel-creation-button uppercase ml-1 mr-2 mb-3 lg:mb-0"
+                [ariaLabel]="'digital-services.version.manage-versions' | translate"
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                icon="pi pi-file"
+                [label]="'digital-services.version.manage-versions' | translate"
+                id="manage-versions"
+            />
 
             <p-button
                 (onClick)="sidebarVisible = true"

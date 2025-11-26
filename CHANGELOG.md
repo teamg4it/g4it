@@ -4,6 +4,9 @@
 
 ## Major changes
 
+- 1604 | Introducing the version concept and DS creation
+- 1632 | Managing the versions
+
 ### Minor Changes
 
 - 1693 | [IS module] Control on the default DC for physical equipment

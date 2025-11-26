@@ -7,9 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.repository;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -33,10 +31,12 @@ public interface DigitalServiceVersionRepository extends JpaRepository<DigitalSe
 
 
     @Query("SELECT dsv " +
-       "FROM DigitalServiceVersion dsv "+
-       "WHERE dsv.digitalService.uid IN :dsUids "+
-        " AND dsv.versionType = 'active' ")
+            "FROM DigitalServiceVersion dsv " +
+            "WHERE dsv.digitalService.uid IN :dsUids " +
+            " AND dsv.versionType = 'active' ")
     List<DigitalServiceVersion> findActiveDigitalServiceVersion(List<String> dsUids);
+
+    List<DigitalServiceVersion> findByDigitalServiceUid(String uid);
 
 
 }

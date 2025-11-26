@@ -33,6 +33,7 @@ import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Digital-Service service.
@@ -201,8 +205,8 @@ public class DigitalServiceVersionService {
     /**
      * Generate the link to share the digital service
      *
-     * @param organization      the client organization name.
-     * @param workspaceId       the linked workspace id.
+     * @param organization             the client organization name.
+     * @param workspaceId              the linked workspace id.
      * @param digitalServiceVersionUid the digital service id.
      * @return the url.
      */
@@ -304,6 +308,28 @@ public class DigitalServiceVersionService {
                                                     String shareId) {
         return digitalServiceLinkRepository.validateLink(shareId, digitalServiceVersionUid).isPresent();
 
+
+    }
+
+    public List<DigitalServiceVersionsListRest> getDigitalServiceVersions(String digitalServiceVersionUid) {
+        // get digitalServiceUid from the version
+        final Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
+        if (digitalServiceVersion.isEmpty()) {
+            return List.of();
+        }
+        String digitalServiceUid = digitalServiceVersion.get().getDigitalService().getUid();
+
+        // fetch all versions for the digitalServiceUid
+        List<DigitalServiceVersion> versions = digitalServiceVersionRepository.findByDigitalServiceUid(digitalServiceUid);
+
+        // Step 3: Map to DigitalServiceVersionsListRest
+        return versions.stream()
+                .map(v -> DigitalServiceVersionsListRest.builder()
+                        .versionName(v.getDescription())
+                        .versionType(v.getVersionType())
+                        .digitalServiceVersionUid(v.getUid())
+                        .digitalServiceUid(digitalServiceUid)
+                        .build()).collect(toList());
 
     }
 

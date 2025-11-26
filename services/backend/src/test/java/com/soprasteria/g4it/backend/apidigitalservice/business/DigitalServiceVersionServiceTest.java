@@ -23,17 +23,14 @@ import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepos
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Role;
-import com.soprasteria.g4it.backend.apiuser.modeldb.User;
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.model.NoteBO;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,21 +46,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.argThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceVersionServiceTest {
@@ -76,9 +61,14 @@ class DigitalServiceVersionServiceTest {
     private static final String WORKSPACE_NAME = "workspace";
     private static final long USER_ID = 1;
     private static final Boolean IS_AI = false;
+    private static final String DIGITAL_SERVICE_NAME = "My DS";
+    private static final String VERSION_NAME = "version 1";
+    private static final String VERSION_TYPE = "draft";
 
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
+    @Mock
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
     @Mock
     private WorkspaceService workspaceService;
     @Mock
@@ -107,8 +97,6 @@ class DigitalServiceVersionServiceTest {
     private InAiInfrastructureRepository inAiInfrastructureRepository;
     @InjectMocks
     private DigitalServiceVersionService digitalServiceVersionService;
-    @Mock
-    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Test
     void shouldCreateNewDigitalServiceVersion_first() {
@@ -630,6 +618,75 @@ class DigitalServiceVersionServiceTest {
                         " not found in " + ORGANIZATION + "/" + WORKSPACE_ID)
                 .isInstanceOf(G4itRestException.class);
 
+    }
+
+    @Test
+    void testGetDigitalServiceVersions_success() {
+
+
+        DigitalService digitalService = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .build();
+
+        DigitalServiceVersion versionFound = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .description("Version A")
+                .versionType("draft")
+                .digitalService(digitalService)
+                .build();
+
+        DigitalServiceVersion v1 = DigitalServiceVersion.builder()
+                .uid("v1")
+                .description("Version A")
+                .versionType("draft")
+                .digitalService(digitalService)
+                .build();
+
+        DigitalServiceVersion v2 = DigitalServiceVersion.builder()
+                .uid("v2")
+                .description("Version B")
+                .versionType("active")
+                .digitalService(digitalService)
+                .build();
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(versionFound));
+
+        when(digitalServiceVersionRepository.findByDigitalServiceUid(DIGITAL_SERVICE_UID))
+                .thenReturn(List.of(v1, v2));
+
+
+        List<DigitalServiceVersionsListRest> result =
+                digitalServiceVersionService.getDigitalServiceVersions(DIGITAL_SERVICE_VERSION_UID);
+
+        assertNotNull(result);
+        assertEquals(2, result.size(), "Should return all versions belonging to the digital service");
+
+        // Validate first version
+        assertEquals("Version A", result.get(0).getVersionName());
+        assertEquals("draft", result.get(0).getVersionType());
+        assertEquals("v1", result.get(0).getDigitalServiceVersionUid());
+        assertEquals(DIGITAL_SERVICE_UID, result.get(0).getDigitalServiceUid());
+
+        // Validate second version
+        assertEquals("Version B", result.get(1).getVersionName());
+        assertEquals("active", result.get(1).getVersionType());
+        assertEquals("v2", result.get(1).getDigitalServiceVersionUid());
+        assertEquals(DIGITAL_SERVICE_UID, result.get(1).getDigitalServiceUid());
+    }
+
+    @Test
+    void testGetDigitalServiceVersions_versionNotFound_returnsEmptyList() {
+
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.empty());
+
+        List<DigitalServiceVersionsListRest> result =
+                digitalServiceVersionService.getDigitalServiceVersions(DIGITAL_SERVICE_VERSION_UID);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty(), "If version not found, should return empty list");
     }
 
 

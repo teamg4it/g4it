@@ -30,36 +30,51 @@
                 {{ "digital-services.version.version-name" | translate }}
                 <p-sortIcon field="name"></p-sortIcon>
             </th>
-            <th scope="col" id="lastName">
-                {{ "digital-services.version.actions" | translate }}
-            </th>
-            <th scope="col" id="select">
-                {{ "digital-services.version.select" | translate }}
-            </th>
+            @if (false) {
+                <th scope="col" id="lastName">
+                    {{ "digital-services.version.actions" | translate }}
+                </th>
+                <th scope="col" id="select">
+                    {{ "digital-services.version.select" | translate }}
+                </th>
+            }
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-version let-rowIndex="rowIndex">
         <tr>
             <td>
                 <app-version-type-tag
-                    [versionType]="version.status"
+                    [versionType]="version.versionType"
                 ></app-version-type-tag>
             </td>
-            <td>{{ version.name }}</td>
             <td>
                 <p-button
-                    class="mx-1 p-1 pt-2"
-                    icon="pi pi-clone"
-                    [text]="true"
-                    [plain]="true"
-                    [rounded]="true"
-                    (onClick)="duplicateDigitalServiceVersion(version.id)"
-                    [pTooltip]="'digital-services.version.duplicate-version' | translate"
-                    tooltipPosition="bottom"
-                    [ariaLabel]="'digital-services.version.duplicate-version' | translate"
+                    class="p-0 m-0 text-left"
+                    (onClick)="redirectToVersionDetails(version.digitalServiceVersionUid)"
+                    [label]="version.versionName"
+                    styleClass="p-button-link"
                 ></p-button>
             </td>
-            <td></td>
+            @if (false) {
+                <td>
+                    <p-button
+                        class="mx-1 p-1 pt-2"
+                        icon="pi pi-clone"
+                        [text]="true"
+                        [plain]="true"
+                        [rounded]="true"
+                        (onClick)="duplicateDigitalServiceVersion(version.id)"
+                        [pTooltip]="
+                            'digital-services.version.duplicate-version' | translate
+                        "
+                        tooltipPosition="bottom"
+                        [ariaLabel]="
+                            'digital-services.version.duplicate-version' | translate
+                        "
+                    ></p-button>
+                </td>
+                <td></td>
+            }
         </tr>
     </ng-template>
 </p-table>
