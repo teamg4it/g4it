@@ -47,6 +47,27 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
         }
     }
 
+    onVersionSelect(version: DigitalServiceVersionResponse): void {
+        const index = this.selectedVersions.findIndex(
+            (v: string) => v === version.digitalServiceVersionUid
+        );
+        
+        if (index > -1) {
+            // Version is already selected, remove it
+            this.selectedVersions.splice(index, 1);
+            version.selected = false;
+        } else if (this.selectedVersions.length < 2) {
+            // Add version if less than 2 are selected
+            this.selectedVersions.push(version.digitalServiceVersionUid);
+            version.selected = true;
+        } else {
+            // Prevent selection if already 2 selected
+            version.selected = false;
+        }
+    }
+
+
+
     duplicateDigitalServiceVersion(dsvUid: string): void {
         this.digitalServiceVersionDataService
             .duplicateVersion(dsvUid)

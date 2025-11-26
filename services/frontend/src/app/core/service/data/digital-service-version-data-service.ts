@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Constants } from "src/constants";
@@ -21,5 +21,16 @@ export class DigitalServiceVersionDataService {
 
     duplicateVersion(dsvUid: string): Observable<DigitalService> {
         return this.http.post<DigitalService>(`${endpoint}/${dsvUid}/duplicate`, null);
+    }
+
+    compareVersions(v1Uid: string, v2Uid: string): Observable<DigitalService> {
+        const params = new HttpParams()
+            .set("digitalServiceVersionUid1", v1Uid)
+            .set("digitalServiceVersionUid2", v2Uid);
+
+        return this.http.get<DigitalService>(
+            `${endpoint}/digital-service-version/compare-versions`,
+            { params },
+        );
     }
 }

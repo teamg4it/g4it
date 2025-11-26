@@ -12,6 +12,7 @@ export interface DigitalServiceVersionResponse {
     digitalServiceVersionUid: string;
     versionName: string;
     versionType: string;
+    selected?: boolean;
 }
 
 export enum DigitalServiceVersionType {

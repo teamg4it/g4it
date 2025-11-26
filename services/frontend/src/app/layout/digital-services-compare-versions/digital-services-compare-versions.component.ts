@@ -8,6 +8,7 @@ import {
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { convertToGlobalVision } from "src/app/core/service/mapper/digital-service";
 
 @Component({
@@ -1905,11 +1906,20 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
     transformedVersionDataObj: any = {};
 
     private readonly translate = inject(TranslateService);
+    private readonly digitalServiceVersionDataService = inject(
+        DigitalServiceVersionDataService,
+    );
     ngOnInit(): void {
         this.route.queryParams.subscribe((params) => {
             this.version1Id = params["version1"];
             this.version2Id = params["version2"];
             // Load and compare the versions using these IDs
+            this.digitalServiceVersionDataService
+                .compareVersions(this.version1Id, this.version2Id)
+                .subscribe((version) => {
+                    console.log("Loaded version for comparison:", version);
+                    // this.redirectToVersionDetails(version.uid);
+                });
         });
 
         this.compareApi = this.compareApi.map((version) => ({
