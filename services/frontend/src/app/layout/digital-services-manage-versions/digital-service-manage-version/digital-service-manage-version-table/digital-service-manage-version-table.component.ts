@@ -15,12 +15,13 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
     versionData: DigitalServiceVersionResponse[] = [];
+    dsVersionUid: string = "";
 
     ngOnInit() {
-        const dsVersionUid =
+        this.dsVersionUid =
             this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
         this.digitalServiceVersionDataService
-            .getVersions(dsVersionUid)
+            .getVersions(this.dsVersionUid)
             .subscribe((versions) => {
                 this.versionData = versions;
             });
@@ -33,7 +34,11 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
         );
     }
 
-    duplicateDigitalServiceVersion(version: string): void {
-        // redirect to version
+    duplicateDigitalServiceVersion(dsvUid: string): void {
+        this.digitalServiceVersionDataService
+            .duplicateVersion(dsvUid)
+            .subscribe((version) => {
+                this.redirectToVersionDetails(version.uid);
+            });
     }
 }

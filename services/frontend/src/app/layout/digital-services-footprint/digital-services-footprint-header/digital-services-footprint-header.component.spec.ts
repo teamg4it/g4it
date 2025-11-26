@@ -8,6 +8,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, convertToParamMap } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -66,6 +67,21 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
                 UserService,
                 MessageService,
                 ConfirmationService,
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        snapshot: {
+                            paramMap: convertToParamMap({
+                                digitalServiceVersionId: "12345",
+                            }),
+                        },
+                        paramMap: of(
+                            convertToParamMap({
+                                digitalServiceVersionId: "12345",
+                            }),
+                        ),
+                    },
+                },
             ],
         });
         fixture = TestBed.createComponent(DigitalServicesFootprintHeaderComponent);
@@ -136,5 +152,10 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         expect(component.displayLinkCreatePopup).toBeFalse();
         component.shareDs();
         expect(component.displayLinkCreatePopup).toBeTrue();
+    });
+
+    it("should set digitalServiceVersionUid from route paramMap", () => {
+        component.ngOnInit();
+        expect(component.digitalServiceVersionUid).toBe("12345");
     });
 });

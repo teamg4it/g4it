@@ -27,6 +27,7 @@ import { DigitalService } from "src/app/core/interfaces/digital-service.interfac
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
+import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
@@ -41,6 +42,9 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
     private readonly route = inject(ActivatedRoute);
+    private readonly digitalServiceVersionDataService = inject(
+        DigitalServiceVersionDataService,
+    );
 
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Input() isSharedDs = false;
@@ -78,6 +82,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        this.route.paramMap.subscribe((params) => {
+            this.digitalServiceVersionUid = params.get("digitalServiceVersionId") ?? "";
+        });
+
         this.digitalServicesData.digitalService$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
@@ -242,5 +250,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             });
     }
 
-    duplicateDigitalServiceVersion(): void {}
+    duplicateDigitalServiceVersion(): void {
+        this.digitalServiceVersionDataService
+            .duplicateVersion(this.digitalService.uid)
+            .subscribe((version) => {
+                this.router.navigate(["../../", version.uid, "footprint", "resources"], {
+                    relativeTo: this.route,
+                });
+            });
+    }
 }
