@@ -116,7 +116,7 @@ export class DigitalServiceBusinessService {
 
     toInPhysicalEquipment(
         server: DigitalServiceServerConfig,
-        digitalServiceUid: string,
+        digitalServiceVersionUid: string,
     ): InPhysicalEquipmentRest {
         const quantity =
             server.mutualizationType === "Dedicated"
@@ -125,7 +125,8 @@ export class DigitalServiceBusinessService {
 
         return {
             name: server.name,
-            digitalServiceUid,
+            digitalServiceUid: server.digitalServiceUid!,
+            digitalServiceVersionUid,
             quantity,
             type:
                 server.mutualizationType === "Dedicated"
@@ -154,7 +155,7 @@ export class DigitalServiceBusinessService {
     ): InVirtualEquipmentRest {
         return {
             id: vm.uid ? Number(vm.uid) : undefined,
-            digitalServiceVersionUid: digitalServiceVersionUid!,
+            digitalServiceVersionUid,
             durationHour: vm.annualOperatingTime,
             infrastructureType: "NON_CLOUD_SERVERS",
             name: vm.name,

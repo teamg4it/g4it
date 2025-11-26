@@ -63,6 +63,7 @@ export class DigitalServicesTerminalsComponent implements OnInit {
                     country: item.location,
                     numberOfUsers: item.numberOfUsers,
                     yearlyUsageTimePerUser: item.durationHour,
+                    digitalServiceUid: item.digitalServiceUid,
                 } as DigitalServiceTerminalConfig;
             });
     });
@@ -113,9 +114,8 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     async updateTerminals(terminal: DigitalServiceTerminalConfig) {
         const datePurchase = new Date("2020-01-01");
         const dateWithdrawal = addDays(datePurchase, terminal.lifespan * 365);
-
         const elementToSave = {
-            digitalServiceUid: this.digitalService.uid,
+            digitalServiceUid: terminal.digitalServiceUid,
             digitalServiceVersionUid: this.dsVersionUid(),
             name: terminal.name,
             type: "Terminal",

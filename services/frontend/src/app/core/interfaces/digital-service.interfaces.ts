@@ -80,6 +80,8 @@ export interface DigitalServiceServerConfig {
     annualElectricConsumption?: number;
     annualOperatingTime?: number;
     vm: ServerVM[];
+    digitalServiceUid?: string;
+    digitalServiceVersionUid?: string;
 }
 
 export interface DigitalServiceCloudServiceConfig {
@@ -130,6 +132,7 @@ export interface DigitalServiceTerminalConfig {
     yearlyUsageTimePerUser: number;
     idFront?: number;
     name: string;
+    digitalServiceUid?: string;
 }
 
 export interface DigitalServiceFootprint {
