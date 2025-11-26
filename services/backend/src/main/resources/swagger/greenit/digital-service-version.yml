@@ -2,7 +2,7 @@ openapi: "3.0.3"
 info:
   title: Swagger GreenIT - Open API 3.0 - Digital Service Version
   description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
-  version: '1.0.0'
+  version: "1.0.0"
 
 tags:
   - name: digital-service-version
@@ -12,8 +12,8 @@ tags:
 paths:
   /organizations/{organization}/workspaces/{workspace}/digital-service-version:
     parameters:
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: "#/components/parameters/organizationPathParam"
+      - $ref: "#/components/parameters/workspacePathParam"
     post:
       tags:
         - digital-service-version
@@ -28,22 +28,22 @@ paths:
             schema:
               $ref: "#/components/schemas/InDigitalServiceVersionRest"
       responses:
-        '201':
+        "201":
           description: Return the digital service version created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DigitalServiceVersionRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
           $ref: "#/components/responses/InternalServerError"
 
   /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}:
     parameters:
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+      - $ref: "#/components/parameters/organizationPathParam"
+      - $ref: "#/components/parameters/workspacePathParam"
+      - $ref: "#/components/parameters/digitalServiceVersionUidPathParam"
     delete:
       tags:
         - digital-service-version
@@ -51,11 +51,11 @@ paths:
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
       operationId: deleteDigitalServiceVersion
       responses:
-        '204':
+        "204":
           description: No content
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
           $ref: "#/components/responses/InternalServerError"
     get:
       tags:
@@ -64,15 +64,15 @@ paths:
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
       operationId: getDigitalServiceVersion
       responses:
-        '200':
+        "200":
           description: The digital service version requested
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DigitalServiceVersionRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
           $ref: "#/components/responses/InternalServerError"
 
     put:
@@ -89,25 +89,25 @@ paths:
             schema:
               $ref: "#/components/schemas/DigitalServiceVersionRest"
       responses:
-        '200':
+        "200":
           description: The updated digital service version list for connected user
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DigitalServiceVersionRest"
-        '400':
+        "400":
           $ref: "#/components/responses/BadRequestError"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
           $ref: "#/components/responses/InternalServerError"
 
   /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/share:
     parameters:
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
-      - $ref: '#/components/parameters/extendLinkQueryParam'
+      - $ref: "#/components/parameters/organizationPathParam"
+      - $ref: "#/components/parameters/workspacePathParam"
+      - $ref: "#/components/parameters/digitalServiceVersionUidPathParam"
+      - $ref: "#/components/parameters/extendLinkQueryParam"
     get:
       tags:
         - digital-service-version
@@ -115,15 +115,15 @@ paths:
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
       operationId: shareDigitalServiceVersion
       responses:
-        '200':
+        "200":
           description: The digital service version link to share
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DigitalServiceShareRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
           $ref: "#/components/responses/InternalServerError"
 
   /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/manage-versions:
@@ -151,3 +151,27 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/duplicate:
+    parameters:
+      - $ref: "#/components/parameters/organizationPathParam"
+      - $ref: "#/components/parameters/workspacePathParam"
+      - $ref: "#/components/parameters/digitalServiceVersionUidPathParam"
+    post:
+      tags:
+        - digital-service-version
+      summary: Duplicate a digital service version
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
+      operationId: duplicateDigitalServiceVersion
+      responses:
+        "201":
+          description: Return the duplicated digital service version
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigitalServiceVersionRest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"

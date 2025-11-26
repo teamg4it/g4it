@@ -39,7 +39,7 @@ export class InVirtualEquipmentsService {
 
     update(equipment: InVirtualEquipmentRest): Observable<InVirtualEquipmentRest> {
         return this.http.put<InVirtualEquipmentRest>(
-            `${endpoint}/${equipment.digitalServiceUid}/inputs/${this.API}/${equipment.id}`,
+            `${endpoint}/${equipment.digitalServiceVersionUid}/inputs/${this.API}/${equipment.id}`,
             equipment,
             {
                 headers: this.HEADERS,

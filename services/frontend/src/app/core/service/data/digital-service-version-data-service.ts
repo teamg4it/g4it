@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 import { DigitalServiceVersionResponse } from "../../interfaces/digital-service-version.interface";
+import { DigitalService } from "../../interfaces/digital-service.interfaces";
 
 const endpoint = Constants.ENDPOINTS.digitalServicesVersions;
 
@@ -16,5 +17,9 @@ export class DigitalServiceVersionDataService {
         return this.http.get<DigitalServiceVersionResponse[]>(
             `${endpoint}/${dsvUid}/manage-versions`,
         );
+    }
+
+    duplicateVersion(dsvUid: string): Observable<DigitalService> {
+        return this.http.post<DigitalService>(`${endpoint}/${dsvUid}/duplicate`, null);
     }
 }

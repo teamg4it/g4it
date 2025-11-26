@@ -238,19 +238,17 @@
                 [pTooltip]="'inventories-footprint.header.export' | translate"
                 tooltipPosition="bottom"
             />
-            @if (false) {
-                <p-button
-                    styleClass="header-blue-btn ml-2 mb-3 lg:mb-0"
-                    icon="pi pi-clone"
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    id="duplicate-version"
-                    [pTooltip]="'digital-services.version.duplicate-version' | translate"
-                    tooltipPosition="bottom"
-                    [ariaLabel]="'digital-services.version.duplicate-version' | translate"
-                    (onClick)="duplicateDigitalServiceVersion()"
-                >
-                </p-button>
-            }
+            <p-button
+                styleClass="header-blue-btn ml-2 mb-3 lg:mb-0"
+                icon="pi pi-clone"
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                id="duplicate-version"
+                [pTooltip]="'digital-services.version.duplicate-version' | translate"
+                tooltipPosition="bottom"
+                [ariaLabel]="'digital-services.version.duplicate-version' | translate"
+                (onClick)="duplicateDigitalServiceVersion()"
+            >
+            </p-button>
 
             @if (digitalService.versionType !== "active") {
                 <p-button

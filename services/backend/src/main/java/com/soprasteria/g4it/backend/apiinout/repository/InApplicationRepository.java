@@ -80,4 +80,19 @@ public interface InApplicationRepository extends JpaRepository<InApplication, Lo
     @Transactional
     @Modifying
     void deleteByInventoryId(Long inventoryId);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            INSERT INTO in_application (
+                name, inventory_id, digital_service_uid, physical_equipment_name, virtual_equipment_name,
+                environment, common_filters, filters, creation_date, last_update_date, digital_service_version_uid
+            )
+            SELECT
+                name, inventory_id, digital_service_uid, physical_equipment_name, virtual_equipment_name,
+                environment, common_filters, filters, NOW(), NOW(), :newUid
+            FROM in_application
+            WHERE digital_service_version_uid = :oldUid
+            """, nativeQuery = true)
+    void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
 }

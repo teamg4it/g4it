@@ -5,6 +5,7 @@
 ## Major changes
 
 - 1604 | Introducing the version concept and DS creation
+- 1605 | Duplicating a version
 - 1632 | Managing the versions
 
 ### Minor Changes

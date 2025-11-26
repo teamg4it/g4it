@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVers
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
@@ -78,6 +79,8 @@ public class DigitalServiceVersionService {
     private InDatacenterRepository inDatacenterRepository;
     @Autowired
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    @Autowired
+    private InApplicationRepository inApplicationRepository;
     @Autowired
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Autowired
@@ -330,7 +333,40 @@ public class DigitalServiceVersionService {
                         .digitalServiceVersionUid(v.getUid())
                         .digitalServiceUid(digitalServiceUid)
                         .build()).collect(toList());
+    }
 
+    /**
+     * Duplicate a digital service version
+     *
+     * @param digitalServiceVersionUid the digital service version uid to duplicate
+     * @return the duplicated digital service version business object
+     */
+    public DigitalServiceVersionBO duplicateDigitalServiceVersion(final String digitalServiceVersionUid) {
+
+        // Verify the version exists
+        DigitalServiceVersion originalVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid)
+                .orElseThrow(() -> new G4itRestException("404",
+                        String.format("Digital Service Version %s not found", digitalServiceVersionUid)));
+
+        // Generate new UID
+        String newUid = java.util.UUID.randomUUID().toString();
+
+        // Duplicate version record
+        digitalServiceVersionRepository.duplicateVersionRecord(digitalServiceVersionUid, newUid);
+
+        // Copy all child records
+        inPhysicalEquipmentRepository.copyForVersion(digitalServiceVersionUid, newUid);
+        inVirtualEquipmentRepository.copyForVersion(digitalServiceVersionUid, newUid);
+        inDatacenterRepository.copyForVersion(digitalServiceVersionUid, newUid);
+        inApplicationRepository.copyForVersion(digitalServiceVersionUid, newUid);
+        inAiInfrastructureRepository.copyForVersion(digitalServiceVersionUid, newUid);
+        inAiParameterRepository.copyForVersion(digitalServiceVersionUid, newUid);
+
+
+        // Retrieve and return the duplicated version
+        DigitalServiceVersion duplicatedVersion = digitalServiceVersionRepository.findById(newUid)
+                .orElseThrow(() -> new G4itRestException("500", "Failed to retrieve duplicated version"));
+        return digitalServiceVersionMapper.toFullBusinessObject(duplicatedVersion);
     }
 
 

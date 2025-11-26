@@ -30,10 +30,10 @@
                 {{ "digital-services.version.version-name" | translate }}
                 <p-sortIcon field="name"></p-sortIcon>
             </th>
+            <th scope="col" id="lastName">
+                {{ "digital-services.version.actions" | translate }}
+            </th>
             @if (false) {
-                <th scope="col" id="lastName">
-                    {{ "digital-services.version.actions" | translate }}
-                </th>
                 <th scope="col" id="select">
                     {{ "digital-services.version.select" | translate }}
                 </th>
@@ -55,26 +55,22 @@
                     styleClass="p-button-link"
                 ></p-button>
             </td>
-            @if (false) {
-                <td>
-                    <p-button
-                        class="mx-1 p-1 pt-2"
-                        icon="pi pi-clone"
-                        [text]="true"
-                        [plain]="true"
-                        [rounded]="true"
-                        (onClick)="duplicateDigitalServiceVersion(version.id)"
-                        [pTooltip]="
-                            'digital-services.version.duplicate-version' | translate
-                        "
-                        tooltipPosition="bottom"
-                        [ariaLabel]="
-                            'digital-services.version.duplicate-version' | translate
-                        "
-                    ></p-button>
-                </td>
-                <td></td>
-            }
+            <td>
+                <p-button
+                    class="mx-1 p-1 pt-2"
+                    icon="pi pi-clone"
+                    [text]="true"
+                    [plain]="true"
+                    [rounded]="true"
+                    (onClick)="
+                        duplicateDigitalServiceVersion(version.digitalServiceVersionUid)
+                    "
+                    [pTooltip]="'digital-services.version.duplicate-version' | translate"
+                    tooltipPosition="bottom"
+                    [ariaLabel]="'digital-services.version.duplicate-version' | translate"
+                ></p-button>
+            </td>
+            <td></td>
         </tr>
     </ng-template>
 </p-table>

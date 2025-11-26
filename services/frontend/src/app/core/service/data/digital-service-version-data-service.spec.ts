@@ -5,6 +5,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 import { Constants } from "src/constants";
 import { DigitalServiceVersionResponse } from "../../interfaces/digital-service-version.interface";
+import { DigitalService } from "../../interfaces/digital-service.interfaces";
 import { DigitalServiceVersionDataService } from "./digital-service-version-data-service";
 
 describe("DigitalServiceVersionDataService", () => {
@@ -50,6 +51,33 @@ describe("DigitalServiceVersionDataService", () => {
 
         const req = httpMock.expectOne(`${endpoint}/${dsvUid}/manage-versions`);
         expect(req.request.method).toBe("GET");
+
+        req.flush(mockResponse);
+    });
+
+    it("should duplicate versions by dsvUid", () => {
+        const dsvUid = "12345";
+        const mockResponse: DigitalService = {
+            uid: "67890",
+            name: "Duplicated Service",
+            description: "This is a duplicated digital service",
+            creationDate: 2,
+            lastCalculationDate: 1,
+            lastUpdateDate: 1,
+            terminals: [],
+            servers: [],
+            networks: [],
+            enableDataInconsistency: false,
+            activeDsvUid: "1",
+            // Add other necessary properties as per the DigitalService interface
+        };
+
+        service.duplicateVersion(dsvUid).subscribe((res) => {
+            expect(res).toEqual(mockResponse);
+        });
+
+        const req = httpMock.expectOne(`${endpoint}/${dsvUid}/duplicate`);
+        expect(req.request.method).toBe("POST");
 
         req.flush(mockResponse);
     });

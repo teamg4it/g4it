@@ -62,13 +62,15 @@ export class DigitalServicesFootprintComponent
     ) {}
 
     ngOnInit(): void {
-        this.asyncInit();
+        this.route.paramMap.subscribe((params) => {
+            const dsvUid = params.get("digitalServiceVersionId") ?? "";
+            this.asyncInit(dsvUid);
+        });
     }
-    private async asyncInit() {
+    private async asyncInit(uid: string) {
         this.setMobileView();
         this.global.setLoading(true);
 
-        const uid = this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
         const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
         // If the digital service is not found, 404 is catched by the interceptor.
         // Therefore we can continue without those verifications.

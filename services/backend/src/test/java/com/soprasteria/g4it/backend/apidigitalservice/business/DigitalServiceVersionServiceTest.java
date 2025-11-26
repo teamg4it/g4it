@@ -13,9 +13,11 @@ import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersio
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersionStatus;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
@@ -87,6 +89,8 @@ class DigitalServiceVersionServiceTest {
     private DigitalServiceLinkRepository digitalServiceLinkRepo;
     @Mock
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Mock
+    private InApplicationRepository inApplicationRepository;
     @Mock
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
     @Mock
@@ -620,6 +624,63 @@ class DigitalServiceVersionServiceTest {
 
     }
 
+    void shouldCreateDigitalServiceVersion_first() {
+
+        final Workspace linkedWorkspace = Workspace.builder().id(WORKSPACE_ID).build();
+        final User user = User.builder().id(USER_ID).build();
+
+        InDigitalServiceVersionRest inDigitalServiceVersionRest = InDigitalServiceVersionRest.builder()
+                .dsName(DIGITAL_SERVICE_NAME)
+                .versionName(VERSION_NAME)
+                .isAi(IS_AI)
+                .build();
+        DigitalService digitalServiceSaved = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .name(inDigitalServiceVersionRest.getDsName())
+                .user(user)
+                .workspace(linkedWorkspace)
+                .isAi(inDigitalServiceVersionRest.getIsAi())
+                .build();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .description(inDigitalServiceVersionRest.getVersionName())
+                .digitalService(DigitalService.builder().uid(digitalServiceSaved.getUid()).build())
+                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
+                .createdBy(digitalServiceSaved.getUser().getId())
+                .creationDate(now)
+                .lastUpdateDate(now)
+                .lastCalculationDate(now)
+                .build();
+
+
+        DigitalServiceVersionBO expectedBO = DigitalServiceVersionBO.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .description(VERSION_NAME)
+                .versionType(VERSION_TYPE)
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceRepository.save(any())).thenReturn(digitalServiceSaved);
+        when(digitalServiceVersionRepository.save(any())).thenReturn(digitalServiceVersion);
+        when(digitalServiceVersionMapper.toBusinessObject(digitalServiceVersion, digitalServiceSaved)).thenReturn(expectedBO);
+
+        final DigitalServiceVersionBO result = digitalServiceVersionService.createDigitalServiceVersion(WORKSPACE_ID, USER_ID, inDigitalServiceVersionRest);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(expectedBO);
+
+        verify(workspaceService, times(1)).getWorkspaceById(WORKSPACE_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
+        verify(digitalServiceRepository, times(1)).save(any());
+        verify(digitalServiceVersionRepository, times(1)).save(any());
+        verify(digitalServiceVersionMapper, times(1)).toBusinessObject(digitalServiceVersion, digitalServiceSaved);
+
+    }
+
     @Test
     void testGetDigitalServiceVersions_success() {
 
@@ -687,7 +748,8 @@ class DigitalServiceVersionServiceTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty(), "If version not found, should return empty list");
-    }
 
+
+    }
 
 }

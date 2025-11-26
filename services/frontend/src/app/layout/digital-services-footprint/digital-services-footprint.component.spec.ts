@@ -1,6 +1,6 @@
 import { ChangeDetectorRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, convertToParamMap } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
@@ -20,6 +20,11 @@ describe("DigitalServicesFootprintComponent", () => {
                 get: (key: string) => "test-uid",
             },
         },
+        paramMap: of(
+            convertToParamMap({
+                digitalServiceVersionId: "ABC-123",
+            }),
+        ),
     };
 
     const mockDigitalService = {
@@ -119,5 +124,15 @@ describe("DigitalServicesFootprintComponent", () => {
             expect(spy).toHaveBeenCalled();
             done();
         }, 10);
+    });
+
+    it("should call asyncInit() with the UID from route params", () => {
+        const asyncInitSpy = spyOn(component as any, "asyncInit").and.returnValue(
+            Promise.resolve(),
+        );
+
+        component.ngOnInit();
+
+        expect(asyncInitSpy).toHaveBeenCalledWith("ABC-123");
     });
 });
