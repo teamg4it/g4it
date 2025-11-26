@@ -131,6 +131,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                         uid: vm.id.toString(),
                         vCpu: vm.vcpuCoreNumber,
                         electricityConsumption: vm.electricityConsumption,
+                        digitalServiceUid: item.digitalServiceUid,
                     } as ServerVM;
                 }),
             } as DigitalServiceServerConfig;
