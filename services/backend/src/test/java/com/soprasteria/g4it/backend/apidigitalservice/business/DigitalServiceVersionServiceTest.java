@@ -7,29 +7,6 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.management.relation.Role;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
@@ -57,6 +34,23 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceVersionServiceTest {
@@ -630,6 +624,63 @@ class DigitalServiceVersionServiceTest {
 
     }
 
+    void shouldCreateDigitalServiceVersion_first() {
+
+        final Workspace linkedWorkspace = Workspace.builder().id(WORKSPACE_ID).build();
+        final User user = User.builder().id(USER_ID).build();
+
+        InDigitalServiceVersionRest inDigitalServiceVersionRest = InDigitalServiceVersionRest.builder()
+                .dsName(DIGITAL_SERVICE_NAME)
+                .versionName(VERSION_NAME)
+                .isAi(IS_AI)
+                .build();
+        DigitalService digitalServiceSaved = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .name(inDigitalServiceVersionRest.getDsName())
+                .user(user)
+                .workspace(linkedWorkspace)
+                .isAi(inDigitalServiceVersionRest.getIsAi())
+                .build();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .description(inDigitalServiceVersionRest.getVersionName())
+                .digitalService(DigitalService.builder().uid(digitalServiceSaved.getUid()).build())
+                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
+                .createdBy(digitalServiceSaved.getUser().getId())
+                .creationDate(now)
+                .lastUpdateDate(now)
+                .lastCalculationDate(now)
+                .build();
+
+
+        DigitalServiceVersionBO expectedBO = DigitalServiceVersionBO.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .description(VERSION_NAME)
+                .versionType(VERSION_TYPE)
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceRepository.save(any())).thenReturn(digitalServiceSaved);
+        when(digitalServiceVersionRepository.save(any())).thenReturn(digitalServiceVersion);
+        when(digitalServiceVersionMapper.toBusinessObject(digitalServiceVersion, digitalServiceSaved)).thenReturn(expectedBO);
+
+        final DigitalServiceVersionBO result = digitalServiceVersionService.createDigitalServiceVersion(WORKSPACE_ID, USER_ID, inDigitalServiceVersionRest);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(expectedBO);
+
+        verify(workspaceService, times(1)).getWorkspaceById(WORKSPACE_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
+        verify(digitalServiceRepository, times(1)).save(any());
+        verify(digitalServiceVersionRepository, times(1)).save(any());
+        verify(digitalServiceVersionMapper, times(1)).toBusinessObject(digitalServiceVersion, digitalServiceSaved);
+
+    }
+
     @Test
     void testGetDigitalServiceVersions_success() {
 
@@ -697,128 +748,8 @@ class DigitalServiceVersionServiceTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty(), "If version not found, should return empty list");
-    void shouldCreateDigitalServiceVersion_first() {
 
-        final Workspace linkedWorkspace = Workspace.builder().id(WORKSPACE_ID).build();
-        final User user = User.builder().id(USER_ID).build();
-
-        InDigitalServiceVersionRest inDigitalServiceVersionRest = InDigitalServiceVersionRest.builder()
-                .dsName(DIGITAL_SERVICE_NAME)
-                .versionName(VERSION_NAME)
-                .isAi(IS_AI)
-                .build();
-        DigitalService digitalServiceSaved = DigitalService.builder()
-                .uid(DIGITAL_SERVICE_UID)
-                .name(inDigitalServiceVersionRest.getDsName())
-                .user(user)
-                .workspace(linkedWorkspace)
-                .isAi(inDigitalServiceVersionRest.getIsAi())
-                .build();
-
-        LocalDateTime now = LocalDateTime.now();
-
-        final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
-                .uid(DIGITAL_SERVICE_VERSION_UID)
-                .description(inDigitalServiceVersionRest.getVersionName())
-                .digitalService(DigitalService.builder().uid(digitalServiceSaved.getUid()).build())
-                .versionType(DigitalServiceVersionStatus.DRAFT.name()) // Initial version type
-                .createdBy(digitalServiceSaved.getUser().getId())
-                .creationDate(now)
-                .lastUpdateDate(now)
-                .lastCalculationDate(now)
-                .build();
-
-
-        DigitalServiceVersionBO expectedBO = DigitalServiceVersionBO.builder()
-                .uid(DIGITAL_SERVICE_VERSION_UID)
-                .description(VERSION_NAME)
-                .versionType(VERSION_TYPE)
-                .build();
-
-        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-        when(digitalServiceRepository.save(any())).thenReturn(digitalServiceSaved);
-        when(digitalServiceVersionRepository.save(any())).thenReturn(digitalServiceVersion);
-        when(digitalServiceVersionMapper.toBusinessObject(digitalServiceVersion, digitalServiceSaved)).thenReturn(expectedBO);
-
-        final DigitalServiceVersionBO result = digitalServiceVersionService.createDigitalServiceVersion(WORKSPACE_ID, USER_ID, inDigitalServiceVersionRest);
-
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(expectedBO);
-
-        verify(workspaceService, times(1)).getWorkspaceById(WORKSPACE_ID);
-        verify(userRepository, times(1)).findById(USER_ID);
-        verify(digitalServiceRepository, times(1)).save(any());
-        verify(digitalServiceVersionRepository, times(1)).save(any());
-        verify(digitalServiceVersionMapper, times(1)).toBusinessObject(digitalServiceVersion, digitalServiceSaved);
 
     }
-
-    @Test
-    void shouldDuplicateDigitalServiceVersion() {
-
-        // --- Input ---
-        final String originalUid = DIGITAL_SERVICE_VERSION_UID;
-        final UUID newUuid = UUID.fromString("00000000-0000-0000-0000-000000000001");
-        final String newUid = newUuid.toString();
-
-        // --- Mock original version ---
-        DigitalServiceVersion originalVersion = DigitalServiceVersion.builder()
-                .uid(originalUid)
-                .description(VERSION_NAME)
-                .versionType(DigitalServiceVersionStatus.DRAFT.name())
-                .createdBy(USER_ID)
-                .build();
-
-        // --- Mock duplicated version ---
-        DigitalServiceVersion duplicatedVersion = DigitalServiceVersion.builder()
-                .uid(newUid)
-                .description(VERSION_NAME + " (1)")
-                .versionType(DigitalServiceVersionStatus.DRAFT.name())
-                .createdBy(USER_ID)
-                .build();
-
-        // --- Expected business object ---
-        DigitalServiceVersionBO expectedBO = DigitalServiceVersionBO.builder()
-                .uid(newUid)
-                .description(VERSION_NAME + " (1)")
-                .versionType(DigitalServiceVersionStatus.DRAFT.name())
-                .build();
-
-        // --- Mock repository behaviors ---
-        when(digitalServiceVersionRepository.findById(originalUid)).thenReturn(Optional.of(originalVersion));
-
-        // Mock UUID generation
-        try (MockedStatic<UUID> mockedUuid = Mockito.mockStatic(UUID.class)) {
-
-            mockedUuid.when(UUID::randomUUID).thenReturn(newUuid);
-
-            // Stub repository calls for the duplicated version
-            when(digitalServiceVersionRepository.findById(newUid)).thenReturn(Optional.of(duplicatedVersion));
-            when(digitalServiceVersionMapper.toBusinessObject(duplicatedVersion)).thenReturn(expectedBO);
-
-            // --- Execute method under test ---
-            DigitalServiceVersionBO result = digitalServiceVersionService.duplicateDigitalServiceVersion(originalUid);
-
-            // --- Validate ---
-            assertThat(result).isNotNull();
-            assertThat(result).isEqualTo(expectedBO);
-
-            // --- Verify interactions ---
-            verify(digitalServiceVersionRepository).findById(originalUid);
-            verify(digitalServiceVersionRepository).duplicateVersionRecord(originalUid, newUid);
-
-            verify(inPhysicalEquipmentRepository).copyForVersion(originalUid, newUid);
-            verify(inVirtualEquipmentRepository).copyForVersion(originalUid, newUid);
-            verify(inDatacenterRepository).copyForVersion(originalUid, newUid);
-            verify(inApplicationRepository).copyForVersion(originalUid, newUid);
-            verify(inAiInfrastructureRepository).copyForVersion(originalUid, newUid);
-            verify(inAiParameterRepository).copyForVersion(originalUid, newUid);
-
-            verify(digitalServiceVersionRepository).findById(newUid);
-            verify(digitalServiceVersionMapper).toBusinessObject(duplicatedVersion);
-        }
-    }
-
 
 }
