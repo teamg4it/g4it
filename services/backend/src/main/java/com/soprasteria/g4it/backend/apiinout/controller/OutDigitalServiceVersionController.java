@@ -8,10 +8,11 @@
 package com.soprasteria.g4it.backend.apiinout.controller;
 
 import com.soprasteria.g4it.backend.apiinout.business.OutApplicationService;
+import com.soprasteria.g4it.backend.apiinout.business.OutDigitalServiceComparisonService;
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
-import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceOutputsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionOutputsApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionComparison;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutVirtualEquipmentRest;
@@ -45,13 +46,15 @@ public class OutDigitalServiceVersionController implements DigitalServiceVersion
      */
     private OutApplicationService outApplicationService;
 
+    private OutDigitalServiceComparisonService comparisonService;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public ResponseEntity<List<OutPhysicalEquipmentRest>> getDigitalServiceVersionOutputsPhysicalEquipmentsRest(String organization,
-                                                                                                         Long workspace,
-                                                                                                         String digitalServiceVersionUid) {
+                                                                                                                Long workspace,
+                                                                                                                String digitalServiceVersionUid) {
         return ResponseEntity.ok().body(outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 
@@ -60,8 +63,8 @@ public class OutDigitalServiceVersionController implements DigitalServiceVersion
      */
     @Override
     public ResponseEntity<List<OutVirtualEquipmentRest>> getDigitalServiceVersionOutputsVirtualEquipmentsRest(String organization,
-                                                                                                       Long workspace,
-                                                                                                       String digitalServiceVersionUid) {
+                                                                                                              Long workspace,
+                                                                                                              String digitalServiceVersionUid) {
         return ResponseEntity.ok().body(outVirtualEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 
@@ -70,8 +73,20 @@ public class OutDigitalServiceVersionController implements DigitalServiceVersion
      */
     @Override
     public ResponseEntity<List<OutApplicationRest>> getDigitalServiceVersionOutputsApplicationsRest(String organization,
-                                                                                             Long workspace,
-                                                                                             String digitalServiceVersionUid) {
+                                                                                                    Long workspace,
+                                                                                                    String digitalServiceVersionUid) {
         return ResponseEntity.ok().body(outApplicationService.getByDigitalServiceVersionUid(digitalServiceVersionUid));
+    }
+
+    @Override
+    public ResponseEntity<List<DigitalServiceVersionComparison>> getDigitalServiceVersionComparison(String organization,
+                                                                                                    Long workspace,
+                                                                                                    String digitalServiceVersionUid1,
+                                                                                                    String digitalServiceVersionUid2) {
+
+        List<DigitalServiceVersionComparison> comparisonList =
+                comparisonService.compareDigitalServiceVersions(digitalServiceVersionUid1, digitalServiceVersionUid2);
+
+        return ResponseEntity.ok(comparisonList);
     }
 }
