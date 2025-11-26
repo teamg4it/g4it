@@ -134,7 +134,7 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
                                                                                           final String digitalServiceVersionUid) {
         
         return ResponseEntity.ok(digitalServiceVersionService.getDigitalServiceVersions(digitalServiceVersionUid));
-    }                                                                                                                                                                                                                                                     }
+    }
     /**
      * {@inheritDoc}
      */
