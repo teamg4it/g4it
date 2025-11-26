@@ -7,6 +7,13 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.controller;
 
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionRestMapper;
@@ -18,12 +25,6 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.net.URI;
-import java.util.List;
 
 /**
  * Digital Service endpoints.
@@ -133,6 +134,21 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
                                                                                           final String digitalServiceVersionUid) {
         
         return ResponseEntity.ok(digitalServiceVersionService.getDigitalServiceVersions(digitalServiceVersionUid));
+    }                                                                                                                                                                                                                                                     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<DigitalServiceVersionRest> duplicateDigitalServiceVersion(
+            final String organization,
+            final Long workspace,
+            final String digitalServiceVersionUid) {
+
+        final DigitalServiceVersionBO duplicatedVersion =
+                digitalServiceVersionService.duplicateDigitalServiceVersion(digitalServiceVersionUid);
+
+        final DigitalServiceVersionRest digitalServiceVersionDTO = digitalServiceVersionRestMapper.toDto(duplicatedVersion);
+        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", duplicatedVersion.getUid())))).body(digitalServiceVersionDTO);
     }
 
 }

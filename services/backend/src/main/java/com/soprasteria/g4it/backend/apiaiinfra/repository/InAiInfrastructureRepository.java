@@ -12,6 +12,8 @@ import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface InAiInfrastructureRepository extends JpaRepository<InAiInfrastructure, Long> {
 
@@ -31,4 +33,17 @@ public interface InAiInfrastructureRepository extends JpaRepository<InAiInfrastr
     @Transactional
     @Modifying
     void deleteByDigitalServiceVersionUid(String digitalServiceVersionUid);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            INSERT INTO in_ai_infrastructure (
+                complementary_pue, infrastructure_type, nb_gpu, gpu_memory, digital_service_uid, digital_service_version_uid
+            )
+            SELECT
+                complementary_pue, infrastructure_type, nb_gpu, gpu_memory, digital_service_uid, :newUid
+            FROM in_ai_infrastructure
+            WHERE digital_service_version_uid = :oldUid
+            """, nativeQuery = true)
+    void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
 }
