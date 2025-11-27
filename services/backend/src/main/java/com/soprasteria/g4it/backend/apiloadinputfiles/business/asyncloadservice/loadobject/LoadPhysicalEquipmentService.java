@@ -77,7 +77,7 @@ public class LoadPhysicalEquipmentService {
         if(null != context.getInventoryId()){
             inPhysicalEquipmentRepository.deleteByInventoryIdAndNameIn(context.getInventoryId(), names);
         }
-        else inPhysicalEquipmentRepository.deleteByDigitalServiceUidAndNameIn(context.getDigitalServiceUid(), names);
+        else inPhysicalEquipmentRepository.deleteByDigitalServiceVersionUidAndNameIn(context.getDigitalServiceVersionUid(), names);
 
         // Load data into database
         inPhysicalEquipmentRepository.saveAll(physicalEquipmentsToSave);

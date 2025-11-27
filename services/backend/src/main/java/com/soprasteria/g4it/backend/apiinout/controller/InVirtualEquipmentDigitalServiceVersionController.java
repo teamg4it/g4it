@@ -10,7 +10,6 @@ package com.soprasteria.g4it.backend.apiinout.controller;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
-import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceInputsVirtualEquipmentApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionInputsVirtualEquipmentApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import lombok.AllArgsConstructor;

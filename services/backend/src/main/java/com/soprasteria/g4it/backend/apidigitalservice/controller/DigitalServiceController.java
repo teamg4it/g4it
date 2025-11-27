@@ -58,21 +58,6 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
     @Autowired
     private AuthorizationUtils authorizationUtils;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<DigitalServiceRest> createDigitalService(final String organization, final Long workspace, final Boolean isAi) {
-        if (isAi != null && isAi) {
-            authorizationUtils.checkEcomindAuthorization();
-            authorizationUtils.checkEcomindEnabledForOrganization(organization);
-        }
-
-        final DigitalServiceBO digitalServiceBO = digitalServiceService.createDigitalService(workspace, authService.getUser().getId(), isAi);
-        final DigitalServiceRest digitalServiceDTO = digitalServiceRestMapper.toDto(digitalServiceBO);
-        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-services", digitalServiceBO.getUid())))).body(digitalServiceDTO);
-    }
-
 
     /**
      * {@inheritDoc}
@@ -85,40 +70,6 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
         }
         final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(workspace, isAi);
         return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceBOs));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<Void> deleteDigitalService(final String organization, final Long workspace, final String digitalServiceUid) {
-        digitalServiceService.deleteDigitalService(digitalServiceUid);
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<DigitalServiceRest> getDigitalService(final String organization,
-                                                                final Long workspace,
-                                                                final String digitalServiceUid) {
-        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.getDigitalService(digitalServiceUid)));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<DigitalServiceRest> updateDigitalService(final String organization,
-                                                                   final Long workspace,
-                                                                   final String digitalServiceUid,
-                                                                   final DigitalServiceRest digitalService) {
-        digitalService.setUid(digitalServiceUid);
-        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.updateDigitalService(
-                digitalServiceRestMapper.toBusinessObject(digitalService), organization, workspace,
-                authService.getUser()
-        )));
     }
 
 }

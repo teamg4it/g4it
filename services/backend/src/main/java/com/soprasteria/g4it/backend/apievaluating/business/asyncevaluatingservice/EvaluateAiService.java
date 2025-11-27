@@ -152,7 +152,7 @@ public class EvaluateAiService {
         // Get the virtual equipment
         List<InVirtualEquipment> virtualEquipments = inVirtualEquipmentRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid());
         if (virtualEquipments.isEmpty()) {
-            throw new G4itRestException("404", String.format("the virtual equipements doesn't exist for digital service : %s", context.getDigitalServiceUid()));
+            throw new G4itRestException("404", String.format("the virtual equipements doesn't exist for digital service : %s", context.getDigitalServiceVersionUid()));
         }
         log.info("Retrieved digital service and AI parameters");
         log.info("Retrieved {} datacenters, {} physical equipments, {} virtual equipments",

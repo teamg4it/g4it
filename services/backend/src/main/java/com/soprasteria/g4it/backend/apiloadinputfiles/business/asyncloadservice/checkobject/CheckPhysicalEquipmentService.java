@@ -50,7 +50,7 @@ public class CheckPhysicalEquipmentService {
      */
     public List<LineError> checkRules(final Context context, final InPhysicalEquipmentRest physicalEquipment, final String filename, final int line) {
         List<LineError> errors = new ArrayList<>();
-        final boolean isDigitalService = context.getDigitalServiceUid() != null;
+        final boolean isDigitalService = context.getDigitalServiceVersionUid() != null;
 
         // check InPhysicalEquipmentRest constraint violations
         genericRuleService.checkViolations(physicalEquipment, filename, line).ifPresent(errors::add);

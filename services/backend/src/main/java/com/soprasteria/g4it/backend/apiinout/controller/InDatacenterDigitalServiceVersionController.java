@@ -10,7 +10,6 @@ package com.soprasteria.g4it.backend.apiinout.controller;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
-import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceInputsDatacenterApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionInputsDatacenterApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import lombok.AllArgsConstructor;

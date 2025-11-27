@@ -156,7 +156,7 @@ public class LoadFileService {
                 .collect(groupingBy(LineError::line, mapping(LineError::error, toList())));
 
         String rejectedFileName = String.join("_", REJECTED, fileType.getFileName(), context.getDatetime().format(Constants.FILE_DATE_TIME_FORMATTER)) + Constants.CSV;
-        String pathId = context.getInventoryId() != null ? String.valueOf(context.getInventoryId()) : context.getDigitalServiceUid();
+        String pathId = context.getInventoryId() != null ? String.valueOf(context.getInventoryId()) : context.getDigitalServiceVersionUid();
 
         String path = localWorkingFolder + File.separator + REJECTED + File.separator + pathId + File.separator + rejectedFileName;
 
@@ -274,7 +274,7 @@ public class LoadFileService {
         List<InVirtualEquipmentRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
+            objects.add(csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceVersionUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadVirtualEquipmentService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();

@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -54,7 +56,7 @@ public class LoadInputFilesService {
     @Autowired
     InventoryRepository inventoryRepository;
     @Autowired
-    DigitalServiceRepository digitalServiceRepository;
+    DigitalServiceVersionRepository digitalServiceVersionRepository;
     @Autowired
     InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Autowired
@@ -157,7 +159,7 @@ public class LoadInputFilesService {
     /**
      * @param organization         the organization
      * @param workspaceId     the workspaceId id
-     * @param digitalServiceUid  the dig
+     * @param digitalServiceVersionUid  the dig
      * @param datacenters        the datacenter files
      * @param physicalEquipments the physical equipment files
      * @param virtualEquipments  the virtual equipment files
@@ -165,13 +167,13 @@ public class LoadInputFilesService {
      */
     public Task loadDigitalServiceFiles(final String organization,
                                         final Long workspaceId,
-                                        final String digitalServiceUid,
+                                        final String digitalServiceVersionUid,
                                         final List<MultipartFile> datacenters,
                                         final List<MultipartFile> physicalEquipments,
                                         final List<MultipartFile> virtualEquipments) {
 
         final Map<FileType, List<MultipartFile>> allFiles = new EnumMap<>(FileType.class);
-        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow();
+        DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
 
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
         if (physicalEquipments != null) allFiles.put(FileType.EQUIPEMENT_PHYSIQUE, physicalEquipments);
@@ -179,7 +181,7 @@ public class LoadInputFilesService {
 
         if (allFiles.isEmpty()) return new Task();
 
-        List<Task> tasks = taskRepository.findByDigitalServiceAndStatusAndType(digitalService, TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
+        List<Task> tasks = taskRepository.findByDigitalServiceVersionAndStatusAndType(digitalServiceVersion, TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString());
         if (!tasks.isEmpty()) {
             throw new G4itRestException("500", "task.already.running");
         }
@@ -188,7 +190,7 @@ public class LoadInputFilesService {
                 .organization(organization)
                 .workspaceId(workspaceId)
                 .workspaceName(workspaceService.getWorkspaceById(workspaceId).getName())
-                .digitalServiceUid(digitalServiceUid)
+                .digitalServiceVersionUid(digitalServiceVersionUid)
                 .datetime(LocalDateTime.now())
                 .build();
 
@@ -213,7 +215,7 @@ public class LoadInputFilesService {
                 .progressPercentage("0%")
                 .status(TaskStatus.TO_START.toString())
                 .type(TaskType.LOADING.toString())
-                .digitalService(digitalService)
+                .digitalServiceVersion(digitalServiceVersion)
                 .filenames(filenames)
                 .createdBy(user)
                 .build();
@@ -263,13 +265,14 @@ public class LoadInputFilesService {
                                 .hasApplications(inventory.getApplicationCount() > 0)
                                 .build();
                     } else {
-                        DigitalService digitalService = task.getDigitalService();
+                        DigitalServiceVersion digitalServiceVersion = task.getDigitalServiceVersion();
+                        DigitalService digitalService = digitalServiceVersion.getDigitalService();
                         Workspace workspace = digitalService.getWorkspace();
                         context = Context.builder()
                                 .organization(workspace.getOrganization().getName())
                                 .workspaceId(workspace.getId())
                                 .workspaceName(workspace.getName())
-                                .digitalServiceUid(task.getDigitalService().getUid())
+                                .digitalServiceVersionUid(task.getDigitalServiceVersion().getUid())
                                 .locale(Locale.getDefault())
                                 .datetime(now)
                                 .build();
