@@ -12,6 +12,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 import {
     DigitalService,
     Host,
@@ -322,8 +323,13 @@ describe("DigitalServicesDataService", () => {
         let result: ShareLinkResp | undefined;
         const ds = {
             uid: uid,
+            lastCalculationDate: "2024-01-01",
         } as unknown as DigitalService;
-        service.copyUrl(uid, ds, true).subscribe((res) => (result = res));
+        service.copyUrl(uid, ds, true).subscribe((resp) => {
+            expect(resp.url).toBe(
+                environment.frontEndUrl + "/shared/abc/footprint/dashboard",
+            );
+        });
 
         const req = httpMock.expectOne(
             `${endpointDsVersions}/${uid}/share?extendLink=true`,
