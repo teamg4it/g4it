@@ -12,7 +12,10 @@ import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,8 +26,16 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +53,8 @@ class FileSystemServiceTest {
     private FileSystem fileSystem;
     @Mock
     private FileStorage fileStorage;
+    @Mock
+    private FileDescriptionRestMapper fileDescriptionRestMapper;
 
     @Test
     void testCheckFiles() {
@@ -113,6 +126,7 @@ class FileSystemServiceTest {
         assertEquals(expectedPath, result);
         verify(fileStorage).delete(folder, fileName);
     }
+
     @Test
     void testDeleteFile_FileNotFound() throws Exception {
         String organization = "user";
@@ -157,5 +171,155 @@ class FileSystemServiceTest {
 
         assertEquals(expectedPath, result);
     }
+
+    @Test
+    void testGetBufferedReader_Utf8Ok() throws Exception {
+        // Content without replacement char
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "test.txt",
+                "text/plain",
+                "hello world".getBytes(StandardCharsets.UTF_8));
+
+        BufferedReader reader = ReflectionTestUtils.invokeMethod(FileSystemService.class,
+                "getBufferedReader", file);
+
+        assertNotNull(reader);
+        assertEquals("hello world", reader.readLine());
+    }
+
+    @Test
+    void testListFiles_defaultFolder() throws Exception {
+        ReflectionTestUtils.setField(fileSystemService, "fileDescriptionRestMapper", fileDescriptionRestMapper);
+
+        when(fileSystem.mount("org", "1")).thenReturn(fileStorage);
+        when(fileStorage.listFiles(FileFolder.INPUT)).thenReturn(List.of());
+        when(fileDescriptionRestMapper.toDto(List.of())).thenReturn(List.of());
+
+        List<FileDescriptionRest> result = fileSystemService.listFiles("org", 1L);
+
+        assertNotNull(result);
+        verify(fileSystem).mount("org", "1");
+        verify(fileStorage).listFiles(FileFolder.INPUT);
+    }
+
+    @Test
+    void testListFiles_customFolder() throws Exception {
+        ReflectionTestUtils.setField(fileSystemService, "fileDescriptionRestMapper", fileDescriptionRestMapper);
+
+        when(fileSystem.mount("org", "1")).thenReturn(fileStorage);
+        when(fileStorage.listFiles(FileFolder.OUTPUT)).thenReturn(List.of());
+        when(fileDescriptionRestMapper.toDto(List.of())).thenReturn(List.of());
+
+        List<FileDescriptionRest> result =
+                fileSystemService.listFiles("org", 1L, FileFolder.OUTPUT);
+
+        assertNotNull(result);
+        verify(fileSystem).mount("org", "1");
+        verify(fileStorage).listFiles(FileFolder.OUTPUT);
+    }
+
+    @Test
+    void testListTemplatesFiles() throws Exception {
+        ReflectionTestUtils.setField(fileSystemService, "fileDescriptionRestMapper", fileDescriptionRestMapper);
+
+        when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
+                .thenReturn(fileStorage);
+
+        when(fileStorage.listFiles(FileFolder.TEMPLATES)).thenReturn(List.of());
+        when(fileDescriptionRestMapper.toDto(List.of())).thenReturn(List.of());
+
+        List<FileDescriptionRest> result = fileSystemService.listTemplatesFiles();
+
+        assertNotNull(result);
+        verify(fileStorage).listFiles(FileFolder.TEMPLATES);
+    }
+
+    @Test
+    void testFetchStorage_success() {
+        when(fileSystem.mount("org", "1")).thenReturn(fileStorage);
+
+        FileStorage storage = ReflectionTestUtils.invokeMethod(
+                fileSystemService, "fetchStorage", "org", "1");
+
+        assertEquals(fileStorage, storage);
+    }
+
+    @Test
+    void testFetchStorage_notFound() throws Exception {
+        when(fileSystem.mount("org", "1")).thenReturn(null);
+
+        Method method = FileSystemService.class.getDeclaredMethod(
+                "fetchStorage", String.class, String.class
+        );
+        method.setAccessible(true);
+
+        InvocationTargetException exception = assertThrows(
+                InvocationTargetException.class,
+                () -> method.invoke(fileSystemService, "org", "1")
+        );
+
+        // unwrap the real exception thrown by the private method
+        assertTrue(exception.getCause() instanceof ResponseStatusException);
+    }
+
+    @Test
+    void testManageFilesAndRename_nullFiles() {
+        List<String> result = fileSystemService.manageFilesAndRename(
+                "org", 1L, null, List.of(), true);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testManageFilesAndRename_success() throws Exception {
+        // Arrange
+        String tempDir = System.getProperty("java.io.tmpdir");
+        ReflectionTestUtils.setField(fileSystemService, "localWorkingFolder", tempDir);
+
+        // Make sure the inventory folder exists (for isInventory = true)
+        Files.createDirectories(Path.of(tempDir, "input", "inventory"));
+
+        MultipartFile file = new MockMultipartFile(
+                "file",                 // field name
+                "a.csv",                // original filename
+                "text/csv",             // content type (allowed by checkFiles)
+                "col1,col2\nv1,v2".getBytes(StandardCharsets.UTF_8)
+        );
+
+        // FileSystem -> FileStorage
+        when(fileSystem.mount("org", "1")).thenReturn(fileStorage);
+
+        // upload() will be called by uploadFile()
+        when(fileStorage.upload(
+                eq(FileFolder.INPUT),
+                eq("newname.csv"),
+                eq("file"),            // file.getName()
+                any(InputStream.class)
+        )).thenReturn("uploaded.csv");
+
+        // Act
+        List<String> result = fileSystemService.manageFilesAndRename(
+                "org",
+                1L,
+                List.of(file),
+                List.of("newname.csv"),
+                true        // isInventory
+        );
+
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals("uploaded.csv", result.get(0));
+
+        verify(fileSystem).mount("org", "1");
+        verify(fileStorage).upload(
+                eq(FileFolder.INPUT),
+                eq("newname.csv"),
+                eq("file"),
+                any(InputStream.class)
+        );
+    }
+
+
 }
 
