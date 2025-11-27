@@ -43,13 +43,12 @@ public interface DigitalServiceVersionRepository extends JpaRepository<DigitalSe
     @Transactional
     @Query(value = """
             INSERT INTO digital_service_version (
-                uid, description, last_calculation_date, creation_date,
+                uid, description, creation_date,
                 last_update_date, item_id, version_type, criteria, created_by
             )
             SELECT
                 :newUid,
                 description || ' (1)',
-                NOW(),
                 NOW(),
                 NOW(),
                 item_id,

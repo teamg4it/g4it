@@ -1,0 +1,32 @@
+<app-digital-services-footprint-header [isCompareVersions]="true">
+</app-digital-services-footprint-header>
+<p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+    <div class="bg-white p-5 mt-3">
+        <div class="h-full bg-gray-color p-4 pt-5">
+            <div class="h-full bg-white grid">
+                @for (version of compareApi; track $index) {
+                    <div class="col-12 lg:col-6">
+                        <h3 class="text-center">{{ version.versionName }}</h3>
+                        @if ((version.convertToChartData?.[0])!.impacts!.length > 1) {
+                            <app-radial-chart
+                                [globalVisionChartData]="version.convertToChartData"
+                                [selectedCriteria]="'Global Vision'"
+                                [showInconsitency]="false"
+                                [enableDataInconsistency]="false"
+                            ></app-radial-chart>
+                        } @else {
+                            <app-pie-chart
+                                [globalVisionChartData]="globalVisionChartData"
+                                [selectedCriteria]="'climate-change'"
+                                [showInconsitency]="false"
+                                [enableDataInconsistency]="false"
+                            ></app-pie-chart>
+                        }
+                    </div>
+                }
+            </div>
+            <app-graph-description
+                [contentText]="getContentText()"
+            ></app-graph-description>
+        </div></div
+></p-scrollPanel>

@@ -108,6 +108,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
             return {
                 id: item.id,
                 name: item.name,
+                digitalServiceUid: item.digitalServiceUid,
                 mutualizationType: item.type.replace(" Server", ""),
                 quantity,
                 quantityVms: `${quantity} (${totalQuantityVms})`,

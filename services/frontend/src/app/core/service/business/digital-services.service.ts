@@ -155,6 +155,7 @@ export class DigitalServiceBusinessService {
     ): InVirtualEquipmentRest {
         return {
             id: vm.uid ? Number(vm.uid) : undefined,
+            digitalServiceUid: vm.digitalServiceUid,
             digitalServiceVersionUid,
             durationHour: vm.annualOperatingTime,
             infrastructureType: "NON_CLOUD_SERVERS",

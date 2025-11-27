@@ -112,7 +112,7 @@
             <i class="pi pi-angle-right text-2xl"></i>
         }
 
-        @if (!isManageVersions()) {
+        @if (!isManageVersions() && !isCompareVersions()) {
             @if (digitalService.versionType) {
                 <app-version-type-tag
                     [versionType]="digitalService.versionType"
@@ -153,13 +153,18 @@
                     </ng-template>
                 </p-inplace>
             </div>
-        } @else {
-            <h2 class="ml-3">
-                {{ "digital-services.version.versions-management" | translate }}
-            </h2>
         }
+
+        <h2 class="ml-3">
+            @if (isManageVersions()) {
+                {{ "digital-services.version.versions-management" | translate }}
+            }
+            @if (isCompareVersions()) {
+                {{ "digital-services.version.compare-versions-title" | translate }}
+            }
+        </h2>
     </div>
-    @if ((showKebabMenu || !isMobile()) && !isManageVersions()) {
+    @if ((showKebabMenu || !isMobile()) && !isManageVersions() && !isCompareVersions()) {
         <div class="mr-3 block align-items-center lg:flex">
             <p-button
                 (onClick)="goToManageVersions()"

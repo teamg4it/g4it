@@ -23,6 +23,7 @@ import { CardModule } from "primeng/card";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DividerModule } from "primeng/divider";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { CommonDigitalServicesSharedModule } from "src/app/core/shared/common-digital-services-shared.module";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
@@ -33,13 +34,9 @@ import { DigitalServicesAiParametersComponent } from "./digital-services-ecomind
 import { DigitalServicesEcomindParametersComponent } from "./digital-services-ecomind-parameters/digital-services-ecomind-parameters.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
-import { GraphDescriptionComponent } from "./digital-services-footprint-dashboard/graph-description/graph-description.component";
 import { ImpactButtonComponent } from "./digital-services-footprint-dashboard/impact-button/impact-button.component";
-import { PieChartComponent } from "./digital-services-footprint-dashboard/pie-chart/pie-chart.component";
-import { RadialChartComponent } from "./digital-services-footprint-dashboard/radial-chart/radial-chart.component";
 import { SetViewPopupComponent } from "./digital-services-footprint-dashboard/set-view-popup/set-view-popup.component";
 import { DigitalServicesFootprintFooterComponent } from "./digital-services-footprint-footer/digital-services-footprint-footer.component";
-import { VersionTypeTagComponent } from "./digital-services-footprint-header/version-type-tag/version-type-tag.component";
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
 import { digitalServicesFootprintRouter } from "./digital-services-footprint.router";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component";
@@ -65,8 +62,6 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         SetViewPopupComponent,
         DigitalServiceTableComponent,
         ImpactButtonComponent,
-        RadialChartComponent,
-        PieChartComponent,
         BarChartComponent,
         DigitalServicesTerminalsSidePanelComponent,
         DigitalServicesNetworksSidePanelComponent,
@@ -81,7 +76,6 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesAiInfrastructureComponent,
         DigitalServicesFootprintFooterComponent,
         DigitalServicesEcomindParametersComponent,
-        GraphDescriptionComponent,
     ],
     imports: [
         CommonModule,
@@ -108,6 +102,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         digitalServicesFootprintRouter,
         TableModule,
         CommonDigitalServicesSharedModule,
+        SharedChartsModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],

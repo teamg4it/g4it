@@ -118,6 +118,7 @@ export interface DigitalServiceNetworkConfig {
     yearlyQuantityOfGbExchanged: number;
     idFront?: number;
     name: string;
+    digitalServiceUid?: string;
 }
 
 export interface DigitalServiceTerminalConfig {
@@ -338,6 +339,7 @@ export interface ServerVM {
     quantity: number;
     annualOperatingTime: number;
     electricityConsumption: number;
+    digitalServiceUid?: string;
 }
 
 export interface ServerDC {
@@ -405,6 +407,6 @@ export interface GraphDescriptionContent {
     description: string;
     scale: string;
     textDescription: string;
-    analysis: string;
-    toGoFurther: string;
+    analysis?: string;
+    toGoFurther?: string;
 }
