@@ -11,12 +11,15 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
+import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import jakarta.persistence.EntityManager;
@@ -60,6 +63,15 @@ class SaveServiceTest {
     @InjectMocks
     private SaveService saveService;
 
+    @Mock
+    private FileSystemService fileSystemService;
+
+    @Mock
+    private FileSystem fileSystem;
+
+    @Mock
+    private FileStorage fileStorage;
+
     @Test
     void saveOutPhysicalEquipments_savesAllEntriesWhenAggregationIsNotEmpty() {
         Map<List<String>, AggValuesBO> aggregation = Map.of(
@@ -93,7 +105,7 @@ class SaveServiceTest {
         Long taskId = 1L;
 
         int result = saveService.saveOutPhysicalEquipments(aggregation, taskId, refShortcutBO);
-        
+
         verify(taskRepository, never()).updateLastUpdateDate(anyLong(), any(LocalDateTime.class));
         assertEquals(0, result);
     }
@@ -154,4 +166,75 @@ class SaveServiceTest {
         verify(outVirtualEquipmentRepository, times(1)).saveAll(anyList());
         assertEquals(2, result);
     }
+
+    @Test
+    void saveOutPhysicalEquipments_triggersBatchFlush() {
+        int batch = Constants.BATCH_SIZE;                       // e.g. 1000
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
+
+        for (int i = 0; i < batch + 1; i++) {
+            aggregation.put(List.of("k" + i), new AggValuesBO());
+        }
+
+        RefShortcutBO ref = new RefShortcutBO(null, null, null, null);
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapPhysicalEquipment(any(), any(), eq(taskId), eq(ref)))
+                .thenReturn(new OutPhysicalEquipment());
+
+        int result = saveService.saveOutPhysicalEquipments(aggregation, taskId, ref);
+
+        // at least 1 flush inside the loop + 1 final save
+        verify(outPhysicalEquipmentRepository, times(2)).saveAll(anyList());
+        verify(taskRepository, atLeastOnce()).updateLastUpdateDate(eq(taskId), any(LocalDateTime.class));
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+        assertEquals(batch + 1, result);
+    }
+
+    @Test
+    void saveOutApplications_triggersBatchFlush() {
+        int batch = Constants.BATCH_SIZE;
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
+        for (int i = 0; i < batch + 1; i++) {
+            aggregation.put(List.of("k" + i), new AggValuesBO());
+        }
+
+        RefShortcutBO ref = new RefShortcutBO(null, null, null, null);
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapApplication(any(), any(), eq(taskId), eq(ref)))
+                .thenReturn(new OutApplication());
+
+        int result = saveService.saveOutApplications(aggregation, taskId, ref);
+
+        verify(outApplicationRepository, times(2)).saveAll(anyList());
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+        assertEquals(batch + 1, result);
+    }
+
+    @Test
+    void saveOutVirtualEquipments_triggersBatchFlush() {
+        int batch = Constants.BATCH_SIZE;
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
+        for (int i = 0; i < batch + 1; i++) {
+            aggregation.put(List.of("k" + i), new AggValuesBO());
+        }
+
+        RefShortcutBO ref = new RefShortcutBO(null, null, null, null);
+        Long taskId = 1L;
+
+        when(aggregationToOutput.mapVirtualEquipment(any(), any(), eq(taskId), eq(ref)))
+                .thenReturn(new OutVirtualEquipment());
+
+        int result = saveService.saveOutVirtualEquipments(aggregation, taskId, ref);
+
+        verify(outVirtualEquipmentRepository, times(2)).saveAll(anyList());
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+        assertEquals(batch + 1, result);
+    }
+
+
 }
