@@ -24,7 +24,6 @@ import { DigitalServicesDataService } from "./digital-services-data.service";
 describe("DigitalServicesDataService", () => {
     let service: DigitalServicesDataService;
     let httpMock: HttpTestingController;
-    const dsEndpoint = Constants.ENDPOINTS.digitalServices;
 
     const endpointDsVersions = Constants.ENDPOINTS.digitalServicesVersions;
     const sharedEndpoint = Constants.ENDPOINTS.sharedDs;
