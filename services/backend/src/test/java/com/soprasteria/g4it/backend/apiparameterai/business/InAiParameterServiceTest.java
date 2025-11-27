@@ -1,8 +1,6 @@
 package com.soprasteria.g4it.backend.apiparameterai.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiparameterai.mapper.InAiParameterMapper;
 import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
@@ -66,7 +64,7 @@ class InAiParameterServiceTest {
         aiParameterRest.setIsFinetuning(false);
 
         // Setup AiParameter entity
-        inAiParameterEntity =  InAiParameter.builder().build();
+        inAiParameterEntity = InAiParameter.builder().build();
         inAiParameterEntity.setModelName("llama3");
         inAiParameterEntity.setType("LLM");
         inAiParameterEntity.setNbParameters("1000000");
@@ -80,7 +78,7 @@ class InAiParameterServiceTest {
         inAiParameterEntity.setIsFinetuning(false);
 
         // Setup saved entity (with ID and dates)
-        savedInAiParameterEntity =  InAiParameter.builder().build();
+        savedInAiParameterEntity = InAiParameter.builder().build();
         savedInAiParameterEntity.setId(1L);
         savedInAiParameterEntity.setModelName("llama3");
         savedInAiParameterEntity.setType("LLM");
@@ -138,13 +136,13 @@ class InAiParameterServiceTest {
         String uid = "existing-uid";
 
         DigitalServiceVersion dsv = new DigitalServiceVersion();
-        InAiParameter inAiParameter= new InAiParameter();
+        InAiParameter inAiParameter = new InAiParameter();
         AiParameterRest aiParameter = AiParameterRest.builder()
                 .type("LLM")
                 .build();
 
         when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.of(dsv));
-        when(inAiParameterRepository.findByDigitalServiceUid(uid)).thenReturn(inAiParameter);
+        when(inAiParameterRepository.findByDigitalServiceVersionUid(uid)).thenReturn(inAiParameter);
         when(inAiParameterMapper.toBusinessObject(inAiParameter)).thenReturn(aiParameter);
 
         AiParameterRest result = inAiParameterService.getAiParameter(uid);
@@ -153,7 +151,7 @@ class InAiParameterServiceTest {
         assertEquals("LLM", result.getType());
 
         verify(digitalServiceVersionRepository).findById(uid);
-        verify(inAiParameterRepository).findByDigitalServiceUid(uid);
+        verify(inAiParameterRepository).findByDigitalServiceVersionUid(uid);
         verify(inAiParameterMapper).toBusinessObject(inAiParameter);
     }
 
@@ -430,10 +428,11 @@ class InAiParameterServiceTest {
         assertThrows(NullPointerException.class,
                 () -> inAiParameterService.createAiParameter(digitalServiceUid, invalidParameterRest));
     }
+
     @Test
     void createAiParameter_WithAllValidTypes_Success() {
         // Test all valid stage values if they exist
-        String[] validTypes= {"LLM", "CLASSIFICATION", "REGRESSION"}; // Adjust based on your enum/constants
+        String[] validTypes = {"LLM", "CLASSIFICATION", "REGRESSION"}; // Adjust based on your enum/constants
 
         for (String type : validTypes) {
             // Given
