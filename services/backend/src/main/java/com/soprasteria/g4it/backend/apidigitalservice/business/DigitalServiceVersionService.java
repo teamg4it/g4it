@@ -332,6 +332,7 @@ public class DigitalServiceVersionService {
                         .versionType(v.getVersionType())
                         .digitalServiceVersionUid(v.getUid())
                         .digitalServiceUid(digitalServiceUid)
+                        .lastCalculationDate(v.getLastCalculationDate())
                         .build()).collect(toList());
     }
 

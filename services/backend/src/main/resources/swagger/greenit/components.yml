@@ -1277,3 +1277,6 @@ components:
           type: string
         versionType:
           type: string
+        lastCalculationDate:
+          type: string
+          format: date-time
