@@ -175,8 +175,8 @@
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
-        "g4it-line": "Veuillez consulter le détail du contenu de cette version sur la page en ligne",
-        "documentation": "documentation",
+        "g4it-line": "Veuillez consulter le détail du contenu de cette version",
+        "documentation": "dans la documentation en ligne",
         "link-to-github": "lien vers le repertoire github"
     },
     "errors": {

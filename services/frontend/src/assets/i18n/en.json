@@ -176,8 +176,8 @@
     },
     "useful-information": {
         "computing-engines": "Computing engines",
-        "g4it-line": "Please consult the detail of the content of that version on the online",
-        "documentation": "documentation",
+        "g4it-line": "Please consult the detail of the content of that version",
+        "documentation": "on the online documentation",
         "link-to-github": "link to github repository"
     },
     "errors": {
