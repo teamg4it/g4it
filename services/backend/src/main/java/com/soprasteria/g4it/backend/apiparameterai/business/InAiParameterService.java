@@ -48,7 +48,7 @@ public class InAiParameterService {
             throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
 
-        return inAiParameterMapper.toBusinessObject(inAiParameterRepository.findByDigitalServiceUid(digitalServiceVersionUid));
+        return inAiParameterMapper.toBusinessObject(inAiParameterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 
     public AiParameterRest updateAiParameter(final String digitalServiceVersionUid, AiParameterRest aiParameterRest) {

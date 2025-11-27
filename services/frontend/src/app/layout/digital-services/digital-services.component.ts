@@ -166,12 +166,9 @@ export class DigitalServicesComponent implements OnInit {
 
     goToDigitalServiceFootprint(uid: string) {
         if (this.isEcoMindAi) {
-            this.router.navigate(
-                [`../digital-service-version/${uid}/footprint/ecomind-parameters`],
-                {
-                    relativeTo: this.route,
-                },
-            );
+            this.router.navigate([`../eco-mind-ai/${uid}/footprint/ecomind-parameters`], {
+                relativeTo: this.route,
+            });
         } else {
             this.router.navigate(
                 [`../digital-service-version/${uid}/footprint/resources`],

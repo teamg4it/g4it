@@ -256,9 +256,22 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.digitalServiceVersionDataService
             .duplicateVersion(this.digitalService.uid)
             .subscribe((version) => {
-                this.router.navigate(["../../", version.uid, "footprint", "resources"], {
-                    relativeTo: this.route,
-                });
+                let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
+                if (moduleType === "eco-mind-ai") {
+                    this.router.navigate(
+                        ["../../", version.uid, "footprint", "ecomind-parameters"],
+                        {
+                            relativeTo: this.route,
+                        },
+                    );
+                } else {
+                    this.router.navigate(
+                        ["../../", version.uid, "footprint", "resources"],
+                        {
+                            relativeTo: this.route,
+                        },
+                    );
+                }
             });
     }
 }

@@ -16,34 +16,6 @@
             />
         </span>
 
-        <!-- <p-button
-            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && isLinkCopied"
-            styleClass="black-button-small font-bold mx-1"
-            [disabled]="true"
-            class="disabled-text-black"
-            [ariaLabel]="'digital-services.linkCopied' | translate"
-            [label]="'digital-services.linkCopied' | translate"
-        />
-
-        <p-button
-            (onClick)="openNote()"
-            styleClass="inventory-add-button-small font-bold mx-1"
-            *ngIf="
-                (userService.isAllowedDigitalServiceWrite$ | async) &&
-                !digitalService.note
-            "
-            icon="pi pi-plus-circle"
-            [label]="'common.note.add' | translate"
-        />
-
-        <p-button
-            (onClick)="openNote()"
-            styleClass="inventory-attached-button-small font-bold mx-1"
-            *ngIf="digitalService.note"
-            [label]="'common.note.attached' | translate"
-            icon="pi pi-clipboard"
-        /> -->
-
         <p-button
             styleClass="mx-1"
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"

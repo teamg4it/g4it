@@ -121,7 +121,7 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
     }
 
     roundSmallNumber(value: number): number {
-        if (value >= 1) return value; // no change
+        if (value >= 1) return Math.ceil(value); // no change
         return Number(value.toPrecision(2));
     }
 
