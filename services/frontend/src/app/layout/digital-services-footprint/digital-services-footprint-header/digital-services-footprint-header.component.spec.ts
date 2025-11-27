@@ -8,7 +8,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, convertToParamMap } from "@angular/router";
+import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -25,6 +25,7 @@ import { DigitalServicesFootprintHeaderComponent } from "./digital-services-foot
 describe("DigitalServicesFootprintHeaderComponent", () => {
     let component: DigitalServicesFootprintHeaderComponent;
     let fixture: ComponentFixture<DigitalServicesFootprintHeaderComponent>;
+    let router: Router;
 
     //mock data service
     const digitalServiceDataMock = {
@@ -42,6 +43,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         } as DigitalService),
         copyUrl: () => of({ url: "test", expiryDate: new Date() }),
         get: () => of({} as DigitalService),
+        delete: () => of({}),
     };
 
     beforeEach(async () => {
@@ -86,6 +88,15 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         });
         fixture = TestBed.createComponent(DigitalServicesFootprintHeaderComponent);
         component = fixture.componentInstance;
+
+        router = TestBed.inject(Router);
+
+        // Mock router.url
+        Object.defineProperty(router, "url", {
+            writable: true,
+            value: "/organizations/test-org/workspaces/test-workspace/digital-service-version/12345/footprint/resources",
+        });
+
         fixture.detectChanges();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -157,5 +168,29 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
     it("should set digitalServiceVersionUid from route paramMap", () => {
         component.ngOnInit();
         expect(component.digitalServiceVersionUid).toBe("12345");
+    });
+
+    it("should navigate to digital-services page when changePageToDigitalServices is called", () => {
+        Object.defineProperty(router, "url", {
+            writable: true,
+            value: "/organizations/test-org/workspaces/test-workspace/digital-service-version/12345/footprint/resources",
+        });
+
+        const result = component.changePageToDigitalServices();
+        expect(result).toBe(
+            "/organizations/test-org/workspaces/test-workspace/digital-services",
+        );
+    });
+
+    it("should navigate to eco-mind-ai page when changePageToDigitalServices is called for AI service", () => {
+        Object.defineProperty(router, "url", {
+            writable: true,
+            value: "/organizations/test-org/workspaces/test-workspace/eco-mind-ai/12345/footprint/resources",
+        });
+
+        const result = component.changePageToDigitalServices();
+        expect(result).toBe(
+            "/organizations/test-org/workspaces/test-workspace/eco-mind-ai",
+        );
     });
 });
