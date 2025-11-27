@@ -157,7 +157,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     changePageToDigitalServices() {
         let [_, _1, organization, _2, workspace, serviceType, dsVId, footprint] =
             this.router.url.split("/");
-
         if (footprint === "footprint") {
             // serviceType can be 'digital-services' or 'eco-mind-ai'
             if (serviceType === "eco-mind-ai") {
@@ -165,6 +164,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             } else {
                 return `/organizations/${organization}/workspaces/${workspace}/digital-services`;
             }
+        } else if (footprint.includes("compare-versions")) {
+            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/manage-versions`;
         } else {
             return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/footprint/resources`;
         }

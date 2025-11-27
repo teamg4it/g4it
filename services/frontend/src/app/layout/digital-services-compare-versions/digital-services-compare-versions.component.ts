@@ -1,14 +1,17 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
+import { lastValueFrom } from "rxjs";
 import { CompareVersion } from "src/app/core/interfaces/digital-service-version.interface";
 import {
+    DigitalService,
     DigitalServiceFootprint,
     GraphDescriptionContent,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
+import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { convertToGlobalVision } from "src/app/core/service/mapper/digital-service";
 
 @Component({
@@ -27,11 +30,14 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
     compareApi: CompareVersion[] = [];
     uniqueCriteria: string[] = [];
     transformedVersionDataObj: any = {};
+    maxSipUnitValue = 0;
 
     private readonly translate = inject(TranslateService);
+    digitalService: DigitalService = {} as DigitalService;
     private readonly digitalServiceVersionDataService = inject(
         DigitalServiceVersionDataService,
     );
+    private readonly digitalServicesDataService = inject(DigitalServicesDataService);
     ngOnInit(): void {
         this.route.queryParams.subscribe((params) => {
             this.version1Id = params["version1"];
@@ -44,6 +50,15 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                     this.transformVersionData();
                 });
         });
+
+        this.getDigitalService();
+    }
+
+    async getDigitalService(): Promise<void> {
+        const uid = this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
+        this.digitalService = await lastValueFrom(
+            this.digitalServicesDataService.get(uid),
+        );
     }
 
     transformVersionData(): void {
@@ -54,6 +69,10 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                 version.virtualEquipment,
             ),
         }));
+        let maxUnitValue = 0;
+        const twoCriteriaCalculated =
+            (this.compareApi[0]?.convertToChartData?.[0]?.impacts?.length ?? 0) > 1 &&
+            (this.compareApi[1]?.convertToChartData?.[0]?.impacts?.length ?? 0) > 1;
 
         for (let version of this.compareApi) {
             // Ensure version bucket exists
@@ -75,6 +94,9 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                         existing.unit = this.translate.instant(
                             `criteria.${impact.criteria.toLowerCase()}.unite`,
                         );
+                        if (existing?.sipValue > maxUnitValue && twoCriteriaCalculated) {
+                            maxUnitValue = existing?.sipValue;
+                        }
                     } else {
                         // If not exists → create entry
                         this.transformedVersionDataObj[version.versionName][
@@ -86,14 +108,21 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                                 `criteria.${impact.criteria.toLowerCase()}.unite`,
                             ),
                         };
+                        if (impact?.sipValue > maxUnitValue && twoCriteriaCalculated) {
+                            maxUnitValue = impact?.sipValue;
+                        }
                     }
                 }
             }
         }
+        if (maxUnitValue) {
+            this.maxSipUnitValue = this.roundSmallNumber(maxUnitValue);
+        }
+    }
 
-        console.log(this.compareApi);
-        console.log(this.uniqueCriteria);
-        console.log(this.transformedVersionDataObj);
+    roundSmallNumber(value: number): number {
+        if (value >= 1) return value; // no change
+        return Number(value.toPrecision(2));
     }
 
     getContentText(): GraphDescriptionContent {
@@ -137,7 +166,10 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
 
         for (const v of versionNames) {
             const criteria = Object.keys(versionData[v]);
-            criteria.forEach((c) => allCriteria.add(c));
+            criteria.sort((a, b) => a.localeCompare(b));
+            for (const c of criteria) {
+                allCriteria.add(c);
+            }
         }
 
         const criteriaList = [...allCriteria];
@@ -172,21 +204,23 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
             for (const version of versionNames) {
                 const entry = versionData[version]?.[criteriaKey];
 
-                const unitValue = entry?.unitValue ?? "-";
-                const sipValue = entry?.sipValue ?? "-";
+                const unitValue = entry?.unitValue ?? "";
+                const sipValue = entry?.sipValue ?? "";
                 const unit = entry?.unit ?? "";
-
-                table += `
-                <td style='padding:14px 18px;font-size:0.95rem;text-align:center; margin: 0px 10px'>
-                &nbsp;&nbsp;
-                    ${this.decimalsPipe.transform(unitValue)}
-                    <span style='font-size:0.85rem;color:#666;'>${unit}</span>
-                    (${this.integerPipe.transform(sipValue)}
-                    ${this.translate.instant(`common.peopleeq-full`)})
+                if (unitValue === "" && sipValue === "") {
+                    table += `<td>&nbsp;&nbsp;${this.translate.instant("digital-services.version.not-calculated")}&nbsp;&nbsp;</td>`;
+                } else {
+                    table += `
+                <td>
                     &nbsp;&nbsp;
-
+                        ${this.decimalsPipe.transform(unitValue)}
+                        <span >${unit}</span>
+                        (${this.integerPipe.transform(sipValue)}
+                        ${this.translate.instant(`common.peopleeq-full`)})
+                    &nbsp;&nbsp;
                 </td>
             `;
+                }
             }
 
             table += `</tr>`;

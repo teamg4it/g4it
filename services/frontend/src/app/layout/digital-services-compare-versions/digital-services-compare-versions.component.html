@@ -13,10 +13,11 @@
                                 [selectedCriteria]="'Global Vision'"
                                 [showInconsitency]="false"
                                 [enableDataInconsistency]="false"
+                                [compareMax]="maxSipUnitValue"
                             ></app-radial-chart>
                         } @else {
                             <app-pie-chart
-                                [globalVisionChartData]="globalVisionChartData"
+                                [globalVisionChartData]="version.convertToChartData"
                                 [selectedCriteria]="'climate-change'"
                                 [showInconsitency]="false"
                                 [enableDataInconsistency]="false"

@@ -36,6 +36,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
     @Output() selectedCriteriaChange: EventEmitter<string> = new EventEmitter();
     @Input() enableDataInconsistency: boolean = false;
+    compareMax = input<number>(0);
     showInconsitency = input<boolean>();
     selectedCriteria = input<string>();
     options: EChartsOption = {};
@@ -173,6 +174,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 },
             },
             radiusAxis: {
+                ...(this.compareMax() > 0 ? { max: this.compareMax() } : {}),
                 name: this.translate.instant("common.peopleeq"),
                 nameLocation: "end",
                 nameTextStyle: {
