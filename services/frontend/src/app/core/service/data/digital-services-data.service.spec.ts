@@ -321,7 +321,10 @@ describe("DigitalServicesDataService", () => {
         const uid = "ds-123";
 
         let result: ShareLinkResp | undefined;
-        service.copyUrl(uid, true).subscribe((res) => (result = res));
+        const ds = {
+            uid: uid,
+        } as unknown as DigitalService;
+        service.copyUrl(uid, ds, true).subscribe((res) => (result = res));
 
         const req = httpMock.expectOne(
             `${endpointDsVersions}/${uid}/share?extendLink=true`,
@@ -333,7 +336,10 @@ describe("DigitalServicesDataService", () => {
         const uid = "ds-123";
 
         let result: ShareLinkResp | undefined;
-        service.copyUrl(uid, false).subscribe((res) => (result = res));
+        const ds = {
+            uid: uid,
+        } as unknown as DigitalService;
+        service.copyUrl(uid, ds, false).subscribe((res) => (result = res));
 
         const req = httpMock.expectOne(`${endpointDsVersions}/${uid}/share`);
         expect(req.request.method).toBe("GET");
