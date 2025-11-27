@@ -56,7 +56,7 @@ export class UsefulInformationComponent implements OnInit {
                 this.repoUrls = {
                     g4it: `https://github.com/teamg4it/g4it/releases/tag/${version["g4it"]}`,
                     ecomindai: `https://github.com/sustain4ai/ecomindai/releases/tag/${version["ecomindai"]}`,
-                    boaviztapi: `https://github.com/Boavizta/boaviztapi/releases/tag/${version["boaviztapi"]}`,
+                    boaviztapi: `https://github.com/Boavizta/boaviztapi/releases/tag/v${version["boaviztapi"]}`,
                     numecoeval: `https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval/-/tree/${version["numecoeval"]}`,
                 };
                 for (const key in version) {

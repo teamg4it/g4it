@@ -65,7 +65,7 @@ export class AppComponent implements OnInit {
                       id: 1,
                       organizations: [],
                       isSuperAdmin: false,
-                  }).pipe(delay(2000))
+                  }).pipe(delay(10))
                 : this.userService.fetchUserInfo(),
         );
         localStorage.setItem("username", user.email);

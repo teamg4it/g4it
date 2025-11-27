@@ -12,6 +12,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 import {
     DigitalService,
     Host,
@@ -24,7 +25,6 @@ import { DigitalServicesDataService } from "./digital-services-data.service";
 describe("DigitalServicesDataService", () => {
     let service: DigitalServicesDataService;
     let httpMock: HttpTestingController;
-    const dsEndpoint = Constants.ENDPOINTS.digitalServices;
 
     const endpointDsVersions = Constants.ENDPOINTS.digitalServicesVersions;
     const sharedEndpoint = Constants.ENDPOINTS.sharedDs;
@@ -321,7 +321,15 @@ describe("DigitalServicesDataService", () => {
         const uid = "ds-123";
 
         let result: ShareLinkResp | undefined;
-        service.copyUrl(uid, true).subscribe((res) => (result = res));
+        const ds = {
+            uid: uid,
+            lastCalculationDate: "2024-01-01",
+        } as unknown as DigitalService;
+        service.copyUrl(uid, ds, true).subscribe((resp) => {
+            expect(resp.url).toBe(
+                environment.frontEndUrl + "/shared/abc/footprint/dashboard",
+            );
+        });
 
         const req = httpMock.expectOne(
             `${endpointDsVersions}/${uid}/share?extendLink=true`,
@@ -333,7 +341,10 @@ describe("DigitalServicesDataService", () => {
         const uid = "ds-123";
 
         let result: ShareLinkResp | undefined;
-        service.copyUrl(uid, false).subscribe((res) => (result = res));
+        const ds = {
+            uid: uid,
+        } as unknown as DigitalService;
+        service.copyUrl(uid, ds, false).subscribe((res) => (result = res));
 
         const req = httpMock.expectOne(`${endpointDsVersions}/${uid}/share`);
         expect(req.request.method).toBe("GET");
