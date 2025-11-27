@@ -6,7 +6,6 @@ import { DigitalServiceVersionDataService } from "src/app/core/service/data/digi
 @Component({
     selector: "app-digital-service-manage-version-table",
     templateUrl: "./digital-service-manage-version-table.component.html",
-    styleUrl: "./digital-service-manage-version-table.component.scss",
 })
 export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly digitalServiceVersionDataService = inject(
@@ -49,9 +48,9 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
 
     onVersionSelect(version: DigitalServiceVersionResponse): void {
         const index = this.selectedVersions.findIndex(
-            (v: string) => v === version.digitalServiceVersionUid
+            (v: string) => v === version.digitalServiceVersionUid,
         );
-        
+
         if (index > -1) {
             // Version is already selected, remove it
             this.selectedVersions.splice(index, 1);
@@ -65,8 +64,6 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
             version.selected = false;
         }
     }
-
-
 
     duplicateDigitalServiceVersion(dsvUid: string): void {
         this.digitalServiceVersionDataService

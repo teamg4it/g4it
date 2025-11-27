@@ -72,6 +72,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
                     type,
                     yearlyQuantityOfGbExchanged,
                     name: item.name,
+                    digitalServiceUid: item.digitalServiceUid,
                 } as DigitalServiceNetworkConfig;
             });
     });
@@ -148,6 +149,7 @@ export class DigitalServicesNetworksComponent implements OnInit {
         const dateWithdrawal = addYears(datePurchase, 1);
 
         const elementToSave = {
+            digitalServiceUid: network.digitalServiceUid,
             digitalServiceVersionUid: this.dsVersionUid(),
             name: network.name,
             type: "Network",
