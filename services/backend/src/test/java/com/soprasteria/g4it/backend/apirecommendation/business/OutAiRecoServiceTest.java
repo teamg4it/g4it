@@ -1,8 +1,7 @@
 package com.soprasteria.g4it.backend.apirecommendation.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apirecomandation.business.OutAiRecoService;
 import com.soprasteria.g4it.backend.apirecomandation.mapper.OutAiRecoMapper;

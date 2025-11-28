@@ -17,8 +17,8 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import org.junit.jupiter.api.Test;
@@ -206,10 +206,7 @@ class InDatacenterServiceTest {
 
     @Test
     void createInDatacenterDigitalService() {
-        var organization = Workspace.builder()
-                .name("DEMO")
-                .organization(Organization.builder().name("SUBSCRIBER").build())
-                .build();
+        
         DigitalService digitalService = new DigitalService();
         digitalService.setUid("uid1");
         var digitalServiceVersion = DigitalServiceVersion.builder()

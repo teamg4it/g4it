@@ -175,14 +175,14 @@ class FileSystemServiceTest {
     @Test
     void testGetBufferedReader_Utf8Ok() throws Exception {
         // Content without replacement char
-        MockMultipartFile file = new MockMultipartFile(
+        MockMultipartFile file1 = new MockMultipartFile(
                 "file",
                 "test.txt",
                 "text/plain",
                 "hello world".getBytes(StandardCharsets.UTF_8));
 
         BufferedReader reader = ReflectionTestUtils.invokeMethod(FileSystemService.class,
-                "getBufferedReader", file);
+                "getBufferedReader", file1);
 
         assertNotNull(reader);
         assertEquals("hello world", reader.readLine());
@@ -280,7 +280,7 @@ class FileSystemServiceTest {
         // Make sure the inventory folder exists (for isInventory = true)
         Files.createDirectories(Path.of(tempDir, "input", "inventory"));
 
-        MultipartFile file = new MockMultipartFile(
+        MultipartFile file1 = new MockMultipartFile(
                 "file",                 // field name
                 "a.csv",                // original filename
                 "text/csv",             // content type (allowed by checkFiles)
@@ -302,7 +302,7 @@ class FileSystemServiceTest {
         List<String> result = fileSystemService.manageFilesAndRename(
                 "org",
                 1L,
-                List.of(file),
+                List.of(file1),
                 List.of("newname.csv"),
                 true        // isInventory
         );
