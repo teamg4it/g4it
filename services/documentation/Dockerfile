@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/pages/hugo/hugo_extended:0.140.2 as build
+FROM registry.gitlab.com/pages/hugo/hugo_extended:0.141.2 as build
 
 # Install necessary tools and upgrade packages in one layer
 RUN apk add --no-cache curl git nodejs npm wget \
