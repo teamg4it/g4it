@@ -1377,8 +1377,17 @@ app-useful-information {
 }
 
 .compare-table {
+    border: 1px solid #000;
+    border-collapse: collapse;
     text-align: left;
+
     .criteria-padding {
         padding-left: 10px;
+    }
+
+    th,
+    td {
+        border: 1px solid #000;
+        padding: 6px 10px;
     }
 }
