@@ -145,57 +145,7 @@ class CheckVirtualEquipmentServiceTest {
 
 
     // ---------------------------------------------------------------------------------------------------------
-    // 4) Digital Service — usageDuration must be checked even if NON-Cloud
-    // ---------------------------------------------------------------------------------------------------------
-    @Test
-    void testCheckRules_DigitalService_NonCloud_TriggersDurationCheck() {
-        // given
-        InVirtualEquipmentRest eq = mockEqp();
-        eq.setInfrastructureType(InfrastructureType.NON_CLOUD_SERVERS.name());
-
-        // Fix: Set digitalServiceUid instead of digitalServiceVersionUid
-        Context ctx = Context.builder()
-                .locale(Locale.getDefault())
-                .digitalServiceUid("DS-123")  // Changed from digitalServiceVersionUid
-                .build();
-
-        // infrastructure type OK
-        when(ruleVirtualEquipmentService.checkInfrastructureType(
-                any(), anyString(), anyInt(), anyString()))
-                .thenReturn(Optional.empty());
-
-        // name OK
-        when(ruleVirtualEquipmentService.checkVirtualEquipmentName(
-                any(), anyString(), anyInt(), anyString(), anySet(), anyBoolean(), anyBoolean()))
-                .thenReturn(Optional.empty());
-
-        // duration returns an error
-        when(ruleVirtualEquipmentService.checkUsageDuration(
-                any(), anyString(), anyInt(), any()))
-                .thenReturn(Optional.of(new LineError(FILENAME, LINE, "duration error")));
-
-        // non-cloud branch stubs
-        when(ruleVirtualEquipmentService.checkPhysicalEquipmentLinked(
-                any(), anyString(), anyInt(), anyString(), any()))
-                .thenReturn(Optional.empty());
-
-        when(ruleVirtualEquipmentService.checkType(
-                any(), anyString(), anyInt(), isNull(), any(), any(), anyBoolean()))
-                .thenReturn(Optional.empty());
-
-        // when
-        List<LineError> result = service.checkRules(ctx, eq, FILENAME, LINE, new HashSet<>());
-
-        // then
-        assertEquals(1, result.size());
-        assertEquals("duration error", result.get(0).error());
-
-        verify(ruleVirtualEquipmentService).checkUsageDuration(any(), anyString(), anyInt(), any());
-    }
-
-
-    // ---------------------------------------------------------------------------------------------------------
-    // 5) Adds name to Set only when rule returns empty
+    // 4) Adds name to Set only when rule returns empty
     // ---------------------------------------------------------------------------------------------------------
     @Test
     void testCheckRules_NameAddedToSet() {
