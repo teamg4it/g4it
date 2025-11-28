@@ -177,13 +177,13 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
         // 3️⃣ Build table headers
         let table = `
         <div style='overflow-x:auto;'>
-        <table style='width:100%;border-collapse:collapse;min-width:600px;'>
+        <table class="compare-table">
         <thead><tr>
             <th style='padding:14px 18px;text-align:center;font-size:1rem;'>Criteria</th>
     `;
 
         for (const version of versionNames) {
-            table += `<th style='padding:14px 18px;text-align:center;font-size:1rem;'>${version}</th>`;
+            table += `<th class="criteria-padding">${version}</th>`;
         }
 
         table += `</tr></thead><tbody>`;
@@ -197,7 +197,7 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
             );
 
             table += `<tr>
-            <th style='padding:14px 18px;text-align:left;font-weight:600;'>${criteriaTitle}</th>
+            <th>${criteriaTitle}</th>
         `;
 
             // 5️⃣ Add column for each version
@@ -208,16 +208,16 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                 const sipValue = entry?.sipValue ?? "";
                 const unit = entry?.unit ?? "";
                 if (unitValue === "" && sipValue === "") {
-                    table += `<td>&nbsp;&nbsp;${this.translate.instant("digital-services.version.not-calculated")}&nbsp;&nbsp;</td>`;
+                    table += `<td class="criteria-padding">${this.translate.instant("digital-services.version.not-calculated")}</td>`;
                 } else {
                     table += `
-                <td>
-                    &nbsp;&nbsp;
+                <td class="criteria-padding">
+
                         ${this.decimalsPipe.transform(unitValue)}
                         <span >${unit}</span>
                         (${this.integerPipe.transform(sipValue)}
                         ${this.translate.instant(`common.peopleeq-full`)})
-                    &nbsp;&nbsp;
+
                 </td>
             `;
                 }
