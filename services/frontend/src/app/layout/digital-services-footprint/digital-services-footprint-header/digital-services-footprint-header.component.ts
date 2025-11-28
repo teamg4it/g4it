@@ -140,7 +140,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.global.setLoading(true);
 
                 this.digitalServicesData
-                    .delete(this.digitalServiceVersionUid)
+                    .deleteVersion(this.digitalServiceVersionUid)
                     .pipe(
                         takeUntilDestroyed(this.destroyRef),
                         finalize(() => {

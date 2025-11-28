@@ -1,21 +1,26 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { firstValueFrom } from "rxjs";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: "app-digital-services-resources",
     templateUrl: "./digital-services-resources.component.html",
 })
-export class DigitalServicesResourcesComponent implements OnInit {
+export class DigitalServicesResourcesComponent implements OnInit, OnDestroy {
     private readonly route = inject(ActivatedRoute);
     dsVersionUid = "";
+    sub!: Subscription;
     ngOnInit(): void {
         this.setDsVerId();
     }
 
     async setDsVerId(): Promise<void> {
-        const params = await firstValueFrom(this.route.parent?.paramMap!);
+        this.sub = this.route.parent!.paramMap.subscribe((params) => {
+            this.dsVersionUid = params.get("digitalServiceVersionId") ?? "";
+        });
+    }
 
-        this.dsVersionUid = params.get("digitalServiceVersionId") ?? "";
+    ngOnDestroy(): void {
+        this.sub?.unsubscribe();
     }
 }

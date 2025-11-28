@@ -82,6 +82,10 @@ export class DigitalServicesDataService {
         return this.http.delete<string>(`${endpoint}/${uid}`);
     }
 
+    deleteVersion(uid: DigitalService["uid"]): Observable<string> {
+        return this.http.delete<string>(`${endpointDsVersions}/${uid}`);
+    }
+
     getDeviceReferential(): Observable<TerminalsType[]> {
         return this.http.get<TerminalsType[]>(`${endpoint}/device-type`);
     }
