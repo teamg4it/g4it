@@ -9,7 +9,6 @@ import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceSer
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.EcomindTypeBO;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.EcomindTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;

@@ -150,10 +150,14 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
                     const selectedType = this.typesOptions.find(
                         (t) => t.value === data.infrastructureType.value,
                     );
+
                     this.infrastructureForm.patchValue({
                         ...data,
                         infrastructureType: selectedType ?? defaultInfrastructureType,
                     });
+                    this.aiFormsStore.setInfrastructureFormData(
+                        this.infrastructureForm.getRawValue(),
+                    );
                     this.handlingValueChangesForCalculateButton();
                 } else {
                     //set the value

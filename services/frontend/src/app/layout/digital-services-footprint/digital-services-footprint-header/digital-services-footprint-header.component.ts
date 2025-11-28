@@ -140,7 +140,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.global.setLoading(true);
 
                 this.digitalServicesData
-                    .delete(this.digitalServiceVersionUid)
+                    .deleteVersion(this.digitalServiceVersionUid)
                     .pipe(
                         takeUntilDestroyed(this.destroyRef),
                         finalize(() => {
@@ -157,7 +157,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     changePageToDigitalServices() {
         let [_, _1, organization, _2, workspace, serviceType, dsVId, footprint] =
             this.router.url.split("/");
-
         if (footprint === "footprint") {
             // serviceType can be 'digital-services' or 'eco-mind-ai'
             if (serviceType === "eco-mind-ai") {
@@ -165,6 +164,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             } else {
                 return `/organizations/${organization}/workspaces/${workspace}/digital-services`;
             }
+        } else if (footprint.includes("compare-versions")) {
+            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/manage-versions`;
         } else {
             return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/footprint/resources`;
         }
@@ -255,9 +256,22 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.digitalServiceVersionDataService
             .duplicateVersion(this.digitalService.uid)
             .subscribe((version) => {
-                this.router.navigate(["../../", version.uid, "footprint", "resources"], {
-                    relativeTo: this.route,
-                });
+                let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
+                if (moduleType === "eco-mind-ai") {
+                    this.router.navigate(
+                        ["../../", version.uid, "footprint", "ecomind-parameters"],
+                        {
+                            relativeTo: this.route,
+                        },
+                    );
+                } else {
+                    this.router.navigate(
+                        ["../../", version.uid, "footprint", "resources"],
+                        {
+                            relativeTo: this.route,
+                        },
+                    );
+                }
             });
     }
 }

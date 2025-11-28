@@ -92,10 +92,6 @@ class InVirtualEquipmentServiceTest {
     @Test
     void createInVirtualEquipmentDigitalServiceTest() {
         String digitalServiceId = "dummy_id";
-        var organization = Workspace.builder()
-                .name("DEMO")
-                .organization(Organization.builder().name("SUBSCRIBER").build())
-                .build();
         var digitalService = DigitalService.builder()
                 .name("DS")
                 .uid("uid")

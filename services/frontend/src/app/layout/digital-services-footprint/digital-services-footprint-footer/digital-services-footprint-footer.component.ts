@@ -45,7 +45,8 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
     private readonly messageService = inject(MessageService);
     private readonly translate = inject(TranslateService);
     private readonly digitalServicesAiData = inject(DigitalServicesAiDataService);
-    digitalServiceVersionUid = "";
+    digitalServiceVersionUid =
+        this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
     enableCalcul = computed(() => {
         const digitalService = this.digitalServiceStore.digitalService();
 
@@ -77,8 +78,9 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.digitalServiceVersionUid =
-            this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
+        this.route.paramMap.subscribe((params) => {
+            this.digitalServiceVersionUid = params.get("digitalServiceVersionId") ?? "";
+        });
         this.digitalServicesData.digitalService$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {

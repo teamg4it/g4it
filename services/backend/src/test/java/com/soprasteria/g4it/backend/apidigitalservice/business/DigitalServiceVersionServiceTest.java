@@ -110,7 +110,6 @@ class DigitalServiceVersionServiceTest {
         final User user = User.builder().id(USER_ID).build();
         final DigitalServiceVersionBO expectedBo = DigitalServiceVersionBO.builder().build();
         final String expectedName = "Digital Service 1";
-        final List<DigitalService> existingDigitalService = new ArrayList<>();
 
         final DigitalService digitalServiceToSave = DigitalService.builder().uid(DIGITAL_SERVICE_UID).workspace(linkedWorkspace).user(user).name(expectedName).build();
         final DigitalServiceVersion digitalServiceVersionToSave = DigitalServiceVersion.builder().digitalService(digitalServiceToSave).build();
@@ -142,7 +141,7 @@ class DigitalServiceVersionServiceTest {
 
         final DigitalServiceVersionBO expectedBo = DigitalServiceVersionBO.builder().build();
         final String expectedName = "Digital Service 2";
-        final List<DigitalService> existingDigitalService = List.of(DigitalService.builder().name("Digital Service 1").build(), DigitalService.builder().name("My Digital Service").build());
+
 
         final DigitalService digitalServiceToSave = DigitalService.builder().workspace(linkedWorkspace).user(user).name(expectedName).build();
         final DigitalServiceVersion digitalServiceVersionToSave = DigitalServiceVersion.builder().digitalService(digitalServiceToSave).build();
@@ -170,7 +169,6 @@ class DigitalServiceVersionServiceTest {
         final Workspace linkedWorkspace = Workspace.builder().name(WORKSPACE_NAME).build();
         final DigitalServiceVersionBO expectedBo = DigitalServiceVersionBO.builder().build();
         final String expectedName = "Digital Service 1 AI";
-        final List<DigitalService> existingDigitalService = new ArrayList<>();
 
         final DigitalService digitalServiceToSave = DigitalService.builder().workspace(linkedWorkspace).user(user).name(expectedName).isAi(true).build();
         final DigitalServiceVersion digitalServiceVersionToSave = DigitalServiceVersion.builder().digitalService(digitalServiceToSave).build();
@@ -394,8 +392,6 @@ class DigitalServiceVersionServiceTest {
                 .uid(DIGITAL_SERVICE_UID).enableDataInconsistency(false).build();
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(DIGITAL_SERVICE_VERSION_UID).digitalService(digitalService).build();
-        final DigitalService digitalServiceUpdated = DigitalService.builder()
-                .uid(DIGITAL_SERVICE_UID).enableDataInconsistency(true).build();
         final DigitalServiceVersion digitalServiceVersionUpdated = DigitalServiceVersion.builder()
                 .uid(DIGITAL_SERVICE_VERSION_UID).digitalService(digitalService).build();
 

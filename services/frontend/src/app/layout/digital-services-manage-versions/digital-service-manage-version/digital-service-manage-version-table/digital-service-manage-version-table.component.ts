@@ -28,6 +28,14 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     }
 
     redirectToVersionDetails(version: string): void {
+        let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
+        if (moduleType === "eco-mind-ai") {
+            this.router.navigate(
+                ["eco-mind-ai", version, "footprint", "ecomind-parameters"],
+                { relativeTo: this.route.parent?.parent },
+            );
+            return;
+        }
         this.router.navigate(
             ["digital-service-version", version, "footprint", "resources"],
             { relativeTo: this.route.parent?.parent },

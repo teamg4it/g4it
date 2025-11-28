@@ -81,6 +81,9 @@ describe("DigitalServicesFootprintFooterComponent", () => {
                                 },
                             },
                         },
+                        paramMap: of(
+                            new Map<string, string>([["digitalServiceVersionId", "1"]]),
+                        ),
                     },
                 },
                 { provide: Router, useValue: mockRouter },
