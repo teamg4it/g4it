@@ -106,10 +106,10 @@ public class FileLoadingUtils {
         }
     }
 
-    public boolean handelRejectedFiles(String organization, Long workspaceId, Long inventoryId, String digitalServiceUid,
+    public boolean handelRejectedFiles(String organization, Long workspaceId, Long inventoryId, String digitalServiceVersionUid,
                                        Long taskId, List<String> filenames) {
 
-        String pathId = null != inventoryId ? String.valueOf(inventoryId) : digitalServiceUid;
+        String pathId = null != inventoryId ? String.valueOf(inventoryId) : digitalServiceVersionUid;
         String inputPath = null != inventoryId ? "input/inventory" : "input/digital-service";
 
         FileStorage fileStorage = fileSystem.mount(organization, workspaceId.toString());

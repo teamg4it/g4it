@@ -32,10 +32,10 @@ public class InAIParameterController implements AiParameterApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<AiParameterRest> createAiParameter(String organization, Long workspace, String digitalServiceUid, AiParameterRest aiParameterRest) {
+    public ResponseEntity<AiParameterRest> createAiParameter(String organization, Long workspace, String digitalServiceVersionUid, AiParameterRest aiParameterRest) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
-        AiParameterRest created = inAiParameterService.createAiParameter(digitalServiceUid, aiParameterRest);
+        AiParameterRest created = inAiParameterService.createAiParameter(digitalServiceVersionUid, aiParameterRest);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
@@ -43,20 +43,20 @@ public class InAIParameterController implements AiParameterApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<AiParameterRest> getAiParameter(String organization, Long workspace, String digitalServiceUid) {
+    public ResponseEntity<AiParameterRest> getAiParameter(String organization, Long workspace, String digitalServiceVersionUid) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
-        return new ResponseEntity<>(inAiParameterService.getAiParameter(digitalServiceUid), HttpStatus.OK);
+        return new ResponseEntity<>(inAiParameterService.getAiParameter(digitalServiceVersionUid), HttpStatus.OK);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<AiParameterRest> updateAiParameter(String organization, Long workspace, String digitalServiceUid, AiParameterRest aiParameterRest) {
+    public ResponseEntity<AiParameterRest> updateAiParameter(String organization, Long workspace, String digitalServiceVersionUid, AiParameterRest aiParameterRest) {
         // Check if EcoMindAi module is enabled or not
         authorizationUtils.checkEcomindAuthorization();
-        return new ResponseEntity<>(inAiParameterService.updateAiParameter(digitalServiceUid, aiParameterRest), HttpStatus.OK);
+        return new ResponseEntity<>(inAiParameterService.updateAiParameter(digitalServiceVersionUid, aiParameterRest), HttpStatus.OK);
     }
 }
 

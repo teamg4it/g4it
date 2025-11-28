@@ -2,7 +2,9 @@ package com.soprasteria.g4it.backend.apiparameterai.business;
 
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiparameterai.mapper.InAiParameterMapper;
 import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
@@ -22,40 +24,40 @@ public class InAiParameterService {
     @Autowired
     private InAiParameterMapper inAiParameterMapper;
     @Autowired
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
-    public AiParameterRest createAiParameter(final String digitalServiceUid,AiParameterRest aiParameterRest) {
-        Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
+    public AiParameterRest createAiParameter(final String digitalServiceVersionUid,AiParameterRest aiParameterRest) {
+        Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
 
-        if (digitalService.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
+        if (digitalServiceVersion.isEmpty()) {
+            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
 
         final InAiParameter entityToSave = inAiParameterMapper.toEntity(aiParameterRest);
         final LocalDateTime now = LocalDateTime.now();
-        entityToSave.setDigitalServiceUid(digitalServiceUid);
+        entityToSave.setDigitalServiceVersionUid(digitalServiceVersionUid);
         entityToSave.setCreationDate(now);
         entityToSave.setLastUpdateDate(now);
         return inAiParameterMapper.toBusinessObject(inAiParameterRepository.save(entityToSave));
     }
 
-    public AiParameterRest getAiParameter(final String digitalServiceUid) {
-        Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
+    public AiParameterRest getAiParameter(final String digitalServiceVersionUid) {
+        Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
 
-        if (digitalService.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
+        if (digitalServiceVersion.isEmpty()) {
+            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
 
-        return inAiParameterMapper.toBusinessObject(inAiParameterRepository.findByDigitalServiceUid(digitalServiceUid));
+        return inAiParameterMapper.toBusinessObject(inAiParameterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid));
     }
 
-    public AiParameterRest updateAiParameter(final String digitalServiceUid, AiParameterRest aiParameterRest) {
-        Optional<DigitalService> digitalService = digitalServiceRepository.findById(digitalServiceUid);
+    public AiParameterRest updateAiParameter(final String digitalServiceVersionUid, AiParameterRest aiParameterRest) {
+        Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
 
-        if (digitalService.isEmpty()) {
-            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceUid));
+        if (digitalServiceVersion.isEmpty()) {
+            throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
-        InAiParameter inAiParameter = inAiParameterRepository.findByDigitalServiceUid(digitalServiceUid);
+        InAiParameter inAiParameter = inAiParameterRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid);
         inAiParameterMapper.updateEntityFromDto(aiParameterRest, inAiParameter);
         inAiParameterRepository.save(inAiParameter);
         return inAiParameterMapper.toBusinessObject(inAiParameter);

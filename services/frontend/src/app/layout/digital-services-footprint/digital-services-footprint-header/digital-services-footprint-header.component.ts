@@ -17,15 +17,17 @@ import {
     Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { finalize, lastValueFrom } from "rxjs";
+import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-service-version.interface";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
+import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
@@ -39,9 +41,15 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly digitalServiceVersionDataService = inject(
+        DigitalServiceVersionDataService,
+    );
 
     @Input() digitalService: DigitalService = {} as DigitalService;
     @Input() isSharedDs = false;
+    isManageVersions = input<boolean>(false);
+    isCompareVersions = input<boolean>(false);
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     @Output() digitalMobileOptionsChange = new EventEmitter<boolean>();
     isZoom125 = computed(() => this.global.zoomLevel() >= 125);
@@ -58,6 +66,9 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     displayLinkCreatePopup = false;
     shareLink = "";
     expiryDate: Date | null = null;
+    digitalServiceVersionType = DigitalServiceVersionType;
+    digitalServiceVersionUid =
+        this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
 
     private readonly destroyRef = inject(DestroyRef);
 
@@ -72,6 +83,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        this.route.paramMap.subscribe((params) => {
+            this.digitalServiceVersionUid = params.get("digitalServiceVersionId") ?? "";
+        });
+
         this.digitalServicesData.digitalService$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
@@ -99,9 +114,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         }
     }
 
-    onNameUpdate(digitalServiceName: string) {
+    onNameUpdate(digitalServiceName: string, isName: boolean) {
         if (digitalServiceName != "") {
-            this.digitalService.name = digitalServiceName;
+            if (isName) {
+                this.digitalService.name = digitalServiceName;
+            } else {
+                this.digitalService.description = digitalServiceName;
+            }
             this.digitalServiceChange.emit(this.digitalService);
         }
     }
@@ -121,7 +140,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.global.setLoading(true);
 
                 this.digitalServicesData
-                    .delete(this.digitalService.uid)
+                    .deleteVersion(this.digitalServiceVersionUid)
                     .pipe(
                         takeUntilDestroyed(this.destroyRef),
                         finalize(() => {
@@ -136,13 +155,19 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let [_, _1, organization, _2, workspace, serviceType] =
+        let [_, _1, organization, _2, workspace, serviceType, dsVId, footprint] =
             this.router.url.split("/");
-        // serviceType can be 'digital-services' or 'eco-mind-ai'
-        if (serviceType === "eco-mind-ai") {
-            return `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai`;
+        if (footprint === "footprint") {
+            // serviceType can be 'digital-services' or 'eco-mind-ai'
+            if (serviceType === "eco-mind-ai") {
+                return `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai`;
+            } else {
+                return `/organizations/${organization}/workspaces/${workspace}/digital-services`;
+            }
+        } else if (footprint.includes("compare-versions")) {
+            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/manage-versions`;
         } else {
-            return `/organizations/${organization}/workspaces/${workspace}/digital-services`;
+            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/footprint/resources`;
         }
     }
 
@@ -150,7 +175,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         this.digitalService.note = {
             content: event,
         } as Note;
-
         this.digitalServicesData.update(this.digitalService).subscribe((res) => {
             this.sidebarVisible = false;
             this.messageService.add({
@@ -176,7 +200,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         try {
             const filename = `g4it_${this.selectedOrganizationName}_${this.selectedWorkspaceName}_${this.digitalService.uid}_export-result-files`;
             const blob: Blob = await lastValueFrom(
-                this.digitalServicesData.downloadFile(this.digitalService.uid),
+                this.digitalServicesData.downloadFile(this.digitalServiceVersionUid),
             );
             saveAs(blob, filename);
         } catch (err) {
@@ -203,12 +227,16 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         }
     }
 
+    goToManageVersions() {
+        this.router.navigate(["../manage-versions"], { relativeTo: this.route });
+    }
+
     getShareLink(extendLink = false): void {
         if (!extendLink) {
             this.global.setLoading(true);
         }
         this.digitalServicesData
-            .copyUrl(this.digitalService.uid, extendLink)
+            .copyUrl(this.digitalServiceVersionUid, this.digitalService, extendLink)
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
                 finalize(() => {
@@ -220,6 +248,29 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.expiryDate = new Date(res.expiryDate.toString() + "Z");
                 if (!this.digitalService.isShared) {
                     this.digitalServicesData.get(this.digitalService.uid).subscribe();
+                }
+            });
+    }
+
+    duplicateDigitalServiceVersion(): void {
+        this.digitalServiceVersionDataService
+            .duplicateVersion(this.digitalService.uid)
+            .subscribe((version) => {
+                let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
+                if (moduleType === "eco-mind-ai") {
+                    this.router.navigate(
+                        ["../../", version.uid, "footprint", "ecomind-parameters"],
+                        {
+                            relativeTo: this.route,
+                        },
+                    );
+                } else {
+                    this.router.navigate(
+                        ["../../", version.uid, "footprint", "resources"],
+                        {
+                            relativeTo: this.route,
+                        },
+                    );
                 }
             });
     }

@@ -6,6 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Injectable, inject } from "@angular/core";
+import { Router } from "@angular/router";
 import { addDays, formatDate } from "date-fns";
 import { Observable, ReplaySubject, Subject, firstValueFrom, lastValueFrom } from "rxjs";
 import { removeBlankSpaces } from "../../custom-validators/unique-name.validator";
@@ -39,7 +40,10 @@ export class DigitalServiceBusinessService {
     private readonly launchCalculSubject = new Subject<void>();
     launchCalcul$ = this.launchCalculSubject.asObservable();
 
-    constructor(private readonly digitalServiceData: DigitalServicesDataService) {}
+    constructor(
+        private readonly digitalServiceData: DigitalServicesDataService,
+        private readonly router: Router,
+    ) {}
 
     closePanel() {
         this.panelSubject.next(false);
@@ -53,8 +57,8 @@ export class DigitalServiceBusinessService {
         server: DigitalServiceServerConfig,
         digitalService: DigitalService,
     ) {
-        const physicalEquipment = this.toInPhysicalEquipment(server, digitalService.uid);
-
+        let physicalEquipment = this.toInPhysicalEquipment(server, digitalService.uid);
+        const digitalServiceVersionUid = this.router.url.split("/")[6];
         if (server.id) {
             physicalEquipment.id = server.id;
             const isSharedServer = server.mutualizationType === "Shared";
@@ -66,13 +70,13 @@ export class DigitalServiceBusinessService {
             let allVms: InVirtualEquipmentRest[] = [];
             if (existingVms.length && isSharedServer) {
                 allVms = existingVms.map((vm) =>
-                    this.toInVirtualEquipment(vm, server, digitalService.uid),
+                    this.toInVirtualEquipment(vm, server, digitalServiceVersionUid),
                 );
             }
             await firstValueFrom(
                 this.inVirtualEquipmentsService.updateAllVms(
                     allVms,
-                    digitalService.uid,
+                    digitalServiceVersionUid,
                     physicalEquipment.id,
                 ),
             );
@@ -80,31 +84,39 @@ export class DigitalServiceBusinessService {
                 for (const vm of newVms) {
                     await firstValueFrom(
                         this.inVirtualEquipmentsService.create(
-                            this.toInVirtualEquipment(vm, server, digitalService.uid),
+                            this.toInVirtualEquipment(
+                                vm,
+                                server,
+                                digitalServiceVersionUid,
+                            ),
                         ),
                     );
                 }
             }
         } else {
+            physicalEquipment = {
+                ...physicalEquipment,
+                digitalServiceVersionUid: digitalServiceVersionUid,
+            };
             await firstValueFrom(
                 this.inPhysicalEquipmentsService.create(physicalEquipment),
             );
             for (const vm of server.vm) {
                 await firstValueFrom(
                     this.inVirtualEquipmentsService.create(
-                        this.toInVirtualEquipment(vm, server, digitalService.uid),
+                        this.toInVirtualEquipment(vm, server, digitalServiceVersionUid),
                     ),
                 );
             }
         }
-        await this.digitalServiceStore.initInPhysicalEquipments(digitalService.uid);
-        await this.digitalServiceStore.initInVirtualEquipments(digitalService.uid);
+        await this.digitalServiceStore.initInPhysicalEquipments(digitalServiceVersionUid);
+        await this.digitalServiceStore.initInVirtualEquipments(digitalServiceVersionUid);
         this.digitalServiceStore.setEnableCalcul(true);
     }
 
     toInPhysicalEquipment(
         server: DigitalServiceServerConfig,
-        digitalServiceUid: string,
+        digitalServiceVersionUid: string,
     ): InPhysicalEquipmentRest {
         const quantity =
             server.mutualizationType === "Dedicated"
@@ -113,7 +125,8 @@ export class DigitalServiceBusinessService {
 
         return {
             name: server.name,
-            digitalServiceUid,
+            digitalServiceUid: server.digitalServiceUid!,
+            digitalServiceVersionUid,
             quantity,
             type:
                 server.mutualizationType === "Dedicated"
@@ -138,11 +151,12 @@ export class DigitalServiceBusinessService {
     toInVirtualEquipment(
         vm: ServerVM,
         server: DigitalServiceServerConfig,
-        digitalServiceUid: string,
-    ) {
+        digitalServiceVersionUid: string,
+    ): InVirtualEquipmentRest {
         return {
             id: vm.uid ? Number(vm.uid) : undefined,
-            digitalServiceUid: digitalServiceUid,
+            digitalServiceUid: vm.digitalServiceUid,
+            digitalServiceVersionUid,
             durationHour: vm.annualOperatingTime,
             infrastructureType: "NON_CLOUD_SERVERS",
             name: vm.name,
@@ -174,16 +188,17 @@ export class DigitalServiceBusinessService {
         existingNames: string[],
         baseName: string,
         isNumeric: boolean,
+        removeBlankFromBase = true,
     ): string {
         const nameSet = new Set(existingNames?.map((n) => removeBlankSpaces(n)));
         let index = 1;
         let newString = isNumeric ? index.toString() : String.fromCodePoint(64 + index);
-        let newName = `${removeBlankSpaces(baseName)} ${newString}`; // Start with "Server 1" or "Server A"
+        let newName = `${removeBlankFromBase ? removeBlankSpaces(baseName) : baseName} ${newString}`; // Start with "Server 1" or "Server A"
 
         while (nameSet.has(removeBlankSpaces(newName))) {
             index++;
             newString = isNumeric ? index.toString() : String.fromCodePoint(64 + index);
-            newName = `${removeBlankSpaces(baseName)} ${newString}`; // Increment to "Server 2", "Server B", etc.
+            newName = `${removeBlankFromBase ? removeBlankSpaces(baseName) : baseName} ${newString}`; // Increment to "Server 2", "Server B", etc.
         }
         return newName;
     }

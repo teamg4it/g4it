@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 import { InDatacenterRest } from "../../../interfaces/input.interface";
 
-const endpoint = Constants.ENDPOINTS.digitalServices;
+const endpoint = Constants.ENDPOINTS.digitalServicesVersions;
 
 @Injectable({
     providedIn: "root",

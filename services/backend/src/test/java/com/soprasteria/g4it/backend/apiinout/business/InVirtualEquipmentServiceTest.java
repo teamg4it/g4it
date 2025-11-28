@@ -10,7 +10,9 @@ package com.soprasteria.g4it.backend.apiinout.business;
 
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InVirtualEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
@@ -46,6 +48,9 @@ class InVirtualEquipmentServiceTest {
 
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
+
+    @Mock
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Mock
     private InventoryRepository inventoryRepository;
@@ -87,27 +92,27 @@ class InVirtualEquipmentServiceTest {
     @Test
     void createInVirtualEquipmentDigitalServiceTest() {
         String digitalServiceId = "dummy_id";
-        var organization = Workspace.builder()
-                .name("DEMO")
-                .organization(Organization.builder().name("SUBSCRIBER").build())
-                .build();
         var digitalService = DigitalService.builder()
-                .name("DS_Name")
-                .workspace(organization)
+                .name("DS")
+                .uid("uid")
+                .build();
+        var digitalServiceversion = DigitalServiceVersion.builder()
+                .description("DS_Name")
+                .digitalService(digitalService)
                 .build();
         InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).build();
         InVirtualEquipment inVirtualEquipment = InVirtualEquipment.builder().id(1L).name("MyVE").physicalEquipmentName("MyPE")
                 .allocationFactor(0.5).datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).infrastructureType("CLOUD_SERVERS").quantity(12.0).sizeDiskGb(234.0).
                 sizeMemoryGb(3.0).vcpuCoreNumber(2.0).workload(33.0).location("France").build();
 
-        when(digitalServiceRepository.findById(digitalServiceId)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(digitalServiceId)).thenReturn(Optional.empty());
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                inVirtualEquipmentService.createInVirtualEquipmentDigitalService(digitalServiceId, inVirtualEquipmentRest));
+                inVirtualEquipmentService.createInVirtualEquipmentDigitalServiceVersion(digitalServiceId, inVirtualEquipmentRest));
         assertEquals("404", exception.getCode());
-        when(digitalServiceRepository.findById(digitalServiceId)).thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceId)).thenReturn(Optional.of(digitalServiceversion));
         when(inVirtualEquipmentMapper.toEntity(inVirtualEquipmentRest)).thenReturn(inVirtualEquipment);
         when(inVirtualEquipmentMapper.toRest(inVirtualEquipment)).thenReturn(inVirtualEquipmentRest);
-        InVirtualEquipmentRest responseRest = inVirtualEquipmentService.createInVirtualEquipmentDigitalService(digitalServiceId, inVirtualEquipmentRest);
+        InVirtualEquipmentRest responseRest = inVirtualEquipmentService.createInVirtualEquipmentDigitalServiceVersion(digitalServiceId, inVirtualEquipmentRest);
         assertNotNull(responseRest);
     }
 
@@ -116,19 +121,19 @@ class InVirtualEquipmentServiceTest {
         String digitalServiceUid = "service-123";
         Long id = 1L;
         Long inventoryId = 12L;
-        InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceUid("dummyid").inventoryId(11L).durationHour(33.0).electricityConsumption(22.0).build();
-        InVirtualEquipment virtualEquipment = InVirtualEquipment.builder().id(1L).name("MyVE").physicalEquipmentName("MyPE")
+        InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceVersionUid("uid").digitalServiceUid("dummyid").inventoryId(11L).durationHour(33.0).electricityConsumption(22.0).build();
+        InVirtualEquipment virtualEquipment = InVirtualEquipment.builder().id(1L).name("MyVE").physicalEquipmentName("MyPE").digitalServiceVersionUid("uid")
                 .allocationFactor(0.5).datacenterName("default").digitalServiceUid("dummyid").inventoryId(11L).durationHour(33.0).electricityConsumption(22.0).infrastructureType("CLOUD_SERVERS").quantity(12.0).sizeDiskGb(234.0).
                 sizeMemoryGb(3.0).vcpuCoreNumber(2.0).workload(33.0).location("France").build();
 
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(virtualEquipment));
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(virtualEquipment));
         G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
                 inVirtualEquipmentService.updateInVirtualEquipment(digitalServiceUid, id, inVirtualEquipmentRest));
 
         assertEquals("409", exception1.getCode());
         when(inVirtualEquipmentMapper.toRest(virtualEquipment)).thenReturn(inVirtualEquipmentRest);
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(inVirtualEquipmentRest.getDigitalServiceUid(), inVirtualEquipmentRest.getId())).thenReturn(Optional.of(virtualEquipment));
-        InVirtualEquipmentRest responseRest = inVirtualEquipmentService.updateInVirtualEquipment(inVirtualEquipmentRest.getDigitalServiceUid(), inVirtualEquipmentRest.getId(), inVirtualEquipmentRest);
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(inVirtualEquipmentRest.getDigitalServiceVersionUid(), inVirtualEquipmentRest.getId())).thenReturn(Optional.of(virtualEquipment));
+        InVirtualEquipmentRest responseRest = inVirtualEquipmentService.updateInVirtualEquipment(inVirtualEquipmentRest.getDigitalServiceVersionUid(), inVirtualEquipmentRest.getId(), inVirtualEquipmentRest);
         assertNotNull(responseRest);
 
         when(inVirtualEquipmentRepository.findByInventoryIdAndId(inventoryId, id)).thenReturn(Optional.of(virtualEquipment));
@@ -156,7 +161,7 @@ class InVirtualEquipmentServiceTest {
                 .allocationFactor(0.5).datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).infrastructureType("CLOUD_SERVERS").quantity(12.0).sizeDiskGb(234.0).
                 sizeMemoryGb(3.0).vcpuCoreNumber(2.0).workload(33.0).location("France").build();
 
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
         G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
                 inVirtualEquipmentService.deleteInVirtualEquipment(digitalServiceUid, id));
         assertEquals("404", exception1.getCode());
@@ -166,7 +171,7 @@ class InVirtualEquipmentServiceTest {
                 inVirtualEquipmentService.deleteInVirtualEquipment(inventoryId, id));
         assertEquals("404", exception2.getCode());
 
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, inVirtualEquipmentRest.getId())).thenReturn(Optional.of(virtualEquipment));
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, inVirtualEquipmentRest.getId())).thenReturn(Optional.of(virtualEquipment));
         inVirtualEquipmentService.deleteInVirtualEquipment(digitalServiceUid, id);
         when(inVirtualEquipmentRepository.findByInventoryIdAndId(inventoryId, inVirtualEquipmentRest.getId())).thenReturn(Optional.of(virtualEquipment));
         inVirtualEquipmentService.deleteInVirtualEquipment(inventoryId, id);
@@ -178,13 +183,13 @@ class InVirtualEquipmentServiceTest {
         List<InVirtualEquipment> virtualEquipments = List.of(new InVirtualEquipment());
         List<InVirtualEquipmentRest> virtualEquipmentRests = List.of(new InVirtualEquipmentRest());
 
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidOrderByName(digitalServiceUid)).thenReturn(virtualEquipments);
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidOrderByName(digitalServiceUid)).thenReturn(virtualEquipments);
         when(inVirtualEquipmentMapper.toRest(virtualEquipments)).thenReturn(virtualEquipmentRests);
 
-        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByDigitalService(digitalServiceUid);
+        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
 
         assertEquals(virtualEquipmentRests, result);
-        verify(inVirtualEquipmentRepository).findByDigitalServiceUidOrderByName(digitalServiceUid);
+        verify(inVirtualEquipmentRepository).findByDigitalServiceVersionUidOrderByName(digitalServiceUid);
         verify(inVirtualEquipmentMapper).toRest(virtualEquipments);
     }
 
@@ -193,27 +198,27 @@ class InVirtualEquipmentServiceTest {
         String digitalServiceUid = "service-123";
         Long id = 1L;
 
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
 
         G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
-                inVirtualEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
+                inVirtualEquipmentService.getByDigitalServiceVersionAndId(digitalServiceUid, id));
 
         assertEquals("404", exception1.getCode());
-        verify(inVirtualEquipmentRepository).findByDigitalServiceUidAndId(digitalServiceUid, id);
+        verify(inVirtualEquipmentRepository).findByDigitalServiceVersionUidAndId(digitalServiceUid, id);
 
-        InVirtualEquipment virtualEquipment = InVirtualEquipment.builder().id(1L).name("MyVE").physicalEquipmentName("MyPE")
+        InVirtualEquipment virtualEquipment = InVirtualEquipment.builder().id(1L).name("MyVE").physicalEquipmentName("MyPE").digitalServiceVersionUid("uid")
                 .allocationFactor(0.5).datacenterName("default").digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).infrastructureType("CLOUD_SERVERS").quantity(12.0).sizeDiskGb(234.0).
                 sizeMemoryGb(3.0).vcpuCoreNumber(2.0).workload(33.0).location("France").build();
         InVirtualEquipmentRest inVirtualEquipmentRest = InVirtualEquipmentRest.builder().datacenterName("default").physicalEquipmentName("MyPE").name("MyVE").id(1L).allocationFactor(0.5).digitalServiceUid("dummyid").durationHour(33.0).electricityConsumption(22.0).build();
 
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(virtualEquipment));
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(virtualEquipment));
         G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
-                inVirtualEquipmentService.getByDigitalServiceAndId(digitalServiceUid, id));
+                inVirtualEquipmentService.getByDigitalServiceVersionAndId(digitalServiceUid, id));
 
         assertEquals("409", exception2.getCode());
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(virtualEquipment.getDigitalServiceUid(), virtualEquipment.getId())).thenReturn(Optional.of(virtualEquipment));
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(virtualEquipment.getDigitalServiceVersionUid(), virtualEquipment.getId())).thenReturn(Optional.of(virtualEquipment));
         when(inVirtualEquipmentMapper.toRest(virtualEquipment)).thenReturn(inVirtualEquipmentRest);
-        InVirtualEquipmentRest response = inVirtualEquipmentService.getByDigitalServiceAndId(virtualEquipment.getDigitalServiceUid(), virtualEquipment.getId());
+        InVirtualEquipmentRest response = inVirtualEquipmentService.getByDigitalServiceVersionAndId(virtualEquipment.getDigitalServiceVersionUid(), virtualEquipment.getId());
         assertNotNull(response);
     }
 
@@ -250,13 +255,13 @@ class InVirtualEquipmentServiceTest {
         String digitalServiceUid = "service-123";
         InVirtualEquipmentRest inVirtualEquipmentRest = new InVirtualEquipmentRest();
 
-        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(digitalServiceUid)).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                inVirtualEquipmentService.createInVirtualEquipmentDigitalService(digitalServiceUid, inVirtualEquipmentRest));
+                inVirtualEquipmentService.createInVirtualEquipmentDigitalServiceVersion(digitalServiceUid, inVirtualEquipmentRest));
 
         assertEquals("404", exception.getCode());
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
     }
 
     @Test
@@ -264,13 +269,13 @@ class InVirtualEquipmentServiceTest {
         String digitalServiceUid = "service-123";
         Long id = 1L;
 
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
                 inVirtualEquipmentService.deleteInVirtualEquipment(digitalServiceUid, id));
 
         assertEquals("404", exception.getCode());
-        verify(inVirtualEquipmentRepository).findByDigitalServiceUidAndId(digitalServiceUid, id);
+        verify(inVirtualEquipmentRepository).findByDigitalServiceVersionUidAndId(digitalServiceUid, id);
     }
 
     @Test
@@ -287,8 +292,8 @@ class InVirtualEquipmentServiceTest {
         List<InVirtualEquipmentRest> inVirtualEquipmentList = List.of(inputEquipment);
 
         when(inPhysicalEquipmentRepository.findById(physicalEqpId)).thenReturn(Optional.of(physicalEquipment));
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndPhysicalEquipmentName(digitalServiceUid, physicalEqpName)).thenReturn(List.of());
-        when(inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, inputEquipment.getId())).thenReturn(Optional.empty());
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentName(digitalServiceUid, physicalEqpName)).thenReturn(List.of());
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, inputEquipment.getId())).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
                 inVirtualEquipmentService.updateOrDeleteInVirtualEquipments(digitalServiceUid, physicalEqpId, inVirtualEquipmentList));

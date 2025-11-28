@@ -26,6 +26,8 @@ public class Context {
     private Long inventoryId;
     private String digitalServiceUid;
     private String digitalServiceName;
+    private String digitalServiceVersionUid;
+    private String digitalServiceVersionName;
     private Locale locale;
     private LocalDateTime datetime;
     private boolean hasVirtualEquipments;
@@ -50,7 +52,7 @@ public class Context {
 
     public String log(String delim) {
         if (inventoryId == null) {
-            return String.join(delim, organization, workspaceId.toString(), digitalServiceUid);
+            return String.join(delim, organization, workspaceId.toString(), digitalServiceVersionUid);
         }
         return String.join(delim, organization, workspaceId.toString(), inventoryId.toString());
     }

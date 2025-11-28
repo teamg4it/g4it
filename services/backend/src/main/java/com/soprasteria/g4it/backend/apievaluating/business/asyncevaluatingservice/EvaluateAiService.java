@@ -127,32 +127,32 @@ public class EvaluateAiService {
 
         // get the data in database
         // Get the AI parameters
-        InAiParameter inAiParameters = inAIParameterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+        InAiParameter inAiParameters = inAIParameterRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid());
 
         if (inAiParameters == null) {
             throw new G4itRestException("404", String.format("the ai parameter doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
         // Get AI infrastructure
-        InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+        InAiInfrastructure inAiInfrastructure = inAiInfrastructureRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid());
 
         if (inAiInfrastructure == null) {
             throw new G4itRestException("404", String.format("the ai infrastructure doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
 
         // Get the data center
-        List<InDatacenter> datacenters = inDatacenterRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+        List<InDatacenter> datacenters = inDatacenterRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid());
         if (datacenters.isEmpty()) {
             throw new G4itRestException("404", String.format("the data center doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
         // Get the physical equipment
-        List<InPhysicalEquipment> physicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+        List<InPhysicalEquipment> physicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid());
         if (physicalEquipments.isEmpty()) {
             throw new G4itRestException("404", String.format("the physical equipements doesn't exist for digital service : %s", context.getDigitalServiceUid()));
         }
         // Get the virtual equipment
-        List<InVirtualEquipment> virtualEquipments = inVirtualEquipmentRepository.findByDigitalServiceUid(context.getDigitalServiceUid());
+        List<InVirtualEquipment> virtualEquipments = inVirtualEquipmentRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid());
         if (virtualEquipments.isEmpty()) {
-            throw new G4itRestException("404", String.format("the virtual equipements doesn't exist for digital service : %s", context.getDigitalServiceUid()));
+            throw new G4itRestException("404", String.format("the virtual equipements doesn't exist for digital service : %s", context.getDigitalServiceVersionUid()));
         }
         log.info("Retrieved digital service and AI parameters");
         log.info("Retrieved {} datacenters, {} physical equipments, {} virtual equipments",

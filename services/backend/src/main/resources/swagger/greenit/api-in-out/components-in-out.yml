@@ -23,6 +23,9 @@ components:
         digitalServiceUid:
           type: string
           maxLength: 255
+        digitalServiceVersionUid:
+          type: string
+          maxLength: 255
         fullName:
           type: string
           maxLength: 255
@@ -61,6 +64,9 @@ components:
           type: integer
           format: int64
         digitalServiceUid:
+          type: string
+          maxLength: 255
+        digitalServiceVersionUid:
           type: string
           maxLength: 255
         datacenterName:
@@ -159,6 +165,9 @@ components:
           type: integer
           format: int64
         digitalServiceUid:
+          type: string
+          maxLength: 255
+        digitalServiceVersionUid:
           type: string
           maxLength: 255
         datacenterName:
@@ -489,6 +498,7 @@ components:
           type: array
           items:
             type: string
+
     OutAiRecommendationRest:
       description: AI recommendation output from out_ai_reco table
       type: object
@@ -515,3 +525,44 @@ components:
         lastUpdateDate:
           type: string
           format: date-time
+
+    DigitalServiceVersionUidRest:
+      description: Digital Service Version Uids
+      type: object
+      properties:
+        digitalServiceVersionUid1:
+          type: string
+        digitalServiceVersionUid2:
+          type: string
+
+    DigitalServiceVersionComparison:
+        type: object
+        description: "Comparison data of a single digital service version"
+        properties:
+          versionId:
+            type: string
+          versionName:
+            type: string
+          physicalEquipment:
+            type: array
+            items:
+              $ref: "#/components/schemas/OutPhysicalEquipmentRest"
+          virtualEquipment:
+            type: array
+            items:
+              $ref: "#/components/schemas/OutVirtualEquipmentRest"
+
+    DigitalServiceVersionComparisonRest:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          $ref: "#/components/schemas/DigitalServiceVersionComparison"
+
+    digitalServiceVersionUidPathParam:
+        in: path
+        name: digitalServiceVersionUid
+        schema:
+          type: string
+        required: true
+        description: The digital service version uid.

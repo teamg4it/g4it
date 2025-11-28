@@ -38,6 +38,7 @@
         "min": "doit être supérieure ou égale à 1",
         "peopleeq": "Hab. eq.",
         "peopleeq-min": "hab. eq.",
+        "peopleeq-full": "habitant équivalent",
         "no-data": "Aucun résultats disponibles",
         "loading": "Chargement en cours",
         "choose-file": "Importer un fichier",
@@ -174,8 +175,8 @@
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
-        "g4it-line": "Veuillez consulter le détail du contenu de cette version sur la page en ligne",
-        "documentation": "documentation",
+        "g4it-line": "Veuillez consulter le détail du contenu de cette version",
+        "documentation": "dans la documentation en ligne",
         "link-to-github": "lien vers le repertoire github"
     },
     "errors": {
@@ -237,7 +238,43 @@
         "back": "Retour",
         "hide-menu-buttons": "Cacher les options du service numérique",
         "show-menu-buttons": "Montrer les options du service numérique",
-        "save-inplace": "Sauvegarder le nom du service numérique"
+        "save-inplace": "Sauvegarder le nom du service numérique",
+        "version": {
+            "ds-name": "Nom du service numérique",
+            "active-version-name": "Nom de la version active",
+            "version-name": "Nom de la version",
+            "add-ds": "Ajouter un service numérique",
+            "ds-text": "Envie de créer un service numérique utile et responsable ? Intégrez dès le départ l’ajout de vos ressources et faites le calcul de l’impact environnemental. C’est l’occasion de concevoir un service plus sobre, plus transparent et plus respectueux de la planète.",
+            "ds-name-placeholder": "Saisir un nom de service numérique",
+            "ds-version-name-placeholder": "Saisir un nom de version",
+            "ds-version-text": "Vous pourrez faire <strong>plusieurs versions</strong> de votre service numérique.<br> Chaque version capture un état précis, ce qui permet suivre vos progrès, de tester différentes hypothèses et de comparer leurs effets sans compromettre la version stable. Si vous êtes satisfait d’une version, faites la devenir votre version active, l’ancienne version sera automatiquement <strong>archivée</strong>.",
+            "active-text": "Cette version sera active par défaut",
+            "cancel-creation": "Annuler la création",
+            "validate-creation": "Valider la création",
+            "required-field": "Champ obligatoire",
+            "tags": {
+                "active": "Active",
+                "draft": "Brouillon",
+                "archived": "Archivée"
+            },
+            "manage-versions": "Gérer les versions",
+            "versions-management": "Gestion des versions",
+            "status": "Statut",
+            "actions": "Actions",
+            "select": "Sélectionner",
+            "versions": "Versions",
+            "duplicate-version": "Dupliquer la version",
+            "compare-versions": "Comparer 2 versions",
+            "compare-version-tooltip": "Sélectionner deux versions pour comparer leurs résultats. Les versions doivent avoir des résultats d'impact calculés.",
+            "compare-versions-title": "Comparer l'impact des versions",
+            "not-calculated": "Non calculé"
+        },
+        "error.digital-service-already-exists": "Le service numérique existe déjà",
+        "comparison": {
+            "description": "Ces graphiques représentent les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement.  <br /> - Le premier graphique correspond à la version {{version1Name}}. Les critères actuellement séléctionnés pour cette version sont : {{impactsV1}}.<br /> - Le second graphique correspond à la version {{version2Name}}. Les critères actuellement séléctionnés pour cette version sont : {{impactsV2}}. <br /> Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères sélectionnés lors du calcul. ",
+            "scale": "L'ensemble des graphiques de l'outil sont exprimés en « habitant équivalent ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://saas-g4it.com/documentation/2-functional-documentation/global_concepts/uc2_people_equivalent/index.html' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br /> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact.",
+            "text-description": "Voici le tableau de répartition de l'impact des versions présentées par critères :"
+        }
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",

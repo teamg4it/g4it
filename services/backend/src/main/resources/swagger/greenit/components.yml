@@ -45,6 +45,13 @@ components:
         type: string
       required: true
       description: The digital service uid.
+    digitalServiceVersionUidPathParam:
+      in: path
+      name: digitalServiceVersionUid
+      schema:
+        type: string
+      required: true
+      description: The digital service version uid.
     noteUidPathParam:
       in: path
       name: noteId
@@ -624,6 +631,8 @@ components:
       properties:
         uid:
           type: string
+        activeDsvUid:
+          type: string
         name:
           type: string
         creationDate:
@@ -656,6 +665,48 @@ components:
           type: boolean
           description: The flag to enable data consistency view
 
+    DigitalServiceVersionRest:
+      description: Information of a Digital Service Version
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+        lastCalculationDate:
+          type: string
+          format: date-time
+        criteria:
+          type: array
+          items:
+            type: string
+        note:
+          type: object
+          $ref: "#/components/schemas/NoteRest"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskRest"
+        isAi:
+          type: boolean
+          description: Indique si le service digital est un service d’IA
+        isShared:
+          type: boolean
+          description: Indique si le service digital est un service d’Shared
+        enableDataInconsistency:
+          type: boolean
+          description: The flag to enable data consistency view
+        versionType:
+          type: string
+        description:
+          type: string
+
     DigitalServiceShareRest:
       description: Information of shared Digital Service
       type: object
@@ -665,6 +716,17 @@ components:
         expiryDate:
           type: string
           format: date-time
+
+    InDigitalServiceVersionRest:
+      description: Information of a Digital Service Version
+      type: object
+      properties:
+        dsName:
+          type: string
+        versionName:
+          type: string
+        isAi:
+          type: boolean
 
     DigitalServiceServerImpactRest:
       type: object
@@ -1202,3 +1264,19 @@ components:
       type: object
       additionalProperties:
         type: string
+
+    DigitalServiceVersionsListRest:
+      description: List of Digital Service Versions
+      type: object
+      properties:
+        digitalServiceUid:
+          type: string
+        digitalServiceVersionUid:
+          type: string
+        versionName:
+          type: string
+        versionType:
+          type: string
+        lastCalculationDate:
+          type: string
+          format: date-time

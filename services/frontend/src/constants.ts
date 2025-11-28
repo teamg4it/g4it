@@ -67,6 +67,7 @@ export abstract class Constants {
     static readonly ENDPOINTS = {
         inventories: "inventories",
         digitalServices: "digital-services",
+        digitalServicesVersions: "digital-service-version",
         referential: "referential",
         users: "users",
         organizations: "administrator/organizations",
@@ -81,7 +82,7 @@ export abstract class Constants {
         downloadReject: "download-reject",
         task: "task",
         sharedDs: "shared",
-        ds: "ds",
+        dsv: "dsv",
     };
 
     static readonly ERRORS: any = {

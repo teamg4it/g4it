@@ -129,7 +129,7 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
 
             //get the digital service uid with the activatedRoute
             const uid = this.route.pathFromRoot
-                .map((r) => r.snapshot.paramMap.get("digitalServiceId"))
+                .map((r) => r.snapshot.paramMap.get("digitalServiceVersionId"))
                 .find((v) => v !== null);
             // default value for the form
             const defaultData = {
@@ -150,10 +150,14 @@ export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestr
                     const selectedType = this.typesOptions.find(
                         (t) => t.value === data.infrastructureType.value,
                     );
+
                     this.infrastructureForm.patchValue({
                         ...data,
                         infrastructureType: selectedType ?? defaultInfrastructureType,
                     });
+                    this.aiFormsStore.setInfrastructureFormData(
+                        this.infrastructureForm.getRawValue(),
+                    );
                     this.handlingValueChangesForCalculateButton();
                 } else {
                     //set the value

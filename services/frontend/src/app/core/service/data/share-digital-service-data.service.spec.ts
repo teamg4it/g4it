@@ -20,7 +20,7 @@ describe("ShareDigitalServiceDataService", () => {
     let httpMock: HttpTestingController;
 
     const sharedEndpoint = Constants.ENDPOINTS.sharedDs;
-    const dsSegment = Constants.ENDPOINTS.ds;
+    const dsSegment = Constants.ENDPOINTS.dsv;
     const token = "share-token-123";
     const uid = "ds-999";
 

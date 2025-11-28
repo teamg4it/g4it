@@ -9,7 +9,8 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.rules;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
@@ -55,7 +56,7 @@ class LoadInputFilesServiceTest {
     @Mock
     private InventoryRepository inventoryRepository;
     @Mock
-    private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -119,7 +120,7 @@ class LoadInputFilesServiceTest {
         List<MultipartFile> physicalEquipments = List.of(mock(MultipartFile.class));
         List<MultipartFile> virtualEquipments = List.of(mock(MultipartFile.class));
 
-        DigitalService digitalService = DigitalService.builder()
+        DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .uid(digitalServiceUid)
                 .build();
 
@@ -131,9 +132,9 @@ class LoadInputFilesServiceTest {
         UserBO userBO = UserBO.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
         User user = User.builder().email("testuser@soprasteria.com").domain("soprasteria.com").id(1L).firstName("fname").build();
 
-        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalServiceVersion));
         when(workspaceService.getWorkspaceById(workspaceId)).thenReturn(workspace);
-        when(taskRepository.findByDigitalServiceAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
+        when(taskRepository.findByDigitalServiceVersionAndStatusAndType(any(), any(), any())).thenReturn(Collections.emptyList());
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(userBO.getId())).thenReturn(Optional.ofNullable(user));
 
@@ -187,19 +188,23 @@ class LoadInputFilesServiceTest {
 
     @Test
     void restartDigitalService_LoadingFiles_restartsTasks_whenTasksAreStale() {
+
+        DigitalService digitalService = DigitalService.builder()
+                .uid("dsuid")
+                .workspace(Workspace.builder()
+                        .id(1L)
+                        .name("Test Workspace")
+                        .organization(Organization.builder().name("testOrganization").build())
+                        .build())
+                .build();
+        DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder().uid("uid")
+                .digitalService(digitalService).build();
         Task staleTask = Task.builder()
                 .id(1L)
                 .lastUpdateDate(LocalDateTime.now().minusMinutes(20))
                 .status(TaskStatus.IN_PROGRESS.toString())
                 .type(TaskType.LOADING.toString())
-                .digitalService(DigitalService.builder()
-                        .uid("uid")
-                        .workspace(Workspace.builder()
-                                .id(1L)
-                                .name("Test Workspace")
-                                .organization(Organization.builder().name("testOrganization").build())
-                                .build())
-                        .build())
+                .digitalServiceVersion(digitalServiceVersion)
                 .build();
 
         when(taskRepository.findByStatusAndType(TaskStatus.IN_PROGRESS.toString(), TaskType.LOADING.toString()))

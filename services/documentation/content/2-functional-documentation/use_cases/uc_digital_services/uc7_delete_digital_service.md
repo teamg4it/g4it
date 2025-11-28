@@ -43,9 +43,6 @@ Decision2 -->|Yes|Step4[Digital Service deleted] -->Step1
 -   'Delete' button on the right of each DS in DS list view :
     ![uc5_deletelistview.png](../images/uc5_deletelistview.png)
 
--   'Delete' button on the top right of DS view :
-    ![uc5_deletedsview.png](../images/uc5_deletedsview.png)
-
 -   On click of the delete button, a warning and confirmation message appears :
     ![uc5_confirmationmessage.png](../images/uc5_confirmationmessage.png)
 

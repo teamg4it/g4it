@@ -75,7 +75,7 @@ public class LoadDatacenterService {
         inDatacenterRepository.deleteByInventoryIdAndNameIn(context.getInventoryId(), datacenterNames);
         }
        else
-           inDatacenterRepository.deleteByDigitalServiceUidAndNameIn(context.getDigitalServiceUid(), datacenterNames);
+           inDatacenterRepository.deleteByDigitalServiceVersionUidAndNameIn(context.getDigitalServiceVersionUid(), datacenterNames);
 
         // Load data into database
         inDatacenterRepository.saveAll(datacentersToSave);

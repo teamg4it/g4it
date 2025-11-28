@@ -8,6 +8,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
@@ -24,6 +25,7 @@ import { DigitalServicesFootprintHeaderComponent } from "./digital-services-foot
 describe("DigitalServicesFootprintHeaderComponent", () => {
     let component: DigitalServicesFootprintHeaderComponent;
     let fixture: ComponentFixture<DigitalServicesFootprintHeaderComponent>;
+    let router: Router;
 
     //mock data service
     const digitalServiceDataMock = {
@@ -37,9 +39,11 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             servers: [],
             enableDataInconsistency: false,
             networks: [],
+            activeDsvUid: "1",
         } as DigitalService),
         copyUrl: () => of({ url: "test", expiryDate: new Date() }),
         get: () => of({} as DigitalService),
+        delete: () => of({}),
     };
 
     beforeEach(async () => {
@@ -65,10 +69,34 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
                 UserService,
                 MessageService,
                 ConfirmationService,
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        snapshot: {
+                            paramMap: convertToParamMap({
+                                digitalServiceVersionId: "12345",
+                            }),
+                        },
+                        paramMap: of(
+                            convertToParamMap({
+                                digitalServiceVersionId: "12345",
+                            }),
+                        ),
+                    },
+                },
             ],
         });
         fixture = TestBed.createComponent(DigitalServicesFootprintHeaderComponent);
         component = fixture.componentInstance;
+
+        router = TestBed.inject(Router);
+
+        // Mock router.url
+        Object.defineProperty(router, "url", {
+            writable: true,
+            value: "/organizations/test-org/workspaces/test-workspace/digital-service-version/12345/footprint/resources",
+        });
+
         fixture.detectChanges();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -77,7 +105,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
     it("should emit event on digital service name change", () => {
         const newDigitalServiceName = "New name";
         spyOn(component.digitalServiceChange, "emit");
-        component.onNameUpdate(newDigitalServiceName);
+        component.onNameUpdate(newDigitalServiceName, true);
         fixture.detectChanges();
         const emittedObject = { name: newDigitalServiceName };
         expect(component.digitalServiceChange.emit).toHaveBeenCalledWith(
@@ -100,6 +128,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             servers: [],
             networks: [],
             enableDataInconsistency: false,
+            activeDsvUid: "1",
         } as DigitalService;
 
         // Patch the observable to emit a new value
@@ -134,5 +163,34 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         expect(component.displayLinkCreatePopup).toBeFalse();
         component.shareDs();
         expect(component.displayLinkCreatePopup).toBeTrue();
+    });
+
+    it("should set digitalServiceVersionUid from route paramMap", () => {
+        component.ngOnInit();
+        expect(component.digitalServiceVersionUid).toBe("12345");
+    });
+
+    it("should navigate to digital-services page when changePageToDigitalServices is called", () => {
+        Object.defineProperty(router, "url", {
+            writable: true,
+            value: "/organizations/test-org/workspaces/test-workspace/digital-service-version/12345/footprint/resources",
+        });
+
+        const result = component.changePageToDigitalServices();
+        expect(result).toBe(
+            "/organizations/test-org/workspaces/test-workspace/digital-services",
+        );
+    });
+
+    it("should navigate to eco-mind-ai page when changePageToDigitalServices is called for AI service", () => {
+        Object.defineProperty(router, "url", {
+            writable: true,
+            value: "/organizations/test-org/workspaces/test-workspace/eco-mind-ai/12345/footprint/resources",
+        });
+
+        const result = component.changePageToDigitalServices();
+        expect(result).toBe(
+            "/organizations/test-org/workspaces/test-workspace/eco-mind-ai",
+        );
     });
 });

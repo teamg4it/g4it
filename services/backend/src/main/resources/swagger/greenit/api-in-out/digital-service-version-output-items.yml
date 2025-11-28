@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Swagger GreenIT - Open API 3.0 - Digital Service Indicators
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: 1.0.0
+
+tags:
+  - name: digital-service-version-outputs
+    description: Endpoint for digital service version outputs
+
+paths:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/outputs/physical-equipments:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+    get:
+      tags:
+        - digital-service-version-outputs
+      summary: Get physical equipments from one digital service version
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
+      operationId: getDigitalServiceVersionOutputsPhysicalEquipmentsRest
+      responses:
+        '200':
+          description: return digital service version output physical equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OutPhysicalEquipmentRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/outputs/virtual-equipments:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+    get:
+      tags:
+        - digital-service-version-outputs
+      summary: Get virtual equipments from one digital service version
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
+      operationId: getDigitalServiceVersionOutputsVirtualEquipmentsRest
+      responses:
+        '200':
+          description: return digital service version output virtual equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OutVirtualEquipmentRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/outputs/applications:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+    get:
+      tags:
+        - digital-service-version-outputs
+      summary: Get applications from one digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      operationId: getDigitalServiceVersionOutputsApplicationsRest
+      responses:
+        '200':
+          description: return digital service version output applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OutApplicationRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/compare-versions:
+    parameters:
+      - $ref: "#/components/parameters/organizationPathParam"
+      - $ref: "#/components/parameters/workspacePathParam"
+      - name: digitalServiceVersionUid1
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The first digital service version UID
+      - name: digitalServiceVersionUid2
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The second digital service version UID
+    get:
+      tags:
+        - digital-service-version-outputs
+      summary: Compare two digital service versions outputs
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
+      operationId: getDigitalServiceVersionComparison
+      responses:
+        "200":
+          description: Return comparison data of two digital service versions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DigitalServiceVersionComparison"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"

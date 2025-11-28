@@ -37,9 +37,18 @@ export class DigitalServicesItemComponent implements OnInit {
     }
 
     goToDigitalServiceFootprint(uid: string) {
-        this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
-            relativeTo: this.route,
-        });
+        if (this.isAi) {
+            this.router.navigate([`${uid}/footprint/${this.firstFootprintTab}`], {
+                relativeTo: this.route,
+            });
+        } else {
+            this.router.navigate(
+                [`../digital-service-version/${uid}/footprint/${this.firstFootprintTab}`],
+                {
+                    relativeTo: this.route,
+                },
+            );
+        }
     }
 
     openNote() {

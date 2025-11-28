@@ -31,19 +31,46 @@ const routes: Routes = [
             },
 
             {
-                path: "eco-mind-ai/:digitalServiceId/footprint",
+                path: "eco-mind-ai/:digitalServiceVersionId/footprint",
                 loadChildren: () =>
                     import(
                         "./digital-services-footprint/digital-services-footprint.module"
                     ).then((modules) => modules.DigitalServicesFootprintModule),
             },
-
             {
-                path: "digital-services/:digitalServiceId/footprint",
+                path: "digital-service-version/:digitalServiceVersionId/footprint",
                 loadChildren: () =>
                     import(
                         "./digital-services-footprint/digital-services-footprint.module"
                     ).then((modules) => modules.DigitalServicesFootprintModule),
+            },
+            {
+                path: "eco-mind-ai/:digitalServiceVersionId/manage-versions",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-manage-versions/digital-services-manage-versions.module"
+                    ).then((modules) => modules.DigitalServicesManageVersionsModule),
+            },
+            {
+                path: "digital-service-version/:digitalServiceVersionId/manage-versions",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-manage-versions/digital-services-manage-versions.module"
+                    ).then((modules) => modules.DigitalServicesManageVersionsModule),
+            },
+            {
+                path: "eco-mind-ai/:digitalServiceVersionId/compare-versions",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-compare-versions/digital-services-compare-versions.module"
+                    ).then((modules) => modules.DigitalServicesCompareVersionsModule),
+            },
+            {
+                path: "digital-service-version/:digitalServiceVersionId/compare-versions",
+                loadChildren: () =>
+                    import(
+                        "./digital-services-compare-versions/digital-services-compare-versions.module"
+                    ).then((modules) => modules.DigitalServicesCompareVersionsModule),
             },
             {
                 path: "inventories",

@@ -32,6 +32,7 @@ export class DigitalServicesComponent implements OnInit {
     digitalServices: DigitalService[] = [];
     selectedDigitalService: DigitalService = {} as DigitalService;
     sidebarVisible = false;
+    newDsSidebarVisible = false;
 
     allDigitalServices: DigitalService[] = [];
     paginatedDigitalServices: DigitalService[] = [];
@@ -127,17 +128,25 @@ export class DigitalServicesComponent implements OnInit {
         this.updatePaginatedItems();
     }
 
-    async createNewDigitalService() {
+    async createNewDigitalServices(event: { dsName: string; versionName: string }) {
         if (
             this.isEcoMindAi &&
             this.isAllowedEcoMindAiService &&
             this.isEcoMindEnabledForCurrentOrganization &&
             this.isEcoMindModuleEnabled
         ) {
-            const { uid } = await lastValueFrom(this.digitalServicesData.create(true));
+            const req = {
+                ...event,
+                isAi: true,
+            };
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
             this.goToDigitalServiceFootprint(uid);
         } else if (!this.isEcoMindAi && this.isAllowedDigitalService) {
-            const { uid } = await lastValueFrom(this.digitalServicesData.create(false));
+            const req = {
+                ...event,
+                isAi: false,
+            };
+            const { uid } = await lastValueFrom(this.digitalServicesData.create(req));
             this.goToDigitalServiceFootprint(uid);
         }
     }
@@ -157,13 +166,16 @@ export class DigitalServicesComponent implements OnInit {
 
     goToDigitalServiceFootprint(uid: string) {
         if (this.isEcoMindAi) {
-            this.router.navigate([`${uid}/footprint/ecomind-parameters`], {
+            this.router.navigate([`../eco-mind-ai/${uid}/footprint/ecomind-parameters`], {
                 relativeTo: this.route,
             });
         } else {
-            this.router.navigate([`${uid}/footprint/resources`], {
-                relativeTo: this.route,
-            });
+            this.router.navigate(
+                [`../digital-service-version/${uid}/footprint/resources`],
+                {
+                    relativeTo: this.route,
+                },
+            );
         }
     }
 
@@ -208,17 +220,19 @@ export class DigitalServicesComponent implements OnInit {
 
     noteDelete() {
         // Get digital services data.
-        this.digitalServicesData.get(this.selectedDigitalService.uid).subscribe((res) => {
-            // update note
-            res.note = undefined;
-            this.digitalServicesData.update(res).subscribe(() => {
-                this.messageService.add({
-                    severity: "success",
-                    summary: this.translate.instant("common.note.delete"),
-                    sticky: false,
+        this.digitalServicesData
+            .get(this.selectedDigitalService.activeDsvUid)
+            .subscribe((res) => {
+                // update note
+                res.note = undefined;
+                this.digitalServicesData.update(res).subscribe(() => {
+                    this.messageService.add({
+                        severity: "success",
+                        summary: this.translate.instant("common.note.delete"),
+                        sticky: false,
+                    });
                 });
             });
-        });
         this.selectedDigitalService.note = undefined;
     }
 }

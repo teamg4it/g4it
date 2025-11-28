@@ -10,7 +10,10 @@ import { DigitalServiceStoreService } from "../../store/digital-service.store";
     providedIn: "root",
 })
 export class CustomAuthService {
-    private readonly publicPaths = [Constants.ENDPOINTS.sharedDs, Constants.ENDPOINTS.ds];
+    private readonly publicPaths = [
+        Constants.ENDPOINTS.sharedDs,
+        Constants.ENDPOINTS.dsv,
+    ];
 
     constructor(
         private readonly keycloak: KeycloakService,

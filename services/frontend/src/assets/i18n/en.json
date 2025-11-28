@@ -38,6 +38,7 @@
         "min": "must be greater than or equal to 1",
         "peopleeq": "People eq.",
         "peopleeq-min": "people. eq.",
+        "peopleeq-full": "people equivalent",
         "no-data": "No results available",
         "loading": "Loading in progress",
         "choose-file": "Choose a file",
@@ -175,8 +176,8 @@
     },
     "useful-information": {
         "computing-engines": "Computing engines",
-        "g4it-line": "Please consult the detail of the content of that version on the online",
-        "documentation": "documentation",
+        "g4it-line": "Please consult the detail of the content of that version",
+        "documentation": "on the online documentation",
         "link-to-github": "link to github repository"
     },
     "errors": {
@@ -239,7 +240,43 @@
         "back": "Back",
         "hide-menu-buttons": "Hide option for the digital service",
         "show-menu-buttons": "Show option for the digital service",
-        "save-inplace": "Save the digital service name"
+        "save-inplace": "Save the digital service name",
+        "version": {
+            "ds-name": "Digital Service Name",
+            "active-version-name": "Active Version Name",
+            "version-name": "Version Name",
+            "add-ds": "Add a digital service",
+            "ds-text": "Want to build a digital service that’s both useful and responsible? Start by adding your resources and calculating the environmental impact of your project. It’s your chance to design a leaner, more transparent, and planet-friendly solution.",
+            "ds-name-placeholder": "Type the name of your digital service here",
+            "ds-version-name-placeholder": "Type a version name",
+            "ds-version-text": "You will be able to create and edit <strong>many versions</strong> of your Digital Service.<br /> Each version captures a specific state, allowing you to track your progress, test different hypotheses and compare their effects without affecting the active version. Once you’re satisfied with a version, you can make it your active one, the previous active version will be automatically <strong>archived</strong>.",
+            "active-text": "This version will be active",
+            "cancel-creation": "Cancel Creation",
+            "validate-creation": "Validate creation",
+            "required-field": "Required field",
+            "tags": {
+                "active": "Active",
+                "draft": "Draft",
+                "archived": "Archived"
+            },
+            "manage-versions": "Manage Versions",
+            "versions-management": "Versions Management",
+            "status": "Status",
+            "actions": "Actions",
+            "select": "Select",
+            "versions": "Versions",
+            "duplicate-version": "Duplicate Version",
+            "compare-versions": "Compare two versions",
+            "compare-version-tooltip": "Select two versions to compare their results. The versions must have calculated impact criteria.",
+            "compare-versions-title": "Compare the impact of versions",
+            "not-calculated": "Not calculated"
+        },
+        "error.digital-service-already-exists": "Digital Service already exists",
+        "comparison": {
+            "description": "These graphs represent the various environmental impacts attributed to your digital service over one year of operation. <br /> - The first graph corresponds to version {{version1Name}}. The currently selected criteria are: {{impactsV1}}.<br /> - The second graph corresponds to version {{version2Name}}. The currently selected criteria are: {{impactsV2}}. <br /> It takes into account the entire lifecycle of the equipment that enables your service to function (its manufacturing, distribution, use, and end-of-life), for all the criteria selected during the calculation.",
+            "scale": "All the tool's graphs are expressed in \"people Equivalent\". To understand this unit, imagine that an equal allowance is defined for each inhabitant of the planet, corresponding to the planetary boundaries that should not be individually exceeded to ensure the global system's balance. This theoretical allowance is obtained by dividing the maximum amount of negative externalities tolerated by the Earth system (defined in this <a href='https://saas-g4it.com/documentation/2-functional-documentation/global_concepts/uc2_people_equivalent/index.html' target='_blank'>report on consumption and consumer footprint</a>) by the number of inhabitants.<br />This unit allows for comparing the criteria with each other and targeting your eco-design action plan (see <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>definition of eco-design</a>) on what truly matters, avoiding impact transfers.",
+            "text-description": "Here is the table showing the impact distribution of the versions, presented by criteria:"
+        }
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

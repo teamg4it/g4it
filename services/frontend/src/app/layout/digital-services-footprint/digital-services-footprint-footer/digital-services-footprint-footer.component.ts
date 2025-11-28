@@ -11,7 +11,7 @@ import {
     Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -45,6 +45,8 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
     private readonly messageService = inject(MessageService);
     private readonly translate = inject(TranslateService);
     private readonly digitalServicesAiData = inject(DigitalServicesAiDataService);
+    digitalServiceVersionUid =
+        this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
     enableCalcul = computed(() => {
         const digitalService = this.digitalServiceStore.digitalService();
 
@@ -69,13 +71,16 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
         return false;
     });
 
-    constructor() {
+    constructor(private readonly route: ActivatedRoute) {
         effect(() => {
             this.updateEnableCalculation.emit(this.enableCalcul());
         });
     }
 
     ngOnInit() {
+        this.route.paramMap.subscribe((params) => {
+            this.digitalServiceVersionUid = params.get("digitalServiceVersionId") ?? "";
+        });
         this.digitalServicesData.digitalService$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
@@ -100,11 +105,11 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
         }
         this.global.setLoading(true);
         await firstValueFrom(
-            this.digitalServicesData.launchEvaluating(this.digitalService.uid),
+            this.digitalServicesData.launchEvaluating(this.digitalServiceVersionUid),
         );
 
         this.digitalService = await lastValueFrom(
-            this.digitalServicesData.get(this.digitalService.uid),
+            this.digitalServicesData.get(this.digitalServiceVersionUid),
         );
         this.global.setLoading(false);
         this.digitalServiceStore.setEnableCalcul(false);
@@ -113,16 +118,14 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
         if (urlSegments.length > 3) {
             const organization = urlSegments[1];
             const workspace = urlSegments[3];
-            // Ensure digitalServiceId is not undefined or null
-            const digitalServiceId = this.digitalService?.uid;
 
-            if (digitalServiceId) {
+            if (this.digitalServiceVersionUid) {
                 if (this.isEcoMindAi()) {
                     this.router
                         .navigateByUrl("/", { skipLocationChange: true })
                         .then(() => {
                             this.router.navigate([
-                                `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai/${digitalServiceId}/footprint/dashboard`,
+                                `/organizations/${organization}/workspaces/${workspace}/eco-mind-ai/${this.digitalServiceVersionUid}/footprint/dashboard`,
                             ]);
                         });
                 } else {
@@ -130,7 +133,7 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
                         .navigateByUrl("/", { skipLocationChange: true })
                         .then(() => {
                             this.router.navigate([
-                                `/organizations/${organization}/workspaces/${workspace}/digital-services/${digitalServiceId}/footprint/dashboard`,
+                                `/organizations/${organization}/workspaces/${workspace}/digital-service-version/${this.digitalServiceVersionUid}/footprint/dashboard`,
                             ]);
                         });
                 }

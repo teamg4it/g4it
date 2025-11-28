@@ -9,7 +9,8 @@ import {
 } from "../../interfaces/digital-service.interfaces";
 import { MapString } from "../../interfaces/generic.interfaces";
 
-const endpoint = Constants.ENDPOINTS.digitalServices;
+const endpointDs = Constants.ENDPOINTS.digitalServices;
+const endpoint = Constants.ENDPOINTS.digitalServicesVersions;
 
 @Injectable({
     providedIn: "root",
@@ -102,6 +103,6 @@ export class DigitalServicesAiDataService {
     }
 
     getEcomindReferential(): Observable<EcomindType[]> {
-        return this.http.get<EcomindType[]>(`${endpoint}/ecomind-type`);
+        return this.http.get<EcomindType[]>(`${endpointDs}/ecomind-type`);
     }
 }

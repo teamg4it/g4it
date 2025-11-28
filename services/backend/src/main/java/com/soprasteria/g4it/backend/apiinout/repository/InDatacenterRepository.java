@@ -28,19 +28,19 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     /**
      * Find datacenter by the functionally unique fields
      *
-     * @param digitalServiceUid digital service Identifier
-     * @param id                datacenter id
+     * @param digitalServiceVersionUid digital service Identifier
+     * @param id                       datacenter id
      * @return return a datacenter
      */
-    Optional<InDatacenter> findByDigitalServiceUidAndId(String digitalServiceUid, Long id);
+    Optional<InDatacenter> findByDigitalServiceVersionUidAndId(String digitalServiceVersionUid, Long id);
 
     /**
      * Find datacenters of one digital service
      *
-     * @param digitalServiceUid digital service Identifier
+     * @param digitalServiceVersionUid digital service Identifier
      * @return return a list of datacenters
      */
-    List<InDatacenter> findByDigitalServiceUid(String digitalServiceUid);
+    List<InDatacenter> findByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
     /**
      * Find datacenter by the functionally unique fields
@@ -62,9 +62,15 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     @Transactional
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
+
     @Transactional
     @Modifying
-    void deleteByDigitalServiceUidAndNameIn(String digitalServiceUid, Set<String> names);
+    void deleteByDigitalServiceVersionUidAndNameIn(String digitalServiceVersionUid, Set<String> names);
+
+
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
     /**
      * Count distinct datacenter name by inventory id.
@@ -82,4 +88,19 @@ public interface InDatacenterRepository extends JpaRepository<InDatacenter, Long
     @Transactional
     @Modifying
     void deleteByDigitalServiceUid(String digitalServiceUid);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            INSERT INTO in_datacenter (
+                name, inventory_id, digital_service_uid, full_name, location, pue,
+                creation_date, last_update_date, common_filters, digital_service_version_uid
+            )
+            SELECT
+                name, inventory_id, digital_service_uid, full_name, location, pue,
+                NOW(), NOW(), common_filters, :newUid
+            FROM in_datacenter
+            WHERE digital_service_version_uid = :oldUid
+            """, nativeQuery = true)
+    void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
 }

@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.common.task.repository;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.transaction.Transactional;
@@ -34,21 +35,25 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByDigitalServiceAndType(final DigitalService digitalService, final String type);
     List<Task> findByInventoryAndStatusAndType(final Inventory inventory, final String status, final String type);
     List<Task> findByDigitalServiceAndStatusAndType(final DigitalService digitalService, final String status, final String type);
+    List<Task> findByDigitalServiceVersionAndStatusAndType(final DigitalServiceVersion digitalServiceVersion, final String status, final String type);
 
     Optional<Task> findByDigitalService(final DigitalService digitalService);
+
+    List<Task> findByDigitalServiceVersionAndType(final DigitalServiceVersion digitalServiceVersion, final String type);
+    Optional<Task> findByDigitalServiceVersion(final DigitalServiceVersion digitalServiceVersion);
 
     /**
      * Find by digitalService
      *
-     * @param digitalService the digitalService
+     * @param digitalServiceVersion the digitalService
      * @return task linked to digital service
      */
     @Query("""
             SELECT t FROM Task t
-            WHERE t.digitalService = :digitalService AND type = 'EVALUATING_DIGITAL_SERVICE'
+            WHERE t.digitalServiceVersion = :digitalServiceVersion AND type = 'EVALUATING_DIGITAL_SERVICE'
             ORDER BY creationDate DESC LIMIT 1
             """)
-    Optional<Task> findByDigitalServiceAndLastCreationDate(@Param("digitalService") final DigitalService digitalService);
+    Optional<Task> findByDigitalServiceVersionAndLastCreationDate(@Param("digitalServiceVersion") final DigitalServiceVersion digitalServiceVersion);
 
     /**
      * Find by inventory id

@@ -19,10 +19,10 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { firstValueFrom, lastValueFrom } from "rxjs";
+import { firstValueFrom, lastValueFrom, Subscription } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import {
     AiRecommendation,
@@ -76,6 +76,7 @@ export class DigitalServicesFootprintDashboardComponent
     private readonly digitalServicesAiData = inject(DigitalServicesAiDataService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly shareDigitalService = inject(ShareDigitalServiceDataService);
+    private readonly route = inject(ActivatedRoute);
     chartType = signal("radial");
     showInconsitencyBtn = false;
     constants = Constants;
@@ -143,7 +144,7 @@ export class DigitalServicesFootprintDashboardComponent
     });
 
     calculatedCriteriaList: string[] = [];
-
+    sub!: Subscription;
     constructor(
         private readonly digitalServicesDataService: DigitalServicesDataService,
         private readonly digitalServiceBusinessService: DigitalServiceBusinessService,
@@ -194,18 +195,22 @@ export class DigitalServicesFootprintDashboardComponent
                 this.titleService.setTitle(`${translatedTitle} - G4IT`);
             });
 
+        this.sub = this.route.parent!.paramMap.subscribe((params) => {
+            const dsVersionUid = params.get("digitalServiceVersionId") ?? "";
+            this.updateRecomendation(dsVersionUid);
+        });
+    }
+
+    async updateRecomendation(dsVersionUid: string): Promise<void> {
         if (this.digitalService.isAi) {
             try {
                 this.aiRecommendation = await firstValueFrom(
-                    this.digitalServicesAiData.getAiRecommendations(
-                        this.digitalService.uid,
-                    ),
+                    this.digitalServicesAiData.getAiRecommendations(dsVersionUid),
                 );
             } catch (error) {
                 console.error("Error fetching AI recommendations:", error);
             }
         }
-
         const isShared = this.digitalServiceStore.isSharedDS();
         const [_, _1, sharedToken] = this.router.url.split("/");
         const physicalEquipments$ = isShared
@@ -213,15 +218,13 @@ export class DigitalServicesFootprintDashboardComponent
                   this.digitalService.uid,
                   sharedToken,
               )
-            : this.outPhysicalEquipmentsService.get(this.digitalService.uid);
+            : this.outPhysicalEquipmentsService.get(dsVersionUid);
         const virtualEquipments$ = isShared
             ? this.shareDigitalService.getOutSharedVirtualEquipments(
                   this.digitalService.uid,
                   sharedToken,
               )
-            : this.outVirtualEquipmentsService.getByDigitalService(
-                  this.digitalService.uid,
-              );
+            : this.outVirtualEquipmentsService.getByDigitalService(dsVersionUid);
 
         const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
             firstValueFrom(physicalEquipments$),
@@ -600,5 +603,6 @@ export class DigitalServicesFootprintDashboardComponent
         // Clean store data
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+        this.sub?.unsubscribe();
     }
 }

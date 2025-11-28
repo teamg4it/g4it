@@ -34,11 +34,14 @@
                 {{ "ds-description-heading.text-description" | translate }}
             </h4>
             <p [innerHTML]="contentText()?.textDescription"></p>
-            <div class="section-hr"></div>
-            <h4 class="mb-0 font-semibold">
-                {{ "ds-description-heading.analysis" | translate }}
-            </h4>
-            <p [innerHTML]="contentText()?.analysis"></p>
+
+            @if (contentText()?.analysis) {
+                <div class="section-hr"></div>
+                <h4 class="mb-0 font-semibold">
+                    {{ "ds-description-heading.analysis" | translate }}
+                </h4>
+                <p [innerHTML]="contentText()?.analysis"></p>
+            }
 
             @if (ecoMindRecomendation()) {
                 <div class="section-hr"></div>
@@ -46,11 +49,13 @@
                 <p [innerHTML]="ecoMindRecomendation()"></p>
             }
 
-            <div class="section-hr"></div>
-            <h4 class="mb-0 font-semibold">
-                {{ "ds-description-heading.to_go_further" | translate }}
-            </h4>
-            <p [innerHTML]="contentText()?.toGoFurther"></p>
+            @if (contentText()?.toGoFurther) {
+                <div class="section-hr"></div>
+                <h4 class="mb-0 font-semibold">
+                    {{ "ds-description-heading.to_go_further" | translate }}
+                </h4>
+                <p [innerHTML]="contentText()?.toGoFurther"></p>
+            }
         </section>
     }
 </div>

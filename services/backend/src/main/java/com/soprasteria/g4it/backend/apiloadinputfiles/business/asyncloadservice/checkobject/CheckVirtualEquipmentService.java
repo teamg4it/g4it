@@ -48,7 +48,7 @@ public class CheckVirtualEquipmentService {
                 .ifPresent(errors::add);
 
         boolean isCloudService = Objects.equals(InfrastructureType.CLOUD_SERVICES.name(), virtualEquipment.getInfrastructureType());
-        final boolean isDigitalService = context.getDigitalServiceUid() != null;
+        final boolean isDigitalService = context.getDigitalServiceVersionUid() != null;
 
         //  check equipment name is not empty
         ruleVirtualEquipmentService.checkVirtualEquipmentName(context.getLocale(), filename, line,

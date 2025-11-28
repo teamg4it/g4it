@@ -29,11 +29,11 @@ public interface CsvToInMapper {
     /**
      * From Csv import to Rest
      */
-    default InDatacenterRest csvInDatacenterToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceUid) {
+    default InDatacenterRest csvInDatacenterToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
         return InDatacenterRest.builder()
                 .name(read(csvRecord, "nomCourtDatacenter"))
                 .inventoryId(inventoryId)
-                .digitalServiceUid(digitalServiceUid)
+                .digitalServiceVersionUid(digitalServiceVersionUid)
                 .fullName(read(csvRecord, "nomLongDatacenter"))
                 .pue(readDouble(csvRecord, "pue"))
                 .location(read(csvRecord, "localisation"))
@@ -42,12 +42,12 @@ public interface CsvToInMapper {
                 .build();
     }
 
-    default InPhysicalEquipmentRest csvInPhysicalEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceUid) {
+    default InPhysicalEquipmentRest csvInPhysicalEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
 
         return InPhysicalEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementPhysique"))
                 .inventoryId(inventoryId)
-                .digitalServiceUid(digitalServiceUid)
+                .digitalServiceVersionUid(digitalServiceVersionUid)
                 .datacenterName(read(csvRecord, "nomCourtDatacenter"))
                 .location(read(csvRecord, "paysDUtilisation"))
                 .quantity(readDouble(csvRecord, "quantite", 1d))
@@ -67,14 +67,14 @@ public interface CsvToInMapper {
                 .build();
     }
 
-    default InVirtualEquipmentRest csvInVirtualEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceUid) {
+    default InVirtualEquipmentRest csvInVirtualEquipmentToRest(CSVRecord csvRecord, final Long inventoryId, String digitalServiceVersionUid) {
 
         Double workload = readDouble(csvRecord, "chargeMoy");
 
         return InVirtualEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementVirtuel"))
                 .inventoryId(inventoryId)
-                .digitalServiceUid(digitalServiceUid)
+                .digitalServiceVersionUid(digitalServiceVersionUid)
                 .physicalEquipmentName(read(csvRecord, "nomEquipementPhysique"))
                 .quantity(readDouble(csvRecord, "quantite", 1d))
                 .type(read(csvRecord, "typeEqv"))

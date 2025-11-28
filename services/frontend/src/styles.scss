@@ -39,9 +39,7 @@ li {
     padding: 0;
 }
 
-h2,
-h1,
-.h2-title {
+h1 {
     font-size: 40px;
     line-height: 48px;
     font-weight: 300;
@@ -49,8 +47,17 @@ h1,
     margin-bottom: 0;
 }
 
+h2,
+.h2-title {
+    font-size: 32px;
+    line-height: 48px;
+    font-weight: 300;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 h3 {
-    font-size: 18px;
+    font-size: 24px;
     line-height: 22px;
     font-weight: 300;
     margin-left: 10px;
@@ -98,6 +105,9 @@ main {
 }
 
 /* Color & Background-color classes */
+.color-black-seventy {
+    color: var(--tints-black-70);
+}
 .color-tertiary {
     color: var(--tertiary-color);
 }
@@ -1349,4 +1359,26 @@ app-useful-information {
     background-color: #ffffff;
     color: var(--red-color);
     border: 2px solid var(--red-color);
+}
+
+.header-blue-btn {
+    padding: 12px;
+    background-color: #ffffff;
+    color: var(--blue-color);
+    border: 2px solid var(--blue-color);
+}
+
+.manage-version-table {
+    .p-checkbox.p-checkbox-disabled .p-checkbox-box {
+        background-color: #e0e0e0;
+        border-color: #bdbdbd;
+        opacity: 0.75;
+    }
+}
+
+.compare-table {
+    text-align: left;
+    .criteria-padding {
+        padding-left: 10px;
+    }
 }

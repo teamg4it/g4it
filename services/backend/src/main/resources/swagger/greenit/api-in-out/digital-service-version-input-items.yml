@@ -1,32 +1,32 @@
 openapi: 3.0.3
 info:
-  title: Swagger GreenIT - Open API 3.0 - Digital Service Indicators
+  title: Swagger GreenIT - Open API 3.0 - Digital Service Version Indicators
   description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
   version: 1.0.0
 
 tags:
-  - name: digital-service-inputs-datacenter
-    description: Endpoint for digital service inputs - datacenter
-  - name: digital-service-inputs-physical-equipment
-    description: Endpoint for digital service inputs - physical-equipment
-  - name: digital-service-inputs-virtual-equipment
-    description: Endpoint for digital service inputs - virtual-equipment
+  - name: digital-service-version-inputs-datacenter
+    description: Endpoint for digital service version inputs - datacenter
+  - name: digital-service-version-inputs-physical-equipment
+    description: Endpoint for digital service version inputs - physical-equipment
+  - name: digital-service-version-inputs-virtual-equipment
+    description: Endpoint for digital service version inputs - virtual-equipment
 
 paths:
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/datacenters:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
     get:
       tags:
-        - digital-service-inputs-datacenter
-      summary: Get datacenters from one digital service
+        - digital-service-version-inputs-datacenter
+      summary: Get datacenters from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceInputsDatacentersRest
+      operationId: getDigitalServiceVersionInputsDatacentersRest
       responses:
         '200':
-          description: return digital service in datacenters
+          description: return digital service version in datacenters
           content:
             application/json:
               schema:
@@ -39,10 +39,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     post:
       tags:
-        - digital-service-inputs-datacenter
-      summary: Post datacenter from one digital service
+        - digital-service-version-inputs-datacenter
+      summary: Post datacenter from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: postDigitalServiceInputsDatacentersRest
+      operationId: postDigitalServiceVersionInputsDatacentersRest
       requestBody:
         description: datacenter
         required: true
@@ -63,21 +63,21 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters/{id}:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/datacenters/{id}:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/idPathParam'
     get:
       tags:
-        - digital-service-inputs-datacenter
-      summary: Get datacenter from one digital service
+        - digital-service-version-inputs-datacenter
+      summary: Get datacenter from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceInputsDatacenterRest
+      operationId: getDigitalServiceVersionInputsDatacenterRest
       responses:
         '200':
-          description: return digital service in datacenter with id
+          description: return digital service version in datacenter with id
           content:
             application/json:
               schema:
@@ -88,10 +88,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     put:
       tags:
-        - digital-service-inputs-datacenter
-      summary: Update the datacenter from one digital service
+        - digital-service-version-inputs-datacenter
+      summary: Update the datacenter from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: putDigitalServiceInputsDatacenterRest
+      operationId: putDigitalServiceVersionInputsDatacenterRest
       requestBody:
         description: datacenter
         required: true
@@ -101,7 +101,7 @@ paths:
               $ref: "#/components/schemas/InDatacenterRest"
       responses:
         '200':
-          description: return datacenter in digital service in datacenter
+          description: return datacenter in digital service version in datacenter
           content:
             application/json:
               schema:
@@ -115,10 +115,10 @@ paths:
 
     delete:
       tags:
-        - digital-service-inputs-datacenter
-      summary: delete datacenter from one digital service
+        - digital-service-version-inputs-datacenter
+      summary: delete datacenter from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: deleteDigitalServiceInputsDatacenterRest
+      operationId: deleteDigitalServiceVersionInputsDatacenterRest
       responses:
         '204':
           description: No content
@@ -127,20 +127,20 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
     get:
       tags:
-        - digital-service-inputs-physical-equipment
-      summary: Get physical equipments from one digital service
+        - digital-service-version-inputs-physical-equipment
+      summary: Get physical equipments from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceInputsPhysicalEquipmentsRest
+      operationId: getDigitalServiceVersionInputsPhysicalEquipmentsRest
       responses:
         '200':
-          description: return digital service in physical equipments
+          description: return digital service version in physical equipments
           content:
             application/json:
               schema:
@@ -153,10 +153,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     post:
       tags:
-        - digital-service-inputs-physical-equipment
-      summary: Post physical equipment from one digital service
+        - digital-service-version-inputs-physical-equipment
+      summary: Post physical equipment from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: postDigitalServiceInputsPhysicalEquipmentsRest
+      operationId: postDigitalServiceVersionInputsPhysicalEquipmentsRest
       requestBody:
         description: physical equipment
         required: true
@@ -177,21 +177,21 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments/{id}:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments/{id}:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/idPathParam'
     get:
       tags:
-        - digital-service-inputs-physical-equipment
-      summary: Get physical equipment from one digital service
+        - digital-service-version-inputs-physical-equipment
+      summary: Get physical equipment from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceInputsPhysicalEquipmentRest
+      operationId: getDigitalServiceVersionInputsPhysicalEquipmentRest
       responses:
         '200':
-          description: return digital service in physical equipment with id
+          description: return digital service version in physical equipment with id
           content:
             application/json:
               schema:
@@ -202,10 +202,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     put:
       tags:
-        - digital-service-inputs-physical-equipment
-      summary: Update the physical equipment from one digital service
+        - digital-service-version-inputs-physical-equipment
+      summary: Update the physical equipment from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: putDigitalServiceInputsPhysicalEquipmentRest
+      operationId: putDigitalServiceVersionInputsPhysicalEquipmentRest
       requestBody:
         description: physical equipment
         required: true
@@ -215,7 +215,7 @@ paths:
               $ref: "#/components/schemas/InPhysicalEquipmentRest"
       responses:
         '200':
-          description: return digital service in virtual equipment with id
+          description: return digital service version in virtual equipment with id
           content:
             application/json:
               schema:
@@ -229,10 +229,10 @@ paths:
 
     delete:
       tags:
-        - digital-service-inputs-physical-equipment
-      summary: delete physical equipment from one digital service
+        - digital-service-version-inputs-physical-equipment
+      summary: delete physical equipment from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: deleteDigitalServiceInputsPhysicalEquipmentRest
+      operationId: deleteDigitalServiceVersionInputsPhysicalEquipmentRest
       responses:
         '204':
           description: No content
@@ -241,20 +241,20 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/virtual-equipments:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
     get:
       tags:
-        - digital-service-inputs-virtual-equipment
-      summary: Get virtual equipments from one digital service
+        - digital-service-version-inputs-virtual-equipment
+      summary: Get virtual equipments from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceInputsVirtualEquipmentsRest
+      operationId: getDigitalServiceVersionInputsVirtualEquipmentsRest
       responses:
         '200':
-          description: return digital service in virtual equipments
+          description: return digital service version in virtual equipments
           content:
             application/json:
               schema:
@@ -267,12 +267,12 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     put:
       tags:
-        - digital-service-inputs-virtual-equipment
-      summary: Update or delete virtual equipments from one digital service
+        - digital-service-version-inputs-virtual-equipment
+      summary: Update or delete virtual equipments from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
       parameters:
         - $ref: "#/components/parameters/physicalEqpIdQueryParam"
-      operationId: updateDigitalServiceInputsVirtualEquipmentRest
+      operationId: updateDigitalServiceVersionInputsVirtualEquipmentRest
       requestBody:
         description: virtual equipment
         required: true
@@ -284,7 +284,7 @@ paths:
                 $ref: "#/components/schemas/InVirtualEquipmentRest"
       responses:
         '200':
-          description: return digital service in virtual equipment with id
+          description: return digital service version in virtual equipment with id
           content:
             application/json:
               schema:
@@ -299,10 +299,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     post:
       tags:
-        - digital-service-inputs-virtual-equipment
-      summary: Post virtual equipment from one digital service
+        - digital-service-version-inputs-virtual-equipment
+      summary: Post virtual equipment from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: postDigitalServiceInputsVirtualEquipmentsRest
+      operationId: postDigitalServiceVersionInputsVirtualEquipmentsRest
       requestBody:
         description: virtual equipment
         required: true
@@ -323,21 +323,21 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments/{id}:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/virtual-equipments/{id}:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
-      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/idPathParam'
     get:
       tags:
-        - digital-service-inputs-virtual-equipment
+        - digital-service-version-inputs-virtual-equipment
       summary: Get virtual equipment from one digital service
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceInputsVirtualEquipmentRest
+      operationId: getDigitalServiceVersionInputsVirtualEquipmentRest
       responses:
         '200':
-          description: return digital service in virtual equipment with id
+          description: return digital service version in virtual equipment with id
           content:
             application/json:
               schema:
@@ -348,10 +348,10 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     put:
       tags:
-        - digital-service-inputs-virtual-equipment
+        - digital-service-version-inputs-virtual-equipment
       summary: Update the virtual equipment from one digital service
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: putDigitalServiceInputsVirtualEquipmentRest
+      operationId: putDigitalServiceVersionInputsVirtualEquipmentRest
       requestBody:
         description: virtual equipment
         required: true
@@ -361,7 +361,7 @@ paths:
               $ref: "#/components/schemas/InVirtualEquipmentRest"
       responses:
         '200':
-          description: return digital service in virtual equipment with id
+          description: return digital service version in virtual equipment with id
           content:
             application/json:
               schema:
@@ -375,10 +375,10 @@ paths:
 
     delete:
       tags:
-        - digital-service-inputs-virtual-equipment
-      summary: delete virtual equipment from one digital service
+        - digital-service-version-inputs-virtual-equipment
+      summary: delete virtual equipment from one digital service version
       x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: deleteDigitalServiceInputsVirtualEquipmentRest
+      operationId: deleteDigitalServiceVersionInputsVirtualEquipmentRest
       responses:
         '204':
           description: No content

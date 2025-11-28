@@ -9,14 +9,16 @@
 package com.soprasteria.g4it.backend.apiinout.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InDatacenterMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,9 @@ class InDatacenterServiceTest {
 
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
+
+    @Mock
+    private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Mock
     private InventoryRepository inventoryRepository;
@@ -152,12 +157,12 @@ class InDatacenterServiceTest {
     void getByDigitalService_returnsEmptyList_whenNoDatacentersExist() {
         String digitalServiceUid = "nonexistent-uid";
 
-        when(inDatacenterRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(List.of());
+        when(inDatacenterRepository.findByDigitalServiceVersionUid(digitalServiceUid)).thenReturn(List.of());
 
-        List<InDatacenterRest> result = inDatacenterService.getByDigitalService(digitalServiceUid);
+        List<InDatacenterRest> result = inDatacenterService.getByDigitalServiceVersion(digitalServiceUid);
 
         assertEquals(0, result.size());
-        verify(inDatacenterRepository).findByDigitalServiceUid(digitalServiceUid);
+        verify(inDatacenterRepository).findByDigitalServiceVersionUid(digitalServiceUid);
         verify(inDatacenterMapper).toRest(List.of());
     }
 
@@ -165,13 +170,13 @@ class InDatacenterServiceTest {
     @Test
     void getByDigitalServiceAndId() {
         InDatacenter inDatacenter = new InDatacenter();
-        inDatacenter.setDigitalServiceUid("uid2");
+        inDatacenter.setDigitalServiceVersionUid("uid2");
         inDatacenter.setId(1L);
         InDatacenterRest inDatacenterRest = new InDatacenterRest();
 
-        when(inDatacenterRepository.findByDigitalServiceUidAndId(inDatacenter.getDigitalServiceUid(), inDatacenter.getId())).thenReturn(Optional.of(inDatacenter));
+        when(inDatacenterRepository.findByDigitalServiceVersionUidAndId(inDatacenter.getDigitalServiceVersionUid(), inDatacenter.getId())).thenReturn(Optional.of(inDatacenter));
         when(inDatacenterMapper.toRest(Mockito.any(InDatacenter.class))).thenReturn(inDatacenterRest);
-        InDatacenterRest response = inDatacenterService.getByDigitalServiceAndId(inDatacenter.getDigitalServiceUid(), inDatacenter.getId());
+        InDatacenterRest response = inDatacenterService.getByDigitalServiceVersionAndId(inDatacenter.getDigitalServiceVersionUid(), inDatacenter.getId());
         assertNotNull(response);
 
     }
@@ -183,39 +188,39 @@ class InDatacenterServiceTest {
         InDatacenter inDatacenter = new InDatacenter();
         inDatacenter.setDigitalServiceUid("uid2");
 
-        when(inDatacenterRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(inDatacenter));
+        when(inDatacenterRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.of(inDatacenter));
 
         G4itRestException exception1 = assertThrows(G4itRestException.class, () ->
-                inDatacenterService.getByDigitalServiceAndId(digitalServiceUid, id));
+                inDatacenterService.getByDigitalServiceVersionAndId(digitalServiceUid, id));
 
         assertEquals("409", exception1.getCode());
-        verify(inDatacenterRepository).findByDigitalServiceUidAndId(digitalServiceUid, id);
+        verify(inDatacenterRepository).findByDigitalServiceVersionUidAndId(digitalServiceUid, id);
 
-        when(inDatacenterRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
+        when(inDatacenterRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id)).thenReturn(Optional.empty());
 
         G4itRestException exception2 = assertThrows(G4itRestException.class, () ->
-                inDatacenterService.getByDigitalServiceAndId(digitalServiceUid, id));
+                inDatacenterService.getByDigitalServiceVersionAndId(digitalServiceUid, id));
 
         assertEquals("404", exception2.getCode());
     }
 
     @Test
     void createInDatacenterDigitalService() {
-        var organization = Workspace.builder()
-                .name("DEMO")
-                .organization(Organization.builder().name("SUBSCRIBER").build())
-                .build();
-        var digitalService = DigitalService.builder()
-                .name("DS_Name")
+        
+        DigitalService digitalService = new DigitalService();
+        digitalService.setUid("uid1");
+        var digitalServiceVersion = DigitalServiceVersion.builder()
+                .description("DS_Name")
                 .uid("dummy_id")
-                .workspace(organization)
+                .digitalService(digitalService)
                 .build();
+
         InDatacenterRest inDatacenterRest = new InDatacenterRest();
         InDatacenter inDatacenter = InDatacenter.builder().name("datacenter_name").build();
-        when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
+        when(digitalServiceVersionRepository.findById(digitalServiceVersion.getUid())).thenReturn(Optional.of(digitalServiceVersion));
         when(inDatacenterMapper.toEntity(inDatacenterRest)).thenReturn(inDatacenter);
         when(inDatacenterMapper.toRest(Mockito.any(InDatacenter.class))).thenReturn(inDatacenterRest);
-        InDatacenterRest response = inDatacenterService.createInDatacenterDigitalService(digitalService.getUid(), inDatacenterRest);
+        InDatacenterRest response = inDatacenterService.createInDatacenterDigitalServiceVersion(digitalServiceVersion.getUid(), inDatacenterRest);
         assertNotNull(response);
 
     }
@@ -226,13 +231,13 @@ class InDatacenterServiceTest {
         String digitalServiceUid = "nonexistent-uid";
         InDatacenterRest inDatacenterRest = new InDatacenterRest();
 
-        when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.empty());
+        when(digitalServiceVersionRepository.findById(digitalServiceUid)).thenReturn(Optional.empty());
 
         G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                inDatacenterService.createInDatacenterDigitalService(digitalServiceUid, inDatacenterRest));
+                inDatacenterService.createInDatacenterDigitalServiceVersion(digitalServiceUid, inDatacenterRest));
 
         assertEquals("404", exception.getCode());
-        verify(digitalServiceRepository).findById(digitalServiceUid);
+        verify(digitalServiceVersionRepository).findById(digitalServiceUid);
     }
 
     @Test
@@ -240,7 +245,7 @@ class InDatacenterServiceTest {
         InDatacenterRest inDatacenterUpdateRest = new InDatacenterRest();
         InDatacenter inDatacenter = InDatacenter.builder().name("datacenter_name").id(1L).build();
 
-        when(inDatacenterRepository.findByDigitalServiceUidAndId(inDatacenter.getDigitalServiceUid(), inDatacenter.getId())).thenReturn(Optional.of(inDatacenter));
+        when(inDatacenterRepository.findByDigitalServiceVersionUidAndId(inDatacenter.getDigitalServiceUid(), inDatacenter.getId())).thenReturn(Optional.of(inDatacenter));
         when(inDatacenterMapper.toEntity(inDatacenterUpdateRest)).thenReturn(inDatacenter);
         when(inDatacenterMapper.toRest(Mockito.any(InDatacenter.class))).thenReturn(inDatacenterUpdateRest);
 

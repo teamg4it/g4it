@@ -131,15 +131,15 @@ public class CheckConstraintService {
      * @return Map of filename, Map of line number, List of LineError : filename -> [ line number -> LineError ]
      * The coherence LineErrors of the filename line
      */
-    public Map<String, Map<Integer, List<LineError>>> checkCoherence(Long taskId, Long inventoryId, String digitalServiceUid, Map<String, Map<Integer, List<LineError>>> unicityMap) {
+    public Map<String, Map<Integer, List<LineError>>> checkCoherence(Long taskId, Long inventoryId, String digitalServiceVersionUid, Map<String, Map<Integer, List<LineError>>> unicityMap) {
         Map<String, Map<Integer, List<LineError>>> coherenceMap = new HashMap<>();
 
         // Check physical equipment references to datacenter for digital service and inventory
 
-        checkPhysicalEquipmentCoherence(taskId, digitalServiceUid, unicityMap, coherenceMap, inventoryId);
+        checkPhysicalEquipmentCoherence(taskId, digitalServiceVersionUid, unicityMap, coherenceMap, inventoryId);
 
         // Check virtual equipment references to physical equipment
-        checkVirtualEquipmentCoherence(taskId, inventoryId, digitalServiceUid, unicityMap, coherenceMap);
+        checkVirtualEquipmentCoherence(taskId, inventoryId, digitalServiceVersionUid, unicityMap, coherenceMap);
 
         // Check application references to virtual equipment
         checkApplicationCoherence(taskId, inventoryId, coherenceMap, unicityMap);
@@ -152,7 +152,7 @@ public class CheckConstraintService {
      *
      * @param taskId the task id
      */
-    private void checkPhysicalEquipmentCoherence(Long taskId, String digitalServiceUid,
+    private void checkPhysicalEquipmentCoherence(Long taskId, String digitalServiceVersionUid,
                                                  Map<String, Map<Integer, List<LineError>>> unicityMap,
                                                  Map<String, Map<Integer, List<LineError>>> coherenceMap, Long inventoryId) {
 
@@ -174,13 +174,13 @@ public class CheckConstraintService {
         List<CoherenceParentDTO> incoherentPhysicalEquipement = new ArrayList<>();
         boolean noErrors = errorenousDatacenter.isEmpty();
 
-        if (digitalServiceUid != null) {
+        if (digitalServiceVersionUid != null) {
             if (noErrors) {
                 incoherentPhysicalEquipement = checkPhysicalEqpRepository
-                        .findIncoherentPhysicalEquipments(taskId, digitalServiceUid);
+                        .findIncoherentPhysicalEquipments(taskId, digitalServiceVersionUid);
             } else {
                 incoherentPhysicalEquipement = checkPhysicalEqpRepository
-                        .findIncoherentPhysicalEquipments(taskId, digitalServiceUid, errorenousDatacenter);
+                        .findIncoherentPhysicalEquipments(taskId, digitalServiceVersionUid, errorenousDatacenter);
             }
         } else {
             if (noErrors) {
@@ -211,7 +211,7 @@ public class CheckConstraintService {
      *
      * @param taskId the task id
      */
-    private void checkVirtualEquipmentCoherence(Long taskId, Long inventoryId, String digitalServiceUid,
+    private void checkVirtualEquipmentCoherence(Long taskId, Long inventoryId, String digitalServiceVersionUid,
                                                 Map<String, Map<Integer, List<LineError>>> unicityMap,
                                                 Map<String, Map<Integer, List<LineError>>> coherenceMap) {
 
@@ -232,9 +232,9 @@ public class CheckConstraintService {
         List<CoherenceParentDTO> incoherentVirtualEquipement = new ArrayList<>();
 
         if (errorenousPhysicalEquipement.isEmpty()) {
-            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceUid);
+            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceVersionUid);
         } else {
-            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceUid, errorenousPhysicalEquipement);
+            incoherentVirtualEquipement = checkVirtualEqpRepository.findIncoherentVirtualEquipments(taskId, inventoryId, digitalServiceVersionUid, errorenousPhysicalEquipement);
         }
 
 

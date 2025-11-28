@@ -62,13 +62,15 @@ export class DigitalServicesFootprintComponent
     ) {}
 
     ngOnInit(): void {
-        this.asyncInit();
+        this.route.paramMap.subscribe((params) => {
+            const dsvUid = params.get("digitalServiceVersionId") ?? "";
+            this.asyncInit(dsvUid);
+        });
     }
-    private async asyncInit() {
+    private async asyncInit(uid: string) {
         this.setMobileView();
         this.global.setLoading(true);
 
-        const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
         const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
         // If the digital service is not found, 404 is catched by the interceptor.
         // Therefore we can continue without those verifications.
@@ -230,8 +232,12 @@ export class DigitalServicesFootprintComponent
             this.digitalServicesData.update(this.digitalService),
         );
 
-        this.digitalServiceStore.initInPhysicalEquipments(this.digitalService.uid);
-        this.digitalServiceStore.initInVirtualEquipments(this.digitalService.uid);
+        this.digitalServiceStore.initInPhysicalEquipments(
+            this.digitalService.activeDsvUid,
+        );
+        this.digitalServiceStore.initInVirtualEquipments(
+            this.digitalService.activeDsvUid,
+        );
         this.updateTabItems();
     }
 }

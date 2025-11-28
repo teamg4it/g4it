@@ -64,9 +64,12 @@ describe("DigitalServicesItemComponent", () => {
 
     it("should navigate to footprint page", () => {
         component.goToDigitalServiceFootprint("abc123");
-        expect(routerSpy.navigate).toHaveBeenCalledWith(["abc123/footprint/resources"], {
-            relativeTo: TestBed.inject(ActivatedRoute),
-        });
+        expect(routerSpy.navigate).toHaveBeenCalledWith(
+            ["../digital-service-version/abc123/footprint/resources"],
+            {
+                relativeTo: TestBed.inject(ActivatedRoute),
+            },
+        );
     });
 
     it("should emit noteOpened when openNote is called", () => {

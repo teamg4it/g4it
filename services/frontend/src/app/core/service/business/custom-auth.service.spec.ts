@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing";
-import { Router, NavigationEnd } from "@angular/router";
-import { Subject } from "rxjs";
-import { CustomAuthService } from "./custom-auth.service";
+import { NavigationEnd, Router } from "@angular/router";
 import { KeycloakService } from "keycloak-angular";
-import { DigitalServiceStoreService } from "../../store/digital-service.store";
+import { Subject } from "rxjs";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+import { DigitalServiceStoreService } from "../../store/digital-service.store";
+import { CustomAuthService } from "./custom-auth.service";
 
 // Simple mock store
 const mockStore = {
@@ -77,10 +77,12 @@ describe("CustomAuthService", () => {
         setPath("/protected/area");
         await service.init();
         expect(mockStore.setIsSharedDS).toHaveBeenCalledWith(false);
-        expect(mockKeycloak.init).toHaveBeenCalledWith(jasmine.objectContaining({
-            config: jasmine.any(Object),
-            initOptions: jasmine.objectContaining({ onLoad: "check-sso" }),
-        }));
+        expect(mockKeycloak.init).toHaveBeenCalledWith(
+            jasmine.objectContaining({
+                config: jasmine.any(Object),
+                initOptions: jasmine.objectContaining({ onLoad: "check-sso" }),
+            }),
+        );
     });
 
     it("setupRouteGuard should call init when navigating to protected route and not logged in", async () => {
@@ -109,12 +111,16 @@ describe("CustomAuthService", () => {
     });
 
     it("setupRouteGuard should NOT call init on public route navigation", async () => {
-        setPath(`/${Constants.ENDPOINTS.ds}/xyz`);
+        setPath(`/${Constants.ENDPOINTS.dsv}/xyz`);
         mockKeycloak.isLoggedIn.and.returnValue(false);
         service.setupRouteGuard();
 
         routerEvents$.next(
-            new NavigationEnd(1, `/${Constants.ENDPOINTS.ds}/xyz`, `/${Constants.ENDPOINTS.ds}/xyz`),
+            new NavigationEnd(
+                1,
+                `/${Constants.ENDPOINTS.dsv}/xyz`,
+                `/${Constants.ENDPOINTS.dsv}/xyz`,
+            ),
         );
         await Promise.resolve();
 

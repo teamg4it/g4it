@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: update-digital-service-version-uids
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: false
+            sql: |
+              -- in_application
+              UPDATE in_application a
+              SET digital_service_version_uid = dsv.uid
+              FROM digital_service_version dsv
+              WHERE a.digital_service_uid = dsv.item_id
+                AND a.digital_service_version_uid IS NULL;
+
+              -- in_datacenter
+              UPDATE in_datacenter d
+              SET digital_service_version_uid = dsv.uid
+              FROM digital_service_version dsv
+              WHERE d.digital_service_uid = dsv.item_id
+                AND d.digital_service_version_uid IS NULL;
+
+              -- in_physical_equipment
+              UPDATE in_physical_equipment pe
+              SET digital_service_version_uid = dsv.uid
+              FROM digital_service_version dsv
+              WHERE pe.digital_service_uid = dsv.item_id
+                AND pe.digital_service_version_uid IS NULL;
+
+              -- in_virtual_equipment
+              UPDATE in_virtual_equipment ve
+              SET digital_service_version_uid = dsv.uid
+              FROM digital_service_version dsv
+              WHERE ve.digital_service_uid = dsv.item_id
+                AND ve.digital_service_version_uid IS NULL;
+
+              -- in_ai_parameters
+              UPDATE in_ai_parameters ap
+              SET digital_service_version_uid = dsv.uid
+              FROM digital_service_version dsv
+              WHERE ap.digital_service_uid = dsv.item_id
+                AND ap.digital_service_version_uid IS NULL;
+
+              -- in_ai_infrastructure
+              UPDATE in_ai_infrastructure ai
+              SET digital_service_version_uid = dsv.uid
+              FROM digital_service_version dsv
+              WHERE ai.digital_service_uid = dsv.item_id
+                AND ai.digital_service_version_uid IS NULL;
+
+              -- digital_service_shared_link
+              UPDATE digital_service_shared_link sl
+              SET digital_service_version_uid = dsv.uid
+              FROM digital_service_version dsv
+              WHERE sl.digital_service_uid = dsv.item_id
+                AND sl.digital_service_version_uid IS NULL;
+
+  - changeSet:
+      id: update-task-digital-service-version-uid
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            splitStatements: true
+            stripComments: false
+            sql: |
+              -- Update task.digital_service_version_uid based on conditions
+              UPDATE task t
+              SET digital_service_version_uid = (
+                SELECT dsv.uid
+                FROM digital_service_version dsv
+                WHERE dsv.item_id = t.digital_service_uid
+              )
+              WHERE t.digital_service_uid IS NOT NULL;

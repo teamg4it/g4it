@@ -36,7 +36,7 @@ public interface InputToCsvRecord {
 
     default List<String> toCsv(InAiParameter inAiParameter) {
         return List.of(
-                inAiParameter.getDigitalServiceUid(),
+                inAiParameter.getDigitalServiceVersionUid(),
                 inAiParameter.getModelName(),
                 inAiParameter.getNbParameters(),
                 inAiParameter.getFramework(),
@@ -52,7 +52,7 @@ public interface InputToCsvRecord {
 
     default List<String> toCsv(InAiInfrastructure inAiInfrastructure) {
         return List.of(
-                inAiInfrastructure.getDigitalServiceUid(),
+                inAiInfrastructure.getDigitalServiceVersionUid(),
                 inAiInfrastructure.getNbGpu().toString(),
                 inAiInfrastructure.getGpuMemory().toString()
         );

@@ -103,7 +103,7 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
                 (
                   (:inventoryId IS NOT NULL AND ipe.inventory_id = :inventoryId)
                   OR
-                  (:digitalServiceUid IS NOT NULL AND ipe.digital_service_uid = :digitalServiceUid)
+                  (:digitalServiceVersionUid IS NOT NULL AND ipe.digital_service_version_uid = :digitalServiceVersionUid)
                 )
             
                 and cilve.physical_equipment_name = ipe.name
@@ -120,7 +120,7 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
             
             """)
     List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId, @Param("inventoryId") Long inventoryId,
-                                                             @Param("digitalServiceUid") String digitalServiceUid,
+                                                             @Param("digitalServiceVersionUid") String digitalServiceVersionUid,
                                                              @Param("parentDuplicates") List<String> parentDuplicates);
 
     @Query(nativeQuery = true, value = """
@@ -147,7 +147,7 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
                  where(
                   (:inventoryId IS NOT NULL AND ipe.inventory_id = :inventoryId)
                   OR
-                  (:digitalServiceUid IS NOT NULL AND ipe.digital_service_uid = :digitalServiceUid)
+                  (:digitalServiceVersionUid IS NOT NULL AND ipe.digital_service_version_uid = :digitalServiceVersionUid)
                 )
                  and cilve.physical_equipment_name = ipe.name
              )
@@ -163,6 +163,6 @@ public interface CheckVirtualEquipmentRepository extends JpaRepository<CheckVirt
             """)
     List<CoherenceParentDTO> findIncoherentVirtualEquipments(@Param("taskId") Long taskId,
                                                              @Param("inventoryId") Long inventoryId,
-                                                             @Param("digitalServiceUid") String digitalServiceUid);
+                                                             @Param("digitalServiceVersionUid") String digitalServiceVersionUid);
 
 }

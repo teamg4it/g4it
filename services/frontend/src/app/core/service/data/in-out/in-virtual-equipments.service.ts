@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 import { InVirtualEquipmentRest } from "../../../interfaces/input.interface";
 
-const endpoint = Constants.ENDPOINTS.digitalServices;
+const endpoint = Constants.ENDPOINTS.digitalServicesVersions;
 
 @Injectable({
     providedIn: "root",
@@ -39,7 +39,7 @@ export class InVirtualEquipmentsService {
 
     update(equipment: InVirtualEquipmentRest): Observable<InVirtualEquipmentRest> {
         return this.http.put<InVirtualEquipmentRest>(
-            `${endpoint}/${equipment.digitalServiceUid}/inputs/${this.API}/${equipment.id}`,
+            `${endpoint}/${equipment.digitalServiceVersionUid}/inputs/${this.API}/${equipment.id}`,
             equipment,
             {
                 headers: this.HEADERS,
@@ -49,12 +49,12 @@ export class InVirtualEquipmentsService {
 
     updateAllVms(
         equipment: InVirtualEquipmentRest[],
-        digitalServiceUid: string,
+        digitalServiceVersionId: string,
         physicalEquipmentId: number,
     ): Observable<InVirtualEquipmentRest> {
         const params = new HttpParams().set("physicalEqpId", physicalEquipmentId);
         return this.http.put<InVirtualEquipmentRest>(
-            `${endpoint}/${digitalServiceUid}/inputs/${this.API}`,
+            `${endpoint}/${digitalServiceVersionId}/inputs/${this.API}`,
             equipment,
             {
                 headers: this.HEADERS,
@@ -65,15 +65,18 @@ export class InVirtualEquipmentsService {
 
     create(equipment: InVirtualEquipmentRest): Observable<InVirtualEquipmentRest> {
         return this.http.post<InVirtualEquipmentRest>(
-            `${endpoint}/${equipment.digitalServiceUid}/inputs/${this.API}`,
+            `${endpoint}/${equipment.digitalServiceVersionUid!}/inputs/${this.API}`,
             equipment,
             { headers: this.HEADERS },
         );
     }
 
-    delete(id: number, digitalServiceUid: string): Observable<InVirtualEquipmentRest> {
+    delete(
+        id: number,
+        digitalServiceVersionUid: string,
+    ): Observable<InVirtualEquipmentRest> {
         return this.http.delete<InVirtualEquipmentRest>(
-            `${endpoint}/${digitalServiceUid}/inputs/${this.API}/${id}`,
+            `${endpoint}/${digitalServiceVersionUid}/inputs/${this.API}/${id}`,
         );
     }
 }

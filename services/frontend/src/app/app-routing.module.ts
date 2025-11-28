@@ -22,7 +22,7 @@ const routes: Routes = [
         component: ErrorComponent,
     },
     {
-        path: "shared/:share-token/ds/:id/footprint",
+        path: "shared/:share-token/dsv/:id/footprint",
         loadChildren: () =>
             import("./layout/share-digital-service/share-digital-service.module").then(
                 (m) => m.ShareDigitalServiceModule,

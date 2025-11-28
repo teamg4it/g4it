@@ -41,6 +41,65 @@ databaseChangeLog:
                   type: timestamp
 
   - changeSet:
+      id: create-digital-service-version-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: digital_service_version
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: digital_service_version_pk
+                    valueComputed: UUID()
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_calculation_date
+                  type: timestamp
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: item_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    referencedTableName: digital_service
+                    referencedColumnNames: uid
+                    foreignKeyName: digital_service_version_item_id_fk
+                    deleteCascade: true
+              - column:
+                  name: version_type
+                  type: varchar(50)
+              - column:
+                  name: note_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: note
+                    referencedColumnNames: id
+                    foreignKeyName: note_id_digital_service_version_fk
+                    deleteCascade: true
+              - column:
+                  name: criteria
+                  type: varchar(255) array
+              - column:
+                  name: created_by
+                  type: bigint
+              - addUniqueConstraint:
+                  columnNames: item_id, description
+                  constraintName: digital_service_version_unique
+                  tableName: digital_service_version
+
+  - changeSet:
       id: create-terminal-referential
       author: G4IT Dev Team
       changes:

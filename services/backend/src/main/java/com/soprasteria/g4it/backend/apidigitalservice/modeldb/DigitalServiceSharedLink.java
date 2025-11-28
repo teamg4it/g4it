@@ -8,7 +8,6 @@
 
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -57,10 +56,17 @@ public class DigitalServiceSharedLink {
     /**
      * The shared digital service's uid.
      */
-    @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "digital_service_uid", referencedColumnName = "uid")
     private DigitalService digitalService;
+
+    /**
+     * Linked Digital Service Version UID
+     */
+    @NotNull
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "digital_service_version_uid", referencedColumnName = "uid")
+    private DigitalServiceVersion digitalServiceVersion;
 
     /**
      * Expiry date.

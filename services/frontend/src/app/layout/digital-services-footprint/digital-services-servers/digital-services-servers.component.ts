@@ -10,6 +10,7 @@ import {
     computed,
     DestroyRef,
     inject,
+    input,
     OnDestroy,
     OnInit,
 } from "@angular/core";
@@ -43,6 +44,8 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     private readonly inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
     private readonly destroyRef = inject(DestroyRef);
+
+    dsVersionUid = input("");
 
     digitalService: DigitalService = {} as DigitalService;
     sidebarVisible: boolean = false;
@@ -105,6 +108,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
             return {
                 id: item.id,
                 name: item.name,
+                digitalServiceUid: item.digitalServiceUid,
                 mutualizationType: item.type.replace(" Server", ""),
                 quantity,
                 quantityVms: `${quantity} (${totalQuantityVms})`,
@@ -128,6 +132,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                         uid: vm.id.toString(),
                         vCpu: vm.vcpuCoreNumber,
                         electricityConsumption: vm.electricityConsumption,
+                        digitalServiceUid: item.digitalServiceUid,
                     } as ServerVM;
                 }),
             } as DigitalServiceServerConfig;
@@ -169,13 +174,13 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     }
 
     async deleteItem(event: DigitalServiceServerConfig) {
-        const digitalServiceUid = this.digitalServiceStore.digitalService().uid;
+        const digitalServiceVersionUid = this.dsVersionUid();
         if (event.vm.length > 0) {
             for (const vm of event.vm) {
                 await firstValueFrom(
                     this.inVirtualEquipmentsService.delete(
                         Number(vm.uid),
-                        digitalServiceUid,
+                        digitalServiceVersionUid,
                     ),
                 );
             }
@@ -183,11 +188,11 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
 
         await firstValueFrom(
             this.inPhysicalEquipmentsService.delete({
-                digitalServiceUid,
+                digitalServiceVersionUid,
                 id: event.id,
             } as InPhysicalEquipmentRest),
         );
-        await this.digitalServiceStore.initInPhysicalEquipments(digitalServiceUid);
+        await this.digitalServiceStore.initInPhysicalEquipments(digitalServiceVersionUid);
         this.digitalServiceStore.setEnableCalcul(true);
     }
 

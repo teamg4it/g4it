@@ -73,7 +73,7 @@ public class LoadMetadataService {
             List<Object> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
             for (CSVRecord csvRecord : records) {
-                objects.add(mapCsvToInMetadataObject(csvRecord, context.getInventoryId(), context.getDigitalServiceUid(), fileToLoad.getFileType()));
+                objects.add(mapCsvToInMetadataObject(csvRecord, context.getInventoryId(), context.getDigitalServiceVersionUid(), fileToLoad.getFileType()));
                 if (row >= Constants.BATCH_SIZE) {
                     retrieveMetadataLoaderService.execute(context, fileToLoad, pageNumber, objects);
                     objects.clear();
@@ -99,13 +99,13 @@ public class LoadMetadataService {
      * @param fileType    : the file type
      * @return The mapped Rest Object
      */
-    private Object mapCsvToInMetadataObject(CSVRecord csvRecord, Long inventoryId, String digitalServiceUid, FileType fileType) {
+    private Object mapCsvToInMetadataObject(CSVRecord csvRecord, Long inventoryId, String digitalServiceVersionUid, FileType fileType) {
         Object mappedObject = null;
         switch (fileType) {
-            case DATACENTER -> mappedObject = csvToInMapper.csvInDatacenterToRest(csvRecord, inventoryId, digitalServiceUid);
+            case DATACENTER -> mappedObject = csvToInMapper.csvInDatacenterToRest(csvRecord, inventoryId, digitalServiceVersionUid);
             case EQUIPEMENT_PHYSIQUE ->
-                    mappedObject = csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, inventoryId, digitalServiceUid);
-            case EQUIPEMENT_VIRTUEL -> mappedObject = csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, inventoryId, digitalServiceUid);
+                    mappedObject = csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, inventoryId, digitalServiceVersionUid);
+            case EQUIPEMENT_VIRTUEL -> mappedObject = csvToInMapper.csvInVirtualEquipmentToRest(csvRecord, inventoryId, digitalServiceVersionUid);
             case APPLICATION -> mappedObject = csvToInMapper.csvInApplicationToRest(csvRecord, inventoryId);
         }
         return mappedObject;

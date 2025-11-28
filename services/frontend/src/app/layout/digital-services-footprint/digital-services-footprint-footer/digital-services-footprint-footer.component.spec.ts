@@ -1,12 +1,13 @@
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { of, Subject } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServicesAiDataService } from "src/app/core/service/data/digital-services-ai-data.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -67,8 +68,24 @@ describe("DigitalServicesFootprintFooterComponent", () => {
 
         TestBed.configureTestingModule({
             declarations: [DigitalServicesFootprintFooterComponent],
-            imports: [HttpClientTestingModule],
+            imports: [HttpClientTestingModule, RouterTestingModule],
             providers: [
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        snapshot: {
+                            paramMap: {
+                                get: (key: string) => {
+                                    if (key === "digitalServiceVersionId") return "1";
+                                    return null;
+                                },
+                            },
+                        },
+                        paramMap: of(
+                            new Map<string, string>([["digitalServiceVersionId", "1"]]),
+                        ),
+                    },
+                },
                 { provide: Router, useValue: mockRouter },
                 { provide: TranslateService, useValue: mockTranslate },
                 { provide: MessageService, useValue: mockMessageService },

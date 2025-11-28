@@ -127,23 +127,25 @@ class EvaluateAiServiceTest {
         when(context.getDigitalServiceName()).thenReturn("Digital Service 1");
         when(context.log()).thenReturn("context-log");
         when(context.isHasVirtualEquipments()).thenReturn(true);
+        when(context.getDigitalServiceVersionUid()).thenReturn("uid");
+        when(context.getDigitalServiceVersionName()).thenReturn("Digital Service Version 1");
 
         when(task.getId()).thenReturn(99L);
         when(task.getCriteria()).thenReturn(List.of("CLIMATE_CHANGE"));
 
         InAiParameter aiParam = mockAiParameter();
-        when(inAIParameterRepository.findByDigitalServiceUid("uid")).thenReturn(aiParam);
-        when(inAiInfrastructureRepository.findByDigitalServiceUid("uid")).thenReturn(mock(InAiInfrastructure.class));
+        when(inAIParameterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(aiParam);
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid")).thenReturn(mock(InAiInfrastructure.class));
 
         InDatacenter datacenter = mockDatacenter("DC1", "FR");
-        when(inDatacenterRepository.findByDigitalServiceUid("uid")).thenReturn(List.of(datacenter));
+        when(inDatacenterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(List.of(datacenter));
 
         InPhysicalEquipment physicalEquipment = mock(InPhysicalEquipment.class);
         when(physicalEquipment.getDatacenterName()).thenReturn("DC1");
-        when(inPhysicalEquipmentRepository.findByDigitalServiceUid("uid")).thenReturn(new ArrayList<>(List.of(physicalEquipment)));
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new ArrayList<>(List.of(physicalEquipment)));
 
         InVirtualEquipment virtualEquipment = mock(InVirtualEquipment.class);
-        when(inVirtualEquipmentRepository.findByDigitalServiceUid("uid")).thenReturn(new ArrayList<>(List.of(virtualEquipment)));
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new ArrayList<>(List.of(virtualEquipment)));
         when(virtualEquipment.getLocation()).thenReturn("FR");
         when(virtualEquipment.getQuantity()).thenReturn(1.0);
         when(virtualEquipment.getDurationHour()).thenReturn(10.0);
@@ -210,8 +212,8 @@ class EvaluateAiServiceTest {
 
     @Test
     void testDoEvaluateAiMissingAiParamsThrows() {
-        when(context.getDigitalServiceUid()).thenReturn("uid");
-        when(inAIParameterRepository.findByDigitalServiceUid("uid")).thenReturn(null);
+        when(context.getDigitalServiceVersionUid()).thenReturn("uid");
+        when(inAIParameterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(null);
 
         G4itRestException ex = assertThrows(G4itRestException.class, () ->
                 aiEvaluationService.doEvaluateAi(context, task, exportDirectory));
@@ -220,9 +222,9 @@ class EvaluateAiServiceTest {
 
     @Test
     void testDoEvaluateAiMissingAiInfraThrows() {
-        when(context.getDigitalServiceUid()).thenReturn("uid");
-        when(inAIParameterRepository.findByDigitalServiceUid("uid")).thenReturn(new InAiParameter());
-        when(inAiInfrastructureRepository.findByDigitalServiceUid("uid")).thenReturn(null);
+        when(context.getDigitalServiceVersionUid()).thenReturn("uid");
+        when(inAIParameterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new InAiParameter());
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid")).thenReturn(null);
 
         G4itRestException ex = assertThrows(G4itRestException.class, () ->
                 aiEvaluationService.doEvaluateAi(context, task, exportDirectory));
@@ -231,10 +233,10 @@ class EvaluateAiServiceTest {
 
     @Test
     void testDoEvaluateAiMissingDatacenterThrows() {
-        when(context.getDigitalServiceUid()).thenReturn("uid");
-        when(inAIParameterRepository.findByDigitalServiceUid("uid")).thenReturn(new InAiParameter());
-        when(inAiInfrastructureRepository.findByDigitalServiceUid("uid")).thenReturn(new InAiInfrastructure());
-        when(inDatacenterRepository.findByDigitalServiceUid("uid")).thenReturn(Collections.emptyList());
+        when(context.getDigitalServiceVersionUid()).thenReturn("uid");
+        when(inAIParameterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new InAiParameter());
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new InAiInfrastructure());
+        when(inDatacenterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(Collections.emptyList());
 
         G4itRestException ex = assertThrows(G4itRestException.class, () ->
                 aiEvaluationService.doEvaluateAi(context, task, exportDirectory));
@@ -244,11 +246,11 @@ class EvaluateAiServiceTest {
     @Test
     void testDoEvaluateAiMissingPhysicalEqThrows() {
         InDatacenter inDatacenter = mockDatacenter("DC1", "FR");
-        when(context.getDigitalServiceUid()).thenReturn("uid");
-        when(inAIParameterRepository.findByDigitalServiceUid("uid")).thenReturn(new InAiParameter());
-        when(inAiInfrastructureRepository.findByDigitalServiceUid("uid")).thenReturn(new InAiInfrastructure());
-        when(inDatacenterRepository.findByDigitalServiceUid("uid")).thenReturn(List.of(inDatacenter));
-        when(inPhysicalEquipmentRepository.findByDigitalServiceUid("uid")).thenReturn(Collections.emptyList());
+        when(context.getDigitalServiceVersionUid()).thenReturn("uid");
+        when(inAIParameterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new InAiParameter());
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new InAiInfrastructure());
+        when(inDatacenterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(List.of(inDatacenter));
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid("uid")).thenReturn(Collections.emptyList());
 
         G4itRestException ex = assertThrows(G4itRestException.class, () ->
                 aiEvaluationService.doEvaluateAi(context, task, exportDirectory));
@@ -259,12 +261,12 @@ class EvaluateAiServiceTest {
     void testDoEvaluateAiMissingVirutalEqThrows() {
         InDatacenter inDatacenter = mockDatacenter("DC1", "FR");
         InPhysicalEquipment inPhysicalEquipment = InPhysicalEquipment.builder().name("name").build();
-        when(context.getDigitalServiceUid()).thenReturn("uid");
-        when(inAIParameterRepository.findByDigitalServiceUid("uid")).thenReturn(new InAiParameter());
-        when(inAiInfrastructureRepository.findByDigitalServiceUid("uid")).thenReturn(new InAiInfrastructure());
-        when(inDatacenterRepository.findByDigitalServiceUid("uid")).thenReturn(List.of(inDatacenter));
-        when(inPhysicalEquipmentRepository.findByDigitalServiceUid("uid")).thenReturn(List.of(inPhysicalEquipment));
-        when(inVirtualEquipmentRepository.findByDigitalServiceUid("uid")).thenReturn(Collections.emptyList());
+        when(context.getDigitalServiceVersionUid()).thenReturn("uid");
+        when(inAIParameterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new InAiParameter());
+        when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid")).thenReturn(new InAiInfrastructure());
+        when(inDatacenterRepository.findByDigitalServiceVersionUid("uid")).thenReturn(List.of(inDatacenter));
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid("uid")).thenReturn(List.of(inPhysicalEquipment));
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("uid")).thenReturn(Collections.emptyList());
 
         G4itRestException ex = assertThrows(G4itRestException.class, () ->
                 aiEvaluationService.doEvaluateAi(context, task, exportDirectory));

@@ -27,6 +27,9 @@ export interface DigitalService {
     isShared?: boolean;
     tasks?: TaskRest[];
     enableDataInconsistency: boolean;
+    activeDsvUid: string;
+    versionType?: string;
+    description?: string;
 }
 
 export interface DigitalServiceUserInfo {
@@ -77,6 +80,8 @@ export interface DigitalServiceServerConfig {
     annualElectricConsumption?: number;
     annualOperatingTime?: number;
     vm: ServerVM[];
+    digitalServiceUid?: string;
+    digitalServiceVersionUid?: string;
 }
 
 export interface DigitalServiceCloudServiceConfig {
@@ -113,6 +118,7 @@ export interface DigitalServiceNetworkConfig {
     yearlyQuantityOfGbExchanged: number;
     idFront?: number;
     name: string;
+    digitalServiceUid?: string;
 }
 
 export interface DigitalServiceTerminalConfig {
@@ -127,6 +133,7 @@ export interface DigitalServiceTerminalConfig {
     yearlyUsageTimePerUser: number;
     idFront?: number;
     name: string;
+    digitalServiceUid?: string;
 }
 
 export interface DigitalServiceFootprint {
@@ -332,6 +339,7 @@ export interface ServerVM {
     quantity: number;
     annualOperatingTime: number;
     electricityConsumption: number;
+    digitalServiceUid?: string;
 }
 
 export interface ServerDC {
@@ -399,6 +407,6 @@ export interface GraphDescriptionContent {
     description: string;
     scale: string;
     textDescription: string;
-    analysis: string;
-    toGoFurther: string;
+    analysis?: string;
+    toGoFurther?: string;
 }
