@@ -1,6 +1,6 @@
 ---
-title: "2.2. Create or Visualize a digital service"
-description: "This use case describes how to create a new digital service"
+title: "2.2. Create or Visualize a digital service version"
+description: "This use case describes how to create a new digital service version"
 weight: 20
 mermaid: true
 ---
@@ -15,31 +15,34 @@ mermaid: true
 
 ## Description
 
-This usecase allows a user to create a digital service.
-
-It means that user can describe all terminals, networks and servers related to a DS to evaluate its environmental footprint
+This usecase allows a user to create a digital service version.
+It means that user can describe all terminals, networks and servers related to a digital service version to evaluate its environmental footprint
 
 **Navigation Path**
 
 -   My Digital Services / Evaluate New Service
--   My Digital Services / My Digital Service
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected workspace.
 
 ## State Diagram
 
-{{< mermaid align="center">}}
-graph TD;
-Step1[List of digital services view] -->|Click on 'Evaluate new service' button| Step2[New service view] -->Decision1{Which type of equipments?}
-Decision1 -->|Devices table| Step3[Terminals table view]
-Decision1 -->|Networks table| Step4[Networks table view]
-Decision1 -->|Private Infrastructures table| Step5[Private Infrastructures table view]
-Decision1 -->|Public Cloud - IaaS  table| Step9[Public Cloud - IaaS table view]
-Step3 -->|Click on Add|Step6[Add terminal view]
-Step4 -->|Click on Add|Step7[Add network view]
-Step5 -->|Click on Add|Step8[Add non-cloud server view]
-Step9 -->|Click on Add|Step10[Add Cloud Services view]
+{{< mermaid align="center" >}}
+graph TD
+Step1[List of digital services view] -->|Click on 'Evaluate new service' button| Step2[Enter Digital Service Name & Active Version Name]
+Step2 -->|Click on 'Validate Creation' button| Step3[New service version view]
+
+    Step3 --> Decision1{Which type of equipments?}
+
+    Decision1 -->|Terminals| T1[Terminals list view]
+    Decision1 -->|Network| N1[Networks list view]
+    Decision1 -->|Private Infrastructures| PI1[Private Infrastructure list view]
+    Decision1 -->|Public Clouds - IaaS| PC1[Public Clouds - IaaS list view]
+
+    T1 -->|Click on Add| T2[Add terminal view]
+    N1 -->|Click on Add| N2[Add network view]
+    PI1 -->|Click on Add| PI2[Add non-cloud server view]
+    PC1 -->|Click on Add| PC2[Add cloud server view]
 {{< /mermaid >}}
 
 ## Mockup
@@ -59,12 +62,14 @@ Step9 -->|Click on Add|Step10[Add Cloud Services view]
 | 2         |             | Add a note                                                           | button |                                                                                                                                                                                                                                                                                                                                                                                                               |
 | 3         |             | Import                                                               | button | Click to import the cloud services and private Infrastructure using files [2.3.3.2. Add Private Infrastructure by importing files](uc3_add_visualize_equipments%2Fuc3_add_visualize_noncloud-servers%2Fimport_nonCloud_servers_via_button.md),  [2.3.4.2. Add Public Cloud - IaaS  by importing files](uc3_add_visualize_equipments%2Fuc3_add_visualize_cloud_services%2Fimport_cloud_services_via_button.md) |
 | 4         |             | Export                                                               | button | Data can be exported at any time after atleast first calculation is done. Details of the behaviour is described in [2.6 Export ](./uc6_export_digital_service.md).                                                                                                                                                                                                                                            |
-| 5         |             | Delete                                                               | button | Details of the behaviour is described in [2.7. Delete digital service](uc7_delete_digital_service.md).                                                                                                                                                                                                                                                                                                        |
+| 5         |             | Version name                                                         | label  | Digital service version name.                                                                                                                                                                                                                                                                                                                                                                                 |
 | 6         | Tab         | Visualize my Resources                                               | tab    | The Terminals, networks, private Infrastructure and cloud Services                                                                                                                                                                                                                                                                                                                                            |
 | 7         | Tables      | Terminals / Networks / Private Infrastructures / Public Cloud - IaaS | group  | <li><u>_initialization rules_</u>: 4 tables are available : Terminals / Networks / Private Infrastructures / Public Cloud - IaaS . <br>Details of the behaviour is described in [2.3. Add or Visualize equipments](uc3_add_visualize_equipments/_index).                                                                                                                                                      |
 | 8         |             | Calculate my Impact                                                  | button | Details of the behaviour is described in [2.4. Launch estimation](uc4_launch_estimation.md).                                                                                                                                                                                                                                                                                                                  |
 | 9         | Tab         | Visualize my results                                                 | tab    | Details of the behaviour is described in [2.5. Visualize digital service's footprint](uc5_visualize_footprint/_index.md).                                                                                                                                                                                                                                                                                     |
 | 10        |             | Share/Shared                                                         | button | Click to share a digital service even outside G4it. Details of the behaviour is described in [2.8. Share a digital service](uc8_share_digital_service.md).                                                                                                                                                                                                                                                    |
+| 11        |             | Manage versions                                                      | button | Click to manage the versions of a digital service. Details of the behaviour is described in [2.9.3. Manage digital service versions](manage_digital-service_version.md).                                                                                                                                                                                                                                      |
+| 12        |             | Duplicate version                                                    | button | Click to share a digital service even outside G4it. Details of the behaviour is described in [2.9.2 Duplicate digital service version](duplicate_digital_service_version.md).                                                                                                                                                                                                                                         |
 
 {{% /expand %}}
 
@@ -78,18 +83,18 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on Evaluate New Service
-front ->> back: POST /api/{organization}/{workspace}/digital-services
-back ->> DataBase: Create the service
-back ->> front: /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}
-front ->> back: GET /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: POST /api/{organization}/{workspace}/digital-service-version
+back ->> DataBase: Create the digital service version
+back ->> front: /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}
+front ->> back: GET /api/{organization}/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments
 DataBase-->> back: Get indicators from in_physical_equipment table
-front ->> back: GET /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
+front ->> back: GET /api/{organization}/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/virtual-equipments
 DataBase-->> back: Get indicators from in_virtual_equipment table
-front ->> back: GET /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters
+front ->> back: GET /api/{organization}/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/datacenters
 DataBase-->> back: Get datacenters from in_datacenter table
-front ->> back: POST /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters
+front ->> back: POST /api/{organization}/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/datacenters
 back -->> DataBase: Create default datacenter in in_datacenter table
-front ->> back: GET /api/{organization}/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters
+front ->> back: GET /api/{organization}/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/datacenters
 DataBase-->> back: Get datacenters from in_datacenter table
 front ->> back: GET /api/{organization}/{workspace}/digital-services/network-type
 DataBase-->> back: Get networks from ref_network_type table

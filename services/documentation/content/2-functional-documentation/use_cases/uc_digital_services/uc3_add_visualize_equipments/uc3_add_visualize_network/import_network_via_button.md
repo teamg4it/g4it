@@ -13,7 +13,7 @@ mermaid: true
 
 ## Description
 
-This use case allows a **project team** to upload Network equipments by importing the files, into a digital service previously created.
+This use case allows a **project team** to upload Network equipments by importing the files, into a digital service version previously created.
 The file type is **physical equipment**.
 
 The files should be in `.csv` or `.xlsx` format. For **CSV files** specifically, both commas and semicolons are
@@ -81,15 +81,15 @@ RND ->> front: Click on the template to download.
 front ->> back: GET /subscribers/{subscriber}/organizations/{organization}/template-files/{name}
 back -->> front: Template file downloaded in user's local machine
 RND ->> front: Click on "Start Upload" button in the loading files view
-front ->> back: POST /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/load-input-files
+front ->> back: POST /subscribers/{subscriber}/organizations/{organization}/digital-service-version/{digitalServiceVersionUid}/load-input-files
 front -->> RND : Display the 'pending' button if another task is in progress
 front -->> back: Resume loading once no other task is in progress
 back -->> DataBase: Validate and load datacenter/s in the in_datacenter table
 back -->> DataBase: Validate and load physical equipment/s in the in_physical_equipment table
 back -->> DataBase: Validate and load virtual equipment/s in the in_virtual_equipment table
 back -->> front: Update the loading history
-front ->> back: GET /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}
-back-->> front: Get the updated digital service
+front ->> back: GET /subscribers/{subscriber}/organizations/{organization}/digital-service-version/{digitalServiceVersionUid}
+back-->> front: Get the updated digital service version
 back ->> front: Display the updated loading history
 front ->> RND : Display the 'completed' button if all the uploaded data is correct
 front -->> RND : Display the 'failed' button if most of the uploaded data is incorrect or <br> mandatory headers missing

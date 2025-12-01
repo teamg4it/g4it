@@ -14,7 +14,7 @@ mermaid: true
 
 ## Description
 
-This usecase allows a project team to add network equipment directly via form, into a digital service previously created.
+This usecase allows a project team to add network equipment directly via form, into a digital service version previously created.
 
 **Navigation Path**
 
@@ -52,10 +52,10 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service's networks table
-front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+RND ->> front: Click on "Add" button in the digital service version's networks table
+front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments
 back--> DataBase: Create network record in the in_physical_equipment table
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments
 DataBase -->> back: Get networks from the in_physical_equipment table of database
 back-->> front: Send the Physical equipments for the network view
 front->> RND : Display the network list view

@@ -13,8 +13,8 @@ mermaid: true
 
 ## Description
 
-This usecase allows a project team to add equipment into a digital service previously created.
-It means that user can describe all terminals, networks, private infrastructures, public cloud - IaaS related to a DS to evaluate its environmental footprint, regardless of whether the service is newly created or an older one
+This usecase allows a project team to add equipment into a digital service version previously created.
+It means that user can describe all terminals, networks, private infrastructures, public cloud - IaaS related to a digital service version to evaluate its environmental footprint, regardless of whether the service is newly created or an older one
 
 **Navigation Path**
 
@@ -82,13 +82,8 @@ BoaviztApi ->> front: List of cloud providers in Boaviztapi
 front ->> BoaviztApi: GET /api/referential/boaviztapi/cloud/providers/instances
 BoaviztApi ->> front: List of instances in Boaviztapi
 
-RND ->> front: Fill the form
-RND ->> front: Click on 'Create' button
-front ->> back: PUT /api/{organization}/{workspace}/digital-services/{digitalServiceUid}
 
-back ->> DataBase: Update the service
-back ->> front: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}
-back ->> front: Display the service in the suited list
+
 
 {{< /mermaid >}}
 

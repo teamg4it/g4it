@@ -14,7 +14,7 @@ mermaid: true
 
 ## Description
 
-This use case allows a project team to add Terminal equipment into a digital service directly via form, previously created.
+This use case allows a project team to add Terminal equipment into a digital service version directly via form, previously created.
 
 **Navigation Path**
 
@@ -56,9 +56,9 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "Add" button in the digital service's terminal table
-front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments
 back--> DataBase: Create terminal record in the in_physical_equipment table
-front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments
 DataBase -->> back: Get terminals from the in_physical_equipment table of database
 back -->> front: Send the Physical equipments for the terminal view
 front->> RND : Display the terminal list view
