@@ -717,19 +717,20 @@ class DigitalServiceVersionServiceTest {
                 digitalServiceVersionService.getDigitalServiceVersions(DIGITAL_SERVICE_VERSION_UID);
 
         assertNotNull(result);
-        assertEquals(2, result.size(), "Should return all versions belonging to the digital service");
+        assertEquals(2, result.size());
 
-        // Validate first version
-        assertEquals("Version A", result.get(0).getVersionName());
-        assertEquals("draft", result.get(0).getVersionType());
-        assertEquals("v1", result.get(0).getDigitalServiceVersionUid());
+        // first should be ACTIVE
+        assertEquals("Version B", result.get(0).getVersionName());
+        assertEquals("active", result.get(0).getVersionType());
+        assertEquals("v2", result.get(0).getDigitalServiceVersionUid());
         assertEquals(DIGITAL_SERVICE_UID, result.get(0).getDigitalServiceUid());
 
-        // Validate second version
-        assertEquals("Version B", result.get(1).getVersionName());
-        assertEquals("active", result.get(1).getVersionType());
-        assertEquals("v2", result.get(1).getDigitalServiceVersionUid());
+        // second should be DRAFT
+        assertEquals("Version A", result.get(1).getVersionName());
+        assertEquals("draft", result.get(1).getVersionType());
+        assertEquals("v1", result.get(1).getDigitalServiceVersionUid());
         assertEquals(DIGITAL_SERVICE_UID, result.get(1).getDigitalServiceUid());
+
     }
 
     @Test
