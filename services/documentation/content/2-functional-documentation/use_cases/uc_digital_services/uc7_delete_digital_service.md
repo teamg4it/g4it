@@ -1,6 +1,6 @@
 ---
-title: "2.7. Delete digital service"
-description: "This use case describes how to delete a digital service"
+title: "2.7. Delete digital service version"
+description: "This use case describes how to delete a digital service version"
 weight: 70
 mermaid: true
 ---

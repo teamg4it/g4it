@@ -1,6 +1,6 @@
 ---
-title: "2.8. Share a digital service"
-description: "This use case describes how to share a digital service"
+title: "2.8. Share a digital service version"
+description: "This use case describes how to share a digital service version"
 weight: 80
 mermaid: true
 ---
@@ -15,12 +15,12 @@ mermaid: true
 
 ## Description
 
-This use case enables a project team to share a digital service externally from G4IT, allowing access without requiring a user account.
-The shared digital service will be accessible to the user in read-only view.
+This use case enables a project team to share a digital service version externally from G4IT, allowing access without requiring a user account.
+The shared digital service version will be accessible to the user in read-only view.
 
 **Navigation Path**
 
--   My Digital Services / Digital Service view / Share button
+-   My Digital Services / Digital Service version view / Share button
 
 **Access Conditions**
 
@@ -30,7 +30,7 @@ The shared digital service will be accessible to the user in read-only view.
 
 {{< mermaid align="center">}}
 graph TD
-Step1[Digital Service View] --> Decision1{Already Shared?}
+Step1[Digital Service Version View] --> Decision1{Already Shared?}
 Decision1 -- No --> Step2['Share' button displayed]
 Step2 --> Step3[Click 'Share']
 Step3 --> Step4[Popup opens to copy link]
@@ -74,7 +74,7 @@ participant back as G4IT Back-End
 participant DataBase
 
 RND ->> front: Click on "Share/Shared" button
-front ->> back: Share /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/share:
+front ->> back: Share /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/share:
 back -> DataBase: Generate a record in digital_service_shared_link table, with a validation token with expiry date after 60 days
 back ->> front: Return the url
 front ->> RND: PopUp opens with the link

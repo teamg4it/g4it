@@ -1,5 +1,5 @@
 ---
-title: "1.2- Load equipments in a digital service"
+title: "1.2- Load equipments in a digital service version"
 description: "This use case describes how to load files"
 weight: 40
 mermaid: true
@@ -7,13 +7,13 @@ mermaid: true
 
 ## API PATH
 
-| API                                                                                                    | Swagger                                                                                                       | Use Cases                                                                                            |
-|:-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------|
-| POST /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchLoadInputFilesDigitalService) | [Load digital service files] |
+| API                                                                                                                           | Swagger                                                                                                       | Use Cases                            |
+|:------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|:-------------------------------------|
+| POST /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/load-input-files | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/loading-files/launchLoadInputFilesDigitalService) | [Load digital service version files] |
 
 ## Description
 
-This API allows the user to upload files to the digital service. Users can upload datacenter, physical, and virtual equipment files to create non-cloud servers; only virtual files for cloud services; only physical files for terminals or networks.
+This API allows the user to upload files to the digital service version. Users can upload datacenter, physical, and virtual equipment files to create non-cloud servers; only virtual files for cloud services; only physical files for terminals or networks.
 The files are uploaded to the fileStorage and then the loading is done asynchronously.
 
 The API returns the async task id that can be used to track the loading process.
@@ -67,7 +67,7 @@ mising for any of the uploaded files, the task fails with status 'FAILED' and no
 
 The main purpose of the checking process is to check the global coherence of the files to be loaded between each other
 and
-between already loaded files of the same digital service.
+between already loaded files of the same digital service version.
 
 To do this efficiently, we load each file in parallel using a newly created thread pool. Each file is loaded into the
 appropriate check metadata table depending on its type.

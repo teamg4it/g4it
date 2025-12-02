@@ -1,5 +1,5 @@
 ---
-title: "Evaluating digital service with Ecomind"
+title: "Evaluating digital service version with Ecomind"
 mermaid: true
 ---
 
@@ -24,7 +24,7 @@ The results of ecomind return the recommendation and the electricity consumption
 
 Physical equipment entities are retrieved from the database in batches via
 the [InPhysicalEquipmentRepository](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apiinout/repository/InPhysicalEquipmentRepository.java).
-For the ia part there is only one physical equipment per digital service.
+For the ia part there is only one physical equipment per digital service version.
 It's build and updated with the information get in the forms of ecomind and the call of ecomind.
 
 The

@@ -22,8 +22,8 @@ other encoding formats, while untested, may also work.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Import button  / Import Networks
--   My Digital Services / My Digital Service / Networks / Modify Networks
+-   My Digital Services / Digital Service Version view / Import button  / Import Networks
+-   My Digital Services / Digital Service Version view / Networks / Modify Networks
 
 ## Import Networks
 ![uc3_add_visualize_equipments_networksImport.png](../../../images/uc3_add_visualize_equipments_networksImport.png)

@@ -17,8 +17,8 @@ This use case allows a project team to add NPrivate Infrastructure equipment dir
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Visualize my resources tab /Private Infrastructures / Add Server
--   My Digital Services / My Digital Service / Visualize my resources tab / Private Infrastructures / Edit Server
+-   My Digital Services / Digital Service Version view / Visualize my resources tab /Private Infrastructures / Add Server
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Private Infrastructures / Edit Server
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected workspace.

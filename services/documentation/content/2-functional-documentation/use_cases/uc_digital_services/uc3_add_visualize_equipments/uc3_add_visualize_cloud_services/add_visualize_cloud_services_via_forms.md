@@ -17,7 +17,7 @@ This use case allows a project team to add Public Cloud - IaaS equipment directl
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Visualize my resources tab / Public Cloud - IaaS / Add Cloud Service
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Public Cloud - IaaS / Add Cloud Service
 
 ## Public Cloud - IaaS add/edit
 

@@ -23,7 +23,7 @@ The key indicators displayed on the radar graph are terminal, network and server
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service view / Visualize my results tab
+-   My Digital Services / Digital Service Version view / Visualize my results tab
 
 - **Access Conditions**
   The connected user must have the read access for that module on the selected workspace.
@@ -72,11 +72,10 @@ Step8-->|Click on 'Global Vision' button|Step4
 | 10        |                            |                                     | Equipment type          | button | <li><u>_action rules_</u>: Click to view graph of the impact for each equipment type i.e terminal, network, non- cloud server or cloud services.</li>                                                                                                   |
 | 11        |                            |                                     | Graph                   | radar  | <li><u>_action rules_</u>: By overflowing, the user can collect data corresponding to certain terminals, networks and servers. A click on a specific criteria redirects to view by criteria. </li>                                                      |
 | 12        |                            | Data Consistency                    | Enable Data Consistency | button | <li><u>_action rules_</u>: Click to enable the data consistency view. See [Global concepts/ Data consistency](../../../global_concepts/uc1_dataconsistency.md) </li>                                                                                    |
-| 13        |                            |                                     | Data Consistency        | button | <li><u>_action rules_</u>: Click to view graph of data consistency for all criteria. See [Global concepts/ Data consistency](../../../global_concepts/uc1_dataconsistency.md)                                                                           |
-| ) </li>   |                            |                                     |                         |        |                                                                                                                                                                                                                                                         |
+| 13        |                            |                                     | Data Consistency        | button | <li><u>_action rules_</u>: Click to view graph of data consistency for all criteria. See [Global concepts/ Data consistency](../../../global_concepts/uc1_dataconsistency.md)                                                    </li>                        |
 | 14        | Information card           |                                     |                         | group  | Quick description of what the graph represents.                                                                                                                                                                                                         |
-| 15        | Manage Versions            |                                     |                         | button  | <li><u>_action rules_</u>: Manage the digital service versions. Details of the behaviour is described in [2.9.1 Manage Digital Service Versions](./manage_digital-service_version.md).                                                                  |
-| 15        |                            | The digital service version name    |                         | label  | <li><u>_initialization rules_</u>: Name of the digital service version for which the user want to visualize footprints.                                                                                                                                 |
+| 15        |                            | Manage Versions                                    |                         | button  | <li><u>_action rules_</u>: Manage the digital service versions. Details of the behaviour is described in [2.9.1 Manage Digital Service Versions](./manage_digital-service_version.md).                                                                  |
+| 16        |                            | The digital service version name    |                         | label  | <li><u>_initialization rules_</u>: Name of the digital service version for which the user want to visualize footprints.                                                                                                                                 |
 
 {{% /expand %}}
 

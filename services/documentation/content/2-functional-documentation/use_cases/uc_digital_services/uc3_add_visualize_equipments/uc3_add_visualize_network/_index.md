@@ -53,7 +53,7 @@ The connected user must have the write access for that module on the selected or
 ## Networks edit
 
 Navigation Path
-My Digital Services / My Digital Service / Visualize my resources tab /Networks / Modify Networks
+My Digital Services / Digital Service Version view / Visualize my resources tab /Networks / Modify Networks
 
 ![uc3_add_visualize_equipments_NetworksAdd.png](../../images/uc3_add_visualize_equipments_NetworksAdd.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}

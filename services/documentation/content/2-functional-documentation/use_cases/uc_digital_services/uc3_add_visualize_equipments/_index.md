@@ -18,7 +18,7 @@ It means that user can describe all terminals, networks, private infrastructures
 
 **Navigation Path**
 
-My Digital Services / My Digital Service /
+My Digital Services / Digital Service Version view /
 
 **Access Conditions**
 

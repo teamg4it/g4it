@@ -17,7 +17,7 @@ This use case allows a project team to add Private Infrastructure equipment dire
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service view / Visualize my resources tab / Private Infrastructures
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Private Infrastructures
 
 
 **Access Conditions**

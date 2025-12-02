@@ -18,8 +18,8 @@ This usecase allows a project team to add network equipment directly via form, i
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Visualize my resources tab / Networks / Add Network
--   My Digital Services / My Digital Service / Visualize my resources tab /Networks / Modify Network
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Networks / Add Network
+-   My Digital Services / Digital Service Version view / Visualize my resources tab /Networks / Modify Network
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected organization.

@@ -22,7 +22,7 @@ other encoding formats, while untested, may also work.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Import button  / Import Devices
+-   My Digital Services / Digital Service Version view / Import button  / Import Devices
 
 ## Import Devices
 ![uc3_add_visualize_equipments_devicesImport.png](../../../images/uc3_add_visualize_equipments_devicesImport.png)

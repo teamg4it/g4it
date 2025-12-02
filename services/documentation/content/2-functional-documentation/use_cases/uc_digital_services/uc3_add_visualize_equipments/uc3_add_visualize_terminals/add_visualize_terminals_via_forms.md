@@ -18,8 +18,8 @@ This use case allows a project team to add Terminal equipment into a digital ser
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Visualize my resources tab / Terminals / Add Device
--   My Digital Services / My Digital Service / Visualize my resources tab / Terminals / Modify Device
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Terminals / Add Device
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Terminals / Modify Device
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected organization.

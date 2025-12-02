@@ -19,7 +19,7 @@ This usecase allows a user to create a digital service version.
 It means that user can describe all terminals, networks and servers related to a digital service version to evaluate its environmental footprint
 
 **Navigation Path**
-My Digital Services / Digital Service / Visualize my digital service version
+My Digital Services / Digital Service Version view / Visualize my digital service version
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected workspace.

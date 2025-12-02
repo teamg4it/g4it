@@ -17,7 +17,7 @@ This use case allows a project team to add Devices equipment, into a digital ser
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service view / Visualize my resources tab / Devices
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Devices
 
 
 **Access Conditions**

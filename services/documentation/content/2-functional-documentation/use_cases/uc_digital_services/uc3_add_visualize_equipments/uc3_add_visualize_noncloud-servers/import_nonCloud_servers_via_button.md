@@ -22,8 +22,8 @@ other encoding formats, while untested, may also work.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Import button  / Import Private Infrastructure
--   My Digital Services / My Digital Service / Private Infrastructures / Modify Private Infrastructure
+-   My Digital Services / Digital Service Version view / Import button  / Import Private Infrastructure
+-   My Digital Services / Digital Service Version view / Private Infrastructures / Modify Private Infrastructure
 
 ## Import Private Infrastructure
 ![uc3_add_visualize_equipments_nonCloudServerImport.png](../../../images/uc3_add_visualize_equipments_nonCloudServerImport.png)

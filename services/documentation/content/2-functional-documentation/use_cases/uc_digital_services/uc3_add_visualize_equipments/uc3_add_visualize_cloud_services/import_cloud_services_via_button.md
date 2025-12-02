@@ -22,7 +22,7 @@ other encoding formats, while untested, may also work.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Import button  / Import Cloud Servers
+-   My Digital Services / Digital Service Version view / Import button  / Import Cloud Servers
 
 ## Import Public Cloud - IaaS
 ![uc3_add_visualize_equipments_CloudServiceImport.png](../../../images/uc3_add_visualize_equipments_CloudServiceImport.png)
