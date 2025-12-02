@@ -58,7 +58,7 @@ public class InApplicationService {
         }
 
         if (!Objects.equals(inventoryId, inApplication.get().getInventoryId())) {
-            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this application id: %d", inventoryId, inApplication.get().getDigitalServiceUid(), id));
+            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this application id: %d", inventoryId, inApplication.get().getDigitalServiceVersionUid(), id));
         }
 
         return inApplicationMapper.toRest(inApplication.get());

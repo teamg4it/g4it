@@ -217,7 +217,7 @@ public class LoadFileService {
         List<InDatacenterRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
+            objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceVersionUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadDatacenterService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
@@ -250,7 +250,7 @@ public class LoadFileService {
         List<InPhysicalEquipmentRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
+            objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceVersionUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadPhysicalEquipmentService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
