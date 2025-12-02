@@ -7,6 +7,7 @@
 - 1604 | Introducing the version concept and DS creation
 - 1605 | Duplicating a version
 - 1632 | Managing the versions
+- 1681 | Comparaison of versions
 
 ### Minor Changes
 
@@ -23,7 +24,15 @@
 ### Minor Changes
 
 - 1714 | Graph Description must be activated on the module EcoMindIA
+- 1400 | find a simpler solution to save electricity consumption in out_physical_equipment
+- 1611 | Add the ecomindAI version on the Useful Information page
+- 1641 | Share functionality to display page result by default 
+- 1662 | Issue to start G4IT locally | update keycloak image
+- 1677 | Update the datamodel to include the specificities of Digital Service Import
 - 1693 | [IS module] Control on the default DC for physical equipment
+- 1697 | Warning message when deleting a line in digital services resources
+- 1710 | Change Server type from Compute to Storage is not taken into account
+- 1714 | Graph Description must be activated on the module EcoMindIA
 
 ## 3.7.0
 

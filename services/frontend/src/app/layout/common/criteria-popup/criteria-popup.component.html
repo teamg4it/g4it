@@ -10,29 +10,8 @@
             [dismissableMask]="true"
             id="criteria"
             [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
+            [header]="getHeader()"
         >
-            <ng-template pTemplate="header">
-                <h3 class="font-semibold ml-0 text-2xl">
-                    {{
-                        type === "organization"
-                            ? ("administration.user.choose-criteria"
-                              | translate: { organization: organizationDetails.name })
-                            : type === "workspace"
-                              ? ("administration.organization.choose-criteria"
-                                | translate
-                                    : {
-                                          workspaceName: workspaceDetails.workspaceName,
-                                      })
-                              : type === "inventory"
-                                ? ("inventories.choose-criteria"
-                                  | translate
-                                      : { inventoryName: (inventory.name | monthYear) })
-                                : ("digital-services.choose-criteria"
-                                  | translate: { digitalServiceName: ds.name })
-                    }}
-                </h3>
-            </ng-template>
-
             @if (type !== "workspace") {
                 <div class="ml-3 pb-2 pt-3">
                     <div class="field-checkbox">
@@ -62,7 +41,7 @@
                 </div>
             } @else {
                 <div>
-                    <h4>{{ "administration.user.is-header" | translate }}</h4>
+                    <h3>{{ "administration.user.is-header" | translate }}</h3>
                     <div class="ml-5">
                         <div class="field-checkbox">
                             <p-checkbox
@@ -92,7 +71,7 @@
                     </div>
                 </div>
                 <div>
-                    <h4>{{ "administration.user.ds-header" | translate }}</h4>
+                    <h3>{{ "administration.user.ds-header" | translate }}</h3>
                     <div class="ml-5">
                         <div class="field-checkbox">
                             <p-checkbox

@@ -1,9 +1,9 @@
 <div class="footprint-dashboard-container my-3">
     <div class="chart-container col-12">
         <div class="flex flex-wrap align-items-center">
-            <h3>
+            <h2>
                 {{ "inventories-footprint.critere.repartition" | translate }}
-            </h3>
+            </h2>
             @if (criteriaCalculated().hasError) {
                 <p-button
                     (onClick)="showInconsitencyGraph = !showInconsitencyGraph"

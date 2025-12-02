@@ -1391,3 +1391,18 @@ app-useful-information {
         padding: 6px 10px;
     }
 }
+
+.criteria-popup {
+    .p-dialog .p-dialog-header span {
+        color: #000000;
+        font-size: 28px;
+    }
+}
+
+.footprint-dashboard-container h2,
+.footprint-dashboard-container-app-criteria h2 {
+    font-size: 1.25rem;
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

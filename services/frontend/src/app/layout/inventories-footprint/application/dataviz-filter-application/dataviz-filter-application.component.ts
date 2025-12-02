@@ -64,9 +64,9 @@ export class DatavizFilterApplicationComponent implements OnChanges {
 
     filterActive(filter: any) {
         return (
-            filter.length === 0 ||
-            (typeof filter[0] === "object" && filter[0]["checked"] === false) ||
-            (typeof filter[0] === "string" && !filter.includes("All"))
+            filter?.length === 0 ||
+            (typeof filter?.[0] === "object" && filter?.[0]?.["checked"] === false) ||
+            (typeof filter?.[0] === "string" && !filter?.includes("All"))
         );
     }
 
