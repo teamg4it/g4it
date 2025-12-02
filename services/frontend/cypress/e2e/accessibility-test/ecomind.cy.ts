@@ -20,6 +20,11 @@ describe("Ecomind", () => {
         cy.log("### Test without change ###");
         cy.get('[id="add-digital"]').click();
 
+        //save digital service creation
+        const dsName = `cy-digital-service ${Math.random().toFixed(2)}`;
+        cy.wait(200).get('[id="dsName-input"]').clear().type(dsName);
+        cy.wait(2000).get('[id="validate-creation-button"]').click();
+
         // fill infrastructure fields
         cy.log("### Fill Infrastructure Fields ###");
         cy.get('[id="pue"]').type("1.5");
@@ -40,7 +45,11 @@ describe("Ecomind", () => {
         cy.then(() => setPage("visualize page"));
         cy.wait(2000).checkA11y(undefined, undefined, reportA11yViolations, true);
         // delete the ai digital service
-        cy.get('[id="delete-service"]').click();
+        cy.get('[id="return-button"]').click();
+
+        cy.contains('p-card[role="button"]', dsName).within(() => {
+            cy.get('[id="delete-digital-service"]').click();
+        });
         cy.get('[aria-label="Yes"]').click();
     });
 });
