@@ -1,130 +1,145 @@
 ---
 title: 'Digital Service input data'
 description: 'These tables present the datas provide by a user for each Digital Service (terminals, networks and servers) in order to evaluate its environmental footprint.'
-weight: 4
+weight: 3
 ---
-## Entity relationship diagram 
-
+## Entity relationship diagram
+ 
 ```mermaid
-erDiagram 
+erDiagram
 
-  note {
+  note {     
+    int8 id PK     
+    text content     
+    timestamp creation_date     
+    timestamp last_update_date     
+    int8 created_by FK     
+    int8 last_updated_by FK   
+}
+  digital_service{     
+    int8 uid PK     
+    varchar name     
+    timestamp last_calculation_date     
+    timestamp creation_date     
+    timestamp last_update_date     
+    int8 note_id FK     
+    varchar criteria     
+    int8 user_id FK     
+    int8 organization_id FK     
+    bool is_new_arch     
+    bool is_migrated   
+}
+   
+  digital_service_version{     
+    int8 uid PK     
+    varchar description     
+    timestamp last_calculation_date     
+    timestamp creation_date     
+    timestamp last_update_date     
+    varchar item_Id     
+    enum version_type     
+    int8 note_id FK     
+    varchar criteria     
+    int8 created_by     
+    int8 task_id FK   
+}
+  in_application{     
+    int8 id PK     
+    varchar name     
+    int8 inventory_id FK     
+    varchar digital_service_version_uid FK     
+    varchar physical_equipment_name     
+    varchar virtual_equipment_name     
+    varchar environment     
+    varchar common_filters     
+    varchar filters     
+    timestamp creation_date     
+    timestamp last_update_date   
+}
+  in_datacenter{
     int8 id PK
-    text content
-    timestamp creation_date
-    timestamp last_update_date
-    int8 created_by FK
-    int8 last_updated_by FK
-  }
-  digital_service {
-    varchar uid PK
     varchar name
-    timestamp last_calculation_date
-    timestamp creation_date
-    timestamp last_update_date
-    int8 note_id FK
-    _varchar criteria
-    int8 user_id FK
-    int8 organization_id FK
-    bool is_new_arch
-    bool is_migrated
-  }
-  in_application {
-    int8 id PK
-    varchar name
-    int8 inventory_id FK
-    varchar digital_service_uid FK
-    varchar physical_equipment_name
-    varchar virtual_equipment_name
-    varchar environment
-    _varchar common_filters
-    _varchar filters
-    timestamp creation_date
-    timestamp last_update_date
-  }
-  in_datacenter {
-    int8 id PK
-    varchar name
-    int8 inventory_id FK
-    varchar digital_service_uid FK
+    int8 inventory_id FK     
+    varchar digital_service_version_uid FK     
     varchar full_name
     varchar location
     float8 pue
     timestamp creation_date
-    timestamp last_update_date
-    _varchar common_filters
-  }
-  in_physical_equipment {
+    timestamp last_update_date     
+    varchar common_filters   
+}
+  in_physical_equipment{     
     int8 id PK
-    varchar name
-    int8 inventory_id FK
-    varchar digital_service_uid FK
-    varchar datacenter_name
-    varchar location
-    float8 quantity
-    varchar type
-    varchar model
-    varchar manufacturer
-    date date_purchase
-    date date_withdrawal
-    varchar cpu_type
-    float8 cpu_core_number
-    float8 size_disk_gb
-    float8 size_memory_gb
-    varchar source
-    varchar quality
-    float8 electricity_consumption
-    _varchar common_filters
-    _varchar filters
-    timestamp creation_date
-    timestamp last_update_date
-    int8 duration_hour
-    varchar description
-    float8 nb_user
-  }
-  in_virtual_equipment {
-    int8 id PK
-    varchar name
-    int8 inventory_id FK
-    varchar digital_service_uid FK
-    varchar datacenter_name
-    varchar physical_equipment_name
-    float8 quantity
-    varchar infrastructure_type
-    varchar instance_type
-    varchar type
-    varchar provider
-    varchar location
-    float8 duration_hour
-    float8 workload
-    float8 electricity_consumption
-    float8 vcpu_core_number
-    float8 size_memory_gb
-    float8 size_disk_gb
-    float8 allocation_factor
-    _varchar common_filters
-    _varchar filters
-    timestamp creation_date
-    timestamp last_update_date
-  }
-  note ||--o{ digital_service : "foreign key"
-  digital_service ||--o{ in_application : "foreign key"
-  digital_service ||--o{ in_datacenter : "foreign key"
-  digital_service ||--o{ in_physical_equipment : "foreign key"
-  digital_service ||--o{ in_virtual_equipment : "foreign key"
+    varchar name     
+    int8 inventory_id FK     
+    varchar digital_service_version_uid FK     
+    varchar datacenter_name     
+    varchar location     
+    float8 quantity     
+    varchar type     
+    varchar model     
+    varchar manufacturer     
+    date date_purchase     
+    date date_withdrawal     
+    varchar cpu_type     
+    float8 cpu_core_number     
+    float8 size_disk_gb     
+    float8 size_memory_gb     
+    varchar source     
+    varchar quality     
+    float8 electricity_consumption     
+    varchar common_filters     
+    varchar filters     
+    timestamp creation_date     
+    timestamp last_update_date     
+    int8 duration_hour     
+    varchar description     
+    float8 nb_user   
+}
+  in_virtual_equipment{     
+    int8 id PK     
+    varchar name     
+    int8 inventory_id FK     
+    varchar digital_service_version_uid FK     
+    varchar datacenter_name     
+    varchar physical_equipment_name     
+    float8 quantity     
+    varchar infrastructure_type     
+    varchar instance_type     
+    varchar type     
+    varchar provider     
+    varchar location     
+    float8 duration_hour     
+    float8 workload     
+    float8 electricity_consumption     
+    float8 vcpu_core_number     
+    float8 size_memory_gb     
+    float8 size_disk_gb     
+    float8 allocation_factor     
+    varchar common_filters     
+    varchar filters     
+    timestamp creation_date     
+    timestamp last_update_date   
+}
+  note ||--o{ digital_service_version : "foreign key"
+  digital_service ||--o{ digital_service_version : "foreign key"
+  digital_service_version ||--o{ in_application : "foreign key"
+  digital_service_version ||--o{ in_datacenter : "foreign key"
+  digital_service_version ||--o{ in_physical_equipment : "foreign key"
+  digital_service_version ||--o{ in_virtual_equipment : "foreign key"
 ``` 
 
-## Tables 
+## Tables
 
-### note 
+### note
 
-{{% expand title="Show details" expanded="false" center="true"%}} 
+{{% expand title="Show details" expanded="false" center="true"%}}
 
-#### Comments 
+#### Comments
 
- - That table defines the notes associated with the Information Systems and Digital Services. 
+- That table defines the notes associated with the Information Systems and Digital Services.
 
-#### Columns 
+#### Columns
 
 |Name|Data type|Comments|
 |---|---|---|
@@ -135,9 +150,9 @@ erDiagram
 |*created_by*|int8||
 |*last_updated_by*|int8||
 
-#### Primary Key 
+#### Primary Key
 
- - id
+- id
 #### Foreign keys
 |Column name|Referenced table|Referenced primary key|
 |---|---|---|
@@ -145,50 +160,85 @@ erDiagram
 |last_updated_by|g4it_user|id|
 
 {{% /expand %}}
-### digital_service 
+### digital_service
 
-{{% expand title="Show details" expanded="false" center="true"%}} 
+{{% expand title="Show details" expanded="false" center="true"%}}
 
-#### Comments 
+#### Comments
 
- - That table defines the list of digital services and characteristics associated. 
+- That table defines the list of digital services and characteristics associated.
 
-#### Columns 
+#### Columns
 
-|Name|Data type|Comments|
-|---|---|---|
-|**uid**|varchar||
-|name|varchar|<ul><li>Name of Digital Service</li></ul>|
-|last_calculation_date|timestamp||
-|creation_date|timestamp||
-|last_update_date|timestamp||
-|*note_id*|int8||
-|criteria|_varchar||
-|*user_id*|int8||
-|*organization_id*|int8||
-|is_new_arch|bool||
-|is_migrated|bool||
+| Name                  | Data type | Comments |
+|-----------------------|-----------|----------|
+| **uid**               | int8      |          |
+| name                  | varchar   |          |
+| last_calculation_date | timestamp |          |
+| creation_date         | timestamp |          |
+| last_update_date      | timestamp |          |
+| note_id               | int8      | FK       |
+| criteria              | varchar   |          |
+| user_id               | int8      | FK       |
+| criteria              | _varchar  |          |
+| *organization_id*     | int8      |          |
 
-#### Primary Key 
+#### Primary Key
 
- - uid
+- id
 #### Foreign keys
-|Column name|Referenced table|Referenced primary key|
-|---|---|---|
-|note_id|note|id|
-|organization_id|g4it_organization|id|
-|user_id|g4it_user|id|
+| Column name     |Referenced table|Referenced primary key|
+|-----------------|---|---|
+| note_id         |note|id|
+| organization_id |g4it_organization|id|
+| user_id         |g4it_user|id|
 
 {{% /expand %}}
-### in_application 
 
-{{% expand title="Show details" expanded="false" center="true"%}} 
+### digital_service_version
 
-#### Comments 
+{{% expand title="Show details" expanded="false" center="true"%}}
 
- - That table presents the application data provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint. 
+#### Comments
 
-#### Columns 
+- That table defines the list of digital service versions and characteristics associated.
+
+#### Columns
+
+| Name                  | Data type  | Comments |
+|-----------------------|------------|----------|
+| **uid**               | int8       | PK       |
+| description           | varchar    |          |
+| last_calculation_date | timestamp  |          |
+| creation_date         | timestamp  |          |
+| last_update_date      | timestamp  |          |
+| note_id               | int8       | FK       |
+| item_id               | varchar    |          |
+| version_type          | enum       |          |
+| criteria              | varchar    |          |
+| int8                  | created_by |          |
+| task_id               | int8       | FK       |
+
+#### Primary Key
+
+- id
+#### Foreign keys
+| Column name | Referenced table |Referenced primary key|
+|-------------|------------------|---|
+| note_id     | note             |id|
+| task_id     | tasks            |id|
+| item_id     | in_xxx           |id|
+
+{{% /expand %}}
+### in_application
+
+{{% expand title="Show details" expanded="false" center="true"%}}
+
+#### Comments
+
+- That table presents the application data provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint.
+
+#### Columns
 
 |Name|Data type|Comments|
 |---|---|---|
@@ -204,9 +254,9 @@ erDiagram
 |creation_date|timestamp|<ul><li>Creation Date of Application</li></ul>|
 |last_update_date|timestamp|<ul><li>Last update date of Application</li></ul>|
 
-#### Primary Key 
+#### Primary Key
 
- - id
+- id
 #### Foreign keys
 |Column name|Referenced table|Referenced primary key|
 |---|---|---|
@@ -214,15 +264,15 @@ erDiagram
 |inventory_id|inventory|id|
 
 {{% /expand %}}
-### in_datacenter 
+### in_datacenter
 
-{{% expand title="Show details" expanded="false" center="true"%}} 
+{{% expand title="Show details" expanded="false" center="true"%}}
 
-#### Comments 
+#### Comments
 
- - That table present the datacenter information provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint. 
+- That table present the datacenter information provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint.
 
-#### Columns 
+#### Columns
 
 |Name|Data type|Comments|
 |---|---|---|
@@ -237,9 +287,9 @@ erDiagram
 |last_update_date|timestamp|<ul><li>Last update of Datacenter</li></ul>|
 |common_filters|_varchar|<ul><li>Common filters of Datacenter</li></ul>|
 
-#### Primary Key 
+#### Primary Key
 
- - id
+- id
 #### Foreign keys
 |Column name|Referenced table|Referenced primary key|
 |---|---|---|
@@ -247,15 +297,15 @@ erDiagram
 |inventory_id|inventory|id|
 
 {{% /expand %}}
-### in_physical_equipment 
+### in_physical_equipment
 
-{{% expand title="Show details" expanded="false" center="true"%}} 
+{{% expand title="Show details" expanded="false" center="true"%}}
 
-#### Comments 
+#### Comments
 
- - That table present the physical equipment data provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint. 
+- That table present the physical equipment data provided by a user for each  Information System or Digital Service in order to evaluate its environmental footprint.
 
-#### Columns 
+#### Columns
 
 |Name|Data type|Comments|
 |---|---|---|
@@ -286,9 +336,9 @@ erDiagram
 |description|varchar|<ul><li>Description</li></ul>|
 |nb_user|float8|<ul><li>Number of users</li></ul>|
 
-#### Primary Key 
+#### Primary Key
 
- - id
+- id
 #### Foreign keys
 |Column name|Referenced table|Referenced primary key|
 |---|---|---|
@@ -296,15 +346,15 @@ erDiagram
 |inventory_id|inventory|id|
 
 {{% /expand %}}
-### in_virtual_equipment 
+### in_virtual_equipment
 
-{{% expand title="Show details" expanded="false" center="true"%}} 
+{{% expand title="Show details" expanded="false" center="true"%}}
 
-#### Comments 
+#### Comments
 
- - That table present the virtual equipment data provided by a user for each  Information System or Digital Service. in order to evaluate its environmental footprint. 
+- That table present the virtual equipment data provided by a user for each  Information System or Digital Service. in order to evaluate its environmental footprint.
 
-#### Columns 
+#### Columns
 
 |Name|Data type|Comments|
 |---|---|---|
@@ -332,9 +382,9 @@ erDiagram
 |creation_date|timestamp|<ul><li>Virtual equipment Creation Date</li></ul>|
 |last_update_date|timestamp|<ul><li>Virtual equipment Last update date</li></ul>|
 
-#### Primary Key 
+#### Primary Key
 
- - id
+- id
 #### Foreign keys
 |Column name|Referenced table|Referenced primary key|
 |---|---|---|
@@ -343,3 +393,4 @@ erDiagram
 
 {{% /expand %}}
 
+ 

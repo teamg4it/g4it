@@ -5,7 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/../.github/.github.iml" filepath="$PROJECT_DIR$/../.github/.github.iml" />
       <module fileurl="file://$PROJECT_DIR$/../services/documentation/documentation.iml" filepath="$PROJECT_DIR$/../services/documentation/documentation.iml" />
       <module fileurl="file://$PROJECT_DIR$/../services/frontend/frontend.iml" filepath="$PROJECT_DIR$/../services/frontend/frontend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../g4it-documentation/g4it-documentation.iml" filepath="$PROJECT_DIR$/../../g4it-documentation/g4it-documentation.iml" />
+      <module fileurl="file://$USER_HOME$/g4it-documentation/g4it-documentation.iml" filepath="$USER_HOME$/g4it-documentation/g4it-documentation.iml" />
       <module fileurl="file://$PROJECT_DIR$/../services/keycloak/keycloak.iml" filepath="$PROJECT_DIR$/../services/keycloak/keycloak.iml" />
       <module fileurl="file://$PROJECT_DIR$/workspace.iml" filepath="$PROJECT_DIR$/workspace.iml" />
     </modules>
