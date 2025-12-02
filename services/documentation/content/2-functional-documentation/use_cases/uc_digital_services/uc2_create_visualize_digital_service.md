@@ -48,9 +48,6 @@ Step2 -->|Click on 'Validate Creation' button| Step3[New service version view]
 ## Mockup
 
 -   **Create a Digital Service**
-    ![uc2_create_visualize_digital_service_create.png](../images/uc2_create_visualize_digital_service_create.png)
-
--   **Visualize an existing Digital Service**
     ![uc2_create_visualize_digital_service_visualize.png](../images/uc2_create_visualize_digital_service_visualize.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}

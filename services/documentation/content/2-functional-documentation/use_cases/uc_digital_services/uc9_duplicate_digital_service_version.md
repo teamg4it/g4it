@@ -1,6 +1,6 @@
 ---
 title: "2.9. Duplicate digital service version"
-description: "This use case describes how to duplicate the resources of a digital service"
+description: "This use case describes how to duplicate the resources of a digital service version"
 weight: 90
 mermaid: true
 ---
