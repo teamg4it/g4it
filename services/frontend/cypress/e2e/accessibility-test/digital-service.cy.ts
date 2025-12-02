@@ -94,7 +94,7 @@ describe("Digital Service", () => {
 
         // calculate
         cy.log("### Visualize ###");
-        cy.get('[ng-reflect-impact="climate-change"]').click();
+        cy.wait(2000).get('[ng-reflect-impact="climate-change"]').click();
         cy.then(() => setPage("visualize page"));
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
 

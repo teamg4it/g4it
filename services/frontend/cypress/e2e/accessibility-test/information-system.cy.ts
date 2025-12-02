@@ -23,7 +23,9 @@ describe("Information System", () => {
 
         // switch to simulation
         cy.get('[id="simulation-radio-button"]').click();
-        cy.get('[id="input-simulation-text"]').type("test-cypress-information-system");
+        cy.get('[id="input-simulation-text"]').type(
+            `test-cypress-information-system${Math.random().toFixed(2)}`,
+        );
 
         // load files
         cy.get("[id=file0] input").selectFile(
@@ -60,7 +62,7 @@ describe("Information System", () => {
 
         // tabs navigation
         cy.then(() => setPage("Equipment criteria page"));
-        cy.get('[id="climate-change"]').click();
+        cy.wait(3000).get('[id="climate-change"]').click();
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
 
         // filter on country
@@ -99,7 +101,7 @@ describe("Information System", () => {
 
         // tabs navigation
         cy.then(() => setPage("Application criteria page"));
-        cy.get('[id="climate-change"]').click();
+        cy.wait(3000).get('[id="climate-change"]').click();
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
         // filter on domain
         cy.then(() => setPage("Application filter page"));
