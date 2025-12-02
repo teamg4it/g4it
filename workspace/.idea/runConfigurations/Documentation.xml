@@ -2,7 +2,7 @@
   <configuration default="false" name="Documentation" type="HUGO_RUN_CONFIGURATION" factoryName="Hugo configuration factory">
     <option name="hugo.plugin.arguments" value="-D -p1234 --navigateToChanged" />
     <option name="hugo.plugin.run.server" value="run" />
-    <option name="hugo.plugin.custom.project.dir" value="$PROJECT_DIR$/../../../../G4IT/_repo/g4it/g4it/workspace\..\..\g4it-documentation" />
+    <option name="hugo.plugin.custom.project.dir" value="$PROJECT_DIR$/../workspace\..\..\g4it-documentation" />
     <method v="2">
       <option name="LaunchBrowser.Before.Run" url="http://localhost:1234" />
     </method>
