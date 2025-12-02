@@ -2,7 +2,7 @@
     <div class="chart-container col-12">
         <div class="flex flex-wrap align-items-center">
             @if (footprintStore.appGraphType() === "global") {
-                <h3
+                <h2
                     attr.aria-label="{{ selectedCriteria().title }}{{
                         'inventories-footprint.application.critere.graph.title'
                             | translate
@@ -19,14 +19,16 @@
                                   }
                     }}
                     ({{ "common.peopleeq-min" | translate }})
-                </h3>
+                </h2>
                 <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
             } @else {
                 <div class="inline">
                     @if (showBackButton()) {
-                        <h4
+                        <a
                             class="cursor-pointer m-0 text-xl color-tertiary"
+                            tabindex="0"
                             (click)="onArrowClick()"
+                            (keydown.enter)="onArrowClick()"
                             attr.aria-label="{{
                                 'inventories-footprint.application.selected-infos'
                                     | translate
@@ -55,10 +57,10 @@
                                             : "")
                                       : ""
                             }}
-                        </h4>
+                        </a>
                     }
                     @if (footprintStore.appGraphType() === "domain") {
-                        <h3
+                        <h2
                             attr.aria-label="{{
                                 'inventories-footprint.application.domain-view'
                                     | translate
@@ -84,10 +86,10 @@
                                             })
                             }}
                             ({{ "common.peopleeq-min" | translate }})
-                        </h3>
+                        </h2>
                     }
                     @if (footprintStore.appGraphType() === "subdomain") {
-                        <h3
+                        <h2
                             attr.aria-label="{{
                                 'inventories-footprint.application.subdomain-view'
                                     | translate
@@ -118,10 +120,10 @@
                                               })
                             }}
                             ({{ "common.peopleeq-min" | translate }})
-                        </h3>
+                        </h2>
                     }
                     @if (footprintStore.appGraphType() === "application") {
-                        <h3
+                        <h2
                             attr.aria-label="{{
                                 'inventories-footprint.application.application-view'
                                     | translate
@@ -139,7 +141,7 @@
                                           }
                             }}
                             ({{ "common.peopleeq-min" | translate }})
-                        </h3>
+                        </h2>
                     }
                 </div>
                 <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
