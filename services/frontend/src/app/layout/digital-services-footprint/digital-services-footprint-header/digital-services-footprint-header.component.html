@@ -155,14 +155,16 @@
             </div>
         }
 
-        <h2 class="ml-3">
-            @if (isManageVersions()) {
+        @if (isManageVersions()) {
+            <h2 class="ml-3">
                 {{ "digital-services.version.versions-management" | translate }}
-            }
-            @if (isCompareVersions()) {
+            </h2>
+        }
+        @if (isCompareVersions()) {
+            <h2 class="ml-3">
                 {{ "digital-services.version.compare-versions-title" | translate }}
-            }
-        </h2>
+            </h2>
+        }
     </div>
     @if ((showKebabMenu || !isMobile()) && !isManageVersions() && !isCompareVersions()) {
         <div class="mr-3 block align-items-center lg:flex">
