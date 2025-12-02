@@ -1,7 +1,7 @@
 ---
-title: "2.9.2. Duplicate digital service version"
+title: "2.9. Duplicate digital service version"
 description: "This use case describes how to duplicate the resources of a digital service"
-weight: 20
+weight: 90
 mermaid: true
 ---
 
@@ -51,9 +51,6 @@ graph TD
 
 
 ## Mockup
-
-
-
 
 ## Sequence Diagram
 
