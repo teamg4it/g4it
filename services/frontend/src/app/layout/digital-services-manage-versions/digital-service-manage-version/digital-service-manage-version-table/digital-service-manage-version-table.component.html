@@ -97,7 +97,10 @@
                         (!version.selected && selectedVersions.length >= 2) ||
                         !version.lastCalculationDate
                     "
-                    [ariaLabel]="'digital-services.version.select-version' | translate"
+                    [ariaLabel]="
+                        'digital-services.version.select-version'
+                            | translate: { versionTableName: version.versionName }
+                    "
                 ></p-checkbox>
             </td>
         </tr>
