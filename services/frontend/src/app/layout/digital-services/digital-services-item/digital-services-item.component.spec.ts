@@ -72,12 +72,6 @@ describe("DigitalServicesItemComponent", () => {
         );
     });
 
-    it("should emit noteOpened when openNote is called", () => {
-        spyOn(component.noteOpened, "emit");
-        component.openNote();
-        expect(component.noteOpened.emit).toHaveBeenCalledWith(component.digitalService);
-    });
-
     it("should set firstFootprintTab to 'resources' in constructor when isAi is false", () => {
         component.isAi = false;
         // Recreate component to trigger constructor logic

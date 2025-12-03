@@ -46,6 +46,7 @@ export class DigitalServicesFootprintComponent
     inPhysicalEquipments: InPhysicalEquipmentRest[] = [];
     isEcoMindAi: boolean = false;
     tabItems: MenuItem[] | undefined;
+    dsvUid = "";
 
     @ViewChild("footprintHeader", { read: ElementRef }) headerRef!: ElementRef;
     @ViewChild("footprintFooter", { read: ElementRef }) footerRef!: ElementRef;
@@ -63,8 +64,8 @@ export class DigitalServicesFootprintComponent
 
     ngOnInit(): void {
         this.route.paramMap.subscribe((params) => {
-            const dsvUid = params.get("digitalServiceVersionId") ?? "";
-            this.asyncInit(dsvUid);
+            this.dsvUid = params.get("digitalServiceVersionId") ?? "";
+            this.asyncInit(this.dsvUid);
         });
     }
     private async asyncInit(uid: string) {
@@ -232,12 +233,8 @@ export class DigitalServicesFootprintComponent
             this.digitalServicesData.update(this.digitalService),
         );
 
-        this.digitalServiceStore.initInPhysicalEquipments(
-            this.digitalService.activeDsvUid,
-        );
-        this.digitalServiceStore.initInVirtualEquipments(
-            this.digitalService.activeDsvUid,
-        );
+        this.digitalServiceStore.initInPhysicalEquipments(this.dsvUid);
+        this.digitalServiceStore.initInVirtualEquipments(this.dsvUid);
         this.updateTabItems();
     }
 }

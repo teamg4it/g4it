@@ -16,7 +16,8 @@ mermaid: true
 ## Description
 
 This use case enables a project team to share a digital service version externally from G4IT, allowing access without requiring a user account.
-The shared digital service version will be accessible to the user in read-only view.
+The shared digital service version will be accessible to the user in read-only view. 
+Once user create a share link, a popup appears with the link to copy. The link is valid for 60 days. Once the link gets created, user can extend the link validity for another 60 days.
 
 **Navigation Path**
 
@@ -31,16 +32,18 @@ The shared digital service version will be accessible to the user in read-only v
 {{< mermaid align="center">}}
 graph TD
 Step1[Digital Service Version View] --> Decision1{Already Shared?}
-Decision1 -- No --> Step2['Share' button displayed]
-Step2 --> Step3[Click 'Share']
+Decision1 -- No --> Step2[ icon with 'Share' button displayed]
+Step2 --> Step3[Click 'Share' icon]
 Step3 --> Step4[Popup opens to copy link]
 Step4 --> Step5[Link copied]
-Step5 --> Step6[Button changes to 'Shared']
+Step5 --> Step6[Button changes to 'Shared' icon]
 Step6 --> Step7[Share with another user]
 
-    Decision1 -- Yes --> Step8['Shared' button displayed]
-    Step8 --> Step9[Click 'Shared']
-    Step9 --> Step10[Popup opens to copy link]
+    Decision1 -- Yes --> Step8[icon with 'Shared' button displayed]
+    Step8 --> Step9[Click 'Shared' icon]
+    Step9 --> Step10[Popup opens to copy link] --> Decision2{Extend link validity?}
+    Decision2 -- Yes --> Step10A[Link validity extended by 60 days] -->  Step11
+    Decision2 -- No -->  Step10
     Step10 --> Step11[Link copied]
     Step11 --> Step12[Share with another user]
 
