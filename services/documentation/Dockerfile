@@ -19,7 +19,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 WORKDIR /app
 COPY . .
 RUN mkdir -p themes/hugo-theme-relearn
-RUN git clone -b main --single-branch https://github.com/McShelby/hugo-theme-relearn.git themes/hugo-theme-relearn
+RUN git clone -b 8.0.0 --single-branch https://github.com/McShelby/hugo-theme-relearn.git themes/hugo-theme-relearn
 
 RUN mkdir -p themes/hugo-video
 RUN git clone -b main --single-branch https://github.com/martignoni/hugo-video.git themes/hugo-video
