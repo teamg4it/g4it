@@ -267,7 +267,8 @@
             "compare-versions": "Comparer 2 versions",
             "compare-version-tooltip": "Sélectionner deux versions pour comparer leurs résultats. Les versions doivent avoir des résultats d'impact calculés.",
             "compare-versions-title": "Comparer l'impact des versions",
-            "not-calculated": "Non calculé"
+            "not-calculated": "Non calculé",
+            "select-version": "Cliquez pour sélectionner une version {{versionTableName}}"
         },
         "error.digital-service-already-exists": "Le service numérique existe déjà",
         "comparison": {
