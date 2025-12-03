@@ -1,7 +1,7 @@
 <div class="my-3 footprint-dashboard-container-app-criteria">
     <div class="chart-container col-12">
         <div class="flex flex-wrap align-items-center">
-            <h3
+            <h2
                 attr.aria-label="{{
                     'inventories-footprint.application.graph-title-global' | translate
                 }}"
@@ -15,7 +15,7 @@
                               }
                 }}
                 ({{ "common.peopleeq-min" | translate }})
-            </h3>
+            </h2>
             @if (showDataConsistencyBtn) {
                 <p-button
                     (onClick)="showInconsitencyGraph = !showInconsitencyGraph"

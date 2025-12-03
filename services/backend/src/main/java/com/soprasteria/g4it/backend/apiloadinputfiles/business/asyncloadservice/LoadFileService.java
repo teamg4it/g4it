@@ -8,6 +8,10 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice;
 
+import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadApplicationService;
@@ -42,6 +46,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -67,6 +72,10 @@ public class LoadFileService {
     CsvToInMapper csvToInMapper;
     @Autowired
     InventoryRepository inventoryRepository;
+    @Autowired
+    InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Autowired
+    InApplicationRepository inApplicationRepository;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
 
@@ -208,7 +217,7 @@ public class LoadFileService {
         List<InDatacenterRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
+            objects.add(csvToInMapper.csvInDatacenterToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceVersionUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadDatacenterService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
@@ -241,7 +250,7 @@ public class LoadFileService {
         List<InPhysicalEquipmentRest> objects = new ArrayList<>(Constants.BATCH_SIZE);
 
         for (CSVRecord csvRecord : records) {
-            objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceUid()));
+            objects.add(csvToInMapper.csvInPhysicalEquipmentToRest(csvRecord, context.getInventoryId(), context.getDigitalServiceVersionUid()));
             if (row >= Constants.BATCH_SIZE) {
                 errors.addAll(loadPhysicalEquipmentService.execute(context, fileToLoad, pageNumber, objects));
                 objects.clear();
@@ -380,5 +389,26 @@ public class LoadFileService {
 
         return errors;
     }
+
+    @Transactional
+    public void linkApplicationsToVirtualEquipments(Long inventoryId) {
+        // Load all virtual equipments
+        Map<String, InVirtualEquipment> virtualMap = inVirtualEquipmentRepository.findByInventoryId(inventoryId)
+                .stream()
+                .collect(Collectors.toMap(InVirtualEquipment::getName, ve -> ve));
+
+        // Find all applications with missing physical equipment
+        List<InApplication> applicationsToLink = inApplicationRepository.findByInventoryIdAndPhysicalEquipmentNameIsNull(inventoryId);
+
+        for (InApplication app : applicationsToLink) {
+            InVirtualEquipment ve = virtualMap.get(app.getVirtualEquipmentName());
+            if (ve != null) {
+                app.setPhysicalEquipmentName(ve.getPhysicalEquipmentName());
+                // optionally update other derived fields
+                inApplicationRepository.save(app);
+            }
+        }
+    }
+
 
 }

@@ -19,6 +19,9 @@ describe("Digital Service", () => {
         // create digital service
         cy.log("### Test without change ###");
         cy.get('[id="add-digital"]').click();
+        const dsName = `cy-digital-service ${Math.random().toFixed(2)}`;
+        cy.wait(200).get('[id="dsName-input"]').clear().type(dsName);
+        cy.wait(2000).get('[id="validate-creation-button"]').click();
 
         // add a note
         cy.then(() => setPage("Note component"));
@@ -91,7 +94,7 @@ describe("Digital Service", () => {
 
         // calculate
         cy.log("### Visualize ###");
-        cy.get('[ng-reflect-impact="climate-change"]').click();
+        cy.wait(2000).get('[ng-reflect-impact="climate-change"]').click();
         cy.then(() => setPage("visualize page"));
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
 
@@ -113,7 +116,11 @@ describe("Digital Service", () => {
         });
         cy.get('[id="criteria-cancel"]').click();
         // delete the digital service
-        cy.get('[id="delete-service"]').click();
+        cy.get('[id="return-button"]').click();
+
+        cy.contains('p-card[role="button"]', dsName).within(() => {
+            cy.get('[id="delete-digital-service"]').click();
+        });
         cy.get('[aria-label="Yes"]').click();
     });
 });

@@ -1,7 +1,7 @@
 <div class="pt-4">
-    <h3 for="workspaceName" class="inline m-0">
+    <h2 for="workspaceName" class="inline m-0">
         {{ "administration.user.select-org" | translate }}
-    </h3>
+    </h2>
     <br />
     <div
         class="h-2rem border-top-2 border-primary p-0 mt-1"
@@ -49,16 +49,18 @@
         </div>
     }
 
-    <app-criteria-popup
-        [displayPopup]="displayPopup"
-        [type]="'workspace'"
-        [workspaceDetails]="workspace"
-        [organizationDetails]="organization"
-        [selectedCriteriaIS]="selectedCriteriaIS"
-        [selectedCriteriaDS]="selectedCriteriaDS"
-        (outSaveWorkspace)="handleSaveWorkspace($event)"
-        (outClose)="displayPopup = false"
-    ></app-criteria-popup>
+    @if (displayPopup) {
+        <app-criteria-popup
+            [displayPopup]="displayPopup"
+            [type]="'workspace'"
+            [workspaceDetails]="workspace"
+            [organizationDetails]="organization"
+            [selectedCriteriaIS]="selectedCriteriaIS"
+            [selectedCriteriaDS]="selectedCriteriaDS"
+            (outSaveWorkspace)="handleSaveWorkspace($event)"
+            (outClose)="displayPopup = false"
+        ></app-criteria-popup>
+    }
     <form class="mt-3" *ngIf="membersAndSearchVisible" [formGroup]="searchForm">
         <h3 for="searchName" class="inline m-0">
             {{ "administration.user.search-user" | translate }}

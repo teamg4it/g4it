@@ -72,14 +72,16 @@
             </div>
         }
 
-        <app-criteria-popup
-            [displayPopup]="displayPopup"
-            [type]="'organization'"
-            [organizationDetails]="organization"
-            [selectedCriteriaIS]="selectedCriteria"
-            (outSaveOrganization)="handleSaveOrganization($event)"
-            (outClose)="displayPopup = false"
-        ></app-criteria-popup>
+        @if (displayPopup) {
+            <app-criteria-popup
+                [displayPopup]="displayPopup"
+                [type]="'organization'"
+                [organizationDetails]="organization"
+                [selectedCriteriaIS]="selectedCriteria"
+                (outSaveOrganization)="handleSaveOrganization($event)"
+                (outClose)="displayPopup = false"
+            ></app-criteria-popup>
+        }
 
         <div
             class="h-2rem border-top-2 border-primary p-0 mt-3"

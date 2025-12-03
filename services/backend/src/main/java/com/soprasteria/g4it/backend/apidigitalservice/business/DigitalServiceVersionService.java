@@ -43,11 +43,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 /**
  * Digital-Service service.
@@ -327,13 +327,18 @@ public class DigitalServiceVersionService {
 
         // Step 3: Map to DigitalServiceVersionsListRest
         return versions.stream()
+                // sort so ACTIVE comes first, then others (e.g., DRAFT)
+                .sorted(Comparator.comparing(
+                        v -> !"ACTIVE".equalsIgnoreCase(v.getVersionType())
+                ))
                 .map(v -> DigitalServiceVersionsListRest.builder()
                         .versionName(v.getDescription())
                         .versionType(v.getVersionType())
                         .digitalServiceVersionUid(v.getUid())
                         .digitalServiceUid(digitalServiceUid)
                         .lastCalculationDate(v.getLastCalculationDate())
-                        .build()).collect(toList());
+                        .build())
+                .collect(Collectors.toList());
     }
 
     /**

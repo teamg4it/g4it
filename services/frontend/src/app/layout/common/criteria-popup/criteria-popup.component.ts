@@ -6,6 +6,7 @@ import {
     Output,
     SimpleChanges,
 } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import {
     OrganizationCriteriaRest,
     WorkspaceCriteriaRest,
@@ -14,11 +15,13 @@ import {
 import { DSCriteriaRest } from "src/app/core/interfaces/digital-service.interfaces";
 import { InventoryCriteriaRest } from "src/app/core/interfaces/inventory.interfaces";
 import { Organization } from "src/app/core/interfaces/user.interfaces";
+import { MonthYearPipe } from "src/app/core/pipes/monthyear.pipe";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-criteria-popup",
     templateUrl: "./criteria-popup.component.html",
+    providers: [MonthYearPipe],
 })
 export class CriteriaPopupComponent implements OnChanges {
     @Input() displayPopup: boolean = false;
@@ -40,7 +43,11 @@ export class CriteriaPopupComponent implements OnChanges {
     @Output() outSaveDS = new EventEmitter<DSCriteriaRest>();
     @Output() outClose = new EventEmitter<void>();
 
-    constructor(private readonly globalStore: GlobalStoreService) {}
+    constructor(
+        private readonly globalStore: GlobalStoreService,
+        private readonly translate: TranslateService,
+        private readonly monthYear: MonthYearPipe,
+    ) {}
 
     criteriaList: string[] = Object.keys(this.globalStore.criteriaList());
     tempSelectedCriteriaIS: string[] = [];
@@ -187,6 +194,31 @@ export class CriteriaPopupComponent implements OnChanges {
             }
             default:
                 break;
+        }
+    }
+
+    getHeader(): string {
+        switch (this.type) {
+            case "organization":
+                return this.translate.instant("administration.user.choose-criteria", {
+                    organization: this.organizationDetails.name,
+                });
+
+            case "workspace":
+                return this.translate.instant(
+                    "administration.organization.choose-criteria",
+                    { workspaceName: this.workspaceDetails.workspaceName },
+                );
+
+            case "inventory":
+                return this.translate.instant("inventories.choose-criteria", {
+                    inventoryName: this.monthYear.transform(this.inventory.name),
+                });
+
+            default: // digital-services
+                return this.translate.instant("digital-services.choose-criteria", {
+                    digitalServiceName: this.ds.name,
+                });
         }
     }
 
