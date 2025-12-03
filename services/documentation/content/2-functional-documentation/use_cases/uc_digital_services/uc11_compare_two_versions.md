@@ -48,8 +48,17 @@ graph TD
     ![uc11_compare_digital_service_versions.png](../images/uc11_compare_digital_service_versions.png)
 
 -   **Comparison of evaluated Digital Service Versions**
-    ![uc11_compare_digital_service_versions_screen.png](../images/uc11_compare_digital_service_versions_screen.png)
+    ![uc11_compare_dsv.png](../images/uc11_compare_dsv.png)
 
+{{% expand title="Show the behavior detail" expanded="false" center="true"%}}
+
+| Reference | Group       | Elements                 | Type   | Description                                                                                  |
+|-----------|-------------|--------------------------|--------|----------------------------------------------------------------------------------------------|
+|           | Page Header |                          | group  |                                                                                              |
+| 1         |             | Digital service versions | label  | Selected two versions to compare                                                             |
+| 2         |             | Compare two versions     | button | Click on the Compare two versions button to get the evaluated data of two selected versions. |
+
+{{% /expand %}}
 ## Sequence Diagram
 
 {{< mermaid >}}

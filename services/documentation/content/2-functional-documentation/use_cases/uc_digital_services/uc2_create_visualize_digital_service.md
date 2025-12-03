@@ -18,9 +18,14 @@ mermaid: true
 This usecase allows a user to create a digital service version.
 It means that user can describe all terminals, networks and servers related to a digital service version to evaluate its environmental footprint
 
+Users can create a new digital service version either by clicking on the "Evaluate New Service" button or by duplicating the existing version. Details of the behaviour is described in [2.9 Duplicate digital service version](uc9_duplicate_digital_service_version.md). 
+
+
 **Navigation Path**
 
 -   My Digital Services / Evaluate New Service
+-   My Digital Services / Digital Service Version view / Duplicate version
+-   My Digital Services / Digital Service Version view / Manage versions / Duplicate version
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected workspace.
@@ -29,8 +34,10 @@ The connected user must have the write access for that module on the selected wo
 
 {{< mermaid align="center" >}}
 graph TD
-Step1[List of digital services view] -->|Click on 'Evaluate new service' button| Step2[Enter Digital Service Name & Active Version Name]
-Step2 -->|Click on 'Validate Creation' button| Step3[New service version view]
+Step1[List of digital services view] --> Decision2{Create new DS version or duplicate existing DS version?}
+Decision2 --> |Click on 'Evaluate new service' button| Step2[Enter Digital Service Name & Active Version Name]
+    
+    Step2 -->|Click on 'Validate Creation' button| Step3[New service version view]
 
     Step3 --> Decision1{Which type of equipments?}
 
@@ -43,6 +50,15 @@ Step2 -->|Click on 'Validate Creation' button| Step3[New service version view]
     N1 -->|Click on Add| N2[Add network view]
     PI1 -->|Click on Add| PI2[Add non-cloud server view]
     PC1 -->|Click on Add| PC2[Add cloud server view]
+
+Decision2 --> |Duplicate the existing DS version | Step4[Click on a digital service]
+
+    Step4 --> Decision3{Do you want to duplicate active version?}
+
+    Decision3 -->|Yes| Step5[Click on duplicate version icon]
+    Decision3 -->|No| Step6[Click on manage versions icon]
+
+    Step6 --> Step7[List of versions appear, click on duplicate version icon]
 {{< /mermaid >}}
 
 ## Mockup
