@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/pages/hugo/hugo_extended:latest as build
+FROM registry.gitlab.com/pages/hugo/hugo_extended:0.140.2 as build
 
 # Install necessary tools and upgrade packages in one layer
 RUN apk add --no-cache curl git nodejs npm wget \
@@ -19,7 +19,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 WORKDIR /app
 COPY . .
 RUN mkdir -p themes/hugo-theme-relearn
-RUN git clone -b main --single-branch https://github.com/McShelby/hugo-theme-relearn.git themes/hugo-theme-relearn
+RUN git clone -b v6.0.0 --single-branch https://github.com/McShelby/hugo-theme-relearn.git themes/hugo-theme-relearn
 
 RUN mkdir -p themes/hugo-video
 RUN git clone -b main --single-branch https://github.com/martignoni/hugo-video.git themes/hugo-video
@@ -37,4 +37,3 @@ CMD ["nginx", "-g", "daemon off;"]
 USER 1001
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD curl -f -s localhost:8080 || exit 1
-
