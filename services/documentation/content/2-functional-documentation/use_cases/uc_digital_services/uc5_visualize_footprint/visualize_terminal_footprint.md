@@ -1,6 +1,6 @@
 ---
-title: "2.5.1. Visualize digital service's terminal footprint"
-description: "This use case describes how to visualize the impact of a digital service"
+title: "2.5.1. Visualize digital service version's terminal footprint"
+description: "This use case describes how to visualize the impact of a digital service version"
 weight: 10
 mermaid: true
 ---
@@ -15,7 +15,7 @@ mermaid: true
 
 ## Description
 
-The use case allows a project team to visualize the impacts of terminals of a digital service.
+The use case allows a project team to visualize the impacts of terminals of a digital service version.
 The key indicators displayed on the radar graph are terminal equipment.
 The results can be filtered by the type of equipment.
 It is also possible to display results for a single criteria only.

@@ -13,7 +13,7 @@ mermaid: true
 
 ## Description
 
-This use case allows a **project team** to upload Public Cloud - IaaS equipments by importing the files, into a digital service previously created.
+This use case allows a **project team** to upload Public Cloud - IaaS equipments by importing the files, into a digital service version previously created.
 The file types are **datacenter**, **physical equipment** and **virtual equipment**.
 
 The files should be in `.csv` or `.xlsx` format. For **CSV files** specifically, both commas and semicolons are
@@ -22,7 +22,7 @@ other encoding formats, while untested, may also work.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Import button  / Import Cloud Servers
+-   My Digital Services / Digital Service Version view / Import button  / Import Cloud Servers
 
 ## Import Public Cloud - IaaS
 ![uc3_add_visualize_equipments_CloudServiceImport.png](../../../images/uc3_add_visualize_equipments_CloudServiceImport.png)
@@ -68,20 +68,20 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Import" button in digital service view
+RND ->> front: Click on "Import" button in digital service version view
 front ->> back: GET /organizations/{organization}/workspaces/{workspace}/template-files
 back -->> front: Return the information of template files
 RND ->> front: Click on the template to download.
 front ->> back: GET /organizations/{organization}/workspaces/{workspace}/template-files/{name}
 back -->> front: Template file downloaded in user's local machine
 RND ->> front: Click on "Start Upload" button in the loading files view
-front ->> back: POST /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/load-input-files
+front ->> back: POST /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/load-input-files
 front -->> RND : Display the 'pending' button if another task is in progress
 front -->> back: Resume loading once no other task is in progress
 back -->> DataBase: Validate and load virtual equipment in the in_virtual_equipment table
 back -->> front: Update the loading history
-front ->> back: GET /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}
-back-->> front: Get the updated digital service
+front ->> back: GET /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}
+back-->> front: Get the updated digital service version
 back ->> front: Display the updated loading history
 front ->> RND : Display the 'completed' button if all the uploaded data is correct
 front -->> RND : Display the 'failed' button if most of the uploaded data is incorrect or <br> mandatory headers missing

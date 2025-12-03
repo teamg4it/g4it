@@ -1,6 +1,6 @@
 ---
-title: "2.6 Export a digital service"
-description: "This use case describes how to export a digital service"
+title: "2.6 Export a digital service version"
+description: "This use case describes how to export a digital service version"
 weight: 60
 mermaid: true
 ---
@@ -19,7 +19,7 @@ This use case allows a project team to generate and download the created termina
 
 **Navigation Path**
 
-My Digital Services / Digital Service view / Export button
+My Digital Services / Digital Service version view / Export button
 
 **Access Conditions**
 
@@ -29,7 +29,7 @@ The connected member must have the 'write' role for the digital service module o
 
 {{< mermaid align="center">}}
 graph TD;
-Step1[Digital Service view] --> Decision1{First Calculation is done?}
+Step1[Digital Service version view] --> Decision1{First Calculation is done?}
 Decision1-->|Yes|Step2[Button 'Export' is enabled]
 Decision1-->|No|Step3[Button 'Export' is not enabled]
 Step2-->|Click on 'Export' button|Step4[Retrieve CSV files stored<br> in azure stoage] --> Step5[Files downloaded]
@@ -58,8 +58,8 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant Azure storage
 
-    RND ->> front: Click on 'Export' button on the digital service view
-    front ->> back: POST /api/GET /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/export
+    RND ->> front: Click on 'Export' button on the digital service version view
+    front ->> back: POST /api/GET /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/export
     Azure storage -->> back: Retrieve the zipped files
     back ->> front: zip file downloaded in user's local
     front ->> RND: Exported zipped CSV files

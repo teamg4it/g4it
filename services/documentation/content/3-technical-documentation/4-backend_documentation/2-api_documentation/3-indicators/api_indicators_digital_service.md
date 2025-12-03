@@ -7,17 +7,17 @@ mermaid: true
 
 ## API PATH
 
-| API                                                                                                                       | Swagger                                                                                                                                 | Use Cases                                                                                                                       |
-|:--------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------|
-| GET /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/outputs/physical-equipments | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/digital-service-outputs/getDigitalServiceOutputsPhysicalEquipmentsRest) | [Visualise digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint.md" %}}) |
-| GET /organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/outputs/virtual-equipments  | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/digital-service-outputs/getDigitalServiceOutputsVirtualEquipmentsRest)  | [Visualise digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint.md" %}}) |
+| API                                                                                                                                     | Swagger                                                                                                                                 | Use Cases                                                                                                                       |
+|:----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------|
+| GET /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/outputs/physical-equipments | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/digital-service-outputs/getDigitalServiceOutputsPhysicalEquipmentsRest) | [Visualise digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint.md" %}}) |
+| GET /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/outputs/virtual-equipments  | [Input/Output](https://saas-g4it.com/api/swagger-ui/index.html#/digital-service-outputs/getDigitalServiceOutputsVirtualEquipmentsRest)  | [Visualise digital service]({{% ref "/2-functional-documentation/use_cases/uc_digital_services/uc5_visualize_footprint.md" %}}) |
 
 ## Description
 
-physical-equipments API allows the user to get physical equipment indicators of digital service. The API returns the
+physical-equipments API allows the user to get physical equipment indicators of digital service version. The API returns the
 indicators of terminal,network and non-cloud server.
 
-virtual-equipments API allows the user to get virtual equipment indicators of digital service. The API returns the
+virtual-equipments API allows the user to get virtual equipment indicators of digital service version. The API returns the
 indicators of virtual and cloud server.
 
 ## API Call Processing
@@ -30,7 +30,7 @@ and [OutVirtualEquipmentService](https://github.com/G4ITTeam/g4it/blob/main/serv
 
 ## Data Model
 
-Below you will find the entities used to save digital service indicators.
+Below you will find the entities used to save digital service version indicators.
 
 | Package                                       | Entity               | table                                                                                                                           |
 |-----------------------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------------------|

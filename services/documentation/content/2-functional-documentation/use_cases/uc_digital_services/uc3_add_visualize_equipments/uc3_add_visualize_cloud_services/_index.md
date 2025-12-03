@@ -13,11 +13,11 @@ mermaid: true
 
 ## Description
 
-This use case allows a project team to add Public Cloud - IaaS equipment directly via form, into a digital service previously created.
+This use case allows a project team to add Public Cloud - IaaS equipment directly via form, into a digital service version previously created.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service view / Visualize my resources tab / Public Clouds - IaaS
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Public Clouds - IaaS
 
 
 **Access Conditions**

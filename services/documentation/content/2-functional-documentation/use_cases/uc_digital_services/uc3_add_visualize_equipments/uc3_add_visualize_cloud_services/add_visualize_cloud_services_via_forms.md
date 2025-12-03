@@ -13,11 +13,11 @@ mermaid: true
 
 ## Description
 
-This use case allows a project team to add Public Cloud - IaaS equipment directly via form, into a digital service previously created.
+This use case allows a project team to add Public Cloud - IaaS equipment directly via form, into a digital service version previously created.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Visualize my resources tab / Public Cloud - IaaS / Add Cloud Service
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Public Cloud - IaaS / Add Cloud Service
 
 ## Public Cloud - IaaS add/edit
 
@@ -52,10 +52,10 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service's Public Clouds - IaaS table
-front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
+RND ->> front: Click on "Add" button in the digital service version's Public Clouds - IaaS table
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/virtual-equipments
 back--> DataBase: Create cloud record in the in_virtual_equipment table
-front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/virtual-equipments
 DataBase -->> back: Get cloud services from the in_virtual_equipment table
 back -->> front: Send the virtual equipments for the cloud service view
 front->> RND : Display the cloud service list view

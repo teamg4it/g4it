@@ -13,12 +13,12 @@ mermaid: true
 
 ## Description
 
-This use case allows a project team to add NPrivate Infrastructure equipment directly via form, into a digital service previously created.
+This use case allows a project team to add NPrivate Infrastructure equipment directly via form, into a digital service version previously created.
 
 **Navigation Path**
 
--   My Digital Services / My Digital Service / Visualize my resources tab /Private Infrastructures / Add Server
--   My Digital Services / My Digital Service / Visualize my resources tab / Private Infrastructures / Edit Server
+-   My Digital Services / Digital Service Version view / Visualize my resources tab /Private Infrastructures / Add Server
+-   My Digital Services / Digital Service Version view / Visualize my resources tab / Private Infrastructures / Edit Server
 
 **Access Conditions**
 The connected user must have the write access for that module on the selected workspace.
@@ -168,18 +168,18 @@ participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
 
-RND ->> front: Click on "Add" button in the digital service's Private Infrastructures table
-front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+RND ->> front: Click on "Add" button in the digital service version's Private Infrastructures table
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments
 back--> DataBase: Create non-cloud server record in the in_physical_equipment table
-front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/datacenters
 back--> DataBase: Create non-cloud server record in the in_datacenter table
-front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/physical-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/physical-equipments
 DataBase-->> back: Get non-cloud servers from the in_physical_equipment table
-front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
+front ->> back: POST /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/virtual-equipments
 back-->> DataBase: Create non-cloud server's vm record in the in_virtual_equipment table
-front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/virtual-equipments
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/virtual-equipments
 DataBase-->> back: Get non-cloud servers' vms from the in_virtual_equipment table
-front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-services/{digitalServiceUid}/inputs/datacenters
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/inputs/datacenters
 DataBase-->> back: Get non-cloud servers' datacenter from the in_datacenter table
 back-->> front: Send the physical and virtual equipments for the non-cloud server view
 front->> RND : Display the Private Infrastructure list view

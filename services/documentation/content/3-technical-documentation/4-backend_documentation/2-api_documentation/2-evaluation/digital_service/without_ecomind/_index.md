@@ -1,19 +1,19 @@
 ---
-title: "Evaluating digital service"
-description: "Evaluate digital service"
+title: "Evaluating digital service version"
+description: "Evaluate digital service version"
 weight: 40
 mermaid: true
 ---
 
 ## Evaluation Process
 
-The digital service data is evaluated using active criteria in
+The digital service version data is evaluated using active criteria in
 the [EvaluateService class](https://github.com/G4ITTeam/g4it/blob/main/services/backend/src/main/java/com/soprasteria/g4it/backend/apievaluating/business/asyncevaluatingservice/EvaluateService.java).
-Note: active criteria here refers to the criteria set for a digital service to calculate the impacts for.
+Note: active criteria here refers to the criteria set for a digital service version to calculate the impacts for.
 
 ### Impact Calculation
 
-The EvaluateService evaluates the physical equipment and virtual equipment associated with the digital service.
+The EvaluateService evaluates the physical equipment and virtual equipment associated with the digital service version.
 Following this evaluation, it aggregates the results using active criteria and lifecycle steps.
 
 #### Cloud Virtual Equipment:
