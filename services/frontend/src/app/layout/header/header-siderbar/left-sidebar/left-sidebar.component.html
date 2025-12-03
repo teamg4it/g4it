@@ -4,7 +4,9 @@
     [attr.aria-label]="'common.left-navigation' | translate"
 >
     @if (!isMobile()) {
-        <div class="flex align-items-center justify-content-center mb-2 mt-4 logo-icon">
+        <div
+            class="flex align-items-center justify-content-center mb-2 mt-4 logo-icon color-transparent"
+        >
             <img
                 src="assets/images/logos/logo-overgreen.svg"
                 alt="{{ 'common.overgreen-logo' | translate }}"
@@ -28,7 +30,7 @@
                 'bg-light-green': isMobile() && selectedPage() === constants.WELCOME_PAGE,
             }"
         >
-            <div class="flex justify-content-center">
+            <div class="flex justify-content-center color-transparent">
                 <img
                     src="assets/images/icons/icon-home.svg"
                     alt="{{ 'welcome-page.title' | translate }}"
@@ -51,7 +53,7 @@
                 'bg-light-green': selectedPage() === 'inventories',
             }"
         >
-            <div class="flex justify-content-center">
+            <div class="flex justify-content-center color-transparent">
                 <img
                     src="assets/images/icons/icon-dashboard.svg"
                     alt="{{
@@ -82,7 +84,7 @@
                     selectedPage() === 'digital-service-version',
             }"
         >
-            <div class="flex justify-content-center">
+            <div class="flex justify-content-center color-transparent">
                 <img
                     src="assets/images/icons/icon-digital-service.svg"
                     alt="{{
@@ -118,7 +120,7 @@
                     'bg-light-green': selectedPage() === 'eco-mind-ai',
                 }"
             >
-                <div class="flex justify-content-center">
+                <div class="flex justify-content-center color-transparent">
                     <img
                         src="assets/images/icons/icon_ecomind_ai_small.svg"
                         alt="{{
@@ -152,7 +154,7 @@
                 'bg-light-green': selectedPage() === 'administration',
             }"
         >
-            <div class="flex justify-content-center">
+            <div class="flex justify-content-center color-transparent">
                 <img
                     src="assets/images/icons/icon-key.svg"
                     alt="{{ 'administration.title' | translate }}"
@@ -167,7 +169,9 @@
         </a>
     </div>
     @if (!isZoomedIn125() && !isMobile()) {
-        <div class="flex align-items-center justify-content-center mb-5">
+        <div
+            class="flex align-items-center justify-content-center mb-5 color-transparent"
+        >
             <img
                 src="assets/images/logos/logo-ssg.svg"
                 alt="{{ 'common.soprasteria-logo' | translate }}"

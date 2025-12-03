@@ -919,6 +919,14 @@ div.label-input-div-medium {
     color: gray !important;
 }
 
+.manage-version-table {
+    .p-disabled,
+    .p-component:disabled {
+        opacity: 1;
+        color: #383838 !important;
+    }
+}
+
 .p-progressbar {
     border: 0 none;
     border-radius: 10px;
