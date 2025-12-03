@@ -63,7 +63,7 @@ public class InDatacenterService {
         }
 
         if (!Objects.equals(digitalServiceVersionUid, inDatacenter.get().getDigitalServiceVersionUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceVersionUid, inDatacenter.get().getDigitalServiceUid(), id));
+            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceVersionUid, inDatacenter.get().getDigitalServiceVersionUid(), id));
         }
 
         return inDatacenterMapper.toRest(inDatacenter.get());
@@ -109,7 +109,7 @@ public class InDatacenterService {
         }
 
         if (!Objects.equals(digitalServiceVersionUid, inDatacenter.get().getDigitalServiceVersionUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceVersionUid, inDatacenter.get().getDigitalServiceUid(), id));
+            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this datacenter id: %d", digitalServiceVersionUid, inDatacenter.get().getDigitalServiceVersionUid(), id));
         }
 
         final InDatacenter objectToUpdate = inDatacenter.get();
@@ -147,7 +147,7 @@ public class InDatacenterService {
         }
 
         if (!Objects.equals(inventoryId, inDatacenter.get().getInventoryId())) {
-            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this datacenter id: %d", inventoryId, inDatacenter.get().getDigitalServiceUid(), id));
+            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this datacenter id: %d", inventoryId, inDatacenter.get().getDigitalServiceVersionUid(), id));
         }
 
         return inDatacenterMapper.toRest(inDatacenter.get());

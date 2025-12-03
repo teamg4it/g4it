@@ -145,7 +145,7 @@ public class InPhysicalEquipmentService {
         }
 
         if (!Objects.equals(inventoryId, inVirtualEquipment.get().getInventoryId())) {
-            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this physical equipment id: %d", inventoryId, inVirtualEquipment.get().getDigitalServiceUid(), id));
+            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this physical equipment id: %d", inventoryId, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
         }
 
         return inPhysicalEquipmentMapper.toRest(inVirtualEquipment.get());

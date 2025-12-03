@@ -67,7 +67,7 @@ public class InVirtualEquipmentService {
         }
 
         if (!Objects.equals(digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceUid(), id));
+            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
         }
 
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment.get());
@@ -114,7 +114,7 @@ public class InVirtualEquipmentService {
         }
 
         if (!Objects.equals(digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid())) {
-            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceUid(), id));
+            throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
         }
 
         final InVirtualEquipment objectToUpdate = inVirtualEquipment.get();
@@ -208,7 +208,7 @@ public class InVirtualEquipmentService {
         }
 
         if (!Objects.equals(inventoryId, inVirtualEquipment.get().getInventoryId())) {
-            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this virtual equipment id: %d", inventoryId, inVirtualEquipment.get().getDigitalServiceUid(), id));
+            throw new G4itRestException("409", String.format("the inventory id provided: %s is not compatible with the inventory id : %s linked to this virtual equipment id: %d", inventoryId, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
         }
 
         return inVirtualEquipmentMapper.toRest(inVirtualEquipment.get());
