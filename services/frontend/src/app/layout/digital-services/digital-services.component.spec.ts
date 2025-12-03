@@ -123,22 +123,4 @@ describe("DigitalServicesComponent", () => {
         expect(mockDigitalServicesData.delete).toHaveBeenCalledWith("1");
         expect(component.retrieveDigitalServices).toHaveBeenCalled();
     });
-
-    it("should save a note for a digital service", () => {
-        const noteContent = "Updated Note";
-        component.selectedDigitalService = { uid: "1" } as any;
-        component.noteSaveValue(noteContent);
-        expect(mockDigitalServicesData.get).toHaveBeenCalledWith("1");
-        expect(mockDigitalServicesData.update).toHaveBeenCalledWith(
-            jasmine.objectContaining({ note: { content: noteContent } }),
-        );
-    });
-
-    it("should delete a note for a digital service", () => {
-        component.selectedDigitalService = { uid: "1" } as any;
-        component.noteDelete();
-        expect(mockDigitalServicesData.update).toHaveBeenCalledWith(
-            jasmine.objectContaining({ note: undefined }),
-        );
-    });
 });

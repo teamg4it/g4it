@@ -31,7 +31,6 @@ export class DigitalServicesComponent implements OnInit {
 
     digitalServices: DigitalService[] = [];
     selectedDigitalService: DigitalService = {} as DigitalService;
-    sidebarVisible = false;
     newDsSidebarVisible = false;
 
     allDigitalServices: DigitalService[] = [];
@@ -179,11 +178,6 @@ export class DigitalServicesComponent implements OnInit {
         }
     }
 
-    itemNoteOpened(digitalService: DigitalService) {
-        this.sidebarVisible = true;
-        this.selectedDigitalService = digitalService;
-    }
-
     itemDelete(uid: string) {
         this.global.setLoading(true);
         this.digitalServicesData
@@ -195,44 +189,5 @@ export class DigitalServicesComponent implements OnInit {
                 }),
             )
             .subscribe(() => this.retrieveDigitalServices());
-    }
-
-    noteSaveValue(event: any) {
-        // Get digital services data.
-        this.digitalServicesData.get(this.selectedDigitalService.uid).subscribe((res) => {
-            // update note
-            res.note = {
-                content: event,
-            };
-            this.digitalServicesData.update(res).subscribe(() => {
-                this.sidebarVisible = false;
-                this.messageService.add({
-                    severity: "success",
-                    summary: this.translate.instant("common.note.save"),
-                    sticky: false,
-                });
-                this.selectedDigitalService.note = {
-                    content: event,
-                };
-            });
-        });
-    }
-
-    noteDelete() {
-        // Get digital services data.
-        this.digitalServicesData
-            .get(this.selectedDigitalService.activeDsvUid)
-            .subscribe((res) => {
-                // update note
-                res.note = undefined;
-                this.digitalServicesData.update(res).subscribe(() => {
-                    this.messageService.add({
-                        severity: "success",
-                        summary: this.translate.instant("common.note.delete"),
-                        sticky: false,
-                    });
-                });
-            });
-        this.selectedDigitalService.note = undefined;
     }
 }

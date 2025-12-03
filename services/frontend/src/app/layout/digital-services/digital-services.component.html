@@ -31,7 +31,6 @@
                 <app-digital-services-item
                     [isAi]="isEcoMindAi"
                     [digitalService]="digitalService"
-                    (noteOpened)="itemNoteOpened($event)"
                     (deleteUid)="itemDelete($event)"
                 >
                 </app-digital-services-item>
@@ -47,28 +46,6 @@
         [totalRecords]="allDigitalServices.length"
         [rowsPerPageOptions]="[5, 10, 20, 50, 100]"
     />
-}
-
-@if (sidebarVisible) {
-    <p-sidebar
-        [(visible)]="sidebarVisible"
-        position="right"
-        styleClass="p-sidebar-md w-7"
-        [showCloseIcon]="true"
-        (onHide)="sidebarVisible = false"
-        ariaCloseLabel="Close"
-    >
-        <app-common-editor
-            [content]="selectedDigitalService.note?.content"
-            [title]="'Note - ' + selectedDigitalService.name"
-            [showButtons]="userService.isAllowedDigitalServiceWrite$ | async"
-            (saveValue)="noteSaveValue($event)"
-            (outClose)="sidebarVisible = $event"
-            (delete)="noteDelete(); sidebarVisible = $event"
-            styleClass="mx-7"
-        >
-        </app-common-editor>
-    </p-sidebar>
 }
 
 @if (newDsSidebarVisible) {
