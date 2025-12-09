@@ -7,7 +7,6 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.util.FileLoadingUtils;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
-import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,6 +42,8 @@ class AsyncLoadFilesServiceTest {
     private FileLoadingUtils fileLoadingUtils;
 
     private Context context;
+
+    @Mock
     private Task task;
     private FileToLoad file;
 
@@ -53,13 +53,6 @@ class AsyncLoadFilesServiceTest {
                 .organization("org")
                 .workspaceId(1L)
                 .inventoryId(100L)
-                .build();
-
-        task = Task.builder()
-                .id(55L)
-                .filenames(List.of("virtual_equipment.csv"))
-                .status(TaskStatus.IN_PROGRESS.toString())
-                .lastUpdateDate(LocalDateTime.now())
                 .build();
 
         file = new FileToLoad();
@@ -74,20 +67,7 @@ class AsyncLoadFilesServiceTest {
         lenient().when(taskRepository.save(any(Task.class))).thenAnswer(inv -> inv.getArgument(0));
         lenient().when(loadFileService.manageFile(any(), any())).thenReturn(Collections.emptyList());
     }
-
-    @Test
-    void shouldLinkWhenNoRejectedFiles() {
-        when(fileLoadingUtils.handelRejectedFiles(any(), any(), any(), any(), any(), any()))
-                .thenReturn(false);
-        when(loadFileService.mandatoryHeadersCheck(any())).thenReturn(Collections.emptyList());
-        doNothing().when(loadFileService).linkApplicationsToVirtualEquipments(anyLong());
-        doNothing().when(loadFileService).setInventoryCounts(anyLong());
-
-        asyncLoadFilesService.execute(context, task);
-
-        verify(loadFileService).linkApplicationsToVirtualEquipments(100L);
-        verify(loadFileService).setInventoryCounts(100L);
-    }
+    
 
     @Test
     void shouldSkipLinkingIfRejectedFiles() {
@@ -117,17 +97,23 @@ class AsyncLoadFilesServiceTest {
         verify(loadFileService, never()).setInventoryCounts(anyLong());
     }
 
+
     @Test
-    void shouldLinkInMultiBatchScenario() {
+    void shouldLinkInventoryWhenProcessingCompletes() {
+        // Arrange
+        when(task.getId()).thenReturn(55L);
+        when(task.getFilenames()).thenReturn(List.of("virtual_equipment.csv"));
+        when(loadFileService.mandatoryHeadersCheck(any())).thenReturn(Collections.emptyList());
         when(fileLoadingUtils.handelRejectedFiles(any(), any(), any(), any(), any(), any()))
                 .thenReturn(false);
-        when(loadFileService.mandatoryHeadersCheck(any())).thenReturn(Collections.emptyList());
-        doNothing().when(loadFileService).linkApplicationsToVirtualEquipments(anyLong());
-        doNothing().when(loadFileService).setInventoryCounts(anyLong());
 
+        // Act
         asyncLoadFilesService.execute(context, task);
 
+        // Assert
         verify(loadFileService).linkApplicationsToVirtualEquipments(100L);
         verify(loadFileService).setInventoryCounts(100L);
     }
+
+
 }

@@ -17,7 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
@@ -26,7 +27,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,7 +44,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles({"azure", "test"})
-@EnabledIf("hasAzureEnvVars")
+@EnabledIfEnvironmentVariable(named = "SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT", matches = ".+")
+
 @Slf4j
 class AzureGreenItFileSystemApplicationTests {
 
@@ -66,30 +67,29 @@ class AzureGreenItFileSystemApplicationTests {
     ResourceLoader resourceLoader;
     @Autowired
     private FileSystem fileSystem;
-    @MockitoBean
+    @Mock
     private CacheManager cacheManager;
 
-    private static boolean hasAzureEnvVars() {
-        var hasEnvVar = System.getenv("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT") != null;
-        if (hasEnvVar) {
-            log.info("ENV VARIABLES:");
-            log.info("AZURE_CLIENT_ID : {}", System.getenv("AZURE_CLIENT_ID"));
-            log.info("AZURE_CLIENT_SECRET : {}...", System.getenv("AZURE_CLIENT_SECRET").substring(0, 5));
-            log.info("AZURE_TENANT_ID : {}", System.getenv("AZURE_TENANT_ID"));
-            log.info("AZURE_SUBSCRIPTION_ID : {}", System.getenv("AZURE_SUBSCRIPTION_ID"));
-            log.info("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT : {}", System.getenv("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT"));
-        }
-        if (!hasEnvVar) {
+    static {
+        String endpoint = System.getenv("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT");
+        if (endpoint != null) {
+            log.info(">>>> Azure integration tests ENABLED");
+            log.info("AZURE_CLIENT_ID            : {}", System.getenv("AZURE_CLIENT_ID"));
+            log.info("AZURE_CLIENT_SECRET        : {}...", System.getenv("AZURE_CLIENT_SECRET").substring(0, 5));
+            log.info("AZURE_TENANT_ID            : {}", System.getenv("AZURE_TENANT_ID"));
+            log.info("AZURE_SUBSCRIPTION_ID      : {}", System.getenv("AZURE_SUBSCRIPTION_ID"));
+            log.info("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT : {}", endpoint);
+        } else {
             log.info("""
-                    To activate azure filestorage tests, you need to set variables:
-                    - AZURE_CLIENT_ID
-                    - AZURE_CLIENT_SECRET
-                    - AZURE_TENANT_ID
-                    - AZURE_SUBSCRIPTION_ID
-                    - SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT
+                        >>> Azure integration tests DISABLED
+                        To activate azure file storage tests, export:
+                        - AZURE_CLIENT_ID
+                        - AZURE_CLIENT_SECRET
+                        - AZURE_TENANT_ID
+                        - AZURE_SUBSCRIPTION_ID
+                        - SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT
                     """);
         }
-        return hasEnvVar;
     }
 
     @Test
