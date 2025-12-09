@@ -181,7 +181,12 @@ public class FileLoadingUtils {
 
         for (FileToLoad fileToLoad : context.getFilesToLoad()) {
             try {
-                fileToLoad.setConvertedFile(fileConversionService.convertFileToCsv(fileToLoad.getFilePath().toFile(), fileToLoad.getOriginalFileName()));
+                Path safePath = fileToLoad.getFilePath().normalize();
+                Path baseDir = fileToLoad.getFilePath().getParent().normalize();
+                if (!safePath.startsWith(baseDir)) {
+                    throw new SecurityException("Invalid file path for file: " + fileToLoad.getOriginalFileName());
+                }
+                fileToLoad.setConvertedFile(fileConversionService.convertFileToCsv(safePath.toFile(), fileToLoad.getOriginalFileName()));
             } catch (IOException | IllegalArgumentException e) {
                 throw new AsyncTaskException(String.format("%s - Error while converting file '%s'", context.log(),
                         fileToLoad.getOriginalFileName()), e);
