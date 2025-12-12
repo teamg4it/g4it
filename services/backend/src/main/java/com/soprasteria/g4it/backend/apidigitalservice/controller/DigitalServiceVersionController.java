@@ -7,13 +7,6 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.controller;
 
-import java.net.URI;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionRestMapper;
@@ -21,10 +14,13 @@ import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersio
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.common.utils.AuthorizationUtils;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.net.URI;
+import java.util.List;
 
 /**
  * Digital Service endpoints.
@@ -132,9 +128,10 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
     public ResponseEntity<List<DigitalServiceVersionsListRest>> getDigitalServiceVersions(final String organization,
                                                                                           final Long workspace,
                                                                                           final String digitalServiceVersionUid) {
-        
+
         return ResponseEntity.ok(digitalServiceVersionService.getDigitalServiceVersions(digitalServiceVersionUid));
     }
+
     /**
      * {@inheritDoc}
      */
@@ -151,6 +148,16 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
         return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", duplicatedVersion.getUid())))).body(digitalServiceVersionDTO);
     }
 
+    @Override
+    public ResponseEntity<PromoteDigitalServiceVersionRest> promoteDigitalServiceVersion(final String organization,
+                                                                                         final Long workspace,
+                                                                                         final String digitalServiceVersionUid) {
+
+        PromoteDigitalServiceVersionRest result =
+                digitalServiceVersionService.promoteDigitalServiceVersion(digitalServiceVersionUid);
+
+        return ResponseEntity.ok(result);
+    }
 }
 
 

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Digital Service repository.
@@ -61,4 +62,5 @@ public interface DigitalServiceVersionRepository extends JpaRepository<DigitalSe
     void duplicateVersionRecord(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
 
 
+    Optional<DigitalServiceVersion> findByDigitalServiceUidAndVersionType(String uid, String value);
 }

@@ -34,6 +34,7 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.PromoteDigitalServiceVersionRest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -748,5 +749,96 @@ class DigitalServiceVersionServiceTest {
 
 
     }
+
+    @Test
+    void promoteDigitalServiceVersion_shouldPromoteDraft_andArchiveExistingActive() {
+        // Given
+        String activeUid = "active-111";
+        String draftUid = DIGITAL_SERVICE_VERSION_UID;
+
+        DigitalService digitalService = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .build();
+
+        DigitalServiceVersion draftVersion = DigitalServiceVersion.builder()
+                .uid(draftUid)
+                .versionType(DigitalServiceVersionStatus.DRAFT.getValue())
+                .digitalService(digitalService)
+                .build();
+
+        DigitalServiceVersion activeVersion = DigitalServiceVersion.builder()
+                .uid(activeUid)
+                .versionType(DigitalServiceVersionStatus.ACTIVE.getValue())
+                .digitalService(digitalService)
+                .build();
+
+        // Mock repository
+        when(digitalServiceVersionRepository.findById(draftUid)).thenReturn(Optional.of(draftVersion));
+        when(digitalServiceVersionRepository.findByDigitalServiceUidAndVersionType(
+                DIGITAL_SERVICE_UID, DigitalServiceVersionStatus.ACTIVE.getValue()))
+                .thenReturn(Optional.of(activeVersion));
+
+        // Promote
+        PromoteDigitalServiceVersionRest result =
+                digitalServiceVersionService.promoteDigitalServiceVersion(draftUid);
+
+        // Then
+        assertTrue(result.getIsPromoted());
+        assertEquals(draftUid, result.getDigitalServiceVersionUid());
+
+        // Active version must be archived
+        assertEquals(DigitalServiceVersionStatus.ARCHIVED.getValue(), activeVersion.getVersionType());
+        // Draft becomes active
+        assertEquals(DigitalServiceVersionStatus.ACTIVE.getValue(), draftVersion.getVersionType());
+
+        verify(digitalServiceVersionRepository, times(1)).save(activeVersion);
+        verify(digitalServiceVersionRepository, times(1)).save(draftVersion);
+    }
+
+
+    @Test
+    void promoteDigitalServiceVersion_shouldReturnNotPromoted_whenAlreadyActive() {
+        // Given
+        DigitalServiceVersion activeVersion = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .versionType(DigitalServiceVersionStatus.ACTIVE.getValue())
+                .digitalService(DigitalService.builder().uid(DIGITAL_SERVICE_UID).build())
+                .build();
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(activeVersion));
+
+        // When
+        PromoteDigitalServiceVersionRest result =
+                digitalServiceVersionService.promoteDigitalServiceVersion(DIGITAL_SERVICE_VERSION_UID);
+
+        // Then
+        assertFalse(result.getIsPromoted());
+        verify(digitalServiceVersionRepository, never()).save(any());
+    }
+
+
+    @Test
+    void promoteDigitalServiceVersion_shouldThrow_whenArchivedVersion() {
+        // Given
+        DigitalServiceVersion archivedVersion = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .versionType(DigitalServiceVersionStatus.ARCHIVED.getValue())
+                .digitalService(DigitalService.builder().uid(DIGITAL_SERVICE_UID).build())
+                .build();
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(archivedVersion));
+
+        // Then
+        assertThatThrownBy(() ->
+                digitalServiceVersionService.promoteDigitalServiceVersion(DIGITAL_SERVICE_VERSION_UID)
+        )
+                .isInstanceOf(G4itRestException.class)
+                .hasMessageContaining("Archived versions cannot be promoted");
+
+        verify(digitalServiceVersionRepository, never()).save(any());
+    }
+
 
 }
