@@ -1280,3 +1280,14 @@ components:
         lastCalculationDate:
           type: string
           format: date-time
+
+    PromoteDigitalServiceVersionRest:
+      description: Promote Digital Service Version response
+      type: object
+      properties:
+        digitalServiceUid:
+          type: string
+        digitalServiceVersionUid:
+          type: string
+        isPromoted:
+          type: boolean

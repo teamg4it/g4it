@@ -36,6 +36,8 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.PromoteDigitalServiceVersionRest;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -375,5 +377,51 @@ public class DigitalServiceVersionService {
         return digitalServiceVersionMapper.toFullBusinessObject(duplicatedVersion);
     }
 
+
+    @Transactional
+    public PromoteDigitalServiceVersionRest promoteDigitalServiceVersion(String digitalServiceVersionUid) {
+
+        // Load the version we want to promote
+        DigitalServiceVersion versionToPromote = digitalServiceVersionRepository.findById(digitalServiceVersionUid)
+                .orElseThrow(() -> new G4itRestException("404",
+                        "Digital Service Version %s not found".formatted(digitalServiceVersionUid)));
+
+        String digitalServiceUid = versionToPromote.getDigitalService().getUid();
+        String versionStatus = versionToPromote.getVersionType();
+
+        // Prevent promoting an already ACTIVE version
+        if (DigitalServiceVersionStatus.ACTIVE.getValue().equals(versionStatus)) {
+            return PromoteDigitalServiceVersionRest.builder()
+                    .digitalServiceVersionUid(digitalServiceVersionUid)
+                    .isPromoted(false)
+                    .build();
+        }
+
+        // Prevent promoting an ARCHIVED version (optional business rule)
+        if (DigitalServiceVersionStatus.ARCHIVED.getValue().equals(versionStatus)) {
+            throw new G4itRestException("400",
+                    "Archived versions cannot be promoted: %s".formatted(digitalServiceVersionUid));
+        }
+
+        // Find current ACTIVE version (if any)
+        Optional<DigitalServiceVersion> currentActiveVersionOpt =
+                digitalServiceVersionRepository.findByDigitalServiceUidAndVersionType(
+                        digitalServiceUid, DigitalServiceVersionStatus.ACTIVE.getValue());
+
+        // Demote current ACTIVE version → ARCHIVED
+        currentActiveVersionOpt.ifPresent(activeVersion -> {
+            activeVersion.setVersionType(DigitalServiceVersionStatus.ARCHIVED.getValue());
+            digitalServiceVersionRepository.save(activeVersion);
+        });
+
+        // Promote target version
+        versionToPromote.setVersionType(DigitalServiceVersionStatus.ACTIVE.getValue());
+        digitalServiceVersionRepository.save(versionToPromote);
+
+        return PromoteDigitalServiceVersionRest.builder()
+                .digitalServiceVersionUid(digitalServiceVersionUid)
+                .isPromoted(true)
+                .build();
+    }
 
 }
