@@ -75,7 +75,7 @@ components:
         location:
           type: string
           maxLength: 50
-          pattern: "^[A-Za-z ]*$"
+          pattern: "^[A-Za-z ,()'\\-]*$"
         quantity:
           type: number
           format: double
