@@ -191,22 +191,6 @@ class DigitalServiceVersionServiceTest {
         verify(userRepository, times(1)).findById(USER_ID);
     }
 
-    @Test
-    void deleteDigitalService_shouldCallAllRepositoriesWithCorrectUid() {
-        // Arrange
-        String digitalServiceUid = "ds-123";
-
-        // Act
-        digitalServiceVersionService.deleteDigitalServiceVersion(digitalServiceUid); // appelle ta méthode
-
-        // Assert : on vérifie que tous les repositories ont bien été appelés
-        verify(inVirtualEquipmentRepository).deleteByDigitalServiceVersionUid(digitalServiceUid);
-        verify(inPhysicalEquipmentRepository).deleteByDigitalServiceVersionUid(digitalServiceUid);
-        verify(inDatacenterRepository).deleteByDigitalServiceVersionUid(digitalServiceUid);
-        verify(inAiParameterRepository).deleteByDigitalServiceVersionUid(digitalServiceUid);
-        verify(inAiInfrastructureRepository).deleteByDigitalServiceVersionUid(digitalServiceUid);
-        verify(digitalServiceVersionRepository).deleteById(digitalServiceUid);
-    }
 
     @Test
     void shouldUpdateDigitalService() {
@@ -838,6 +822,103 @@ class DigitalServiceVersionServiceTest {
                 .hasMessageContaining("Archived versions cannot be promoted");
 
         verify(digitalServiceVersionRepository, never()).save(any());
+    }
+
+    @Test
+    void deleteDigitalServiceVersion_shouldDeleteArchivedVersionSuccessfully() {
+
+        // Given
+        String uid = DIGITAL_SERVICE_VERSION_UID;
+
+        DigitalServiceVersion version =
+                DigitalServiceVersion.builder()
+                        .uid(uid)
+                        .versionType(DigitalServiceVersionStatus.ARCHIVED.getValue())
+                        .build();
+
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.of(version));
+
+        // When
+        digitalServiceVersionService.deleteDigitalServiceVersion(uid);
+
+        // Then – same deletion flow as DRAFT
+        verify(inVirtualEquipmentRepository).deleteByDigitalServiceVersionUid(uid);
+        verify(inPhysicalEquipmentRepository).deleteByDigitalServiceVersionUid(uid);
+        verify(inDatacenterRepository).deleteByDigitalServiceVersionUid(uid);
+        verify(inAiParameterRepository).deleteByDigitalServiceVersionUid(uid);
+        verify(inAiInfrastructureRepository).deleteByDigitalServiceVersionUid(uid);
+
+        verify(digitalServiceVersionRepository).deleteById(uid);
+    }
+
+    @Test
+    void deleteDigitalServiceVersion_shouldDeleteAllLinkedData_whenVersionIsDraft() {
+
+        // Given
+        String uid = DIGITAL_SERVICE_VERSION_UID;
+
+        DigitalServiceVersion version =
+                DigitalServiceVersion.builder()
+                        .uid(uid)
+                        .versionType(DigitalServiceVersionStatus.DRAFT.getValue())
+                        .build();
+
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.of(version));
+
+        // When
+        digitalServiceVersionService.deleteDigitalServiceVersion(uid);
+
+        // Then – all dependent deletions must be called
+        verify(inVirtualEquipmentRepository).deleteByDigitalServiceVersionUid(uid);
+        verify(inPhysicalEquipmentRepository).deleteByDigitalServiceVersionUid(uid);
+        verify(inDatacenterRepository).deleteByDigitalServiceVersionUid(uid);
+        verify(inAiParameterRepository).deleteByDigitalServiceVersionUid(uid);
+        verify(inAiInfrastructureRepository).deleteByDigitalServiceVersionUid(uid);
+
+        verify(digitalServiceVersionRepository).deleteById(uid);
+    }
+
+    @Test
+    void deleteDigitalServiceVersion_shouldThrow400_whenVersionIsActive() {
+
+        // Given
+        String uid = DIGITAL_SERVICE_VERSION_UID;
+        DigitalServiceVersion version =
+                DigitalServiceVersion.builder()
+                        .uid(uid)
+                        .versionType(DigitalServiceVersionStatus.ACTIVE.getValue())
+                        .build();
+
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.of(version));
+
+        // Then
+        assertThatThrownBy(() -> digitalServiceVersionService.deleteDigitalServiceVersion(uid))
+                .isInstanceOf(G4itRestException.class)
+                .hasMessageContaining("Cannot delete ACTIVE Digital Service Version " + uid);
+
+        // No delete calls should happen
+        verify(inVirtualEquipmentRepository, never()).deleteByDigitalServiceVersionUid(any());
+        verify(digitalServiceVersionRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deleteDigitalServiceVersion_shouldThrow404_whenVersionNotFound() {
+
+        // Given
+        String uid = DIGITAL_SERVICE_VERSION_UID;
+        when(digitalServiceVersionRepository.findById(uid)).thenReturn(Optional.empty());
+
+        // Then
+        assertThatThrownBy(() -> digitalServiceVersionService.deleteDigitalServiceVersion(uid))
+                .isInstanceOf(G4itRestException.class)
+                .hasMessageContaining("Digital Service Version " + uid + " not found");
+
+        verify(digitalServiceVersionRepository, times(1)).findById(uid);
+        verifyNoMoreInteractions(inVirtualEquipmentRepository,
+                inPhysicalEquipmentRepository,
+                inDatacenterRepository,
+                inAiInfrastructureRepository,
+                inAiParameterRepository);
     }
 
 
