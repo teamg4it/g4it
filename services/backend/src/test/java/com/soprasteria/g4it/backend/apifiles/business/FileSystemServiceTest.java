@@ -30,9 +30,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -235,13 +233,13 @@ class FileSystemServiceTest {
         when(fileStorage.listFiles(FileFolder.TEMPLATES))
                 .thenReturn(List.of());
 
+        // 👉 Cleaner invocation, no eq() needed
         when(fileStorage.listResources(
-                eq(FileFolder.TEMPLATES),
-                eq("Ready for Production"),
-                eq(FileType.UNKNOWN)
+                FileFolder.TEMPLATES,
+                "Ready for Production",
+                FileType.UNKNOWN
         )).thenReturn(new Resource[]{mockResource});
 
-        // Instead of exact list matching → match ANY list
         List<FileDescriptionRest> expected = List.of(mock(FileDescriptionRest.class));
         when(fileDescriptionRestMapper.toDto(anyList())).thenReturn(expected);
 
@@ -339,6 +337,90 @@ class FileSystemServiceTest {
                 eq("file"),
                 any(InputStream.class)
         );
+    }
+
+    @Test
+    void testDownloadFile_FoundInTemplatesRoot() throws Exception {
+        String filename = "file.xlsx";
+        InputStream mockStream = new ByteArrayInputStream("root".getBytes());
+
+        when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
+                .thenReturn(fileStorage);
+
+        // Root call succeeds
+        when(fileStorage.readFile(FileFolder.TEMPLATES, filename))
+                .thenReturn(mockStream);
+
+        InputStream result = fileSystemService.downloadFile(
+                Constants.INTERNAL_ORGANIZATION,
+                Constants.INTERNAL_WORKSPACE,
+                FileFolder.TEMPLATES,
+                filename
+        );
+
+        assertNotNull(result);
+        assertEquals("root", new String(result.readAllBytes()));
+
+        verify(fileStorage).readFile(FileFolder.TEMPLATES, filename);
+        verify(fileStorage, never())
+                .readFile(eq(FileFolder.TEMPLATES), startsWith("Ready for Production/"));
+    }
+
+    @Test
+    void testDownloadFile_FoundInSubfolder() throws Exception {
+        String filename = "file.xlsx";
+
+        when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
+                .thenReturn(fileStorage);
+
+        // Root call → throw to force fallback
+        when(fileStorage.readFile(FileFolder.TEMPLATES, filename))
+                .thenThrow(new IOException("not in root"));
+
+        // Subfolder call → success
+        InputStream mockStream = new ByteArrayInputStream("subfolder".getBytes());
+        when(fileStorage.readFile(FileFolder.TEMPLATES, "Ready for Production/" + filename))
+                .thenReturn(mockStream);
+
+        InputStream result = fileSystemService.downloadFile(
+                Constants.INTERNAL_ORGANIZATION,
+                Constants.INTERNAL_WORKSPACE,
+                FileFolder.TEMPLATES,
+                filename
+        );
+
+        assertNotNull(result);
+        assertEquals("subfolder", new String(result.readAllBytes()));
+
+        verify(fileStorage).readFile(FileFolder.TEMPLATES, filename);
+        verify(fileStorage).readFile(FileFolder.TEMPLATES, "Ready for Production/" + filename);
+    }
+
+    @Test
+    void testDownloadFile_NotFoundAnywhere() throws Exception {
+        String filename = "file.xlsx";
+
+        when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
+                .thenReturn(fileStorage);
+
+        // Both locations throw IOException
+        when(fileStorage.readFile(FileFolder.TEMPLATES, filename))
+                .thenThrow(new IOException("not in root"));
+
+        when(fileStorage.readFile(FileFolder.TEMPLATES, "Ready for Production/" + filename))
+                .thenThrow(new IOException("not in subfolder"));
+
+        assertThrows(FileNotFoundException.class, () ->
+                fileSystemService.downloadFile(
+                        Constants.INTERNAL_ORGANIZATION,
+                        Constants.INTERNAL_WORKSPACE,
+                        FileFolder.TEMPLATES,
+                        filename
+                )
+        );
+
+        verify(fileStorage).readFile(FileFolder.TEMPLATES, filename);
+        verify(fileStorage).readFile(FileFolder.TEMPLATES, "Ready for Production/" + filename);
     }
 
 

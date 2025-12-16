@@ -163,6 +163,7 @@ public class FileSystemService {
         try {
             return storage.readFile(fileFolder, filename);
         } catch (IOException ignored) {
+            //Intentionally ignored because we want to throw FileNotFoundException below
         }
 
         // 2. If template file → try inside subfolder
@@ -171,6 +172,7 @@ public class FileSystemService {
             try {
                 return storage.readFile(FileFolder.TEMPLATES, pathInSubfolder);
             } catch (IOException ignored) {
+                //Intentionally ignored because we want to throw FileNotFoundException below
             }
         }
 
