@@ -1,0 +1,8 @@
+nomEquipementVirtuel;nomEquipementPhysique;nomSourceDonneeEquipementPhysique;cleRepartition;vCPU;cluster;consoElecAn;typeEqv;capaciteStockage;nomEntite;nomSourceDonnee
+virtual-eq-1;physical-eq-10;;;4;PY1ORA01;;calcul;;;
+virtual-eq-2;physical-eq-10;;;4;PY1LNX03;;calcul;;;
+virtual-eq-3;physical-eq-10;;;4;PY1WRP01;;calcul;;;
+virtual-eq-4;physical-eq-10;;;2;10.244.72.6;;calcul;;;
+virtual-eq-5;physical-eq-10;;;2;10.244.64.6;;calcul;;;
+virtual-eq-6;physical-eq-10;;;4;PY1WRP01;;calcul;;;
+virtual-eq-7;"physical-eq-10";;;4;PY1WRP01;;calcul;;;

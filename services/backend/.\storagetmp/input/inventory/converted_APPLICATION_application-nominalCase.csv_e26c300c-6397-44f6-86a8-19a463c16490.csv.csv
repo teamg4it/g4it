@@ -1,0 +1,7 @@
+nomApplication;typeEnvironnement;nomEquipementVirtuel;nomSourceDonneeEquipementVirtuel;domaine;sousDomaine;nomEntite;nomSourceDonnee
+application-1;Developpement;virtual-eq-1;;Domain 1;Sub Domain 1;ACME SERVICES;
+application-2;Developpement;virtual-eq-2;;Domain 2;Sub Domain 1;BRAND B SERVICES;
+application-3;Production;virtual-eq-3;;Domain 1;Sub Domain 1;ACME SERVICES;
+application-4;Recette;virtual-eq-4;;Domain 1;Sub Domain 1;ACME SERVICES;
+application-5;Production;virtual-eq-5;;Domain 1;Sub Domain 2;ACME SERVICES;
+application-6;Recette;virtual-eq-6;;Domain 3;Sub Domain 1;MEX SERVICES;

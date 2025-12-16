@@ -1,0 +1,74 @@
+- name: "Inventories G4IT"
+  url: "http://localhost:4200/organizations/SOPRA-STERIA-GROUP/workspaces/1/inventories"
+  screenshot: "output/screenshots/inventories.png"
+  actions:
+    - name: "Equipment page"
+      type: "click"
+      waitForNavigation: networkidle0
+      waitForSelector: 'p-button[id="inventory-equipment-button"]'
+      element: 'p-button[id="inventory-equipment-button"]'
+      pageChange: true
+    - name: "Equipment page climate change"
+      type: "click"
+      element: 'a[id="climate-change"]'
+      pageChange: true
+    - name: "Home G4IT"
+      type: "click"
+      element: 'p-button[id="my-is-return-button"]'
+      pageChange: true
+    - name: "Application page"
+      waitForNavigation: load
+      type: "click"
+      element: 'p-button[id="inventory-application-button"]'
+      pageChange: true
+    - name: "Application page climate change"
+      type: "click"
+      element: 'a[id="climate-change"]'
+      pageChange: true
+
+- name: "Digital Services G4IT"
+  url: "http://localhost:4200/organizations/SOPRA-STERIA-GROUP/workspaces/1/digital-services"
+  waitForSelector: "#add-digital"
+  screenshot: "output/screenshots/ds.png"
+  actions:
+    - name: "Choose digital service"
+      type: "click"
+      waitForNavigation: networkidle0
+      waitForSelector: 'p-card[aria-label="Digital Service 1"]'
+      element: 'p-card[aria-label="Digital Service 1"]'
+      pageChange: true
+    - name: "Visualize click"
+      type: "click"
+      element: 'a[id="visualize"]'
+      pageChange: true
+    - name: "Manage Versions"
+      type: "click"
+      waitForSelector: "#manage-versions"
+      element: "#manage-versions"
+      pageChange: true
+
+- name: "Administration Panel Users G4IT"
+  url: "http://localhost:4200/administration/users"
+  actions:
+    - name: "Choose workspace dropdown click"
+      type: "click"
+      element: 'p-dropdown[id="workspaceName"]'
+    - name: "workspace Click"
+      type: "click"
+      element: 'p-dropdownitem[ng-reflect-id="workspaceName_0"]'
+    - name: "Fill email input"
+      type: "text"
+      element: 'input[id="searchName"]'
+      content: "admin@g4it.com"
+    - name: "Search click"
+      type: "click"
+      element: 'p-button[id="search-button"]'
+- name: "Administration Panel Organizations G4IT"
+  url: "http://localhost:4200/administration/organizations"
+  actions:
+    - name: "Choose organization dropdown click"
+      type: "click"
+      element: 'p-dropdown[id="organizationName"]'
+    - name: "Organization select"
+      type: "click"
+      element: 'p-dropdownitem[ng-reflect-id="organizationName_0"]'
