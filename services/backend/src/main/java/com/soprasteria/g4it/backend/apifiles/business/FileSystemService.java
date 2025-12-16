@@ -11,9 +11,7 @@ import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
@@ -25,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -118,35 +115,10 @@ public class FileSystemService {
     @Cacheable("listTemplatesFiles")
     public List<FileDescriptionRest> listTemplatesFiles() throws IOException {
 
-        FileStorage storage = fetchStorage(
-                Constants.INTERNAL_ORGANIZATION,
-                String.valueOf(Constants.INTERNAL_WORKSPACE)
+        return fileDescriptionRestMapper.toDto(
+                fetchStorage(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE))
+                        .listFiles(FileFolder.TEMPLATES)
         );
-
-        List<FileDescription> allFiles = new ArrayList<>();
-
-        // 1️⃣ Files directly inside /templates
-        allFiles.addAll(storage.listFiles(FileFolder.TEMPLATES));
-
-        // 2️⃣ Files inside /templates/Ready for Production
-        Resource[] subfolderFiles = storage.listResources(
-                FileFolder.TEMPLATES,
-                "Ready for Production",  // sub folder name
-                FileType.UNKNOWN         //use UNKNOWN to fetch all file types
-        );
-
-        for (Resource resource : subfolderFiles) {
-            allFiles.add(
-                    FileDescription.builder()
-                            .name(resource.getFilename())
-                            .type(FileType.UNKNOWN)    // or assign type if needed
-                            .metadata(null)            // keep metadata empty
-                            .build()
-            );
-        }
-
-        // Convert to DTO
-        return fileDescriptionRestMapper.toDto(allFiles);
     }
 
     /**
@@ -157,26 +129,7 @@ public class FileSystemService {
      * @return the list of files
      */
     public InputStream downloadFile(final String organization, final Long workspaceId, final FileFolder fileFolder, final String filename) throws IOException {
-        FileStorage storage = fetchStorage(organization, workspaceId.toString());
-
-        // 1. Try templates root
-        try {
-            return storage.readFile(fileFolder, filename);
-        } catch (IOException ignored) {
-            //Intentionally ignored because we want to throw FileNotFoundException below
-        }
-
-        // 2. If template file → try inside subfolder
-        if (fileFolder == FileFolder.TEMPLATES) {
-            String pathInSubfolder = "Ready for Production/" + filename;
-            try {
-                return storage.readFile(FileFolder.TEMPLATES, pathInSubfolder);
-            } catch (IOException ignored) {
-                //Intentionally ignored because we want to throw FileNotFoundException below
-            }
-        }
-
-        throw new FileNotFoundException("File not found: " + filename);
+        return fetchStorage(organization, workspaceId.toString()).readFile(fileFolder, filename);
     }
 
     /**

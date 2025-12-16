@@ -12,7 +12,6 @@ import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
@@ -23,14 +22,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -226,33 +226,14 @@ class FileSystemServiceTest {
         when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
                 .thenReturn(fileStorage);
 
-        // Mock resources
-        Resource mockResource = mock(Resource.class);
-        when(mockResource.getFilename()).thenReturn("G4IT_Datamodel.xlsx");
-
-        when(fileStorage.listFiles(FileFolder.TEMPLATES))
-                .thenReturn(List.of());
-
-        // 👉 Cleaner invocation, no eq() needed
-        when(fileStorage.listResources(
-                FileFolder.TEMPLATES,
-                "Ready for Production",
-                FileType.UNKNOWN
-        )).thenReturn(new Resource[]{mockResource});
-
-        List<FileDescriptionRest> expected = List.of(mock(FileDescriptionRest.class));
-        when(fileDescriptionRestMapper.toDto(anyList())).thenReturn(expected);
+        when(fileStorage.listFiles(FileFolder.TEMPLATES)).thenReturn(List.of());
+        when(fileDescriptionRestMapper.toDto(List.of())).thenReturn(List.of());
 
         List<FileDescriptionRest> result = fileSystemService.listTemplatesFiles();
 
         assertNotNull(result);
-        assertEquals(expected, result);
-
         verify(fileStorage).listFiles(FileFolder.TEMPLATES);
-        verify(fileStorage).listResources(FileFolder.TEMPLATES, "Ready for Production", FileType.UNKNOWN);
-        verify(fileDescriptionRestMapper).toDto(anyList());
     }
-
 
     @Test
     void testFetchStorage_success() {
@@ -337,90 +318,6 @@ class FileSystemServiceTest {
                 eq("file"),
                 any(InputStream.class)
         );
-    }
-
-    @Test
-    void testDownloadFile_FoundInTemplatesRoot() throws Exception {
-        String filename = "file.xlsx";
-        InputStream mockStream = new ByteArrayInputStream("root".getBytes());
-
-        when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
-                .thenReturn(fileStorage);
-
-        // Root call succeeds
-        when(fileStorage.readFile(FileFolder.TEMPLATES, filename))
-                .thenReturn(mockStream);
-
-        InputStream result = fileSystemService.downloadFile(
-                Constants.INTERNAL_ORGANIZATION,
-                Constants.INTERNAL_WORKSPACE,
-                FileFolder.TEMPLATES,
-                filename
-        );
-
-        assertNotNull(result);
-        assertEquals("root", new String(result.readAllBytes()));
-
-        verify(fileStorage).readFile(FileFolder.TEMPLATES, filename);
-        verify(fileStorage, never())
-                .readFile(eq(FileFolder.TEMPLATES), startsWith("Ready for Production/"));
-    }
-
-    @Test
-    void testDownloadFile_FoundInSubfolder() throws Exception {
-        String filename = "file.xlsx";
-
-        when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
-                .thenReturn(fileStorage);
-
-        // Root call → throw to force fallback
-        when(fileStorage.readFile(FileFolder.TEMPLATES, filename))
-                .thenThrow(new IOException("not in root"));
-
-        // Subfolder call → success
-        InputStream mockStream = new ByteArrayInputStream("subfolder".getBytes());
-        when(fileStorage.readFile(FileFolder.TEMPLATES, "Ready for Production/" + filename))
-                .thenReturn(mockStream);
-
-        InputStream result = fileSystemService.downloadFile(
-                Constants.INTERNAL_ORGANIZATION,
-                Constants.INTERNAL_WORKSPACE,
-                FileFolder.TEMPLATES,
-                filename
-        );
-
-        assertNotNull(result);
-        assertEquals("subfolder", new String(result.readAllBytes()));
-
-        verify(fileStorage).readFile(FileFolder.TEMPLATES, filename);
-        verify(fileStorage).readFile(FileFolder.TEMPLATES, "Ready for Production/" + filename);
-    }
-
-    @Test
-    void testDownloadFile_NotFoundAnywhere() throws Exception {
-        String filename = "file.xlsx";
-
-        when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
-                .thenReturn(fileStorage);
-
-        // Both locations throw IOException
-        when(fileStorage.readFile(FileFolder.TEMPLATES, filename))
-                .thenThrow(new IOException("not in root"));
-
-        when(fileStorage.readFile(FileFolder.TEMPLATES, "Ready for Production/" + filename))
-                .thenThrow(new IOException("not in subfolder"));
-
-        assertThrows(FileNotFoundException.class, () ->
-                fileSystemService.downloadFile(
-                        Constants.INTERNAL_ORGANIZATION,
-                        Constants.INTERNAL_WORKSPACE,
-                        FileFolder.TEMPLATES,
-                        filename
-                )
-        );
-
-        verify(fileStorage).readFile(FileFolder.TEMPLATES, filename);
-        verify(fileStorage).readFile(FileFolder.TEMPLATES, "Ready for Production/" + filename);
     }
 
 
