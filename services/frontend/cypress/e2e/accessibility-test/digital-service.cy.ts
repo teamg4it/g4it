@@ -115,6 +115,9 @@ describe("Digital Service", () => {
             );
         });
         cy.get('[id="criteria-cancel"]').click();
+        // manage version page
+        cy.wait(2000).get('[id="manage-versions"]').click();
+        cy.wait(2000).get('[id="return-button"]').click();
         // delete the digital service
         cy.get('[id="return-button"]').click();
 
