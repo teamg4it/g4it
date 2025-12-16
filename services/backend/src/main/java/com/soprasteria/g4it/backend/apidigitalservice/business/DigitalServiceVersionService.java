@@ -11,10 +11,7 @@ import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepo
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceVersionBO;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceSharedLink;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersionStatus;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.*;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
@@ -151,6 +148,16 @@ public class DigitalServiceVersionService {
      * @param digitalServiceVersionUid the digital service UID.
      */
     public void deleteDigitalServiceVersion(final String digitalServiceVersionUid) {
+
+        DigitalServiceVersion versionToDelete = digitalServiceVersionRepository.findById(digitalServiceVersionUid)
+                .orElseThrow(() -> new G4itRestException("404",
+                        "Digital Service Version %s not found".formatted(digitalServiceVersionUid)));
+
+        if (versionToDelete.getVersionType().equals(DigitalServiceVersionStatus.ACTIVE.getValue())) {
+            throw new G4itRestException("400",
+                    "Cannot delete ACTIVE Digital Service Version %s".formatted(digitalServiceVersionUid));
+        }
+
         inVirtualEquipmentRepository.deleteByDigitalServiceVersionUid(digitalServiceVersionUid);
         inPhysicalEquipmentRepository.deleteByDigitalServiceVersionUid(digitalServiceVersionUid);
         inDatacenterRepository.deleteByDigitalServiceVersionUid(digitalServiceVersionUid);
@@ -327,11 +334,11 @@ public class DigitalServiceVersionService {
         // fetch all versions for the digitalServiceUid
         List<DigitalServiceVersion> versions = digitalServiceVersionRepository.findByDigitalServiceUid(digitalServiceUid);
 
-        // Step 3: Map to DigitalServiceVersionsListRest
+        // Ste
+        // p 3: Map to DigitalServiceVersionsListRest
         return versions.stream()
-                // sort so ACTIVE comes first, then others (e.g., DRAFT)
-                .sorted(Comparator.comparing(
-                        v -> !"ACTIVE".equalsIgnoreCase(v.getVersionType())
+                .sorted(Comparator.comparingInt(v ->
+                        DigitalServiceVersionStatusOrder.from(v.getVersionType()).getSortOrder()
                 ))
                 .map(v -> DigitalServiceVersionsListRest.builder()
                         .versionName(v.getDescription())
@@ -341,6 +348,8 @@ public class DigitalServiceVersionService {
                         .lastCalculationDate(v.getLastCalculationDate())
                         .build())
                 .collect(Collectors.toList());
+
+
     }
 
     /**
