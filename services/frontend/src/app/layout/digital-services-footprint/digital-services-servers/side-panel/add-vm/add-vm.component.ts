@@ -164,10 +164,10 @@ export class PanelAddVmComponent implements OnInit {
     submitFormData() {
         // If the vm with the uid exists, update it; otherwise, add the new vm
         const server = this.server();
-        if (this.index !== undefined) {
-            server.vm[this.index] = this.vm;
-        } else {
+        if (this.index === undefined) {
             server.vm.push(this.vm);
+        } else {
+            server.vm[this.index] = this.vm;
         }
         this.digitalServiceStore.setServer(server);
         this.close();

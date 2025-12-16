@@ -100,10 +100,10 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     onTreeChildChanged(event: CheckboxChangeEvent, item: TransformedDomain) {
-        if (!item.children?.some((child) => child.checked)) {
-            item.checked = false;
-        } else {
+        if (item.children?.some((child) => child.checked)) {
             item.checked = true;
+        } else {
+            item.checked = false;
         }
         this.setAllCheckBox();
         const f = this.footprintStore.applicationSelectedFilters();
@@ -112,10 +112,10 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     setAllCheckBox(): void {
-        if (!this.checkIfAllNotCheck()) {
-            this.setAllCheckBoxValue(true);
-        } else {
+        if (this.checkIfAllNotCheck()) {
             this.setAllCheckBoxValue(false);
+        } else {
+            this.setAllCheckBoxValue(true);
         }
     }
 

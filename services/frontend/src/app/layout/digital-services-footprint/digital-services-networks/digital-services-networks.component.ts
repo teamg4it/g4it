@@ -119,9 +119,9 @@ export class DigitalServicesNetworksComponent implements OnInit {
         this.existingNames.set(
             this.networkData()
                 .filter((c) =>
-                    this.network.idFront !== undefined
-                        ? this.network.name !== c.name
-                        : true,
+                    this.network.idFront === undefined
+                        ? true
+                        : this.network.name !== c.name,
                 )
                 .map((network) => network.name),
         );

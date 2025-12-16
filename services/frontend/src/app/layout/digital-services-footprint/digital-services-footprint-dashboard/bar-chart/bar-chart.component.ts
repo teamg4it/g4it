@@ -354,12 +354,12 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             ) {
                 return "";
             }
-            const seriesName = !this.barChartChild
-                ? `<div style="display: flex; align-items: center; height: 30px;">
+            const seriesName = this.barChartChild
+                ? ""
+                : `<div style="display: flex; align-items: center; height: 30px;">
                             <span style="display: inline-block; width: 10px; height: 10px; background-color: ${params.color}; border-radius: 50%; margin-right: 5px;"></span>
                             <span style="font-weight: bold; margin-right: 15px;">${params.seriesName}</span>
-                        </div>`
-                : "";
+                        </div>`;
             const showedHtml = `
                 <div>
                     ${this.integerPipe.transform(this.barChartChild ? params.value : params.data[1])}
@@ -452,10 +452,10 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
         let okMap = {};
         const isTerminals = type === Constants.TERMINAL;
 
-        if (!this.barChartChild) {
-            return this.processParentData(seriesData, xAxis, yAxis, okMap, isTerminals);
-        } else {
+        if (this.barChartChild) {
             return this.processChildData(seriesData, xAxis, yAxis, okMap, isTerminals);
+        } else {
+            return this.processParentData(seriesData, xAxis, yAxis, okMap, isTerminals);
         }
     }
 

@@ -268,34 +268,7 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     computeImpactOrder(impact: ApplicationImpact, yAxisValue: string) {
-        if (!this.yAxislist.includes(yAxisValue)) {
-            this.yAxislist.push(yAxisValue);
-            this.impactOrder.push({
-                domain: impact.domain,
-                sipImpact: impact.sip,
-                unitImpact: impact.impact,
-                subdomain: impact.subDomain,
-                app: impact.applicationName,
-                equipment: impact.equipmentType,
-                environment: impact.environment,
-                virtualEquipmentName: impact.virtualEquipmentName,
-                cluster: impact.cluster,
-                subdomains: [impact.subDomain],
-                apps: [impact.applicationName],
-                lifecycle: impact.lifeCycle,
-                status: {
-                    ok:
-                        impact.statusIndicator === Constants.DATA_QUALITY_STATUS.ok
-                            ? 1
-                            : 0,
-                    error:
-                        impact.statusIndicator === Constants.DATA_QUALITY_STATUS.error
-                            ? 1
-                            : 0,
-                    total: 1,
-                },
-            });
-        } else {
+        if (this.yAxislist.includes(yAxisValue)) {
             const index = this.yAxislist.indexOf(yAxisValue);
             this.impactOrder[index] = {
                 domain: impact.domain,
@@ -324,6 +297,33 @@ export class ApplicationCriteriaFootprintComponent
                     total: this.impactOrder[index]?.status?.total + 1,
                 },
             };
+        } else {
+            this.yAxislist.push(yAxisValue);
+            this.impactOrder.push({
+                domain: impact.domain,
+                sipImpact: impact.sip,
+                unitImpact: impact.impact,
+                subdomain: impact.subDomain,
+                app: impact.applicationName,
+                equipment: impact.equipmentType,
+                environment: impact.environment,
+                virtualEquipmentName: impact.virtualEquipmentName,
+                cluster: impact.cluster,
+                subdomains: [impact.subDomain],
+                apps: [impact.applicationName],
+                lifecycle: impact.lifeCycle,
+                status: {
+                    ok:
+                        impact.statusIndicator === Constants.DATA_QUALITY_STATUS.ok
+                            ? 1
+                            : 0,
+                    error:
+                        impact.statusIndicator === Constants.DATA_QUALITY_STATUS.error
+                            ? 1
+                            : 0,
+                    total: 1,
+                },
+            });
         }
     }
 

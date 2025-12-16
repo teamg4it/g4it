@@ -46,15 +46,15 @@ export class ApplicationCriteriaPieChartComponent {
     constructor(private readonly translate: TranslateService) {}
 
     pushData(lifecyles: string[], impact: any, data: any[]) {
-        if (!lifecyles.includes(impact.lifeCycle)) {
+        if (lifecyles.includes(impact.lifeCycle)) {
+            const index = lifecyles.indexOf(impact.lifeCycle);
+            data[index].value += impact.sip;
+        } else {
             lifecyles.push(impact.lifeCycle);
             data.push({
                 name: impact.lifeCycle,
                 value: impact.sip,
             });
-        } else {
-            const index = lifecyles.indexOf(impact.lifeCycle);
-            data[index].value += impact.sip;
         }
     }
 
@@ -145,15 +145,15 @@ export class ApplicationCriteriaPieChartComponent {
                     selectedFilters["lifeCycle"]?.includes(impact.lifeCycle) &&
                     this.footprintStore.appApplication() === impact.applicationName
                 ) {
-                    if (!environments.includes(impact.environment)) {
+                    if (environments.includes(impact.environment)) {
+                        const index = environments.indexOf(impact.environment);
+                        data[index].value += impact.sip;
+                    } else {
                         environments.push(impact.environment);
                         data.push({
                             name: impact.environment,
                             value: impact.sip,
                         });
-                    } else {
-                        const index = environments.indexOf(impact.environment);
-                        data[index].value += impact.sip;
                     }
                 }
             }
