@@ -106,14 +106,14 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         let unmodifyFilter: Filter<string | TransformedDomain> = {};
         for (const filter of Constants.APPLICATION_FILTERS) {
             unmodifyFilter[filter.field] = [
-                filter.field !== "domain"
-                    ? Constants.ALL
-                    : {
+                filter.field === "domain"
+                    ? {
                           label: Constants.ALL,
                           checked: true,
                           visible: true,
                           children: [],
-                      },
+                      }
+                    : Constants.ALL,
                 ...this.getValues(uniqueFilterSet, filter),
             ];
         }
@@ -291,7 +291,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         if (filter.translated) {
             return this.mapLifecycle(item as string, lifecyleMap);
         }
-        return item !== "" ? item : Constants.EMPTY;
+        return item === "" ? Constants.EMPTY : item;
     }
 
     private mapLifecycle(lifecycle: string, lifecyleMap: Map<string, string>): string {

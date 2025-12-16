@@ -223,10 +223,10 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
 
     async loopLoadDigitalServices() {
         this.digitalServiceInterval = setInterval(async () => {
-            if (!this.toReloadDigitalService) {
-                clearInterval(this.digitalServiceInterval);
-            } else {
+            if (this.toReloadDigitalService) {
                 await this.getDigitalServiceStatus();
+            } else {
+                clearInterval(this.digitalServiceInterval);
             }
         }, this.waitingLoop);
     }

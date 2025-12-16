@@ -40,13 +40,13 @@ export class AbstractDashboard {
 
     getCriteriaTranslation(input: string) {
         this.selectedLang = this.translate.currentLang;
-        if (!Object.keys(this.globalStore.criteriaList()).includes(input)) {
+        if (Object.keys(this.globalStore.criteriaList()).includes(input)) {
             return this.translate.instant(
-                "criteria-title." + input.toLowerCase().replace(/\s+/g, "-") + ".title",
+                "criteria." + input.toLowerCase().replace(/\s+/g, "-") + ".title",
             );
         } else {
             return this.translate.instant(
-                "criteria." + input.toLowerCase().replace(/\s+/g, "-") + ".title",
+                "criteria-title." + input.toLowerCase().replace(/\s+/g, "-") + ".title",
             );
         }
     }

@@ -234,11 +234,11 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
                             this.name
                         } ${this.translate.instant("inventories.created")}`,
                     });
-                    if (bodyLoading.length !== 0) {
-                        this.uploadAndLaunchLoading(formData, response.id);
-                    } else {
+                    if (bodyLoading.length === 0) {
                         this.reloadInventoriesAndLoop.emit(response.id);
                         this.close();
+                    } else {
+                        this.uploadAndLaunchLoading(formData, response.id);
                     }
                 },
                 error: (error) => {},

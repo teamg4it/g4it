@@ -41,7 +41,7 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
     ngOnInit() {
         const isNew = this.network.idFront === undefined;
         this.existingNames = this.networkData
-            .filter((c) => (!isNew ? this.network.name !== c.name : true))
+            .filter((c) => (isNew ? true : this.network.name !== c.name))
             .map((cloud) => cloud.name);
         this.networksForm = this._formBuilder.group({
             name: [

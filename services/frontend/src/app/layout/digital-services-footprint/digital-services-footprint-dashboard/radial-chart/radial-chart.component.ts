@@ -65,9 +65,9 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                                 : 0),
                         error:
                             (this.criteriaMap[translatedCriteria]?.status?.error ?? 0) +
-                            (impact.status !== Constants.DATA_QUALITY_STATUS.ok
-                                ? impact.countValue
-                                : 0),
+                            (impact.status === Constants.DATA_QUALITY_STATUS.ok
+                                ? 0
+                                : impact.countValue),
                         total:
                             (this.criteriaMap[translatedCriteria]?.status?.total ?? 0) +
                             impact.countValue,
