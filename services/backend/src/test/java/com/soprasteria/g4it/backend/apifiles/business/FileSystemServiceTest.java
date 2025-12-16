@@ -12,6 +12,7 @@ import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
@@ -22,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -226,14 +228,33 @@ class FileSystemServiceTest {
         when(fileSystem.mount(Constants.INTERNAL_ORGANIZATION, String.valueOf(Constants.INTERNAL_WORKSPACE)))
                 .thenReturn(fileStorage);
 
-        when(fileStorage.listFiles(FileFolder.TEMPLATES)).thenReturn(List.of());
-        when(fileDescriptionRestMapper.toDto(List.of())).thenReturn(List.of());
+        // Mock resources
+        Resource mockResource = mock(Resource.class);
+        when(mockResource.getFilename()).thenReturn("G4IT_Datamodel.xlsx");
+
+        when(fileStorage.listFiles(FileFolder.TEMPLATES))
+                .thenReturn(List.of());
+
+        when(fileStorage.listResources(
+                eq(FileFolder.TEMPLATES),
+                eq("Ready for Production"),
+                eq(FileType.UNKNOWN)
+        )).thenReturn(new Resource[]{mockResource});
+
+        // Instead of exact list matching → match ANY list
+        List<FileDescriptionRest> expected = List.of(mock(FileDescriptionRest.class));
+        when(fileDescriptionRestMapper.toDto(anyList())).thenReturn(expected);
 
         List<FileDescriptionRest> result = fileSystemService.listTemplatesFiles();
 
         assertNotNull(result);
+        assertEquals(expected, result);
+
         verify(fileStorage).listFiles(FileFolder.TEMPLATES);
+        verify(fileStorage).listResources(FileFolder.TEMPLATES, "Ready for Production", FileType.UNKNOWN);
+        verify(fileDescriptionRestMapper).toDto(anyList());
     }
+
 
     @Test
     void testFetchStorage_success() {
