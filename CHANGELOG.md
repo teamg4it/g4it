@@ -1,5 +1,12 @@
 # G4IT
 
+## 3.9.0
+
+## Major changes
+- 1606 | Making a version the new current
+
+### Minor Changes
+
 ## 3.8.1
 
 ### Minor Changes
