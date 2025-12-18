@@ -16,10 +16,15 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     versionData: DigitalServiceVersionResponse[] = [];
     dsVersionUid: string = "";
     selectedVersions: string[] = [];
+    isPromoteVersionDialogVisible = false;
 
     ngOnInit() {
         this.dsVersionUid =
             this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
+        this.getVersions();
+    }
+
+    getVersions(): void {
         this.digitalServiceVersionDataService
             .getVersions(this.dsVersionUid)
             .subscribe((versions) => {

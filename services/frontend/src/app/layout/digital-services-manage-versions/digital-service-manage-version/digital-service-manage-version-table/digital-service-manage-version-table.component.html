@@ -75,7 +75,6 @@
             </td>
             <td>
                 <p-button
-                    class="mx-1 p-1 pt-2"
                     icon="pi pi-clone"
                     [text]="true"
                     [plain]="true"
@@ -87,6 +86,22 @@
                     tooltipPosition="bottom"
                     [ariaLabel]="'digital-services.version.duplicate-version' | translate"
                 ></p-button>
+                @if (version.versionType === "draft") {
+                    <p-button
+                        icon="pi pi pi-star"
+                        [text]="true"
+                        [plain]="true"
+                        [rounded]="true"
+                        (onClick)="isPromoteVersionDialogVisible = true"
+                        [pTooltip]="
+                            'digital-services.version.promote-version' | translate
+                        "
+                        tooltipPosition="bottom"
+                        [ariaLabel]="
+                            'digital-services.version.aria-promote-version' | translate
+                        "
+                    ></p-button>
+                }
             </td>
             <td>
                 <p-checkbox
@@ -106,3 +121,11 @@
         </tr>
     </ng-template>
 </p-table>
+@if (isPromoteVersionDialogVisible) {
+    <app-promote-version-dialog
+        [dsvId]="dsVersionUid"
+        [displayPopup]="isPromoteVersionDialogVisible"
+        (outClose)="isPromoteVersionDialogVisible = false"
+        (promotedEvent)="getVersions()"
+    ></app-promote-version-dialog>
+}
