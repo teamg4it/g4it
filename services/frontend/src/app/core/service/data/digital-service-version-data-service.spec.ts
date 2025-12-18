@@ -4,7 +4,10 @@ import {
 } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { Constants } from "src/constants";
-import { DigitalServiceVersionResponse } from "../../interfaces/digital-service-version.interface";
+import {
+    DigitalServicePromoteResponse,
+    DigitalServiceVersionResponse,
+} from "../../interfaces/digital-service-version.interface";
 import { DigitalService } from "../../interfaces/digital-service.interfaces";
 import { DigitalServiceVersionDataService } from "./digital-service-version-data-service";
 
@@ -78,6 +81,24 @@ describe("DigitalServiceVersionDataService", () => {
 
         const req = httpMock.expectOne(`${endpoint}/${dsvUid}/duplicate`);
         expect(req.request.method).toBe("POST");
+
+        req.flush(mockResponse);
+    });
+
+    it("should promote versions by dsvUid", () => {
+        const dsvUid = "12345";
+        const mockResponse: DigitalServicePromoteResponse = {
+            digitalServiceUid: "1",
+            digitalServiceVersionUid: "12345",
+            isPromoted: true,
+        };
+
+        service.promoteVersion(dsvUid).subscribe((res) => {
+            expect(res).toEqual(mockResponse);
+        });
+
+        const req = httpMock.expectOne(`${endpoint}/${dsvUid}/promote-version`);
+        expect(req.request.method).toBe("GET");
 
         req.flush(mockResponse);
     });
