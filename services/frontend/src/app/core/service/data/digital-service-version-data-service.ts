@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 import {
     CompareVersion,
+    DigitalServicePromoteResponse,
     DigitalServiceVersionResponse,
 } from "../../interfaces/digital-service-version.interface";
 import { DigitalService } from "../../interfaces/digital-service.interfaces";
@@ -34,5 +35,11 @@ export class DigitalServiceVersionDataService {
         return this.http.get<CompareVersion[]>(`${endpoint}/compare-versions`, {
             params,
         });
+    }
+
+    promoteVersion(dsvUid: string): Observable<DigitalServicePromoteResponse> {
+        return this.http.get<DigitalServicePromoteResponse>(
+            `${endpoint}/${dsvUid}/promote-version`,
+        );
     }
 }

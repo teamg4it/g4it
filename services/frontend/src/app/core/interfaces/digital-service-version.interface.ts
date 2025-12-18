@@ -15,6 +15,12 @@ export interface DigitalServiceVersionResponse {
     selected?: boolean;
 }
 
+export interface DigitalServicePromoteResponse {
+    digitalServiceUid: string;
+    digitalServiceVersionUid: string;
+    isPromoted: boolean;
+}
+
 export enum DigitalServiceVersionType {
     ACTIVE = "active",
     DRAFT = "draft",

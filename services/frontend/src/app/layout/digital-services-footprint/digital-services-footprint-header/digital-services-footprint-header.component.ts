@@ -69,7 +69,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     digitalServiceVersionType = DigitalServiceVersionType;
     digitalServiceVersionUid =
         this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
-
+    isPromoteVersionDialogVisible = false;
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -247,9 +247,13 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.shareLink = res.url;
                 this.expiryDate = new Date(res.expiryDate.toString() + "Z");
                 if (!this.digitalService.isShared) {
-                    this.digitalServicesData.get(this.digitalService.uid).subscribe();
+                    this.getDigitalServiceversion();
                 }
             });
+    }
+
+    getDigitalServiceversion(): void {
+        this.digitalServicesData.get(this.digitalService.uid).subscribe();
     }
 
     duplicateDigitalServiceVersion(): void {

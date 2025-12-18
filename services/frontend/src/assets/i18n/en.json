@@ -266,11 +266,18 @@
             "select": "Select",
             "versions": "Versions",
             "duplicate-version": "Duplicate Version",
+            "promote-version": "Promote Version",
+            "aria-promote-version": "Click here to promote this version as active",
             "compare-versions": "Compare two versions",
             "compare-version-tooltip": "Select two versions to compare their results. The versions must have calculated impact criteria.",
             "compare-versions-title": "Compare the impact of versions",
             "not-calculated": "Not calculated",
-            "select-version": "Click to select a version {{versionTableName}}"
+            "select-version": "Click to select a version {{versionTableName}}",
+            "promote-popup": {
+                "title": "Promote a version",
+                "description": "You are about to promote this version as <strong>active</strong>.<br/> Your former <strong>active version</strong> will be <strong>archived</strong>.<br/> <strong>Do you want to promote this version?</strong>",
+                "save": "Promote"
+            }
         },
         "error.digital-service-already-exists": "Digital Service already exists",
         "comparison": {
