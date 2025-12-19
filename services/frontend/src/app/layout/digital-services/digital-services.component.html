@@ -9,7 +9,7 @@
         }}
     </h1>
     <p-button
-        styleClass="black-button"
+        styleClass="black-button matomo-add-digital-service"
         (onClick)="newDsSidebarVisible = true"
         *ngIf="
             ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||

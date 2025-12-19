@@ -237,9 +237,7 @@
                 [ariaLabel]="'common.accessibility.download' | translate"
                 styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
                 (onClick)="exportData()"
-                *ngIf="
-                    (userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi()
-                "
+                *ngIf="userService.isAllowedDigitalServiceRead$ | async"
                 [disabled]="digitalService.lastCalculationDate === undefined"
                 icon="pi pi-download"
                 [pTooltip]="'inventories-footprint.header.export' | translate"
