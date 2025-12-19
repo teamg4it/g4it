@@ -6,6 +6,7 @@
 - 1606 | Making a version the new current
 
 ### Minor Changes
+- 1756 | All connected users can export data
 
 ## 3.8.1
 
