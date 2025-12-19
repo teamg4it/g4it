@@ -102,6 +102,22 @@
                         "
                     ></p-button>
                 }
+                @if (version.versionType !== "active") {
+                    <p-confirmPopup [style]="{ width: '450px' }" />
+                    <p-button
+                        icon="pi pi pi-trash"
+                        id="manage-version-delete"
+                        [text]="true"
+                        [plain]="true"
+                        [rounded]="true"
+                        [pTooltip]="'digital-services.version.delete-version' | translate"
+                        tooltipPosition="bottom"
+                        (onClick)="confirmDelete($event, version)"
+                        [ariaLabel]="
+                            'digital-services.version.aria-delete-version' | translate
+                        "
+                    ></p-button>
+                }
             </td>
             <td>
                 <p-checkbox
