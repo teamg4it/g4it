@@ -4,6 +4,7 @@
 
 ## Major changes
 - 1606 | Making a version the new current
+- 1607 | Deleting a Digital Service Version
 
 ### Minor Changes
 
