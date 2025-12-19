@@ -83,9 +83,12 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.route.paramMap.subscribe((params) => {
-            this.digitalServiceVersionUid = params.get("digitalServiceVersionId") ?? "";
-        });
+        this.route.paramMap
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((params) => {
+                this.digitalServiceVersionUid =
+                    params.get("digitalServiceVersionId") ?? "";
+            });
 
         this.digitalServicesData.digitalService$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -132,9 +135,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             acceptLabel: this.translate.instant("common.yes"),
             rejectLabel: this.translate.instant("common.no"),
             message: `${this.translate.instant(
-                "digital-services.popup.delete-question",
-            )} ${this.digitalService.name} ?
-            ${this.translate.instant("digital-services.popup.delete-text")}`,
+                "digital-services.version.popup.delete-question",
+            )} "${this.digitalService.description}" ?
+            ${this.translate.instant("digital-services.popup.delete-text")}
+            ${this.digitalService.versionType === "archived" ? this.translate.instant("digital-services.version.popup.archived-text") : ""}`,
             icon: "pi pi-exclamation-triangle",
             accept: () => {
                 this.global.setLoading(true);

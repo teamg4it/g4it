@@ -266,6 +266,8 @@
             "duplicate-version": "Dupliquer la version",
             "promote-version": "Promouvoir la version",
             "aria-promote-version": "Cliquer ici pour promouvoir cette version en active",
+            "delete-version": "Supprimer la version",
+            "aria-delete-version": "Cliquez ici pour supprimer cette version",
             "compare-versions": "Comparer 2 versions",
             "compare-version-tooltip": "Sélectionner deux versions pour comparer leurs résultats. Les versions doivent avoir des résultats d'impact calculés.",
             "compare-versions-title": "Comparer l'impact des versions",
@@ -275,6 +277,10 @@
                 "title": "Promouvoir une version",
                 "description": "Vous allez promouvoir cette version comme <strong>active</strong>.<br/> Votre ancienne <strong>version active</strong> sera archivée.<br/> <strong>Souhaitez-vous promouvoir cette version ?</strong>",
                 "save": "Valider la promotion"
+            },
+            "popup": {
+                "delete-question": "Etes vous sûr de vouloir supprimer cette version",
+                "archived-text": "Vous êtes sur le point de supprimer une verison archivée, vous ne pourrez plus intégrer cette version dans votre suivi d'évolution."
             }
         },
         "error.digital-service-already-exists": "Le service numérique existe déjà",
