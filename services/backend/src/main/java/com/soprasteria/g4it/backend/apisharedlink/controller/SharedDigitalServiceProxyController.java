@@ -8,18 +8,14 @@
 
 package com.soprasteria.g4it.backend.apisharedlink.controller;
 
+import com.soprasteria.g4it.backend.apibusinesshours.business.BusinessHoursService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
-import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceVersionRestMapper;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
-import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
-import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
-import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
-import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
+import com.soprasteria.g4it.backend.apiinout.business.*;
+import com.soprasteria.g4it.backend.apiversion.business.VersionService;
 import com.soprasteria.g4it.backend.server.gen.api.SharedLinkDigitalServiceItemsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.AllArgsConstructor;
@@ -43,9 +39,10 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
     private InVirtualEquipmentService inVirtualEquipmentService;
     private DigitalServiceReferentialService digitalServiceReferentialService;
     private DigitalServiceReferentialRestMapper digitalServiceReferentialRestMapper;
-    private DigitalServiceService digitalServiceService;
     private DigitalServiceVersionService digitalServiceVersionService;
+    private VersionService versionService;
     private DigitalServiceVersionRestMapper digitalServiceVersionRestMapper;
+    private BusinessHoursService businessHoursService;
     /**
      * Service to access physical equipment output data.
      */
@@ -109,7 +106,18 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
 
     @Override
     public ResponseEntity<DigitalServiceVersionRest> getSharedDigitalServiceLinkMetadata(String digitalServiceVersionUid,
-                                                                                  String shareId) {
+                                                                                         String shareId) {
         return ResponseEntity.ok(digitalServiceVersionRestMapper.toDto(digitalServiceVersionService.getDigitalServiceVersion(digitalServiceVersionUid)));
+    }
+
+    @Override
+    public ResponseEntity<List<BusinessHoursRest>> getSharedDigitalServiceBusinessHours(String digitalServiceVersionUid,
+                                                                                        String shareId) {
+        return ResponseEntity.ok().body(businessHoursService.getBusinessHours());
+    }
+
+    @Override
+    public ResponseEntity<VersionRest> getSharedVersion(String shareId) {
+        return ResponseEntity.ok(versionService.getVersion());
     }
 }
