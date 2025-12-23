@@ -44,23 +44,35 @@ public interface DigitalServiceVersionRepository extends JpaRepository<DigitalSe
     @Transactional
     @Query(value = """
             INSERT INTO digital_service_version (
-                uid, description, creation_date,
-                last_update_date, item_id, version_type, criteria, created_by
+                uid,
+                description,
+                creation_date,
+                last_update_date,
+                item_id,
+                version_type,
+                criteria,
+                created_by
             )
             SELECT
                 :newUid,
-                description || ' (1)',
+                'Version ' || (
+                    SELECT COUNT(*) + 1
+                    FROM digital_service_version dsv2
+                    WHERE dsv2.item_id = dsv.item_id
+                ),
                 NOW(),
                 NOW(),
                 item_id,
                 'draft',
                 criteria,
                 created_by
-            FROM digital_service_version
+            FROM digital_service_version dsv
             WHERE uid = :oldUid
             """, nativeQuery = true)
-    void duplicateVersionRecord(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
-
+    void duplicateVersionRecord(
+            @Param("oldUid") String oldUid,
+            @Param("newUid") String newUid
+    );
 
     Optional<DigitalServiceVersion> findByDigitalServiceUidAndVersionType(String uid, String value);
 }
