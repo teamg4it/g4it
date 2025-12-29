@@ -1,0 +1,46 @@
+<div class="promote-popup">
+    <p-dialog
+        [modal]="true"
+        [(visible)]="displayPopup"
+        (onHide)="closePopup()"
+        [breakpoints]="{ '1199px': '50vw', '575px': '90vw' }"
+        [style]="{ width: '30vw' }"
+        [draggable]="false"
+        [dismissableMask]="true"
+        id="promote-popup"
+        [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
+        [header]="'digital-services.version.promote-popup.title' | translate"
+    >
+        <p
+            [innerHTML]="'digital-services.version.promote-popup.description' | translate"
+        ></p>
+
+        <ng-template pTemplate="footer">
+            <div
+                class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
+            >
+                <div class="flex justify-content-start mr-auto">
+                    <p-button
+                        styleClass="cancel-creation-button uppercase mb-2 sm:mb-0"
+                        aria-label="Cancel"
+                        id="criteria-cancel"
+                        (onClick)="closePopup()"
+                    >
+                        {{ "common.cancel" | translate }}
+                    </p-button>
+                </div>
+
+                <p-button
+                    styleClass="uppercase"
+                    [attr.aria-label]="
+                        'digital-services.version.promote-popup.save' | translate
+                    "
+                    (onClick)="promoteVersion()"
+                    [autofocus]="true"
+                >
+                    {{ "digital-services.version.promote-popup.save" | translate }}
+                </p-button>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

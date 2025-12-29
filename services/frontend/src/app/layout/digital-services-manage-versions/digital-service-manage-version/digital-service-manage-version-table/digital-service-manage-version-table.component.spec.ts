@@ -1,5 +1,7 @@
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { DigitalServiceVersionResponse } from "src/app/core/interfaces/digital-service-version.interface";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
@@ -21,6 +23,7 @@ describe("DigitalServiceManageVersionTableComponent", () => {
 
         await TestBed.configureTestingModule({
             declarations: [DigitalServiceManageVersionTableComponent],
+            imports: [TranslateModule.forRoot(), HttpClientTestingModule],
             providers: [
                 { provide: DigitalServiceVersionDataService, useValue: dataServiceSpy },
                 { provide: Router, useValue: routerSpy },
@@ -38,6 +41,7 @@ describe("DigitalServiceManageVersionTableComponent", () => {
                         },
                     },
                 },
+                TranslateService,
             ],
         }).compileComponents();
 

@@ -37,6 +37,7 @@ import { CommonEditorComponent } from "src/app/layout/common/common-editor/commo
 import { CriteriaPopupComponent } from "src/app/layout/common/criteria-popup/criteria-popup.component";
 import { FormNavComponent } from "src/app/layout/common/form-nav/form-nav.component";
 import { InformationCardComponent } from "src/app/layout/common/information-card/information-card.component";
+import { PromoteVersionDialogComponent } from "src/app/layout/common/promote-version-dialog/promote-version-dialog.component";
 import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
 import { StackBarChartComponent } from "src/app/layout/common/stack-bar-chart/stack-bar-chart.component";
 import { StatsComponent } from "src/app/layout/common/stats/stats.component";
@@ -62,6 +63,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         BusinessHoursRendererPipe,
         StatsComponent,
         CriteriaPopupComponent,
+        PromoteVersionDialogComponent,
         AutofocusDirective,
         StackBarChartComponent,
         WorkspaceComponent,
@@ -133,6 +135,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         SpinnerComponent,
         ClipboardModule,
         CriteriaPopupComponent,
+        PromoteVersionDialogComponent,
         AutofocusDirective,
         StackBarChartComponent,
         WorkspaceComponent,

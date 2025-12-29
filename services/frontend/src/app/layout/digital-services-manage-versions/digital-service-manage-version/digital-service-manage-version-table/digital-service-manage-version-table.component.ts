@@ -1,11 +1,18 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
+import { ConfirmationService } from "primeng/api";
+import { finalize } from "rxjs";
 import { DigitalServiceVersionResponse } from "src/app/core/interfaces/digital-service-version.interface";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
+import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-digital-service-manage-version-table",
     templateUrl: "./digital-service-manage-version-table.component.html",
+    providers: [ConfirmationService],
 })
 export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly digitalServiceVersionDataService = inject(
@@ -13,15 +20,26 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     );
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
+    private readonly confirmationService = inject(ConfirmationService);
+    private readonly translate = inject(TranslateService);
+    private readonly global = inject(GlobalStoreService);
+    private readonly digitalServicesDataService = inject(DigitalServicesDataService);
+    private readonly destroyRef = inject(DestroyRef);
     versionData: DigitalServiceVersionResponse[] = [];
     dsVersionUid: string = "";
     selectedVersions: string[] = [];
+    isPromoteVersionDialogVisible = false;
 
     ngOnInit() {
         this.dsVersionUid =
             this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
+        this.getVersions();
+    }
+
+    getVersions(): void {
         this.digitalServiceVersionDataService
             .getVersions(this.dsVersionUid)
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((versions) => {
                 this.versionData = versions;
             });
@@ -76,8 +94,39 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     duplicateDigitalServiceVersion(dsvUid: string): void {
         this.digitalServiceVersionDataService
             .duplicateVersion(dsvUid)
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((version) => {
                 this.redirectToVersionDetails(version.uid);
             });
+    }
+
+    confirmDelete(event: Event, version: DigitalServiceVersionResponse) {
+        this.confirmationService.confirm({
+            closeOnEscape: true,
+
+            target: event.target as EventTarget,
+            acceptLabel: this.translate.instant("common.yes"),
+            rejectLabel: this.translate.instant("common.no"),
+            message: `${this.translate.instant(
+                "digital-services.version.popup.delete-question",
+            )} "${version.versionName}" ?
+                ${this.translate.instant("digital-services.popup.delete-text")}
+                ${version.versionType === "archived" ? this.translate.instant("digital-services.version.popup.archived-text") : ""}`,
+
+            icon: "pi pi-exclamation-triangle",
+
+            accept: () => {
+                this.global.setLoading(true);
+                this.digitalServicesDataService
+                    .deleteVersion(version.digitalServiceVersionUid)
+                    .pipe(
+                        takeUntilDestroyed(this.destroyRef),
+                        finalize(() => {
+                            this.global.setLoading(false);
+                        }),
+                    )
+                    .subscribe(() => this.getVersions());
+            },
+        });
     }
 }

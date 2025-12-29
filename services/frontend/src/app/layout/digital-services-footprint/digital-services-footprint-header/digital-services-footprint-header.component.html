@@ -237,9 +237,7 @@
                 [ariaLabel]="'common.accessibility.download' | translate"
                 styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
                 (onClick)="exportData()"
-                *ngIf="
-                    (userService.isAllowedDigitalServiceWrite$ | async) || isEcoMindAi()
-                "
+                *ngIf="userService.isAllowedDigitalServiceRead$ | async"
                 [disabled]="digitalService.lastCalculationDate === undefined"
                 icon="pi pi-download"
                 [pTooltip]="'inventories-footprint.header.export' | translate"
@@ -256,6 +254,21 @@
                 (onClick)="duplicateDigitalServiceVersion()"
             >
             </p-button>
+            @if (digitalService.versionType === "draft") {
+                <p-button
+                    styleClass="header-blue-btn ml-2 mb-3 lg:mb-0"
+                    icon="pi pi-star"
+                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                    id="promote-version"
+                    [pTooltip]="'digital-services.version.promote-version' | translate"
+                    tooltipPosition="bottom"
+                    [ariaLabel]="
+                        'digital-services.version.aria-promote-version' | translate
+                    "
+                    (onClick)="isPromoteVersionDialogVisible = true"
+                >
+                </p-button>
+            }
 
             @if (digitalService.versionType !== "active") {
                 <p-button
@@ -283,4 +296,13 @@
         [expiryDate]="expiryDate"
     >
     </app-link-create-popup>
+}
+
+@if (isPromoteVersionDialogVisible) {
+    <app-promote-version-dialog
+        [dsvId]="digitalServiceVersionUid"
+        [displayPopup]="isPromoteVersionDialogVisible"
+        (outClose)="isPromoteVersionDialogVisible = false"
+        (promotedEvent)="getDigitalServiceversion()"
+    ></app-promote-version-dialog>
 }

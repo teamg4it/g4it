@@ -1,5 +1,20 @@
 # G4IT
 
+## 3.9.0
+
+## Major changes
+- 1606 | Making a version the new current
+- 1607 | Deleting a Digital Service Version
+
+### Minor Changes
+- 1756 | All connected users can export data
+
+## 3.8.1
+
+### Minor Changes
+
+- 1798 | Impossible to load physical equipment associated to location in Korea
+
 ## 3.8.0
 
 ## Major changes
@@ -26,7 +41,7 @@
 - 1714 | Graph Description must be activated on the module EcoMindIA
 - 1400 | find a simpler solution to save electricity consumption in out_physical_equipment
 - 1611 | Add the ecomindAI version on the Useful Information page
-- 1641 | Share functionality to display page result by default 
+- 1641 | Share functionality to display page result by default
 - 1662 | Issue to start G4IT locally | update keycloak image
 - 1677 | Update the datamodel to include the specificities of Digital Service Import
 - 1693 | [IS module] Control on the default DC for physical equipment
