@@ -94,6 +94,14 @@
 
     <profiles>
         <profile>
+            <id>coverage</id>
+            <properties>
+                <sonar.coverage.jacoco.xmlReportPaths>
+                    ${project.build.directory}/site/jacoco/jacoco.xml
+                </sonar.coverage.jacoco.xmlReportPaths>
+            </properties>
+        </profile>
+        <profile>
             <id>SKIP-ALL-TEST</id>
             <properties>
                 <skip.unit.tests>true</skip.unit.tests>
@@ -307,6 +315,13 @@
 
     <build>
         <plugins>
+            <!-- SonarQube / SonarCloud Maven Plugin -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version>
+            </plugin>
+
             <!-- Merge all yaml swagger file for greenIT -->
             <plugin>
                 <groupId>com.rameshkp</groupId>
@@ -554,8 +569,8 @@
                         <exclude>**/repository/**/*</exclude>
                         <exclude>**/tasklet/**/*</exclude>
                         <exclude>**/client/**/*</exclude>
-                        <exclude>**/utils/Constants*</exclude>>
-                        <exclude>**/BackendApplication*</exclude>>
+                        <exclude>**/utils/Constants*</exclude>
+                        <exclude>**/BackendApplication*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
