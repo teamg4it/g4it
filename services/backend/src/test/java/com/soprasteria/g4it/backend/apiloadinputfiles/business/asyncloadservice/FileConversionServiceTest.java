@@ -115,4 +115,19 @@ class FileConversionServiceTest {
         assertTrue(result.exists());
     }
 
+    @Test
+    void testInvalidParentPathTriggersSecurityException() throws Exception {
+        File csv = new File("input.csv"); // parent = null
+        try (FileWriter writer = new FileWriter(csv)) {
+            writer.write("A,B\n1,2");
+        }
+        SecurityException ex = assertThrows(
+                SecurityException.class,
+                () -> fileConversionService.convertFileToCsv(csv, "input.csv")
+        );
+        assertTrue(ex.getMessage().contains("Invalid file path"));
+        csv.delete();
+    }
+
+
 }
