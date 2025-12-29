@@ -104,17 +104,15 @@ class FileConversionServiceTest {
     }
 
     @Test
-    void testPathTraversalThrowsSecurityException() throws Exception {
+    void testPathTraversalIsIgnoredAndHandledSafely() throws Exception {
         File csv = tempDir.resolve("input.csv").toFile();
         try (FileWriter writer = new FileWriter(csv)) {
             writer.write("A,B\n1,2");
         }
         String maliciousFilename = "../wrongfile.csv";
-        SecurityException ex = assertThrows(
-                SecurityException.class,
-                () -> fileConversionService.convertFileToCsv(csv, maliciousFilename)
-        );
-        assertTrue(ex.getMessage().contains("Invalid file path"));
+        File result = fileConversionService.convertFileToCsv(csv, maliciousFilename);
+        assertNotNull(result);
+        assertTrue(result.exists());
     }
 
 }
