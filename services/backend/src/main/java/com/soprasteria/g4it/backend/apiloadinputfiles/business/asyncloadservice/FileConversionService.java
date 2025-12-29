@@ -54,9 +54,13 @@ public class FileConversionService {
      */
     public File convertFileToCsv(File file, String originalFilename) throws IOException, RuntimeException {
         String extension = StringUtils.getFilenameExtension(originalFilename == null ? "" : originalFilename).toLowerCase();
-
-        String convertedFileName = "converted_" + file.getName() + Constants.CSV;
-        Path convertedFilePath = file.toPath().resolveSibling(convertedFileName);
+        String safeName = file.getName().replaceAll("[^a-zA-Z0-9._-]", "_");
+        Path convertedFilePath = file.toPath().resolveSibling("converted_" + safeName + Constants.CSV).normalize();
+        if (!convertedFilePath.startsWith(file.getParent())) {
+            throw new SecurityException("Invalid file path for conversion. File: " + file.getName() +
+                    ", Path: " + convertedFilePath
+            );
+        }
         File convertedFile = convertedFilePath.toFile();
 
         log.info("Converting '{}' to '{}' separated csv format", originalFilename, CsvUtils.DELIMITER);
