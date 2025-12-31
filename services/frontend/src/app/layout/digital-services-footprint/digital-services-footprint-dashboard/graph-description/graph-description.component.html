@@ -38,19 +38,83 @@
                 @for (impactText of textDescriptionImpacts(); track $index) {
                     <li>
                         <span [innerHTML]="impactText.text"></span>
-                        @if (chartType() !== "bar") {
+                        @if (
+                            !barChartChild() &&
+                            selectedParam() !== "Network" &&
+                            chartType() !== "bar"
+                        ) {
                             <button
                                 class="blue-link"
-                                (click)="impactClick(impactText.impactName)"
+                                (click)="
+                                    impactClick(
+                                        impactText.impactName,
+                                        impactText?.impactType!
+                                    )
+                                "
                             >
                                 <i class="pi pi-arrow-right inline"></i> &nbsp;&nbsp;
-                                access to detail impact on
-                                {{ impactText.impactNameVisible }} axis
+                                @if (chartType() === "radial") {
+                                    {{
+                                        "digital-services.global-access-link"
+                                            | translate
+                                                : {
+                                                      criteria:
+                                                          impactText.impactNameVisible,
+                                                  }
+                                    }}
+                                } @else {
+                                    {{
+                                        "digital-services.criteria-access-link"
+                                            | translate
+                                                : { type: impactText.impactNameVisible }
+                                    }}
+                                }
                             </button>
                         }
+                        <span>{{
+                            textDescriptionImpacts().length === 1 ||
+                            $index === textDescriptionImpacts().length - 1
+                                ? "."
+                                : ","
+                        }}</span>
                     </li>
                 }
             </ul>
+            @if (contentText()?.textResourceDescription) {
+                <p [innerHTML]="contentText()?.textResourceDescription"></p>
+            }
+            <ul>
+                @for (impactText of textDescriptionResourceImpacts(); track $index) {
+                    <li>
+                        <span [innerHTML]="impactText.text"></span>
+                        @if (!barChartChild() && selectedParam() !== "Network") {
+                            <button
+                                class="blue-link"
+                                (click)="
+                                    impactClick(
+                                        impactText.impactName,
+                                        impactText?.impactType!
+                                    )
+                                "
+                            >
+                                <i class="pi pi-arrow-right inline"></i> &nbsp;&nbsp;
+                                {{
+                                    "digital-services.resource-access-link"
+                                        | translate
+                                            : { type: impactText.impactNameVisible }
+                                }}
+                            </button>
+                        }
+                        <span>{{
+                            textDescriptionImpacts().length === 1 ||
+                            $index === textDescriptionImpacts().length - 1
+                                ? "."
+                                : ","
+                        }}</span>
+                    </li>
+                }
+            </ul>
+
             @if (contentText()?.analysis) {
                 <div class="section-hr"></div>
                 <h4 class="mb-0 font-semibold">

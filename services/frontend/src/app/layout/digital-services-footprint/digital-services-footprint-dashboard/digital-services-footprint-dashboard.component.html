@@ -185,6 +185,9 @@
                         (selectedDetailParamChange)="selectedDetailParam = $event"
                         (selectedDetailNameChange)="selectedDetailName = $event"
                         (barChartTopThreeImpact)="barChartTopThreeImpact = $event"
+                        (barChartTopThreeResourceImpact)="
+                            barChartTopThreeResourceImpact = $event
+                        "
                     ></app-bar-chart>
                 </ng-template>
             </div>
@@ -192,7 +195,10 @@
                 [ecoMindRecomendation]="getEcoMindRecomendation()"
                 [contentText]="getContentText()"
                 [textDescriptionImpacts]="textDescriptionImpacts"
+                [textDescriptionResourceImpacts]="textDescriptionResourceImpacts"
                 [chartType]="chartType()"
+                [barChartChild]="barChartChild"
+                [selectedParam]="selectedParam"
                 (impactSelectedEvent)="handleImpactClick($event)"
             ></app-graph-description>
         </div>

@@ -13,17 +13,38 @@ export class GraphDescriptionComponent {
     contentText = input<GraphDescriptionContent>();
     ecoMindRecomendation = input<string>("");
     chartType = input<string>("");
+    barChartChild = input<boolean>(false);
+    selectedParam = input<string>("");
     textDescriptionImpacts = input<
-        { text: string; impactName: string; impactNameVisible: string }[]
+        {
+            text: string;
+            impactName: string;
+            impactNameVisible: string;
+            impactType?: string;
+        }[]
+    >([]);
+    textDescriptionResourceImpacts = input<
+        {
+            text: string;
+            impactName: string;
+            impactNameVisible: string;
+            impactType?: string;
+        }[]
     >([]);
 
-    @Output() impactSelectedEvent: EventEmitter<string> = new EventEmitter();
+    @Output() impactSelectedEvent: EventEmitter<any> = new EventEmitter();
 
     toggleContentVisibility() {
         this.contentVisible = !this.contentVisible;
     }
 
-    impactClick(event: string) {
-        this.impactSelectedEvent.emit(event);
+    impactClick(impactName: string, impactType: string) {
+        this.impactSelectedEvent.emit(impactName);
+        if (impactType) {
+            this.impactSelectedEvent.emit({
+                impactName,
+                impactType,
+            });
+        }
     }
 }

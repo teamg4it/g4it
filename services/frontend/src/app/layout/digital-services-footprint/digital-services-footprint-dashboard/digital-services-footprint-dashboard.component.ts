@@ -102,6 +102,7 @@ export class DigitalServicesFootprintDashboardComponent
     topThreeImpacts: any[] = [];
     topPieThreeImpacts: any[] = [];
     barChartTopThreeImpact: any[] = [];
+    barChartTopThreeResourceImpact: any[] = [];
 
     globalVisionChartData: DigitalServiceFootprint[] | undefined;
 
@@ -112,6 +113,12 @@ export class DigitalServicesFootprintDashboardComponent
     workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
     organization!: Organization;
     textDescriptionImpacts: {
+        text: string;
+        impactName: string;
+        impactNameVisible: string;
+    }[] = [];
+
+    textDescriptionResourceImpacts: {
         text: string;
         impactName: string;
         impactNameVisible: string;
@@ -432,9 +439,12 @@ export class DigitalServicesFootprintDashboardComponent
         );
         let translationKey: string;
         let textDescription: string = "";
+        let textResourceDescription: string = "";
         if (isBarChart) {
             translationKey = this.getBarTranslateKey();
-            textDescription = this.getBarChartTextDescription(translationKey);
+            const description = this.getBarChartTextDescription(translationKey);
+            textDescription = description.textDescription;
+            textResourceDescription = description.textResourceDescription;
         } else {
             const criteriaKey = this.selectedCriteria
                 .toLowerCase()
@@ -463,15 +473,20 @@ export class DigitalServicesFootprintDashboardComponent
                 ? this.translate.instant(`${key}scale`)
                 : this.translate.instant(`${translationKey}scale`),
             textDescription: textDescription,
+            textResourceDescription: textResourceDescription,
             analysis: this.translate.instant(`${translationKey}analysis`),
             toGoFurther: this.translate.instant(`${translationKey}to-go-further`),
         };
     }
 
-    getBarChartTextDescription(translationKey: string): string {
+    getBarChartTextDescription(translationKey: string): {
+        textDescription: string;
+        textResourceDescription: string;
+    } {
         let textDescription = "";
         let textImpacts = [];
-        const totalImpacts = this.barChartTopThreeImpact.length;
+        let textResourceImpacts = [];
+        let textResourceDescription = "";
         for (const [index, impact] of this.barChartTopThreeImpact.entries()) {
             if (index === 0) {
                 textDescription += this.translate.instant(
@@ -482,21 +497,51 @@ export class DigitalServicesFootprintDashboardComponent
                 );
             }
             textImpacts.push({
-                text:
-                    (index === 0 ? "" : "<br />") +
-                    this.translate.instant(`${translationKey}text-description-iterate`, {
+                text: this.translate.instant(
+                    `${translationKey}text-description-iterate`,
+                    {
                         impactName: impact.name,
                         impactValue: this.integerPipe.transform(impact.totalSipValue),
                         rawValue: this.decimalsPipe.transform(impact.totalRawValue),
                         unit: impact.unit,
-                    }) +
-                    this.getCommaOrDot(totalImpacts, index),
+                    },
+                ),
                 impactName: impact.name,
                 impactNameVisible: impact.name,
+                impactType: impact?.type,
             });
         }
+
+        if (!this.barChartChild && this.selectedParam !== "Network") {
+            for (const [index, impact] of this.barChartTopThreeResourceImpact.entries()) {
+                if (index === 0) {
+                    textResourceDescription += this.translate.instant(
+                        `${translationKey}resource-text-description`,
+                        {
+                            cloudInstanceName: this.selectedDetailName,
+                        },
+                    );
+                }
+                textResourceImpacts.push({
+                    text: this.translate.instant(
+                        `${translationKey}text-description-iterate`,
+                        {
+                            impactName: impact.name,
+                            impactValue: this.integerPipe.transform(impact.totalSipValue),
+                            rawValue: this.decimalsPipe.transform(impact.totalRawValue),
+                            unit: impact.unit,
+                        },
+                    ),
+                    impactName: impact.name,
+                    impactNameVisible: impact.name,
+                    impactType: impact?.type,
+                });
+            }
+        }
+
+        this.textDescriptionResourceImpacts = textResourceImpacts;
         this.textDescriptionImpacts = textImpacts;
-        return textDescription;
+        return { textDescription, textResourceDescription };
     }
 
     getGlobalVisionTextDescription(translationKey: string): string {
@@ -520,7 +565,6 @@ export class DigitalServicesFootprintDashboardComponent
 
             textImpacts.push({
                 text:
-                    (index === 0 ? "" : "<br />") +
                     prefix +
                     this.translate.instant(`${translationKey}text-description-iterate`, {
                         impactName: impact.title,
@@ -535,13 +579,13 @@ export class DigitalServicesFootprintDashboardComponent
                             impact.maxCriteria.raw,
                         ),
                         resourceUnit: impact.unite,
-                    }) +
-                    this.getCommaOrDot(totalImpacts, index),
+                    }),
                 impactName: impact.name,
                 impactNameVisible: impact.title,
             });
         }
         this.textDescriptionImpacts = textImpacts;
+        this.textDescriptionResourceImpacts = [];
         return textDescription;
     }
 
@@ -559,27 +603,24 @@ export class DigitalServicesFootprintDashboardComponent
                 );
             }
             textImpacts.push({
-                text:
-                    (index === 0 ? "" : "<br />") +
-                    this.translate.instant(`${translationKey}text-description-iterate`, {
+                text: this.translate.instant(
+                    `${translationKey}text-description-iterate`,
+                    {
                         impactName: impact.name,
                         impactValue: this.integerPipe.transform(impact.value),
                         resource: this.translate.instant(`criteria.${criteriaKey}.title`),
                         resourceValue: this.integerPipe.transform(impact.percentage),
                         rawValue: this.decimalsPipe.transform(impact.unitValue),
                         unit: impact.unit,
-                    }) +
-                    this.getCommaOrDot(totalImpacts, index),
+                    },
+                ),
                 impactName: impact.tier,
                 impactNameVisible: impact.name,
             });
         }
         this.textDescriptionImpacts = textImpacts;
+        this.textDescriptionResourceImpacts = [];
         return textDescription;
-    }
-
-    getCommaOrDot(totalImpacts: number, index: number): string {
-        return totalImpacts === 1 || index === totalImpacts - 1 ? "." : ",";
     }
 
     getTNSTranslation(input: string) {
@@ -623,9 +664,7 @@ export class DigitalServicesFootprintDashboardComponent
         }
     }
 
-    handleImpactClick(impactName: string) {
-        console.log(impactName);
-        console.log(this.chartType());
+    handleImpactClick(impactName: any) {
         if (this.chartType() == "radial") {
             this.handleChartChange(impactName);
             return;
@@ -637,8 +676,9 @@ export class DigitalServicesFootprintDashboardComponent
             return;
         }
         if (this.chartType() == "bar") {
-            if (this.selectedParam === "Terminal") {
-                this.selectedDetailParam = impactName;
+            if (this.selectedParam !== "Network") {
+                this.selectedDetailName = impactName.impactName;
+                this.selectedDetailParam = impactName.impactType;
                 this.barChartChild = true;
             }
         }
