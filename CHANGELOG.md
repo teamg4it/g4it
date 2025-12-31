@@ -8,6 +8,7 @@
 
 ### Minor Changes
 - 1756 | All connected users can export data
+- 1715 | Digital Service Text description add a link to access to the detail view
 
 ## 3.8.1
 
