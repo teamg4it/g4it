@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { DigitalServiceVersionResponse } from "src/app/core/interfaces/digital-service-version.interface";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { DigitalServiceManageVersionTableComponent } from "./digital-service-manage-version-table.component";
 
@@ -11,12 +12,17 @@ describe("DigitalServiceManageVersionTableComponent", () => {
     let component: DigitalServiceManageVersionTableComponent;
     let fixture: ComponentFixture<DigitalServiceManageVersionTableComponent>;
     let dataServiceSpy: jasmine.SpyObj<DigitalServiceVersionDataService>;
+    let userServiceSpy: jasmine.SpyObj<UserService>;
     let routerSpy: jasmine.SpyObj<Router>;
 
     beforeEach(async () => {
         dataServiceSpy = jasmine.createSpyObj("DigitalServiceVersionDataService", [
             "getVersions",
             "duplicateVersion",
+        ]);
+
+        userServiceSpy = jasmine.createSpyObj("UserService", [
+            "isAllowedDigitalServiceWrite$",
         ]);
 
         routerSpy = jasmine.createSpyObj("Router", ["navigate"]);
@@ -42,6 +48,7 @@ describe("DigitalServiceManageVersionTableComponent", () => {
                     },
                 },
                 TranslateService,
+                { provide: UserService, useValue: userServiceSpy },
             ],
         }).compileComponents();
 
