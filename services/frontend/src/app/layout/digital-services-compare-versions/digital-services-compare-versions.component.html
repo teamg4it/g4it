@@ -6,7 +6,19 @@
             <div class="h-full bg-white grid">
                 @for (version of compareApi; track $index) {
                     <div class="col-12 lg:col-6">
-                        <h3 class="text-center">{{ version.versionName }}</h3>
+                        <h3 class="text-center">
+                            <a
+                                href="javascript:void(0)"
+                                [routerLink]="[
+                                    '../..',
+                                    version.versionId,
+                                    'footprint',
+                                    'resources',
+                                ]"
+                                [queryParams]="{}"
+                                >{{ version.versionName }}</a
+                            >
+                        </h3>
                         @if ((version.convertToChartData?.[0])!.impacts!.length > 1) {
                             <app-radial-chart
                                 [globalVisionChartData]="version.convertToChartData"
@@ -28,6 +40,8 @@
             </div>
             <app-graph-description
                 [contentText]="getContentText()"
+                [versionIdNames]="versionIdNames"
+                [tableBody]="tableBody()"
             ></app-graph-description>
         </div></div
 ></p-scrollPanel>

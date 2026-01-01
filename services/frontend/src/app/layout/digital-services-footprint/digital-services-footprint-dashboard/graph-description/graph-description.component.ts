@@ -15,6 +15,8 @@ export class GraphDescriptionComponent {
     chartType = input<string>("");
     barChartChild = input<boolean>(false);
     selectedParam = input<string>("");
+    versionIdNames = input<any[]>([]);
+    tableBody = input<any>([]);
     textDescriptionImpacts = input<
         {
             text: string;
