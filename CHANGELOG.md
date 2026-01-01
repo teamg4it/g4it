@@ -8,6 +8,7 @@
 
 ### Minor Changes
 - 1777 | add access to manage version button for read role
+- 1778 | Put link to open directly the version from compare version page
 - 1756 | All connected users can export data
 - 1715 | Digital Service Text description add a link to access to the detail view
 
