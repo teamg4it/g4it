@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class FileLoadingUtilsTest {
+public class FileLoadingUtilsTest {
 
     @TempDir
     Path tempDir;
