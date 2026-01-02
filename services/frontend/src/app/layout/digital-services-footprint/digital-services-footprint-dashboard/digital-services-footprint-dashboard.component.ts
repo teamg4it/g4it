@@ -102,6 +102,7 @@ export class DigitalServicesFootprintDashboardComponent
     topThreeImpacts: any[] = [];
     topPieThreeImpacts: any[] = [];
     barChartTopThreeImpact: any[] = [];
+    barChartTopThreeResourceImpact: any[] = [];
 
     globalVisionChartData: DigitalServiceFootprint[] | undefined;
 
@@ -111,6 +112,17 @@ export class DigitalServicesFootprintDashboardComponent
     displayCriteriaPopup = false;
     workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
     organization!: Organization;
+    textDescriptionImpacts: {
+        text: string;
+        impactName: string;
+        impactNameVisible: string;
+    }[] = [];
+
+    textDescriptionResourceImpacts: {
+        text: string;
+        impactName: string;
+        impactNameVisible: string;
+    }[] = [];
     @ViewChildren(BarChartComponent) barChartComponents?: QueryList<BarChartComponent>;
 
     cloudData = computed(() => {
@@ -427,9 +439,12 @@ export class DigitalServicesFootprintDashboardComponent
         );
         let translationKey: string;
         let textDescription: string = "";
+        let textResourceDescription: string = "";
         if (isBarChart) {
             translationKey = this.getBarTranslateKey();
-            textDescription = this.getBarChartTextDescription(translationKey);
+            const description = this.getBarChartTextDescription(translationKey);
+            textDescription = description.textDescription;
+            textResourceDescription = description.textResourceDescription;
         } else {
             const criteriaKey = this.selectedCriteria
                 .toLowerCase()
@@ -458,14 +473,20 @@ export class DigitalServicesFootprintDashboardComponent
                 ? this.translate.instant(`${key}scale`)
                 : this.translate.instant(`${translationKey}scale`),
             textDescription: textDescription,
+            textResourceDescription: textResourceDescription,
             analysis: this.translate.instant(`${translationKey}analysis`),
             toGoFurther: this.translate.instant(`${translationKey}to-go-further`),
         };
     }
 
-    getBarChartTextDescription(translationKey: string): string {
+    getBarChartTextDescription(translationKey: string): {
+        textDescription: string;
+        textResourceDescription: string;
+    } {
         let textDescription = "";
-        const totalImpacts = this.barChartTopThreeImpact.length;
+        let textImpacts = [];
+        let textResourceImpacts = [];
+        let textResourceDescription = "";
         for (const [index, impact] of this.barChartTopThreeImpact.entries()) {
             if (index === 0) {
                 textDescription += this.translate.instant(
@@ -475,29 +496,63 @@ export class DigitalServicesFootprintDashboardComponent
                     },
                 );
             }
-            textDescription +=
-                (index === 0 ? "" : "<br />") +
-                this.translate.instant(`${translationKey}text-description-iterate`, {
-                    impactName: impact.name,
-                    impactValue: this.integerPipe.transform(impact.totalSipValue),
-                    rawValue: this.decimalsPipe.transform(impact.totalRawValue),
-                    unit: impact.unit,
-                }) +
-                this.getCommaOrDot(totalImpacts, index);
+            textImpacts.push({
+                text: this.translate.instant(
+                    `${translationKey}text-description-iterate`,
+                    {
+                        impactName: impact.name,
+                        impactValue: this.integerPipe.transform(impact.totalSipValue),
+                        rawValue: this.decimalsPipe.transform(impact.totalRawValue),
+                        unit: impact.unit,
+                    },
+                ),
+                impactName: impact.name,
+                impactNameVisible: impact.name,
+                impactType: impact?.type,
+            });
         }
-        return textDescription;
+
+        if (!this.barChartChild && this.selectedParam !== "Network") {
+            for (const [index, impact] of this.barChartTopThreeResourceImpact.entries()) {
+                if (index === 0) {
+                    textResourceDescription += this.translate.instant(
+                        `${translationKey}resource-text-description`,
+                        {
+                            cloudInstanceName: this.selectedDetailName,
+                        },
+                    );
+                }
+                textResourceImpacts.push({
+                    text: this.translate.instant(
+                        `${translationKey}text-description-iterate`,
+                        {
+                            impactName: impact.name,
+                            impactValue: this.integerPipe.transform(impact.totalSipValue),
+                            rawValue: this.decimalsPipe.transform(impact.totalRawValue),
+                            unit: impact.unit,
+                        },
+                    ),
+                    impactName: impact.name,
+                    impactNameVisible: impact.name,
+                    impactType: impact?.type,
+                });
+            }
+        }
+
+        this.textDescriptionResourceImpacts = textResourceImpacts;
+        this.textDescriptionImpacts = textImpacts;
+        return { textDescription, textResourceDescription };
     }
 
     getGlobalVisionTextDescription(translationKey: string): string {
         let textDescription = "";
-        const totalImpacts = this.topThreeImpacts.length;
+        let textImpacts = [];
         const firstPrefix = this.translate.instant(
             `${translationKey}text-description-first-prefix`,
         );
         const iteratePrefix = this.translate.instant(
             `${translationKey}text-description-iterate-prefix`,
         );
-
         for (const [index, impact] of this.topThreeImpacts.entries()) {
             const prefix = index === 0 ? firstPrefix : iteratePrefix;
 
@@ -506,30 +561,36 @@ export class DigitalServicesFootprintDashboardComponent
                     `${translationKey}text-description`,
                 );
             }
-            textDescription +=
-                (index === 0 ? "" : "<br />") +
-                prefix +
-                this.translate.instant(`${translationKey}text-description-iterate`, {
-                    impactName: impact.title,
-                    impactValue: this.integerPipe.transform(impact.peopleeq),
-                    resource: impact.maxCriteria.name,
-                    resourceValue: this.integerPipe.transform(
-                        impact.maxCriteria.peopleeq,
-                    ),
-                    rawValue: this.decimalsPipe.transform(impact.raw),
-                    unit: impact.unite,
-                    resourceRawValue: this.decimalsPipe.transform(impact.maxCriteria.raw),
-                    resourceUnit: impact.unite,
-                }) +
-                this.getCommaOrDot(totalImpacts, index);
-        }
 
+            textImpacts.push({
+                text:
+                    prefix +
+                    this.translate.instant(`${translationKey}text-description-iterate`, {
+                        impactName: impact.title,
+                        impactValue: this.integerPipe.transform(impact.peopleeq),
+                        resource: impact.maxCriteria.name,
+                        resourceValue: this.integerPipe.transform(
+                            impact.maxCriteria.peopleeq,
+                        ),
+                        rawValue: this.decimalsPipe.transform(impact.raw),
+                        unit: impact.unite,
+                        resourceRawValue: this.decimalsPipe.transform(
+                            impact.maxCriteria.raw,
+                        ),
+                        resourceUnit: impact.unite,
+                    }),
+                impactName: impact.name,
+                impactNameVisible: impact.title,
+            });
+        }
+        this.textDescriptionImpacts = textImpacts;
+        this.textDescriptionResourceImpacts = [];
         return textDescription;
     }
 
     getCriteriaTextDescription(translationKey: string, criteriaKey: string): string {
         let textDescription = "";
-        const totalImpacts = this.topPieThreeImpacts.length;
+        let textImpacts = [];
         for (const [index, impact] of this.topPieThreeImpacts.entries()) {
             if (index === 0) {
                 textDescription += this.translate.instant(
@@ -539,23 +600,25 @@ export class DigitalServicesFootprintDashboardComponent
                     },
                 );
             }
-            textDescription +=
-                (index === 0 ? "" : "<br />") +
-                this.translate.instant(`${translationKey}text-description-iterate`, {
-                    impactName: impact.name,
-                    impactValue: this.integerPipe.transform(impact.value),
-                    resource: this.translate.instant(`criteria.${criteriaKey}.title`),
-                    resourceValue: this.integerPipe.transform(impact.percentage),
-                    rawValue: this.decimalsPipe.transform(impact.unitValue),
-                    unit: impact.unit,
-                }) +
-                this.getCommaOrDot(totalImpacts, index);
+            textImpacts.push({
+                text: this.translate.instant(
+                    `${translationKey}text-description-iterate`,
+                    {
+                        impactName: impact.name,
+                        impactValue: this.integerPipe.transform(impact.value),
+                        resource: this.translate.instant(`criteria.${criteriaKey}.title`),
+                        resourceValue: this.integerPipe.transform(impact.percentage),
+                        rawValue: this.decimalsPipe.transform(impact.unitValue),
+                        unit: impact.unit,
+                    },
+                ),
+                impactName: impact.tier,
+                impactNameVisible: impact.name,
+            });
         }
+        this.textDescriptionImpacts = textImpacts;
+        this.textDescriptionResourceImpacts = [];
         return textDescription;
-    }
-
-    getCommaOrDot(totalImpacts: number, index: number): string {
-        return totalImpacts === 1 || index === totalImpacts - 1 ? "." : ",";
     }
 
     getTNSTranslation(input: string) {
@@ -596,6 +659,26 @@ export class DigitalServicesFootprintDashboardComponent
             this.digitalService = await lastValueFrom(
                 this.digitalServicesDataService.update(this.digitalService),
             );
+        }
+    }
+
+    handleImpactClick(impactName: any) {
+        if (this.chartType() == "radial") {
+            this.handleChartChange(impactName);
+            return;
+        }
+        if (this.chartType() == "pie") {
+            this.selectedParam = impactName;
+            this.chartType.set("bar");
+            this.barChartChild = false;
+            return;
+        }
+        if (this.chartType() == "bar") {
+            if (this.selectedParam !== "Network") {
+                this.selectedDetailName = impactName.impactName;
+                this.selectedDetailParam = impactName.impactType;
+                this.barChartChild = true;
+            }
         }
     }
 

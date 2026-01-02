@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { lastValueFrom } from "rxjs";
@@ -26,11 +26,13 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
     version1Id: string = "";
     version2Id: string = "";
     globalVisionChartData: DigitalServiceFootprint[] | undefined;
+    versionIdNames: { versionName: string; versionId: string }[] = [];
 
     compareApi: CompareVersion[] = [];
     uniqueCriteria: string[] = [];
     transformedVersionDataObj: any = {};
     maxSipUnitValue = 0;
+    tableBody: any = signal([]);
 
     private readonly translate = inject(TranslateService);
     digitalService: DigitalService = {} as DigitalService;
@@ -118,6 +120,7 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
         if (maxUnitValue) {
             this.maxSipUnitValue = this.roundSmallNumber(maxUnitValue);
         }
+        this.getTableDescription();
     }
 
     roundSmallNumber(value: number): number {
@@ -149,17 +152,23 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                 },
             ),
             scale: this.translate.instant(`digital-services.comparison.scale`),
-            textDescription:
-                this.translate.instant(`digital-services.comparison.text-description`) +
-                this.getTableDescription(),
+            textDescription: this.translate.instant(
+                `digital-services.comparison.text-description`,
+            ),
         };
     }
 
-    getTableDescription(): string {
+    getTableDescription(): void {
         const versionData = this.transformedVersionDataObj;
 
         // 1️⃣ Get all version names
         const versionNames = Object.keys(versionData);
+        this.versionIdNames = versionNames.map((v) => ({
+            versionName: v,
+            versionId: this.compareApi.find(
+                (c) => c.versionName.trim().toLowerCase() === v.trim().toLowerCase(),
+            )!.versionId,
+        }));
 
         // 2️⃣ Get all unique criteria across all versions
         const allCriteria = new Set<string>();
@@ -174,31 +183,17 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
 
         const criteriaList = [...allCriteria];
 
-        // 3️⃣ Build table headers
-        let table = `
-        <div style='overflow-x:auto;'>
-        <table class="compare-table">
-        <thead><tr>
-            <th style='padding:14px 18px;text-align:center;font-size:1rem;'>Criteria</th>
-    `;
-
-        for (const version of versionNames) {
-            table += `<th class="criteria-padding">${version}</th>`;
-        }
-
-        table += `</tr></thead><tbody>`;
+        let trs: any[] = [];
 
         // 4️⃣ Build rows for each criteria
         for (const criteriaKey of criteriaList) {
+            let tds = [];
             const translationKey = criteriaKey.toLowerCase();
 
             const criteriaTitle = this.translate.instant(
                 `criteria.${translationKey}.title`,
             );
-
-            table += `<tr>
-            <th>${criteriaTitle}</th>
-        `;
+            tds.push(criteriaTitle);
 
             // 5️⃣ Add column for each version
             for (const version of versionNames) {
@@ -207,26 +202,22 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                 const unitValue = entry?.unitValue ?? "";
                 const sipValue = entry?.sipValue ?? "";
                 const unit = entry?.unit ?? "";
-                if (unitValue === "" && sipValue === "") {
-                    table += `<td class="criteria-padding">${this.translate.instant("digital-services.version.not-calculated")}</td>`;
-                } else {
-                    table += `
-                <td class="criteria-padding">
 
-                        ${this.decimalsPipe.transform(unitValue)}
+                if (unitValue === "" && sipValue === "") {
+                    tds.push(
+                        this.translate.instant("digital-services.version.not-calculated"),
+                    );
+                } else {
+                    tds.push(`${this.decimalsPipe.transform(unitValue)}
                         <span >${unit}</span>
                         (${this.integerPipe.transform(sipValue)}
-                        ${this.translate.instant(`common.peopleeq-full`)})
-
-                </td>
-            `;
+                        ${this.translate.instant(`common.peopleeq-full`)})`);
                 }
             }
 
-            table += `</tr>`;
+            trs.push(tds);
         }
 
-        table += `</tbody></table></div>`;
-        return table;
+        this.tableBody.set(trs);
     }
 }

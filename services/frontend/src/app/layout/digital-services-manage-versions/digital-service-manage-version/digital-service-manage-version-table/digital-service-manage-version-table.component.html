@@ -50,9 +50,11 @@
                 {{ "digital-services.version.version-name" | translate }}
                 <p-sortIcon field="versionName"></p-sortIcon>
             </th>
-            <th scope="col" id="lastName">
-                {{ "digital-services.version.actions" | translate }}
-            </th>
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <th scope="col" id="lastName">
+                    {{ "digital-services.version.actions" | translate }}
+                </th>
+            }
             <th scope="col" id="select">
                 {{ "digital-services.version.select" | translate }}
             </th>
@@ -73,52 +75,63 @@
                     styleClass="p-button-link"
                 ></p-button>
             </td>
-            <td>
-                <p-button
-                    icon="pi pi-clone"
-                    [text]="true"
-                    [plain]="true"
-                    [rounded]="true"
-                    (onClick)="
-                        duplicateDigitalServiceVersion(version.digitalServiceVersionUid)
-                    "
-                    [pTooltip]="'digital-services.version.duplicate-version' | translate"
-                    tooltipPosition="bottom"
-                    [ariaLabel]="'digital-services.version.duplicate-version' | translate"
-                ></p-button>
-                @if (version.versionType === "draft") {
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <td>
                     <p-button
-                        icon="pi pi pi-star"
+                        icon="pi pi-clone"
                         [text]="true"
                         [plain]="true"
                         [rounded]="true"
-                        (onClick)="isPromoteVersionDialogVisible = true"
+                        (onClick)="
+                            duplicateDigitalServiceVersion(
+                                version.digitalServiceVersionUid
+                            )
+                        "
                         [pTooltip]="
-                            'digital-services.version.promote-version' | translate
+                            'digital-services.version.duplicate-version' | translate
                         "
                         tooltipPosition="bottom"
                         [ariaLabel]="
-                            'digital-services.version.aria-promote-version' | translate
+                            'digital-services.version.duplicate-version' | translate
                         "
                     ></p-button>
-                }
-                @if (version.versionType !== "active") {
-                    <p-confirmPopup [style]="{ width: '450px' }" />
-                    <p-button
-                        icon="pi pi pi-trash"
-                        id="manage-version-delete"
-                        [text]="true"
-                        [plain]="true"
-                        [rounded]="true"
-                        [pTooltip]="'digital-services.version.delete-version' | translate"
-                        tooltipPosition="bottom"
-                        (onClick)="confirmDelete($event, version)"
-                        [ariaLabel]="
-                            'digital-services.version.aria-delete-version' | translate
-                        "
-                    ></p-button>
-                }
-            </td>
+                    @if (version.versionType === "draft") {
+                        <p-button
+                            icon="pi pi pi-star"
+                            [text]="true"
+                            [plain]="true"
+                            [rounded]="true"
+                            (onClick)="isPromoteVersionDialogVisible = true"
+                            [pTooltip]="
+                                'digital-services.version.promote-version' | translate
+                            "
+                            tooltipPosition="bottom"
+                            [ariaLabel]="
+                                'digital-services.version.aria-promote-version'
+                                    | translate
+                            "
+                        ></p-button>
+                    }
+                    @if (version.versionType !== "active") {
+                        <p-confirmPopup [style]="{ width: '450px' }" />
+                        <p-button
+                            icon="pi pi pi-trash"
+                            id="manage-version-delete"
+                            [text]="true"
+                            [plain]="true"
+                            [rounded]="true"
+                            [pTooltip]="
+                                'digital-services.version.delete-version' | translate
+                            "
+                            tooltipPosition="bottom"
+                            (onClick)="confirmDelete($event, version)"
+                            [ariaLabel]="
+                                'digital-services.version.aria-delete-version' | translate
+                            "
+                        ></p-button>
+                    }
+                </td>
+            }
             <td>
                 <p-checkbox
                     [binary]="true"
