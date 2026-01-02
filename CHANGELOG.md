@@ -7,6 +7,7 @@
 - 1607 | Deleting a Digital Service Version
 
 ### Minor Changes
+- 1777 | add access to manage version button for read role
 - 1756 | All connected users can export data
 
 ## 3.8.1

@@ -5,6 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService } from "primeng/api";
 import { finalize } from "rxjs";
 import { DigitalServiceVersionResponse } from "src/app/core/interfaces/digital-service-version.interface";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -25,6 +26,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);
     private readonly digitalServicesDataService = inject(DigitalServicesDataService);
     private readonly destroyRef = inject(DestroyRef);
+    public readonly userService = inject(UserService);
     versionData: DigitalServiceVersionResponse[] = [];
     dsVersionUid: string = "";
     selectedVersions: string[] = [];
