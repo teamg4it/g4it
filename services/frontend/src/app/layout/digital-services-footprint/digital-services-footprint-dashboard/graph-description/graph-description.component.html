@@ -114,6 +114,55 @@
                     </li>
                 }
             </ul>
+            @if (versionIdNames().length) {
+                <div>
+                    <table class="compare-table">
+                        <thead>
+                            <caption class="visually-hidden">
+                                {{
+                                    "digital-services.version.compare-versions-title"
+                                        | translate
+                                }}
+                            </caption>
+                            <tr>
+                                <th id="criteria" class="border-top-none">
+                                    {{
+                                        "digital-services.comparison.criteria" | translate
+                                    }}
+                                </th>
+                                @for (version of versionIdNames(); track $index) {
+                                    <th [id]="version.versionId">
+                                        <a
+                                            href="javascript:void(0)"
+                                            [routerLink]="[
+                                                '../..',
+                                                version.versionId,
+                                                'footprint',
+                                                'resources',
+                                            ]"
+                                            [queryParams]="{}"
+                                            >{{ version.versionName }}</a
+                                        >
+                                    </th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (trs of tableBody(); track $index) {
+                                <tr>
+                                    @for (ths of trs; track $index) {
+                                        @if ($index === 0) {
+                                            <th [id]="$index" [innerHTML]="ths"></th>
+                                        } @else {
+                                            <td [innerHTML]="ths"></td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
 
             @if (contentText()?.analysis) {
                 <div class="section-hr"></div>
