@@ -67,6 +67,7 @@ class FileLoadingUtilsTest {
                 .thenThrow(new IOException("boom"));
 
         Context context = Context.builder()
+                .workspaceId(1L)              // ✅ REQUIRED
                 .filesToLoad(List.of(fileToLoad))
                 .build();
 
