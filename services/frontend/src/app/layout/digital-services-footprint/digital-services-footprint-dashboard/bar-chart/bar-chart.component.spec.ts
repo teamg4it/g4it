@@ -510,6 +510,11 @@ describe("BarChartComponent", () => {
                             {
                                 name: "Server1",
                                 totalSipValue: 0.5,
+                                impactStep: [
+                                    {
+                                        unit: "u",
+                                    },
+                                ],
                                 impactVmDisk: [
                                     {
                                         status: Constants.DATA_QUALITY_STATUS.ok,
@@ -539,6 +544,11 @@ describe("BarChartComponent", () => {
                             {
                                 name: "Server2",
                                 totalSipValue: 2,
+                                impactStep: [
+                                    {
+                                        unit: "u",
+                                    },
+                                ],
                                 impactVmDisk: [
                                     {
                                         status: Constants.DATA_QUALITY_STATUS.error,
@@ -616,6 +626,11 @@ describe("BarChartComponent", () => {
                             {
                                 name: "Server1",
                                 totalSipValue: 0.5,
+                                impactStep: [
+                                    {
+                                        unit: "u",
+                                    },
+                                ],
                                 impactVmDisk: [
                                     {
                                         status: Constants.DATA_QUALITY_STATUS.ok,

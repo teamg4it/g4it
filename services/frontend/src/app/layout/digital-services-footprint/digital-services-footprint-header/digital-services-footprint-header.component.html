@@ -43,7 +43,7 @@
     <div class="block relative w-full lg:w-auto md:flex align-items-center">
         @if (!isSharedDs) {
             <p-button
-                [routerLink]="changePageToDigitalServices()"
+                (onClick)="backButton()"
                 styleClass="cancel-creation-button uppercase mr-2 mb-2 lg:mb-0"
                 [ariaLabel]="'digital-services.return' | translate"
                 icon="pi pi-arrow-left"

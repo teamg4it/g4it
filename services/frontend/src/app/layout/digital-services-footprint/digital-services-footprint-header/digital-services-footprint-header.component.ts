@@ -158,6 +158,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         });
     }
 
+    backButton() {
+        this.router.navigateByUrl(this.changePageToDigitalServices());
+    }
+
     changePageToDigitalServices() {
         let [_, _1, organization, _2, workspace, serviceType, dsVId, footprint] =
             this.router.url.split("/");

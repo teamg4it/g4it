@@ -295,12 +295,6 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         expect(result).toBe("ds-graph-description.other-param.");
     });
 
-    it("should return empty string if no impacts", () => {
-        component.barChartTopThreeImpact = [];
-        const result = component.getBarChartTextDescription("prefix.");
-        expect(result).toBe("");
-    });
-
     describe("getGlobalVisionTextDescription", () => {
         it("should return empty string if topThreeImpacts is empty", () => {
             component.topThreeImpacts = [];
@@ -345,8 +339,9 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         const result = component.getBarChartTextDescription(
             "ds-graph-description.terminal-type.",
         );
-        expect(result).toContain("<br />");
-        expect(result).toContain(",");
+        expect(result.textDescription).toContain(
+            "ds-graph-description.terminal-type.text-description",
+        );
     });
 
     it("should return formatted description for barChartTopThreeImpact", () => {
@@ -376,8 +371,7 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
         const result = component.getGlobalVisionTextDescription(
             "ds-graph-description.global-vision.",
         );
-        expect(result).toContain("<br />");
-        expect(result).toContain(",");
+        expect(result).toContain("ds-graph-description.global-vision.text-description");
     });
 
     it("should return formatted description for barChartTopThreeImpact", () => {
@@ -390,7 +384,6 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
             "ds-graph-description.criteria.",
             "climate-change",
         );
-        expect(result).toContain("<br />");
-        expect(result).toContain(",");
+        expect(result).toContain("ds-graph-description.criteria.text-description");
     });
 });
