@@ -155,7 +155,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DigitalServiceVersionRest"
-  /shared/{shareId}/dsv/{digitalServiceVersionUid}/outputs/business-hours:
+  /shared/{shareId}/dsv/outputs/business-hours:
     parameters:
       - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
