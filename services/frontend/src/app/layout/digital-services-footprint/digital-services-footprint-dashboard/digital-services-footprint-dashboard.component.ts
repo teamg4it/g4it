@@ -547,7 +547,6 @@ export class DigitalServicesFootprintDashboardComponent
     getGlobalVisionTextDescription(translationKey: string): string {
         let textDescription = "";
         let textImpacts = [];
-        const totalImpacts = this.topThreeImpacts.length;
         const firstPrefix = this.translate.instant(
             `${translationKey}text-description-first-prefix`,
         );
@@ -592,7 +591,6 @@ export class DigitalServicesFootprintDashboardComponent
     getCriteriaTextDescription(translationKey: string, criteriaKey: string): string {
         let textDescription = "";
         let textImpacts = [];
-        const totalImpacts = this.topPieThreeImpacts.length;
         for (const [index, impact] of this.topPieThreeImpacts.entries()) {
             if (index === 0) {
                 textDescription += this.translate.instant(
