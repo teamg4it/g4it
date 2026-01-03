@@ -155,4 +155,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DigitalServiceVersionRest"
+  /shared/{shareId}/dsv/outputs/business-hours:
+    parameters:
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: Get Business hours for digital service for shared link
+      operationId: getSharedDigitalServiceBusinessHours
+      security: [ ]
+      responses:
+        '200':
+          description: return business hours for a digital service
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BusinessHoursRest"
+  /shared/{shareId}/dsv/outputs/api-version:
+    parameters:
+      - $ref: '#/components/parameters/shareidPathParam'
+    get:
+      tags:
+        - shared-link-digital-service-items
+      summary: return API version for shared digital service
+      operationId: getSharedVersion
+      security: [ ]
+      responses:
+        '200':
+          description: The API version for shared digital service requested
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionRest"
 
