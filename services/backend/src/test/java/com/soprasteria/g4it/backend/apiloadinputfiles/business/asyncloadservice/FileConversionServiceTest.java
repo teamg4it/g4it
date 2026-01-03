@@ -3,15 +3,22 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class FileConversionServiceTest {
 
     private final FileConversionService fileConversionService = new FileConversionService();
@@ -324,5 +331,28 @@ public class FileConversionServiceTest {
         assertNotNull(result);
         assertTrue(result.exists());
     }
+
+    @Test
+    void shouldThrowSecurityExceptionWhenConvertedPathIsOutsideParent() throws Exception {
+
+        File file = mock(File.class);
+        Path filePath = mock(Path.class);
+
+        // real path (do NOT mock this)
+        Path maliciousPath = Paths.get("/tmp/evil/converted_file.csv");
+
+        when(file.getName()).thenReturn("test.txt");
+        when(file.getParent()).thenReturn("/safe/dir");
+        when(file.toPath()).thenReturn(filePath);
+
+        // resolveSibling returns a path outside parent
+        when(filePath.resolveSibling(anyString())).thenReturn(maliciousPath);
+
+        assertThrows(
+                SecurityException.class,
+                () -> fileConversionService.convertFileToCsv(file, "test.txt")
+        );
+    }
+
 
 }
