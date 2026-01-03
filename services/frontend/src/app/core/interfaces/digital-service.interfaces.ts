@@ -409,4 +409,5 @@ export interface GraphDescriptionContent {
     textDescription: string;
     analysis?: string;
     toGoFurther?: string;
+    textResourceDescription?: string;
 }

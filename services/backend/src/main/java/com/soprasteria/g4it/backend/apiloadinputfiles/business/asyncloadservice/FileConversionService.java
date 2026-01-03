@@ -54,6 +54,7 @@ public class FileConversionService {
      */
     public File convertFileToCsv(File file, String originalFilename) throws IOException, RuntimeException {
         String extension = StringUtils.getFilenameExtension(originalFilename == null ? "" : originalFilename).toLowerCase();
+        // added regex pattern to verify correct filename
         String safeName = file.getName().replaceAll("[^a-zA-Z0-9._-]", "_");
         Path convertedFilePath = file.toPath().resolveSibling("converted_" + safeName + Constants.CSV).normalize();
         if (!convertedFilePath.startsWith(file.getParent())) {

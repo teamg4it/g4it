@@ -5,6 +5,9 @@
         <h3>
             <ng-container [ngSwitch]="chartType()">
                 <ng-container *ngSwitchCase="'bar'">
+                    {{ selectedDetailName }} {{ selectedDetailParam }}
+                    {{ selectedParam }} {{ barChartChild }}
+
                     {{
                         barChartChild
                             ? selectedDetailName
@@ -182,12 +185,21 @@
                         (selectedDetailParamChange)="selectedDetailParam = $event"
                         (selectedDetailNameChange)="selectedDetailName = $event"
                         (barChartTopThreeImpact)="barChartTopThreeImpact = $event"
+                        (barChartTopThreeResourceImpact)="
+                            barChartTopThreeResourceImpact = $event
+                        "
                     ></app-bar-chart>
                 </ng-template>
             </div>
             <app-graph-description
                 [ecoMindRecomendation]="getEcoMindRecomendation()"
                 [contentText]="getContentText()"
+                [textDescriptionImpacts]="textDescriptionImpacts"
+                [textDescriptionResourceImpacts]="textDescriptionResourceImpacts"
+                [chartType]="chartType()"
+                [barChartChild]="barChartChild"
+                [selectedParam]="selectedParam"
+                (impactSelectedEvent)="handleImpactClick($event)"
             ></app-graph-description>
         </div>
     </div>

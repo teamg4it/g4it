@@ -54,6 +54,8 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
     @Output() selectedDetailParamChange: EventEmitter<any> = new EventEmitter();
     @Output() selectedDetailNameChange: EventEmitter<any> = new EventEmitter();
     @Output() barChartTopThreeImpact: EventEmitter<any[]> = new EventEmitter();
+    @Output() barChartTopThreeResourceImpact: EventEmitter<any[]> = new EventEmitter();
+
     showInconsitency = input<boolean>();
     options: EChartsOption = {};
 
@@ -504,30 +506,36 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                 });
             }
         }
-
-        const topThree = [...seriesData]
+        const topThreeResources = yAxis
             .map((item) => {
-                const items = isTerminals ? item.terminals : item.clouds;
-                const totalSipValue =
-                    items?.reduce(
-                        (sum: number, t: any) => sum + (t.totalSipValue ?? 0),
-                        0,
-                    ) ?? 0;
-                const totalRawValue =
-                    items?.reduce((sum: number, t: any) => sum + (t.rawValue ?? 0), 0) ??
-                    0;
-                const unit = items?.[0]?.unit ?? "";
-
                 return {
                     name: item.name,
-                    totalSipValue,
-                    totalRawValue,
-                    unit,
+                    totalSipValue: item.data[0][1],
+                    totalRawValue: item.data[0][4],
+                    unit: item.data[0][5],
+                    type: item.data[0][0],
                 };
             })
             .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
             .slice(0, 3); // top 3
+        const topThree = [...seriesData].map((item) => {
+            const items = isTerminals ? item.terminals : item.clouds;
+            const totalSipValue =
+                items?.reduce((sum: number, t: any) => sum + (t.totalSipValue ?? 0), 0) ??
+                0;
+            const totalRawValue =
+                items?.reduce((sum: number, t: any) => sum + (t.rawValue ?? 0), 0) ?? 0;
+            const unit = items?.[0]?.unit ?? "";
+
+            return {
+                name: item.name,
+                totalSipValue,
+                totalRawValue,
+                unit,
+            };
+        });
         this.barChartTopThreeImpact.emit(topThree);
+        this.barChartTopThreeResourceImpact.emit(topThreeResources);
         return okMap;
     }
 
@@ -680,6 +688,26 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
                 });
             }
         }
+        const topThreeResources = data4Criteria
+            .flatMap((s) => {
+                return s.servers.map((c: any) => ({
+                    ...c,
+                    serverType: this.translate.instant(
+                        `digital-services-servers.server-type.${s.mutualizationType}-${s.serverType}`,
+                    ),
+                }));
+            })
+            .map((s) => {
+                return {
+                    name: s.name,
+                    totalSipValue: s.totalSipValue,
+                    totalRawValue: s.totalRawValue,
+                    unit: s.impactStep[0].unit,
+                    type: s.serverType,
+                };
+            })
+            .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
+            .slice(0, 3); // top 3;
 
         const topThree = [...data4Criteria]
             .map((item) => {
@@ -708,6 +736,7 @@ export class BarChartComponent extends AbstractDashboard implements OnChanges {
             .sort((a, b) => b.totalSipValue - a.totalSipValue) // descending order
             .slice(0, 3); // top 3
         this.barChartTopThreeImpact.emit(topThree);
+        this.barChartTopThreeResourceImpact.emit(topThreeResources);
 
         this.xAxisInput = xAxisData;
         this.criteriaMap = serverOkmap;
