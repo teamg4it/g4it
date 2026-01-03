@@ -27,7 +27,12 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest(
+        properties = {
+                "spring.cloud.azure.enabled=false",
+                "spring.liquibase.enabled=false"
+        }
+)
 @ActiveProfiles({"local", "test"})
 class LocalGreenItFileSystemApplicationTests {
 
@@ -58,7 +63,6 @@ class LocalGreenItFileSystemApplicationTests {
         assertFalse(new File("target/local-filesystem/work").exists());
         assertFalse(new File("target/local-filesystem/output").exists());
         assertFalse(new File("target/local-filesystem/templates").exists());
-
 
         Assertions.assertEquals(LocalFileStorage.class, fileSystem.mount("local", "G4IT").getClass());
 
