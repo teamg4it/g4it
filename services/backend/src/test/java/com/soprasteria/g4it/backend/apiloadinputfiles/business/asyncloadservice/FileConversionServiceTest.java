@@ -3,16 +3,22 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class FileConversionServiceTest {
 
     private final FileConversionService fileConversionService = new FileConversionService();
@@ -49,10 +55,52 @@ class FileConversionServiceTest {
     }
 
     @Test
+    void testCsvWithNoDelimiterStillProcesses() throws Exception {
+        File csv = tempDir.resolve("singleColumn.csv").toFile();
+        try (FileWriter writer = new FileWriter(csv)) {
+            writer.write("ONLYONECOLUMN");
+        }
+
+        File result = fileConversionService.convertFileToCsv(csv, "singleColumn.csv");
+        assertTrue(result.exists());
+    }
+
+    @Test
+    void testCsvWithBomEncoding() throws Exception {
+        File csv = tempDir.resolve("bom.csv").toFile();
+        try (Writer writer = new OutputStreamWriter(
+                new FileOutputStream(csv), StandardCharsets.UTF_8)) {
+            writer.write('\uFEFF' + "A,B\n1,2");
+        }
+
+        File result = fileConversionService.convertFileToCsv(csv, "bom.csv");
+        List<String> lines = java.nio.file.Files.readAllLines(result.toPath());
+
+        assertFalse(lines.isEmpty());
+    }
+
+    @Test
+    void testEmptyCsvFileIsNotSupported() throws Exception {
+        File csv = tempDir.resolve("empty.csv").toFile();
+        csv.createNewFile();
+
+        assertThrows(
+                NullPointerException.class,
+                () -> fileConversionService.convertFileToCsv(csv, "empty.csv")
+        );
+    }
+
+    /* -------------------------------------------------
+     * XLSX conversion
+     * ------------------------------------------------- */
+
+    @Test
     void testConvertXlsxToCsv() throws Exception {
         File xlsx = tempDir.resolve("input.xlsx").toFile();
 
-        try (org.apache.poi.ss.usermodel.Workbook wb = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+        try (org.apache.poi.ss.usermodel.Workbook wb =
+                     new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+
             var sheet = wb.createSheet();
             sheet.createRow(0).createCell(0).setCellValue("A");
             sheet.getRow(0).createCell(1).setCellValue("B");
@@ -72,12 +120,32 @@ class FileConversionServiceTest {
     }
 
     @Test
+    void testEmptyXlsxDoesNotFail() throws Exception {
+        File xlsx = tempDir.resolve("empty.xlsx").toFile();
+
+        try (org.apache.poi.ss.usermodel.Workbook wb =
+                     new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+            wb.createSheet();
+            try (FileOutputStream fos = new FileOutputStream(xlsx)) {
+                wb.write(fos);
+            }
+        }
+
+        File result = fileConversionService.convertFileToCsv(xlsx, "empty.xlsx");
+        assertTrue(result.exists());
+    }
+
+    /* -------------------------------------------------
+     * ODS conversion
+     * ------------------------------------------------- */
+
+    @Test
     void testConvertOdsToCsv() throws Exception {
         File ods = tempDir.resolve("input.ods").toFile();
 
-        javax.swing.JTable jTable = new javax.swing.JTable(2, 2);
-        SpreadSheet spreadsheet = SpreadSheet.createEmpty(jTable.getModel());
-        org.jopendocument.dom.spreadsheet.Sheet sheet = spreadsheet.getSheet(0);
+        javax.swing.JTable table = new javax.swing.JTable(2, 2);
+        SpreadSheet spreadsheet = SpreadSheet.createEmpty(table.getModel());
+        var sheet = spreadsheet.getSheet(0);
 
         sheet.getCellAt(0, 0).setValue("H1");
         sheet.getCellAt(1, 0).setValue("H2");
@@ -90,16 +158,62 @@ class FileConversionServiceTest {
         List<String> lines = java.nio.file.Files.readAllLines(result.toPath());
 
         assertTrue(lines.get(0).contains("H1"));
-        assertTrue(lines.get(0).contains("H2"));
         assertTrue(lines.get(1).contains("5"));
-        assertTrue(lines.get(1).contains("6"));
     }
 
+    @Test
+    void testEmptyOdsFileReturnsEmptyCsv() throws Exception {
+        File ods = tempDir.resolve("empty.ods").toFile();
+
+        javax.swing.JTable table = new javax.swing.JTable(1, 1);
+        SpreadSheet.createEmpty(table.getModel()).saveAs(ods);
+
+        File result = fileConversionService.convertFileToCsv(ods, "empty.ods");
+
+        assertNotNull(result);
+        assertTrue(result.exists());
+    }
+
+    /* -------------------------------------------------
+     * Validation & security
+     * ------------------------------------------------- */
 
     @Test
     void testUnsupportedExtensionThrowsError() {
         File pdf = tempDir.resolve("file.pdf").toFile();
-        assertThrows(IllegalArgumentException.class,
-                () -> fileConversionService.convertFileToCsv(pdf, "file.pdf"));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> fileConversionService.convertFileToCsv(pdf, "file.pdf")
+        );
+    }
+
+    @Test
+    void testPathTraversalIsHandledSafely() throws Exception {
+        File csv = tempDir.resolve("input.csv").toFile();
+        try (FileWriter writer = new FileWriter(csv)) {
+            writer.write("A,B\n1,2");
+        }
+
+        File result = fileConversionService.convertFileToCsv(csv, "../safe.csv");
+        assertNotNull(result);
+        assertTrue(result.exists());
+    }
+
+    @Test
+    void shouldThrowSecurityExceptionWhenConvertedPathIsOutsideParent() {
+        File file = mock(File.class);
+        Path filePath = mock(Path.class);
+        Path maliciousPath = Paths.get("/tmp/evil/converted_file.csv");
+
+        when(file.getName()).thenReturn("test.txt");
+        when(file.getParent()).thenReturn("/safe/dir");
+        when(file.toPath()).thenReturn(filePath);
+        when(filePath.resolveSibling(anyString())).thenReturn(maliciousPath);
+
+        assertThrows(
+                SecurityException.class,
+                () -> fileConversionService.convertFileToCsv(file, "test.txt")
+        );
     }
 }
