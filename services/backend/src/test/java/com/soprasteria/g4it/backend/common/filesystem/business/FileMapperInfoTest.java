@@ -16,11 +16,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-@SpringBootTest
+@SpringBootTest(
+        properties = {
+                "spring.cloud.azure.enabled=false",
+                "spring.liquibase.enabled=false"
+        }
+)
 @ActiveProfiles({"local", "test"})
 class FileMapperInfoTest {
 
