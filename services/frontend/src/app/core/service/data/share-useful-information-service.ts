@@ -13,21 +13,22 @@ import { BusinessHours } from "../../interfaces/business-hours.interface";
 import { VersionRest } from "../../interfaces/version.interfaces";
 
 const endpoint = Constants.ENDPOINTS.sharedDs;
+const endpointDs = Constants.ENDPOINTS.dsv;
 @Injectable({
     providedIn: "root",
 })
 export class ShareUsefulInformationDataService {
     constructor(private readonly http: HttpClient) {}
 
-    getVersion(sharedToken: string): Observable<VersionRest> {
+    getVersion(sharedToken: string, dsvId: string): Observable<VersionRest> {
         return this.http.get<VersionRest>(
-            `${endpoint}/${sharedToken}/${Constants.ENDPOINTS.version}`,
+            `${endpoint}/${sharedToken}/${endpointDs}/${dsvId}/${Constants.ENDPOINTS.version}`,
         );
     }
 
-    getBusinessHours(sharedToken: string): Observable<BusinessHours[]> {
+    getBusinessHours(sharedToken: string, dsvId: string): Observable<BusinessHours[]> {
         return this.http.get<BusinessHours[]>(
-            `${endpoint}/${sharedToken}/${Constants.ENDPOINTS.businessHours}`,
+            `${endpoint}/${sharedToken}/${endpointDs}/${dsvId}/${Constants.ENDPOINTS.businessHours}`,
         );
     }
 }

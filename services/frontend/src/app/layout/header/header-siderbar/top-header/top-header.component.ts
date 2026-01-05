@@ -21,7 +21,7 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, NavigationEnd, Router, RouterModule } from "@angular/router";
+import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
 import { MenuItem } from "primeng/api";
@@ -70,7 +70,6 @@ export class TopHeaderComponent implements OnInit {
     private readonly userService = inject(UserService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly globalStore = inject(GlobalStoreService);
-    private route = inject(ActivatedRoute);
     ecoDesignPercent = this.userService.ecoDesignPercent;
     maxLength = 30;
     ingredient: string = "english";
@@ -166,7 +165,9 @@ export class TopHeaderComponent implements OnInit {
                     {
                         label: "common.useful-info",
                         route: Constants.USEFUL_INFORMATION,
-                        subHeading: "common.useful-info-desc",
+                        subHeading: this.isSharedDs()
+                            ? "common.shared-useful-info-desc"
+                            : "common.useful-info-desc",
                         command: () => {
                             this.isSharedDs()
                                 ? this.openDeclarationsInNewTab(
