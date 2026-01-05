@@ -13,6 +13,7 @@ import {
     ElementRef,
     HostListener,
     inject,
+    input,
     OnInit,
     QueryList,
     signal,
@@ -20,7 +21,7 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
-import { NavigationEnd, Router, RouterModule } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
 import { MenuItem } from "primeng/api";
@@ -62,12 +63,14 @@ import { LeftSidebarComponent } from "../left-sidebar/left-sidebar.component";
     ],
 })
 export class TopHeaderComponent implements OnInit {
+    isSharedDs = input<boolean>(false);
     private readonly translate = inject(TranslateService);
     private readonly router = inject(Router);
     private readonly keycloak = inject(KeycloakService);
     private readonly userService = inject(UserService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly globalStore = inject(GlobalStoreService);
+    private route = inject(ActivatedRoute);
     ecoDesignPercent = this.userService.ecoDesignPercent;
     maxLength = 30;
     ingredient: string = "english";
@@ -165,7 +168,11 @@ export class TopHeaderComponent implements OnInit {
                         route: Constants.USEFUL_INFORMATION,
                         subHeading: "common.useful-info-desc",
                         command: () => {
-                            this.router.navigate(["/useful-information"]);
+                            this.isSharedDs()
+                                ? this.openDeclarationsInNewTab(
+                                      Constants.USEFUL_INFORMATION,
+                                  )
+                                : this.router.navigate(["/useful-information"]);
                             this.dialogVisible = false;
                         },
                     },
@@ -175,7 +182,9 @@ export class TopHeaderComponent implements OnInit {
                         subHeading: "declarations.accessibility-text",
                         ecoHeading: "declarations.ecodesign",
                         command: () => {
-                            this.router.navigate(["/declarations"]);
+                            this.isSharedDs()
+                                ? this.openDeclarationsInNewTab(Constants.DECLARATIONS)
+                                : this.router.navigate(["/declarations"]);
                             this.dialogVisible = false;
                         },
                     },
@@ -237,7 +246,11 @@ export class TopHeaderComponent implements OnInit {
                         subHeading: "common.useful-info-desc",
 
                         command: () => {
-                            this.router.navigate(["/useful-information"]);
+                            this.isSharedDs()
+                                ? this.openDeclarationsInNewTab(
+                                      Constants.USEFUL_INFORMATION,
+                                  )
+                                : this.router.navigate(["/useful-information"]);
                         },
                     },
                 ],
@@ -251,11 +264,13 @@ export class TopHeaderComponent implements OnInit {
                 items: [
                     {
                         label: "declarations.title",
-                        route: Constants.USEFUL_INFORMATION,
+                        route: Constants.DECLARATIONS,
                         subHeading: "declarations.accessibility-text",
                         ecoHeading: "declarations.ecodesign",
                         command: () => {
-                            this.router.navigate(["/declarations"]);
+                            this.isSharedDs()
+                                ? this.openDeclarationsInNewTab(Constants.DECLARATIONS)
+                                : this.router.navigate(["/declarations"]);
                         },
                     },
                 ],
@@ -305,6 +320,16 @@ export class TopHeaderComponent implements OnInit {
                 ],
             },
         ];
+    }
+
+    openDeclarationsInNewTab(page: string) {
+        let [_, shared, sharedId, dsv, dsvId] = this.router.url.split("/");
+
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([shared, sharedId, dsv, dsvId, page]),
+        );
+        console.log(url);
+        window.open(url, "_blank");
     }
 
     handleKeydown(event: KeyboardEvent) {

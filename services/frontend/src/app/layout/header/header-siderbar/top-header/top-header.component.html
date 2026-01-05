@@ -98,33 +98,35 @@
                 <span class="pi pi-chevron-down ml-3"></span>
             </button>
         </div>
-        <div
-            class="org-menu-new-btn flex align-items-center"
-            [ngClass]="isZoomedIn() ? 'ml-2' : 'ml-7'"
-        >
-            <button
-                (focus)="isAboutMenuOpen = false; isAccountMenuVisible = false"
-                type="button"
-                class="flex align-items-center p-menuitem-link text-xl border-none text-white orgNameMenuBtn cursor-pointer"
-                [ngClass]="isOrgMenuVisible ? 'orgMenuOpen' : ''"
-                (click)="toggleOrgMenu(); isAboutMenuOpen = false"
+        @if (!isSharedDs()) {
+            <div
+                class="org-menu-new-btn flex align-items-center"
+                [ngClass]="isZoomedIn() ? 'ml-2' : 'ml-7'"
             >
-                <span class="ml-2">
-                    {{
-                        selectedWorkspace &&
-                        selectedWorkspace.name &&
-                        selectedWorkspace.name.length > maxLength
-                            ? selectedWorkspace.name.slice(0, maxLength) + "..."
-                            : selectedWorkspace.name
-                    }}
+                <button
+                    (focus)="isAboutMenuOpen = false; isAccountMenuVisible = false"
+                    type="button"
+                    class="flex align-items-center p-menuitem-link text-xl border-none text-white orgNameMenuBtn cursor-pointer"
+                    [ngClass]="isOrgMenuVisible ? 'orgMenuOpen' : ''"
+                    (click)="toggleOrgMenu(); isAboutMenuOpen = false"
+                >
+                    <span class="ml-2">
+                        {{
+                            selectedWorkspace &&
+                            selectedWorkspace.name &&
+                            selectedWorkspace.name.length > maxLength
+                                ? selectedWorkspace.name.slice(0, maxLength) + "..."
+                                : selectedWorkspace.name
+                        }}
 
-                    @if (!isZoomedIn()) {
-                        ({{ currentOrganization.name }})
-                    }
-                </span>
-                <span class="pi pi-chevron-down ml-3"></span>
-            </button>
-        </div>
+                        @if (!isZoomedIn()) {
+                            ({{ currentOrganization.name }})
+                        }
+                    </span>
+                    <span class="pi pi-chevron-down ml-3"></span>
+                </button>
+            </div>
+        }
     }
     <!-- Organization Menu -->
     @if (isOrgMenuVisible) {
@@ -219,17 +221,18 @@
             ></p-button>
         </div>
     }
-
-    <div class="account-menu-btn flex align-items-center gap-2 ml-4">
-        <p-button
-            [ariaLabel]="'common.settings' | translate"
-            [label]="initials"
-            (onClick)="isAccountMenuVisible = !isAccountMenuVisible"
-            (onFocus)="isOrgMenuVisible = false"
-            styleClass="border-circle text-md p-0 w-2-5rem h-2-5rem name-circle"
-        >
-        </p-button>
-    </div>
+    @if (!isSharedDs()) {
+        <div class="account-menu-btn flex align-items-center gap-2 ml-4">
+            <p-button
+                [ariaLabel]="'common.settings' | translate"
+                [label]="initials"
+                (onClick)="isAccountMenuVisible = !isAccountMenuVisible"
+                (onFocus)="isOrgMenuVisible = false"
+                styleClass="border-circle text-md p-0 w-2-5rem h-2-5rem name-circle"
+            >
+            </p-button>
+        </div>
+    }
     @if (isMobile()) {
         <div class="flex align-items-center gap-2 ml-2 mobile-menu">
             <button
@@ -262,39 +265,49 @@
                     ></p-button>
 
                     <!-- Organization dropdown -->
-                    <div
-                        class="org-menu-new-btn flex align-items-center mobile-top-header-menu mt-5"
-                        [ngClass]="isZoomedIn() ? 'ml-2' : 'ml-7'"
-                    >
-                        <button
-                            (focus)="
-                                isAboutMenuOpen = false; isAccountMenuVisible = false
-                            "
-                            type="button"
-                            class="flex align-items-center p-menuitem-link text-xl border-none text-white orgNameMenuBtn cursor-pointer"
-                            [ngClass]="isOrgMenuVisible ? 'orgMenuOpen' : ''"
-                            (click)="toggleOrgMenu(); isAboutMenuOpen = false"
+                    @if (!isSharedDs()) {
+                        <div
+                            class="org-menu-new-btn flex align-items-center mobile-top-header-menu mt-5"
+                            [ngClass]="isZoomedIn() ? 'ml-2' : 'ml-7'"
                         >
-                            <span class="ml-2">
-                                {{
-                                    selectedWorkspace &&
-                                    selectedWorkspace.name &&
-                                    selectedWorkspace.name.length > maxLength
-                                        ? selectedWorkspace.name.slice(0, maxLength) +
-                                          "..."
-                                        : selectedWorkspace.name
-                                }}
-                                ({{ currentOrganization.name }})
-                            </span>
-                            <span
-                                class="flex-grow-1 flex align-items-center justify-content-center"
-                            ></span>
-                            <span class="pi pi-chevron-down mr-1"></span>
-                        </button>
-                    </div>
-                    <div class="sidebar-with-menu overflow-x-hidden overflow-y-auto">
+                            <button
+                                (focus)="
+                                    isAboutMenuOpen = false; isAccountMenuVisible = false
+                                "
+                                type="button"
+                                class="flex align-items-center p-menuitem-link text-xl border-none text-white orgNameMenuBtn cursor-pointer"
+                                [ngClass]="isOrgMenuVisible ? 'orgMenuOpen' : ''"
+                                (click)="toggleOrgMenu(); isAboutMenuOpen = false"
+                            >
+                                <span class="ml-2">
+                                    {{
+                                        selectedWorkspace &&
+                                        selectedWorkspace.name &&
+                                        selectedWorkspace.name.length > maxLength
+                                            ? selectedWorkspace.name.slice(0, maxLength) +
+                                              "..."
+                                            : selectedWorkspace.name
+                                    }}
+                                    ({{ currentOrganization.name }})
+                                </span>
+                                <span
+                                    class="flex-grow-1 flex align-items-center justify-content-center"
+                                ></span>
+                                <span class="pi pi-chevron-down mr-1"></span>
+                            </button>
+                        </div>
+                    }
+                    <div
+                        class="sidebar-with-menu"
+                        [ngClass]="{
+                            'overflow-y-auto': !isSharedDs(),
+                            'overflow-x-hidden': !isSharedDs(),
+                        }"
+                    >
                         <!-- Left Sidebar Modules Menu In mobile view comes in hamberger menu button -->
-                        <app-left-sidebar></app-left-sidebar>
+                        @if (!isSharedDs()) {
+                            <app-left-sidebar></app-left-sidebar>
+                        }
                         <!-- About us & Help center -->
                         <p-menu
                             [model]="mobileMenuItems"
