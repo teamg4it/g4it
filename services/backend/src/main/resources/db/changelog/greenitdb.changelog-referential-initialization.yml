@@ -444,3 +444,78 @@ databaseChangeLog:
             columns:
               - column:
                   name: category
+
+  - changeSet:
+      id: add-water-use-criterion
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            sqlCheck:
+              expectedResult: "1"
+              sql: "SELECT COUNT(*) FROM ref_criterion WHERE code = 'WATER_USE'"
+      changes:
+        - insert:
+            tableName: ref_criterion
+            columns:
+              - column:
+                  name: code
+                  value: "WATER_USE"
+              - column:
+                  name: label
+                  value: "Water use"
+              - column:
+                  name: description
+                  value: "Depletion of available water depending on local water scarcity and water needs for human activities and ecosystem integrity."
+              - column:
+                  name: unit
+                  value: "m3 eq"
+
+  - changeSet:
+      id: add-ref-item-impact-data-for-water-use-criterion
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: "0"
+            sql: |
+              SELECT COUNT(*)
+              FROM ref_item_impact
+              WHERE criterion = 'WATER_USE'
+
+      changes:
+        - loadData:
+            file: db/changelog/data/data_for_ref_item_impact_water_use.csv
+            tableName: ref_item_impact
+            separator: ","
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: criterion
+              - column:
+                  name: lifecycle_step
+              - column:
+                  name: name
+              - column:
+                  name: category
+              - column:
+                  name: avg_electricity_consumption
+                  type: NUMERIC
+                  defaultValueComputed: NULL
+              - column:
+                  name: location
+              - column:
+                  name: level
+              - column:
+                  name: source
+              - column:
+                  name: tier
+              - column:
+                  name: unit
+              - column:
+                  name: value
+                  type: NUMERIC
+
+
+        
+              

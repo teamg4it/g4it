@@ -32,7 +32,8 @@ public final class CriteriaUtils {
             Map.entry("eutrophication-terrestrial", "Eutrophication, terrestrial"),
             Map.entry("eutrophication-freshwater", "Eutrophication, freshwater"),
             Map.entry("eutrophication-marine", "Eutrophication, marine"),
-            Map.entry("resource-use-fossils", "Resource use, fossils")
+            Map.entry("resource-use-fossils", "Resource use, fossils"),
+            Map.entry("water-use", "Water use")
     );
 
     /**
@@ -54,6 +55,7 @@ public final class CriteriaUtils {
             case "Eutrophication, freshwater" -> "eutrophication-freshwater";
             case "Eutrophication, marine" -> "eutrophication-marine";
             case "Resource use, fossils" -> "resource-use-fossils";
+            case "Water use" -> "water-use";
             default -> "";
         };
     }
