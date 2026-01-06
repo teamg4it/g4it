@@ -117,7 +117,8 @@ public class SharedDigitalServiceProxyController implements SharedLinkDigitalSer
     }
 
     @Override
-    public ResponseEntity<VersionRest> getSharedVersion(String shareId) {
+    public ResponseEntity<VersionRest> getSharedVersion(String digitalServiceVersionUid,
+                                                        String shareId) {
         return ResponseEntity.ok(versionService.getVersion());
     }
 }

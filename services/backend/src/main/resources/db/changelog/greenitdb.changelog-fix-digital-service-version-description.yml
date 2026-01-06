@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: fix-digital-service-version-description
+      author: G4IT Dev Team
+      runOnChange: true
+      runAlways: true
+      changes:
+        - sql:
+            splitStatements: false
+            stripComments: true
+            sql: |
+              WITH ranked_versions AS (
+                  SELECT
+                      uid,
+                      'Version ' || ROW_NUMBER() OVER (
+                          PARTITION BY item_id
+                          ORDER BY creation_date
+                      ) AS new_description
+                  FROM digital_service_version
+              )
+              UPDATE digital_service_version dsv
+              SET description = rv.new_description
+              FROM ranked_versions rv
+              WHERE dsv.uid = rv.uid
+                AND dsv.description <> rv.new_description;
