@@ -28,7 +28,17 @@ describe("ShareLandingPageComponent", () => {
                 UserService,
                 MessageService,
             ],
-        }).compileComponents();
+        })
+            .overrideTemplate(
+                ShareLandingPageComponent,
+                `
+        <div #mainContent>
+          <button id="firstBtn">First</button>
+          <button id="secondBtn">Second</button>
+        </div>
+        `,
+            )
+            .compileComponents();
 
         fixture = TestBed.createComponent(ShareLandingPageComponent);
         component = fixture.componentInstance;
@@ -37,5 +47,21 @@ describe("ShareLandingPageComponent", () => {
 
     it("should create", () => {
         expect(component).toBeTruthy();
+    });
+    it("should focus the first focusable element", () => {
+        const firstButton = fixture.nativeElement.querySelector(
+            "#firstBtn",
+        ) as HTMLButtonElement;
+
+        component.focusFirstElement();
+        fixture.detectChanges();
+
+        expect(document.activeElement).toBe(firstButton);
+    });
+
+    it("should not throw error if no focusable elements exist", () => {
+        component.mainContent.nativeElement.innerHTML = "<div>No focus</div>";
+
+        expect(() => component.focusFirstElement()).not.toThrow();
     });
 });
