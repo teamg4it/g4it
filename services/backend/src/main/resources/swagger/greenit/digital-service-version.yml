@@ -135,7 +135,7 @@ paths:
       tags:
         - digital-service-version
       summary: Get the digital service versions list
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
       operationId: getDigitalServiceVersions
       responses:
         '201':
@@ -198,3 +198,4 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+
