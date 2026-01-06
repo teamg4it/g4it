@@ -7,12 +7,10 @@ import { appRoutes } from "./share-landing-page.route";
 
 describe("Share Landing App Routes", () => {
     let router: Router;
-    let location: Location;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule.withRoutes(appRoutes)],
-            declarations: [ShareLandingPageComponent],
             providers: [
                 {
                     provide: SharedAccessGuard,
@@ -24,7 +22,6 @@ describe("Share Landing App Routes", () => {
         }).compileComponents();
 
         router = TestBed.inject(Router);
-        location = TestBed.inject(Location);
         router.initialNavigation();
     });
 
