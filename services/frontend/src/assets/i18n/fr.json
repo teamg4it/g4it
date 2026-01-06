@@ -138,6 +138,7 @@
         "boaviztapi-github-link": "Accéder à BoaviztAPI GitHub",
         "doc-link": "Aller à la documentation",
         "useful-info-desc": "Versions G4IT, heures d'ouverture et contact d'assistance",
+        "shared-useful-info-desc": "Présentation de G4IT, versions des modules, horaires d'ouverture et contact",
         "inventories": "Inventaires",
         "digital-services": "Services numériques",
         "eco-mind-ai": "EcoMind AI (experimental)",
@@ -177,7 +178,9 @@
         "computing-engines": "Moteurs de calcul",
         "g4it-line": "Veuillez consulter le détail du contenu de cette version",
         "documentation": "dans la documentation en ligne",
-        "link-to-github": "lien vers le repertoire github"
+        "link-to-github": "lien vers le repertoire github",
+        "overview": "Présentation G4IT",
+        "module-available": "Les modules disponibles"
     },
     "errors": {
         "error-occurred": "Une erreur est survenue"

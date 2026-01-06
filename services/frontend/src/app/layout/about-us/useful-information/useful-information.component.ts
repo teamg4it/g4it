@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
+import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { sortByProperty } from "sort-by-property";
 import { BusinessHours } from "src/app/core/interfaces/business-hours.interface";
@@ -8,8 +9,10 @@ import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces
 import { Version, VersionRest } from "src/app/core/interfaces/version.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
+import { ShareUsefulInformationDataService } from "src/app/core/service/data/share-useful-information-service";
 import { VersionDataService } from "src/app/core/service/data/version-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { environment } from "src/environments/environment";
 @Component({
     selector: "app-useful-information",
@@ -26,6 +29,11 @@ export class UsefulInformationComponent implements OnInit {
     private readonly versionDataService = inject(VersionDataService);
     protected readonly userService = inject(UserService);
     private readonly title = inject(Title);
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly shareUsefulInformationDataService = inject(
+        ShareUsefulInformationDataService,
+    );
+    private readonly router = inject(Router);
     currentOrganization: Organization = {} as Organization;
     selectedWorkspace: Workspace = {} as Workspace;
     versions: Version[] = [];
@@ -34,6 +42,7 @@ export class UsefulInformationComponent implements OnInit {
     selectedLanguage: string = "en";
     isEcoMindModuleEnabled: boolean = environment.isEcomindEnabled;
     repoUrls: { [key: string]: string } = {};
+    isShared = false;
     constructor(private readonly titleService: Title) {}
     ngOnInit() {
         this.translate.get("common.useful-info").subscribe((translatedTitle: string) => {
@@ -41,15 +50,24 @@ export class UsefulInformationComponent implements OnInit {
         });
         this.selectedLanguage = this.translate.currentLang;
 
-        this.businessHoursService
-            .getBusinessHours()
+        this.isShared = this.digitalServiceStore.isSharedDS();
+        console.log(this.isShared);
+
+        const [_, _1, sharedToken, _2, dsvId] = this.router.url.split("/");
+
+        (this.isShared
+            ? this.shareUsefulInformationDataService.getBusinessHours(sharedToken, dsvId)
+            : this.businessHoursService.getBusinessHours()
+        )
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((businessHours: BusinessHours[]) => {
                 this.businessHoursData = businessHours;
             });
 
-        this.versionDataService
-            .getVersion()
+        (this.isShared
+            ? this.shareUsefulInformationDataService.getVersion(sharedToken, dsvId)
+            : this.versionDataService.getVersion()
+        )
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((version: VersionRest) => {
                 this.versions.push({ name: "g4it", version: version["g4it"] });

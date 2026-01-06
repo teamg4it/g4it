@@ -13,6 +13,7 @@ import {
     ElementRef,
     HostListener,
     inject,
+    input,
     OnInit,
     QueryList,
     signal,
@@ -62,6 +63,7 @@ import { LeftSidebarComponent } from "../left-sidebar/left-sidebar.component";
     ],
 })
 export class TopHeaderComponent implements OnInit {
+    isSharedDs = input<boolean>(false);
     private readonly translate = inject(TranslateService);
     private readonly router = inject(Router);
     private readonly keycloak = inject(KeycloakService);
@@ -163,9 +165,15 @@ export class TopHeaderComponent implements OnInit {
                     {
                         label: "common.useful-info",
                         route: Constants.USEFUL_INFORMATION,
-                        subHeading: "common.useful-info-desc",
+                        subHeading: this.isSharedDs()
+                            ? "common.shared-useful-info-desc"
+                            : "common.useful-info-desc",
                         command: () => {
-                            this.router.navigate(["/useful-information"]);
+                            this.isSharedDs()
+                                ? this.openDeclarationsInNewTab(
+                                      Constants.USEFUL_INFORMATION,
+                                  )
+                                : this.router.navigate(["/useful-information"]);
                             this.dialogVisible = false;
                         },
                     },
@@ -175,7 +183,9 @@ export class TopHeaderComponent implements OnInit {
                         subHeading: "declarations.accessibility-text",
                         ecoHeading: "declarations.ecodesign",
                         command: () => {
-                            this.router.navigate(["/declarations"]);
+                            this.isSharedDs()
+                                ? this.openDeclarationsInNewTab(Constants.DECLARATIONS)
+                                : this.router.navigate(["/declarations"]);
                             this.dialogVisible = false;
                         },
                     },
@@ -234,10 +244,15 @@ export class TopHeaderComponent implements OnInit {
                     {
                         label: "common.useful-info",
                         route: Constants.USEFUL_INFORMATION,
-                        subHeading: "common.useful-info-desc",
-
+                        subHeading: this.isSharedDs()
+                            ? "common.shared-useful-info-desc"
+                            : "common.useful-info-desc",
                         command: () => {
-                            this.router.navigate(["/useful-information"]);
+                            this.isSharedDs()
+                                ? this.openDeclarationsInNewTab(
+                                      Constants.USEFUL_INFORMATION,
+                                  )
+                                : this.router.navigate(["/useful-information"]);
                         },
                     },
                 ],
@@ -251,11 +266,13 @@ export class TopHeaderComponent implements OnInit {
                 items: [
                     {
                         label: "declarations.title",
-                        route: Constants.USEFUL_INFORMATION,
+                        route: Constants.DECLARATIONS,
                         subHeading: "declarations.accessibility-text",
                         ecoHeading: "declarations.ecodesign",
                         command: () => {
-                            this.router.navigate(["/declarations"]);
+                            this.isSharedDs()
+                                ? this.openDeclarationsInNewTab(Constants.DECLARATIONS)
+                                : this.router.navigate(["/declarations"]);
                         },
                     },
                 ],
@@ -305,6 +322,16 @@ export class TopHeaderComponent implements OnInit {
                 ],
             },
         ];
+    }
+
+    openDeclarationsInNewTab(page: string) {
+        let [_, shared, sharedId, dsv, dsvId] = this.router.url.split("/");
+
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([shared, sharedId, dsv, dsvId, page]),
+        );
+        console.log(url);
+        window.open(url, "_blank");
     }
 
     handleKeydown(event: KeyboardEvent) {
