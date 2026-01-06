@@ -31,6 +31,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
     dsVersionUid: string = "";
     selectedVersions: string[] = [];
     isPromoteVersionDialogVisible = false;
+    promoteDsvId = "";
 
     ngOnInit() {
         this.dsVersionUid =
@@ -40,7 +41,12 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
 
     getVersions(): void {
         this.digitalServiceVersionDataService
-            .getVersions(this.dsVersionUid)
+            .getVersions(
+                this.versionData.length
+                    ? this.versionData.find((v) => v.versionType === "active")
+                          ?.digitalServiceVersionUid!
+                    : this.dsVersionUid,
+            )
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((versions) => {
                 this.versionData = versions;
@@ -127,7 +133,22 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
                             this.global.setLoading(false);
                         }),
                     )
-                    .subscribe(() => this.getVersions());
+                    .subscribe(() => {
+                        if (version.digitalServiceVersionUid === this.dsVersionUid) {
+                            const activeVersion = this.versionData.find(
+                                (v) => v.versionType === "active",
+                            )?.digitalServiceVersionUid!;
+                            this.router.navigate(
+                                [
+                                    "digital-service-version",
+                                    activeVersion,
+                                    "manage-versions",
+                                ],
+                                { relativeTo: this.route.parent?.parent },
+                            );
+                        }
+                        this.getVersions();
+                    });
             },
         });
     }
