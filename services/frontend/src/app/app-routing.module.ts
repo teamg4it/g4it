@@ -9,7 +9,6 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { environment } from "src/environments/environment";
 import { AuthGuard } from "./guard/auth.gard";
-import { SharedAccessGuard } from "./guard/shared-ds.guard";
 import { ErrorComponent } from "./layout/common/error/error.component";
 import { LandingPageComponent } from "./layout/landing-page/landing-page.component";
 
@@ -22,12 +21,13 @@ const routes: Routes = [
         component: ErrorComponent,
     },
     {
-        path: "shared/:share-token/dsv/:id/footprint",
+        path: "shared",
         loadChildren: () =>
-            import("./layout/share-digital-service/share-digital-service.module").then(
-                (m) => m.ShareDigitalServiceModule,
-            ),
-        canActivate: [SharedAccessGuard],
+            import(
+                "./layout/share-digital-service/share-landing-page/share-landing-page.route"
+            ).then((t) => {
+                return t.appRoutes;
+            }),
     },
     {
         path: "",

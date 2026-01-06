@@ -155,7 +155,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DigitalServiceVersionRest"
-  /shared/{shareId}/dsv/{digitalServiceVersionUid}/outputs/business-hours:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/business-hours:
     parameters:
       - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'
@@ -174,7 +174,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/BusinessHoursRest"
-  /shared/{shareId}/dsv/{digitalServiceVersionUid}/outputs/api-version:
+  /shared/{shareId}/dsv/{digitalServiceVersionUid}/version:
     parameters:
       - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
       - $ref: '#/components/parameters/shareidPathParam'

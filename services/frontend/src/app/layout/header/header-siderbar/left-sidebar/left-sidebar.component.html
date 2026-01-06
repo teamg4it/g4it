@@ -15,159 +15,166 @@
         </div>
         <div class="flex align-items-center justify-content-center extra-div"></div>
     }
-    <div
-        class="flex align-items-center justify-content-center my-1"
-        [ngClass]="{
-            'bg-light-green': !isMobile() && selectedPage() === constants.WELCOME_PAGE,
-        }"
-    >
-        <a
-            [routerLink]="constants.WELCOME_PAGE"
-            id="home"
+    @if (!isSharedDs()) {
+        <div
+            class="flex align-items-center justify-content-center my-1"
             [ngClass]="{
-                'home-padding-zoomin': isZoomedIn(),
-                'home-padding': !isZoomedIn(),
-                'bg-light-green': isMobile() && selectedPage() === constants.WELCOME_PAGE,
-            }"
-        >
-            <div class="flex justify-content-center color-transparent">
-                <img
-                    src="assets/images/icons/icon-home.svg"
-                    alt="{{ 'welcome-page.title' | translate }}"
-                    [attr.title]="homeTitle()"
-                />
-            </div>
-            <span class="text-white span-font nav-span-text">{{
-                "welcome-page.name" | translate
-            }}</span>
-        </a>
-    </div>
-    <div class="flex align-items-center justify-content-center my-1">
-        <a
-            *ngIf="userService.isAllowedInventoryRead$ | async"
-            [routerLink]="selectedPath + '/inventories'"
-            id="information-system"
-            [ngClass]="{
-                'inventory-padding-zoomin': isZoomedIn(),
-                'inventory-padding': !isZoomedIn(),
-                'bg-light-green': selectedPage() === 'inventories',
-            }"
-        >
-            <div class="flex justify-content-center color-transparent">
-                <img
-                    src="assets/images/icons/icon-dashboard.svg"
-                    alt="{{
-                        'inventories.title'
-                            | translate: { WorkspaceName: selectedWorkspace.name }
-                    }}"
-                    [attr.title]="inventoriesTitle()"
-                />
-            </div>
-            <span class="text-white span-font nav-span-text">{{
-                "common.inventories" | translate
-            }}</span>
-        </a>
-    </div>
-    <div
-        class="flex align-items-center justify-content-center my-1"
-        [attr.aria-label]="'header.menu' | translate"
-    >
-        <a
-            *ngIf="userService.isAllowedDigitalServiceRead$ | async"
-            [routerLink]="selectedPath + '/digital-services'"
-            id="digital-services"
-            [ngClass]="{
-                'digital-padding-zoomin': isZoomedIn(),
-                'digital-padding': !isZoomedIn(),
                 'bg-light-green':
-                    selectedPage() === 'digital-services' ||
-                    selectedPage() === 'digital-service-version',
+                    !isMobile() && selectedPage() === constants.WELCOME_PAGE,
             }"
         >
-            <div class="flex justify-content-center color-transparent">
-                <img
-                    src="assets/images/icons/icon-digital-service.svg"
-                    alt="{{
-                        'digital-services.title'
-                            | translate: { WorkspaceName: selectedWorkspace.name }
-                    }}"
-                    [attr.title]="digitalServicesTitle()"
-                    [attr.aria-current]="digitalServicesAriaCurrent()"
-                />
-            </div>
-
-            <span class="text-white span-font nav-span-text ds-text">{{
-                "common.digital-services" | translate
-            }}</span>
-        </a>
-    </div>
-
-    @if (
-        (userService.isAllowedEcoMindAiRead$ | async) &&
-        isEcoMindEnabledForCurrentOrganization &&
-        isEcoMindModuleEnabled
-    ) {
+            <a
+                [routerLink]="constants.WELCOME_PAGE"
+                id="home"
+                [ngClass]="{
+                    'home-padding-zoomin': isZoomedIn(),
+                    'home-padding': !isZoomedIn(),
+                    'bg-light-green':
+                        isMobile() && selectedPage() === constants.WELCOME_PAGE,
+                }"
+            >
+                <div class="flex justify-content-center color-transparent">
+                    <img
+                        src="assets/images/icons/icon-home.svg"
+                        alt="{{ 'welcome-page.title' | translate }}"
+                        [attr.title]="homeTitle()"
+                    />
+                </div>
+                <span class="text-white span-font nav-span-text">{{
+                    "welcome-page.name" | translate
+                }}</span>
+            </a>
+        </div>
+        <div class="flex align-items-center justify-content-center my-1">
+            <a
+                *ngIf="userService.isAllowedInventoryRead$ | async"
+                [routerLink]="selectedPath + '/inventories'"
+                id="information-system"
+                [ngClass]="{
+                    'inventory-padding-zoomin': isZoomedIn(),
+                    'inventory-padding': !isZoomedIn(),
+                    'bg-light-green': selectedPage() === 'inventories',
+                }"
+            >
+                <div class="flex justify-content-center color-transparent">
+                    <img
+                        src="assets/images/icons/icon-dashboard.svg"
+                        alt="{{
+                            'inventories.title'
+                                | translate: { WorkspaceName: selectedWorkspace.name }
+                        }}"
+                        [attr.title]="inventoriesTitle()"
+                    />
+                </div>
+                <span class="text-white span-font nav-span-text">{{
+                    "common.inventories" | translate
+                }}</span>
+            </a>
+        </div>
         <div
             class="flex align-items-center justify-content-center my-1"
             [attr.aria-label]="'header.menu' | translate"
         >
             <a
-                [routerLink]="selectedPath + '/eco-mind-ai'"
-                id="eco-mind-ai"
+                *ngIf="userService.isAllowedDigitalServiceRead$ | async"
+                [routerLink]="selectedPath + '/digital-services'"
+                id="digital-services"
                 [ngClass]="{
-                    'ecomind-padding-zoomin': isZoomedIn(),
-                    'ecomind-padding': !isZoomedIn(),
-                    'bg-light-green': selectedPage() === 'eco-mind-ai',
+                    'digital-padding-zoomin': isZoomedIn(),
+                    'digital-padding': !isZoomedIn(),
+                    'bg-light-green':
+                        selectedPage() === 'digital-services' ||
+                        selectedPage() === 'digital-service-version',
                 }"
             >
                 <div class="flex justify-content-center color-transparent">
                     <img
-                        src="assets/images/icons/icon_ecomind_ai_small.svg"
+                        src="assets/images/icons/icon-digital-service.svg"
                         alt="{{
-                            'eco-mind-ai.title'
+                            'digital-services.title'
                                 | translate: { WorkspaceName: selectedWorkspace.name }
                         }}"
-                        [attr.title]="ecoMindAiTitle()"
-                        [attr.aria-current]="ecoMindAiAriaCurrent()"
+                        [attr.title]="digitalServicesTitle()"
+                        [attr.aria-current]="digitalServicesAriaCurrent()"
                     />
                 </div>
 
-                <span class="text-white span-font nav-span-text ds-text mt-2">{{
-                    "common.eco-mind-ai" | translate
+                <span class="text-white span-font nav-span-text ds-text">{{
+                    "common.digital-services" | translate
+                }}</span>
+            </a>
+        </div>
+
+        @if (
+            (userService.isAllowedEcoMindAiRead$ | async) &&
+            isEcoMindEnabledForCurrentOrganization &&
+            isEcoMindModuleEnabled
+        ) {
+            <div
+                class="flex align-items-center justify-content-center my-1"
+                [attr.aria-label]="'header.menu' | translate"
+            >
+                <a
+                    [routerLink]="selectedPath + '/eco-mind-ai'"
+                    id="eco-mind-ai"
+                    [ngClass]="{
+                        'ecomind-padding-zoomin': isZoomedIn(),
+                        'ecomind-padding': !isZoomedIn(),
+                        'bg-light-green': selectedPage() === 'eco-mind-ai',
+                    }"
+                >
+                    <div class="flex justify-content-center color-transparent">
+                        <img
+                            src="assets/images/icons/icon_ecomind_ai_small.svg"
+                            alt="{{
+                                'eco-mind-ai.title'
+                                    | translate: { WorkspaceName: selectedWorkspace.name }
+                            }}"
+                            [attr.title]="ecoMindAiTitle()"
+                            [attr.aria-current]="ecoMindAiAriaCurrent()"
+                        />
+                    </div>
+
+                    <span class="text-white span-font nav-span-text ds-text mt-2">{{
+                        "common.eco-mind-ai" | translate
+                    }}</span>
+                </a>
+            </div>
+        }
+    }
+
+    @if (!isMobile()) {
+        <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
+    }
+    @if (!isSharedDs()) {
+        <div
+            class="flex align-items-center justify-content-center my-1 lg:mt-2 xl:mb-5 mr-2 lg:mr-auto"
+        >
+            <a
+                routerLink="/administration/users"
+                *ngIf="isAdminOnWorkspaceOrOrganization"
+                id="administration"
+                [ngClass]="{
+                    'admin-padding-zoomin': isZoomedIn(),
+                    'admin-padding': !isZoomedIn(),
+                    'bg-light-green': selectedPage() === 'administration',
+                }"
+            >
+                <div class="flex justify-content-center color-transparent">
+                    <img
+                        src="assets/images/icons/icon-key.svg"
+                        alt="{{ 'administration.title' | translate }}"
+                        [attr.title]="administrationTitle()"
+                        [attr.aria-current]="administrationAriaCurrent()"
+                        width="25"
+                    />
+                </div>
+                <span class="text-white span-font nav-span-text">{{
+                    "common.administration" | translate
                 }}</span>
             </a>
         </div>
     }
-    @if (!isMobile()) {
-        <div class="flex-grow-1 flex align-items-center justify-content-center"></div>
-    }
-    <div
-        class="flex align-items-center justify-content-center my-1 lg:mt-2 xl:mb-5 mr-2 lg:mr-auto"
-    >
-        <a
-            routerLink="/administration/users"
-            *ngIf="isAdminOnWorkspaceOrOrganization"
-            id="administration"
-            [ngClass]="{
-                'admin-padding-zoomin': isZoomedIn(),
-                'admin-padding': !isZoomedIn(),
-                'bg-light-green': selectedPage() === 'administration',
-            }"
-        >
-            <div class="flex justify-content-center color-transparent">
-                <img
-                    src="assets/images/icons/icon-key.svg"
-                    alt="{{ 'administration.title' | translate }}"
-                    [attr.title]="administrationTitle()"
-                    [attr.aria-current]="administrationAriaCurrent()"
-                    width="25"
-                />
-            </div>
-            <span class="text-white span-font nav-span-text">{{
-                "common.administration" | translate
-            }}</span>
-        </a>
-    </div>
     @if (!isZoomedIn125() && !isMobile()) {
         <div
             class="flex align-items-center justify-content-center mb-5 color-transparent"

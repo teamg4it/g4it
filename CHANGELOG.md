@@ -5,6 +5,7 @@
 ## Major changes
 - 1606 | Making a version the new current
 - 1607 | Deleting a Digital Service Version
+- 1757 | Not authenticated mode put the same banner (without workspace and user menu)
 
 ### Minor Changes
 - 1777 | add access to manage version button for read role

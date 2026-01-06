@@ -12,6 +12,7 @@ import {
     DestroyRef,
     ElementRef,
     inject,
+    input,
     OnInit,
     signal,
 } from "@angular/core";
@@ -39,6 +40,7 @@ import { environment } from "src/environments/environment";
     imports: [CommonModule, TranslateModule, RouterModule],
 })
 export class LeftSidebarComponent implements OnInit {
+    isSharedDs = input<boolean>(false);
     private readonly destroyRef = inject(DestroyRef);
     private readonly router = inject(Router);
     public userService = inject(UserService);
