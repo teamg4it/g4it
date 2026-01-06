@@ -244,8 +244,9 @@ export class TopHeaderComponent implements OnInit {
                     {
                         label: "common.useful-info",
                         route: Constants.USEFUL_INFORMATION,
-                        subHeading: "common.useful-info-desc",
-
+                        subHeading: this.isSharedDs()
+                            ? "common.shared-useful-info-desc"
+                            : "common.useful-info-desc",
                         command: () => {
                             this.isSharedDs()
                                 ? this.openDeclarationsInNewTab(

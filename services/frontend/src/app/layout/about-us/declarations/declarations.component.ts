@@ -5,6 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 
 @Component({
     selector: "app-declarations",
@@ -23,12 +24,16 @@ export class DeclarationsComponent implements OnInit {
     selectedWorkspace: Workspace = {} as Workspace;
     ecoDesignPercent = this.userService.ecoDesignPercent;
     pdfSize = 0;
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
+    isShared = false;
     ngOnInit() {
         this.translate.get("declarations.title").subscribe((translatedTitle: string) => {
             this.titleService.setTitle(translatedTitle);
         });
         this.currentLang = this.translate.currentLang;
         this.pdfSize = this.currentLang === "en" ? 139 : 428;
+
+        this.isShared = this.digitalServiceStore.isSharedDS();
 
         this.userService.currentOrganization$
             .pipe(takeUntilDestroyed(this.destroyRef))
