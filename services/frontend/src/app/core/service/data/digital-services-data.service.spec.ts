@@ -387,4 +387,17 @@ describe("DigitalServicesDataService", () => {
         expect(req.request.method).toBe("GET");
         req.flush(ds);
     });
+
+    it("getDs should fetch getDuplicateDigitalServiceAndVersionName", () => {
+        const id = "ds-55";
+
+        service.getDuplicateDigitalServiceAndVersionName(id).subscribe((res) => {
+            expect(res.versionNames).toBe([]);
+        });
+
+        const req = httpMock.expectOne(
+            `${endpointDsVersions}/${id}/validate-duplicate-names`,
+        );
+        expect(req.request.method).toBe("GET");
+    });
 });

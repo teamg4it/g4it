@@ -308,13 +308,17 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     validateDs(value: string) {
         this.disableDs = this.duplicateDsNames
-            .filter((ds) => ds !== this.savedDigitalServiceAndVersion.dsName)
+            .map((ds) => ds.trim())
+            .filter(
+                (ds) => ds.trim() !== this.savedDigitalServiceAndVersion.dsName.trim(),
+            )
             .includes(value.trim());
     }
 
     validateVersion(value: string) {
         this.disableVersion = this.duplicateVersionNames
-            .filter((v) => v !== this.savedDigitalServiceAndVersion.version)
+            .map((v) => v.trim())
+            .filter((v) => v.trim() !== this.savedDigitalServiceAndVersion.version.trim())
             .includes(value.trim());
     }
 }
