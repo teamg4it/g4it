@@ -218,18 +218,6 @@ export class TopHeaderComponent implements OnInit {
                             );
                         },
                     },
-                    {
-                        label: "common.boaviztapi-github-link",
-                        link: "https://github.com/Boavizta/boaviztapi",
-                        outsideLink: true,
-                        command: () => {
-                            window.open(
-                                "https://github.com/Boavizta/boaviztapi",
-                                "_blank",
-                                "noopener",
-                            );
-                        },
-                    },
                 ],
             },
         ];
@@ -301,19 +289,6 @@ export class TopHeaderComponent implements OnInit {
                         command: () => {
                             window.open(
                                 "https://saas-g4it.com/documentation/",
-                                "_blank",
-                                "noopener",
-                            );
-                        },
-                    },
-                    {
-                        label: "common.boaviztapi-github-link",
-                        link: "https://github.com/Boavizta/boaviztapi",
-                        outsideLink: true,
-                        borderClass: "border-light-grey-color",
-                        command: () => {
-                            window.open(
-                                "https://github.com/Boavizta/boaviztapi",
                                 "_blank",
                                 "noopener",
                             );

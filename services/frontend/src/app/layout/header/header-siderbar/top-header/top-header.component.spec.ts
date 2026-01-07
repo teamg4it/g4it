@@ -163,29 +163,6 @@ describe("TopHeaderComponent", () => {
         expect(component.modelWorkspace).toBe(1);
     }));
 
-    it("should open Boaviztapi GitHub link when help menu item is clicked", () => {
-        const windowOpenSpy = spyOn(window, "open");
-
-        // Trigger ngOnInit to populate items
-        component.ngOnInit();
-
-        const helpMenu = component.items?.find(
-            (item) => item.label === "common.help-center",
-        );
-        const boaviztapiItem = helpMenu?.items?.find(
-            (item) => item["link"] === "https://github.com/Boavizta/boaviztapi",
-        );
-
-        // Call command with a dummy event object
-        boaviztapiItem?.command?.({});
-
-        expect(windowOpenSpy).toHaveBeenCalledWith(
-            "https://github.com/Boavizta/boaviztapi",
-            "_blank",
-            "noopener",
-        );
-    });
-
     it("should toggle organization menu visibility", () => {
         component.isOrgMenuVisible = false;
         component.toggleOrgMenu();
@@ -262,21 +239,6 @@ describe("TopHeaderComponent", () => {
         expect(component.mobileMenuItems?.[1].label).toBe("common.help-center");
     });
 
-    it("should set items with help-center and correct links", () => {
-        component.items = [];
-        component.ngOnInit();
-        const helpCenter = component.items?.find((i) => i.label === "common.help-center");
-        expect(helpCenter).toBeDefined();
-        const githubItem = helpCenter?.items?.find(
-            (i) => i["link"] === "https://github.com/G4ITTeam/g4it",
-        );
-        expect(githubItem).toBeDefined();
-        const boaviztapiItem = helpCenter?.items?.find(
-            (i) => i["link"] === "https://github.com/Boavizta/boaviztapi",
-        );
-        expect(boaviztapiItem).toBeDefined();
-    });
-
     it("should initialize mobileMenuItems with correct structure", () => {
         expect(component.mobileMenuItems).toBeDefined();
         expect(component.mobileMenuItems?.length).toBe(2);
@@ -323,19 +285,6 @@ describe("TopHeaderComponent", () => {
         }
         expect(window.open).toHaveBeenCalledWith(
             "https://saas-g4it.com/documentation/",
-            "_blank",
-            "noopener",
-        );
-    });
-
-    it("should open boaviztapi github link in new tab when command is called", () => {
-        spyOn(window, "open");
-        const item = component.mobileMenuItems?.[1].items?.[2];
-        if (item?.command) {
-            item.command({} as any);
-        }
-        expect(window.open).toHaveBeenCalledWith(
-            "https://github.com/Boavizta/boaviztapi",
             "_blank",
             "noopener",
         );
