@@ -44,6 +44,8 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         copyUrl: () => of({ url: "test", expiryDate: new Date() }),
         get: () => of({} as DigitalService),
         delete: () => of({}),
+        getDuplicateDigitalServiceAndVersionName: () =>
+            of({ dsNames: [], versionNames: [] }),
     };
 
     beforeEach(async () => {
