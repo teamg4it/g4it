@@ -51,7 +51,6 @@ export class UsefulInformationComponent implements OnInit {
         this.selectedLanguage = this.translate.currentLang;
 
         this.isShared = this.digitalServiceStore.isSharedDS();
-        console.log(this.isShared);
 
         const [_, _1, sharedToken, _2, dsvId] = this.router.url.split("/");
 

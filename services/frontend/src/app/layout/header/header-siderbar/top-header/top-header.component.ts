@@ -330,7 +330,6 @@ export class TopHeaderComponent implements OnInit {
         const url = this.router.serializeUrl(
             this.router.createUrlTree([shared, sharedId, dsv, dsvId, page]),
         );
-        console.log(url);
         window.open(url, "_blank");
     }
 
