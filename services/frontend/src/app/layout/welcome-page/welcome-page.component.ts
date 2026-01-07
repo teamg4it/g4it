@@ -57,11 +57,6 @@ export class WelcomePageComponent implements OnInit {
             label: "common.doc-link",
             iconClass: "pi pi-sign-out ml-auto",
         },
-        {
-            href: "https://github.com/Boavizta/boaviztapi",
-            label: "common.boaviztapi-github-link",
-            iconClass: "pi pi-sign-out ml-3 lg:ml-4",
-        },
     ];
 
     constructor(
