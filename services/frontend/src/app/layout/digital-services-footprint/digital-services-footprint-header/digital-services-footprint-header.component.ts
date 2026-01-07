@@ -70,6 +70,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     digitalServiceVersionUid =
         this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
     isPromoteVersionDialogVisible = false;
+    duplicateDsNames: string[] = [];
+    duplicateVersionNames: string[] = [];
+    disableDs = false;
+    disableVersion = false;
+    savedDigitalServiceAndVersion: any = undefined;
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -94,7 +99,21 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
                 this.digitalService = res;
+                if (!this.savedDigitalServiceAndVersion && this.digitalService) {
+                    this.savedDigitalServiceAndVersion = {
+                        dsName: this.digitalService.name,
+                        version: this.digitalService.description,
+                    };
+                }
                 this.digitalServiceStore.setDigitalService(this.digitalService);
+            });
+
+        this.digitalServicesData
+            .getDuplicateDigitalServiceAndVersionName(this.digitalServiceVersionUid)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((n) => {
+                this.duplicateDsNames = n.dsNames;
+                this.duplicateVersionNames = n.versionNames;
             });
 
         this.userService.currentOrganization$
@@ -285,5 +304,17 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                     );
                 }
             });
+    }
+
+    validateDs(value: string) {
+        this.disableDs = this.duplicateDsNames
+            .filter((ds) => ds !== this.savedDigitalServiceAndVersion.dsName)
+            .includes(value.trim());
+    }
+
+    validateVersion(value: string) {
+        this.disableVersion = this.duplicateVersionNames
+            .filter((v) => v !== this.savedDigitalServiceAndVersion.version)
+            .includes(value.trim());
     }
 }
