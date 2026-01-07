@@ -63,6 +63,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             if (
                 error.status === +key &&
                 (error.url.includes("/digital-services") ||
+                    error.url.includes("/digital-service-version") ||
                     error.url.includes(Constants.ENDPOINTS.sharedDs)) &&
                 !error.url.includes("/export") &&
                 (isDigitalServiceRead || error.url.includes(Constants.ENDPOINTS.sharedDs))
@@ -73,11 +74,14 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                         `/organizations/${organization}/workspaces/${workspace}/digital-services`,
                     );
                 }
+
                 this.messageService.add({
                     severity: "error",
-                    summary: this.translate.instant(
-                        `digital-services.${Constants.ERRORS[key]}`,
-                    ),
+                    summary: error.url.includes("/digital-service-version")
+                        ? this.translate.instant(`digital-services.version-not-found`)
+                        : this.translate.instant(
+                              `digital-services.${Constants.ERRORS[key]}`,
+                          ),
                 });
             }
         }
