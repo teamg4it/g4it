@@ -30,10 +30,8 @@ import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.PromoteDigitalServiceVersionRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -433,4 +431,31 @@ public class DigitalServiceVersionService {
                 .build();
     }
 
+    public ValidateDuplicatesRest getDigitalServiceNames(String digitalServiceVersionUid) {
+        // get digitalServiceUid from the version
+        DigitalServiceVersion version =
+                digitalServiceVersionRepository.findById(digitalServiceVersionUid)
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "DigitalServiceVersion not found: " + digitalServiceVersionUid
+                                )
+                        );
+        // get digitalServiceUid from the version
+        String digitalServiceUid = version.getDigitalService().getUid();
+
+        List<String> digitalServiceVersionNames = digitalServiceVersionRepository.findByDigitalServiceUid(digitalServiceUid)
+                .stream()
+                .map(DigitalServiceVersion::getDescription)
+                .toList();
+
+        Workspace workspace = version.getDigitalService().getWorkspace();
+
+        // fetch all digital service names for the digitalServiceUid under the same workspace
+        List<String> digitalServices = digitalServiceRepository.findByWorkspace(workspace).stream().map(DigitalService::getName).toList();
+
+        return ValidateDuplicatesRest.builder()
+                .dsNames(digitalServices)
+                .versionNames(digitalServiceVersionNames)
+                .build();
+    }
 }
