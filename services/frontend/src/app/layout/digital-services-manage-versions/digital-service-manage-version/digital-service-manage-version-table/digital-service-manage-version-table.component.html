@@ -101,7 +101,10 @@
                             [text]="true"
                             [plain]="true"
                             [rounded]="true"
-                            (onClick)="isPromoteVersionDialogVisible = true"
+                            (onClick)="
+                                isPromoteVersionDialogVisible = true;
+                                promoteDsvId = version.digitalServiceVersionUid
+                            "
                             [pTooltip]="
                                 'digital-services.version.promote-version' | translate
                             "
@@ -152,9 +155,9 @@
 </p-table>
 @if (isPromoteVersionDialogVisible) {
     <app-promote-version-dialog
-        [dsvId]="dsVersionUid"
+        [dsvId]="promoteDsvId"
         [displayPopup]="isPromoteVersionDialogVisible"
-        (outClose)="isPromoteVersionDialogVisible = false"
+        (outClose)="isPromoteVersionDialogVisible = false; promoteDsvId = ''"
         (promotedEvent)="getVersions()"
     ></app-promote-version-dialog>
 }
