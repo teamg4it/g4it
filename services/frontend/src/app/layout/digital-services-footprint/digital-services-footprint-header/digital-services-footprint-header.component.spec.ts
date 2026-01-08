@@ -22,7 +22,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header.component";
 
-fdescribe("DigitalServicesFootprintHeaderComponent", () => {
+describe("DigitalServicesFootprintHeaderComponent", () => {
     let component: DigitalServicesFootprintHeaderComponent;
     let fixture: ComponentFixture<DigitalServicesFootprintHeaderComponent>;
     let router: Router;
