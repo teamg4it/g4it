@@ -136,6 +136,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 this.digitalService.description = digitalServiceName;
             }
             this.digitalServiceChange.emit(this.digitalService);
+            this.firstDsVersionCall = true;
         }
     }
 
