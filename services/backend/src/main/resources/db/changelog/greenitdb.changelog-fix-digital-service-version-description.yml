@@ -2,24 +2,50 @@ databaseChangeLog:
   - changeSet:
       id: fix-digital-service-version-description
       author: G4IT Dev Team
-      runOnChange: true
-      runAlways: true
+      context: fix-version-migration   # <-- MUST be explicitly enabled
+      runOnChange: false
+      runAlways: false
       changes:
         - sql:
             splitStatements: false
             stripComments: true
             sql: |
-              WITH ranked_versions AS (
+              WITH valid_versions AS (
                   SELECT
                       uid,
-                      'Version ' || ROW_NUMBER() OVER (
-                          PARTITION BY item_id
-                          ORDER BY creation_date
-                      ) AS new_description
+                      item_id,
+                      CAST(SPLIT_PART(description, ' ', 2) AS INTEGER) AS version_num,
+                      creation_date
                   FROM digital_service_version
+                  WHERE description ~ '^Version[ ]+[0-9]+$'
+              ),
+              legacy_versions AS (
+                  SELECT
+                      uid,
+                      item_id,
+                      creation_date
+                  FROM digital_service_version
+                  WHERE description ~ '^Version[ ]+[0-9]+(\\s+\\(1\\))+$'
+              ),
+              combined AS (
+                  SELECT uid, item_id, version_num, creation_date FROM valid_versions
+                  UNION ALL
+                  SELECT uid, item_id, NULL AS version_num, creation_date FROM legacy_versions
+              ),
+              renumbered AS (
+                  SELECT
+                      uid,
+                      item_id,
+                      ROW_NUMBER() OVER (
+                          PARTITION BY item_id
+                          ORDER BY
+                              version_num NULLS LAST,
+                              creation_date
+                      ) AS new_version
+                  FROM combined
               )
               UPDATE digital_service_version dsv
-              SET description = rv.new_description
-              FROM ranked_versions rv
-              WHERE dsv.uid = rv.uid
-                AND dsv.description <> rv.new_description;
+              SET description = 'Version ' || r.new_version
+              FROM renumbered r
+              WHERE dsv.uid = r.uid
+                AND dsv.description ~ '^Version[ ]+[0-9]+(\\s+\\(1\\))+$';
