@@ -411,3 +411,8 @@ export interface GraphDescriptionContent {
     toGoFurther?: string;
     textResourceDescription?: string;
 }
+
+export interface DuplicateNames {
+    dsNames: string[];
+    versionNames: string[];
+}

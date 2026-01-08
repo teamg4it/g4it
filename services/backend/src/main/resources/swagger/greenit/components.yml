@@ -1291,3 +1291,19 @@ components:
           type: string
         isPromoted:
           type: boolean
+
+
+    ValidateDuplicatesRest:
+      type: object
+      description: Response used to validate duplicate digital service and version names within a workspace
+      properties:
+        dsNames:
+          type: array
+          description: List of digital service names under the workspace
+          items:
+            type: string
+        versionNames:
+          type: array
+          description: List of digital service version names
+          items:
+            type: string

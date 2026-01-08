@@ -1417,3 +1417,11 @@ app-useful-information {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.hide-close .p-button-icon-only {
+    display: none;
+}
+.input-title .hide-close .p-inplace-content {
+    flex-direction: column !important;
+    align-items: unset !important;
+}

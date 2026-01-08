@@ -70,6 +70,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     digitalServiceVersionUid =
         this.route.snapshot.paramMap.get("digitalServiceVersionId") ?? "";
     isPromoteVersionDialogVisible = false;
+    duplicateDsNames: string[] = [];
+    duplicateVersionNames: string[] = [];
+    disableDs = false;
+    disableVersion = false;
+    savedDigitalServiceAndVersion: any = undefined;
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -94,7 +99,21 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
                 this.digitalService = res;
+                if (!this.savedDigitalServiceAndVersion && this.digitalService) {
+                    this.savedDigitalServiceAndVersion = {
+                        dsName: this.digitalService.name,
+                        version: this.digitalService.description,
+                    };
+                }
                 this.digitalServiceStore.setDigitalService(this.digitalService);
+            });
+
+        this.digitalServicesData
+            .getDuplicateDigitalServiceAndVersionName(this.digitalServiceVersionUid)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((n) => {
+                this.duplicateDsNames = n.dsNames;
+                this.duplicateVersionNames = n.versionNames;
             });
 
         this.userService.currentOrganization$
@@ -285,5 +304,21 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                     );
                 }
             });
+    }
+
+    validateDs(value: string) {
+        this.disableDs = this.duplicateDsNames
+            .map((ds) => ds.trim())
+            .filter(
+                (ds) => ds.trim() !== this.savedDigitalServiceAndVersion.dsName.trim(),
+            )
+            .includes(value.trim());
+    }
+
+    validateVersion(value: string) {
+        this.disableVersion = this.duplicateVersionNames
+            .map((v) => v.trim())
+            .filter((v) => v.trim() !== this.savedDigitalServiceAndVersion.version.trim())
+            .includes(value.trim());
     }
 }

@@ -15,6 +15,7 @@ import {
     AiModelConfig,
     DigitalService,
     DSCriteriaRest,
+    DuplicateNames,
     Host,
     NetworkType,
     ShareLinkResp,
@@ -176,5 +177,11 @@ export class DigitalServicesDataService {
         return this.http
             .get<DigitalService>(`${endpointshared}/${token}/${endpointDs}/${dsId}`)
             .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
+    }
+
+    getDuplicateDigitalServiceAndVersionName(dsvId: string): Observable<DuplicateNames> {
+        return this.http.get<DuplicateNames>(
+            `${endpointDsVersions}/${dsvId}/validate-duplicate-names`,
+        );
     }
 }
