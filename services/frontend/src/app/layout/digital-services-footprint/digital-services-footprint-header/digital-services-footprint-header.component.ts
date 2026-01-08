@@ -75,6 +75,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     disableDs = false;
     disableVersion = false;
     savedDigitalServiceAndVersion: any = undefined;
+    firstDsVersionCall = true;
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -106,14 +107,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                     };
                 }
                 this.digitalServiceStore.setDigitalService(this.digitalService);
-            });
-
-        this.digitalServicesData
-            .getDuplicateDigitalServiceAndVersionName(this.digitalServiceVersionUid)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((n) => {
-                this.duplicateDsNames = n.dsNames;
-                this.duplicateVersionNames = n.versionNames;
             });
 
         this.userService.currentOrganization$
@@ -306,7 +299,23 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             });
     }
 
-    validateDs(value: string) {
+    callDSVersion(value: string, isDs: boolean) {
+        this.digitalServicesData
+            .getDuplicateDigitalServiceAndVersionName(this.digitalServiceVersionUid)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((n) => {
+                this.duplicateDsNames = n.dsNames;
+                this.duplicateVersionNames = n.versionNames;
+                if (isDs) {
+                    this.validateDataDS(value);
+                } else {
+                    this.validateDataVersion(value);
+                }
+                this.firstDsVersionCall = false;
+            });
+    }
+
+    validateDataDS(value: string) {
         this.disableDs = this.duplicateDsNames
             .map((ds) => ds.trim())
             .filter(
@@ -315,10 +324,26 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             .includes(value.trim());
     }
 
-    validateVersion(value: string) {
+    validateDataVersion(value: string) {
         this.disableVersion = this.duplicateVersionNames
             .map((v) => v.trim())
             .filter((v) => v.trim() !== this.savedDigitalServiceAndVersion.version.trim())
             .includes(value.trim());
+    }
+
+    validateDs(value: string) {
+        if (this.firstDsVersionCall) {
+            this.callDSVersion(value, true);
+        } else {
+            this.validateDataDS(value);
+        }
+    }
+
+    validateVersion(value: string) {
+        if (this.firstDsVersionCall) {
+            this.callDSVersion(value, false);
+        } else {
+            this.validateDataVersion(value);
+        }
     }
 }

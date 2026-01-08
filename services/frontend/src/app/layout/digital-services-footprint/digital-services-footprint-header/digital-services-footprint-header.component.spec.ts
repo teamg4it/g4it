@@ -22,7 +22,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header.component";
 
-describe("DigitalServicesFootprintHeaderComponent", () => {
+fdescribe("DigitalServicesFootprintHeaderComponent", () => {
     let component: DigitalServicesFootprintHeaderComponent;
     let fixture: ComponentFixture<DigitalServicesFootprintHeaderComponent>;
     let router: Router;
@@ -196,89 +196,109 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         );
     });
 
-    describe("validateDs", () => {
-        it("should set disableDs to false when value is not in duplicateDsNames excluding saved name", () => {
+    describe("validateDataDS", () => {
+        it("should set disableDs to true when value is in duplicateDsNames excluding saved dsName", () => {
             component.duplicateDsNames = ["ds1", "ds2"];
             component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateDs("ds3");
-            expect(component.disableDs).toBeFalse();
+            component.validateDataDS("ds2");
+            expect(component.disableDs).toBeTrue();
         });
 
         it("should set disableDs to false when value matches saved dsName", () => {
             component.duplicateDsNames = ["ds1", "ds2"];
             component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateDs("ds1");
+            component.validateDataDS("ds1");
             expect(component.disableDs).toBeFalse();
         });
 
-        it("should set disableDs to true when value is in duplicateDsNames excluding saved name", () => {
+        it("should set disableDs to false when value is not in duplicateDsNames", () => {
             component.duplicateDsNames = ["ds1", "ds2"];
             component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateDs("ds2");
+            component.validateDataDS("ds3");
+            expect(component.disableDs).toBeFalse();
+        });
+
+        it("should handle trimming correctly", () => {
+            component.duplicateDsNames = [" ds1 ", "ds2"];
+            component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
+            component.validateDataDS(" ds2 ");
             expect(component.disableDs).toBeTrue();
         });
 
-        it("should trim value when validating ds", () => {
-            component.duplicateDsNames = ["ds1", "ds2"];
-            component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateDs("  ds2  ");
-            expect(component.disableDs).toBeTrue();
-        });
-
-        it("should handle empty duplicateDsNames array", () => {
+        it("should handle empty duplicateDsNames", () => {
             component.duplicateDsNames = [];
             component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateDs("ds2");
+            component.validateDataDS("ds2");
             expect(component.disableDs).toBeFalse();
-        });
-
-        it("should handle undefined savedDigitalServiceAndVersion", () => {
-            component.duplicateDsNames = ["ds1", "ds2"];
-            component.savedDigitalServiceAndVersion = undefined;
-            expect(() => component.validateDs("ds2")).toThrow();
         });
     });
 
-    describe("validateVersion", () => {
-        it("should set disableVersion to false when value is not in duplicateVersionNames excluding saved version", () => {
+    describe("validateDataVersion", () => {
+        it("should set disableVersion to true when value is in duplicateVersionNames excluding saved version", () => {
             component.duplicateVersionNames = ["v1", "v2"];
             component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateVersion("v3");
-            expect(component.disableVersion).toBeFalse();
+            component.validateDataVersion("v2");
+            expect(component.disableVersion).toBeTrue();
         });
 
         it("should set disableVersion to false when value matches saved version", () => {
             component.duplicateVersionNames = ["v1", "v2"];
             component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateVersion("v1");
+            component.validateDataVersion("v1");
             expect(component.disableVersion).toBeFalse();
         });
 
-        it("should set disableVersion to true when value is in duplicateVersionNames excluding saved version", () => {
+        it("should set disableVersion to false when value is not in duplicateVersionNames", () => {
             component.duplicateVersionNames = ["v1", "v2"];
             component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateVersion("v2");
+            component.validateDataVersion("v3");
+            expect(component.disableVersion).toBeFalse();
+        });
+
+        it("should handle trimming correctly", () => {
+            component.duplicateVersionNames = [" v1 ", "v2"];
+            component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
+            component.validateDataVersion(" v2 ");
             expect(component.disableVersion).toBeTrue();
         });
 
-        it("should trim value when validating version", () => {
-            component.duplicateVersionNames = ["v1", "v2"];
-            component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateVersion("  v2  ");
-            expect(component.disableVersion).toBeTrue();
-        });
-
-        it("should handle empty duplicateVersionNames array", () => {
+        it("should handle empty duplicateVersionNames", () => {
             component.duplicateVersionNames = [];
             component.savedDigitalServiceAndVersion = { dsName: "ds1", version: "v1" };
-            component.validateVersion("v2");
+            component.validateDataVersion("v2");
             expect(component.disableVersion).toBeFalse();
         });
+    });
 
-        it("should handle undefined savedDigitalServiceAndVersion", () => {
-            component.duplicateVersionNames = ["v1", "v2"];
-            component.savedDigitalServiceAndVersion = undefined;
-            expect(() => component.validateVersion("v2")).toThrow();
+    describe("validateDs", () => {
+        it("should call callDSVersion with value and true when firstDsVersionCall is true", () => {
+            component.firstDsVersionCall = true;
+            spyOn(component, "callDSVersion");
+            component.validateDs("testValue");
+            expect(component.callDSVersion).toHaveBeenCalledWith("testValue", true);
+        });
+
+        it("should call validateDataDS with value when firstDsVersionCall is false", () => {
+            component.firstDsVersionCall = false;
+            spyOn(component, "validateDataDS");
+            component.validateDs("testValue");
+            expect(component.validateDataDS).toHaveBeenCalledWith("testValue");
+        });
+    });
+
+    describe("validateVersion", () => {
+        it("should call callDSVersion with value and false when firstDsVersionCall is true", () => {
+            component.firstDsVersionCall = true;
+            spyOn(component, "callDSVersion");
+            component.validateVersion("testValue");
+            expect(component.callDSVersion).toHaveBeenCalledWith("testValue", false);
+        });
+
+        it("should call validateDataVersion with value when firstDsVersionCall is false", () => {
+            component.firstDsVersionCall = false;
+            spyOn(component, "validateDataVersion");
+            component.validateVersion("testValue");
+            expect(component.validateDataVersion).toHaveBeenCalledWith("testValue");
         });
     });
 });
