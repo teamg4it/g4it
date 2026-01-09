@@ -54,9 +54,9 @@ graph TD
 |           | Page Header |                | group |                                                                            |
 | 1         |             | Version status | label | Version status could be [active, draft, archived].                         |
 | 4         |             | Version name   | label | Click on the version name to access the resources.                         |
-| 5         |             | Actions        | icon  | Click on icon to duplicate the specific version of digital service version |
-| 6         |             | Actions        | icon  | Click on icon to promote the specific version of digital service version   |
-| 7         |             | Actions        | icon  | Click on icon to delete the specific version of digital service version    |
+| 5         |             | Actions        | icon  | Click on icon to duplicate the specific version of digital service version. |
+| 6         |             | Actions        | icon  | Click on icon to promote the specific version of digital service version.   |
+| 7         |             | Actions        | icon  | Click on icon to delete the specific version of digital service version.    |
 
 {{% /expand %}}
 

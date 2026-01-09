@@ -24,6 +24,10 @@ The "Promote version" button is enabled only when exactly a version is in draft 
 -   My Digital Services / Digital Service Version view / Manage versions / Promote version
 -   My Digital Services / Digital Service Version view / Promote version
 
+**Access Conditions**
+
+The connected member must have the 'write' role for the digital service module one the selected workspace.
+
 
 
 ## State Diagram
@@ -59,7 +63,7 @@ graph TD
 | Reference | Group       | Elements                      | Type   | Description                                                                                  |
 |-----------|-------------|-------------------------------|--------|----------------------------------------------------------------------------------------------|
 |           | Page Header |                               | group  |                                                                                              |
-| 1         |             | Promote Digital Service button| button | Selected a version to promote and click on promote button in row of version which we want to promote|
+| 1         |             | Promote Digital Service button| button | The button is displayed only for users with “write” role access. Selected a version to promote and click on promote button in row of version which we want to promote|
 | 2         |             | Current status of a version   | label  | It show the current status (active, draft, archive) of a digital service version             |
 | 2         |             | Promote Confirmation Popup    | Button | Click on the Promote button to promote a version                                             |
 
