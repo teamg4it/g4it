@@ -1,4 +1,4 @@
-<p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 80px)' }">
     <section class="useful-page">
         @if (!isShared) {
             <div class="breadcrumb mb-4">
@@ -9,7 +9,9 @@
                 <span class="active">{{ "common.useful-info" | translate }} </span>
             </div>
         }
-        <h1 class="font-semibold">{{ "common.useful-info" | translate }}</h1>
+        <h1 class="font-semibold" [ngClass]="{ 'mt-5': isShared }">
+            {{ "common.useful-info" | translate }}
+        </h1>
         <div class="my-4">
             <span class="text-2xl">{{ "common.useful-line" | translate }}</span>
         </div>
