@@ -1,4 +1,4 @@
-<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 80px)' }">
+<p-scrollPanel [style]="{ width: '100%', height: '100%' }">
     <section class="useful-page">
         @if (!isShared) {
             <div class="breadcrumb mb-4">
@@ -105,7 +105,9 @@
                             class="flex justify-content-between gap-1 flex-wrap text-base"
                             *ngIf="software.name != 'ecomindai' || isEcoMindModuleEnabled"
                         >
-                            <span class="flex w-7rem">{{ software.name | uppercase}}</span>
+                            <span class="flex w-7rem">{{
+                                software.name | uppercase
+                            }}</span>
                             <span class="flex">{{ software.version }}</span>
                             <span class="flex"
                                 ><a

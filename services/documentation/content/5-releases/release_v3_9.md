@@ -35,7 +35,7 @@ An additional warning is shown when deleting a Past version.
 
 ### Unified banner for non-authenticated users
 
-External users accessing a shared Digital Service now experience a consistent application banner aligned with the connected-user experience. The left sidebar displays only the Sopra Steria logo, while the top banner includes only the About G4IT menu. Informational links (Useful Information, G4IT Declaration) now open in a new tab. In addition, the Useful Information page has been simplified with a new introduction and a list of modules available in G4IT.
+External users accessing a shared Digital Service now experience a consistent application banner aligned with the connected-user experience. The left sidebar displays only the Sopra Steria logo, while the top banner includes only the About G4IT menu. Informational links (Useful Information, G4IT Declaration) open in a new tab for non-authenticated mode. In addition, the Useful Information page has been simplified with a new introduction and a list of modules available in G4IT.
 
 ![release_v3_9_non-authroize.png](../images/release_v3_9_non-authroize.png)
 
