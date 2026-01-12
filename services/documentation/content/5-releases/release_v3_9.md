@@ -35,8 +35,9 @@ An additional warning is shown when deleting a Past version.
 
 ### Unified banner for non-authenticated users
 
-External users accessing a shared Digital Service now benefit from a consistent application banner aligned with the connected-user experience. The sidebar displays only the Sopra Steria logo, while the top banner removes workspace and profile access but keeps the About G4IT menu. Informational links (Useful information, G4IT Declaration) open in a new tab, and the Useful Information page is simplified with a new introduction and no navigation or module buttons
+External users accessing a shared Digital Service now experience a consistent application banner aligned with the connected-user experience. The left sidebar displays only the Sopra Steria logo, while the top banner includes only the About G4IT menu. Informational links (Useful Information, G4IT Declaration) open in a new tab for non-authenticated mode. In addition, the Useful Information page has been simplified with a new introduction and a list of modules available in G4IT.
 
+![release_v3_9_non-authroize.png](../images/release_v3_9_non-authroize.png)
 
 ### Introduction of the Water use impact criterion
 
@@ -48,7 +49,7 @@ A new Water use environmental indicator is now available to assess the footprint
 
 Users having READ Role can export the data
 
-![release_v3_9_promoteVersion.png](../images/release_v3_9_promoteVersion.png)
+![release_v3_9_export.png](../images/release_v3_9_export.png)
 
 ## Content
 
