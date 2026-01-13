@@ -13,6 +13,7 @@ import {
     OnInit,
     signal,
     ViewChild,
+    ViewEncapsulation
 } from "@angular/core";
 import { addYears } from "date-fns";
 import { MessageService } from "primeng/api";
@@ -33,6 +34,7 @@ import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-ne
     selector: "app-digital-services-networks",
     templateUrl: "./digital-services-networks.component.html",
     providers: [MessageService],
+    encapsulation: ViewEncapsulation.None,
 })
 export class DigitalServicesNetworksComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);

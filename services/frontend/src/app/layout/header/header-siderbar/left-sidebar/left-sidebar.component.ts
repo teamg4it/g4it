@@ -14,6 +14,7 @@ import {
     inject,
     OnInit,
     signal,
+    ViewEncapsulation,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterModule } from "@angular/router";
@@ -35,7 +36,8 @@ import { environment } from "src/environments/environment";
     standalone: true,
     selector: "app-left-sidebar",
     templateUrl: "./left-sidebar.component.html",
-    styleUrls: ["./left-sidebar.component.scss"],
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: [],
     imports: [CommonModule, TranslateModule, RouterModule],
 })
 export class LeftSidebarComponent implements OnInit {

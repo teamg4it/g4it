@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Component, computed, EventEmitter, inject, Input, Output, ViewEncapsulation } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -8,6 +8,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     selector: "app-digital-service-table",
     templateUrl: "./digital-service-table.component.html",
     providers: [ConfirmationService],
+    encapsulation: ViewEncapsulation.None,
 })
 export class DigitalServiceTableComponent {
     protected userService = inject(UserService);

@@ -17,6 +17,7 @@ import {
     QueryList,
     signal,
     ViewChildren,
+    ViewEncapsulation
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
@@ -47,7 +48,8 @@ import { LeftSidebarComponent } from "../left-sidebar/left-sidebar.component";
     standalone: true,
     selector: "app-top-header",
     templateUrl: "./top-header.component.html",
-    styleUrls: ["./top-header.component.scss"],
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: [],
     imports: [
         ButtonModule,
         MenuModule,

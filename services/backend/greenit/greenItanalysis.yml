@@ -1,13 +1,13 @@
 - name: "Inventories G4IT"
-  url: "http://localhost:4200/organizations/SOPRA-STERIA-GROUP/workspaces/1/inventories"
+  url: "http://localhost:4200/#/organizations/SOPRA-STERIA-GROUP/workspaces/1/inventories"
   screenshot: "output/screenshots/inventories.png"
   actions:
     - name: "Equipment page"
       type: "click"
-      waitForNavigation: networkidle0
       waitForSelector: 'p-button[id="inventory-equipment-button"]'
       element: 'p-button[id="inventory-equipment-button"]'
       pageChange: true
+      waitForNavigation: networkidle0
     - name: "Equipment page climate change"
       type: "click"
       element: 'a[id="climate-change"]'
@@ -27,7 +27,7 @@
       pageChange: true
 
 - name: "Digital Services G4IT"
-  url: "http://localhost:4200/organizations/SOPRA-STERIA-GROUP/workspaces/1/digital-services"
+  url: "http://localhost:4200/#/organizations/SOPRA-STERIA-GROUP/workspaces/1/digital-services"
   waitForSelector: "#add-digital"
   screenshot: "output/screenshots/ds.png"
   actions:
@@ -48,14 +48,17 @@
       pageChange: true
 
 - name: "Administration Panel Users G4IT"
-  url: "http://localhost:4200/administration/users"
+  url: "http://localhost:4200/#/administration/users"
   actions:
     - name: "Choose workspace dropdown click"
       type: "click"
+      waitForSelector: 'p-dropdown[id="workspaceName"]'
       element: 'p-dropdown[id="workspaceName"]'
-    - name: "workspace Click"
+    - name: "Select First Workspace Option"
       type: "click"
-      element: 'p-dropdownitem[ng-reflect-id="workspaceName_0"]'
+      # CORRECTION : On attend que la liste s'ouvre et on clique sur l'item standard
+      waitForSelector: '.p-dropdown-item'
+      element: '.p-dropdown-item'
     - name: "Fill email input"
       type: "text"
       element: 'input[id="searchName"]'
@@ -63,12 +66,16 @@
     - name: "Search click"
       type: "click"
       element: 'p-button[id="search-button"]'
+
 - name: "Administration Panel Organizations G4IT"
-  url: "http://localhost:4200/administration/organizations"
+  url: "http://localhost:4200/#/administration/organizations"
   actions:
     - name: "Choose organization dropdown click"
       type: "click"
+      waitForSelector: 'p-dropdown[id="organizationName"]'
       element: 'p-dropdown[id="organizationName"]'
-    - name: "Organization select"
+    - name: "Select First Organization Option"
       type: "click"
-      element: 'p-dropdownitem[ng-reflect-id="organizationName_0"]'
+      # CORRECTION : On attend que la liste s'ouvre et on clique sur l'item standard
+      waitForSelector: '.p-dropdown-item'
+      element: '.p-dropdown-item'

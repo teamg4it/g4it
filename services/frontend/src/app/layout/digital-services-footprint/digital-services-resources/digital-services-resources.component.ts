@@ -1,10 +1,11 @@
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
 
 @Component({
     selector: "app-digital-services-resources",
     templateUrl: "./digital-services-resources.component.html",
+    encapsulation: ViewEncapsulation.None,
 })
 export class DigitalServicesResourcesComponent implements OnInit, OnDestroy {
     private readonly route = inject(ActivatedRoute);

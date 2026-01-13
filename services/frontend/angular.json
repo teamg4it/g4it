@@ -28,10 +28,11 @@
                         "tsConfig": "tsconfig.app.json",
                         "assets": ["src/favicon.ico", "src/assets"],
                         "styles": [
-                            "src/styles.scss",
+                            "node_modules/primeng/resources/primeng.min.css",
+                            "node_modules/primeicons/primeicons.css",
                             "node_modules/primeflex/primeflex.css",
-                            "node_modules/quill/dist/quill.core.css",
-                            "node_modules/quill/dist/quill.snow.css"
+                            "src/assets/themes/primeng-theme.scss",
+                            "src/styles.scss"
                         ],
                         "scripts": ["node_modules/quill/dist/quill.js"],
                         "allowedCommonJsDependencies": [
@@ -44,6 +45,11 @@
                     },
                     "configurations": {
                         "production": {
+                            "optimization": {
+                                "styles": {
+                                    "inlineCritical": false
+                                }
+                            },
                             "budgets": [
                                 {
                                     "type": "initial",

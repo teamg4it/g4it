@@ -16,6 +16,7 @@ import { CustomAuthService } from "./core/service/business/custom-auth.service";
 import { MatomoScriptService } from "./core/service/business/matomo-script.service";
 import { UserDataService } from "./core/service/data/user-data.service";
 import { GlobalStoreService } from "./core/store/global.store";
+import { PrimeNGConfig } from "primeng/api";
 
 @Component({
     selector: "app-root",
@@ -35,10 +36,16 @@ export class AppComponent implements OnInit {
         private readonly activatedRoute: ActivatedRoute,
         private readonly titleService: Title,
         private readonly customAuthService: CustomAuthService,
+        // 2. Injecte le service ici
+        private readonly primengConfig: PrimeNGConfig,
     ) {}
 
     ngOnInit(): void {
-        this.initializeAsync();
+            // 3. Configure PrimeNG ici
+            this.primengConfig.csp.set({ nonce: 'G4IT-NONCE' });
+            this.primengConfig.ripple = true;
+
+            this.initializeAsync();
     }
 
     private async initializeAsync(): Promise<void> {

@@ -13,6 +13,7 @@ import {
     input,
     OnDestroy,
     OnInit,
+    ViewEncapsulation
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -38,6 +39,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     selector: "app-digital-services-servers",
     templateUrl: "./digital-services-servers.component.html",
     providers: [MessageService],
+    encapsulation: ViewEncapsulation.None,
 })
 export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
