@@ -86,9 +86,9 @@ public class EvaluatingService {
     /**
      * Evaluating an inventory
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
-     * @param inventoryId    the inventory id
+     * @param organization the organization
+     * @param workspaceId  the workspace id
+     * @param inventoryId  the inventory id
      * @return the Task created
      */
     public Task evaluating(final String organization,
@@ -134,8 +134,14 @@ public class EvaluatingService {
                 .build();
 
         taskRepository.save(task);
+        taskRepository.updateTaskState(
+                task.getId(),
+                TaskStatus.IN_PROGRESS.toString(),
+                LocalDateTime.now(),
+                "0%"
+        );
 
-        // run evaluation async task
+        // evaluation may be heavy, so runs in threaded executor to avoid performance issues
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
 
         return task;
@@ -144,8 +150,8 @@ public class EvaluatingService {
     /**
      * Evaluating an inventory
      *
-     * @param organization        the organization
-     * @param workspaceId    the workspace id
+     * @param organization             the organization
+     * @param workspaceId              the workspace id
      * @param digitalServiceVersionUid digitalServiceUid
      * @return the Task created
      */
@@ -198,9 +204,16 @@ public class EvaluatingService {
                 .build();
 
         taskRepository.save(task);
+        taskRepository.updateTaskState(
+                task.getId(),
+                TaskStatus.IN_PROGRESS.toString(),
+                LocalDateTime.now(),
+                "0%"
+        );
 
-        // run evaluation task
-        asyncEvaluatingService.execute(context, task);
+        // evaluation may be heavy, so runs in threaded executor to avoid performance issues
+//        asyncEvaluatingService.execute(context, task);
+        taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
 
         digitalService.setLastCalculationDate(LocalDateTime.now());
         digitalServiceRepository.save(digitalService);
@@ -230,7 +243,13 @@ public class EvaluatingService {
                     task.setLastUpdateDate(now);
                     task.setDetails(new ArrayList<>());
                     task.setProgressPercentage("0%");
-                    taskRepository.save(task);
+//                    taskRepository.save(task);
+                    taskRepository.updateTaskState(
+                            task.getId(),
+                            TaskStatus.IN_PROGRESS.toString(),
+                            LocalDateTime.now(),
+                            "0%"
+                    );
 
                     final Inventory inventory = task.getInventory();
                     final Workspace workspace = inventory.getWorkspace();
@@ -259,9 +278,9 @@ public class EvaluatingService {
      * - check for already running task
      * - clean old tasks, always keep the 2 last tasks
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
-     * @param inventory      the inventory
+     * @param organization the organization
+     * @param workspaceId  the workspace id
+     * @param inventory    the inventory
      */
     private void manageInventoryTasks(String organization, Long workspaceId, Inventory inventory) {
         // check if any task is already running
@@ -285,8 +304,8 @@ public class EvaluatingService {
      * Manage tasks:
      * - clean old tasks, always keep the 2 last tasks
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
+     * @param organization          the organization
+     * @param workspaceId           the workspace id
      * @param digitalServiceVersion the digitalService
      */
     private void manageDigitalServiceTasks(String organization, Long workspaceId, DigitalServiceVersion digitalServiceVersion) {
