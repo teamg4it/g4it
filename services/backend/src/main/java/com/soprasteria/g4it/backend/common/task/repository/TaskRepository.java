@@ -32,14 +32,19 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByStatusAndType(final String status, final String type);
 
     List<Task> findByInventoryAndType(final Inventory inventory, final String type);
+
     List<Task> findByDigitalServiceAndType(final DigitalService digitalService, final String type);
+
     List<Task> findByInventoryAndStatusAndType(final Inventory inventory, final String status, final String type);
+
     List<Task> findByDigitalServiceAndStatusAndType(final DigitalService digitalService, final String status, final String type);
+
     List<Task> findByDigitalServiceVersionAndStatusAndType(final DigitalServiceVersion digitalServiceVersion, final String status, final String type);
 
     Optional<Task> findByDigitalService(final DigitalService digitalService);
 
     List<Task> findByDigitalServiceVersionAndType(final DigitalServiceVersion digitalServiceVersion, final String type);
+
     Optional<Task> findByDigitalServiceVersion(final DigitalServiceVersion digitalServiceVersion);
 
     /**
@@ -86,4 +91,46 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByTypeAndInventoryId(String type, Long inventoryId);
 
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
+                set t.progressPercentage = :progress,
+                    t.lastUpdateDate = :date
+                where t.id = :id
+            """)
+    void updateProgress(@Param("id") Long id,
+                        @Param("progress") String progress,
+                        @Param("date") LocalDateTime date);
+
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
+                set t.status = :status,
+                    t.lastUpdateDate = :date,
+                    t.progressPercentage = :progress
+                where t.id = :id
+            """)
+    void updateTaskState(@Param("id") Long id,
+                         @Param("status") String status,
+                         @Param("date") LocalDateTime date,
+                         @Param("progress") String progress);
+
+    @Modifying
+    @Transactional
+    @Query("""
+                update Task t
+                set t.status = :status,
+                    t.progressPercentage = :progress,
+                    t.details = :details,
+                    t.lastUpdateDate = CURRENT_TIMESTAMP
+                where t.id = :taskId
+            """)
+    void updateTaskFinalState(
+            Long taskId,
+            String status,
+            String progress,
+            List<String> details
+    );
 }

@@ -15,7 +15,6 @@ import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.LogUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
-import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,15 +56,23 @@ public class AsyncEvaluatingService implements ITaskExecute {
         final List<String> details = new ArrayList<>();
         details.add(LogUtils.info("Start task"));
 
-        task.setDetails(details);
-        task.setStatus(TaskStatus.IN_PROGRESS.toString());
-        taskRepository.save(task);
+//        task.setDetails(details);
+//        task.setStatus(TaskStatus.IN_PROGRESS.toString());
+//        taskRepository.save(task);
+        taskRepository.updateTaskState(
+                taskId,
+                TaskStatus.IN_PROGRESS.toString(),
+                null,
+                null
+        );
 
+        String finalStatus = TaskStatus.COMPLETED.toString();
+        String finalProgress = "100%";
 
         try {
             Path exportDirectory = exportService.createExportDirectory(taskId);
 
-            if(context.isAi()) {
+            if (context.isAi()) {
                 evaluateAiService.doEvaluateAi(context, task, exportDirectory);
             } else {
                 evaluateService.doEvaluate(context, task, exportDirectory);
@@ -73,24 +80,34 @@ public class AsyncEvaluatingService implements ITaskExecute {
             exportService.uploadExportZip(taskId, context.getOrganization(), context.getWorkspaceId().toString());
             exportService.clean(taskId);
 
-            task.setStatus(TaskStatus.COMPLETED.toString());
-            task.setProgressPercentage("100%");
+//            task.setStatus(TaskStatus.COMPLETED.toString());
+//            task.setProgressPercentage("100%");
 
         } catch (AsyncTaskException e) {
             log.error("Async task with id '{}' failed for '{}' with error: ", taskId, context.log(), e);
-            task.setStatus(TaskStatus.FAILED.toString());
+            finalStatus = TaskStatus.FAILED.toString();
+            finalProgress = "0%";
             details.add(LogUtils.error(e.getMessage()));
         } catch (RuntimeException e) {
             log.error("Task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
-            task.setStatus(TaskStatus.FAILED.toString());
+            finalStatus = TaskStatus.FAILED.toString();
+            finalProgress = "0%";
             details.add(LogUtils.error(e.getMessage()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("IO error for task with id '{}' failed for '{}': ", taskId, context.log(), e);
+            finalStatus = TaskStatus.FAILED.toString();
+            finalProgress = "0%";
+            details.add(LogUtils.error(e.getMessage()));
         } finally {
             task.setDetails(details);
         }
 
-        taskRepository.save(task);
+        taskRepository.updateTaskFinalState(
+                taskId,
+                finalStatus,
+                finalProgress,
+                details
+        );
 
         long end = System.currentTimeMillis();
         log.info("End evaluating for {}/{}. Time taken: {}s", context.log(), taskId, (end - start) / 1000);
