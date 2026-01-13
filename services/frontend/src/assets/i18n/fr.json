@@ -134,8 +134,8 @@
         "support": "Contact",
         "account-settings": "Paramètres du compte",
         "help-center": "Centre d'aide",
-        "github-link": "Accéder à G4IT GitHub",
-        "boaviztapi-github-link": "Accéder à BoaviztAPI GitHub",
+        "github-link": "Aller à G4IT GitHub",
+        "boaviztapi-github-link": "Aller à BoaviztAPI GitHub",
         "doc-link": "Aller à la documentation",
         "useful-info-desc": "Versions G4IT, heures d'ouverture et contact",
         "shared-useful-info-desc": "Présentation de G4IT, versions des modules, horaires d'ouverture et contact",
@@ -189,7 +189,7 @@
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
         "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
         "not-found": "Le service numérique n'existe pas.",
-        "expired": "Le lien de service numérique a expiré.",
+        "version-not-found": "Le version du service numérique n'existe pas.",
         "link-expiry-info": "Le lien suivant peut être partagé avec des personnes ne possédant pas de compte G4IT. Il permet de visualiser les ressources et l'impact du service numérique.",
         "title": "Mes Services Numériques - {{WorkspaceName}}",
         "page-title": "Mes Services Numériques",
@@ -287,6 +287,7 @@
             }
         },
         "error.digital-service-already-exists": "Le service numérique existe déjà",
+        "error.digital-service-version-already-exists": "La version existe déjà",
         "comparison": {
             "description": "Ces graphiques représentent les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement.  <br /> - Le premier graphique correspond à la version {{version1Name}}. Les critères actuellement séléctionnés pour cette version sont : {{impactsV1}}.<br /> - Le second graphique correspond à la version {{version2Name}}. Les critères actuellement séléctionnés pour cette version sont : {{impactsV2}}. <br /> Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères sélectionnés lors du calcul. ",
             "scale": "L'ensemble des graphiques de l'outil sont exprimés en « habitant équivalent ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://saas-g4it.com/documentation/2-functional-documentation/global_concepts/uc2_people_equivalent/index.html' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br /> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact.",
@@ -302,7 +303,6 @@
         "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
         "copyLink": "COPIER LE LIEN",
         "not-found": "Le service numérique IA n'existe pas.",
-        "expired": "Le lien du service numérique IA a expiré.",
         "linkCopied": "LIEN COPIÉ !",
         "title": "Mes Services Numériques IA - {{WorkspaceName}}",
         "page-title": "Mes Services Numériques IA",
@@ -1075,12 +1075,10 @@
             "title": "Utilisation de l'eau",
             "name": "Utilisation de l'eau",
             "unite": "m<sup>3</sup> eq.",
-            "inventory-title": "Utilisation des ressources en eau (m<sub>3</sub> eq.)",
+            "inventory-title": "Utilisation des ressources en eau (m<sup>3</sup> eq.)",
             "inventory-text": "L'épuisement des ressources en eau disponibles dépend de la rareté de l'eau au niveau local et des besoins en eau pour les activités humaines et l'intégrité des écosystèmes.",
-            "digital-services-card-title": "Why Climate Change matters and how engage action ?",
-            "digital-services-card-content": "<strong>Climate Change (kg CO<sub>2</sub> eq.):</strong> this criteria measures radiative forcing as global warming potential (GWP100) that increase in the average global temperature resulting from greenhouse gas emission. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "wateruse",
-            "scale": "<strong>Utilisation de l'eau (m<sub>3</sub> eq.) :</strong> Ce critère mesure l'épuisement des ressources en eau disponibles en fonction de la rareté de l'eau au niveau local et des besoins en eau pour les activités humaines et l'intégrité des écosystèmes."
+            "scale": "<strong>Utilisation de l'eau (m<sup>3</sup> eq.) :</strong> Ce critère mesure l'épuisement des ressources en eau disponibles en fonction de la rareté de l'eau au niveau local et des besoins en eau pour les activités humaines et l'intégrité des écosystèmes."
         }
     },
     "administration": {

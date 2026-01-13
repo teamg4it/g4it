@@ -190,7 +190,7 @@
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",
         "headerForSharedWithMe": "SHARED WITH ME ({{count}})",
         "not-found": "Digital service does not exist.",
-        "expired": "Digital service link is expired.",
+        "version-not-found": "Digital service version does not exist.",
         "link-expiry-info": "The following link can be shared with person without G4IT account. It will allow him to visualize the resources and the impact of the digital service.",
         "title": "My Digital Services - {{WorkspaceName}}",
         "page-title": "My Digital Services",
@@ -289,6 +289,7 @@
             }
         },
         "error.digital-service-already-exists": "Digital Service already exists",
+        "error.digital-service-version-already-exists": "Version already exists",
         "comparison": {
             "description": "These graphs represent the various environmental impacts attributed to your digital service over one year of operation. <br /> - The first graph corresponds to version {{version1Name}}. The currently selected criteria are: {{impactsV1}}.<br /> - The second graph corresponds to version {{version2Name}}. The currently selected criteria are: {{impactsV2}}. <br /> It takes into account the entire lifecycle of the equipment that enables your service to function (its manufacturing, distribution, use, and end-of-life), for all the criteria selected during the calculation.",
             "scale": "All the tool's graphs are expressed in \"people Equivalent\". To understand this unit, imagine that an equal allowance is defined for each inhabitant of the planet, corresponding to the planetary boundaries that should not be individually exceeded to ensure the global system's balance. This theoretical allowance is obtained by dividing the maximum amount of negative externalities tolerated by the Earth system (defined in this <a href='https://saas-g4it.com/documentation/2-functional-documentation/global_concepts/uc2_people_equivalent/index.html' target='_blank'>report on consumption and consumer footprint</a>) by the number of inhabitants.<br />This unit allows for comparing the criteria with each other and targeting your eco-design action plan (see <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>definition of eco-design</a>) on what truly matters, avoiding impact transfers.",
@@ -304,7 +305,6 @@
         "headerForSharedWithMe": "SHARED WITH ME ({{count}})",
         "copyLink": "COPY LINK",
         "not-found": "Digital service AI does not exist.",
-        "expired": "Digital service AI link is expired.",
         "linkCopied": "LINK COPIED !",
         "title": "My Digital Services AI - {{WorkspaceName}}",
         "page-title": "My Digital Services AI",
@@ -1080,10 +1080,8 @@
             "unite": "m<sup>3</sup> eq.",
             "inventory-title": "Use of the water resources (m<sup>3</sup> eq.)",
             "inventory-text": "Depletion of available water depending on local water scarcity and water needs for human activities and ecosystem integrity.",
-            "digital-services-card-title": "Why Climate Change matters and how engage action ?",
-            "digital-services-card-content": "<strong>Climate Change (kg CO<sub>2</sub> eq.):</strong> this criteria measures radiative forcing as global warming potential (GWP100) that increase in the average global temperature resulting from greenhouse gas emission. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "wateruse",
-            "scale": "<strong>Water use (m<sub>3</sub> eq.) :</strong> this criteria measures the depletion of available water depending on local water scarcity and water needs for human activities and ecosystem integrity."
+            "scale": "<strong>Water use (m<sup>3</sup> eq.) :</strong> this criteria measures the depletion of available water depending on local water scarcity and water needs for human activities and ecosystem integrity."
         }
     },
     "administration": {

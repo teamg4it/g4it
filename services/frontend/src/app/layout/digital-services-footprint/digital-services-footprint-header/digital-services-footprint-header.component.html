@@ -87,6 +87,7 @@
                 [preventClick]="digitalService.name === ''"
                 (onDeactivate)="onNameUpdate(digitalService.name, true)"
                 styleClass="inline-block w-auto color-black-seventy lg:w-24rem md:w-15rem"
+                [ngClass]="{ 'hide-close': disableDs }"
             >
                 <ng-template pTemplate="display">
                     <h1 class="text-xl px-2 color-black-seventy lg:text-4xl">
@@ -100,7 +101,17 @@
                         pInputText
                         [(ngModel)]="digitalService.name"
                         [required]="true"
+                        (ngModelChange)="validateDs($event)"
+                        [ngClass]="{ 'ng-dirty ng-invalid': disableDs }"
                     />
+                    @if (disableDs) {
+                        <span class="error-text block">
+                            {{
+                                "digital-services.error.digital-service-already-exists"
+                                    | translate
+                            }}
+                        </span>
+                    }
                 </ng-template>
 
                 <ng-template pTemplate="closeicon">
@@ -133,6 +144,7 @@
                     [preventClick]="digitalService.description === ''"
                     (onDeactivate)="onNameUpdate(digitalService.description!, false)"
                     styleClass="inline-block w-auto  lg:w-18rem md:w-15rem"
+                    [ngClass]="{ 'hide-close': disableVersion }"
                 >
                     <ng-template pTemplate="display">
                         <h2 class="text-xl px-2 lg:text-4xl">
@@ -146,7 +158,17 @@
                             pInputText
                             [(ngModel)]="digitalService.description"
                             [required]="true"
+                            (ngModelChange)="validateVersion($event)"
+                            [ngClass]="{ 'ng-dirty ng-invalid': disableVersion }"
                         />
+                        @if (disableVersion) {
+                            <span class="error-text block">
+                                {{
+                                    "digital-services.error.digital-service-version-already-exists"
+                                        | translate
+                                }}
+                            </span>
+                        }
                     </ng-template>
                     <ng-template pTemplate="closeicon">
                         <i class="pi pi-check"></i>

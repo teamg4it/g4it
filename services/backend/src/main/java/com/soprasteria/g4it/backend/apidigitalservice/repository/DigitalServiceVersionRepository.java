@@ -43,31 +43,48 @@ public interface DigitalServiceVersionRepository extends JpaRepository<DigitalSe
     @Modifying
     @Transactional
     @Query(value = """
-            INSERT INTO digital_service_version (
-                uid,
-                description,
-                creation_date,
-                last_update_date,
-                item_id,
-                version_type,
-                criteria,
-                created_by
-            )
-            SELECT
-                :newUid,
-                'Version ' || (
-                    SELECT COUNT(*) + 1
-                    FROM digital_service_version dsv2
-                    WHERE dsv2.item_id = dsv.item_id
-                ),
-                NOW(),
-                NOW(),
-                item_id,
-                'draft',
-                criteria,
-                created_by
-            FROM digital_service_version dsv
-            WHERE uid = :oldUid
+                INSERT INTO digital_service_version (
+                    uid,
+                    description,
+                    creation_date,
+                    last_update_date,
+                    item_id,
+                    version_type,
+                    criteria,
+                    created_by
+                )
+                SELECT
+                    :newUid,
+                    'Version ' || (
+                        SELECT COALESCE(
+                            MIN(v.num) + 1,
+                            1
+                        )
+                        FROM (
+                            SELECT
+                                CAST(SPLIT_PART(description, ' ', 2) AS INTEGER) AS num
+                            FROM digital_service_version
+                            WHERE item_id = dsv.item_id
+                              AND description ~ '^Version[ ]+[0-9]+$'
+                        ) v
+                        LEFT JOIN (
+                            SELECT
+                                CAST(SPLIT_PART(description, ' ', 2) AS INTEGER) AS num
+                            FROM digital_service_version
+                            WHERE item_id = dsv.item_id
+                              AND description ~ '^Version[ ]+[0-9]+$'
+                        ) v_next
+                          ON v_next.num = v.num + 1
+                        WHERE v_next.num IS NULL
+                    ),
+                    NOW(),
+                    NOW(),
+                    item_id,
+                    'draft',
+                    criteria,
+                    created_by
+                FROM digital_service_version dsv
+                WHERE uid = :oldUid
             """, nativeQuery = true)
     void duplicateVersionRecord(
             @Param("oldUid") String oldUid,

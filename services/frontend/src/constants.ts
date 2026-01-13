@@ -87,7 +87,6 @@ export abstract class Constants {
 
     static readonly ERRORS: any = {
         404: "not-found",
-        410: "expired",
     };
 
     static readonly FILE_TYPES = ["datacenter", "physical", "virtual", "application"];

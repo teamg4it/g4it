@@ -54,7 +54,9 @@ graph TD
 |           | Page Header |                | group |                                                                            |
 | 1         |             | Version status | label | Version status could be [active, draft, archived].                         |
 | 4         |             | Version name   | label | Click on the version name to access the resources.                         |
-| 5         |             | Actions        | icon  | Click on icon to duplicate the specific version of digital service version |
+| 5         |             | Actions        | icon  | Click on icon to duplicate the specific version of digital service version. |
+| 6         |             | Actions        | icon  | Click on icon to promote the specific version of digital service version.   |
+| 7         |             | Actions        | icon  | Click on icon to delete the specific version of digital service version.    |
 
 {{% /expand %}}
 
@@ -92,7 +94,7 @@ front -->> back: GET /api/{organization}/{workspace}/digital-services/server-hos
 DataBase -->> back: Get networks from ref_server_host table in which type is Storage
 front -->> back: GET /api/referential/boaviztapi/countries
 DataBase -->> back : Get referential countries from boaviztapi
-back -->> front: Display the service in the suited list
+back -->> front: Display the digital service version in the suited list
 
 {{< /mermaid >}}
 

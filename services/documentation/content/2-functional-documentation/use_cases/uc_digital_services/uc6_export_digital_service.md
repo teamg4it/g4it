@@ -23,7 +23,7 @@ My Digital Services / Digital Service version view / Export button
 
 **Access Conditions**
 
-The connected member must have the 'write' role for the digital service module one the selected workspace.
+The connected member must have the 'read' role for the digital service module one the selected workspace.
 
 ## State Diagram
 
@@ -44,7 +44,7 @@ Step2-->|Click on 'Export' button|Step4[Retrieve CSV files stored<br> in azure s
 
 | Management rules | Title         | Rule description                                                                                                                                                                                                                                                                 |
 | ---------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1                | Export button | The button is displayed only for users with “write” role access. The button gets enabled only when the first calculation is done.                                                                                                                                                |
+| 1                | Export button | The button is displayed only for users with “read” role access. The button gets enabled only when the first calculation is done.                                                                                                                                                |
 | 2                | Export files  | The files produced are :<br> - 3 files which represent the digital service (physical_equipment.csv, virtual_equipment.csv, datacenter.csv), <br> - 2 files which represent the impact indicator of the digital service (ind_physical_equipment.csv, ind_virtual_equipment.csv) . |
 
 {{% /expand %}}
