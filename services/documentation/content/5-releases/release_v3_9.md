@@ -43,8 +43,6 @@ External users accessing a shared Digital Service now experience a consistent ap
 
 A new Water use environmental indicator is now available to assess the footprint of Digital Services, Information Systems, and EcoMind IA services. It is fully integrated into criteria selection, impact graphs, and descriptions, alongside existing water-related criteria. Water use can be configured at organization, workspace, and inventory levels, and is included in data exports. The indicator is also visible in non-authenticated (shared) mode.
 
-![release_v3_9_promoteVersion.png](../images/release_v3_9_promoteVersion.png)
-
 ### Export access for all connected users
 
 Users having READ Role can export the data
