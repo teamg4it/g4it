@@ -19,7 +19,7 @@ This use case allows a sustainable IT leader to generate and download the previo
 datacenters, physical and virtual equipment or applications, as well as their evaluated impacts, in .csv format.
 
 **Restrictions :**  
-This is only for users with "write" role access.  
+This is for users with "read" role access for the inventory module to access it.  
 Export files generated during export are kept for 7 days on Azure storage space and deleted afterward.  
 When this allowed time expires, an error message appears when user tries to download.
 
@@ -32,7 +32,7 @@ When this allowed time expires, an error message appears when user tries to down
 
 | Management rules | Title            | Rule description                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1                | Export button    | The button is displayed only for users with “write” role access. The label of the button depends of the state of the export request. <br> If no request have been triggered, label is "Export".<br> If request have been triggered but not completed, label is "Preparing your results".<br> If request have been triggered and completed, label is "Download".<br> When a user launch a new evaluation, the button is reset from ‘Download’ to ‘Export’. |
+| 1                | Export button    | The button is displayed for users with “read” role access on inventory module. The label of the button depends of the state of the export request. <br> If no request have been triggered, label is "Export".<br> If request have been triggered but not completed, label is "Preparing your results".<br> If request have been triggered and completed, label is "Download".<br> When a user launch a new evaluation, the button is reset from ‘Download’ to ‘Export’. |
 | 2                | Export files     | The files produced are :<br> - 5 files which represent the inventory (inventory.csv, datacenter.csv, application.csv, physical_equipment.csv, virtual_equipment.csv), <br> - 3 files which represent the impact indicator of the inventory (ind_application.csv, ind_physical_equipment.csv, ind_virtual_equipment.csv).                                                                                                                                  |
 | 3                | Retention period | Export files generated during export are kept for 7 days on Azure storage space and deleted afterwards.<br>When the files have been purged (after a period of 7 days), try to download them produce an error message. <br> When a user launch a new evaluation, the button is reset from ‘Download’ to ‘Export’.                                                                                                                                          |
 

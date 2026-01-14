@@ -31,10 +31,8 @@ import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.model.NoteBO;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceShareRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceVersionsListRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InDigitalServiceVersionRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.PromoteDigitalServiceVersionRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -921,5 +919,106 @@ class DigitalServiceVersionServiceTest {
                 inAiParameterRepository);
     }
 
+    @Test
+    void shouldGetDigitalServiceNames_andVersionNames() {
+
+        // Given
+        Workspace workspace = Workspace.builder().id(WORKSPACE_ID).build();
+
+        DigitalService digitalService = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .workspace(workspace)
+                .build();
+
+        DigitalServiceVersion version = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .digitalService(digitalService)
+                .build();
+
+        DigitalServiceVersion v1 = DigitalServiceVersion.builder()
+                .description("Version 1")
+                .build();
+
+        DigitalServiceVersion v2 = DigitalServiceVersion.builder()
+                .description("Version 2")
+                .build();
+
+        DigitalService ds1 = DigitalService.builder().name("DS 1").build();
+        DigitalService ds2 = DigitalService.builder().name("DS 2").build();
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(version));
+
+        when(digitalServiceVersionRepository.findByDigitalServiceUid(DIGITAL_SERVICE_UID))
+                .thenReturn(List.of(v1, v2));
+
+        when(digitalServiceRepository.findByWorkspace(workspace))
+                .thenReturn(List.of(ds1, ds2));
+
+        // When
+        ValidateDuplicatesRest result =
+                digitalServiceVersionService.getDigitalServiceNames(DIGITAL_SERVICE_VERSION_UID);
+
+        // Then
+        assertNotNull(result);
+
+        assertThat(result.getDsNames())
+                .containsExactlyInAnyOrder("DS 1", "DS 2");
+
+        assertThat(result.getVersionNames())
+                .containsExactlyInAnyOrder("Version 1", "Version 2");
+
+        verify(digitalServiceVersionRepository).findById(DIGITAL_SERVICE_VERSION_UID);
+        verify(digitalServiceVersionRepository).findByDigitalServiceUid(DIGITAL_SERVICE_UID);
+        verify(digitalServiceRepository).findByWorkspace(workspace);
+    }
+
+    @Test
+    void shouldThrow_whenDigitalServiceVersionNotFound() {
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+                digitalServiceVersionService.getDigitalServiceNames(DIGITAL_SERVICE_VERSION_UID)
+        )
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("DigitalServiceVersion not found");
+
+        verify(digitalServiceVersionRepository).findById(DIGITAL_SERVICE_VERSION_UID);
+        verifyNoInteractions(digitalServiceRepository);
+    }
+
+    @Test
+    void shouldReturnEmptyLists_whenNoVersionsAndNoServices() {
+
+        Workspace workspace = Workspace.builder().id(WORKSPACE_ID).build();
+
+        DigitalService digitalService = DigitalService.builder()
+                .uid(DIGITAL_SERVICE_UID)
+                .workspace(workspace)
+                .build();
+
+        DigitalServiceVersion version = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .digitalService(digitalService)
+                .build();
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(version));
+
+        when(digitalServiceVersionRepository.findByDigitalServiceUid(DIGITAL_SERVICE_UID))
+                .thenReturn(Collections.emptyList());
+
+        when(digitalServiceRepository.findByWorkspace(workspace))
+                .thenReturn(Collections.emptyList());
+
+        ValidateDuplicatesRest result =
+                digitalServiceVersionService.getDigitalServiceNames(DIGITAL_SERVICE_VERSION_UID);
+
+        assertNotNull(result);
+        assertTrue(result.getDsNames().isEmpty());
+        assertTrue(result.getVersionNames().isEmpty());
+    }
 
 }

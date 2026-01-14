@@ -6,8 +6,10 @@
 - 1606 | Making a version the new current
 - 1607 | Deleting a Digital Service Version
 - 1757 | Not authenticated mode put the same banner (without workspace and user menu)
+- 1769 | Add Water use criteria
 
 ### Minor Changes
+- 1768 | Add Check for Duplicate on Digital Service and Version
 - 1777 | add access to manage version button for read role
 - 1778 | Put link to open directly the version from compare version page
 - 1756 | All connected users can export data

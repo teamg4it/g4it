@@ -138,7 +138,7 @@ paths:
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ') || hasRole('ROLE_ECO_MIND_AI_READ')"
       operationId: getDigitalServiceVersions
       responses:
-        '201':
+        '200':
           description: Return all digital service versions
           content:
             application/json:
@@ -194,6 +194,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PromoteDigitalServiceVersionRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/validate-duplicate-names:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+    get:
+      tags:
+        - digital-service-version
+      summary: Get all the digital service names and versions to validate duplicates
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
+      operationId: getDigitalServiceNames
+      responses:
+        '200':
+          description: Returns list of digital service names and versions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidateDuplicatesRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '500':

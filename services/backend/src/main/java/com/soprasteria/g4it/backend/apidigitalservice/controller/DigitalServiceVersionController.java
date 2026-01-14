@@ -158,6 +158,16 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
 
         return ResponseEntity.ok(result);
     }
+
+    @Override
+    public ResponseEntity<ValidateDuplicatesRest> getDigitalServiceNames(final String organization,
+                                                                         final Long workspace, String digitalServiceVersionUid) {
+
+        ValidateDuplicatesRest result =
+                digitalServiceVersionService.getDigitalServiceNames(digitalServiceVersionUid);
+
+        return ResponseEntity.ok(result);
+    }
 }
 
 
