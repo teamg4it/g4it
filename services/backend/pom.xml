@@ -29,7 +29,7 @@
     </repositories>
 
     <properties>
-        <numecoeval.version>2.2.1-SNAPSHOT</numecoeval.version>
+        <numecoeval.version>2.2.0</numecoeval.version>
         <java.version>21</java.version>
         <swagger.version>2.2.30</swagger.version>
         <mapstruct.dependency.version>1.6.3</mapstruct.dependency.version>
