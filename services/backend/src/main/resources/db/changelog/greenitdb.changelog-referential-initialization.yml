@@ -516,6 +516,18 @@ databaseChangeLog:
                   name: value
                   type: NUMERIC
 
+  - changeSet:
+      id: update-ref-sustainable-individual-package-water-use
+      author: G4IT Dev Team
+
+      changes:
+        - update:
+            tableName: ref_sustainable_individual_package
+            columns:
+              - column:
+                  name: individual_sustainable_package
+                  valueNumeric: 22750
+            where: criteria = 'Water use'
 
         
               
