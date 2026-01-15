@@ -70,6 +70,18 @@
                             "extractLicenses": false,
                             "sourceMap": true,
                             "namedChunks": true
+                        },
+                        "local": {
+                            "optimization": false,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "namedChunks": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.test.ts"
+                                }
+                            ]
                         }
                     },
                     "defaultConfiguration": "production"
@@ -82,6 +94,9 @@
                         },
                         "development": {
                             "buildTarget": "frontend:build:development"
+                        },
+                        "local": {
+                            "buildTarget": "frontend:build:local"
                         }
                     },
                     "defaultConfiguration": "development"

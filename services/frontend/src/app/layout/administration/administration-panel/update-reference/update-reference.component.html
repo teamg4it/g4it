@@ -1,0 +1,151 @@
+<div class="pt-4">
+    <span for="upload-reference" role="heading" [ariaLevel]="3">{{
+        "administration.uploadcsv.description" | translate
+    }}</span>
+    <div
+        class="h-2rem border-top-2 border-primary p-0 mt-1"
+        style="color: lightgray"
+    ></div>
+
+    <!-- Endpoint Selection -->
+    <div class="endpoint-selection">
+        <label for="endpoint-dropdown">{{
+            "administration.uploadcsv.select-endpoint" | translate
+        }}</label>
+        <p-dropdown
+            appendTo="body"
+            [options]="csvEndpoints"
+            optionLabel="apiEndpointName"
+            name="endpointDropdown"
+            [(ngModel)]="selectedEndpoint"
+            [style]="{ width: '35%' }"
+            placeholder="{{
+                'administration.uploadcsv.select-endpoint-placeholder' | translate
+            }}"
+            filterPlaceholder="{{ 'common.search' | translate }}"
+        >
+            <ng-template pTemplate="selectedItem" let-selectedOption>
+                <div class="endpoint-item" *ngIf="selectedOption">
+                    <span>{{ selectedOption.label }}</span>
+                    <small class="endpoint-url">{{ selectedOption.url }}</small>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="item" let-endpoint>
+                <div class="endpoint-item">
+                    <span>{{ endpoint.label }}</span>
+                    <small class="endpoint-url">{{ endpoint.url }}</small>
+                </div>
+            </ng-template>
+        </p-dropdown>
+    </div>
+
+    <p-fileUpload
+        #fileUpload
+        name="csvFile"
+        [multiple]="false"
+        accept=".csv"
+        [maxFileSize]="maxFileSize"
+        [customUpload]="true"
+        (uploadHandler)="onUpload($event)"
+        (onSelect)="onSelect($event)"
+        (onRemove)="onRemove($event)"
+        (onError)="onError($event)"
+        [auto]="false"
+        [disabled]="!selectedEndpoint"
+        chooseLabel="{{ 'common.choose-file' | translate }}"
+        uploadLabel="{{ 'administration.uploadcsv.upload-button' | translate }}"
+        cancelLabel="{{ 'common.cancel' | translate }}"
+        mode="basic"
+        [showUploadButton]="true"
+        [showCancelButton]="false"
+    ></p-fileUpload>
+
+    <!-- Section d'informations -->
+    <div class="mt-3">
+        <p>{{ "administration.uploadcsv.max-file-size" | translate }}</p>
+    </div>
+
+    <!-- Section de traitement -->
+    <div *ngIf="isProcessing">
+        <p-progressBar mode="indeterminate"></p-progressBar>
+        <p>{{ "administration.uploadcsv.processing" | translate }}</p>
+    </div>
+
+    <div *ngIf="uploadedFile">
+        <h3>{{ "administration.uploadcsv.uploaded" | translate }}</h3>
+        <div class="file-list">
+            <div class="file-item">
+                <i class="pi pi-file"></i>
+                <span>{{ uploadedFile.name }}</span>
+                <span>({{ (uploadedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
+                <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    size="small"
+                    [text]="true"
+                    (click)="clearFile()"
+                    (keydown.enter)="clearFile()"
+                    (keydown.space)="clearFile()"
+                    [title]="'administration.uploadcsv.delete-file' | translate"
+                    class="delete-file-btn"
+                ></p-button>
+            </div>
+        </div>
+
+        <!-- Résumé de l'import -->
+        <div class="import-summary" *ngIf="lastUploadResponse">
+            <div class="summary-stats">
+                <div class="stat-item success">
+                    <i class="pi pi-check-circle"></i>
+                    <span
+                        >{{ "administration.uploadcsv.imported-lines" | translate }}:
+                        {{ importedLineNumber }}</span
+                    >
+                </div>
+                <div class="stat-item error" *ngIf="uploadErrors.length > 0">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    <span
+                        >{{ "administration.uploadcsv.validation-errors" | translate }}:
+                        {{ uploadErrors.length }}</span
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section des erreurs de validation -->
+    <div class="validation-errors" *ngIf="uploadErrors.length > 0">
+        <div class="error-container">
+            <!-- Header des erreurs -->
+            <div class="error-header">
+                <div class="error-icon-wrapper">
+                    <i class="pi pi-exclamation-triangle"></i>
+                </div>
+                <div class="error-title">
+                    <h3>
+                        {{
+                            "administration.uploadcsv.validation-errors-title" | translate
+                        }}
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Liste des erreurs -->
+            <div class="error-content">
+                <div class="error-scroll-container">
+                    <div
+                        class="error-item"
+                        *ngFor="let error of uploadErrors; let i = index"
+                    >
+                        <div class="error-details">
+                            <div class="error-message">
+                                <i class="pi pi-times-circle error-message-icon"></i>
+                                {{ error }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

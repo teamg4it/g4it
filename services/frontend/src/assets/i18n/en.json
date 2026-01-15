@@ -1089,6 +1089,7 @@
         "manage-users": "Manage users",
         "manage-workspaces": "Manage workspaces",
         "super-admin-title": "Super Admin",
+        "update-referential": "Update reference data",
         "organization-placeholder": "Choose organization",
         "accessibility": {
             "placeholder": "Subscriber selection, {{name}} currently selected",
@@ -1156,6 +1157,22 @@
         },
         "super-admin": {
             "launch-release-script": "Start the release's script"
+        },
+        "uploadcsv": {
+            "uploaded": "File uploaded :",
+            "description": "Import a CSV file to feed reference data",
+            "select-endpoint": "Select target reference data",
+            "select-endpoint-placeholder": "Choose the reference data for your CSV data",
+            "supported-formats": "Supported formats: .csv",
+            "max-file-size": "Maximum size: 100MB",
+            "upload-button": "Upload file",
+            "processing": "Processing your file...",
+            "success": "File uploaded successfully",
+            "error": "Error uploading file",
+            "delete-file": "Delete file",
+            "imported-lines": "Imported lines",
+            "validation-errors": "Validation errors",
+            "validation-errors-title": "Error details"
         }
     },
     "error-graph": {
