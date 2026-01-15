@@ -133,4 +133,19 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             String progress,
             List<String> details
     );
+
+    @Modifying
+    @Query("""
+            update Task t
+            set t.status = :status,
+                t.lastUpdateDate = :lastUpdateDate,
+                t.progressPercentage = :progress,
+                t.details = :details
+            where t.id = :taskId """)
+    void updateTaskStateWithDetails(@Param("taskId") Long taskId,
+                                    @Param("status") String status,
+                                    @Param("lastUpdateDate") LocalDateTime lastUpdateDate,
+                                    @Param("progress") String progress,
+                                    @Param("details") List<String> details);
+
 }

@@ -336,19 +336,15 @@ public class EvaluateService {
 
         log.info("Saving aggregated indicators");
         // Store aggregated indicators
-//        int outPhysicalEquipmentSize = saveService.saveOutPhysicalEquipments(aggregationPhysicalEquipments, taskId, refShortcutBO);
-//        aggregationPhysicalEquipments.clear();
         if (!aggregationPhysicalEquipments.isEmpty()) {
             outPhysicalEquipmentSize += saveService.saveOutPhysicalEquipments(
                     aggregationPhysicalEquipments, taskId, refShortcutBO);
             aggregationPhysicalEquipments.clear();
         }
-//        int outVirtualEquipmentSize = 0;
         if (!aggregationVirtualEquipments.isEmpty()) {
             outVirtualEquipmentSize += saveService.saveOutVirtualEquipments(aggregationVirtualEquipments, taskId, refShortcutBO);
             aggregationVirtualEquipments.clear();
         }
-//        int outApplicationSize = 0;
         if (!aggregationApplications.isEmpty()) {
             outApplicationSize += saveService.saveOutApplications(aggregationApplications, taskId, refShortcutBO);
             aggregationApplications.clear();
@@ -382,18 +378,18 @@ public class EvaluateService {
     }
 
     // Returns number of virtual equipment records saved in this call (delta, not total)
-    private /*int*/ SaveResult evaluateVirtualsEquipments(Context context, EvaluateReportBO evaluateReportBO,
-                                                          InPhysicalEquipment physicalEquipment,
-                                                          List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
-                                                          Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
-                                                          Map<List<String>, AggValuesBO> aggregationApplications,
-                                                          CSVPrinter csvInVirtualEquipment,
-                                                          CSVPrinter csvVirtualEquipment,
-                                                          CSVPrinter csvInApplication,
-                                                          CSVPrinter csvApplication,
-                                                          Map<String, Double> refSip, RefShortcutBO refShortcutBO,
-                                                          final List<String> criteria, final List<String> lifecycleSteps,
-                                                          Map<String, String> codeToCountryMap/*,
+    private SaveResult evaluateVirtualsEquipments(Context context, EvaluateReportBO evaluateReportBO,
+                                                  InPhysicalEquipment physicalEquipment,
+                                                  List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
+                                                  Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
+                                                  Map<List<String>, AggValuesBO> aggregationApplications,
+                                                  CSVPrinter csvInVirtualEquipment,
+                                                  CSVPrinter csvVirtualEquipment,
+                                                  CSVPrinter csvInApplication,
+                                                  CSVPrinter csvApplication,
+                                                  Map<String, Double> refSip, RefShortcutBO refShortcutBO,
+                                                  final List<String> criteria, final List<String> lifecycleSteps,
+                                                  Map<String, String> codeToCountryMap/*,
                                            int outVirtualEquipmentSize*/) throws IOException {
 
         if (!context.isHasVirtualEquipments()) return new SaveResult(0, 0);
@@ -405,12 +401,6 @@ public class EvaluateService {
 
         int savedVirtualCount = 0;   // ✅ local delta only
         int savedApplicationCount = 0;
-//        Map<String, String> countryMap = boaviztapiService.getCountryMap();
-
-        // Reverse the map to create a code-to-countryLabel mapping
-//        Map<String, String> codeToCountryMap = countryMap.entrySet()
-//                .stream()
-//                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
         final Sort sortByName = Sort.by("name");
         while (true) {
             Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
@@ -485,7 +475,6 @@ public class EvaluateService {
                 if (virtualSaveCounter >= 50) {
                     savedVirtualCount += saveService.saveOutVirtualEquipments(
                             aggregationVirtualEquipments, evaluateReportBO.getTaskId(), refShortcutBO);
-//                    aggregationVirtualEquipments.clear();
                     aggregationVirtualEquipments.clear();
                     virtualSaveCounter = 0;
                 }
@@ -504,7 +493,7 @@ public class EvaluateService {
                     aggregationVirtualEquipments, evaluateReportBO.getTaskId(), refShortcutBO);
             aggregationVirtualEquipments.clear();
         }
-        return /*savedVirtualCount*/ new SaveResult(savedVirtualCount, savedApplicationCount);
+        return new SaveResult(savedVirtualCount, savedApplicationCount);
     }
 
     private int evaluateApplications(Context context, EvaluateReportBO evaluateReportBO,
@@ -637,14 +626,6 @@ public class EvaluateService {
         return result;
     }
 
-    /*class SaveResult {
-        int savedVirtualCount, savedApplicationCount;
-
-        SaveResult(int savedVirtualCount, int savedApplicationCount) {
-            this.savedApplicationCount = savedApplicationCount;
-            this.savedVirtualCount = savedVirtualCount;
-        }
-    }*/
     record SaveResult(int savedVirtualCount, int savedApplicationCount) {
     }
 
