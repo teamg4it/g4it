@@ -37,7 +37,6 @@ import {
     ],
     providers: [MessageService],
     templateUrl: "./update-reference.component.html",
-    styleUrls: ["./update-reference.component.scss"],
 })
 export class UpdateReferenceComponent implements OnInit {
     @ViewChild("fileUpload") fileUpload!: FileUpload;
