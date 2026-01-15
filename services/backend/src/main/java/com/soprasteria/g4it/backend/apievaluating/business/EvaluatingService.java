@@ -95,7 +95,9 @@ public class EvaluatingService {
                            final Long workspaceId,
                            final Long inventoryId) {
 
-        Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow();
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new G4itRestException("404", "Inventory not found."));
+
 
         manageInventoryTasks(organization, workspaceId, inventory);
 
@@ -237,25 +239,35 @@ public class EvaluatingService {
 
         // check tasks to restart
         inProgressLoadingTasks.stream()
-                .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now) && task.getInventory() != null)
+                .filter(task -> task.getInventory() != null)
+                .filter(task -> task.getLastUpdateDate() == null
+                        || task.getLastUpdateDate().plusMinutes(15).isBefore(now))
                 .forEach(task -> {
                     task.setStatus(TaskStatus.TO_START.toString());
                     task.setLastUpdateDate(now);
                     task.setDetails(new ArrayList<>());
                     task.setProgressPercentage("0%");
 //                    taskRepository.save(task);
-                    taskRepository.updateTaskState(
+                    taskRepository.updateTaskStateWithDetails(
                             task.getId(),
-                            TaskStatus.IN_PROGRESS.toString(),
-                            LocalDateTime.now(),
-                            "0%"
+                            TaskStatus.TO_START.toString(),
+                            now,
+                            "0%",
+                            new ArrayList<>()
                     );
 
                     final Inventory inventory = task.getInventory();
                     final Workspace workspace = inventory.getWorkspace();
                     final String organization = workspace.getOrganization().getName();
-                    manageInventoryTasks(organization, workspace.getId(), inventory);
-
+                    try {
+                        manageInventoryTasks(organization, workspace.getId(), inventory);
+                    } catch (G4itRestException e) {
+                        if ("task.already.running".equals(e.getMessage())) {
+                            log.info("TaskId={} is already running, so restart is skipped", task.getId());
+                            return;
+                        }
+                        throw e;
+                    }
                     final Context context = Context.builder()
                             .organization(organization)
                             .workspaceId(workspace.getId())
@@ -267,6 +279,12 @@ public class EvaluatingService {
                             .hasApplications(inventory.getApplicationCount() > 0)
                             .build();
 
+                    taskRepository.updateTaskState(
+                            task.getId(),
+                            TaskStatus.IN_PROGRESS.toString(),
+                            now,
+                            "0%"
+                    );
                     log.warn("Restart task {} with taskId={}", TaskType.EVALUATING, task.getId());
 
                     taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));

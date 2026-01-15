@@ -62,8 +62,8 @@ public class AsyncEvaluatingService implements ITaskExecute {
         taskRepository.updateTaskState(
                 taskId,
                 TaskStatus.IN_PROGRESS.toString(),
-                null,
-                null
+                java.time.LocalDateTime.now(),
+                "0%"
         );
 
         String finalStatus = TaskStatus.COMPLETED.toString();
