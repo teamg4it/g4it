@@ -47,8 +47,6 @@ export class UpdateReferenceComponent implements OnInit {
     maxFileSize = 100 * 1024 * 1024; // 100MB
     csvEndpoints: CsvImportEndpoint[] = [];
     selectedEndpoint: CsvImportEndpoint | null = null;
-
-    // Propriétés pour les réponses de l'API
     lastUploadResponse: any = null;
     uploadErrors: string[] = [];
     importedLineNumber: number = 0;
@@ -68,7 +66,7 @@ export class UpdateReferenceComponent implements OnInit {
         this.uploadErrors = [];
         this.importedLineNumber = 0;
 
-        // Réinitialiser le composant FileUpload
+        // Reset the FileUpload component
         if (this.fileUpload) {
             this.fileUpload.clear();
         }
@@ -95,7 +93,7 @@ export class UpdateReferenceComponent implements OnInit {
             return;
         }
 
-        // Prendre seulement le premier fichier
+        // Take only the first file
         const file = files[0];
         this.isProcessing = true;
         this.lastUploadResponse = null;
@@ -108,9 +106,9 @@ export class UpdateReferenceComponent implements OnInit {
                 this.isProcessing = false;
                 this.lastUploadResponse = response;
 
-                // Traiter la réponse
+                // Process the response
                 if (response?.errors?.length > 0) {
-                    // Il y a des erreurs de validation
+                    // There are validation errors
                     this.uploadErrors = response.errors;
                     this.importedLineNumber = response.importedLineNumber ?? 0;
 
@@ -120,7 +118,7 @@ export class UpdateReferenceComponent implements OnInit {
                         detail: `File uploaded but contains ${response.errors.length} validation error(s). ${response.importedLineNumber ?? 0} line(s) imported successfully.`,
                     });
                 } else {
-                    // Succès complet
+                    // Successful upload without validation errors
                     this.importedLineNumber = response.importedLineNumber ?? 0;
 
                     this.messageService.add({
@@ -137,7 +135,7 @@ export class UpdateReferenceComponent implements OnInit {
                 this.uploadErrors = [];
                 this.importedLineNumber = 0;
 
-                // Extraire le message d'erreur de l'API
+                // Extract the error message from the API
                 let errorMessage = "Unknown error";
                 if (error.error?.message) {
                     errorMessage = error.error.message;
@@ -165,13 +163,13 @@ export class UpdateReferenceComponent implements OnInit {
     }
 
     onSelect(event: any) {
-        // Vérifier la taille du fichier et le type
+        // Check file size and type
         const files = event.files;
         if (files.length === 0) {
             return;
         }
 
-        // Prendre seulement le premier fichier
+        // Take only the first file
         const file = files[0];
 
         if (file.size > this.maxFileSize) {
@@ -194,14 +192,14 @@ export class UpdateReferenceComponent implements OnInit {
     }
 
     onRemove(event: any) {
-        // Supprimer le fichier uploadé
+        // Remove the uploaded file
         if (this.uploadedFile && this.uploadedFile.name === event.file.name) {
             this.uploadedFile = null;
-            // Réinitialiser l'upload
+            // Reset the upload
             this.lastUploadResponse = null;
             this.uploadErrors = [];
             this.importedLineNumber = 0;
-            // Réinitialiser l'endpoint sélectionné
+            // Reset the selected endpoint
             this.csvEndpoints = [];
         }
     }

@@ -1,7 +1,7 @@
 <div class="pt-4">
-    <span for="upload-reference" role="heading" [ariaLevel]="3">{{
-        "administration.uploadcsv.description" | translate
-    }}</span>
+    <h2 for="upload-reference" class="inline m-0">
+        {{ "administration.uploadcsv.description" | translate }}
+    </h2>
     <div
         class="h-2rem border-top-2 border-primary p-0 mt-1"
         style="color: lightgray"
@@ -60,12 +60,12 @@
         [showCancelButton]="false"
     ></p-fileUpload>
 
-    <!-- Section d'informations -->
+    <!-- Information section -->
     <div class="mt-3">
         <p>{{ "administration.uploadcsv.max-file-size" | translate }}</p>
     </div>
 
-    <!-- Section de traitement -->
+    <!-- Section for processing -->
     <div *ngIf="isProcessing">
         <p-progressBar mode="indeterminate"></p-progressBar>
         <p>{{ "administration.uploadcsv.processing" | translate }}</p>
@@ -79,20 +79,20 @@
                 <span>{{ uploadedFile.name }}</span>
                 <span>({{ (uploadedFile.size / 1024 / 1024).toFixed(2) }} MB)</span>
                 <p-button
-                    icon="pi pi-trash"
                     severity="danger"
-                    size="small"
+                    size="large"
                     [text]="true"
                     (click)="clearFile()"
                     (keydown.enter)="clearFile()"
                     (keydown.space)="clearFile()"
                     [title]="'administration.uploadcsv.delete-file' | translate"
                     class="delete-file-btn"
-                ></p-button>
+                    >{{ "administration.uploadcsv.delete-file" | translate }}</p-button
+                >
             </div>
         </div>
 
-        <!-- Résumé de l'import -->
+        <!-- Import summary -->
         <div class="import-summary" *ngIf="lastUploadResponse">
             <div class="summary-stats">
                 <div class="stat-item success">
@@ -113,14 +113,11 @@
         </div>
     </div>
 
-    <!-- Section des erreurs de validation -->
+    <!-- Validation errors section -->
     <div class="validation-errors" *ngIf="uploadErrors.length > 0">
         <div class="error-container">
-            <!-- Header des erreurs -->
+            <!-- Validation errors header -->
             <div class="error-header">
-                <div class="error-icon-wrapper">
-                    <i class="pi pi-exclamation-triangle"></i>
-                </div>
                 <div class="error-title">
                     <h3>
                         {{
@@ -130,7 +127,7 @@
                 </div>
             </div>
 
-            <!-- Liste des erreurs -->
+            <!-- Validation errors list -->
             <div class="error-content">
                 <div class="error-scroll-container">
                     <div
