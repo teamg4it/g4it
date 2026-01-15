@@ -95,6 +95,7 @@ public abstract class DigitalServiceVersionMapper {
         bo.setEnableDataInconsistency(digitalService.isEnableDataInconsistency());
         bo.setIsShared(false); // Default value, can be set later
         bo.setDescription(version.getDescription());
+        bo.setCriteria(version.getCriteria());
 
         return bo;
     }

@@ -20,9 +20,11 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
@@ -90,6 +92,8 @@ public class DigitalServiceVersionService {
     private String localWorkingPath;
     @Autowired
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
+    @Autowired
+    private AuthService authService;
 
 
     /**
@@ -123,6 +127,20 @@ public class DigitalServiceVersionService {
 
         final DigitalService savedDigitalService = digitalServiceRepository.save(digitalService);
 
+        List<String> criteria;
+
+        List<String> criteriaDs = linkedWorkspace.getCriteriaDs();
+
+        if (criteriaDs != null && !criteriaDs.isEmpty()) {
+            criteria = criteriaDs;
+        } else {
+            Organization organization = linkedWorkspace.getOrganization();
+            criteria = organization != null && organization.getCriteria() != null
+                    ? organization.getCriteria()
+                    : List.of();
+        }
+
+
         // Step 2: Create the Digital Service Version
         final DigitalServiceVersion digitalServiceVersion = DigitalServiceVersion.builder()
                 .description(inDigitalServiceVersionRest.getVersionName())
@@ -132,6 +150,7 @@ public class DigitalServiceVersionService {
                 .creationDate(savedDigitalService.getCreationDate())
                 .lastUpdateDate(savedDigitalService.getLastUpdateDate())
                 .lastCalculationDate(savedDigitalService.getLastCalculationDate())
+                .criteria(criteria)
                 .build();
 
         final DigitalServiceVersion savedDigitalServiceVersion = digitalServiceVersionRepository.save(digitalServiceVersion);
