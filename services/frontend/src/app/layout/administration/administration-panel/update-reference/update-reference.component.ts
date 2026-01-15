@@ -6,16 +6,8 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { TranslateModule } from "@ngx-translate/core";
-import { ButtonModule } from "primeng/button";
-import { FileUpload, FileUploadModule } from "primeng/fileupload";
+import { FileUpload } from "primeng/fileupload";
 import { MessageService } from "primeng/api";
-import { ToastModule } from "primeng/toast";
-import { ProgressBarModule } from "primeng/progressbar";
-import { CardModule } from "primeng/card";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
 import {
     CsvImportDataService,
     CsvImportEndpoint,
@@ -23,18 +15,6 @@ import {
 
 @Component({
     selector: "app-update-reference",
-    standalone: true,
-    imports: [
-        CommonModule,
-        TranslateModule,
-        ButtonModule,
-        FileUploadModule,
-        ToastModule,
-        ProgressBarModule,
-        CardModule,
-        DropdownModule,
-        FormsModule,
-    ],
     providers: [MessageService],
     templateUrl: "./update-reference.component.html",
 })
