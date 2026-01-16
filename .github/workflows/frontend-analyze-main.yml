@@ -3,12 +3,6 @@ on:
   push:
     branches:
       - main
-      - feat/*
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
-      - feat/*
 
 jobs:
   build:
