@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - main
+      - feat/*
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - feat/*
 
 jobs:
   build:
@@ -25,8 +31,8 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v3.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: g4itteam_g4it_frontend
-          SONAR_ORGANIZATION: g4itteam
+          SONAR_PROJECT_KEY: remimoul_g4it
+          SONAR_ORGANIZATION: remi
         with:
           projectBaseDir: services/frontend
 

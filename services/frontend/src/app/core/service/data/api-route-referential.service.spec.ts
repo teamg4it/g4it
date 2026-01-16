@@ -51,7 +51,7 @@ describe("CsvImportDataService", () => {
     });
 
     afterEach(() => {
-        // Vérifie qu'il n'y a pas de requêtes HTTP en attente
+        // Verify that no unmatched requests are outstanding.
         httpMock.verify();
     });
 
