@@ -21,10 +21,11 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -62,7 +63,8 @@ public class SaveService {
      * @param refShortcutBO the ref shortcut BO
      * @return the size of saved data
      */
-    @Transactional
+    /*@Transactional*/
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int saveOutPhysicalEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutPhysicalEquipment> outPhysicalEquipments = new ArrayList<>(Constants.BATCH_SIZE);
         Iterator<Map.Entry<List<String>, AggValuesBO>> iterator = aggregation.entrySet().iterator();
@@ -82,7 +84,12 @@ public class SaveService {
         }
         outPhysicalEquipmentRepository.saveAll(outPhysicalEquipments);
         outPhysicalEquipments.clear();
-        return aggregation.size();
+        entityManager.flush();
+        entityManager.clear();
+        int totalSaved = aggregation.size();
+        aggregation.clear();
+//        return aggregation.size();
+        return totalSaved;
     }
 
     /**
@@ -92,7 +99,8 @@ public class SaveService {
      * @param taskId      the task id
      * @return the size of saved data
      */
-    @Transactional
+//    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int saveOutVirtualEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutVirtualEquipment> outVirtualEquipments = new ArrayList<>(Constants.BATCH_SIZE);
         Iterator<Map.Entry<List<String>, AggValuesBO>> iterator = aggregation.entrySet().iterator();
@@ -111,7 +119,11 @@ public class SaveService {
         }
         outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
         outVirtualEquipments.clear();
-        return aggregation.size();
+        entityManager.flush();
+        entityManager.clear();
+        int totalSaved = aggregation.size();
+        aggregation.clear();
+        return totalSaved;
     }
 
     /**
@@ -121,7 +133,8 @@ public class SaveService {
      * @param taskId      the task id
      * @return the size of saved data
      */
-    @Transactional
+//    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int saveOutApplications(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutApplication> outApplications = new ArrayList<>(Constants.BATCH_SIZE);
         Iterator<Map.Entry<List<String>, AggValuesBO>> iterator = aggregation.entrySet().iterator();
@@ -140,7 +153,12 @@ public class SaveService {
         }
         outApplicationRepository.saveAll(outApplications);
         outApplications.clear();
-        return aggregation.size();
+        entityManager.flush();
+        entityManager.clear();
+        int totalSaved = aggregation.size();
+        aggregation.clear();
+        //return aggregation.size();
+        return totalSaved;
     }
 
     /**
@@ -150,7 +168,8 @@ public class SaveService {
      * @param taskId      the task id
      * @return the size of saved data
      */
-    @Transactional
+//    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int saveOutCloudVirtualEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId) {
         List<OutVirtualEquipment> outVirtualEquipments = new ArrayList<>(Constants.BATCH_SIZE);
         Iterator<Map.Entry<List<String>, AggValuesBO>> iterator = aggregation.entrySet().iterator();
@@ -169,6 +188,11 @@ public class SaveService {
         }
         outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
         outVirtualEquipments.clear();
-        return aggregation.size();
+        entityManager.flush();
+        entityManager.clear();
+        int totalSaved = aggregation.size();
+        aggregation.clear();
+        //return aggregation.size();
+        return totalSaved;
     }
 }
