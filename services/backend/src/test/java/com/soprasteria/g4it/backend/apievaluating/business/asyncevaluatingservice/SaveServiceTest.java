@@ -74,10 +74,11 @@ class SaveServiceTest {
 
     @Test
     void saveOutPhysicalEquipments_savesAllEntriesWhenAggregationIsNotEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = Map.of(
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
                 List.of("key1"), new AggValuesBO(),
                 List.of("key2"), new AggValuesBO()
-        );
+        ));
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 null, null,
                 null,
@@ -96,7 +97,8 @@ class SaveServiceTest {
 
     @Test
     void saveOutPhysicalEquipments_doesNotSaveWhenAggregationIsEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = Map.of();
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 null, null,
                 null,
@@ -134,10 +136,11 @@ class SaveServiceTest {
 
     @Test
     void saveOutApplications_savesAllEntriesWhenAggregationIsNotEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = Map.of(
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
                 List.of("key1"), new AggValuesBO(),
                 List.of("key2"), new AggValuesBO()
-        );
+        ));
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(null, null, null, null);
         Long taskId = 1L;
 
@@ -152,10 +155,11 @@ class SaveServiceTest {
 
     @Test
     void saveOutCloudVirtualEquipments_savesAllEntriesWhenAggregationIsNotEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = Map.of(
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
                 List.of("key1"), new AggValuesBO(),
                 List.of("key2"), new AggValuesBO()
-        );
+        ));
+
         Long taskId = 1L;
 
         when(aggregationToOutput.mapCloudVirtualEquipment(any(), any(), eq(taskId)))
