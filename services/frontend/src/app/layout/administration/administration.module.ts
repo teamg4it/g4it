@@ -7,7 +7,6 @@ import { SuperAdminComponent } from "./administration-panel/super-admin/super-ad
 import { AddWorkspaceComponent } from "./administration-panel/users/add-workspace/add-workspace.component";
 import { UsersComponent } from "./administration-panel/users/users.component";
 import { administrationRouter } from "./administration.router";
-import { UpdateReferenceComponent } from "./administration-panel/update-reference/update-reference.component";
 
 @NgModule({
     declarations: [
@@ -16,7 +15,6 @@ import { UpdateReferenceComponent } from "./administration-panel/update-referenc
         UsersComponent,
         SuperAdminComponent,
         AddWorkspaceComponent,
-        UpdateReferenceComponent,
     ],
     imports: [CommonModule, SharedModule, administrationRouter],
 })

@@ -49,8 +49,6 @@ import { BusinessHoursRendererPipe } from "../pipes/business-hours-renderer.pipe
 import { DecimalsPipe } from "../pipes/decimal.pipe";
 import { IntegerPipe } from "../pipes/integer.pipe";
 import { MonthYearPipe } from "../pipes/monthyear.pipe";
-import { FileUploadModule } from "primeng/fileupload";
-import { ProgressBarModule } from "primeng/progressbar";
 
 @NgModule({
     declarations: [
@@ -96,8 +94,6 @@ import { ProgressBarModule } from "primeng/progressbar";
         AccordionModule,
         InputTextModule,
         ClipboardModule,
-        FileUploadModule,
-        ProgressBarModule,
         NgxEchartsModule.forRoot({
             echarts: () => import("echarts"),
         }),
@@ -145,8 +141,6 @@ import { ProgressBarModule } from "primeng/progressbar";
         WorkspaceComponent,
         FormNavComponent,
         DialogModule,
-        FileUploadModule,
-        ProgressBarModule,
     ],
     providers: [DecimalsPipe, IntegerPipe],
 })
