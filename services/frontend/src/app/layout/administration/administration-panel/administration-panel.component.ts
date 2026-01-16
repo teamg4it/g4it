@@ -48,6 +48,14 @@ export class AdministrationPanelComponent implements OnInit {
                     id: "super-admin-tab",
                 });
             }
+
+            if (user.isSuperAdmin) {
+                this.tabMenuList.push({
+                    label: this.translate.instant("administration.update-referential"),
+                    routerLink: "update-referential",
+                    id: "update-referential-tab",
+                });
+            }
         });
     }
 }
