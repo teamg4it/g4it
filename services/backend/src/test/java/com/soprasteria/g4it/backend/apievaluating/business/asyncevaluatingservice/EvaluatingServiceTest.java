@@ -24,8 +24,8 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaByType;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
-import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.model.BackgroundTask;
+import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -103,20 +103,31 @@ class EvaluatingServiceTest {
 
         final User user = User.builder().id(USER_ID).build();
 
-        // Stub repository and service methods
         when(inventoryRepository.findById(INVENTORY_ID)).thenReturn(Optional.of(inventory));
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(work);
-        when(criteriaService.getSelectedCriteriaForInventory(any(), any(), any())).thenReturn(criteriaByType);
-        when(criteriaByType.active()).thenReturn(CRITERIA);
+
+        when(criteriaService.getSelectedCriteriaForInventory(any(), any(), any()))
+                .thenReturn(criteriaByType);
 
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(authService.getUser()).thenReturn(userBO);
+
         when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
 
         Task result = evaluatingService.evaluating(ORGANIZATION, WORKSPACE_ID, INVENTORY_ID);
 
         assertNotNull(result);
+
         verify(taskRepository).save(any(Task.class));
+
+        // correct verification (NOT updateTaskStateWithDetails)
+        verify(taskRepository).updateTaskState(
+                any(),
+                eq(TaskStatus.IN_PROGRESS.toString()),
+                any(LocalDateTime.class),
+                eq("0%")
+        );
+
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
 
@@ -142,7 +153,8 @@ class EvaluatingServiceTest {
         Task result = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
 
         assertNotNull(result);
-        verify(asyncEvaluatingService).execute(any(Context.class), any(Task.class));
+        verify(taskExecutor).execute(any(BackgroundTask.class));
+
         verify(digitalServiceRepository).save(any(DigitalService.class));
     }
 
@@ -172,7 +184,7 @@ class EvaluatingServiceTest {
         Task result = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
 
         assertNotNull(result);
-        verify(asyncEvaluatingService).execute(any(Context.class), any(Task.class));
+        verify(taskExecutor).execute(any(BackgroundTask.class));
         verify(digitalServiceRepository).save(any(DigitalService.class));
     }
 
@@ -212,8 +224,14 @@ class EvaluatingServiceTest {
         when(inventory.getApplicationCount()).thenReturn(0L);
 
         evaluatingService.restartEvaluating();
+        verify(taskRepository).updateTaskStateWithDetails(
+                anyLong(),
+                eq(TaskStatus.TO_START.toString()),
+                any(LocalDateTime.class),
+                eq("0%"),
+                anyList()
+        );
 
-        verify(taskRepository).save(any(Task.class));
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
 }
