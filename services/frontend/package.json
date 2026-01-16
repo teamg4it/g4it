@@ -4,7 +4,6 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "start:local": "ng serve --configuration=local",
         "build": "ng build",
         "build:overgreen": "ng build --base-href /overgreen/ --deploy-url /overgreen/",
         "watch": "ng build --watch --configuration development",

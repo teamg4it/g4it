@@ -26,12 +26,12 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v3.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: remimoul_g4it
-          SONAR_ORGANIZATION: remi
+          SONAR_PROJECT_KEY: g4itteam_g4it_frontend
+          SONAR_ORGANIZATION: g4itteam
         with:
           projectBaseDir: services/frontend
       - name: Run Trivy vulnerability scanner in fs mode
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.20.0
         with:
           scan-type: "fs"
           scan-ref: "services/frontend"
