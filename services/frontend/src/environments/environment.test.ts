@@ -20,7 +20,7 @@ export const environment = {
         "download-reject",
         "task",
     ],
-    apiBaseUrl: "http://localhost:8082",
+    apiBaseUrl: "",
     frontEndUrl: "http://localhost:4200",
     subpath: "",
     keycloak: {
