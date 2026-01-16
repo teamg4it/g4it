@@ -1,0 +1,161 @@
+<div class="pt-4">
+    <h2 for="upload-reference" class="inline m-0">
+        {{ "administration.uploadcsv.description" | translate }}
+    </h2>
+    <div
+        class="h-2rem border-top-2 border-primary p-0 mt-1"
+        style="color: lightgray"
+    ></div>
+
+    <!-- Endpoint Selection -->
+    <div class="mb-3">
+        <label
+            for="endpoint-dropdown"
+            class="block font-semibold text-color mb-2 text-base"
+            >{{ "administration.uploadcsv.select-endpoint" | translate }}</label
+        >
+        <p-dropdown
+            appendTo="body"
+            [options]="csvEndpoints"
+            optionLabel="apiEndpointName"
+            name="endpointDropdown"
+            [(ngModel)]="selectedEndpoint"
+            [style]="{ width: '35%' }"
+            placeholder="{{
+                'administration.uploadcsv.select-endpoint-placeholder' | translate
+            }}"
+            filterPlaceholder="{{ 'common.search' | translate }}"
+        >
+            <ng-template pTemplate="selectedItem" let-selectedOption>
+                <div
+                    class="flex align-items-center justify-content-between gap-1"
+                    *ngIf="selectedOption"
+                >
+                    <span class="font-medium text-color">{{ selectedOption.label }}</span>
+                    <small class="text-base text-500 font-mono">{{
+                        selectedOption.url
+                    }}</small>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="item" let-endpoint>
+                <div class="flex align-items-center justify-content-between gap-1">
+                    <span class="font-medium text-color">{{ endpoint.label }}</span>
+                    <small class="text-base text-500 font-mono">{{ endpoint.url }}</small>
+                </div>
+            </ng-template>
+        </p-dropdown>
+    </div>
+
+    <p-fileUpload
+        #fileUpload
+        name="csvFile"
+        [multiple]="false"
+        accept=".csv"
+        [maxFileSize]="maxFileSize"
+        [customUpload]="true"
+        (uploadHandler)="onUpload($event)"
+        (onSelect)="onSelect($event)"
+        (onRemove)="onRemove($event)"
+        (onError)="onError($event)"
+        [auto]="false"
+        [disabled]="!selectedEndpoint"
+        chooseLabel="{{ 'common.choose-file' | translate }}"
+        uploadLabel="{{ 'administration.uploadcsv.upload-button' | translate }}"
+        cancelLabel="{{ 'common.cancel' | translate }}"
+        mode="basic"
+        [showUploadButton]="true"
+        [showCancelButton]="false"
+        styleClass="ml-1"
+    ></p-fileUpload>
+
+    <!-- Information section -->
+    <div class="mt-3">
+        <p>{{ "administration.uploadcsv.max-file-size" | translate }}</p>
+    </div>
+
+    <!-- Section for processing Progress Bar-->
+    <div *ngIf="isProcessing">
+        <p-progressBar mode="indeterminate"></p-progressBar>
+        <p>{{ "administration.uploadcsv.processing" | translate }}</p>
+    </div>
+
+    <div *ngIf="uploadedFile">
+        <h3>{{ "administration.uploadcsv.uploaded" | translate }}</h3>
+        <div class="flex flex-column gap-2">
+            <div
+                class="flex align-items-center gap-3 p-3 surface-100 border-1 surface-border border-round mb-2"
+            >
+                <i class="pi pi-file"></i>
+                <span>{{ uploadedFile.name }}</span>
+                <p-button
+                    severity="danger"
+                    size="large"
+                    [text]="true"
+                    (click)="clearFile()"
+                    (keydown.enter)="clearFile()"
+                    (keydown.space)="clearFile()"
+                    [title]="'administration.uploadcsv.delete-file' | translate"
+                    class="ml-auto"
+                    >{{ "administration.uploadcsv.delete-file" | translate }}</p-button
+                >
+            </div>
+        </div>
+
+        <!-- Import summary -->
+        <div class="mt-3 p-3 surface-100 border-round" *ngIf="lastUploadResponse">
+            <div class="flex gap-3 flex-wrap">
+                <div
+                    class="flex align-items-center gap-2 px-3 py-2 border-round font-medium bg-green-100 text-green-800"
+                >
+                    <span
+                        >{{ "administration.uploadcsv.imported-lines" | translate }}:
+                        {{ importedLineNumber }}</span
+                    >
+                </div>
+                <div
+                    class="flex align-items-center gap-2 px-3 py-2 border-round font-medium bg-red-100 text-red-800"
+                    *ngIf="uploadErrors.length > 0"
+                >
+                    <span
+                        >{{ "administration.uploadcsv.validation-errors" | translate }}:
+                        {{ uploadErrors.length }}</span
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Validation errors section -->
+    <div class="mt-4" *ngIf="uploadErrors.length > 0">
+        <div class="border-1 border-red-300 border-round-lg overflow-hidden shadow-2">
+            <!-- Validation errors header -->
+            <div class="flex align-items-center gap-3 px-4 py-3 bg-red-600 text-white">
+                <div class="flex-1">
+                    <h3 class="m-0 text-xl font-semibold">
+                        {{
+                            "administration.uploadcsv.validation-errors-title" | translate
+                        }}
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Validation errors list -->
+            <div class="p-0 bg-red-50">
+                <div class="max-h-20rem overflow-y-auto border-bottom-1 border-red-300">
+                    <div
+                        class="flex align-items-start gap-3 px-4 py-3 border-bottom-1 border-red-200"
+                        *ngFor="let error of uploadErrors; let i = index"
+                    >
+                        <div class="flex-1">
+                            <div
+                                class="flex align-items-start gap-2 text-sm line-height-3 text-red-900 font-medium"
+                            >
+                                {{ error }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

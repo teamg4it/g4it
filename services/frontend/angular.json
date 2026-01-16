@@ -82,6 +82,9 @@
                         },
                         "development": {
                             "buildTarget": "frontend:build:development"
+                        },
+                        "local": {
+                            "buildTarget": "frontend:build:local"
                         }
                     },
                     "defaultConfiguration": "development"
