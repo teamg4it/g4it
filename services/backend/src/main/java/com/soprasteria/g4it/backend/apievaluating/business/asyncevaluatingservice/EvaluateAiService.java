@@ -268,6 +268,10 @@ public class EvaluateAiService {
                         inPhysicalEq.setLocation(datacenter.getLocation());
                     }
 
+                    Double equipmentPue = datacenter != null ? datacenter.getPue() : null;
+                    String equipmentLocation = datacenter != null ? datacenter.getLocation() : null;
+
+
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
                             organization, activeCriteria, lifecycleSteps, hypothesisRestList);
@@ -300,7 +304,7 @@ public class EvaluateAiService {
                     }
 
                     evaluateVirtualsEquipments(context, evaluateReportBO, inPhysicalEq, virtualEquipments, aggregationVirtualEquipments, impactEquipementPhysiqueList,
-                            refSip, refShortcutBO, csvInVirtualEquipment, csvOutVirtualEquipment);
+                            refSip, refShortcutBO, csvInVirtualEquipment, csvOutVirtualEquipment, equipmentPue, equipmentLocation);
 
                 }
 
@@ -358,7 +362,9 @@ public class EvaluateAiService {
                                             List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
                                             Map<String, Double> refSip, RefShortcutBO refShortcutBO,
                                             CSVPrinter csvInVirtualEquipment,
-                                            CSVPrinter csvOutVirtualEquipment) throws IOException {
+                                            CSVPrinter csvOutVirtualEquipment,
+                                            Double equipmentPue,
+                                            String equipmentLocation) throws IOException {
 
         if (!context.isHasVirtualEquipments()) return;
 
@@ -369,7 +375,7 @@ public class EvaluateAiService {
 
                 List<ImpactEquipementVirtuel> impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
                         virtualEquipment, impactEquipementPhysiqueList,
-                        virtualEquipments.size(), totalVcpuCoreNumber, totalStorage
+                        virtualEquipments.size(), totalVcpuCoreNumber, totalStorage, equipmentPue, equipmentLocation
                 );
 
                 String location = virtualEquipment.getLocation();
