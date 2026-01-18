@@ -77,19 +77,18 @@ public class SaveService {
                 outPhysicalEquipmentRepository.saveAll(outPhysicalEquipments);
                 taskRepository.updateLastUpdateDate(taskId, LocalDateTime.now());
                 outPhysicalEquipments.clear();
-                entityManager.flush();
-                entityManager.clear();
+                flushAndClearEntityManager();
                 i = 0;
             }
         }
         outPhysicalEquipmentRepository.saveAll(outPhysicalEquipments);
         outPhysicalEquipments.clear();
+        return finalizeSaveAndCleanup(aggregation);
+    }
+
+    private void flushAndClearEntityManager() {
         entityManager.flush();
         entityManager.clear();
-        int totalSaved = aggregation.size();
-        aggregation.clear();
-//        return aggregation.size();
-        return totalSaved;
     }
 
     /**
@@ -112,15 +111,17 @@ public class SaveService {
             if (i >= Constants.BATCH_SIZE) {
                 outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
                 outVirtualEquipments.clear();
-                entityManager.flush();
-                entityManager.clear();
+                flushAndClearEntityManager();
                 i = 0;
             }
         }
         outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
         outVirtualEquipments.clear();
-        entityManager.flush();
-        entityManager.clear();
+        return finalizeSaveAndCleanup(aggregation);
+    }
+
+    private int finalizeSaveAndCleanup(Map<List<String>, AggValuesBO> aggregation) {
+        flushAndClearEntityManager();
         int totalSaved = aggregation.size();
         aggregation.clear();
         return totalSaved;
@@ -146,19 +147,13 @@ public class SaveService {
             if (i >= Constants.BATCH_SIZE) {
                 outApplicationRepository.saveAll(outApplications);
                 outApplications.clear();
-                entityManager.flush();
-                entityManager.clear();
+                flushAndClearEntityManager();
                 i = 0;
             }
         }
         outApplicationRepository.saveAll(outApplications);
         outApplications.clear();
-        entityManager.flush();
-        entityManager.clear();
-        int totalSaved = aggregation.size();
-        aggregation.clear();
-        //return aggregation.size();
-        return totalSaved;
+        return finalizeSaveAndCleanup(aggregation);
     }
 
     /**
@@ -181,18 +176,12 @@ public class SaveService {
             if (i >= Constants.BATCH_SIZE) {
                 outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
                 outVirtualEquipments.clear();
-                entityManager.flush();
-                entityManager.clear();
+                flushAndClearEntityManager();
                 i = 0;
             }
         }
         outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
         outVirtualEquipments.clear();
-        entityManager.flush();
-        entityManager.clear();
-        int totalSaved = aggregation.size();
-        aggregation.clear();
-        //return aggregation.size();
-        return totalSaved;
+        return finalizeSaveAndCleanup(aggregation);
     }
 }
