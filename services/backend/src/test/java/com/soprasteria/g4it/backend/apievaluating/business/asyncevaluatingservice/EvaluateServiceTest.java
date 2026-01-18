@@ -8,8 +8,10 @@ import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImp
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiindicator.repository.RefSustainableIndividualPackageRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
@@ -31,12 +33,16 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
+import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
+import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -382,4 +388,275 @@ class EvaluateServiceTest {
             filesMock.verify(() -> Files.deleteIfExists(any()), atLeastOnce());
         }
     }
+
+    @Test
+    void doEvaluate_shouldHandleImpactWithErrorStatus() throws Exception {
+        Context context = mock(Context.class);
+        Task task = mock(Task.class);
+
+        when(context.log()).thenReturn("ORG/DS/ERR");
+        when(context.getInventoryId()).thenReturn(1L);
+        when(context.getOrganization()).thenReturn("ORG");
+        when(context.getDigitalServiceName()).thenReturn("DS");
+        when(context.isHasVirtualEquipments()).thenReturn(false);
+        when(context.isHasApplications()).thenReturn(false);
+
+        when(task.getId()).thenReturn(202L);
+        when(task.getCriteria()).thenReturn(List.of("criterion-1"));
+
+        Inventory inv = mock(Inventory.class);
+        when(inv.getDoExportVerbose()).thenReturn(true);
+        when(inv.getName()).thenReturn("INV");
+        when(task.getInventory()).thenReturn(inv);
+
+        CriterionRest criterionRest = new CriterionRest();
+        criterionRest.setCode("criterion_1");
+        criterionRest.setUnit("kg");
+
+        when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
+        when(referentialService.getActiveCriteria(anyList())).thenReturn(List.of(criterionRest));
+        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
+        when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
+        when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
+
+        when(inDatacenterRepository.findByInventoryId(1L)).thenReturn(new ArrayList<>());
+
+        when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(1L);
+        when(inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(1L, "CLOUD_SERVICES")).thenReturn(0L);
+
+        InPhysicalEquipment pe = mock(InPhysicalEquipment.class);
+        when(pe.getName()).thenReturn("PE1");
+
+        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                .thenReturn(new ArrayList<>(List.of(pe)))
+                .thenReturn(new ArrayList<>());
+
+        ImpactEquipementPhysique impactPE = mock(ImpactEquipementPhysique.class);
+        when(impactPE.getStatutIndicateur()).thenReturn("KO");
+        when(impactPE.getTrace()).thenReturn("bad trace");
+        when(impactPE.getQuantite()).thenReturn(1.0);
+        when(impactPE.getConsoElecMoyenne()).thenReturn(0.0);
+        when(impactPE.getImpactUnitaire()).thenReturn(10.0);
+        when(impactPE.getCritere()).thenReturn("criterion_1");
+        when(impactPE.getDureeDeVie()).thenReturn(5.0);
+
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
+                .thenReturn(List.of(impactPE));
+
+        when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
+                .thenReturn(List.of("k1"));
+
+        when(saveService.saveOutPhysicalEquipments(anyMap(), eq(202L), any(RefShortcutBO.class))).thenReturn(1);
+
+        assertDoesNotThrow(() -> evaluateService.doEvaluate(context, task, tempDir));
+
+        verify(saveService, atLeastOnce()).saveOutPhysicalEquipments(anyMap(), eq(202L), any(RefShortcutBO.class));
+    }
+
+    @Test
+    void doEvaluate_shouldProcessPhysicalVirtualAndApplications_andSaveAggregations() throws Exception {
+        Context context = mock(Context.class);
+        Task task = mock(Task.class);
+
+        when(context.log()).thenReturn("ORG/DS/90");
+        when(context.getInventoryId()).thenReturn(1L);
+        when(context.getOrganization()).thenReturn("ORG");
+        when(context.getDigitalServiceName()).thenReturn("DS");
+        when(context.isHasVirtualEquipments()).thenReturn(true);
+        when(context.isHasApplications()).thenReturn(true);
+
+        when(task.getId()).thenReturn(200L);
+        when(task.getCriteria()).thenReturn(List.of("criterion-1"));
+
+        Inventory inv = mock(Inventory.class);
+        when(inv.getDoExportVerbose()).thenReturn(true);
+        when(inv.getName()).thenReturn("INV");
+        when(task.getInventory()).thenReturn(inv);
+
+        // referential stubs
+        CriterionRest criterionRest = new CriterionRest();
+        criterionRest.setCode("criterion_1");
+        criterionRest.setUnit("kg");
+
+        when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
+        when(referentialService.getActiveCriteria(anyList())).thenReturn(List.of(criterionRest));
+        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
+        when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
+
+        // country map
+        when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
+
+        // printers
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
+
+        // datacenters empty
+        when(inDatacenterRepository.findByInventoryId(1L)).thenReturn(new ArrayList<>());
+
+        // counts
+        when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(1L);
+        when(inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(1L, "CLOUD_SERVICES")).thenReturn(0L);
+
+        // physical equipment page
+        InPhysicalEquipment pe = mock(InPhysicalEquipment.class);
+        when(pe.getName()).thenReturn("PE1");
+        when(pe.getDatacenterName()).thenReturn(null);
+
+        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                .thenReturn(new ArrayList<>(List.of(pe)))
+                .thenReturn(new ArrayList<>());
+
+        // physical impacts
+        ImpactEquipementPhysique impactPE = mock(ImpactEquipementPhysique.class);
+        when(impactPE.getStatutIndicateur()).thenReturn("OK");
+        when(impactPE.getTrace()).thenReturn(null);
+        when(impactPE.getQuantite()).thenReturn(1.0);
+        when(impactPE.getConsoElecMoyenne()).thenReturn(0.0);
+        when(impactPE.getImpactUnitaire()).thenReturn(10.0);
+        when(impactPE.getCritere()).thenReturn("criterion_1");
+        when(impactPE.getDureeDeVie()).thenReturn(5.0);
+
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
+                .thenReturn(List.of(impactPE));
+
+        // aggregation key stubs (VERY IMPORTANT)
+        when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
+                .thenReturn(List.of("k1"));
+
+        when(aggregationToOutput.keyVirtualEquipment(any(), any(), any(), any(), any()))
+                .thenReturn(List.of("k2"));
+
+        when(aggregationToOutput.keyApplication(any(), any(), any(), any(), any()))
+                .thenReturn(List.of("k3"));
+
+        // virtual equipment for this physical equipment
+        InVirtualEquipment ve = mock(InVirtualEquipment.class);
+        when(ve.getName()).thenReturn("VE1");
+        when(ve.getInfrastructureType()).thenReturn("ON_PREM");
+        when(ve.getQuantity()).thenReturn(1.0);
+        when(ve.getDurationHour()).thenReturn(10.0);
+        when(ve.getWorkload()).thenReturn(0.5);
+        when(ve.getLocation()).thenReturn("France");
+
+        when(inVirtualEquipmentRepository.findByInventoryIdAndPhysicalEquipmentName(eq(1L), eq("PE1"), any()))
+                .thenReturn(new ArrayList<>(List.of(ve)))
+                .thenReturn(new ArrayList<>());
+
+        when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(anyList())).thenReturn(4.0);
+        when(evaluateNumEcoEvalService.getTotalDiskSize(anyList())).thenReturn(100.0);
+
+        ImpactEquipementVirtuel impactVE = mock(ImpactEquipementVirtuel.class);
+        when(impactVE.getStatutIndicateur()).thenReturn("OK");
+        when(impactVE.getTrace()).thenReturn(null);
+        when(impactVE.getConsoElecMoyenne()).thenReturn(0.0);
+        when(impactVE.getImpactUnitaire()).thenReturn(20.0);
+        when(impactVE.getCritere()).thenReturn("criterion_1");
+
+        when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), anyList(), anyInt(), anyDouble(), anyDouble()))
+                .thenReturn(List.of(impactVE));
+
+        // applications for this VE
+        InApplication app = mock(InApplication.class);
+        when(app.getName()).thenReturn("APP1");
+
+        when(inApplicationRepository.findByInventoryIdAndPhysicalEquipmentNameAndVirtualEquipmentName(1L, "PE1", "VE1"))
+                .thenReturn(new ArrayList<>(List.of(app)));
+
+        ImpactApplication impactApp = mock(ImpactApplication.class);
+        when(impactApp.getStatutIndicateur()).thenReturn("OK");
+        when(impactApp.getTrace()).thenReturn(null);
+        when(impactApp.getConsoElecMoyenne()).thenReturn(0.0);
+        when(impactApp.getImpactUnitaire()).thenReturn(30.0);
+        when(impactApp.getCritere()).thenReturn("criterion_1");
+
+        when(evaluateNumEcoEvalService.calculateApplication(any(), anyList(), anyInt()))
+                .thenReturn(List.of(impactApp));
+
+        // saveService return sizes
+        when(saveService.saveOutPhysicalEquipments(anyMap(), eq(200L), any(RefShortcutBO.class))).thenReturn(1);
+        when(saveService.saveOutVirtualEquipments(anyMap(), eq(200L), any(RefShortcutBO.class))).thenReturn(1);
+        when(saveService.saveOutApplications(anyMap(), eq(200L), any(RefShortcutBO.class))).thenReturn(1);
+
+        assertDoesNotThrow(() -> evaluateService.doEvaluate(context, task, tempDir));
+
+        verify(saveService, atLeastOnce()).saveOutPhysicalEquipments(anyMap(), eq(200L), any(RefShortcutBO.class));
+        verify(saveService, atLeastOnce()).saveOutVirtualEquipments(anyMap(), eq(200L), any(RefShortcutBO.class));
+        verify(saveService, atLeastOnce()).saveOutApplications(anyMap(), eq(200L), any(RefShortcutBO.class));
+
+        verify(taskRepository, atLeastOnce()).updateProgress(eq(200L), anyString(), any());
+    }
+
+    @Test
+    void doEvaluate_shouldHandleImpactWithErrorStatus2() throws Exception {
+        Context context = mock(Context.class);
+        Task task = mock(Task.class);
+
+        when(context.log()).thenReturn("ORG/DS/ERR");
+        when(context.getInventoryId()).thenReturn(1L);
+        when(context.getOrganization()).thenReturn("ORG");
+        when(context.getDigitalServiceName()).thenReturn("DS");
+        when(context.isHasVirtualEquipments()).thenReturn(false);
+        when(context.isHasApplications()).thenReturn(false);
+
+        when(task.getId()).thenReturn(202L);
+        when(task.getCriteria()).thenReturn(List.of("criterion-1"));
+
+        Inventory inv = mock(Inventory.class);
+        when(inv.getDoExportVerbose()).thenReturn(true);
+        when(inv.getName()).thenReturn("INV");
+        when(task.getInventory()).thenReturn(inv);
+
+        CriterionRest criterionRest = new CriterionRest();
+        criterionRest.setCode("criterion_1");
+        criterionRest.setUnit("kg");
+
+        when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
+        when(referentialService.getActiveCriteria(anyList())).thenReturn(List.of(criterionRest));
+        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
+        when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
+        when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
+
+        when(inDatacenterRepository.findByInventoryId(1L)).thenReturn(new ArrayList<>());
+
+        when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(1L);
+        when(inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(1L, "CLOUD_SERVICES")).thenReturn(0L);
+
+        InPhysicalEquipment pe = mock(InPhysicalEquipment.class);
+        when(pe.getName()).thenReturn("PE1");
+
+        when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
+                .thenReturn(new ArrayList<>(List.of(pe)))
+                .thenReturn(new ArrayList<>());
+
+        ImpactEquipementPhysique impactPE = mock(ImpactEquipementPhysique.class);
+        when(impactPE.getStatutIndicateur()).thenReturn("KO");
+        when(impactPE.getTrace()).thenReturn("bad trace");
+        when(impactPE.getQuantite()).thenReturn(1.0);
+        when(impactPE.getConsoElecMoyenne()).thenReturn(0.0);
+        when(impactPE.getImpactUnitaire()).thenReturn(10.0);
+        when(impactPE.getCritere()).thenReturn("criterion_1");
+        when(impactPE.getDureeDeVie()).thenReturn(5.0);
+
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
+                .thenReturn(List.of(impactPE));
+
+        when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
+                .thenReturn(List.of("k1"));
+
+        when(saveService.saveOutPhysicalEquipments(anyMap(), eq(202L), any(RefShortcutBO.class))).thenReturn(1);
+
+        assertDoesNotThrow(() -> evaluateService.doEvaluate(context, task, tempDir));
+
+        verify(saveService, atLeastOnce()).saveOutPhysicalEquipments(anyMap(), eq(202L), any(RefShortcutBO.class));
+    }
+
 }
