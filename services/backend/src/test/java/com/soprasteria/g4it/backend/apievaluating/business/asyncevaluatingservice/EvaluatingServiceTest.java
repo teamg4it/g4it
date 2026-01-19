@@ -53,7 +53,6 @@ class EvaluatingServiceTest {
     static final Long WORKSPACE_ID = 1L;
     static final Long INVENTORY_ID = 2L;
     static final String DIGITAL_SERVICE_VERSION_UID = "90651485-3f8b-49dd-a7be-753e4fe1fd36";
-    static final List<String> CRITERIA = List.of("criteria1", "criteria2");
 
     @InjectMocks
     private EvaluatingService evaluatingService;
@@ -77,8 +76,6 @@ class EvaluatingServiceTest {
 
     @Mock
     private AuthService authService;
-    @Mock
-    private AsyncEvaluatingService asyncEvaluatingService;
     @Mock
     private ExportService exportService;
 
@@ -279,9 +276,9 @@ class EvaluatingServiceTest {
 
         when(inventoryRepository.findById(10L)).thenReturn(Optional.of(inventory));
         when(taskRepository.findByInventoryAndStatusAndType(
-                eq(inventory),
-                eq(TaskStatus.IN_PROGRESS.toString()),
-                eq(TaskType.EVALUATING.toString())
+                inventory,
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()
         )).thenReturn(List.of(mock(Task.class)));
 
         G4itRestException ex = assertThrows(G4itRestException.class,
@@ -294,7 +291,7 @@ class EvaluatingServiceTest {
     }
 
     @Test
-    void evaluating_shouldDeleteOldTasksAndCleanExport_keepLatest2() {
+    void evaluating_shouldDeleteOldTasksAndCleanExport_whenMoreThanTwoTasksExist() {
         Inventory inventory = mock(Inventory.class);
         Workspace workspace = mock(Workspace.class);
 
@@ -307,9 +304,9 @@ class EvaluatingServiceTest {
 
         // No task already running
         when(taskRepository.findByInventoryAndStatusAndType(
-                eq(inventory),
-                eq(TaskStatus.IN_PROGRESS.toString()),
-                eq(TaskType.EVALUATING.toString())
+                inventory,
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()
         )).thenReturn(List.of());
 
         // 4 tasks => should delete 2 (after keeping latest 2)
@@ -318,15 +315,15 @@ class EvaluatingServiceTest {
         Task t3 = Task.builder().id(3L).build();
         Task t4 = Task.builder().id(4L).build();
 
-        when(taskRepository.findByInventoryAndType(eq(inventory), eq(TaskType.EVALUATING.toString())))
+        when(taskRepository.findByInventoryAndType(inventory, TaskType.EVALUATING.toString()))
                 .thenReturn(List.of(t1, t2, t3, t4));
 
         when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
         when(workspace.getName()).thenReturn("WS");
 
-        // Criteria mock (Deep stub way)
-        when(criteriaService.getSelectedCriteriaForInventory(eq("ORG"), eq(1L), any()).active())
+        when(criteriaService.getSelectedCriteriaForInventory(anyString(), anyLong(), any()).active())
                 .thenReturn(List.of("C1"));
+
 
         // ✅ FIX: AuthService returns UserBO, not User
         when(authService.getUser()).thenReturn(userBO);
@@ -373,8 +370,7 @@ class EvaluatingServiceTest {
         when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
         when(workspace.getName()).thenReturn("WS");
 
-        // active criteria empty => should use default 5
-        when(criteriaService.getSelectedCriteriaForInventory(eq("ORG"), eq(1L), any()).active())
+        when(criteriaService.getSelectedCriteriaForInventory(anyString(), anyLong(), any()).active())
                 .thenReturn(List.of());
 
         // ✅ FIX: AuthService returns UserBO
@@ -416,7 +412,6 @@ class EvaluatingServiceTest {
         when(task.getId()).thenReturn(101L);
         when(task.getInventory()).thenReturn(inventory);
 
-        // Eligible for restart (older than 15 minutes)
         when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
 
         when(inventory.getWorkspace()).thenReturn(workspace);
@@ -430,39 +425,43 @@ class EvaluatingServiceTest {
         when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
         when(inventory.getApplicationCount()).thenReturn(0L);
 
-        // manageInventoryTasks() -> should pass (no already running tasks)
         when(taskRepository.findByInventoryAndStatusAndType(
-                eq(inventory),
-                eq(TaskStatus.IN_PROGRESS.toString()),
-                eq(TaskType.EVALUATING.toString())
+                inventory,
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()
         )).thenReturn(Collections.emptyList());
 
-        // manageInventoryTasks() cleanup old tasks (none)
-        when(taskRepository.findByInventoryAndType(eq(inventory), eq(TaskType.EVALUATING.toString())))
+        when(taskRepository.findByInventoryAndType(inventory, TaskType.EVALUATING.toString()))
                 .thenReturn(Collections.emptyList());
 
+        // when
         evaluatingService.restartEvaluating();
 
-        // Task state reset before restart
+        // then
+        ArgumentCaptor<LocalDateTime> toStartTimeCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<String>> detailsCaptor = ArgumentCaptor.forClass((Class) List.class);
+
         verify(taskRepository).updateTaskStateWithDetails(
                 eq(101L),
                 eq(TaskStatus.TO_START.toString()),
-                any(LocalDateTime.class),
+                toStartTimeCaptor.capture(),
                 eq("0%"),
-                anyList()
+                detailsCaptor.capture()
         );
 
-        // Task moved to IN_PROGRESS again
+        ArgumentCaptor<LocalDateTime> inProgressTimeCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+
         verify(taskRepository).updateTaskState(
                 eq(101L),
                 eq(TaskStatus.IN_PROGRESS.toString()),
-                any(LocalDateTime.class),
+                inProgressTimeCaptor.capture(),
                 eq("0%")
         );
 
-        // Background execution triggered
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
+
 
     @Test
     void evaluatingDigitalService_shouldUseActiveCriteria_whenActiveCriteriaPresent() {
@@ -518,7 +517,6 @@ class EvaluatingServiceTest {
         verify(digitalServiceRepository).save(any(DigitalService.class));
         verify(digitalServiceVersionRepository).save(any(DigitalServiceVersion.class));
     }
-
 
     // ------------------ NEW TESTS END ------------------
 }
