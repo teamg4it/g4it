@@ -237,4 +237,196 @@ class AsyncEvaluatingServiceTest {
         verify(exportService, never()).uploadExportZip(anyLong(), anyString(), anyString());
         verify(exportService, never()).clean(anyLong());
     }
+
+    @Test
+    void execute_shouldMarkFailed_whenEvaluateAiThrowsAsyncTaskException() throws Exception {
+        when(context.isAi()).thenReturn(true);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doThrow(new AsyncTaskException("boom-ai"))
+                .when(evaluateAiService).doEvaluateAi(eq(context), eq(task), eq(exportDir));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(evaluateAiService).doEvaluateAi(eq(context), eq(task), eq(exportDir));
+        verify(evaluateService, never()).doEvaluate(any(), any(), any());
+
+        verify(exportService, never()).uploadExportZip(anyLong(), anyString(), anyString());
+        verify(exportService, never()).clean(anyLong());
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
+
+    @Test
+    void execute_shouldMarkFailed_whenEvaluateAiThrowsRuntimeException() throws Exception {
+        when(context.isAi()).thenReturn(true);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doThrow(new RuntimeException("boom-ai-runtime"))
+                .when(evaluateAiService).doEvaluateAi(eq(context), eq(task), eq(exportDir));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
+
+    @Test
+    void execute_shouldMarkFailed_whenCleanThrowsException() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+
+        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+
+        doThrow(new RuntimeException("clean-fail"))
+                .when(exportService).clean(eq(101L));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        verify(exportService).clean(eq(101L));
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
+
+    @Test
+    void execute_shouldMarkFailed_whenWorkspaceIdIsNull() throws Exception {
+        when(context.isAi()).thenReturn(false);
+        when(context.getWorkspaceId()).thenReturn(null); // will trigger NPE inside execute()
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        asyncEvaluatingService.execute(context, task);
+
+        // since it fails before upload, these should NOT be called
+        verify(exportService, never()).uploadExportZip(anyLong(), anyString(), anyString());
+        verify(exportService, never()).clean(anyLong());
+
+        // should mark FAILED
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
+
+
+    @Test
+    void execute_shouldThrow_whenUpdateTaskFinalStateFails() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        doNothing().when(exportService).clean(eq(101L));
+
+        doThrow(new RuntimeException("final-state-fail"))
+                .when(taskRepository).updateTaskFinalState(eq(101L), anyString(), anyString(), anyList());
+
+        assertThrows(RuntimeException.class, () -> asyncEvaluatingService.execute(context, task));
+
+        verify(taskRepository).updateTaskFinalState(eq(101L), anyString(), anyString(), anyList());
+        verify(task).setDetails(anyList());
+    }
+
+    @Test
+    void execute_shouldThrow_whenUpdateFinalStateCompletedThrows() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        doNothing().when(exportService).clean(eq(101L));
+
+        doThrow(new RuntimeException("final-fail"))
+                .when(taskRepository)
+                .updateTaskFinalState(eq(101L), eq(TaskStatus.COMPLETED.toString()), eq("100%"), anyList());
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> asyncEvaluatingService.execute(context, task));
+
+        assertEquals("final-fail", ex.getMessage());
+
+        // upload + clean already happened before final update
+        verify(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        verify(exportService).clean(eq(101L));
+
+        // completed final update attempted
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.COMPLETED.toString()),
+                eq("100%"),
+                anyList()
+        );
+
+        // details should still be set (depends on your finally block)
+        verify(task).setDetails(anyList());
+    }
+
+
+    @Test
+    void execute_shouldMarkFailed_whenCleanThrowsAfterUpload() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+
+        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+
+        doThrow(new RuntimeException("clean-crash"))
+                .when(exportService).clean(eq(101L));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        verify(exportService).clean(eq(101L));
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
+
 }
