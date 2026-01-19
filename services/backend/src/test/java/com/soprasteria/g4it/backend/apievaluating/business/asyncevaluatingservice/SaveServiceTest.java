@@ -11,15 +11,12 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
-import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
-import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
-import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import jakarta.persistence.EntityManager;
@@ -62,15 +59,6 @@ class SaveServiceTest {
 
     @InjectMocks
     private SaveService saveService;
-
-    @Mock
-    private FileSystemService fileSystemService;
-
-    @Mock
-    private FileSystem fileSystem;
-
-    @Mock
-    private FileStorage fileStorage;
 
     @Test
     void saveOutPhysicalEquipments_savesAllEntriesWhenAggregationIsNotEmpty() {
