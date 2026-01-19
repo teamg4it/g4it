@@ -740,5 +740,142 @@ class AsyncEvaluatingServiceTest {
         assertTrue(details.stream().anyMatch(s -> s.contains("clean-error")));
     }
 
-    
+    @Test
+    void execute_shouldMarkFailed_whenUploadThrowsUncheckedIOException() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+
+        doThrow(new UncheckedIOException("upload-io-fail", new java.io.IOException("upload-io-fail")))
+                .when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(exportService, never()).clean(anyLong());
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
+
+    @Test
+    void execute_shouldMarkFailed_whenCreateExportDirectoryThrowsRuntimeException() throws Exception {
+
+        doThrow(new RuntimeException("dir-fail"))
+                .when(exportService).createExportDirectory(101L);
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+
+        verify(evaluateService, never()).doEvaluate(any(), any(), any());
+        verify(evaluateAiService, never()).doEvaluateAi(any(), any(), any());
+        verify(exportService, never()).uploadExportZip(anyLong(), anyString(), anyString());
+        verify(exportService, never()).clean(anyLong());
+    }
+
+
+    @Test
+    void execute_shouldStillCallUpdateFinalState_whenEvaluateFails() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doThrow(new RuntimeException("eval-crash"))
+                .when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
+
+    @Test
+    void execute_shouldNotCallUploadAndClean_whenEvaluationFails() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doThrow(new RuntimeException("eval-fail"))
+                .when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(exportService, never()).uploadExportZip(anyLong(), anyString(), anyString());
+        verify(exportService, never()).clean(anyLong());
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+    }
+
+    @Test
+    void execute_shouldCallEvaluateAiOnly_whenAiTrue() throws Exception {
+        when(context.isAi()).thenReturn(true);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateAiService).doEvaluateAi(eq(context), eq(task), eq(exportDir));
+        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        doNothing().when(exportService).clean(eq(101L));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(evaluateAiService).doEvaluateAi(eq(context), eq(task), eq(exportDir));
+        verify(evaluateService, never()).doEvaluate(any(), any(), any());
+    }
+
+    @Test
+    void execute_shouldAlwaysAddStartTaskDetail() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        doNothing().when(exportService).clean(eq(101L));
+
+        asyncEvaluatingService.execute(context, task);
+
+        ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.COMPLETED.toString()),
+                eq("100%"),
+                captor.capture()
+        );
+
+        List<String> details = captor.getValue();
+        assertTrue(details.stream().anyMatch(d -> d.contains("Start task")));
+    }
+
 }
