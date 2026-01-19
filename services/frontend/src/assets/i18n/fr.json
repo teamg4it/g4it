@@ -189,7 +189,8 @@
         "renew-button": "Prolonger",
         "renew-button-extended": "Prolongée",
         "renew-service-success-message": "prolongée avec succès",
-        "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation"
+        "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation",
+        "compare": "Comparer"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -255,6 +256,7 @@
         "configure-view": "Configurer la vue",
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
+        "view-recommendations": "Voir les recommandations",
         "visualize-parameters": "Voir les paramètres",
         "back": "Retour",
         "hide-menu-buttons": "Cacher les options du service numérique",
@@ -519,6 +521,14 @@
         "complementary-pue": "PUE complémentaire",
         "energy-efficiency": "Efficacité énergétique",
         "location": "Localisation"
+    },
+    "digital-services-recommendations": {
+        "recommendations": "Recommandations",
+        "recommendation": "Recommandation",
+        "title": "Titre",
+        "category": "Catégorie",
+        "globalReduction": "Réduction globale",
+        "description": "Description"
     },
     "digital-services-import": {
         "import": "Importer des données",
