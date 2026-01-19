@@ -25,6 +25,8 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +41,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -69,8 +72,9 @@ class EvaluatingServiceTest {
     private UserRepository userRepository;
     @Mock
     private TaskExecutor taskExecutor;
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CriteriaService criteriaService;
+
     @Mock
     private AuthService authService;
     @Mock
@@ -268,6 +272,253 @@ class EvaluatingServiceTest {
         verify(digitalServiceVersionRepository).save(any(DigitalServiceVersion.class));
         verify(taskExecutor).execute(any(BackgroundTask.class));
     }
+
+    @Test
+    void evaluating_shouldThrow409_whenTaskAlreadyRunningForInventory() {
+        Inventory inventory = mock(Inventory.class);
+
+        when(inventoryRepository.findById(10L)).thenReturn(Optional.of(inventory));
+        when(taskRepository.findByInventoryAndStatusAndType(
+                eq(inventory),
+                eq(TaskStatus.IN_PROGRESS.toString()),
+                eq(TaskType.EVALUATING.toString())
+        )).thenReturn(List.of(mock(Task.class)));
+
+        G4itRestException ex = assertThrows(G4itRestException.class,
+                () -> evaluatingService.evaluating("ORG", 1L, 10L));
+
+        assertEquals("409", ex.getCode());
+        assertEquals("task.already.running", ex.getMessage());
+
+        verify(taskExecutor, never()).execute(any());
+    }
+
+    @Test
+    void evaluating_shouldDeleteOldTasksAndCleanExport_keepLatest2() {
+        Inventory inventory = mock(Inventory.class);
+        Workspace workspace = mock(Workspace.class);
+
+        User user = mock(User.class);
+        UserBO userBO = mock(UserBO.class);
+
+        when(inventoryRepository.findById(10L)).thenReturn(Optional.of(inventory));
+        when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
+        when(inventory.getApplicationCount()).thenReturn(1L);
+
+        // No task already running
+        when(taskRepository.findByInventoryAndStatusAndType(
+                eq(inventory),
+                eq(TaskStatus.IN_PROGRESS.toString()),
+                eq(TaskType.EVALUATING.toString())
+        )).thenReturn(List.of());
+
+        // 4 tasks => should delete 2 (after keeping latest 2)
+        Task t1 = Task.builder().id(1L).build();
+        Task t2 = Task.builder().id(2L).build();
+        Task t3 = Task.builder().id(3L).build();
+        Task t4 = Task.builder().id(4L).build();
+
+        when(taskRepository.findByInventoryAndType(eq(inventory), eq(TaskType.EVALUATING.toString())))
+                .thenReturn(List.of(t1, t2, t3, t4));
+
+        when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
+        when(workspace.getName()).thenReturn("WS");
+
+        // Criteria mock (Deep stub way)
+        when(criteriaService.getSelectedCriteriaForInventory(eq("ORG"), eq(1L), any()).active())
+                .thenReturn(List.of("C1"));
+
+        // ✅ FIX: AuthService returns UserBO, not User
+        when(authService.getUser()).thenReturn(userBO);
+        when(userBO.getId()).thenReturn(5L);
+
+        when(userRepository.findById(5L)).thenReturn(Optional.of(user));
+
+        when(taskRepository.save(any(Task.class))).thenAnswer(inv -> {
+            Task task = inv.getArgument(0);
+            task.setId(999L);
+            return task;
+        });
+
+        evaluatingService.evaluating("ORG", 1L, 10L);
+
+        // Sorted desc => keep ids 4,3 ; delete 2,1
+        verify(taskRepository).deleteTask(2L);
+        verify(taskRepository).deleteTask(1L);
+
+        verify(exportService).cleanExport(2L, "ORG", "1");
+        verify(exportService).cleanExport(1L, "ORG", "1");
+
+        verify(taskExecutor).execute(any(BackgroundTask.class));
+    }
+
+    @Test
+    void evaluating_shouldUseDefault5Criteria_whenActiveCriteriaEmpty() {
+        Inventory inventory = mock(Inventory.class);
+        Workspace workspace = mock(Workspace.class);
+
+        User user = mock(User.class);
+        UserBO userBO = mock(UserBO.class);
+
+        when(inventoryRepository.findById(10L)).thenReturn(Optional.of(inventory));
+        when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
+        when(inventory.getApplicationCount()).thenReturn(1L);
+
+        when(taskRepository.findByInventoryAndStatusAndType(any(), anyString(), anyString()))
+                .thenReturn(List.of());
+
+        when(taskRepository.findByInventoryAndType(any(), anyString()))
+                .thenReturn(List.of()); // no cleanup
+
+        when(workspaceService.getWorkspaceById(1L)).thenReturn(workspace);
+        when(workspace.getName()).thenReturn("WS");
+
+        // active criteria empty => should use default 5
+        when(criteriaService.getSelectedCriteriaForInventory(eq("ORG"), eq(1L), any()).active())
+                .thenReturn(List.of());
+
+        // ✅ FIX: AuthService returns UserBO
+        when(authService.getUser()).thenReturn(userBO);
+        when(userBO.getId()).thenReturn(5L);
+
+        when(userRepository.findById(5L)).thenReturn(Optional.of(user));
+
+        when(taskRepository.save(any(Task.class))).thenAnswer(inv -> {
+            Task task = inv.getArgument(0);
+            task.setId(100L);
+            return task;
+        });
+
+        evaluatingService.evaluating("ORG", 1L, 10L);
+
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(captor.capture());
+
+        Task createdTask = captor.getValue();
+        assertNotNull(createdTask.getCriteria());
+        assertEquals(5, createdTask.getCriteria().size());
+
+        verify(taskExecutor).execute(any(BackgroundTask.class));
+    }
+
+    @Test
+    void restartEvaluating_shouldRestartEligibleTask_whenLastUpdateOlderThan15Min() {
+        Task task = mock(Task.class);
+        Inventory inventory = mock(Inventory.class);
+        Workspace workspace = mock(Workspace.class);
+        Organization org = mock(Organization.class);
+
+        when(taskRepository.findByStatusAndType(
+                TaskStatus.IN_PROGRESS.toString(),
+                TaskType.EVALUATING.toString()
+        )).thenReturn(List.of(task));
+
+        when(task.getId()).thenReturn(101L);
+        when(task.getInventory()).thenReturn(inventory);
+
+        // Eligible for restart (older than 15 minutes)
+        when(task.getLastUpdateDate()).thenReturn(LocalDateTime.now().minusMinutes(20));
+
+        when(inventory.getWorkspace()).thenReturn(workspace);
+        when(workspace.getOrganization()).thenReturn(org);
+        when(org.getName()).thenReturn(ORGANIZATION);
+
+        when(workspace.getId()).thenReturn(WORKSPACE_ID);
+        when(workspace.getName()).thenReturn(WORKSPACE);
+
+        when(inventory.getId()).thenReturn(INVENTORY_ID);
+        when(inventory.getVirtualEquipmentCount()).thenReturn(1L);
+        when(inventory.getApplicationCount()).thenReturn(0L);
+
+        // manageInventoryTasks() -> should pass (no already running tasks)
+        when(taskRepository.findByInventoryAndStatusAndType(
+                eq(inventory),
+                eq(TaskStatus.IN_PROGRESS.toString()),
+                eq(TaskType.EVALUATING.toString())
+        )).thenReturn(Collections.emptyList());
+
+        // manageInventoryTasks() cleanup old tasks (none)
+        when(taskRepository.findByInventoryAndType(eq(inventory), eq(TaskType.EVALUATING.toString())))
+                .thenReturn(Collections.emptyList());
+
+        evaluatingService.restartEvaluating();
+
+        // Task state reset before restart
+        verify(taskRepository).updateTaskStateWithDetails(
+                eq(101L),
+                eq(TaskStatus.TO_START.toString()),
+                any(LocalDateTime.class),
+                eq("0%"),
+                anyList()
+        );
+
+        // Task moved to IN_PROGRESS again
+        verify(taskRepository).updateTaskState(
+                eq(101L),
+                eq(TaskStatus.IN_PROGRESS.toString()),
+                any(LocalDateTime.class),
+                eq("0%")
+        );
+
+        // Background execution triggered
+        verify(taskExecutor).execute(any(BackgroundTask.class));
+    }
+
+    @Test
+    void evaluatingDigitalService_shouldUseActiveCriteria_whenActiveCriteriaPresent() {
+        Workspace work = mock(Workspace.class);
+        DigitalService digitalService = mock(DigitalService.class);
+        DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
+        CriteriaByType criteriaByType = mock(CriteriaByType.class);
+
+        UserBO userBO = UserBO.builder()
+                .id(USER_ID)
+                .email("test@soprasteria.com")
+                .domain("soprasteria.com")
+                .build();
+
+        User user = User.builder().id(USER_ID).build();
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(digitalServiceVersion));
+
+        when(digitalServiceVersion.getDigitalService()).thenReturn(digitalService);
+        when(digitalServiceVersion.getDescription()).thenReturn("v1");
+        when(digitalService.getUid()).thenReturn("ds-uid");
+        when(digitalService.getName()).thenReturn("ds-name");
+        when(digitalService.isAi()).thenReturn(false);
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(work);
+        when(work.getName()).thenReturn(WORKSPACE);
+
+        when(digitalServiceVersion.getCriteria()).thenReturn(null);
+
+        when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any()))
+                .thenReturn(criteriaByType);
+
+        // ✅ Active criteria present (NO fallback)
+        List<String> activeCriteria = List.of("C1", "C2", "C3");
+        when(criteriaByType.active()).thenReturn(activeCriteria);
+
+        when(authService.getUser()).thenReturn(userBO);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+
+        when(taskRepository.save(any(Task.class))).thenAnswer(i -> {
+            Task t = i.getArgument(0);
+            t.setId(777L);
+            return t;
+        });
+
+        Task task = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
+
+        assertNotNull(task);
+        assertEquals(activeCriteria, task.getCriteria());
+
+        verify(taskExecutor).execute(any(BackgroundTask.class));
+        verify(digitalServiceRepository).save(any(DigitalService.class));
+        verify(digitalServiceVersionRepository).save(any(DigitalServiceVersion.class));
+    }
+
 
     // ------------------ NEW TESTS END ------------------
 }
