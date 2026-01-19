@@ -34,6 +34,9 @@
         </caption>
         <tr>
             
+             @if (selectable) {
+            <th scope="col"></th>
+        }
             @if (showId && !isMobileView()) {
                 <th scope="col" id="id">
                     {{ "digital-services-terminals.id" | translate }}
@@ -71,6 +74,14 @@
         <tr>
 
            
+            @if (selectable) {
+            <td>
+                <p-checkbox
+                    [(ngModel)]="data.selected"
+                    binary="true"
+                ></p-checkbox>
+            </td>
+        }
 
             @if (showId && !isMobileView()) {
                 <td class="grey-text">{{ rowIndex + 1 }}</td>

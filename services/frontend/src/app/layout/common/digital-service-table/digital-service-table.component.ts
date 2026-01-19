@@ -29,6 +29,9 @@ export class DigitalServiceTableComponent {
     @Input() paginator = true;
     @Input() hideActions = false;
 
+
+
+
     @Output() sidebar: EventEmitter<boolean> = new EventEmitter();
     @Output() resetItem: EventEmitter<boolean> = new EventEmitter();
     @Output() setItem: EventEmitter<any> = new EventEmitter();

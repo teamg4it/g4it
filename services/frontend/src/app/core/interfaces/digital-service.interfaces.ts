@@ -436,4 +436,5 @@ export interface DigitalServiceRecommendation {
     category: string;
     description : string ; 
     implementationDifficulty: string;
+    globalReduction: number;
 }

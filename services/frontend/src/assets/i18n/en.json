@@ -507,9 +507,7 @@
         "numberOfUsers": "Nb of user per year",
         "averageRequest": "Average nb of requests per year",
         "averageToken": "Average nb of tokens generated per request",
-        "numberOfUsers": "Nb of users per year",
-        "averageRequest": "Nb of requests per year",
-        "averageToken": "Nb of tokens generated per request",
+     
         "totalTokenGenerate": "Total nb of generated tokens"
     },
 
@@ -532,8 +530,9 @@
         "priority": "Priority",
         "category": "Category",
         "implementationDifficulty": "Implementation Difficulty",
-        "description": "Description"
+        "description": "Description",
         
+        "globalReduction": "Global reduction"
     },
     "digital-services-import": {
         "import": "Import Data",

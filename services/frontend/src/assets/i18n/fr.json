@@ -192,6 +192,7 @@
         "renew-button-extended": "Prolongée",
         "renew-service-success-message": "prolongée avec succès",
         "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation"
+       
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -530,7 +531,9 @@
         "priority": "Priorité",
         "category": "Catégorie",
         "implementationDifficulty": "Difficulté d'implémentation",
-        "description": "Description"      
+        "description": "Description" ,    
+        "globalReduction": "Réduction globale"
+  
     },
     "digital-services-import": {
         "import": "Importer des données",
