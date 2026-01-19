@@ -429,4 +429,108 @@ class AsyncEvaluatingServiceTest {
         verify(task).setDetails(anyList());
     }
 
+    @Test
+    void execute_shouldThrow_whenUpdateTaskStateThrows() {
+        doThrow(new RuntimeException("state-fail"))
+                .when(taskRepository)
+                .updateTaskState(eq(101L), eq(TaskStatus.IN_PROGRESS.toString()), any(), eq("0%"));
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> asyncEvaluatingService.execute(context, task));
+
+        assertEquals("state-fail", ex.getMessage());
+
+        verify(exportService, never()).createExportDirectory(anyLong());
+        verify(taskRepository, never()).updateTaskFinalState(anyLong(), anyString(), anyString(), anyList());
+    }
+
+
+    @Test
+    void execute_shouldThrow_whenUpdateFinalStateFailedAlsoThrows() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doThrow(new RuntimeException("boom-runtime"))
+                .when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+
+        doThrow(new RuntimeException("failed-update-crash"))
+                .when(taskRepository)
+                .updateTaskFinalState(eq(101L), eq(TaskStatus.FAILED.toString()), eq("0%"), anyList());
+
+        assertThrows(RuntimeException.class, () -> asyncEvaluatingService.execute(context, task));
+
+        verify(task).setDetails(anyList());
+    }
+
+    @Test
+    void execute_shouldMarkFailed_whenWorkspaceIdIsNull_beforeUpload() throws Exception {
+        when(context.isAi()).thenReturn(false);
+        when(context.getWorkspaceId()).thenReturn(null);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(exportService, never()).uploadExportZip(anyLong(), anyString(), anyString());
+        verify(exportService, never()).clean(anyLong());
+
+        verify(task).setDetails(anyList());
+    }
+
+
+    @Test
+    void execute_shouldMarkFailed_whenUploadThrowsRuntimeException() throws Exception {
+        when(context.isAi()).thenReturn(false);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+
+        doThrow(new RuntimeException("upload-runtime"))
+                .when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(exportService, never()).clean(anyLong());
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
+
+    @Test
+    void execute_debug_whereItStops() throws Exception {
+        when(context.isAi()).thenReturn(false);
+        when(context.getOrganization()).thenReturn("ORG");
+        when(context.getWorkspaceId()).thenReturn(999L);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        doNothing().when(exportService).clean(eq(101L));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(exportService).createExportDirectory(101L); // <--- this will fail if code stops before it
+    }
+
+
 }
