@@ -35,6 +35,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -1020,5 +1021,162 @@ class DigitalServiceVersionServiceTest {
         assertTrue(result.getDsNames().isEmpty());
         assertTrue(result.getVersionNames().isEmpty());
     }
+
+    @Test
+    void createDigitalServiceVersion_shouldUseWorkspaceCriteriaDs_whenPresent() {
+        // Given
+        List<String> criteriaDs = List.of("climate-change", "water-use");
+
+        Workspace workspace = Workspace.builder()
+                .id(WORKSPACE_ID)
+                .criteriaDs(criteriaDs)
+                .organization(Organization.builder()
+                        .criteria(List.of("resource-use"))
+                        .build())
+                .build();
+
+        User user = User.builder().id(USER_ID).build();
+
+        InDigitalServiceVersionRest input = InDigitalServiceVersionRest.builder()
+                .dsName("DS")
+                .versionName("v1")
+                .isAi(false)
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(digitalServiceVersionRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(digitalServiceVersionMapper.toBusinessObject(any(), any()))
+                .thenReturn(DigitalServiceVersionBO.builder().build());
+
+        ArgumentCaptor<DigitalServiceVersion> captor =
+                ArgumentCaptor.forClass(DigitalServiceVersion.class);
+
+        // When
+        digitalServiceVersionService.createDigitalServiceVersion(WORKSPACE_ID, USER_ID, input);
+
+        // Then
+        verify(digitalServiceVersionRepository).save(captor.capture());
+        assertThat(captor.getValue().getCriteria())
+                .containsExactly("climate-change", "water-use");
+    }
+
+    @Test
+    void createDigitalServiceVersion_shouldFallbackToOrganizationCriteria_whenCriteriaDsEmpty() {
+        // Given
+        List<String> orgCriteria = List.of("resource-use", "water-use");
+
+        Workspace workspace = Workspace.builder()
+                .id(WORKSPACE_ID)
+                .criteriaDs(Collections.emptyList())
+                .organization(Organization.builder()
+                        .criteria(orgCriteria)
+                        .build())
+                .build();
+
+        User user = User.builder().id(USER_ID).build();
+
+        InDigitalServiceVersionRest input = InDigitalServiceVersionRest.builder()
+                .dsName("DS")
+                .versionName("v1")
+                .isAi(false)
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(digitalServiceRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(digitalServiceVersionRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(digitalServiceVersionMapper.toBusinessObject(any(), any()))
+                .thenReturn(DigitalServiceVersionBO.builder().build());
+
+        ArgumentCaptor<DigitalServiceVersion> captor =
+                ArgumentCaptor.forClass(DigitalServiceVersion.class);
+
+        // When
+        digitalServiceVersionService.createDigitalServiceVersion(WORKSPACE_ID, USER_ID, input);
+
+        // Then
+        verify(digitalServiceVersionRepository).save(captor.capture());
+        assertThat(captor.getValue().getCriteria())
+                .containsExactly("resource-use", "water-use");
+    }
+
+    @Test
+    void duplicateDigitalServiceVersion_shouldDuplicateVersionAndChildren() {
+        // Given
+        DigitalServiceVersion original = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .build();
+
+        DigitalServiceVersion duplicated = DigitalServiceVersion.builder()
+                .uid("new-generated-uid")
+                .build();
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(original));
+
+
+        when(digitalServiceVersionRepository.findById(argThat(uid ->
+                !uid.equals(DIGITAL_SERVICE_VERSION_UID)
+        ))).thenReturn(Optional.of(duplicated));
+
+        when(digitalServiceVersionMapper.toFullBusinessObject(duplicated))
+                .thenReturn(DigitalServiceVersionBO.builder().uid("new-generated-uid").build());
+
+
+        DigitalServiceVersionBO result =
+                digitalServiceVersionService.duplicateDigitalServiceVersion(DIGITAL_SERVICE_VERSION_UID);
+
+
+        assertThat(result).isNotNull();
+
+        verify(digitalServiceVersionRepository)
+                .duplicateVersionRecord(eq(DIGITAL_SERVICE_VERSION_UID), anyString());
+
+        verify(inPhysicalEquipmentRepository)
+                .copyForVersion(eq(DIGITAL_SERVICE_VERSION_UID), anyString());
+        verify(inVirtualEquipmentRepository)
+                .copyForVersion(eq(DIGITAL_SERVICE_VERSION_UID), anyString());
+        verify(inDatacenterRepository)
+                .copyForVersion(eq(DIGITAL_SERVICE_VERSION_UID), anyString());
+        verify(inApplicationRepository)
+                .copyForVersion(eq(DIGITAL_SERVICE_VERSION_UID), anyString());
+        verify(inAiInfrastructureRepository)
+                .copyForVersion(eq(DIGITAL_SERVICE_VERSION_UID), anyString());
+        verify(inAiParameterRepository)
+                .copyForVersion(eq(DIGITAL_SERVICE_VERSION_UID), anyString());
+    }
+
+    @Test
+    void duplicateDigitalServiceVersion_whenOriginalNotFound_shouldThrow404() {
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+                digitalServiceVersionService.duplicateDigitalServiceVersion(DIGITAL_SERVICE_VERSION_UID))
+                .isInstanceOf(G4itRestException.class)
+                .hasMessageContaining("Digital Service Version " + DIGITAL_SERVICE_VERSION_UID + " not found");
+
+        verify(digitalServiceVersionRepository, never())
+                .duplicateVersionRecord(any(), any());
+    }
+
+    @Test
+    void duplicateDigitalServiceVersion_whenDuplicatedVersionMissing_shouldThrow500() {
+        DigitalServiceVersion original = DigitalServiceVersion.builder()
+                .uid(DIGITAL_SERVICE_VERSION_UID)
+                .build();
+
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(original))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+                digitalServiceVersionService.duplicateDigitalServiceVersion(DIGITAL_SERVICE_VERSION_UID))
+                .isInstanceOf(G4itRestException.class)
+                .hasMessageContaining("Failed to retrieve duplicated version");
+    }
+
 
 }
