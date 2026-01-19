@@ -2,6 +2,7 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
+import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
@@ -26,10 +27,12 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
 import org.apache.commons.csv.CSVPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
@@ -52,6 +55,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith(MockitoExtension.class)
 class EvaluateServiceTest {
 
     @Mock
@@ -78,10 +82,10 @@ class EvaluateServiceTest {
     InputToCsvRecord inputToCsvRecord;
     @Mock
     BoaviztapiService boaviztapiService;
-
+    @Mock
+    private ImpactToCsvRecord impactToCsvRecord;
     @InjectMocks
     EvaluateService evaluateService;
-
     @TempDir
     Path tempDir;
 
