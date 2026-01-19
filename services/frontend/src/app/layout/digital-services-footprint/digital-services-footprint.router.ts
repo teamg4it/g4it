@@ -14,6 +14,7 @@ import { DigitalServicesResourcesComponent } from "./digital-services-resources/
 import { PanelCreateServerComponent } from "./digital-services-servers/side-panel/create-server/create-server.component";
 import { PanelListVmComponent } from "./digital-services-servers/side-panel/list-vm/list-vm.component";
 import { PanelServerParametersComponent } from "./digital-services-servers/side-panel/server-parameters/server-parameters.component";
+import { DigitalServicesRecommendationsComponent } from "./digital-services-recommendations/digital-services-recommendations.component";
 
 const titleResolveObject = {
     resolve: {
@@ -74,6 +75,11 @@ const routes: Routes = [
                 path: "",
                 redirectTo: "dashboard",
                 pathMatch: "full",
+            },
+             {
+                path: "recommendations",
+                component: DigitalServicesRecommendationsComponent,
+                ...titleResolveObject,
             },
         ],
     },

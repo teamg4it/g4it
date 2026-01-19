@@ -182,7 +182,8 @@
         "collapse-impact": "Cliquez ici pour réduire la section d'impact",
         "unit-manage": "Gestion des unités",
         "data-consistency-text": "Afficher les données qui n'ont pas pu être calculées",
-        "unit-manage-text": "Votre choix s'appliquera à toutes les unités"
+        "unit-manage-text": "Votre choix s'appliquera à toutes les unités",
+        "compare": "Comparer"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -248,6 +249,7 @@
         "configure-view": "Configurer la vue",
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
+        "view-recommendations": "Voir les recommandations",
         "visualize-parameters": "Voir les paramètres",
         "back": "Retour",
         "hide-menu-buttons": "Cacher les options du service numérique",
@@ -512,6 +514,14 @@
         "complementary-pue": "PUE complémentaire",
         "energy-efficiency": "Efficacité énergétique",
         "location": "Localisation"
+    },
+    "digital-services-recommendations": {
+        "recommendations": "Recommandations",
+        "recommendation": "Recommandation",
+        "title": "Titre",
+        "category": "Catégorie",
+        "globalReduction": "Réduction globale",
+        "description": "Description"
     },
     "digital-services-import": {
         "import": "Importer des données",
