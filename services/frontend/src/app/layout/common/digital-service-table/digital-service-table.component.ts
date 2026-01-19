@@ -24,6 +24,12 @@ export class DigitalServiceTableComponent {
     @Input() showId = true;
     @Input() addButtonId = "add-button";
     @Input() isVM = false;
+    @Input() selectable = false;
+    @Input() compareMode = false;
+    @Input() paginator = true;
+
+
+
 
     @Output() sidebar: EventEmitter<boolean> = new EventEmitter();
     @Output() resetItem: EventEmitter<boolean> = new EventEmitter();
@@ -72,4 +78,13 @@ export class DigitalServiceTableComponent {
             });
         }
     }
+
+    onMainButtonClick() {
+    if (this.compareMode) {
+        return;
+    }
+
+    this.doResetItem();
+    this.sidebarVisible(true);
+}
 }

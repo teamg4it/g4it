@@ -173,7 +173,8 @@
         "plus-menu": "Plus",
         "add-button": "Add",
         "actions": "Actions",
-        "nav-panel": "Show the navigation panel"
+        "nav-panel": "Show the navigation panel",
+        "compare": "Compare"
     },
     "useful-information": {
         "computing-engines": "Computing engines",
@@ -239,6 +240,7 @@
         "configure-criteria": "Configure the view for digital service {{digitalServiceName}}",
         "view-resources": "Visualize my resources",
         "visualize-results": "Visualize my results",
+        "view-recommendations": "Visualize recommendations",
         "visualize-parameters": "Visualize the parameters",
         "back": "Back",
         "hide-menu-buttons": "Hide option for the digital service",
@@ -503,6 +505,14 @@
         "complementary-pue": "Complementary PUE",
         "energy-efficiency": "Energy efficiency",
         "location": "Location"
+    },
+    "digital-services-recommendations": {
+        "recommendations": "Recommendations",
+        "recommendation": "Recommendation",
+        "title": "Title",
+        "category": "Category",
+        "globalReduction": "Global reduction",
+        "description": "Description"
     },
     "digital-services-import": {
         "import": "Import Data",
