@@ -55,7 +55,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -265,10 +268,11 @@ public class EvaluateService {
                     // Aggregate physical equipment indicators in memory
                     for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
 
+                        Double sipValue = refSip.get(impact.getCritere());
                         AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                                 impact.getQuantite(), impact.getConsoElecMoyenne(),
                                 impact.getImpactUnitaire(),
-                                refSip.get(impact.getCritere()),
+                                sipValue,
                                 impact.getDureeDeVie(), null, null, false);
 
                         aggregationPhysicalEquipments
@@ -278,7 +282,7 @@ public class EvaluateService {
 
                         if (evaluateReportBO.isExport()) {
                             csvPhysicalEquipment.printRecord(impactToCsvRecord.toCsv(
-                                    context, taskId, inventoryName, physicalEquipment, impact, refSip.get(impact.getCritere()), evaluateReportBO.isVerbose())
+                                    context, taskId, inventoryName, physicalEquipment, impact, sipValue, evaluateReportBO.isVerbose())
                             );
                         }
 
@@ -426,9 +430,10 @@ public class EvaluateService {
                 // Aggregate virtual equipment indicators in memory
                 for (ImpactEquipementVirtuel impact : impactEquipementVirtuelList) {
 
+                    Double sipValue = refSip.get(impact.getCritere());
                     AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                             virtualEquipment.getQuantity(), impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
-                            refSip.get(impact.getCritere()),
+                            sipValue,
                             null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService);
 
                     aggregationVirtualEquipments
@@ -437,7 +442,7 @@ public class EvaluateService {
 
                     if (evaluateReportBO.isExport()) {
                         csvVirtualEquipment.printRecord(impactToCsvRecord.toCsv(
-                                context, evaluateReportBO, virtualEquipment, impact, refSip.get(impact.getCritere()))
+                                context, evaluateReportBO, virtualEquipment, impact, sipValue)
                         );
                     }
 
@@ -461,9 +466,11 @@ public class EvaluateService {
                 savedApplicationCount += this.evaluateApplications(context, evaluateReportBO, physicalEquipment, virtualEquipment, impactEquipementVirtuelList,
                         aggregationApplications, csvInApplication, csvApplication, refSip, refShortcutBO);
             }
-            csvVirtualEquipment.flush();
-            csvApplication.flush();
             pageNumber++;
+            if (pageNumber > 0 && pageNumber % 5 == 0) {
+                csvVirtualEquipment.flush();
+                csvApplication.flush();
+            }
             virtualEquipments.clear();
         }
 
@@ -500,9 +507,10 @@ public class EvaluateService {
             // Aggregate virtual equipment indicators in memory
             for (ImpactApplication impact : impactApplicationList) {
 
+                Double sipValue = refSip.get(impact.getCritere());
                 AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                         null, impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
-                        refSip.get(impact.getCritere()),
+                        sipValue,
                         null, null, null, false);
 
                 aggregationApplications
@@ -511,7 +519,7 @@ public class EvaluateService {
 
                 if (evaluateReportBO.isExport()) {
                     csvApplication.printRecord(impactToCsvRecord.toCsv(
-                            context, evaluateReportBO, application, impact, refSip.get(impact.getCritere()))
+                            context, evaluateReportBO, application, impact, sipValue)
                     );
                 }
 
@@ -591,7 +599,7 @@ public class EvaluateService {
                 .lifespan(lifespan == null ? 0d : lifespan * localQuantity)
                 .usageDuration(usageDuration == null ? 0d : usageDuration)
                 .workload(workload == null ? 0d : workload)
-                .errors(error == null ? Collections.emptySet() : Set.of(error))
+                .errors(error == null ? Collections.emptySet() : Collections.singleton(error))
                 .build();
     }
 
