@@ -176,7 +176,6 @@ class SaveServiceTest {
 
         int result = saveService.saveOutPhysicalEquipments(aggregation, taskId, ref);
 
-        // at least 1 flush inside the loop + 1 final save
         verify(outPhysicalEquipmentRepository, times(2)).saveAll(anyList());
         verify(taskRepository, atLeastOnce()).updateLastUpdateDate(eq(taskId), any(LocalDateTime.class));
         verify(entityManager, atLeastOnce()).flush();

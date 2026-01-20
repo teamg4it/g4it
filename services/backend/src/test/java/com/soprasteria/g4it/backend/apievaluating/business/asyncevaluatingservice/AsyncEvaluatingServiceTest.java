@@ -52,7 +52,6 @@ class AsyncEvaluatingServiceTest {
         when(task.getId()).thenReturn(101L);
         when(context.log()).thenReturn("ORG/WS/DS");
 
-        // These are not used in all tests -> lenient
         lenient().when(context.getOrganization()).thenReturn("ORG");
         lenient().when(context.getWorkspaceId()).thenReturn(999L);
     }
@@ -329,7 +328,6 @@ class AsyncEvaluatingServiceTest {
 
         asyncEvaluatingService.execute(context, task);
 
-        // since it fails before upload, these should NOT be called
         verify(exportService, never()).uploadExportZip(anyLong(), anyString(), anyString());
         verify(exportService, never()).clean(anyLong());
 
@@ -383,7 +381,6 @@ class AsyncEvaluatingServiceTest {
 
         assertEquals("final-fail", ex.getMessage());
 
-        // upload + clean already happened before final update
         verify(exportService).uploadExportZip(101L, "ORG", "999");
         verify(exportService).clean(101L);
 
@@ -394,7 +391,6 @@ class AsyncEvaluatingServiceTest {
                 anyList()
         );
 
-        // details should still be set (depends on your finally block)
         verify(task).setDetails(anyList());
     }
 

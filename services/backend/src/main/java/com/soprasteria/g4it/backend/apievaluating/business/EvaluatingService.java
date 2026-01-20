@@ -214,7 +214,6 @@ public class EvaluatingService {
         );
 
         // evaluation may be heavy, so runs in threaded executor to avoid performance issues
-//        asyncEvaluatingService.execute(context, task);
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
 
         digitalService.setLastCalculationDate(LocalDateTime.now());
@@ -247,7 +246,6 @@ public class EvaluatingService {
                     task.setLastUpdateDate(now);
                     task.setDetails(new ArrayList<>());
                     task.setProgressPercentage("0%");
-//                    taskRepository.save(task);
                     taskRepository.updateTaskStateWithDetails(
                             task.getId(),
                             TaskStatus.TO_START.toString(),

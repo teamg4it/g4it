@@ -65,7 +65,7 @@ import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD
 @Slf4j
 public class EvaluateService {
 
-    private static final int INITIAL_MAP_CAPACITY = 5_000; // 50_000 is too high initial size;
+    private static final int INITIAL_MAP_CAPACITY = 5_000;
     private static final int MAXIMUM_MAP_CAPACITY = 500_000;
     @Autowired
     InDatacenterRepository inDatacenterRepository;
@@ -226,7 +226,6 @@ public class EvaluateService {
             final Sort sortByName = Sort.by("name");
             while (true) {
                 Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
-//                Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, Sort.by("name"));
                 final List<InPhysicalEquipment> physicalEquipments =
                         context.getInventoryId() == null ?
                                 inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid(), page) :
@@ -238,9 +237,6 @@ public class EvaluateService {
 
                 log.info("Evaluating {} physical equipments, page {}/{}", physicalEquipments.size(), pageNumber + 1, (int) Math.ceil((double) totalPhysicalEquipments / Constants.BATCH_SIZE));
                 int physicalSaveCounter = 0;
-//                int virtualSaveCounter = 0;
-//                int applicationSaveCounter = 0;
-
                 for (InPhysicalEquipment physicalEquipment : physicalEquipments) {
 
                     if (aggregationPhysicalEquipments.size() > MAXIMUM_MAP_CAPACITY) {
@@ -286,7 +282,6 @@ public class EvaluateService {
                             );
                         }
 
-//                        evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbVirtualEquipmentLines() + 1);
                         evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbPhysicalEquipmentLines() + 1);
                     }
 
@@ -302,7 +297,6 @@ public class EvaluateService {
                     if (physicalSaveCounter >= 10) {
                         outPhysicalEquipmentSize += saveService.saveOutPhysicalEquipments(
                                 aggregationPhysicalEquipments, taskId, refShortcutBO);
-//                        aggregationPhysicalEquipments.clear();
                         aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPACITY);
                         physicalSaveCounter = 0;
                     }
@@ -316,9 +310,6 @@ public class EvaluateService {
 
                 // set progress percentage, 0% to 90% is for this process, 90% to 100% is for compressing exports
                 double processFactor = evaluateReportBO.isExport() ? 0.8 : 0.9;
-//                task.setProgressPercentage((int) Math.ceil(currentTotal * 100L * processFactor / totalEquipments) + "%");
-//                task.setLastUpdateDate(LocalDateTime.now());
-//                taskRepository.save(task);
                 taskRepository.updateProgress(
                         taskId,
                         (int) Math.ceil(currentTotal * 100L * processFactor / totalEquipments) + "%",
@@ -389,8 +380,7 @@ public class EvaluateService {
                                                   CSVPrinter csvApplication,
                                                   Map<String, Double> refSip, RefShortcutBO refShortcutBO,
                                                   final List<String> criteria, final List<String> lifecycleSteps,
-                                                  Map<String, String> codeToCountryMap/*,
-                                           int outVirtualEquipmentSize*/) throws IOException {
+                                                  Map<String, String> codeToCountryMap) throws IOException {
 
         if (!context.isHasVirtualEquipments()) return new SaveResult(0, 0);
 
@@ -399,12 +389,11 @@ public class EvaluateService {
         int pageNumber = 0;
         int virtualSaveCounter = 0;
 
-        int savedVirtualCount = 0;   // ✅ local delta only
+        int savedVirtualCount = 0;
         int savedApplicationCount = 0;
         final Sort sortByName = Sort.by("name");
         while (true) {
             Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
-//            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, Sort.by("name"));
             List<InVirtualEquipment> virtualEquipments = context.getInventoryId() == null ?
                     inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentName(context.getDigitalServiceVersionUid(), physicalEquipmentName, page) :
                     inVirtualEquipmentRepository.findByInventoryIdAndPhysicalEquipmentName(context.getInventoryId(), physicalEquipmentName, page);
@@ -412,12 +401,6 @@ public class EvaluateService {
             if (virtualEquipments.isEmpty()) {
                 break;
             }
-//            Map<String, String> countryMap = boaviztapiService.getCountryMap();
-//
-//            // Reverse the map to create a code-to-countryLabel mapping
-//            Map<String, String> codeToCountryMap = countryMap.entrySet()
-//                    .stream()
-//                    .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
             Double totalVcpuCoreNumber =
                     evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
             Double totalStorage =
@@ -431,12 +414,8 @@ public class EvaluateService {
                     impactEquipementVirtuelList = internalToNumEcoEvalImpact.map(impactBOList);
 
                 } else {
-//                    Double totalVcpuCoreNumber = evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
-//                    Double totalStorage = evaluateNumEcoEvalService.getTotalDiskSize(virtualEquipments);
-
                     impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
-                            virtualEquipment, impactEquipementPhysiqueList,
-                            /*virtualEquipments.size()*/virtualSize, totalVcpuCoreNumber, totalStorage
+                            virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage
                     );
                 }
                 String location = isCloudService ? codeToCountryMap.get(virtualEquipment.getLocation()) : virtualEquipment.getLocation();
@@ -612,7 +591,6 @@ public class EvaluateService {
                 .lifespan(lifespan == null ? 0d : lifespan * localQuantity)
                 .usageDuration(usageDuration == null ? 0d : usageDuration)
                 .workload(workload == null ? 0d : workload)
-//                .errors(error == null ? new HashSet<>() : new HashSet<>(List.of(error)))
                 .errors(error == null ? Collections.emptySet() : Set.of(error))
                 .build();
     }

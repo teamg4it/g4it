@@ -146,7 +146,6 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        // minimal required stubs
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
@@ -171,7 +170,7 @@ class EvaluateServiceTest {
         when(inVirtualEquipmentRepository.countByDigitalServiceVersionUidAndInfrastructureType(anyString(), anyString())).thenReturn(0L);
 
         when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(anyString(), any()))
-                .thenReturn(List.of()); // no loop
+                .thenReturn(List.of());
 
         assertDoesNotThrow(() -> evaluateService.doEvaluate(context, task, tempDir));
 
@@ -272,7 +271,6 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        // physical impacts empty -> no aggregation key call needed
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
                 .thenReturn(List.of());
 
@@ -358,7 +356,6 @@ class EvaluateServiceTest {
         when(context.isHasVirtualEquipments()).thenReturn(false);
         when(context.isHasApplications()).thenReturn(false);
 
-        // inventory null => digital service => export = true, but still lines = 0 -> delete happens
         when(task.getInventory()).thenReturn(null);
         when(task.getId()).thenReturn(101L);
 
@@ -370,7 +367,6 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        // mock static Files.deleteIfExists to confirm deletion attempt
         try (MockedStatic<Files> filesMock = mockStatic(Files.class)) {
             filesMock.when(() -> Files.deleteIfExists(any())).thenReturn(true);
 
@@ -465,7 +461,6 @@ class EvaluateServiceTest {
 
         Inventory inv = mock(Inventory.class);
 
-        // ✅ changed from TRUE -> FALSE (to avoid sonar duplication + different path)
         when(inv.getDoExportVerbose()).thenReturn(false);
 
         when(inv.getName()).thenReturn("INV");
@@ -541,7 +536,6 @@ class EvaluateServiceTest {
         when(inv.getName()).thenReturn("INV");
         when(task.getInventory()).thenReturn(inv);
 
-        // referential stubs
         CriterionRest criterionRest = new CriterionRest();
         criterionRest.setCode("criterion_1");
         criterionRest.setUnit("kg");
@@ -552,21 +546,16 @@ class EvaluateServiceTest {
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
 
-        // country map
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
 
-        // printers
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        // datacenters empty
         when(inDatacenterRepository.findByInventoryId(1L)).thenReturn(new ArrayList<>());
 
-        // counts
         when(inPhysicalEquipmentRepository.countByInventoryId(1L)).thenReturn(1L);
         when(inVirtualEquipmentRepository.countByInventoryIdAndInfrastructureType(1L, "CLOUD_SERVICES")).thenReturn(0L);
 
-        // physical equipment page
         InPhysicalEquipment pe = mock(InPhysicalEquipment.class);
         when(pe.getName()).thenReturn("PE1");
         when(pe.getDatacenterName()).thenReturn(null);
@@ -574,8 +563,6 @@ class EvaluateServiceTest {
         when(inPhysicalEquipmentRepository.findByInventoryId(eq(1L), any()))
                 .thenReturn(new ArrayList<>(List.of(pe)))
                 .thenReturn(new ArrayList<>());
-
-        // physical impacts
         ImpactEquipementPhysique impactPE = mock(ImpactEquipementPhysique.class);
         when(impactPE.getStatutIndicateur()).thenReturn("OK");
         when(impactPE.getTrace()).thenReturn(null);
@@ -588,7 +575,6 @@ class EvaluateServiceTest {
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
                 .thenReturn(List.of(impactPE));
 
-        // aggregation key stubs (VERY IMPORTANT)
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
                 .thenReturn(List.of("k1"));
 
@@ -598,7 +584,6 @@ class EvaluateServiceTest {
         when(aggregationToOutput.keyApplication(any(), any(), any(), any(), any()))
                 .thenReturn(List.of("k3"));
 
-        // virtual equipment for this physical equipment
         InVirtualEquipment ve = mock(InVirtualEquipment.class);
         when(ve.getName()).thenReturn("VE1");
         when(ve.getInfrastructureType()).thenReturn("ON_PREM");
@@ -624,7 +609,6 @@ class EvaluateServiceTest {
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), anyList(), anyInt(), anyDouble(), anyDouble()))
                 .thenReturn(List.of(impactVE));
 
-        // applications for this VE
         InApplication app = mock(InApplication.class);
         when(app.getName()).thenReturn("APP1");
 
@@ -641,7 +625,6 @@ class EvaluateServiceTest {
         when(evaluateNumEcoEvalService.calculateApplication(any(), anyList(), anyInt()))
                 .thenReturn(List.of(impactApp));
 
-        // saveService return sizes
         when(saveService.saveOutPhysicalEquipments(anyMap(), eq(200L), any(RefShortcutBO.class))).thenReturn(1);
         when(saveService.saveOutVirtualEquipments(anyMap(), eq(200L), any(RefShortcutBO.class))).thenReturn(1);
         when(saveService.saveOutApplications(anyMap(), eq(200L), any(RefShortcutBO.class))).thenReturn(1);

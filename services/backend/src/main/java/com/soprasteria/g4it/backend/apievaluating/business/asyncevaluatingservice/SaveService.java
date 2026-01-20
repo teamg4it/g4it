@@ -63,7 +63,6 @@ public class SaveService {
      * @param refShortcutBO the ref shortcut BO
      * @return the size of saved data
      */
-    /*@Transactional*/
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int saveOutPhysicalEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutPhysicalEquipment> outPhysicalEquipments = new ArrayList<>(Constants.BATCH_SIZE);
@@ -98,7 +97,6 @@ public class SaveService {
      * @param taskId      the task id
      * @return the size of saved data
      */
-//    @Transactional
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int saveOutVirtualEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutVirtualEquipment> outVirtualEquipments = new ArrayList<>(Constants.BATCH_SIZE);
@@ -134,7 +132,6 @@ public class SaveService {
      * @param taskId      the task id
      * @return the size of saved data
      */
-//    @Transactional
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int saveOutApplications(Map<List<String>, AggValuesBO> aggregation, Long taskId, RefShortcutBO refShortcutBO) {
         List<OutApplication> outApplications = new ArrayList<>(Constants.BATCH_SIZE);
@@ -163,7 +160,6 @@ public class SaveService {
      * @param taskId      the task id
      * @return the size of saved data
      */
-//    @Transactional
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int saveOutCloudVirtualEquipments(Map<List<String>, AggValuesBO> aggregation, Long taskId) {
         List<OutVirtualEquipment> outVirtualEquipments = new ArrayList<>(Constants.BATCH_SIZE);

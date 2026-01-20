@@ -55,10 +55,6 @@ public class AsyncEvaluatingService implements ITaskExecute {
 
         final List<String> details = new ArrayList<>();
         details.add(LogUtils.info("Start task"));
-
-//        task.setDetails(details);
-//        task.setStatus(TaskStatus.IN_PROGRESS.toString());
-//        taskRepository.save(task);
         taskRepository.updateTaskState(
                 taskId,
                 TaskStatus.IN_PROGRESS.toString(),
@@ -79,9 +75,6 @@ public class AsyncEvaluatingService implements ITaskExecute {
             }
             exportService.uploadExportZip(taskId, context.getOrganization(), context.getWorkspaceId().toString());
             exportService.clean(taskId);
-
-//            task.setStatus(TaskStatus.COMPLETED.toString());
-//            task.setProgressPercentage("100%");
 
         } catch (AsyncTaskException e) {
             log.error("Async task with id '{}' failed for '{}' with error: ", taskId, context.log(), e);

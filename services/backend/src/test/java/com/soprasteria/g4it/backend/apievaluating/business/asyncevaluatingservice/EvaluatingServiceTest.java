@@ -79,8 +79,6 @@ class EvaluatingServiceTest {
     @Mock
     private ExportService exportService;
 
-    // ------------------ NEW TESTS START ------------------
-
     @Test
     void evaluating_shouldThrow404_whenInventoryNotFound() {
         when(inventoryRepository.findById(INVENTORY_ID)).thenReturn(Optional.empty());
@@ -309,7 +307,6 @@ class EvaluatingServiceTest {
                 TaskType.EVALUATING.toString()
         )).thenReturn(List.of());
 
-        // 4 tasks => should delete 2 (after keeping latest 2)
         Task t1 = Task.builder().id(1L).build();
         Task t2 = Task.builder().id(2L).build();
         Task t3 = Task.builder().id(3L).build();
@@ -324,8 +321,6 @@ class EvaluatingServiceTest {
         when(criteriaService.getSelectedCriteriaForInventory(anyString(), anyLong(), any()).active())
                 .thenReturn(List.of("C1"));
 
-
-        // ✅ FIX: AuthService returns UserBO, not User
         when(authService.getUser()).thenReturn(userBO);
         when(userBO.getId()).thenReturn(5L);
 
@@ -339,7 +334,6 @@ class EvaluatingServiceTest {
 
         evaluatingService.evaluating("ORG", 1L, 10L);
 
-        // Sorted desc => keep ids 4,3 ; delete 2,1
         verify(taskRepository).deleteTask(2L);
         verify(taskRepository).deleteTask(1L);
 
@@ -373,7 +367,6 @@ class EvaluatingServiceTest {
         when(criteriaService.getSelectedCriteriaForInventory(anyString(), anyLong(), any()).active())
                 .thenReturn(List.of());
 
-        // ✅ FIX: AuthService returns UserBO
         when(authService.getUser()).thenReturn(userBO);
         when(userBO.getId()).thenReturn(5L);
 
@@ -434,12 +427,9 @@ class EvaluatingServiceTest {
         when(taskRepository.findByInventoryAndType(inventory, TaskType.EVALUATING.toString()))
                 .thenReturn(Collections.emptyList());
 
-        // when
         evaluatingService.restartEvaluating();
 
-        // then
         ArgumentCaptor<LocalDateTime> toStartTimeCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
-        @SuppressWarnings("unchecked")
         ArgumentCaptor<List<String>> detailsCaptor = ArgumentCaptor.forClass((Class) List.class);
 
         verify(taskRepository).updateTaskStateWithDetails(
@@ -495,7 +485,6 @@ class EvaluatingServiceTest {
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any()))
                 .thenReturn(criteriaByType);
 
-        // ✅ Active criteria present (NO fallback)
         List<String> activeCriteria = List.of("C1", "C2", "C3");
         when(criteriaByType.active()).thenReturn(activeCriteria);
 
@@ -518,5 +507,4 @@ class EvaluatingServiceTest {
         verify(digitalServiceVersionRepository).save(any(DigitalServiceVersion.class));
     }
 
-    // ------------------ NEW TESTS END ------------------
 }
