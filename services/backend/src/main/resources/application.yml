@@ -31,7 +31,6 @@ aimodelestimationapi:
   version: 1.0
   base-url: http://localhost:8000
 
-
 g4it:
   criteria: "Climate change, Particulate matter and respiratory inorganics, Ionising radiation, Acidification, Resource use (minerals and metals)"
   data:
@@ -139,4 +138,4 @@ ecomindaimodule:
 
 numecoevalmodule:
   enabled: true
-  version: 2.1.0
+  version: 2.2.0

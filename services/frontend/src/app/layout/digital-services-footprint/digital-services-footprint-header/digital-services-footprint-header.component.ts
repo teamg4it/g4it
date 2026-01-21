@@ -89,7 +89,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        console.log("in1");
         this.route.paramMap
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((params) => {
@@ -325,7 +324,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     validateDataVersion(value: string) {
-        console.log(this.savedDigitalServiceAndVersion);
         this.disableVersion = this.duplicateVersionNames
             .map((v) => v.trim())
             .filter((v) => v.trim() !== this.savedDigitalServiceAndVersion.version.trim())
