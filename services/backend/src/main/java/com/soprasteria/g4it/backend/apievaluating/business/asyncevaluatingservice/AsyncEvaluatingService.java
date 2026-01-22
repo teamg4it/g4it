@@ -103,7 +103,7 @@ public class AsyncEvaluatingService implements ITaskExecute {
         );
 
         long end = System.currentTimeMillis();
-        log.info("End evaluating for {}/{}. Time taken: {}s", context.log(), taskId, (end - start) / 1000);
+        log.info("End evaluating for {}/{}. Time taken: {}s {}ms", context.log(), taskId, (end - start) / 1000, (end - start) % 1000);
     }
 
 }
