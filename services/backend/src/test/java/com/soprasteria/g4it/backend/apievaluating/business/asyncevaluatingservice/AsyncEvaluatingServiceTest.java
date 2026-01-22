@@ -356,4 +356,30 @@ class AsyncEvaluatingServiceTest {
                 anyList()
         );
     }
+
+    @Test
+    void execute_shouldMarkFailed_whenEvaluateAiThrowsIOException() throws Exception {
+        when(context.isAi()).thenReturn(true);
+
+        Path exportDir = Path.of("target/test-export/101");
+        when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
+
+        doThrow(new IOException("ai-io-failed"))
+                .when(evaluateAiService)
+                .doEvaluateAi(eq(context), eq(task), eq(exportDir));
+
+        asyncEvaluatingService.execute(context, task);
+
+        verify(exportService, never()).uploadExportZip(anyLong(), anyString(), anyString());
+        verify(exportService, never()).clean(anyLong());
+
+        verify(taskRepository).updateTaskFinalState(
+                eq(101L),
+                eq(TaskStatus.FAILED.toString()),
+                eq("0%"),
+                anyList()
+        );
+
+        verify(task).setDetails(anyList());
+    }
 }
