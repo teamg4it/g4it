@@ -96,7 +96,7 @@ export class CriteriaPopupComponent implements OnChanges {
                 this.organizationDetails?.criteria ??
                 this.defaultCriteria;
             this.selectedCriteriaDS =
-                this.workspaceDetails.criteriaIs ??
+                this.workspaceDetails.criteriaDs ??
                 this.organizationDetails?.criteria ??
                 this.defaultCriteria;
         }
