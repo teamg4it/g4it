@@ -398,10 +398,18 @@ public class EvaluateService {
         final Sort sortByName = Sort.by("name");
         while (true) {
             Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE, sortByName);
-            List<InVirtualEquipment> virtualEquipments = context.getInventoryId() == null ?
-                    inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentName(context.getDigitalServiceVersionUid(), physicalEquipmentName, page) :
-                    inVirtualEquipmentRepository.findByInventoryIdAndPhysicalEquipmentName(context.getInventoryId(), physicalEquipmentName, page);
-
+            List<InVirtualEquipment> virtualEquipments;
+            if (context.getInventoryId() == null && physicalEquipmentName == null) {
+                virtualEquipments = inVirtualEquipmentRepository
+                        .findByDigitalServiceVersionUidAndPhysicalEquipmentNameIsNull(
+                                context.getDigitalServiceVersionUid(), page);
+            } else {
+                virtualEquipments = context.getInventoryId() == null ?
+                        inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndPhysicalEquipmentName(
+                                context.getDigitalServiceVersionUid(), physicalEquipmentName, page) :
+                        inVirtualEquipmentRepository.findByInventoryIdAndPhysicalEquipmentName(
+                                context.getInventoryId(), physicalEquipmentName, page);
+            }
             if (virtualEquipments.isEmpty()) {
                 break;
             }

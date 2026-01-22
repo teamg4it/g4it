@@ -144,4 +144,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                     @Param("progress") String progress,
                                     @Param("details") List<String> details);
 
+    Optional<Task> findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
+            DigitalServiceVersion digitalServiceVersion,
+            String type,
+            String status
+    );
+
+    
 }
