@@ -413,7 +413,7 @@ export class TopHeaderComponent implements OnInit {
             skipLocationChange: true,
             queryParamsHandling: "merge",
         });
-        window.location.reload();
+        globalThis.location.reload();
     }
 
     async logout() {
