@@ -38,6 +38,7 @@ class OutPhysicalEquipmentServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
+
     @Mock
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
 
@@ -52,14 +53,27 @@ class OutPhysicalEquipmentServiceTest {
         String digitalServiceVersionUid = "nonexistent-uid";
         final DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
 
-        when(taskRepository.findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion)).thenReturn(Optional.empty());
-        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid)).thenReturn(Optional.of(digitalServiceVersion));
+        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
 
-        List<OutPhysicalEquipmentRest> result = outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
+        when(taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
+                digitalServiceVersion,
+                "EVALUATING_DIGITAL_SERVICE",
+                "COMPLETED"
+        )).thenReturn(Optional.empty());
+
+        List<OutPhysicalEquipmentRest> result =
+                outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
 
         assertTrue(result.isEmpty());
-        verify(taskRepository).findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion);
+
         verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
+        verify(taskRepository).findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
+                digitalServiceVersion,
+                "EVALUATING_DIGITAL_SERVICE",
+                "COMPLETED"
+        );
+
         verifyNoInteractions(outPhysicalEquipmentRepository, outPhysicalEquipmentMapper);
     }
 
@@ -70,16 +84,32 @@ class OutPhysicalEquipmentServiceTest {
         task.setId(1L);
         final DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
 
-        when(taskRepository.findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion)).thenReturn(Optional.of(task));
-        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid)).thenReturn(Optional.of(digitalServiceVersion));
-        when(outPhysicalEquipmentRepository.findByTaskId(task.getId())).thenReturn(List.of());
-        when(outPhysicalEquipmentMapper.toRest(anyList())).thenReturn(List.of(OutPhysicalEquipmentRest.builder().build()));
+        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid))
+                .thenReturn(Optional.of(digitalServiceVersion));
 
-        List<OutPhysicalEquipmentRest> result = outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
+        when(taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
+                digitalServiceVersion,
+                "EVALUATING_DIGITAL_SERVICE",
+                "COMPLETED"
+        )).thenReturn(Optional.of(task));
+
+        when(outPhysicalEquipmentRepository.findByTaskId(task.getId()))
+                .thenReturn(List.of());
+
+        when(outPhysicalEquipmentMapper.toRest(anyList()))
+                .thenReturn(List.of(OutPhysicalEquipmentRest.builder().build()));
+
+        List<OutPhysicalEquipmentRest> result =
+                outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
 
         assertFalse(result.isEmpty());
-        verify(taskRepository).findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion);
+
         verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
+        verify(taskRepository).findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
+                digitalServiceVersion,
+                "EVALUATING_DIGITAL_SERVICE",
+                "COMPLETED"
+        );
         verify(outPhysicalEquipmentRepository).findByTaskId(task.getId());
         verify(outPhysicalEquipmentMapper).toRest(anyList());
     }
