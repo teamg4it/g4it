@@ -157,7 +157,7 @@ export class PanelServerParametersComponent {
     ) {}
 
     setDefaultForm(type: string) {
-        if (!this.current.host || !this.current.host.code) return;
+        if (!this.current?.host?.code) return;
         this.serverForm.controls["electricityConsumption"].setValue(
             this.current.host.characteristic.find(
                 (c) => c.code === "annualElectricityConsumption",

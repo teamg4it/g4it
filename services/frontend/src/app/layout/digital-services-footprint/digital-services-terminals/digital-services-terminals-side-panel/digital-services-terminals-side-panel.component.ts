@@ -106,7 +106,7 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
         );
         const exclusions = ["Non spécifié", "France-CNR"];
         this.countries = countryList
-            .sort()
+            .sort((a, b) => a.localeCompare(b))
             .filter((item) => !exclusions.includes(item))
             .map((item) => ({ value: item, label: item }));
     }
