@@ -88,7 +88,7 @@ export class WorkspaceComponent implements OnInit {
             Validators.required,
             this.spaceDuplicateValidator.bind(this),
             Validators.maxLength(20),
-            Validators.pattern(/^[^@\/;?]*$/),
+            Validators.pattern(/^[^@/;?]*$/),
         ]),
     });
 

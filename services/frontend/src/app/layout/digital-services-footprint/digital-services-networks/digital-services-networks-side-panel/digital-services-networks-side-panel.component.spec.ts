@@ -52,7 +52,7 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
         component.networkData = [];
         component.update = new EventEmitter();
         component.delete = new EventEmitter();
-        component.cancel = new EventEmitter();
+        component.outCancel = new EventEmitter();
         component.sidebarVisible = new EventEmitter();
         fixture.detectChanges();
     });
@@ -102,17 +102,17 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
         });
     });
 
-    it("should emit cancel event when cancelNetwork is called", () => {
-        spyOn(component.cancel, "emit");
+    it("should emit outCancel event when cancelNetwork is called", () => {
+        spyOn(component.outCancel, "emit");
         component.cancelNetwork();
-        expect(component.cancel.emit).toHaveBeenCalledWith(component.network);
+        expect(component.outCancel.emit).toHaveBeenCalledWith(component.network);
     });
 
-    it("should emit cancel and sidebarVisible events when close is called", () => {
-        spyOn(component.cancel, "emit");
+    it("should emit outCancel and sidebarVisible events when close is called", () => {
+        spyOn(component.outCancel, "emit");
         spyOn(component.sidebarVisible, "emit");
         component.close();
-        expect(component.cancel.emit).toHaveBeenCalledWith(component.network);
+        expect(component.outCancel.emit).toHaveBeenCalledWith(component.network);
         expect(component.sidebarVisible.emit).toHaveBeenCalledWith(false);
     });
 });
