@@ -217,8 +217,8 @@ export class InventoriesFootprintComponent implements OnInit {
             this.allUnmodifiedFilters[field] = [
                 Constants.ALL,
                 ...uniqueFilterSet[field]
-                    .map((item: any) => (item ? item : Constants.EMPTY))
-                    .sort(),
+                    .map((item: any) => item ?? Constants.EMPTY)
+                    .sort((a, b) => a.localeCompare(b)),
             ];
         }
 

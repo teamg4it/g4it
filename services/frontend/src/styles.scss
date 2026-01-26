@@ -919,14 +919,6 @@ div.label-input-div-medium {
     color: gray !important;
 }
 
-.manage-version-table {
-    .p-disabled,
-    .p-component:disabled {
-        opacity: 1;
-        color: #383838 !important;
-    }
-}
-
 .p-progressbar {
     border: 0 none;
     border-radius: 10px;
@@ -1382,6 +1374,12 @@ app-useful-information {
         background-color: #e0e0e0;
         border-color: #bdbdbd;
         opacity: 0.75;
+    }
+
+    .p-disabled,
+    .p-component:disabled {
+        opacity: 1;
+        color: #383838 !important;
     }
 }
 

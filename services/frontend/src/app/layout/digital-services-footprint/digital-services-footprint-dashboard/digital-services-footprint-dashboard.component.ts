@@ -627,8 +627,10 @@ export class DigitalServicesFootprintDashboardComponent
 
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
+        const criteriasCalculated = this.impacts.flatMap((impact) => impact.name);
         this.selectedCriteriaPopup =
             this.digitalService.criteria ??
+            criteriasCalculated ??
             this.workspace.criteriaDs ??
             this.organization.criteria ??
             defaultCriteria;

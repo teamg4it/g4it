@@ -44,56 +44,76 @@ export class TemplateFileService {
         });
     }
 
+    private processZipFile(
+        templateFileDescription: TemplateFileDescription,
+        isDs: boolean,
+    ): TemplateFileDescription | null {
+        if (!isDs) {
+            templateFileDescription.type = "zip";
+            templateFileDescription.displayFileName = this.translate.instant(
+                "inventories.templates.all-template-files",
+                {
+                    type: templateFileDescription.type,
+                    size: this.toKB(templateFileDescription.metadata.size),
+                },
+            );
+            return templateFileDescription;
+        }
+        return null;
+    }
+
+    private processXlsxFile(
+        templateFileDescription: TemplateFileDescription,
+    ): TemplateFileDescription {
+        templateFileDescription.type = "xlsx";
+        templateFileDescription.displayFileName = this.translate.instant(
+            "inventories.templates.data-model",
+            {
+                type: templateFileDescription.type,
+                size: this.toKB(templateFileDescription.metadata.size),
+            },
+        );
+        return templateFileDescription;
+    }
+
+    private processCsvFile(
+        templateFileDescription: TemplateFileDescription,
+    ): TemplateFileDescription {
+        templateFileDescription.type = "csv";
+        for (const csvFileType of Constants.FILE_TYPES) {
+            if (templateFileDescription.name.includes(csvFileType)) {
+                templateFileDescription.displayFileName = this.translate.instant(
+                    `inventories.templates.${csvFileType}-template-file`,
+                    {
+                        type: templateFileDescription.type,
+                        size: this.toKB(templateFileDescription.metadata.size),
+                    },
+                );
+                templateFileDescription.csvFileType = csvFileType;
+                break;
+            }
+        }
+        return templateFileDescription;
+    }
+
     transformTemplateFiles(
         templateFiles: FileDescription[],
         isDs: boolean,
     ): TemplateFileDescription[] {
-        let zipFile: TemplateFileDescription = {} as TemplateFileDescription;
-        let xlsxFile: TemplateFileDescription = {} as TemplateFileDescription;
+        let zipFile: TemplateFileDescription | null = null;
+        let xlsxFile: TemplateFileDescription | null = null;
         const csvFiles: TemplateFileDescription[] = [];
 
         for (const res of templateFiles) {
             let templateFileDescription = { ...res } as TemplateFileDescription;
             templateFileDescription.name = extractFileName(templateFileDescription.name);
 
-            if (res.name.includes("zip") && !isDs) {
-                templateFileDescription.type = "zip";
-                templateFileDescription.displayFileName = this.translate.instant(
-                    "inventories.templates.all-template-files",
-                    {
-                        type: templateFileDescription.type,
-                        size: this.toKB(res.metadata.size),
-                    },
-                );
-                zipFile = templateFileDescription;
-            }
-            if (res.name.includes("xlsx")) {
-                templateFileDescription.type = "xlsx";
-                templateFileDescription.displayFileName = this.translate.instant(
-                    "inventories.templates.data-model",
-                    {
-                        type: templateFileDescription.type,
-                        size: this.toKB(res.metadata.size),
-                    },
-                );
-                xlsxFile = templateFileDescription;
-            }
-            if (res.name.includes("csv")) {
-                templateFileDescription.type = "csv";
-                for (const csvFileType of Constants.FILE_TYPES) {
-                    if (res.name.includes(csvFileType)) {
-                        templateFileDescription.displayFileName = this.translate.instant(
-                            `inventories.templates.${csvFileType}-template-file`,
-                            {
-                                type: templateFileDescription.type,
-                                size: this.toKB(res.metadata.size),
-                            },
-                        );
-                        templateFileDescription.csvFileType = csvFileType;
-                    }
-                }
-
-                csvFiles.push(templateFileDescription);
+            if (res.name.includes("zip")) {
+                zipFile = this.processZipFile(templateFileDescription, isDs);
+            } else if (res.name.includes("xlsx")) {
+                xlsxFile = this.processXlsxFile(templateFileDescription);
+            } else if (res.name.includes("csv")) {
+                csvFiles.push(this.processCsvFile(templateFileDescription));
             }
         }
 
@@ -102,7 +122,16 @@ export class TemplateFileService {
                 Constants.FILE_TYPES.indexOf(a.csvFileType ?? "") -
                 Constants.FILE_TYPES.indexOf(b.csvFileType ?? ""),
         );
-        return isDs ? [...csvFiles, xlsxFile] : [zipFile, ...csvFiles, xlsxFile];
+
+        const result: TemplateFileDescription[] = [];
+        if (!isDs && zipFile) {
+            result.push(zipFile);
+        }
+        result.push(...csvFiles);
+        if (xlsxFile) {
+            result.push(xlsxFile);
+        }
+        return result;
     }
 
     toKB(bytes: string | undefined) {

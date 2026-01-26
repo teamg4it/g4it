@@ -18,15 +18,17 @@
     </div>
     <div>
         <form action="" method="post">
-            <div
-                class="flex flex-wrap gap-3 bg-white w-7 border-round-xl border-1 cursor-pointer"
+            <fieldset
+                class="flex flex-wrap gap-3 border-black-alpha-90 bg-white w-7 border-round-xl border-1 cursor-pointer"
                 *ngIf="purpose === 'new'"
                 role="group"
                 [attr.aria-label]="'inventories.type.name' | translate"
             >
                 <div
-                    class="flex align-items-center p-3"
+                    class="flex align-items-center p-2"
                     (click)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
+                    (keydown.enter)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
+                    (keydown.space)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
                 >
                     <label for="information-system" class="mr-1 cursor-pointer">{{
                         "inventories.type.is-version" | translate
@@ -42,8 +44,10 @@
 
                 <div class="border-left-1"></div>
                 <div
-                    class="flex align-items-center px-2 py-3"
+                    class="flex align-items-center p-2"
                     (click)="selectedType = 'SIMULATION'; name = ''"
+                    (keydown.enter)="selectedType = 'SIMULATION'; name = ''"
+                    (keydown.space)="selectedType = 'SIMULATION'; name = ''"
                 >
                     <label for="simulation" class="mr-1 cursor-pointer">{{
                         "inventories.type.simulation" | translate
@@ -56,7 +60,7 @@
                         id="simulation-radio-button"
                     ></p-radioButton>
                 </div>
-            </div>
+            </fieldset>
 
             <br />
             <div class="flex flex-row align-items-start ml-1" *ngIf="purpose === 'new'">
@@ -146,6 +150,7 @@
                             </span>
 
                             <button
+                                type="button"
                                 class="bg-transparent border-none cursor-pointer vertical-align-middle"
                                 (click)="downloadTemplateFile(data.name)"
                             >
