@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
+import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import { DigitalServiceServerConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -45,18 +46,24 @@ export class PanelCreateServerComponent implements OnInit {
             .map((pe) => pe.name)
             .filter((name) => name !== this.server.name);
 
-        this.serverForm = this._formBuilder.group({
-            name: [
-                "",
-                [
-                    Validators.required,
-                    uniqueNameValidator(existingNames),
-                    noWhitespaceValidator(),
+        this.serverForm = this._formBuilder.group(
+            {
+                name: [
+                    "",
+                    [
+                        Validators.required,
+                        uniqueNameValidator(existingNames),
+                        noWhitespaceValidator(),
+                    ],
                 ],
-            ],
-            mutualizationType: ["", Validators.required],
-            type: ["", Validators.required],
-        });
+                mutualizationType: ["", Validators.required],
+                type: ["", Validators.required],
+            },
+            {
+                validators: [xssFormGroupValidator()],
+                updateOn: "blur",
+            },
+        );
 
         this.serverForm.get("name")?.markAsDirty();
     }

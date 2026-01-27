@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
+import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import { DigitalServiceNetworkConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
@@ -43,21 +44,27 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
         this.existingNames = this.networkData
             .filter((c) => (isNew ? true : this.network.name !== c.name))
             .map((cloud) => cloud.name);
-        this.networksForm = this._formBuilder.group({
-            name: [
-                "",
-                [
-                    Validators.required,
-                    uniqueNameValidator(this.existingNames),
-                    noWhitespaceValidator(),
+        this.networksForm = this._formBuilder.group(
+            {
+                name: [
+                    "",
+                    [
+                        Validators.required,
+                        uniqueNameValidator(this.existingNames),
+                        noWhitespaceValidator(),
+                    ],
                 ],
-            ],
-            type: [
-                { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
-                Validators.required,
-            ],
-            yearlyQuantityOfGbExchanged: [0, [Validators.required]],
-        });
+                type: [
+                    { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
+                    Validators.required,
+                ],
+                yearlyQuantityOfGbExchanged: [0, [Validators.required]],
+            },
+            {
+                validators: [xssFormGroupValidator()],
+                updateOn: "blur",
+            },
+        );
     }
 
     deleteNetwork() {
