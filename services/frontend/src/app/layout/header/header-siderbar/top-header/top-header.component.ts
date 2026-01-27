@@ -48,7 +48,6 @@ import { LeftSidebarComponent } from "../left-sidebar/left-sidebar.component";
     standalone: true,
     selector: "app-top-header",
     templateUrl: "./top-header.component.html",
-    styleUrls: ["./top-header.component.scss"],
     imports: [
         ButtonModule,
         MenuModule,
