@@ -6,18 +6,21 @@ export function xssFormGroupValidator(): ValidatorFn {
             return null;
         }
 
-        const xssPatterns = [
-            /<script\b[^>]*>/i,
-            /<\/script\s*>/i,
-            /javascript\s*:/i,
-            /on[a-z]+\s*=/i,
-            /<[^>]+>/,
-        ];
+        // Function to check a single string for XSS
+        const containsXss = (value: string): boolean => {
+            const lower = value.toLowerCase();
+
+            return (
+                lower.includes("<script") || // catches opening script tags
+                lower.includes("</script") || // catches closing script tags
+                lower.includes("javascript:") || // catches javascript: URLs
+                /\bon[a-z]{1,32}\s*=/.test(lower) || // bounded event handler attributes
+                /<[^>]{1,2048}>/.test(value) // bounded tag length to prevent abuse
+            );
+        };
 
         const hasXss = Object.values(control.value).some(
-            (value) =>
-                typeof value === "string" &&
-                xssPatterns.some((pattern) => pattern.test(value)),
+            (value) => typeof value === "string" && containsXss(value),
         );
 
         return hasXss ? { xssDetected: true } : null;

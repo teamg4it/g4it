@@ -9,8 +9,8 @@ describe("xssFormGroupValidator", () => {
     });
 
     it("should return null if control value is not an object", () => {
-        const control = new FormControl("just a string");
-        expect(validatorFn(control)).toBeNull();
+        const control1 = new FormControl("just a string");
+        expect(validatorFn(control1)).toBeNull();
 
         const control2 = new FormControl(null);
         expect(validatorFn(control2)).toBeNull();
@@ -34,6 +34,15 @@ describe("xssFormGroupValidator", () => {
     it("should detect <script> tag", () => {
         const control = new FormGroup(
             { comment: new FormControl("<script>alert(1)</script>") },
+            { validators: validatorFn },
+        );
+
+        expect(validatorFn(control)).toEqual({ xssDetected: true });
+    });
+
+    it("should detect closing </script> tag", () => {
+        const control = new FormGroup(
+            { comment: new FormControl("Hello </script>") },
             { validators: validatorFn },
         );
 
@@ -85,6 +94,34 @@ describe("xssFormGroupValidator", () => {
             { validators: validatorFn },
         );
 
+        expect(validatorFn(control)).toEqual({ xssDetected: true });
+    });
+
+    it("should detect XSS in mixed-case patterns", () => {
+        const control = new FormGroup(
+            { input: new FormControl("<ScRiPt>alert(1)</ScRiPt>") },
+            { validators: validatorFn },
+        );
+
+        expect(validatorFn(control)).toEqual({ xssDetected: true });
+    });
+
+    it("should detect XSS in large but bounded HTML tags", () => {
+        const longTag = "<div>" + "a".repeat(2000) + "</div>";
+        const control = new FormGroup(
+            { field: new FormControl(longTag) },
+            { validators: validatorFn },
+        );
+
+        expect(validatorFn(control)).toEqual({ xssDetected: true });
+    });
+
+    it("should ignore HTML tags longer than bounds (safe fallback)", () => {
+        const tooLongTag = "<div>" + "a".repeat(5000) + "</div>";
+        const control = new FormGroup(
+            { field: new FormControl(tooLongTag) },
+            { validators: validatorFn },
+        );
         expect(validatorFn(control)).toEqual({ xssDetected: true });
     });
 });
