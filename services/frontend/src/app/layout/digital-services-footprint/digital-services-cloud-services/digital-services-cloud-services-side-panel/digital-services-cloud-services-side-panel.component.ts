@@ -12,6 +12,7 @@ import { MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
+import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import { DigitalServiceCloudServiceConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { DropdownValue } from "src/app/core/interfaces/generic.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
@@ -116,22 +117,28 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
         this.existingNames = this.cloudServices
             .filter((c) => (this.isNew ? true : this.cloud.name !== c.name))
             .map((cloud) => cloud.name);
-        this.cloudForm = this._formBuilder.group({
-            name: [
-                "",
-                [
-                    Validators.required,
-                    uniqueNameValidator(this.existingNames),
-                    noWhitespaceValidator(),
+        this.cloudForm = this._formBuilder.group(
+            {
+                name: [
+                    "",
+                    [
+                        Validators.required,
+                        uniqueNameValidator(this.existingNames),
+                        noWhitespaceValidator(),
+                    ],
                 ],
-            ],
-            cloudProvider: ["", Validators.required],
-            instanceType: ["", Validators.required],
-            location: ["", Validators.required],
-            quantity: ["0", Validators.required],
-            averageWorkload: ["0", Validators.required],
-            annualUsage: ["0", Validators.required],
-        });
+                cloudProvider: ["", Validators.required],
+                instanceType: ["", Validators.required],
+                location: ["", Validators.required],
+                quantity: ["0", Validators.required],
+                averageWorkload: ["0", Validators.required],
+                annualUsage: ["0", Validators.required],
+            },
+            {
+                validators: [xssFormGroupValidator()],
+                updateOn: "blur",
+            },
+        );
         this.cloudForm.get("name")?.markAsDirty();
     }
 
