@@ -6,10 +6,18 @@ export function xssFormGroupValidator(): ValidatorFn {
             return null;
         }
 
-        const xssPattern = /<script.*?>.*?<\/script>|javascript:|on\w+=|<.*?>/i;
+        const xssPatterns = [
+            /<script\b[^>]*>/i,
+            /<\/script\s*>/i,
+            /javascript\s*:/i,
+            /on[a-z]+\s*=/i,
+            /<[^>]+>/,
+        ];
 
         const hasXss = Object.values(control.value).some(
-            (value) => typeof value === "string" && xssPattern.test(value),
+            (value) =>
+                typeof value === "string" &&
+                xssPatterns.some((pattern) => pattern.test(value)),
         );
 
         return hasXss ? { xssDetected: true } : null;
