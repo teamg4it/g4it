@@ -12,7 +12,7 @@ import { FootprintDataService } from "src/app/core/service/data/footprint-data.s
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 
-fdescribe("InventoryItemComponent", () => {
+describe("InventoryItemComponent", () => {
     let component: InventoryItemComponent;
     let fixture: ComponentFixture<InventoryItemComponent>;
 
