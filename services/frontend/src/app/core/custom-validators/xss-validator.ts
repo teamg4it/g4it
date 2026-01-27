@@ -16,7 +16,7 @@ export function xssFormGroupValidator(): ValidatorFn {
                 lower.includes("</script") || // catches closing script tags
                 jsProtocolPattern.test(value) || // safer for Sonar
                 /\bon[a-z]{1,32}\s*=/.test(lower) || // bounded event handler attributes
-                /<[^>]{1,2048}>/.test(value) // bounded tag length to prevent abuse
+                /<[^>]+>/.test(value) // bounded tag length to prevent abuse
             );
         };
 
