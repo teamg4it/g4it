@@ -10,8 +10,6 @@ package com.soprasteria.g4it.backend.config;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -20,9 +18,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -86,15 +82,10 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth.requestMatchers(AUTH_WHITELIST).permitAll())
                     .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                     .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-                    .cors(Customizer.withDefaults()).headers(headers -> headers
-                            .contentTypeOptions(Customizer.withDefaults())
-                            .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                            .contentSecurityPolicy(csp -> csp
-                                    .policyDirectives(
-                                            "default-src 'self'; " +
-                                             "script-src 'self'; " +
-                                             "object-src 'none'; " +
-                                             "frame-ancestors 'none';"))).build();
+                    .cors(Customizer.withDefaults())
+                    .build();
         }
+
     }
+
 }
