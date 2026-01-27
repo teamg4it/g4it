@@ -21,7 +21,6 @@ public class XssValidator {
         String cleaned = Jsoup.clean(value, Safelist.none());
 
         if (!cleaned.equals(value)) {
-            //System.out.println("INFO :: invalid input json content exception config ");
             throw new G4itRestException("400", "Invalid input detected. Script or HTML content is not allowed");
         }
         return value;

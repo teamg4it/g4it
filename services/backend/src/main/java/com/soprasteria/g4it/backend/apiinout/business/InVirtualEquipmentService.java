@@ -19,7 +19,9 @@ import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepos
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,7 @@ public class InVirtualEquipmentService {
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private InventoryRepository inventoryRepository;
     private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    private CommonValidationUtil commonValidationUtil;
 
     /**
      * Get the virtual equipments list linked to a digital service.
@@ -87,6 +90,7 @@ public class InVirtualEquipmentService {
             throw new G4itRestException("404", String.format("the digital service of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
 
+        validateLocationByBoaviztaApi(inVirtualEquipmentRest);
         final InVirtualEquipment inVirtualEquipmentToCreate = inVirtualEquipmentMapper.toEntity(inVirtualEquipmentRest);
         inVirtualEquipmentToCreate.setId(null);
         final LocalDateTime now = LocalDateTime.now();
@@ -117,6 +121,7 @@ public class InVirtualEquipmentService {
             throw new G4itRestException("409", String.format("the digital service uid provided: %s is not compatible with the digital uid : %s linked to this virtual equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
         }
 
+        validateLocationByBoaviztaApi(inVirtualEquipmentUpdateRest);
         final InVirtualEquipment objectToUpdate = inVirtualEquipment.get();
         final InVirtualEquipment updates = inVirtualEquipmentMapper.toEntity(inVirtualEquipmentUpdateRest);
         inVirtualEquipmentMapper.merge(objectToUpdate, updates);
@@ -286,6 +291,14 @@ public class InVirtualEquipmentService {
         inVirtualEquipmentRepository.findByInventoryIdAndId(inventoryId, id)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Virtual equipment %d not found in inventory %d", id, inventoryId)));
         inVirtualEquipmentRepository.deleteById(id);
+    }
+
+    private void validateLocationByBoaviztaApi(InVirtualEquipmentRest inVirtualEquipmentUpdateRest) {
+        if (inVirtualEquipmentUpdateRest.getLocation() != null && !inVirtualEquipmentUpdateRest.getLocation().isBlank()) {
+            if (!commonValidationUtil.validateboaviztaCountry(inVirtualEquipmentUpdateRest.getLocation())) {
+                throw new G4itRestException("400", String.format("Selected Country : %s, doesn't exist", inVirtualEquipmentUpdateRest.getLocation()));
+            }
+        }
     }
 
 }

@@ -19,7 +19,6 @@ public class XssStringDeserializer extends JsonDeserializer<String> {
     @Override
     public String deserialize(JsonParser p, DeserializationContext ctxt)
             throws IOException {
-        //System.out.println("XSS DESERIALIZER CALLED");
         return XssValidator.validate(p.getValueAsString());
     }
 }
