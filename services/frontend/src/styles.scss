@@ -1,8 +1,5 @@
-@import "variables";
-@import "assets/themes/primeng-theme.scss";
-@import "primeng/resources/primeng.css";
 @import "primeflex/primeflex.scss";
-@import "primeicons/primeicons.css";
+@import "variables";
 
 /* General */
 
@@ -1053,49 +1050,6 @@ div.label-input-div-medium {
 .header-share-count .p-button span.pi-users {
     font-size: 2rem;
 }
-app-top-header {
-    .aboutMenuBtn {
-        background-color: transparent !important;
-        padding: 10px;
-    }
-    .orgNameMenuBtn {
-        background-color: rgba(255, 255, 255, 0.2) !important;
-        padding: 8px;
-        border-radius: 4px;
-    }
-    .aboutMenuBtn.aboutMenuOpen,
-    .orgNameMenuBtn.orgMenuOpen {
-        background-color: var(--light-green-color) !important;
-        padding-top: 22px;
-        padding-bottom: 22px;
-    }
-
-    .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus {
-        outline: 1px solid green;
-    }
-
-    .p-menu.p-menu-overlay {
-        width: 375px;
-        padding: 15px;
-    }
-
-    li.p-submenu-header:empty {
-        display: none; /* or any other style */
-    }
-
-    .p-menu .p-submenu-header {
-        padding: 0;
-    }
-
-    .p-menu .p-menuitem-link {
-        color: var(--tints-black-80);
-    }
-
-    .p-menu .p-menuitem-link:hover {
-        font-weight: 700;
-        transition: 0.2s;
-    }
-}
 
 .border-light-grey-color {
     border-color: var(--tints-black-60);
@@ -1422,4 +1376,338 @@ app-useful-information {
 .input-title .hide-close .p-inplace-content {
     flex-direction: column !important;
     align-items: unset !important;
+}
+
+app-top-header {
+    .aboutMenuBtn {
+        background-color: transparent !important;
+        padding: 10px;
+    }
+    .orgNameMenuBtn {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        padding: 8px;
+        border-radius: 4px;
+    }
+    .aboutMenuBtn.aboutMenuOpen,
+    .orgNameMenuBtn.orgMenuOpen {
+        background-color: var(--light-green-color) !important;
+        padding-top: 22px;
+        padding-bottom: 22px;
+    }
+
+    .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus {
+        outline: 1px solid green;
+    }
+
+    .p-menu.p-menu-overlay {
+        width: 375px;
+        padding: 15px;
+    }
+
+    li.p-submenu-header:empty {
+        display: none; /* or any other style */
+    }
+
+    .p-menu .p-submenu-header {
+        padding: 0;
+    }
+
+    .p-menu .p-menuitem-link {
+        color: var(--tints-black-80);
+    }
+
+    .p-menu .p-menuitem-link:hover {
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .top-header {
+        .white-g4,
+        .green-it {
+            color: #fff;
+            font-size: 33px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 24px;
+            margin-top: 10px;
+        }
+        .green-it {
+            color: #00ba00;
+        }
+    }
+
+    .org-menu-new {
+        display: none;
+        position: absolute;
+        color: black;
+        top: 70px;
+        right: 41px;
+        max-height: 415px;
+        z-index: 100;
+    }
+
+    .account-menu {
+        display: none;
+        color: var(--tints-black-100);
+        top: 70px;
+        right: 22px;
+        width: 324px;
+        position: absolute;
+        height: 300px;
+        z-index: 100;
+    }
+
+    p-button .name-circle {
+        background: var(--blue-color);
+    }
+
+    .text-black {
+        color: #000000;
+    }
+
+    .help-center-color {
+        color: var(--tints-black-100);
+    }
+
+    .dialog-close {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 0.5rem;
+    }
+
+    .dialog-close-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 0 none;
+        background: black;
+        border-radius: 50%;
+        transition:
+            background-color 0.2s,
+            color 0.2s,
+            box-shadow 0.2s;
+        align-items: center;
+    }
+
+    .dialog-close-button:enabled:hover {
+        border-color: transparent;
+        background: rgba(0, 0, 0, 0.04);
+    }
+
+    @media screen and (max-width: 992px) {
+        .mobile-menu .orgNameMenuBtn {
+            width: 100%;
+        }
+
+        .org-menu-new {
+            z-index: 1101 !important;
+            top: 135px;
+            right: 5%;
+            width: 90%;
+        }
+
+        .sidebar-with-menu {
+            height: calc(100vh - 145px);
+        }
+    }
+}
+
+app-left-sidebar {
+    .logo-icon {
+        z-index: 1000;
+    }
+
+    nav a:hover .nav-span-text {
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .ds-text {
+        text-align: center;
+        float: inline-start;
+    }
+
+    nav a {
+        text-decoration: unset;
+    }
+
+    .span-font {
+        font-size: 10px;
+    }
+
+    .extra-div {
+        height: 24vh;
+    }
+
+    .home-padding {
+        padding: 20px 27px;
+    }
+
+    .home-padding-zoomin {
+        padding: 8px 26px;
+    }
+
+    .inventory-padding {
+        padding: 20px 15px;
+    }
+
+    .inventory-padding-zoomin {
+        padding: 8px 15px;
+    }
+
+    .digital-padding {
+        padding: 20px 13px;
+    }
+
+    .digital-padding-zoomin {
+        padding: 8px 13px;
+    }
+
+    .ecomind-padding {
+        padding: 14px 7px;
+    }
+
+    .ecomind-padding-zoomin {
+        padding: 7px;
+    }
+
+    .admin-padding {
+        padding: 20px 7px;
+    }
+
+    .admin-padding-zoomin {
+        padding: 8px 7px;
+    }
+
+    nav.left-sidebar-nav {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media screen and (max-width: 450px) {
+        nav.left-sidebar-nav {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    .add-z-index {
+        z-index: 101;
+    }
+
+    .color-transparent {
+        background: none;
+        color: #c7c7c7;
+    }
+
+    a.bg-light-green .color-transparent {
+        background: none;
+        color: #ffffff;
+    }
+}
+
+app-spinner {
+    .full-screen {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .spinner-overlay {
+        transform: translate(-50%, -50%);
+    }
+
+    .ball-pulse,
+    .ball-pulse > div {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .ball-pulse {
+        width: 108px;
+        height: 36px;
+    }
+
+    .ball-pulse > div {
+        display: inline-block;
+        background-color: white;
+        width: 20px;
+        height: 20px;
+        margin: 8px;
+        border-radius: 100%;
+        -webkit-animation: ball-pulse 1s ease infinite;
+        -o-animation: ball-pulse 1s ease infinite;
+        animation: ball-pulse 1s ease infinite;
+    }
+
+    .ball-pulse > div:nth-child(1) {
+        -webkit-animation-delay: -200ms;
+        -o-animation-delay: -200ms;
+        animation-delay: -200ms;
+    }
+
+    .ball-pulse > div:nth-child(2) {
+        -webkit-animation-delay: -100ms;
+        -o-animation-delay: -100ms;
+        animation-delay: -100ms;
+    }
+
+    .ball-pulse > div:nth-child(3) {
+        -webkit-animation-delay: 0ms;
+        -o-animation-delay: 0ms;
+        animation-delay: 0ms;
+    }
+
+    /*
+ * Animation
+ */
+    @keyframes ball-pulse {
+        0%,
+        60%,
+        100% {
+            opacity: 1;
+            -webkit-transform: scale(1);
+            -o-transform: scale(1);
+            transform: scale(1);
+        }
+        30% {
+            opacity: 0.1;
+            -webkit-transform: scale(0.01);
+            -o-transform: scale(0.01);
+            transform: scale(0.01);
+        }
+    }
+}
+
+app-version-type-tag {
+    .status-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 4px 12px;
+
+        border-radius: 4px;
+
+        font-size: 16px;
+
+        color: var(--blue-color);
+        border: 1px solid var(--blue-color);
+        font-weight: 800;
+        background: rgba(54, 66, 229, 0.08);
+    }
+
+    .status-tag .pi {
+        font-size: 16px;
+    }
+
+    .draft-brown-color {
+        color: #000;
+        border: 1px solid #000;
+        background: #f2f2f2;
+    }
+
+    .archived-yellow-color {
+        color: #9a5200;
+        border: 1px solid #9a5200;
+        background: #fff4d6;
+    }
 }
