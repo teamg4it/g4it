@@ -795,6 +795,10 @@
         "task.already.running": {
             "title": "Tâche en cours",
             "text": "Une tâche est déjà en cours de traitement. Merci de relancer le traitement plus tard"
+        },
+        "bad-request": {
+            "title": "Mauvaise demande",
+            "text": "La requête n'a pas pu être traitée en raison d'une syntaxe invalide ou de paramètres manquants."
         }
     },
     "digital-services-cards": {

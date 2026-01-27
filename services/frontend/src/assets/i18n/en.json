@@ -798,6 +798,10 @@
         "task.already.running": {
             "title": "Task already in progress",
             "text": "A running task is already started. Please try again later"
+        },
+        "bad-request": {
+            "title": "Bad Request",
+            "text": "The request could not be processed due to invalid syntax or missing parameters."
         }
     },
     "digital-services-cards": {
