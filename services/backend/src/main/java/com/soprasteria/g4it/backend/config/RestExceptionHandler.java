@@ -77,6 +77,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                             .build(),
                     HttpStatus.GONE);
         }
+        // Added BAD_REQUEST Exception handler
+        if (String.valueOf(HttpStatus.BAD_REQUEST.value()).equals(ex.getCode())) {
+            return new ResponseEntity<>(
+                    RestError.builder()
+                            .code(HttpStatus.BAD_REQUEST.toString())
+                            .message(ex.getMessage())
+                            .timestamp(LocalDateTime.now())
+                            .status(HttpStatus.BAD_REQUEST.value())
+                            .build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
         log.error("Exception de validation survenue lors de la requête {}", request.getContextPath(), ex);
         return new ResponseEntity<>(
                 RestError.builder()

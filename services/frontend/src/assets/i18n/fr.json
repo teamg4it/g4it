@@ -288,6 +288,7 @@
         },
         "error.digital-service-already-exists": "Le service numérique existe déjà",
         "error.digital-service-version-already-exists": "La version existe déjà",
+        "error.xss-detected": "Les scripts et le HTML ne sont pas autorisés",
         "comparison": {
             "description": "Ces graphiques représentent les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement.  <br /> - Le premier graphique correspond à la version {{version1Name}}. Les critères actuellement séléctionnés pour cette version sont : {{impactsV1}}.<br /> - Le second graphique correspond à la version {{version2Name}}. Les critères actuellement séléctionnés pour cette version sont : {{impactsV2}}. <br /> Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères sélectionnés lors du calcul. ",
             "scale": "L'ensemble des graphiques de l'outil sont exprimés en « habitant équivalent ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://saas-g4it.com/documentation/2-functional-documentation/global_concepts/uc2_people_equivalent/index.html' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br /> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact.",
@@ -795,6 +796,10 @@
         "task.already.running": {
             "title": "Tâche en cours",
             "text": "Une tâche est déjà en cours de traitement. Merci de relancer le traitement plus tard"
+        },
+        "bad-request": {
+            "title": "Mauvaise demande",
+            "text": "La requête n'a pas pu être traitée en raison d'une syntaxe invalide ou de paramètres manquants."
         }
     },
     "digital-services-cards": {
