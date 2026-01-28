@@ -260,7 +260,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         return filterItem
             .map((item) => this.mapItem(item, filter, lifecyleMap))
             .map((item: any) => item || Constants.UNSPECIFIED)
-            .sort((a, b) => a.localeCompare(b));
+            .sort((a, b) => String(a).localeCompare(String(b)));
     }
 
     pushFilter(
