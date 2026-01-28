@@ -95,6 +95,12 @@
             </div>
         </div>
         <div class="button-bottom-right">
+            <div
+                class="error-text block"
+                *ngIf="datacenterForm.hasError('xssDetected') && datacenterForm.dirty"
+            >
+                {{ "digital-services.error.xss-detected" | translate }}
+            </div>
             <p-button styleClass="white-button" (onClick)="close()">{{
                 "common.cancel" | translate
             }}</p-button>
