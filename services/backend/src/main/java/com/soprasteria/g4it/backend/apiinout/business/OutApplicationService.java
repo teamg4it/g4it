@@ -13,8 +13,6 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceV
 import com.soprasteria.g4it.backend.apiinout.mapper.OutApplicationMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
-import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
-import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutApplicationRest;
@@ -65,13 +63,15 @@ public class OutApplicationService {
     public List<OutApplicationRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
 
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
-        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                digitalServiceVersion,
-                TaskType.EVALUATING_DIGITAL_SERVICE.toString(),
-                TaskStatus.COMPLETED.toString()
-        );
-
-
+        Optional<Task> task = Optional.empty();
+        for (int i = 0; i < 3 && task.isEmpty(); i++) {
+            task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
+            if (task.isEmpty()) {
+                try {
+                    Thread.sleep(700);
+                } catch (InterruptedException e) {/* ignore InterruptedException */ }
+            }
+        }
         if (task.isEmpty()) {
             return List.of();
         }

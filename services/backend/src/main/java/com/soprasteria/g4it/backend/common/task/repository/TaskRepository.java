@@ -43,6 +43,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Optional<Task> findByDigitalServiceVersion(final DigitalServiceVersion digitalServiceVersion);
 
+    Optional<Task> findTopByDigitalServiceVersionOrderByIdDesc(final DigitalServiceVersion dsv);
+
     /**
      * Find by digitalService
      *
@@ -150,5 +152,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             String status
     );
 
-    
+
 }

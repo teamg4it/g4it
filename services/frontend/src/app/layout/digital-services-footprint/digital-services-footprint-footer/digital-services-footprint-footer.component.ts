@@ -108,6 +108,10 @@ export class DigitalServicesFootprintFooterComponent implements OnInit {
             this.digitalServicesData.launchEvaluating(this.digitalServiceVersionUid),
         );
 
+        // to resolve the issue of not getting data first time
+        // and getting old data after calculation
+        await new Promise((resolve) => setTimeout(resolve, 700));
+
         this.digitalService = await lastValueFrom(
             this.digitalServicesData.get(this.digitalServiceVersionUid),
         );
