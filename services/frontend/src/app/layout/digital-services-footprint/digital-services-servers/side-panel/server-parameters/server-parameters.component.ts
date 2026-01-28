@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom } from "rxjs";
+import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import {
     DigitalServiceServerConfig,
     Host,
@@ -39,16 +40,22 @@ export class PanelServerParametersComponent {
     addSidebarVisible: boolean = false;
 
     totalVmvCpu = 0;
-    serverForm = this._formBuilder.group({
-        host: ["", Validators.required],
-        datacenter: [{ name: "", location: "", pue: 1 }, Validators.required],
-        quantity: [0, [Validators.required]],
-        vcpu: [0, [Validators.required]],
-        disk: [0, [Validators.required]],
-        lifespan: [0, [Validators.required]],
-        electricityConsumption: [0, [Validators.required]],
-        operatingTime: [8760, [Validators.required]],
-    });
+    serverForm = this._formBuilder.group(
+        {
+            host: ["", Validators.required],
+            datacenter: [{ name: "", location: "", pue: 1 }, Validators.required],
+            quantity: [0, [Validators.required]],
+            vcpu: [0, [Validators.required]],
+            disk: [0, [Validators.required]],
+            lifespan: [0, [Validators.required]],
+            electricityConsumption: [0, [Validators.required]],
+            operatingTime: [8760, [Validators.required]],
+        },
+        {
+            validators: [xssFormGroupValidator()],
+            updateOn: "blur",
+        },
+    );
 
     datacenterOptions = computed(() => {
         return this.digitalServiceStore.inDatacenters().map((datacenter) => {

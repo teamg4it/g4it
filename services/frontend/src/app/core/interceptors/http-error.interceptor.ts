@@ -110,6 +110,15 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     detail: this.translate.instant(`toast-errors.${errorKey}.text`),
                     sticky: true,
                 });
+            } else if (error.status === HttpStatusCode.BadRequest) {
+                this.messageService.add({
+                    severity: "error",
+                    summary: this.translate.instant(
+                        `toast-errors.${"bad-request"}.title`,
+                    ),
+                    detail: this.translate.instant(`toast-errors.${"bad-request"}.text`),
+                    sticky: true,
+                });
             } else {
                 this.router.navigate(["/something-went-wrong", error.status]);
             }
