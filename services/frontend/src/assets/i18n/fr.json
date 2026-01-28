@@ -172,7 +172,8 @@
         "plus-menu": "Plus",
         "add-button": "Ajouter",
         "actions": "Actions",
-        "nav-panel": "Ouvrir le menu de navigation"
+        "nav-panel": "Ouvrir le menu de navigation",
+        "compare": "Comparer"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -237,6 +238,7 @@
         "configure-criteria": "Configurer la vue pour le service numérique {{digitalServiceName}}",
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
+        "view-recommendations": "Voir les recommandations",
         "visualize-parameters": "Voir les paramètres",
         "back": "Retour",
         "hide-menu-buttons": "Cacher les options du service numérique",
@@ -500,6 +502,14 @@
         "complementary-pue": "PUE complémentaire",
         "energy-efficiency": "Efficacité énergétique",
         "location": "Localisation"
+    },
+    "digital-services-recommendations": {
+        "recommendations": "Recommandations",
+        "recommendation": "Recommandation",
+        "title": "Titre",
+        "category": "Catégorie",
+        "globalReduction": "Réduction globale",
+        "description": "Description"
     },
     "digital-services-import": {
         "import": "Importer des données",

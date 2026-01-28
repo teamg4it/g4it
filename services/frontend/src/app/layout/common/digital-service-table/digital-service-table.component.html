@@ -2,7 +2,7 @@
     [value]="data"
     [tableStyle]="{ 'min-width': '50rem' }"
     [rows]="6"
-    [paginator]="true"
+    [paginator]="paginator"
     [sortField]="'name'"
     [sortOrder]="1"
 >
@@ -12,24 +12,20 @@
                 {{ translationPrefix + "." + titleText | translate }}
             </div>
             <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                (onClick)="doResetItem(); sidebarVisible(true)"
-                styleClass="p-button-secondary-blue uppercase"
-                [id]="addButtonId"
-                icon="pi pi-plus-circle"
-                [label]="'common.add-button' | translate"
-                [ariaLabel]="
-                    'common.accessibility.add'
-                        | translate
-                            : {
-                                  type:
-                                      translationPrefix + '.' + accessibilityText
-                                      | translate,
-                              }
-                "
-            ></p-button>
+    *ngIf="compareMode || (userService.isAllowedDigitalServiceWrite$ | async)"
+    (onClick)="onMainButtonClick()"
+    styleClass="p-button-secondary-blue uppercase"
+    [id]="addButtonId"
+    [icon]="compareMode ? 'pi pi-sliders-h' : 'pi pi-plus-circle'"
+    [label]="
+        compareMode
+            ? ('common.compare' | translate)
+            : ('common.add-button' | translate)
+    "
+></p-button>
         </div>
     </ng-template>
+
     <ng-template pTemplate="header">
         <caption class="visually-hidden">
             {{
@@ -37,6 +33,9 @@
             }}
         </caption>
         <tr>
+             @if (selectable) {
+            <th scope="col"></th>
+        }
             @if (showId && !isMobileView()) {
                 <th scope="col" id="id">
                     {{ "digital-services-terminals.id" | translate }}
@@ -60,6 +59,16 @@
     </ng-template>
     <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
         <tr>
+
+            @if (selectable) {
+            <td>
+                <p-checkbox
+                    [(ngModel)]="data.selected"
+                    binary="true"
+                ></p-checkbox>
+            </td>
+        }
+
             @if (showId && !isMobileView()) {
                 <td class="grey-text">{{ rowIndex + 1 }}</td>
             }
