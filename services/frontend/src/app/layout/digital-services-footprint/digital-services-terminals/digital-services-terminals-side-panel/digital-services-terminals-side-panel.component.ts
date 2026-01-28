@@ -11,6 +11,7 @@ import { MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
+import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import {
     DigitalServiceTerminalConfig,
     TerminalsType,
@@ -73,21 +74,27 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
         this.existingNames = this.terminalData
             .filter((c) => (this.isNew ? true : this.terminal.name !== c.name))
             .map((cloud) => cloud.name);
-        this.terminalsForm = this._formBuilder.group({
-            name: [
-                "",
-                [
-                    Validators.required,
-                    uniqueNameValidator(this.existingNames),
-                    noWhitespaceValidator(),
+        this.terminalsForm = this._formBuilder.group(
+            {
+                name: [
+                    "",
+                    [
+                        Validators.required,
+                        uniqueNameValidator(this.existingNames),
+                        noWhitespaceValidator(),
+                    ],
                 ],
-            ],
-            type: [{ code: "", value: "", lifespan: null }, Validators.required],
-            country: ["", Validators.required],
-            numberOfUsers: ["0", Validators.required],
-            lifespan: [null, Validators.required],
-            yearlyUsageTimePerUser: ["0", Validators.required],
-        });
+                type: [{ code: "", value: "", lifespan: null }, Validators.required],
+                country: ["", Validators.required],
+                numberOfUsers: ["0", Validators.required],
+                lifespan: [null, Validators.required],
+                yearlyUsageTimePerUser: ["0", Validators.required],
+            },
+            {
+                validators: [xssFormGroupValidator()],
+                updateOn: "blur",
+            },
+        );
 
         this.terminalsForm.get("name")?.markAsDirty();
     }
@@ -106,7 +113,7 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
         );
         const exclusions = ["Non spécifié", "France-CNR"];
         this.countries = countryList
-            .sort((a, b) => a.localeCompare(b))
+            .sort((a, b) => a?.localeCompare(b))
             .filter((item) => !exclusions.includes(item))
             .map((item) => ({ value: item, label: item }));
     }

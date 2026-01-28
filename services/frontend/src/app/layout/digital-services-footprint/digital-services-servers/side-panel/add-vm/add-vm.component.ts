@@ -16,6 +16,7 @@ import {
 } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
+import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import { ServerVM } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
@@ -44,14 +45,20 @@ export class PanelAddVmComponent implements OnInit {
     electricityConsumptionControl = this._formBuilder.control<number | undefined>(
         undefined,
     );
-    addVmForm = this._formBuilder.group({
-        name: ["", Validators.required],
-        vcpu: this.vcpuControl,
-        disk: this.diskControl,
-        quantity: this.quantityControl,
-        opratingTime: [0, [Validators.required]],
-        electricityConsumption: this.electricityConsumptionControl,
-    });
+    addVmForm = this._formBuilder.group(
+        {
+            name: ["", Validators.required],
+            vcpu: this.vcpuControl,
+            disk: this.diskControl,
+            quantity: this.quantityControl,
+            opratingTime: [0, [Validators.required]],
+            electricityConsumption: this.electricityConsumptionControl,
+        },
+        {
+            validators: [xssFormGroupValidator()],
+            updateOn: "blur",
+        },
+    );
 
     isValueTooHigh: boolean = false;
 
