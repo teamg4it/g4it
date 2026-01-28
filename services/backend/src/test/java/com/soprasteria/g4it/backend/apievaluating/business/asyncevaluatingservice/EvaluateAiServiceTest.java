@@ -25,6 +25,7 @@ import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
+import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
@@ -37,6 +38,7 @@ import org.mockito.MockitoAnnotations;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Path;
@@ -506,7 +508,6 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
                 .thenReturn(List.of(mock(ImpactEquipementVirtuel.class)));
 
-        // 🔥 Always same aggregation key → overflow
         when(aggregationToOutput.keyVirtualEquipment(any(), any(), any(), any(), any()))
                 .thenReturn(List.of("SAME_KEY"));
 
@@ -521,28 +522,99 @@ class EvaluateAiServiceTest {
                 () -> aiEvaluationService.doEvaluateAi(context, task, exportDirectory));
     }
 
-    private void setupMinimalHappyPath() {
+    @Test
+    void testIOExceptionWhileWritingCsv_isWrappedIntoAsyncTaskException() throws Exception {
+        setupMinimalHappyPath();
+
+        when(csvFileService.getPrinter(any(), any()))
+                .thenThrow(new IOException("disk full"));
+
+        AsyncTaskException ex = assertThrows(
+                AsyncTaskException.class,
+                () -> aiEvaluationService.doEvaluateAi(context, task, exportDirectory)
+        );
+
+        assertTrue(ex.getMessage().contains("An error occurred on writing csv files"));
+    }
+
+    @Test
+    void testExportEnabled_writesAllCsvFiles() throws Exception {
+        setupMinimalHappyPath();
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any()))
+                .thenReturn(printer);
+
+        aiEvaluationService.doEvaluateAi(context, task, exportDirectory);
+
+        verify(printer, atLeastOnce())
+                .printRecord(any(Iterable.class));
+    }
+
+    private void setupMinimalHappyPath() throws Exception {
         when(context.isHasVirtualEquipments()).thenReturn(true);
         when(context.getDigitalServiceVersionUid()).thenReturn("uid");
         when(context.getDigitalServiceName()).thenReturn("DS");
+        when(context.getOrganization()).thenReturn("ORG");
+        when(task.getId()).thenReturn(1L);
+        when(task.getCriteria()).thenReturn(List.of("CLIMATE_CHANGE"));
+
+        InAiParameter param = new InAiParameter();
+        param.setFramework("llamacpp");
+        param.setModelName("llama3");
+        param.setQuantization("q4");
+        param.setNbParameters("8");
+        param.setTotalGeneratedTokens(BigInteger.valueOf(100));
+        param.setIsInference(true);
 
         when(inAIParameterRepository.findByDigitalServiceVersionUid("uid"))
-                .thenReturn(mockAiParameter());
+                .thenReturn(param);
+
+        InAiInfrastructure infra = new InAiInfrastructure();
+        infra.setNbGpu(1L);
+        infra.setGpuMemory(16L);
 
         when(inAiInfrastructureRepository.findByDigitalServiceVersionUid("uid"))
-                .thenReturn(mock(InAiInfrastructure.class));
+                .thenReturn(infra);
+
+        InDatacenter dc = new InDatacenter();
+        dc.setName("DC1");
+        dc.setLocation("FR");
 
         when(inDatacenterRepository.findByDigitalServiceVersionUid("uid"))
-                .thenReturn(List.of(mockDatacenter("DC1", "FR")));
+                .thenReturn(new ArrayList<>(List.of(dc)));
+
+        InPhysicalEquipment pe = new InPhysicalEquipment();
+        pe.setCpuCoreNumber(8.0);
+        pe.setSizeMemoryGb(32.0);
+        pe.setDatacenterName("DC1");
 
         when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUid("uid"))
-                .thenReturn(List.of(mock(InPhysicalEquipment.class)));
+                .thenReturn(new ArrayList<>(List.of(pe)));
+
+        InVirtualEquipment ve = new InVirtualEquipment();
+        ve.setLocation("FR");
+        ve.setQuantity(1.0);
+        ve.setWorkload(0.5);
 
         when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("uid"))
-                .thenReturn(List.of(mock(InVirtualEquipment.class)));
+                .thenReturn(new ArrayList<>(List.of(ve)));
 
-        when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
-        when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
+        when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any()))
+                .thenReturn(4.0);
+        when(evaluateNumEcoEvalService.getTotalDiskSize(any()))
+                .thenReturn(100.0);
+
+        OutputEstimation estimation = new OutputEstimation();
+        estimation.setElectricityConsumption(BigDecimal.valueOf(100));
+        estimation.setRuntime(BigDecimal.valueOf(10));
+        estimation.setRecommendations(List.of());
+
+        when(aiService.runEstimation(any()))
+                .thenReturn(estimation);
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any()))
+                .thenReturn(printer);
     }
-
 }
