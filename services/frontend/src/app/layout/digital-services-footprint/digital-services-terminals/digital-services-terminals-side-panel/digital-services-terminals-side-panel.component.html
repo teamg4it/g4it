@@ -185,6 +185,12 @@
         </div>
 
         <div class="button-bottom-right">
+            <div
+                class="error-text block"
+                *ngIf="terminalsForm.hasError('xssDetected') && terminalsForm.dirty"
+            >
+                {{ "digital-services.error.xss-detected" | translate }}
+            </div>
             <p-button
                 styleClass="grey-button"
                 *ngIf="!isNew && (userService.isAllowedDigitalServiceWrite$ | async)"

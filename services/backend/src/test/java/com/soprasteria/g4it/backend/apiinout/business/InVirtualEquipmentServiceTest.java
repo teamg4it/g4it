@@ -22,6 +22,7 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.junit.jupiter.api.Test;
@@ -34,8 +35,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class InVirtualEquipmentServiceTest {
@@ -60,6 +61,9 @@ class InVirtualEquipmentServiceTest {
 
     @InjectMocks
     private InVirtualEquipmentService inVirtualEquipmentService;
+
+    @Mock
+    private CommonValidationUtil commonValidationUtil;
 
     @Test
     void createInVirtualEquipmentInventoryTest() {
@@ -348,4 +352,109 @@ class InVirtualEquipmentServiceTest {
         assertEquals("404", exception.getCode());
         assertEquals("The digitalService id provided: service-123 has no physical equipment with id: 1", exception.getMessage());
     }
+
+    @Test
+    void createInVirtualEquipmentThrows400WhenCountryInvalid() {
+        String digitalServiceId = "ds-1";
+        DigitalService ds = DigitalService.builder().uid("ds-uid").build();
+        DigitalServiceVersion dsv = DigitalServiceVersion.builder().digitalService(ds).build();
+
+        InVirtualEquipmentRest rest = InVirtualEquipmentRest.builder().name("ve").location("InvalidCountry").build();
+
+        when(digitalServiceVersionRepository.findById(digitalServiceId)).thenReturn(Optional.of(dsv));
+        when(commonValidationUtil.validateboaviztaCountry("InvalidCountry")).thenReturn(false);
+
+        G4itRestException ex = assertThrows(G4itRestException.class,
+                () -> inVirtualEquipmentService.createInVirtualEquipmentDigitalServiceVersion(digitalServiceId, rest));
+        assertEquals("400", ex.getCode());
+        verify(digitalServiceVersionRepository).findById(digitalServiceId);
+        verify(commonValidationUtil).validateboaviztaCountry("InvalidCountry");
+        verify(inVirtualEquipmentRepository, never()).save(any());
+    }
+
+    @Test
+    void createInVirtualEquipmentSucceedsWhenCountryValid() {
+        String digitalServiceId = "ds-2";
+        DigitalService ds = DigitalService.builder().uid("ds-uid-2").build();
+        DigitalServiceVersion dsv = DigitalServiceVersion.builder().digitalService(ds).build();
+
+        InVirtualEquipmentRest rest = InVirtualEquipmentRest.builder().name("ve2").location("France").build();
+        InVirtualEquipment entity = new InVirtualEquipment();
+
+        when(digitalServiceVersionRepository.findById(digitalServiceId)).thenReturn(Optional.of(dsv));
+        when(commonValidationUtil.validateboaviztaCountry("France")).thenReturn(true);
+        when(inVirtualEquipmentMapper.toEntity(rest)).thenReturn(entity);
+        when(inVirtualEquipmentMapper.toRest(entity)).thenReturn(rest);
+
+        InVirtualEquipmentRest result = inVirtualEquipmentService.createInVirtualEquipmentDigitalServiceVersion(digitalServiceId, rest);
+
+        assertNotNull(result);
+        // The service sets these fields on the entity produced by the mapper
+        assertNull(entity.getId());
+        assertEquals(digitalServiceId, entity.getDigitalServiceVersionUid());
+        assertEquals(ds.getUid(), entity.getDigitalServiceUid());
+        assertNotNull(entity.getCreationDate());
+        assertNotNull(entity.getLastUpdateDate());
+        verify(inVirtualEquipmentRepository).save(entity);
+        verify(inVirtualEquipmentMapper).toEntity(rest);
+        verify(inVirtualEquipmentMapper).toRest(entity);
+    }
+
+    @Test
+    void shouldThrow400WhenLocationValidationFails() {
+        String dsvUid = "dsv-2";
+        Long id = 7L;
+        InVirtualEquipment stored = new InVirtualEquipment();
+        stored.setId(id);
+        stored.setDigitalServiceVersionUid(dsvUid);
+
+        InVirtualEquipmentRest updateRest = new InVirtualEquipmentRest();
+        updateRest.setLocation("UnknownCountry");
+
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(dsvUid, id)).thenReturn(Optional.of(stored));
+        when(commonValidationUtil.validateboaviztaCountry("UnknownCountry")).thenReturn(false);
+
+        G4itRestException ex = assertThrows(G4itRestException.class,
+                () -> inVirtualEquipmentService.updateInVirtualEquipment(dsvUid, id, updateRest));
+        assertEquals("400", ex.getCode());
+        verify(inVirtualEquipmentRepository).findByDigitalServiceVersionUidAndId(dsvUid, id);
+        verify(commonValidationUtil).validateboaviztaCountry("UnknownCountry");
+        verifyNoInteractions(inVirtualEquipmentMapper);
+    }
+
+    @Test
+    void shouldUpdateAndReturnRestWhenInputIsValid() {
+        String dsvUid = "dsv-3";
+        Long id = 3L;
+        InVirtualEquipment stored = new InVirtualEquipment();
+        stored.setId(id);
+        stored.setDigitalServiceVersionUid(dsvUid);
+        stored.setLocation("France");
+
+        InVirtualEquipmentRest updateRest = new InVirtualEquipmentRest();
+        updateRest.setLocation("France");
+        updateRest.setName("UpdatedName");
+
+        InVirtualEquipment updatesEntity = new InVirtualEquipment();
+        InVirtualEquipmentRest returnedRest = new InVirtualEquipmentRest();
+        returnedRest.setName("UpdatedName");
+
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidAndId(dsvUid, id)).thenReturn(Optional.of(stored));
+        when(commonValidationUtil.validateboaviztaCountry("France")).thenReturn(true);
+        when(inVirtualEquipmentMapper.toEntity(updateRest)).thenReturn(updatesEntity);
+        // mapper.merge is void - just ensure it is called
+        when(inVirtualEquipmentMapper.toRest(stored)).thenReturn(returnedRest);
+
+        InVirtualEquipmentRest result = inVirtualEquipmentService.updateInVirtualEquipment(dsvUid, id, updateRest);
+
+        assertNotNull(result);
+        assertEquals(returnedRest, result);
+        verify(inVirtualEquipmentRepository).findByDigitalServiceVersionUidAndId(dsvUid, id);
+        verify(commonValidationUtil).validateboaviztaCountry("France");
+        verify(inVirtualEquipmentMapper).toEntity(updateRest);
+        verify(inVirtualEquipmentMapper).merge(stored, updatesEntity);
+        verify(inVirtualEquipmentRepository).save(stored);
+        verify(inVirtualEquipmentMapper).toRest(stored);
+    }
+
 }

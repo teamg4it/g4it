@@ -156,7 +156,7 @@ export class FootprintService {
         );
 
         for (let criteria in footprint) {
-            if (!footprint[criteria] || !footprint[criteria].impacts) continue;
+            if (!footprint[criteria]?.impacts) continue;
 
             const filteredImpacts = hasAllFilters
                 ? footprint[criteria].impacts
