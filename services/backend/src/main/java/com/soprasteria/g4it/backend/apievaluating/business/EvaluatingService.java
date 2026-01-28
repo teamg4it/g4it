@@ -86,16 +86,18 @@ public class EvaluatingService {
     /**
      * Evaluating an inventory
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
-     * @param inventoryId    the inventory id
+     * @param organization the organization
+     * @param workspaceId  the workspace id
+     * @param inventoryId  the inventory id
      * @return the Task created
      */
     public Task evaluating(final String organization,
                            final Long workspaceId,
                            final Long inventoryId) {
 
-        Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow();
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new G4itRestException("404", "Inventory not found."));
+
 
         manageInventoryTasks(organization, workspaceId, inventory);
 
@@ -134,8 +136,14 @@ public class EvaluatingService {
                 .build();
 
         taskRepository.save(task);
+        taskRepository.updateTaskState(
+                task.getId(),
+                TaskStatus.IN_PROGRESS.toString(),
+                LocalDateTime.now(),
+                "0%"
+        );
 
-        // run evaluation async task
+        // evaluation may be heavy, so runs in threaded executor to avoid performance issues
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
 
         return task;
@@ -144,8 +152,8 @@ public class EvaluatingService {
     /**
      * Evaluating an inventory
      *
-     * @param organization        the organization
-     * @param workspaceId    the workspace id
+     * @param organization             the organization
+     * @param workspaceId              the workspace id
      * @param digitalServiceVersionUid digitalServiceUid
      * @return the Task created
      */
@@ -198,9 +206,15 @@ public class EvaluatingService {
                 .build();
 
         taskRepository.save(task);
+        taskRepository.updateTaskState(
+                task.getId(),
+                TaskStatus.IN_PROGRESS.toString(),
+                LocalDateTime.now(),
+                "0%"
+        );
 
-        // run evaluation task
-        asyncEvaluatingService.execute(context, task);
+        // evaluation may be heavy, so runs in threaded executor to avoid performance issues
+        taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
 
         digitalService.setLastCalculationDate(LocalDateTime.now());
         digitalServiceRepository.save(digitalService);
@@ -224,19 +238,34 @@ public class EvaluatingService {
 
         // check tasks to restart
         inProgressLoadingTasks.stream()
-                .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now) && task.getInventory() != null)
+                .filter(task -> task.getInventory() != null)
+                .filter(task -> task.getLastUpdateDate() == null
+                        || task.getLastUpdateDate().plusMinutes(15).isBefore(now))
                 .forEach(task -> {
                     task.setStatus(TaskStatus.TO_START.toString());
                     task.setLastUpdateDate(now);
                     task.setDetails(new ArrayList<>());
                     task.setProgressPercentage("0%");
-                    taskRepository.save(task);
+                    taskRepository.updateTaskStateWithDetails(
+                            task.getId(),
+                            TaskStatus.TO_START.toString(),
+                            now,
+                            "0%",
+                            new ArrayList<>()
+                    );
 
                     final Inventory inventory = task.getInventory();
                     final Workspace workspace = inventory.getWorkspace();
                     final String organization = workspace.getOrganization().getName();
-                    manageInventoryTasks(organization, workspace.getId(), inventory);
-
+                    try {
+                        manageInventoryTasks(organization, workspace.getId(), inventory);
+                    } catch (G4itRestException e) {
+                        if ("task.already.running".equals(e.getMessage())) {
+                            log.info("TaskId={} is already running, so restart is skipped", task.getId());
+                            return;
+                        }
+                        throw e;
+                    }
                     final Context context = Context.builder()
                             .organization(organization)
                             .workspaceId(workspace.getId())
@@ -248,6 +277,12 @@ public class EvaluatingService {
                             .hasApplications(inventory.getApplicationCount() > 0)
                             .build();
 
+                    taskRepository.updateTaskState(
+                            task.getId(),
+                            TaskStatus.IN_PROGRESS.toString(),
+                            now,
+                            "0%"
+                    );
                     log.warn("Restart task {} with taskId={}", TaskType.EVALUATING, task.getId());
 
                     taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
@@ -259,9 +294,9 @@ public class EvaluatingService {
      * - check for already running task
      * - clean old tasks, always keep the 2 last tasks
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
-     * @param inventory      the inventory
+     * @param organization the organization
+     * @param workspaceId  the workspace id
+     * @param inventory    the inventory
      */
     private void manageInventoryTasks(String organization, Long workspaceId, Inventory inventory) {
         // check if any task is already running
@@ -285,8 +320,8 @@ public class EvaluatingService {
      * Manage tasks:
      * - clean old tasks, always keep the 2 last tasks
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
+     * @param organization          the organization
+     * @param workspaceId           the workspace id
      * @param digitalServiceVersion the digitalService
      */
     private void manageDigitalServiceTasks(String organization, Long workspaceId, DigitalServiceVersion digitalServiceVersion) {

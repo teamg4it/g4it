@@ -18,7 +18,6 @@ import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-
         SharedModule,
     ],
     templateUrl: "./share-landing-page.component.html",
-    styleUrl: "./share-landing-page.component.scss",
 })
 export class ShareLandingPageComponent {
     @ViewChild("mainContent") mainContent!: ElementRef;

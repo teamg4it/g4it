@@ -43,7 +43,7 @@
                 </th>
             }
             @if (isMobileView()) {
-                <th scope="col" id="button">{{ "common.actions" | translate }}</th>
+                <th scope="col" id="button-mobile">{{ "common.actions" | translate }}</th>
             }
             @for (header of headerFields; track $index) {
                 <th scope="col" [pSortableColumn]="header" [id]="header">

@@ -4,7 +4,6 @@ import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-servi
 @Component({
     selector: "app-version-type-tag",
     templateUrl: "./version-type-tag.component.html",
-    styleUrl: "./version-type-tag.component.scss",
 })
 export class VersionTypeTagComponent {
     versionType = input<string>();

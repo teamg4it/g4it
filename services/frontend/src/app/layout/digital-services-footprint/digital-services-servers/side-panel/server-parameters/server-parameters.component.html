@@ -292,6 +292,12 @@
             </div>
         </div>
         <div class="button-bottom-right">
+            <div
+                class="error-text block"
+                *ngIf="serverForm.hasError('xssDetected') && serverForm.dirty"
+            >
+                {{ "digital-services.error.xss-detected" | translate }}
+            </div>
             <p-button styleClass="white-button" (onClick)="close()">
                 {{ "common.cancel" | translate }}
             </p-button>
