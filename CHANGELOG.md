@@ -1,4 +1,12 @@
 # G4IT
+## 3.9.1
+## Major changes
+Memory Leak fixes in Digital Service and Inventory
+
+### Minor Changes
+-1892 | desynchronization of digital service criteria
+-1893 | greenItanalysis style optimization 
+-1890 | Sonar fixes
 
 ## 3.9.0
 

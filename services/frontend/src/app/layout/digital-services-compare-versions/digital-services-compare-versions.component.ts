@@ -211,7 +211,7 @@ export class DigitalServicesCompareVersionsComponent implements OnInit {
                     tds.push(`${this.decimalsPipe.transform(unitValue)}
                         <span >${unit}</span>
                         (${this.integerPipe.transform(sipValue)}
-                        ${this.translate.instant(`common.peopleeq-full`)})`);
+                        ${this.translate.instant("common.peopleeq-full")})`);
                 }
             }
 

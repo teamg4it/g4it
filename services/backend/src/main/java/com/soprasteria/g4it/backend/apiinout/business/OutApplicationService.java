@@ -8,13 +8,13 @@
 
 package com.soprasteria.g4it.backend.apiinout.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutApplicationMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
+import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutApplicationRest;
@@ -65,7 +65,12 @@ public class OutApplicationService {
     public List<OutApplicationRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
 
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
-        Optional<Task> task = taskRepository.findByDigitalServiceVersion(digitalServiceVersion);
+        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
+                digitalServiceVersion,
+                TaskType.EVALUATING_DIGITAL_SERVICE.toString(),
+                TaskStatus.COMPLETED.toString()
+        );
+
 
         if (task.isEmpty()) {
             return List.of();

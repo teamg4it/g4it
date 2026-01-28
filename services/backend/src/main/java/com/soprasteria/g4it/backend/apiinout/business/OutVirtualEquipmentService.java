@@ -8,9 +8,7 @@
 
 package com.soprasteria.g4it.backend.apiinout.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutVirtualEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
@@ -64,7 +62,12 @@ public class OutVirtualEquipmentService {
     public List<OutVirtualEquipmentRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
 
-        Optional<Task> task = taskRepository.findByDigitalServiceVersionAndLastCreationDate(digitalServiceVersion);
+        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
+                digitalServiceVersion,
+                "EVALUATING_DIGITAL_SERVICE",
+                "COMPLETED"
+        );
+
         if (task.isEmpty()) {
             return List.of();
         }
