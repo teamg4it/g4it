@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class InPhysicalEquipmentService {
     private InPhysicalEquipmentMapper inPhysicalEquipmentMapper;
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
     private InventoryRepository inventoryRepository;
+    private CommonValidationUtil commonValidationUtil;
 
     /**
      * Get the physical equipments list linked to a digital service.
@@ -80,6 +82,7 @@ public class InPhysicalEquipmentService {
         if (digitalServiceVersion.isEmpty()) {
             throw new G4itRestException("404", String.format("the digital service version of uid : %s, doesn't exist", digitalServiceVersionUid));
         }
+        validateLocation(inVirtualEquipmentRest);
 
         final InPhysicalEquipment inVirtualEquipmentToCreate = inPhysicalEquipmentMapper.toEntity(inVirtualEquipmentRest);
         final LocalDateTime now = LocalDateTime.now();
@@ -110,12 +113,22 @@ public class InPhysicalEquipmentService {
             throw new G4itRestException("409", String.format("the digital service version uid provided: %s is not compatible with the digital uid : %s linked to this physical equipment id: %d", digitalServiceVersionUid, inVirtualEquipment.get().getDigitalServiceVersionUid(), id));
         }
 
+        validateLocation(inVirtualEquipmentUpdateRest);
+
         final InPhysicalEquipment objectToUpdate = inVirtualEquipment.get();
         final InPhysicalEquipment updates = inPhysicalEquipmentMapper.toEntity(inVirtualEquipmentUpdateRest);
         inPhysicalEquipmentMapper.merge(objectToUpdate, updates);
 
         inPhysicalEquipmentRepository.save(objectToUpdate);
         return inPhysicalEquipmentMapper.toRest(objectToUpdate);
+    }
+
+    private void validateLocation(InPhysicalEquipmentRest inVirtualEquipmentUpdateRest) {
+        if (inVirtualEquipmentUpdateRest.getLocation() != null && !inVirtualEquipmentUpdateRest.getLocation().isBlank()) {
+            if (!commonValidationUtil.validateCountry(inVirtualEquipmentUpdateRest.getLocation())) {
+                throw new G4itRestException("400", String.format("Selected Country : %s, doesn't exist", inVirtualEquipmentUpdateRest.getLocation()));
+            }
+        }
     }
 
     // *** INVENTORY PART ***
