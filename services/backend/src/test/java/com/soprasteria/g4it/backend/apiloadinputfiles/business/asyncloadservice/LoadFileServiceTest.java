@@ -12,7 +12,6 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
-import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadApplicationService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.loadobject.LoadDatacenterService;
@@ -23,10 +22,8 @@ import com.soprasteria.g4it.backend.common.filesystem.model.CsvFileMapperInfo;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
-import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +52,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class LoadFileServiceTest {
+class LoadFileServiceTest {
 
     @Mock
     CsvFileMapperInfo csvFileMapperInfo;
@@ -149,34 +146,6 @@ public class LoadFileServiceTest {
         verify(messageSource).getMessage(eq("header.unknown"), any(Object[].class), eq(Locale.ENGLISH));
     }
 
-    /*@Test
-    void manageFile_datacenter_withReadErrors_writesRejectedFile_and_returnsNoHeaderErrors() throws Exception {
-        String delim = CsvUtils.DELIMITER;
-        Files.writeString(tempCsv, String.join(delim, List.of("id", "name")) + System.lineSeparator() + "1" + delim + "A");
-
-        when(fileToLoad.getConvertedFile()).thenReturn(tempCsv.toFile());
-        when(fileToLoad.getFileType()).thenReturn(FileType.DATACENTER);
-
-        when(csvFileMapperInfo.getHeaderFields(FileType.DATACENTER, false)).thenReturn(new HashSet<>(List.of("id", "name")));
-        when(csvToInMapper.csvInDatacenterToRest(any(), anyLong(), any()))
-                .thenReturn(new InDatacenterRest());
-
-        LineError le = new LineError(2, "bad line");
-        when(loadDatacenterService.execute(eq(context), eq(fileToLoad), anyInt(), anyList()))
-                .thenReturn(Collections.singletonList(le));
-
-        List<String> errors = loadFileService.manageFile(context, fileToLoad);
-
-        assertNotNull(errors);
-        assertTrue(errors.isEmpty());
-
-        Path rejectedDir = tempDir.resolve("rejected").resolve(String.valueOf(context.getInventoryId()));
-        assertTrue(Files.exists(rejectedDir), "rejected directory must exist");
-
-        boolean rejectedFileExists = Files.list(rejectedDir)
-                .anyMatch(p -> p.getFileName().toString().startsWith("rejected_") && p.getFileName().toString().endsWith(".csv"));
-        assertTrue(rejectedFileExists, "a rejected CSV file should have been created");
-    }*/
 
     @Test
     void manageFile_virtualEquipmentRouting_callsVirtualLoader() throws Exception {
@@ -247,25 +216,6 @@ public class LoadFileServiceTest {
 
         assertThrows(AsyncTaskException.class, () -> loadFileService.mandatoryHeadersCheck(context));
     }
-
-   /* @Test
-    void setInventoryCounts_updatesCountsAndSavesInventory() {
-        Inventory inventory = new Inventory();
-        when(inventoryRepository.findById(123L)).thenReturn(Optional.of(inventory));
-
-        when(loadDatacenterService.getDatacenterCount(123L)).thenReturn(10);
-        when(loadPhysicalEquipmentService.getPhysicalEquipmentCount(123L)).thenReturn(20);
-        when(loadVirtualEquipmentService.getVirtualEquipmentCount(123L)).thenReturn(30);
-        when(loadApplicationService.getApplicationCount(123L)).thenReturn(40);
-
-        loadFileService.setInventoryCounts(123L);
-
-        verify(inventoryRepository).save(inventory);
-        assertEquals(10, inventory.getDataCenterCount());
-        assertEquals(20, inventory.getPhysicalEquipmentCount());
-        assertEquals(30, inventory.getVirtualEquipmentCount());
-        assertEquals(40, inventory.getApplicationCount());
-    }*/
 
     @Test
     void linkApplicationsToVirtualEquipments_linksAndSaves() {
