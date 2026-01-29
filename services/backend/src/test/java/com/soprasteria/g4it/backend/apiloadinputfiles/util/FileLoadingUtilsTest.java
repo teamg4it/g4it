@@ -1,27 +1,49 @@
 package com.soprasteria.g4it.backend.apiloadinputfiles.util;
 
+import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.FileConversionService;
+import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.LoadFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class FileLoadingUtilsTest {
 
     @TempDir
     Path tempDir;
+
+    @Mock
+    private FileSystemService fileSystemService;
+
+    @InjectMocks
+    private FileLoadingUtils loadFileService;
+
+    @Mock
+    private Context context;
+
+    @Mock
+    private FileToLoad fileToLoad;
 
     /* -------------------------------------------------
      * Helper: inject private field
@@ -144,4 +166,47 @@ class FileLoadingUtilsTest {
                 () -> utils.convertAllFileToLoad(context)
         );
     }
+
+    @Test
+    void downloadAllFileToLoad_success_writesFile() throws Exception {
+        Path dest = tempDir.resolve("downloaded.csv");
+        // ensure parent exists
+        Files.createDirectories(dest.getParent());
+
+        when(context.getFilesToLoad()).thenReturn(List.of(fileToLoad));
+        when(fileToLoad.getFilename()).thenReturn("downloaded.csv");
+        when(fileToLoad.getFilePath()).thenReturn(dest);
+
+        byte[] bytes = "hello".getBytes(StandardCharsets.UTF_8);
+        InputStream is = new ByteArrayInputStream(bytes);
+
+        // match any org/workspace/filefolder since those are provided from context in real code
+        when(fileSystemService.downloadFile(any(), any(), any(), eq("downloaded.csv"))).thenReturn(is);
+
+        loadFileService.downloadAllFileToLoad(context);
+
+        assertTrue(Files.exists(dest), "Downloaded file must exist");
+        String content = Files.readString(dest, StandardCharsets.UTF_8);
+        assertEquals("hello", content);
+    }
+
+    @Test
+    void downloadAllFileToLoad_whenDownloadFails_throwsAsyncTaskException() throws Exception {
+        Path dest = tempDir.resolve("fail.csv");
+        when(context.getFilesToLoad()).thenReturn(List.of(fileToLoad));
+       /* when(fileToLoad.getFilename()).thenReturn("fail.csv");
+        when(fileToLoad.getFilePath()).thenReturn(dest);*/
+
+        // Only stub methods that are called before the exception is thrown
+        when(fileSystemService.downloadFile(any(), any(), any(), anyString()))
+                .thenThrow(new IOException("download error"));
+
+        AsyncTaskException ex = assertThrows(AsyncTaskException.class,
+                () -> loadFileService.downloadAllFileToLoad(context));
+
+        assertNotNull(ex.getCause());
+        assertTrue(ex.getCause() instanceof Exception);
+        assertTrue(ex.getMessage().contains("Cannot download file"));
+    }
+
 }
