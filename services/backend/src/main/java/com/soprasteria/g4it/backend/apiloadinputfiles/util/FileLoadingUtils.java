@@ -66,7 +66,7 @@ public class FileLoadingUtils {
             try (InputStream is = fileSystemService.downloadFile(context.getOrganization(), context.getWorkspaceId(), FileFolder.INPUT, fileToLoad.getFilename())) {
                 // copy file to local storage tmp
                 FileUtils.copyInputStreamToFile(is, fileToLoad.getFilePath().toFile());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new AsyncTaskException(String.format("%s - Cannot download file %s from storage", context.log(), fileToLoad.getOriginalFileName()), e);
             }
         }
@@ -187,7 +187,7 @@ public class FileLoadingUtils {
                     throw new SecurityException("Invalid file path for file: " + fileToLoad.getOriginalFileName());
                 }
                 fileToLoad.setConvertedFile(fileConversionService.convertFileToCsv(safePath.toFile(), fileToLoad.getOriginalFileName()));
-            } catch (IOException | IllegalArgumentException e) {
+            } catch (Exception e) {
                 throw new AsyncTaskException(String.format("%s - Error while converting file '%s'", context.log(),
                         fileToLoad.getOriginalFileName()), e);
             }
@@ -199,7 +199,7 @@ public class FileLoadingUtils {
         for (FileToLoad fileToLoad : context.getFilesToLoad()) {
             try {
                 Files.delete(fileToLoad.getConvertedFile().toPath());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new AsyncTaskException(String.format("%s - Error while deleting converted file '%s'", context.log(),
                         fileToLoad.getOriginalFileName()), e);
             }
