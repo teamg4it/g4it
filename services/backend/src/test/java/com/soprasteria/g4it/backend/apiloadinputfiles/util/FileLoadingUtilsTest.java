@@ -209,4 +209,40 @@ class FileLoadingUtilsTest {
         assertTrue(ex.getMessage().contains("Cannot download file"));
     }
 
+    @Test
+    void cleanConvertedFiles_shouldDeleteConvertedFiles() throws Exception {
+        FileLoadingUtils utils = new FileLoadingUtils();
+
+        // Create a temp file to act as the converted file
+        Path convertedFile = Files.createTempFile("converted", ".csv");
+        FileToLoad fileToLoad = new FileToLoad();
+        fileToLoad.setOriginalFileName("converted.csv");
+        fileToLoad.setConvertedFile(convertedFile.toFile());
+
+        Context context = Context.builder()
+                .filesToLoad(List.of(fileToLoad))
+                .build();
+
+        utils.cleanConvertedFiles(context);
+
+        assertFalse(Files.exists(convertedFile), "Converted file should be deleted");
+    }
+
+    @Test
+    void cleanConvertedFiles_shouldThrowAsyncTaskExceptionOnFailure() throws Exception {
+        FileLoadingUtils utils = new FileLoadingUtils();
+
+        // Create a mock file that cannot be deleted (simulate by using a non-existent file)
+        FileToLoad fileToLoad = new FileToLoad();
+        fileToLoad.setOriginalFileName("fail.csv");
+        fileToLoad.setConvertedFile(new java.io.File("non_existent_file.csv"));
+
+        Context context = Context.builder()
+                .workspaceId(1L) // Set required field to avoid NPE in context.log()
+                .filesToLoad(List.of(fileToLoad))
+                .build();
+
+        assertThrows(AsyncTaskException.class, () -> utils.cleanConvertedFiles(context));
+    }
+
 }
