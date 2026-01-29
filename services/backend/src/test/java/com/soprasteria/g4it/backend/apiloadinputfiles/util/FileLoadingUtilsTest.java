@@ -2,7 +2,6 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.util;
 
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.FileConversionService;
-import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.LoadFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.FileToLoad;
@@ -131,7 +130,7 @@ class FileLoadingUtilsTest {
                 tempDir.resolve("input").resolve("..").resolve("ok.csv")
         );
 
-        Context context = Context.builder()
+        context = Context.builder()
                 .workspaceId(1L)
                 .filesToLoad(List.of(file))
                 .build();
@@ -156,7 +155,7 @@ class FileLoadingUtilsTest {
         file.setOriginalFileName("file.csv");
         file.setFilePath(tempDir.resolve("file.csv"));
 
-        Context context = Context.builder()
+        context = Context.builder()
                 .workspaceId(1L) // REQUIRED to avoid NPE in context.log()
                 .filesToLoad(List.of(file))
                 .build();
@@ -192,10 +191,7 @@ class FileLoadingUtilsTest {
 
     @Test
     void downloadAllFileToLoad_whenDownloadFails_throwsAsyncTaskException() throws Exception {
-        Path dest = tempDir.resolve("fail.csv");
         when(context.getFilesToLoad()).thenReturn(List.of(fileToLoad));
-       /* when(fileToLoad.getFilename()).thenReturn("fail.csv");
-        when(fileToLoad.getFilePath()).thenReturn(dest);*/
 
         // Only stub methods that are called before the exception is thrown
         when(fileSystemService.downloadFile(any(), any(), any(), anyString()))
@@ -215,11 +211,11 @@ class FileLoadingUtilsTest {
 
         // Create a temp file to act as the converted file
         Path convertedFile = Files.createTempFile("converted", ".csv");
-        FileToLoad fileToLoad = new FileToLoad();
+        fileToLoad = new FileToLoad();
         fileToLoad.setOriginalFileName("converted.csv");
         fileToLoad.setConvertedFile(convertedFile.toFile());
 
-        Context context = Context.builder()
+        context = Context.builder()
                 .filesToLoad(List.of(fileToLoad))
                 .build();
 
@@ -229,15 +225,15 @@ class FileLoadingUtilsTest {
     }
 
     @Test
-    void cleanConvertedFiles_shouldThrowAsyncTaskExceptionOnFailure() throws Exception {
+    void cleanConvertedFiles_shouldThrowAsyncTaskExceptionOnFailure() {
         FileLoadingUtils utils = new FileLoadingUtils();
 
         // Create a mock file that cannot be deleted (simulate by using a non-existent file)
-        FileToLoad fileToLoad = new FileToLoad();
+        fileToLoad = new FileToLoad();
         fileToLoad.setOriginalFileName("fail.csv");
         fileToLoad.setConvertedFile(new java.io.File("non_existent_file.csv"));
 
-        Context context = Context.builder()
+        context = Context.builder()
                 .workspaceId(1L) // Set required field to avoid NPE in context.log()
                 .filesToLoad(List.of(fileToLoad))
                 .build();
