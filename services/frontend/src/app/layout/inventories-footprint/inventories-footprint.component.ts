@@ -219,7 +219,7 @@ export class InventoriesFootprintComponent implements OnInit {
                 ...uniqueFilterSet[field]
 
                     .map((item: any) => {
-                        const value = typeof item === "string" ? item.trim() : item;
+                        const value = typeof item === "string" ? item?.trim() : item;
                         return value?.length ? value : Constants.EMPTY;
                     })
                     .sort((a, b) => String(a).localeCompare(String(b))),
