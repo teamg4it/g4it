@@ -18,7 +18,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mte.numecoeval.calculs.domain.data.entree.DataCenter;
 import org.mte.numecoeval.calculs.domain.data.entree.EquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
@@ -255,6 +254,7 @@ class EvaluateNumEcoEvalServiceTest {
 
     @Test
     void calculatePhysicalEquipment_shouldMarkReferentialSourceAsType_whenNoModelMatch() {
+
         // GIVEN
         InPhysicalEquipment physical = new InPhysicalEquipment();
         physical.setType("SERVER");
@@ -262,8 +262,6 @@ class EvaluateNumEcoEvalServiceTest {
 
         CriterionRest criterion = new CriterionRest();
         criterion.setCode("CLIMATE_CHANGE");
-
-        List<String> lifecycleSteps = List.of("MANUFACTURING");
 
         ItemTypeRest itemType = new ItemTypeRest();
         itemType.setRefDefaultItem("DEFAULT_SERVER");
@@ -273,17 +271,6 @@ class EvaluateNumEcoEvalServiceTest {
 
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of());
-
-        EquipementPhysique mappedPhysical = mock(EquipementPhysique.class);
-        DataCenter mappedDataCenter = mock(DataCenter.class);
-
-        when(mappedPhysical.getDataCenter()).thenReturn(mappedDataCenter);
-
-        when(internalToNumEcoEvalCalculs.map(any(InPhysicalEquipment.class)))
-                .thenReturn(mappedPhysical);
-
-        when(internalToNumEcoEvalCalculs.map(any(InDatacenter.class)))
-                .thenReturn(mappedDataCenter);
 
         when(internalToNumEcoEvalCalculs.map(any(CriterionRest.class)))
                 .thenReturn(new org.mte.numecoeval.calculs.domain.data.referentiel.ReferentielCritere());
@@ -297,14 +284,13 @@ class EvaluateNumEcoEvalServiceTest {
 
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(impact);
-
-        // WHEN
+        
         service.calculatePhysicalEquipment(
                 physical,
                 null,
                 "ORG",
                 List.of(criterion),
-                lifecycleSteps,
+                List.of("MANUFACTURING"),
                 List.of()
         );
 
@@ -312,8 +298,7 @@ class EvaluateNumEcoEvalServiceTest {
         ArgumentCaptor<String> traceCaptor = ArgumentCaptor.forClass(String.class);
         verify(impact).setTrace(traceCaptor.capture());
 
-        String rewrittenTrace = traceCaptor.getValue();
-        assertTrue(rewrittenTrace.contains("\"impact source\":\"TYPE\""));
+        assertTrue(traceCaptor.getValue().contains("\"impact source\":\"TYPE\""));
     }
 
     @Test
@@ -351,6 +336,7 @@ class EvaluateNumEcoEvalServiceTest {
     @Test
     void calculatePhysicalEquipment_shouldRewriteElectricityTrace_forUsingLifecycle() throws Exception {
 
+        // GIVEN
         InPhysicalEquipment physical = new InPhysicalEquipment();
         physical.setType("SERVER");
         physical.setLocation("FR");
@@ -359,37 +345,24 @@ class EvaluateNumEcoEvalServiceTest {
         datacenter.setPue(1.2);
         datacenter.setLocation("FR");
 
-        // 🔑 FIX: mock mapping results
-        EquipementPhysique mappedPhysical = new EquipementPhysique();
-
-        org.mte.numecoeval.calculs.domain.data.entree.DataCenter dc =
-                mock(org.mte.numecoeval.calculs.domain.data.entree.DataCenter.class);
-
-        mappedPhysical.setDataCenter(dc);
-
-        when(internalToNumEcoEvalCalculs.map(any(InPhysicalEquipment.class)))
-                .thenReturn(mappedPhysical);
-        when(internalToNumEcoEvalCalculs.map(any(InDatacenter.class)))
-                .thenReturn(dc);
-
         CriterionRest criterion = new CriterionRest();
         criterion.setCode("CLIMATE_CHANGE");
 
-        ItemTypeRest itemType = new ItemTypeRest();
-        ItemImpactRest itemImpact = new ItemImpactRest();
-
         when(referentialService.getItemType(any(), any()))
-                .thenReturn(itemType);
-        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
-                .thenReturn(List.of(itemImpact));
+                .thenReturn(new ItemTypeRest());
 
-        String initialTrace = """
-                { "consoElecAnMoyenne": { "valeur": 100 } }
-                """;
+        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
+                .thenReturn(List.of(new ItemImpactRest()));
+
+        String initialTrace =
+                "{ \"consoElecAnMoyenne\": { \"valeur\": 100 } }";
 
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
-                .thenReturn(ImpactEquipementPhysique.builder().trace(initialTrace).build());
+                .thenReturn(ImpactEquipementPhysique.builder()
+                        .trace(initialTrace)
+                        .build());
 
+        // WHEN
         List<ImpactEquipementPhysique> result =
                 service.calculatePhysicalEquipment(
                         physical,
@@ -400,16 +373,21 @@ class EvaluateNumEcoEvalServiceTest {
                         Collections.emptyList()
                 );
 
+        // THEN
+        assertEquals(1, result.size());
+
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> trace =
                 mapper.readValue(result.get(0).getTrace(), Map.class);
 
         Map<?, ?> conso = (Map<?, ?>) trace.get("consoElecAnMoyenne");
+        assertNotNull(conso);
         assertEquals("REELLE", conso.get("impact source"));
     }
 
     @Test
     void calculatePhysicalEquipment_shouldMarkReferentialSourceAsModel_whenMatched() {
+
         // GIVEN
         InPhysicalEquipment physical = new InPhysicalEquipment();
         physical.setModel("Dell R740");
@@ -418,8 +396,6 @@ class EvaluateNumEcoEvalServiceTest {
 
         CriterionRest criterion = new CriterionRest();
         criterion.setCode("CLIMATE_CHANGE");
-
-        List<String> lifecycleSteps = List.of("MANUFACTURING");
 
         MatchingItemRest matchingItem = new MatchingItemRest();
         matchingItem.setRefItemTarget("REF_SERVER");
@@ -432,17 +408,6 @@ class EvaluateNumEcoEvalServiceTest {
 
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of());
-
-        EquipementPhysique mappedPhysical = mock(EquipementPhysique.class);
-        DataCenter mappedDataCenter = mock(DataCenter.class);
-
-        when(mappedPhysical.getDataCenter()).thenReturn(mappedDataCenter);
-
-        when(internalToNumEcoEvalCalculs.map(any(InPhysicalEquipment.class)))
-                .thenReturn(mappedPhysical);
-
-        when(internalToNumEcoEvalCalculs.map(any(InDatacenter.class)))
-                .thenReturn(mappedDataCenter);
 
         when(internalToNumEcoEvalCalculs.map(any(CriterionRest.class)))
                 .thenReturn(new org.mte.numecoeval.calculs.domain.data.referentiel.ReferentielCritere());
@@ -463,7 +428,7 @@ class EvaluateNumEcoEvalServiceTest {
                 null,
                 "ORG",
                 List.of(criterion),
-                lifecycleSteps,
+                List.of("MANUFACTURING"),
                 List.of()
         );
 
@@ -472,6 +437,7 @@ class EvaluateNumEcoEvalServiceTest {
         verify(impact).setTrace(traceCaptor.capture());
 
         String rewrittenTrace = traceCaptor.getValue();
+        assertNotNull(rewrittenTrace);
         assertTrue(rewrittenTrace.contains("\"impact source\":\"MODELE\""));
     }
 

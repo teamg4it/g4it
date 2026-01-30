@@ -680,6 +680,8 @@ class EvaluateServiceTest {
         when(inPhysicalEquipmentRepository.findByInventoryId(anyLong(), any())).thenReturn(List.of());
 
         evaluateService.doEvaluate(context, task, tempDir);
+        verify(evaluateNumEcoEvalService, never())
+                .calculateVirtualEquipment(any(), any(), anyInt(), anyDouble(), anyDouble(), anyDouble(), anyString());
 
     }
 
