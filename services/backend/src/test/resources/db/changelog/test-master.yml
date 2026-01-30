@@ -53,5 +53,5 @@ databaseChangeLog:
   - include:
       file: db/changelog/greenitdb.changelog-migrate-digital-service-uid-to-digital-services-version-uid.yml
   - include:
-      file: db/changelog/greenitdb.changelog-fix-digital-service-version-description.yml
+      file: db/changelog/greenitdb.changelog-fix-digital-service-version-description-v2.yml
 
