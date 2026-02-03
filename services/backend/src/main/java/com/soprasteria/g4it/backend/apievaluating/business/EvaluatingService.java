@@ -145,7 +145,9 @@ public class EvaluatingService {
 
         // evaluation may be heavy, so runs in threaded executor to avoid performance issues
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
-
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {/* ignore InterruptedException */ }
         return task;
     }
 
@@ -215,6 +217,9 @@ public class EvaluatingService {
 
         // evaluation may be heavy, so runs in threaded executor to avoid performance issues
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {/* ignore InterruptedException */ }
 
         digitalService.setLastCalculationDate(LocalDateTime.now());
         digitalServiceRepository.save(digitalService);
