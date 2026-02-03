@@ -238,12 +238,53 @@ export class DigitalServicesFootprintDashboardComponent
               )
             : this.outVirtualEquipmentsService.getByDigitalService(dsVersionUid);
 
-        const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
-            firstValueFrom(physicalEquipments$),
-            firstValueFrom(virtualEquipments$),
-        ]);
-        this.outPhysicalEquipments = outPhysicalEquipments;
-        this.outVirtualEquipments = outVirtualEquipments;
+        // code added for digital service output physical equipment not visible
+        const MAX_RETRIES = 5;
+        const DELAY_MS = 500;
+        const LOADER_TIMEOUT_MS = 2000;
+
+        // auto-hide safeguard
+        const loaderTimeout = setTimeout(() => {
+            this.globalStore.setLoading(false);
+        }, LOADER_TIMEOUT_MS);
+
+        const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        let outPhysicalEquipments: OutPhysicalEquipmentRest[] = [];
+        let outVirtualEquipments: OutVirtualEquipmentRest[] = [];
+
+        this.globalStore.setLoading(true);
+
+        try {
+            for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+                [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
+                    outPhysicalEquipments.length === 0
+                        ? firstValueFrom(physicalEquipments$)
+                        : Promise.resolve(outPhysicalEquipments),
+
+                    outVirtualEquipments.length === 0
+                        ? firstValueFrom(virtualEquipments$)
+                        : Promise.resolve(outVirtualEquipments),
+                ]);
+
+                // stop early if both have data
+                if (outPhysicalEquipments.length > 0 || outVirtualEquipments.length > 0) {
+                    break;
+                }
+
+                // delay before next retry
+                if (attempt < MAX_RETRIES) {
+                    await delay(DELAY_MS);
+                }
+            }
+
+            this.outPhysicalEquipments = outPhysicalEquipments;
+            this.outVirtualEquipments = outVirtualEquipments;
+        } finally {
+            // clear timeout & hide loader normally
+            clearTimeout(loaderTimeout);
+            this.globalStore.setLoading(false);
+        }
 
         this.retrieveFootprintData();
         if (this.impacts?.length === 1) {
