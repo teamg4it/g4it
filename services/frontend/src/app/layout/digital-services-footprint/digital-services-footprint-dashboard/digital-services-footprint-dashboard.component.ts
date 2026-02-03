@@ -247,7 +247,6 @@ export class DigitalServicesFootprintDashboardComponent
 
         let outPhysicalEquipments: OutPhysicalEquipmentRest[] = [];
         let outVirtualEquipments: OutVirtualEquipmentRest[] = [];
-        console.log("loader start");
         this.globalStore.setLoading(true);
 
         try {
@@ -263,7 +262,7 @@ export class DigitalServicesFootprintDashboardComponent
                 ]);
 
                 // stop early if both have data
-                if (outPhysicalEquipments.length > 0 || outVirtualEquipments.length > 0) {
+                if (outPhysicalEquipments.length > 0 && outVirtualEquipments.length > 0) {
                     break;
                 }
 
@@ -272,11 +271,9 @@ export class DigitalServicesFootprintDashboardComponent
                     await delay(DELAY_MS);
                 }
             }
-            console.log("data loaded");
             this.outPhysicalEquipments = outPhysicalEquipments;
             this.outVirtualEquipments = outVirtualEquipments;
         } finally {
-            console.log("loader false");
             setTimeout(() => {
                 this.globalStore.setLoading(false);
             }, LOADER_TIMEOUT_MS);
