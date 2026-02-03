@@ -239,8 +239,8 @@ export class DigitalServicesFootprintDashboardComponent
             : this.outVirtualEquipmentsService.getByDigitalService(dsVersionUid);
 
         // code added for digital service output physical equipment not visible
-        const MAX_RETRIES = 5;
-        const DELAY_MS = 200;
+        const MAX_RETRIES = 10;
+        const DELAY_MS = 500;
         const LOADER_TIMEOUT_MS = 1200;
 
         const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -276,10 +276,8 @@ export class DigitalServicesFootprintDashboardComponent
             }
             this.outPhysicalEquipments = outPhysicalEquipments;
             this.outVirtualEquipments = outVirtualEquipments;
-            console.log("process complete");
         } finally {
             setTimeout(() => {
-                console.log("loader false");
                 this.globalStore.setLoading(false);
             }, LOADER_TIMEOUT_MS);
         }
