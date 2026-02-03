@@ -241,18 +241,13 @@ export class DigitalServicesFootprintDashboardComponent
         // code added for digital service output physical equipment not visible
         const MAX_RETRIES = 5;
         const DELAY_MS = 500;
-        const LOADER_TIMEOUT_MS = 2000;
-
-        // auto-hide safeguard
-        const loaderTimeout = setTimeout(() => {
-            this.globalStore.setLoading(false);
-        }, LOADER_TIMEOUT_MS);
+        const LOADER_TIMEOUT_MS = 5000;
 
         const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
         let outPhysicalEquipments: OutPhysicalEquipmentRest[] = [];
         let outVirtualEquipments: OutVirtualEquipmentRest[] = [];
-
+        console.log("loader start");
         this.globalStore.setLoading(true);
 
         try {
@@ -277,13 +272,14 @@ export class DigitalServicesFootprintDashboardComponent
                     await delay(DELAY_MS);
                 }
             }
-
+            console.log("data loaded");
             this.outPhysicalEquipments = outPhysicalEquipments;
             this.outVirtualEquipments = outVirtualEquipments;
         } finally {
-            // clear timeout & hide loader normally
-            clearTimeout(loaderTimeout);
-            this.globalStore.setLoading(false);
+            console.log("loader false");
+            setTimeout(() => {
+                this.globalStore.setLoading(false);
+            }, LOADER_TIMEOUT_MS);
         }
 
         this.retrieveFootprintData();
