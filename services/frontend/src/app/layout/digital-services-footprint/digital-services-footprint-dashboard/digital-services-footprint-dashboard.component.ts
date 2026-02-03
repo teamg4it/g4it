@@ -240,17 +240,20 @@ export class DigitalServicesFootprintDashboardComponent
 
         // code added for digital service output physical equipment not visible
         const MAX_RETRIES = 5;
-        const DELAY_MS = 500;
-        const LOADER_TIMEOUT_MS = 5000;
+        const DELAY_MS = 200;
+        const LOADER_TIMEOUT_MS = 1200;
 
         const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
         let outPhysicalEquipments: OutPhysicalEquipmentRest[] = [];
         let outVirtualEquipments: OutVirtualEquipmentRest[] = [];
-        this.globalStore.setLoading(true);
 
         try {
             for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+                if (!this.globalStore.loading()) {
+                    this.globalStore.setLoading(true);
+                }
+
                 [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
                     outPhysicalEquipments.length === 0
                         ? firstValueFrom(physicalEquipments$)
@@ -273,8 +276,10 @@ export class DigitalServicesFootprintDashboardComponent
             }
             this.outPhysicalEquipments = outPhysicalEquipments;
             this.outVirtualEquipments = outVirtualEquipments;
+            console.log("process complete");
         } finally {
             setTimeout(() => {
+                console.log("loader false");
                 this.globalStore.setLoading(false);
             }, LOADER_TIMEOUT_MS);
         }
