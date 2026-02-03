@@ -502,7 +502,7 @@ public class EvaluateService {
 
                 virtualSaveCounter++;
 
-                if (virtualSaveCounter >= 50) {
+                if (virtualSaveCounter >= 10) {
                     savedVirtualCount += saveService.saveOutVirtualEquipments(
                             aggregationVirtualEquipments, evaluateReportBO.getTaskId(), refShortcutBO);
                     aggregationVirtualEquipments.clear();
@@ -579,7 +579,7 @@ public class EvaluateService {
 
             applicationSaveCounter++;
 
-            if (applicationSaveCounter >= 50) {
+            if (applicationSaveCounter >= 10) {
                 savedApplicationCount += saveService.saveOutApplications(
                         aggregationApplications,
                         evaluateReportBO.getTaskId(),
