@@ -47,30 +47,6 @@ class OutPhysicalEquipmentServiceTest {
     @InjectMocks
     private OutPhysicalEquipmentService outPhysicalEquipmentService;
 
-    @Test
-    void getByDigitalServiceUid_returnsEmptyList_whenTaskNotFoundEvenAfterRetry() {
-        String uid = "nonexistent-uid";
-
-        DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
-        digitalServiceVersion.setUid(uid);
-
-        when(digitalServiceVersionRepository.findById(uid))
-                .thenReturn(Optional.of(digitalServiceVersion));
-
-        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion))
-                .thenReturn(Optional.empty());
-
-        List<OutPhysicalEquipmentRest> result =
-                outPhysicalEquipmentService.getByDigitalServiceVersionUid(uid);
-
-        assertTrue(result.isEmpty());
-
-        verify(digitalServiceVersionRepository).findById(uid);
-        verify(taskRepository, times(3))
-                .findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
-
-        verifyNoInteractions(outPhysicalEquipmentRepository, outPhysicalEquipmentMapper);
-    }
 
     @Test
     void getByDigitalServiceUid_returnsMappedList_whenTaskFoundOnFirstTry() {
@@ -106,40 +82,6 @@ class OutPhysicalEquipmentServiceTest {
         verify(outPhysicalEquipmentMapper).toRest(anyList());
     }
 
-    @Test
-    void getByDigitalServiceUid_returnsMappedList_whenTaskFoundAfterRetry() {
-        String uid = "valid-uid";
-
-        DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
-        digitalServiceVersion.setUid(uid);
-
-        Task task = new Task();
-        task.setId(1L);
-
-        when(digitalServiceVersionRepository.findById(uid))
-                .thenReturn(Optional.of(digitalServiceVersion));
-
-        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion))
-                .thenReturn(Optional.empty())
-                .thenReturn(Optional.empty())
-                .thenReturn(Optional.of(task));
-
-        when(outPhysicalEquipmentRepository.findByTaskId(task.getId()))
-                .thenReturn(List.of());
-
-        when(outPhysicalEquipmentMapper.toRest(anyList()))
-                .thenReturn(List.of(OutPhysicalEquipmentRest.builder().build()));
-
-        List<OutPhysicalEquipmentRest> result =
-                outPhysicalEquipmentService.getByDigitalServiceVersionUid(uid);
-
-        assertFalse(result.isEmpty());
-
-        verify(taskRepository, times(3))
-                .findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
-        verify(outPhysicalEquipmentRepository).findByTaskId(task.getId());
-        verify(outPhysicalEquipmentMapper).toRest(anyList());
-    }
 
     @Test
     void getByInventory_returnsEmptyList_whenTaskNotFound() {

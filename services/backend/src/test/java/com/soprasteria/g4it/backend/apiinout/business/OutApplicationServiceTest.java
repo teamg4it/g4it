@@ -90,31 +90,6 @@ class OutApplicationServiceTest {
     }
 
     @Test
-    void getByDigitalServiceVersionUid_returnsEmptyList_whenTaskNotFoundEvenAfterRetry() {
-        String uid = "uid123";
-
-        DigitalServiceVersion dsv = new DigitalServiceVersion();
-        dsv.setUid(uid);
-
-        when(digitalServiceVersionRepository.findById(uid))
-                .thenReturn(Optional.of(dsv));
-
-        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(dsv))
-                .thenReturn(Optional.empty());
-
-        List<OutApplicationRest> result =
-                outApplicationService.getByDigitalServiceVersionUid(uid);
-
-        assertEquals(List.of(), result);
-
-        verify(digitalServiceVersionRepository).findById(uid);
-        verify(taskRepository, times(3))
-                .findTopByDigitalServiceVersionOrderByIdDesc(dsv);
-
-        verifyNoInteractions(outApplicationRepository, outApplicationMapper);
-    }
-
-    @Test
     void getByDigitalServiceVersionUid_returnsMappedApplications_whenTaskFoundOnFirstTry() {
         String uid = "uid123";
 
@@ -152,42 +127,4 @@ class OutApplicationServiceTest {
         verify(outApplicationMapper).toRest(entities);
     }
 
-    @Test
-    void getByDigitalServiceVersionUid_returnsMappedApplications_whenTaskFoundAfterRetry() {
-        String uid = "uid123";
-
-        DigitalServiceVersion dsv = new DigitalServiceVersion();
-        dsv.setUid(uid);
-
-        Task task = new Task();
-        task.setId(1L);
-
-        List<OutApplication> entities = List.of(new OutApplication());
-        List<OutApplicationRest> mapped =
-                List.of(OutApplicationRest.builder().build());
-
-        when(digitalServiceVersionRepository.findById(uid))
-                .thenReturn(Optional.of(dsv));
-
-        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(dsv))
-                .thenReturn(Optional.empty())
-                .thenReturn(Optional.empty())
-                .thenReturn(Optional.of(task));
-
-        when(outApplicationRepository.findByTaskId(1L))
-                .thenReturn(entities);
-
-        when(outApplicationMapper.toRest(entities))
-                .thenReturn(mapped);
-
-        List<OutApplicationRest> result =
-                outApplicationService.getByDigitalServiceVersionUid(uid);
-
-        assertEquals(1, result.size());
-
-        verify(taskRepository, times(3))
-                .findTopByDigitalServiceVersionOrderByIdDesc(dsv);
-        verify(outApplicationRepository).findByTaskId(1L);
-        verify(outApplicationMapper).toRest(entities);
-    }
 }
