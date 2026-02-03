@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,9 +40,10 @@ class OutApplicationServiceTest {
     private OutApplicationRepository outApplicationRepository;
 
     @Mock
-    private TaskRepository taskRepository;
-    @Mock
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
+
+    @Mock
+    private TaskRepository taskRepository;
 
     @Mock
     private OutApplicationMapper outApplicationMapper;
@@ -52,12 +51,17 @@ class OutApplicationServiceTest {
     @Test
     void getByInventory_returnsEmptyList_whenNoTaskFound() {
         Inventory inventory = new Inventory();
-        when(taskRepository.findByInventoryAndLastCreationDate(inventory)).thenReturn(Optional.empty());
 
-        List<OutApplicationRest> result = outApplicationService.getByInventory(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(inventory))
+                .thenReturn(Optional.empty());
+
+        List<OutApplicationRest> result =
+                outApplicationService.getByInventory(inventory);
 
         assertEquals(List.of(), result);
+
         verify(taskRepository).findByInventoryAndLastCreationDate(inventory);
+        verifyNoInteractions(outApplicationRepository, outApplicationMapper);
     }
 
     @Test
@@ -65,99 +69,62 @@ class OutApplicationServiceTest {
         Inventory inventory = new Inventory();
         Task task = new Task();
         task.setId(1L);
-        when(taskRepository.findByInventoryAndLastCreationDate(inventory)).thenReturn(Optional.of(task));
-        when(outApplicationRepository.findByTaskId(1L)).thenReturn(List.of());
-        when(outApplicationMapper.toRest(List.of())).thenReturn(List.of(OutApplicationRest.builder().build()));
 
-        List<OutApplicationRest> result = outApplicationService.getByInventory(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(inventory))
+                .thenReturn(Optional.of(task));
+
+        when(outApplicationRepository.findByTaskId(1L))
+                .thenReturn(List.of());
+
+        when(outApplicationMapper.toRest(List.of()))
+                .thenReturn(List.of(OutApplicationRest.builder().build()));
+
+        List<OutApplicationRest> result =
+                outApplicationService.getByInventory(inventory);
 
         assertEquals(1, result.size());
+
         verify(taskRepository).findByInventoryAndLastCreationDate(inventory);
         verify(outApplicationRepository).findByTaskId(1L);
         verify(outApplicationMapper).toRest(List.of());
     }
 
     @Test
-    void getByDigitalServiceUid_returnsEmptyList_whenNoTaskFound() {
-        String digitalServiceVersionUid = "uid123";
+    void getByDigitalServiceVersionUid_returnsMappedApplications_whenTaskFoundOnFirstTry() {
+        String uid = "uid123";
 
-        DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
-        digitalServiceVersion.setUid(digitalServiceVersionUid);
-
-        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid))
-                .thenReturn(Optional.of(digitalServiceVersion));
-
-        when(taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                any(DigitalServiceVersion.class),
-                eq("EVALUATING_DIGITAL_SERVICE"),
-                eq("COMPLETED")
-        )).thenReturn(Optional.empty());
-
-        List<OutApplicationRest> result =
-                outApplicationService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
-
-        assertEquals(List.of(), result);
-
-        verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
-
-        verify(taskRepository).findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                any(DigitalServiceVersion.class),
-                eq("EVALUATING_DIGITAL_SERVICE"),
-                eq("COMPLETED")
-        );
-
-        // optional safety checks (since task not found, these should not be called)
-        verifyNoInteractions(outApplicationRepository, outApplicationMapper);
-    }
-
-
-    @Test
-    void getByDigitalServiceUid_returnsMappedApplications_whenTaskFound() {
-        String digitalServiceVersionUid = "uid123";
+        DigitalServiceVersion dsv = new DigitalServiceVersion();
+        dsv.setUid(uid);
 
         Task task = new Task();
         task.setId(1L);
 
-        DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
-        digitalServiceVersion.setUid(digitalServiceVersionUid);
+        List<OutApplication> entities = List.of(new OutApplication());
+        List<OutApplicationRest> mapped =
+                List.of(OutApplicationRest.builder().build());
 
-        // mock DB entity list (1 record)
-        List<OutApplication> outApplications = List.of(new OutApplication());
+        when(digitalServiceVersionRepository.findById(uid))
+                .thenReturn(Optional.of(dsv));
 
-        // mock REST mapped list (1 record)
-        List<OutApplicationRest> mapped = List.of(OutApplicationRest.builder().build());
-
-        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid))
-                .thenReturn(Optional.of(digitalServiceVersion));
-
-        when(taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                any(DigitalServiceVersion.class),
-                eq("EVALUATING_DIGITAL_SERVICE"),
-                eq("COMPLETED")
-        )).thenReturn(Optional.of(task));
+        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(dsv))
+                .thenReturn(Optional.of(task));
 
         when(outApplicationRepository.findByTaskId(1L))
-                .thenReturn(outApplications);
+                .thenReturn(entities);
 
-        when(outApplicationMapper.toRest(outApplications))
+        when(outApplicationMapper.toRest(entities))
                 .thenReturn(mapped);
 
         List<OutApplicationRest> result =
-                outApplicationService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
+                outApplicationService.getByDigitalServiceVersionUid(uid);
 
         assertEquals(1, result.size());
 
-        verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
-
-        verify(taskRepository).findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                any(DigitalServiceVersion.class),
-                eq("EVALUATING_DIGITAL_SERVICE"),
-                eq("COMPLETED")
-        );
-
+        verify(digitalServiceVersionRepository).findById(uid);
+        verify(taskRepository)
+                .findTopByDigitalServiceVersionOrderByIdDesc(dsv);
         verify(outApplicationRepository).findByTaskId(1L);
-        verify(outApplicationMapper).toRest(outApplications);
+        verify(outApplicationMapper).toRest(entities);
     }
-
 
 }

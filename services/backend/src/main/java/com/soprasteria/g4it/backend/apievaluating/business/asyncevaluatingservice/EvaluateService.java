@@ -118,6 +118,15 @@ public class EvaluateService {
      */
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
+        // retrieving the VM list for this DS
+        Map<String, List<InVirtualEquipment>> vmsByPhysical =
+                inVirtualEquipmentRepository
+                        .findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid())
+                        .stream()
+                        // ONLY VMs attached to a physical equipment
+                        .filter(vm -> vm.getPhysicalEquipmentName() != null)
+                        .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName));
+
         final Inventory inventory = task.getInventory();
         final String inventoryName = inventory == null ? context.getDigitalServiceName() : inventory.getName();
         final long start = System.currentTimeMillis();
@@ -221,7 +230,8 @@ public class EvaluateService {
             SaveResult saveResult = evaluateVirtualsEquipments(context, evaluateReportBO, null, null,
                     aggregationVirtualEquipments, aggregationApplications,
                     csvInVirtualEquipment, csvVirtualEquipment, csvInApplication, csvApplication, refSip, refShortcutBO,
-                    criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/);
+                    criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/,
+                    null, null);
             outVirtualEquipmentSize += saveResult.savedVirtualCount();
             outApplicationSize += saveResult.savedApplicationCount();
 
@@ -256,10 +266,22 @@ public class EvaluateService {
                         physicalEquipment.setLocation(datacenter.getLocation());
                     }
 
+                    Double equipmentPue = datacenter != null ? datacenter.getPue() : null;
+                    String equipmentLocation = datacenter != null ? datacenter.getLocation() : null;
+
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
                             organization, activeCriteria, lifecycleSteps, hypothesisRestList);
+
+                    // Identify NON-CLOUD VMs for this physical equipment
+                    List<InVirtualEquipment> allVMs = vmsByPhysical.getOrDefault(physicalEquipment.getName(), List.of());
+
+                    List<InVirtualEquipment> nonCloudVMs = allVMs.stream()
+                            .filter(vm -> !CLOUD_SERVICES.name().equals(vm.getInfrastructureType()))
+                            .toList();
+
+                    boolean hasNonCloudVM = !nonCloudVMs.isEmpty();
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(physicalEquipment, datacenter));
@@ -289,11 +311,24 @@ public class EvaluateService {
                         evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbPhysicalEquipmentLines() + 1);
                     }
 
+                    /**
+                     * ------------------------------------------------------------------
+                     * VM RULE:
+                     * A physical equipment must run VM calculations ONLY IF:
+                     *    - It has ≥ 1 NON-CLOUD VM
+                     * Cloud VMs do NOT count for this condition.
+                     * ------------------------------------------------------------------
+                     */
+                    if (!hasNonCloudVM) {
+                        log.info("Skipping VM calculation for physical equipment {} — contains no NON-cloud VMs", physicalEquipment.getName());
+                        continue;
+                    }
 
                     SaveResult saveResult2 = evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipment, impactEquipementPhysiqueList,
                             aggregationVirtualEquipments, aggregationApplications,
                             csvInVirtualEquipment, csvVirtualEquipment, csvInApplication, csvApplication,
-                            refSip, refShortcutBO, criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/);
+                            refSip, refShortcutBO, criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/,
+                            equipmentPue, equipmentLocation);
                     outVirtualEquipmentSize += saveResult2.savedVirtualCount();
                     outApplicationSize += saveResult2.savedApplicationCount();
 
@@ -384,7 +419,9 @@ public class EvaluateService {
                                                   CSVPrinter csvApplication,
                                                   Map<String, Double> refSip, RefShortcutBO refShortcutBO,
                                                   final List<String> criteria, final List<String> lifecycleSteps,
-                                                  Map<String, String> codeToCountryMap) throws IOException {
+                                                  Map<String, String> codeToCountryMap,
+                                                  Double equipmentPue,
+                                                  String equipmentLocation) throws IOException {
 
         if (!context.isHasVirtualEquipments()) return new SaveResult(0, 0);
 
@@ -427,7 +464,8 @@ public class EvaluateService {
 
                 } else {
                     impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
-                            virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage
+                            virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage,
+                            equipmentPue, equipmentLocation
                     );
                 }
                 String location = isCloudService ? codeToCountryMap.get(virtualEquipment.getLocation()) : virtualEquipment.getLocation();
@@ -464,7 +502,7 @@ public class EvaluateService {
 
                 virtualSaveCounter++;
 
-                if (virtualSaveCounter >= 50) {
+                if (virtualSaveCounter >= 10) {
                     savedVirtualCount += saveService.saveOutVirtualEquipments(
                             aggregationVirtualEquipments, evaluateReportBO.getTaskId(), refShortcutBO);
                     aggregationVirtualEquipments.clear();
@@ -541,7 +579,7 @@ public class EvaluateService {
 
             applicationSaveCounter++;
 
-            if (applicationSaveCounter >= 50) {
+            if (applicationSaveCounter >= 10) {
                 savedApplicationCount += saveService.saveOutApplications(
                         aggregationApplications,
                         evaluateReportBO.getTaskId(),

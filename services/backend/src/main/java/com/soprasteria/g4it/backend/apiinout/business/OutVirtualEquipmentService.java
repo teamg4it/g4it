@@ -62,12 +62,7 @@ public class OutVirtualEquipmentService {
     public List<OutVirtualEquipmentRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
 
-        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                digitalServiceVersion,
-                "EVALUATING_DIGITAL_SERVICE",
-                "COMPLETED"
-        );
-
+        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
         if (task.isEmpty()) {
             return List.of();
         }

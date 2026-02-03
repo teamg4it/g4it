@@ -8,7 +8,6 @@
 
 package com.soprasteria.g4it.backend.apiinout.business;
 
-
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.OutVirtualEquipmentMapper;
@@ -51,11 +50,15 @@ class OutVirtualEquipmentServiceTest {
     @Test
     void getByInventory_returnsEmptyList_whenNoTaskFound() {
         Inventory inventory = new Inventory();
-        when(taskRepository.findByInventoryAndLastCreationDate(inventory)).thenReturn(Optional.empty());
 
-        List<OutVirtualEquipmentRest> result = outVirtualEquipmentService.getByInventory(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(inventory))
+                .thenReturn(Optional.empty());
+
+        List<OutVirtualEquipmentRest> result =
+                outVirtualEquipmentService.getByInventory(inventory);
 
         assertTrue(result.isEmpty());
+
         verify(taskRepository).findByInventoryAndLastCreationDate(inventory);
         verifyNoInteractions(outVirtualEquipmentRepository, outVirtualEquipmentMapper);
     }
@@ -65,71 +68,83 @@ class OutVirtualEquipmentServiceTest {
         Inventory inventory = new Inventory();
         Task task = new Task();
         task.setId(1L);
-        when(taskRepository.findByInventoryAndLastCreationDate(inventory)).thenReturn(Optional.of(task));
-        when(outVirtualEquipmentRepository.findByTaskId(task.getId())).thenReturn(List.of());
-        when(outVirtualEquipmentMapper.toRest(anyList())).thenReturn(List.of(OutVirtualEquipmentRest.builder().build()));
 
-        List<OutVirtualEquipmentRest> result = outVirtualEquipmentService.getByInventory(inventory);
+        when(taskRepository.findByInventoryAndLastCreationDate(inventory))
+                .thenReturn(Optional.of(task));
+
+        when(outVirtualEquipmentRepository.findByTaskId(task.getId()))
+                .thenReturn(List.of());
+
+        when(outVirtualEquipmentMapper.toRest(anyList()))
+                .thenReturn(List.of(OutVirtualEquipmentRest.builder().build()));
+
+        List<OutVirtualEquipmentRest> result =
+                outVirtualEquipmentService.getByInventory(inventory);
 
         assertFalse(result.isEmpty());
+
         verify(taskRepository).findByInventoryAndLastCreationDate(inventory);
         verify(outVirtualEquipmentRepository).findByTaskId(task.getId());
         verify(outVirtualEquipmentMapper).toRest(anyList());
     }
 
     @Test
-    void getByDigitalServiceUid_returnsEmptyList_whenNoTaskFound() {
-        String digitalServiceVersionUid = "test-uid";
-        final DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
+    void getByDigitalServiceUid_returnsMappedVirtualEquipments_whenTaskFoundOnFirstTry() {
+        String uid = "test-uid";
 
-        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid)).thenReturn(Optional.of(digitalServiceVersion));
+        DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
+        digitalServiceVersion.setUid(uid);
 
-        when(taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                digitalServiceVersion,
-                "EVALUATING_DIGITAL_SERVICE",
-                "COMPLETED"
-        )).thenReturn(Optional.empty());
-
-        List<OutVirtualEquipmentRest> result = outVirtualEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
-
-        assertTrue(result.isEmpty());
-        verify(taskRepository).findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                digitalServiceVersion,
-                "EVALUATING_DIGITAL_SERVICE",
-                "COMPLETED"
-        );
-        verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
-        verifyNoInteractions(outVirtualEquipmentRepository, outVirtualEquipmentMapper);
-    }
-
-    @Test
-    void getByDigitalServiceUid_returnsMappedVirtualEquipments_whenTaskFound() {
-        String digitalServiceVersionUid = "test-uid";
         Task task = new Task();
         task.setId(1L);
-        final DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
 
-        when(digitalServiceVersionRepository.findById(digitalServiceVersionUid)).thenReturn(Optional.of(digitalServiceVersion));
+        when(digitalServiceVersionRepository.findById(uid))
+                .thenReturn(Optional.of(digitalServiceVersion));
 
-        when(taskRepository.findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                digitalServiceVersion,
-                "EVALUATING_DIGITAL_SERVICE",
-                "COMPLETED"
-        )).thenReturn(Optional.of(task));
+        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion))
+                .thenReturn(Optional.of(task));
 
-        when(outVirtualEquipmentRepository.findByTaskId(task.getId())).thenReturn(List.of());
-        when(outVirtualEquipmentMapper.toRest(anyList())).thenReturn(List.of(OutVirtualEquipmentRest.builder().build()));
+        when(outVirtualEquipmentRepository.findByTaskId(task.getId()))
+                .thenReturn(List.of());
 
-        List<OutVirtualEquipmentRest> result = outVirtualEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
+        when(outVirtualEquipmentMapper.toRest(anyList()))
+                .thenReturn(List.of(OutVirtualEquipmentRest.builder().build()));
+
+        List<OutVirtualEquipmentRest> result =
+                outVirtualEquipmentService.getByDigitalServiceVersionUid(uid);
 
         assertFalse(result.isEmpty());
-        verify(taskRepository).findTopByDigitalServiceVersionAndTypeAndStatusOrderByIdDesc(
-                digitalServiceVersion,
-                "EVALUATING_DIGITAL_SERVICE",
-                "COMPLETED"
-        );
-        verify(digitalServiceVersionRepository).findById(digitalServiceVersionUid);
+
+        verify(digitalServiceVersionRepository).findById(uid);
+        verify(taskRepository)
+                .findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
         verify(outVirtualEquipmentRepository).findByTaskId(task.getId());
         verify(outVirtualEquipmentMapper).toRest(anyList());
     }
+
+    @Test
+    void getByDigitalServiceUid_returnsEmptyList_whenTaskNotFound() {
+        String uid = "test-uid";
+
+        DigitalServiceVersion digitalServiceVersion = new DigitalServiceVersion();
+        digitalServiceVersion.setUid(uid);
+
+        when(digitalServiceVersionRepository.findById(uid))
+                .thenReturn(Optional.of(digitalServiceVersion));
+
+        when(taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion))
+                .thenReturn(Optional.empty());
+
+        List<OutVirtualEquipmentRest> result =
+                outVirtualEquipmentService.getByDigitalServiceVersionUid(uid);
+
+        assertTrue(result.isEmpty());
+
+        verify(digitalServiceVersionRepository).findById(uid);
+        verify(taskRepository)
+                .findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
+
+        verifyNoInteractions(outVirtualEquipmentRepository, outVirtualEquipmentMapper);
+    }
+
 }

@@ -1,22 +1,33 @@
 # G4IT
+
 ## 3.9.1
+
 ## Major changes
-Memory Leak fixes in Digital Service and Inventory
+
+- 1838 | Code fix for Inventory memory leak (out of memory)
+- 1845 | Code fix to reduce reevaluate time on digital service edit
+- 1732 | NumEcoEval - Electricity consumption of a Virtual Machine #2 on Usage phase only
 
 ### Minor Changes
--1892 | desynchronization of digital service criteria
--1893 | greenItanalysis style optimization 
--1890 | Sonar fixes
+
+- 1892 | desynchronization of digital service criteria
+- 1893 | greenItanalysis style optimization
+- 1890 | Sonar fixes
+- 1832 | fix content spoofing to avoid any malicious text in request
+- 1905 | fixImproper Error Management, avoid showing XML/technical error
+- 1920 | Set Disk field default value to 1 in Shared Storage Server
 
 ## 3.9.0
 
 ## Major changes
+
 - 1606 | Making a version the new current
 - 1607 | Deleting a Digital Service Version
 - 1757 | Not authenticated mode put the same banner (without workspace and user menu)
 - 1769 | Add Water use criteria
 
 ### Minor Changes
+
 - 1768 | Add Check for Duplicate on Digital Service and Version
 - 1777 | add access to manage version button for read role
 - 1778 | Put link to open directly the version from compare version page
