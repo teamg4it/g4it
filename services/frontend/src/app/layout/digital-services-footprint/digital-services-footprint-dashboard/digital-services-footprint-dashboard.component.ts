@@ -238,7 +238,6 @@ export class DigitalServicesFootprintDashboardComponent
               )
             : this.outVirtualEquipmentsService.getByDigitalService(dsVersionUid);
 
-        // code added for digital service output physical equipment not visible
         const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
             firstValueFrom(physicalEquipments$),
             firstValueFrom(virtualEquipments$),
