@@ -143,11 +143,8 @@ public class EvaluatingService {
                 "0%"
         );
 
-        // evaluation may be heavy, so runs in threaded executor to avoid performance issues
+        // run evaluation async task
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {/* ignore InterruptedException */ }
         return task;
     }
 
@@ -215,18 +212,18 @@ public class EvaluatingService {
                 "0%"
         );
 
-        // evaluation may be heavy, so runs in threaded executor to avoid performance issues
-        taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {/* ignore InterruptedException */ }
-
         digitalService.setLastCalculationDate(LocalDateTime.now());
         digitalServiceRepository.save(digitalService);
 
         digitalServiceVersion.setLastCalculationDate(LocalDateTime.now());
         digitalServiceVersionRepository.save(digitalServiceVersion);
-        return task;
+        // run evaluation task
+        Long taskId = task.getId();
+        asyncEvaluatingService.execute(
+                context,
+                taskRepository.findById(taskId).orElseThrow()
+        );
+        return taskRepository.findById(taskId).orElseThrow();
     }
 
     /**
