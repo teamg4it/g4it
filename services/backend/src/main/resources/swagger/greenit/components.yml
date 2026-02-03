@@ -629,6 +629,39 @@ components:
         lowImpact:
           type: boolean
 
+    VirtualEquipmentLowImpactRest:
+      type: object
+      properties:
+        inventoryName:
+          type: string
+        country:
+          type: string
+        nomEntite:
+          type: string
+        quantite:
+          type: integer
+        lowImpact:
+          type: boolean
+        lifecycleStep:
+          type: string
+          description: lifecycle step of the application
+        domain:
+          type: string
+          description: domain from application filters
+        subDomain:
+          type: string
+          description: sub domain from application filters
+        environment:
+          type: string
+          description: environment
+        equipmentType:
+          type: string
+          description: equipment type
+        InfrastructureType:
+          type: string
+          description: Infrastructure type
+
+
     DigitalServiceRest:
       description: Information of a Digital Service
       type: object

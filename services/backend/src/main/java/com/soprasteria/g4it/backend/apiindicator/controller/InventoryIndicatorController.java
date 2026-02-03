@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apiindicator.mapper.IndicatorRestMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
@@ -185,6 +186,24 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         } catch (IOException e) {
             throw new G4itRestException("500", String.format("Something went wrong downloading file %s", filePath), e);
         }
+
+
+    }
+
+    @Override
+    public ResponseEntity<List<VirtualEquipmentLowImpactRest>> getVirtualEquipmentsLowImpact(
+            String organization,
+            Long workspace,
+            Long inventoryId) {
+
+        List<VirtualEquipmentLowImpactBO> bos =
+                inventoryIndicatorService
+                        .getVirtualEquipmentsLowImpact(organization, workspace, inventoryId);
+
+        List<VirtualEquipmentLowImpactRest> rest =
+                indicatorRestMapper.toVirtualLowImpactDto(bos);
+
+        return ResponseEntity.ok(rest);
     }
 
 }
