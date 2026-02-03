@@ -239,64 +239,12 @@ export class DigitalServicesFootprintDashboardComponent
             : this.outVirtualEquipmentsService.getByDigitalService(dsVersionUid);
 
         // code added for digital service output physical equipment not visible
-        const MAX_RETRIES = 10;
-        const DELAY_MS = 500;
-        const LOADER_TIMEOUT_MS = 1200;
-
-        const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-        let outPhysicalEquipments: OutPhysicalEquipmentRest[] = [];
-        let outVirtualEquipments: OutVirtualEquipmentRest[] = [];
-
-        let foundOne = false;
-        let extraRetryAfterFoundOne = false;
-
-        try {
-            for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-                if (!this.globalStore.loading()) {
-                    this.globalStore.setLoading(true);
-                }
-
-                [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
-                    outPhysicalEquipments.length === 0
-                        ? firstValueFrom(physicalEquipments$)
-                        : Promise.resolve(outPhysicalEquipments),
-
-                    outVirtualEquipments.length === 0
-                        ? firstValueFrom(virtualEquipments$)
-                        : Promise.resolve(outVirtualEquipments),
-                ]);
-
-                const hasPhysical = outPhysicalEquipments.length > 0;
-                const hasVirtual = outVirtualEquipments.length > 0;
-
-                // both found → done
-                if (hasPhysical && hasVirtual) {
-                    break;
-                }
-
-                // exactly one found
-                if (hasPhysical || hasVirtual) {
-                    if (!foundOne) {
-                        foundOne = true;
-                        extraRetryAfterFoundOne = true;
-                    } else if (extraRetryAfterFoundOne) {
-                        // already did the one extra retry → stop
-                        break;
-                    }
-                }
-
-                if (attempt < MAX_RETRIES) {
-                    await delay(DELAY_MS);
-                }
-            }
-            this.outPhysicalEquipments = outPhysicalEquipments;
-            this.outVirtualEquipments = outVirtualEquipments;
-        } finally {
-            setTimeout(() => {
-                this.globalStore.setLoading(false);
-            }, LOADER_TIMEOUT_MS);
-        }
+        const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
+            firstValueFrom(physicalEquipments$),
+            firstValueFrom(virtualEquipments$),
+        ]);
+        this.outPhysicalEquipments = outPhysicalEquipments;
+        this.outVirtualEquipments = outVirtualEquipments;
 
         this.retrieveFootprintData();
         if (this.impacts?.length === 1) {
