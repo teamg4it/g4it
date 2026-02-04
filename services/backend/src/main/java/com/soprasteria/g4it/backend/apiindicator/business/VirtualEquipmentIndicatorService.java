@@ -9,8 +9,11 @@
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apiindicator.mapper.VirtualEquipmentIndicatorMapper;
+import com.soprasteria.g4it.backend.apiindicator.model.NumberOfVirtualEquipmentsBO;
 import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.NumberOfVirtualEquipmentsView;
 import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentLowImpactViewRepository;
+import com.soprasteria.g4it.backend.apiindicator.repository.NumberOfVirtualEquipmentsViewRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class VirtualEquipmentIndicatorService {
     private final InVirtualEquipmentLowImpactViewRepository repository;
     private final VirtualEquipmentIndicatorMapper mapper;
     private final InventoryService inventoryService;
+    private final NumberOfVirtualEquipmentsViewRepository numberOfVirtualEquipmentsViewRepository;
 
     public List<VirtualEquipmentLowImpactBO> getVirtualEquipmentsLowImpact(
             final String organization,
@@ -39,5 +43,25 @@ public class VirtualEquipmentIndicatorService {
 
         return bos;
     }
+
+    public NumberOfVirtualEquipmentsBO getNumberOfVirtualEquipments(Long inventoryId) {
+
+        NumberOfVirtualEquipmentsView view =
+                numberOfVirtualEquipmentsViewRepository.findByInventoryId(inventoryId);
+
+        if (view == null) {
+            return NumberOfVirtualEquipmentsBO.builder()
+                    .inventoryId(inventoryId)
+                    .numberOfVirtualEquipments(0L)
+                    .build();
+        }
+
+        return NumberOfVirtualEquipmentsBO.builder()
+                .inventoryId(view.getInventoryId())
+                .inventoryName(view.getInventoryName())
+                .numberOfVirtualEquipments(view.getNumberOfVirtualEquipments())
+                .build();
+    }
+
 }
 
