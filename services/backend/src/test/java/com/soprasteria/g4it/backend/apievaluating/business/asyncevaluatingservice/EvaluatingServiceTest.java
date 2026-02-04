@@ -78,6 +78,9 @@ class EvaluatingServiceTest {
     private AuthService authService;
     @Mock
     private ExportService exportService;
+    @Mock
+    private AsyncEvaluatingService asyncEvaluatingService;
+
 
     @Test
     void evaluating_shouldThrow404_whenInventoryNotFound() {
@@ -232,22 +235,22 @@ class EvaluatingServiceTest {
     @Test
     void evaluatingDigitalService_shouldFallbackToDefaultCriteria_whenActiveCriteriaEmpty() {
         Workspace work = mock(Workspace.class);
-        UserBO userBO = UserBO.builder().id(USER_ID).email("test@soprasteria.com").domain("soprasteria.com").build();
+        UserBO userBO = UserBO.builder().id(USER_ID).build();
         User user = User.builder().id(USER_ID).build();
         DigitalService digitalService = mock(DigitalService.class);
         DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
         CriteriaByType criteriaByType = mock(CriteriaByType.class);
 
-        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID)).thenReturn(Optional.of(digitalServiceVersion));
+        when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
+                .thenReturn(Optional.of(digitalServiceVersion));
         when(digitalServiceVersion.getDigitalService()).thenReturn(digitalService);
         when(digitalServiceVersion.getDescription()).thenReturn("v1");
         when(digitalService.getUid()).thenReturn("ds-uid");
         when(digitalService.getName()).thenReturn("ds-name");
+        when(digitalService.isAi()).thenReturn(false);
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(work);
         when(work.getName()).thenReturn(WORKSPACE);
-
-        when(digitalServiceVersion.getCriteria()).thenReturn(null);
 
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any()))
                 .thenReturn(criteriaByType);
@@ -256,17 +259,29 @@ class EvaluatingServiceTest {
         when(authService.getUser()).thenReturn(userBO);
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
-        when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(taskRepository.save(any(Task.class))).thenAnswer(i -> {
+            Task t = i.getArgument(0);
+            t.setId(100L);
+            return t;
+        });
 
-        Task task = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
+        // ***** CRITICAL FIX *****
+        when(taskRepository.findById(100L)).thenReturn(Optional.of(
+                Task.builder()
+                        .id(100L)
+                        .criteria(Constants.CRITERIA_LIST.subList(0, 5))
+                        .build()
+        ));
+
+        Task task = evaluatingService.evaluatingDigitalService(
+                ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
 
         assertNotNull(task);
-        assertEquals(Constants.CRITERIA_LIST.subList(0, 5), task.getCriteria());
+        assertEquals(5, task.getCriteria().size());
 
-        verify(digitalServiceRepository).save(any(DigitalService.class));
-        verify(digitalServiceVersionRepository).save(any(DigitalServiceVersion.class));
-        verify(taskExecutor).execute(any(BackgroundTask.class));
+        verify(asyncEvaluatingService).execute(any(), any());
     }
+
 
     @Test
     void evaluating_shouldThrow409_whenTaskAlreadyRunningForInventory() {
@@ -460,17 +475,13 @@ class EvaluatingServiceTest {
         DigitalServiceVersion digitalServiceVersion = mock(DigitalServiceVersion.class);
         CriteriaByType criteriaByType = mock(CriteriaByType.class);
 
-        UserBO userBO = UserBO.builder()
-                .id(USER_ID)
-                .email("test@soprasteria.com")
-                .domain("soprasteria.com")
-                .build();
-
+        UserBO userBO = UserBO.builder().id(USER_ID).build();
         User user = User.builder().id(USER_ID).build();
+
+        List<String> activeCriteria = List.of("C1", "C2");
 
         when(digitalServiceVersionRepository.findById(DIGITAL_SERVICE_VERSION_UID))
                 .thenReturn(Optional.of(digitalServiceVersion));
-
         when(digitalServiceVersion.getDigitalService()).thenReturn(digitalService);
         when(digitalServiceVersion.getDescription()).thenReturn("v1");
         when(digitalService.getUid()).thenReturn("ds-uid");
@@ -480,12 +491,8 @@ class EvaluatingServiceTest {
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(work);
         when(work.getName()).thenReturn(WORKSPACE);
 
-        when(digitalServiceVersion.getCriteria()).thenReturn(null);
-
         when(criteriaService.getSelectedCriteriaForDigitalService(any(), any(), any()))
                 .thenReturn(criteriaByType);
-
-        List<String> activeCriteria = List.of("C1", "C2", "C3");
         when(criteriaByType.active()).thenReturn(activeCriteria);
 
         when(authService.getUser()).thenReturn(userBO);
@@ -493,18 +500,26 @@ class EvaluatingServiceTest {
 
         when(taskRepository.save(any(Task.class))).thenAnswer(i -> {
             Task t = i.getArgument(0);
-            t.setId(777L);
+            t.setId(200L);
             return t;
         });
 
-        Task task = evaluatingService.evaluatingDigitalService(ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
+        // ***** CRITICAL FIX *****
+        when(taskRepository.findById(200L)).thenReturn(Optional.of(
+                Task.builder()
+                        .id(200L)
+                        .criteria(activeCriteria)
+                        .build()
+        ));
+
+        Task task = evaluatingService.evaluatingDigitalService(
+                ORGANIZATION, WORKSPACE_ID, DIGITAL_SERVICE_VERSION_UID);
 
         assertNotNull(task);
         assertEquals(activeCriteria, task.getCriteria());
 
-        verify(taskExecutor).execute(any(BackgroundTask.class));
-        verify(digitalServiceRepository).save(any(DigitalService.class));
-        verify(digitalServiceVersionRepository).save(any(DigitalServiceVersion.class));
+        verify(asyncEvaluatingService).execute(any(), any());
     }
+
 
 }

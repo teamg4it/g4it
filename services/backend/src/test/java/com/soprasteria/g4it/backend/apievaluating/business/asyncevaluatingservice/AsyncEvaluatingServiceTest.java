@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -52,7 +53,11 @@ class AsyncEvaluatingServiceTest {
     void setup() {
         when(task.getId()).thenReturn(101L);
         when(context.log()).thenReturn("ORG/WS/DS");
+
+        // ***** FIX FOR NoSuchElementException *****
+        when(taskRepository.findById(101L)).thenReturn(Optional.of(task));
     }
+
 
     private void stubOrgAndWorkspace() {
         when(context.getOrganization()).thenReturn("ORG");
