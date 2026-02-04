@@ -486,11 +486,13 @@ public class EvaluateService {
             int virtualSize = virtualEquipments.size();
             for (InVirtualEquipment virtualEquipment : virtualEquipments) {
                 List<ImpactEquipementVirtuel> impactEquipementVirtuelList;
+                Double cloudElectricityKwh = null;
                 boolean isCloudService = CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType());
                 if (isCloudService) {
                     List<ImpactBO> impactBOList = evaluateBoaviztapiService.evaluate(virtualEquipment, criteria, lifecycleSteps);
                     impactEquipementVirtuelList = internalToNumEcoEvalImpact.map(impactBOList);
-
+                    cloudElectricityKwh =
+                            boaviztapiService.getAnnualCloudElectricityKwh(virtualEquipment);
                 } else {
                     impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
                             virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage,
@@ -507,7 +509,8 @@ public class EvaluateService {
 
                     Double sipValue = refSip.get(impact.getCritere());
                     AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                            virtualEquipment.getQuantity(), impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
+                            virtualEquipment.getQuantity(),
+                            isCloudService ? cloudElectricityKwh : impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
                             sipValue,
                             null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService);
 
