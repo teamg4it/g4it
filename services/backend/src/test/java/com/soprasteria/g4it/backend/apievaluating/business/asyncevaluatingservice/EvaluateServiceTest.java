@@ -91,8 +91,39 @@ class EvaluateServiceTest {
 
     @BeforeEach
     void setup() {
-        ReflectionTestUtils.setField(evaluateService, "localWorkingFolder", tempDir.toString());
+
+        ReflectionTestUtils.setField(
+                evaluateService,
+                "localWorkingFolder",
+                tempDir.toString()
+        );
+
+        // ---- MOCK REFERENTIAL BEFORE INIT ----
+        when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
+        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
+
+        // ---- MANUALLY CALL @PostConstruct ----
+        evaluateService.init();
+
+        // ---- Aggregation SAFE DEFAULTS ----
+        lenient().when(aggregationToOutput.keyPhysicalEquipment(
+                any(), any(), any(), any(), anyBoolean()
+        )).thenReturn(List.of("KEY"));
+
+        lenient().when(aggregationToOutput.keyVirtualEquipment(
+                any(), any(), any(), any(), any()
+        )).thenReturn(List.of("KEY"));
+
+        lenient().when(aggregationToOutput.keyCloudVirtualEquipment(
+                any(), any()
+        )).thenReturn(List.of("KEY"));
+
+        lenient().when(aggregationToOutput.keyApplication(
+                any(), any(), any(), any(), any()
+        )).thenReturn(List.of("KEY"));
     }
+
 
     private static CriterionRest criterion(String code, String unit) {
         CriterionRest c = new CriterionRest();
