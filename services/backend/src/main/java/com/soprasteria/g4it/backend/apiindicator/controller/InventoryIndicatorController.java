@@ -12,10 +12,7 @@ import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.business.InventoryIndicatorService;
 import com.soprasteria.g4it.backend.apiindicator.mapper.IndicatorRestMapper;
-import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
-import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.RoleService;
@@ -205,5 +202,25 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
 
         return ResponseEntity.ok(rest);
     }
+
+    @Override
+    public ResponseEntity<NumberOfVirtualEquipmentsRest> getNumberOfVirtualEquipments(
+            String organization,
+            Long workspace,
+            Long inventoryId) {
+
+        NumberOfVirtualEquipmentsBO bo =
+                inventoryIndicatorService.getNumberOfVirtualEquipments(inventoryId);
+
+        NumberOfVirtualEquipmentsRest rest =
+                NumberOfVirtualEquipmentsRest.builder()
+                        .inventoryId(bo.getInventoryId())
+                        .inventoryName(bo.getInventoryName())
+                        .numberOfVirtualEquipments(bo.getNumberOfVirtualEquipments())
+                        .build();
+
+        return ResponseEntity.ok(rest);
+    }
+
 
 }

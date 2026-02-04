@@ -160,4 +160,8 @@ public class InventoryIndicatorService {
     public List<VirtualEquipmentLowImpactBO> getVirtualEquipmentsLowImpact(final String organization, final Long workspaceId, final Long inventoryId) {
         return indicatorService.getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId);
     }
+
+    public NumberOfVirtualEquipmentsBO getNumberOfVirtualEquipments(Long inventoryId) {
+        return indicatorService.getNumberOfVirtualEquipments(inventoryId);
+    }
 }

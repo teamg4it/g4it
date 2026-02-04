@@ -1347,3 +1347,15 @@ components:
           description: List of digital service version names
           items:
             type: string
+
+    NumberOfVirtualEquipmentsRest:
+      type: object
+      properties:
+        inventoryId:
+          type: integer
+          format: int64
+        inventoryName:
+          type: string
+        numberOfVirtualEquipments:
+          type: long
+
