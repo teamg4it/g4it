@@ -39,8 +39,10 @@ import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
@@ -108,6 +110,23 @@ public class EvaluateService {
     BoaviztapiService boaviztapiService;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
+    private Map<String, String> codeToCountryMapCache;
+    private List<String> lifecycleStepsCache;
+    private Map<Pair<String, String>, Integer> electricityMixQuartilesCache;
+
+    @PostConstruct
+    public void init() {
+        codeToCountryMapCache =
+                boaviztapiService.getCountryMap()
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getValue,
+                                Map.Entry::getKey
+                        ));
+        lifecycleStepsCache = referentialService.getLifecycleSteps();
+        electricityMixQuartilesCache = referentialService.getElectricityMixQuartiles();
+    }
 
     /**
      * Evaluate the inventory
@@ -141,7 +160,9 @@ public class EvaluateService {
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity()));
 
         // Match referential if needed, with cache
-        final List<String> lifecycleSteps = referentialService.getLifecycleSteps();
+//        final List<String> lifecycleSteps = referentialService.getLifecycleSteps();
+        final List<String> lifecycleSteps = lifecycleStepsCache;
+
         List<CriterionRest> activeCriteria = referentialService.getActiveCriteria(task.getCriteria().stream()
                 .map(StringUtils::kebabToSnakeCase).toList());
 
@@ -155,11 +176,17 @@ public class EvaluateService {
                 CriterionRest::getUnit
         ));
 
+//        RefShortcutBO refShortcutBO = new RefShortcutBO(
+//                criteriaUnitMap,
+//                getShortcutMap(criteriaCodes),
+//                getShortcutMap(lifecycleSteps),
+//                referentialService.getElectricityMixQuartiles()
+//        );
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
-                referentialService.getElectricityMixQuartiles()
+                electricityMixQuartilesCache
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
@@ -167,14 +194,16 @@ public class EvaluateService {
         log.info("Start evaluating impacts for {}/{}", context.log(), taskId);
 
         Map<String, Double> refSip = referentialService.getSipValueMap(criteriaCodes);
-        Map<String, String> codeToCountryMap =
-                boaviztapiService.getCountryMap()
-                        .entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getValue,
-                                Map.Entry::getKey
-                        ));
+//        Map<String, String> codeToCountryMap =
+//                boaviztapiService.getCountryMap()
+//                        .entrySet()
+//                        .stream()
+//                        .collect(Collectors.toMap(
+//                                Map.Entry::getValue,
+//                                Map.Entry::getKey
+//                        ));
+        Map<String, String> codeToCountryMap = codeToCountryMapCache;
+
         Map<List<String>, AggValuesBO> aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPACITY);
         Map<List<String>, AggValuesBO> aggregationVirtualEquipments = new HashMap<>(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPACITY : 0);
         Map<List<String>, AggValuesBO> aggregationApplications = new HashMap<>(context.isHasApplications() ? INITIAL_MAP_CAPACITY : 0);
