@@ -24,6 +24,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.boavizta.client.BoaviztapiClient;
 import com.soprasteria.g4it.backend.server.gen.api.dto.TaskIdRest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -36,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.IOException;
@@ -57,6 +59,8 @@ import java.util.Map;
 class FunctionalTests {
 
     private static final String ORGANIZATION = "ORGANIZATION";
+    @MockitoBean
+    private BoaviztapiClient boaviztapiClient;
 
     @Autowired
     LoadInputFilesController loadInputFilesController;

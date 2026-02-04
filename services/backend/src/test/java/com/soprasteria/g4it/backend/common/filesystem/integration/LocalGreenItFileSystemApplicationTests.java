@@ -3,7 +3,7 @@
  * Copyright 2023 Sopra Steria
  *
  * This product includes software developed by
- * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
+ * French Ecological Ministery
  */
 package com.soprasteria.g4it.backend.common.filesystem.integration;
 
@@ -11,26 +11,25 @@ import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.external.VaultAccessClient;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import com.soprasteria.g4it.backend.external.boavizta.client.BoaviztapiClient;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(
         properties = {
-                "spring.cloud.azure.enabled=false",
-                "spring.liquibase.enabled=false"
+                "spring.cloud.azure.enabled=false"
         }
 )
 @ActiveProfiles({"local", "test"})
@@ -39,16 +38,26 @@ class LocalGreenItFileSystemApplicationTests {
     @Autowired
     private FileSystem fileSystem;
 
-    @Mock
+    @MockitoBean
     private VaultAccessClient vaultAccessClient;
 
-    @Mock
+    @MockitoBean
     private CacheManager cacheManager;
+
+    @MockitoBean
+    private BoaviztapiClient boaviztapiClient;
+
+    @BeforeEach
+    void setup() {
+        // return empty so EvaluateService.init() does not fail
+        when(boaviztapiClient.getAllCountries())
+                .thenReturn(Collections.emptyMap());
+    }
+
 
     @AfterAll
     @BeforeAll
     static void cleanup() {
-        // remove local-filesystem folder
         FileSystemUtils.deleteRecursively(new File("target/local-filesystem"));
     }
 
@@ -71,5 +80,4 @@ class LocalGreenItFileSystemApplicationTests {
         assertTrue(new File("target/local-filesystem/local/G4IT/output").exists());
         assertTrue(new File("target/local-filesystem/local/G4IT/templates").exists());
     }
-
 }
