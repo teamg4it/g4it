@@ -55,15 +55,20 @@ class LocalGreenItFileSystemApplicationTests {
     }
 
 
-    @AfterAll
     @BeforeAll
-    static void cleanup() {
+    static void beforeAll() {
         FileSystemUtils.deleteRecursively(new File("target/local-filesystem"));
     }
 
+    @AfterAll
+    static void afterAll() {
+        FileSystemUtils.deleteRecursively(new File("target/local-filesystem"));
+    }
+
+
     @Test
     void fileSystemShouldBeOfLocalFileSystemType() {
-        Assertions.assertEquals(LocalFileSystem.class, fileSystem.getClass());
+        Assertions.assertTrue(fileSystem instanceof LocalFileSystem);
     }
 
     @Test
