@@ -11,24 +11,26 @@ import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.external.VaultAccessClient;
-import com.soprasteria.g4it.backend.external.boavizta.client.BoaviztapiClient;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
-@SpringBootTest(
+@SpringBootTest(classes = LocalFileSystem.class,
         properties = {
+                "spring.cloud.azure.enabled=false",
+                "spring.liquibase.enabled=false",
                 "spring.cloud.azure.enabled=false"
         }
 )
@@ -38,37 +40,24 @@ class LocalGreenItFileSystemApplicationTests {
     @Autowired
     private FileSystem fileSystem;
 
-    @MockBean
+    @Mock
     private VaultAccessClient vaultAccessClient;
 
-    @MockBean
+    @Mock
     private CacheManager cacheManager;
 
-    @MockBean
-    private BoaviztapiClient boaviztapiClient;
-
-    @BeforeEach
-    void setup() {
-        // return empty so EvaluateService.init() does not fail
-        when(boaviztapiClient.getAllCountries())
-                .thenReturn(Collections.emptyMap());
-    }
-
-
-    @BeforeAll
-    static void beforeAll() {
-        FileSystemUtils.deleteRecursively(new File("target/local-filesystem"));
-    }
-
     @AfterAll
-    static void afterAll() {
+    @BeforeAll
+    static void cleanup() {
+        // remove local-filesystem folder
         FileSystemUtils.deleteRecursively(new File("target/local-filesystem"));
+
     }
 
 
     @Test
     void fileSystemShouldBeOfLocalFileSystemType() {
-        Assertions.assertTrue(fileSystem instanceof LocalFileSystem);
+        Assertions.assertEquals(LocalFileSystem.class, fileSystem.getClass());
     }
 
     @Test
