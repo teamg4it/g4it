@@ -74,32 +74,25 @@ public class BoaviztapiService {
         return boaviztapiClient.runCalculation(virtualEquipment);
     }
 
-    public double computeCloudElectricityKwh(BoaResponseRest response) {
-        return extractAvgPowerW(response)
-                .map(avgPowerW -> avgPowerW * HOURS_PER_YEAR / 1000d)
-                .orElse(0d);
+    public double computeAnnualElectricityKwhRaw(
+            Double avgPowerW,
+            double durationHours,
+            double quantity
+    ) {
+        if (avgPowerW == null) return 0d;
+
+        return avgPowerW * durationHours / 1000d * quantity;
     }
 
-    private Optional<Double> extractAvgPowerW(BoaResponseRest response) {
 
+    public Optional<Double> extractAvgPowerW(BoaResponseRest response) {
         if (response == null ||
                 response.getVerbose() == null ||
-                response.getVerbose().getUsage() == null ||
-                response.getVerbose().getUsage().getAvgPower() == null ||
-                response.getVerbose().getUsage().getAvgPower().getValue() == null) {
-
+                response.getVerbose().getAvgPower() == null ||
+                response.getVerbose().getAvgPower().getValue() == null) {
             return Optional.empty();
         }
-
-        return Optional.of(
-                response.getVerbose().getUsage().getAvgPower().getValue()
-        );
+        return Optional.of(response.getVerbose().getAvgPower().getValue());
     }
-
-    public double getAnnualCloudElectricityKwh(InVirtualEquipment ve) {
-        BoaResponseRest response = runBoaviztCalculations(ve);
-        return computeCloudElectricityKwh(response);
-    }
-
 
 }

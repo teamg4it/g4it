@@ -9,16 +9,16 @@
 package com.soprasteria.g4it.backend.external.boavizta.model.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BoaVerboseRest {
+public class BoaValueRest {
 
-    @JsonProperty("avg_power")
-    private BoaValueRest avgPower;
-
+    private Double value;
+    private String unit;
+    private String status;
+    private Double min;
+    private Double max;
 }
-
 

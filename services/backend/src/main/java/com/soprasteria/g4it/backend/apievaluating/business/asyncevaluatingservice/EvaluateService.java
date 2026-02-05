@@ -38,6 +38,7 @@ import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
 import jakarta.annotation.PostConstruct;
@@ -485,8 +486,42 @@ public class EvaluateService {
                 if (isCloudService) {
                     List<ImpactBO> impactBOList = evaluateBoaviztapiService.evaluate(virtualEquipment, criteria, lifecycleSteps);
                     impactEquipementVirtuelList = internalToNumEcoEvalImpact.map(impactBOList);
+                    BoaResponseRest response =
+                            boaviztapiService.runBoaviztCalculations(virtualEquipment);
+
+                    Double avgPowerW =
+                            boaviztapiService.extractAvgPowerW(response).orElse(null);
+
                     cloudElectricityKwh =
-                            boaviztapiService.getAnnualCloudElectricityKwh(virtualEquipment);
+                            boaviztapiService.computeAnnualElectricityKwhRaw(
+                                    avgPowerW,
+                                    virtualEquipment.getDurationHour(),
+                                    virtualEquipment.getQuantity()
+                            );
+                    log.info("""
+                                    [CLOUD ELECTRICITY CALCULATION]
+                                    VM name           : {}
+                                    Provider          : {}
+                                    Instance type     : {}
+                                    Location          : {}
+                                    Avg power (W)     : {}
+                                    Duration (h)      : {}
+                                    Quantity          : {}
+                                    Workload          : {}
+                                    Raw annual kWh    : {}
+                                    Effective kWh(*)  : {}
+                                    """,
+                            virtualEquipment.getName(),
+                            virtualEquipment.getProvider(),
+                            virtualEquipment.getInstanceType(),
+                            virtualEquipment.getLocation(),
+                            avgPowerW,
+                            virtualEquipment.getDurationHour(),
+                            virtualEquipment.getQuantity(),
+                            virtualEquipment.getWorkload(),
+                            cloudElectricityKwh * (virtualEquipment.getWorkload() == null ? 1 : virtualEquipment.getWorkload()),
+                            cloudElectricityKwh
+                    );
                 } else {
                     impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
                             virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage,
@@ -502,9 +537,12 @@ public class EvaluateService {
                 for (ImpactEquipementVirtuel impact : impactEquipementVirtuelList) {
 
                     Double sipValue = refSip.get(impact.getCritere());
+                    double electricity =
+                            isCloudService
+                                    ? cloudElectricityKwh : impact.getConsoElecMoyenne();
                     AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                             virtualEquipment.getQuantity(),
-                            isCloudService ? cloudElectricityKwh : impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
+                            electricity, impact.getImpactUnitaire(),
                             sipValue,
                             null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService);
 
