@@ -33,13 +33,7 @@ Key improvements include:
 
 Performance improvements were applied to the Digital Service re-evaluation flow when editing or adding extra resources.
 
-Re-evaluation execution time has been significantly reduced, often completing in under one second for typical scenarios.
-Logging improvements confirm faster processing paths.
-Large dataset validation is still recommended for final performance confirmation.
-
-UX note:
-Currently, execution time is displayed in seconds. When the value is below one second, it appears as 0s.
-A future enhancement may display milliseconds (ms) for better clarity.
+Digital Service re-evaluation has been enhanced to deliver a faster, more responsive experience when editing or adding extra resources. The execution flow has been streamlined, enabling near-instant completion in most common scenarios and supported by improved logging for clearer processing insights. Making the process synchronous improves the Digital service more fluidity and user experience.
 
 
 ## Content
