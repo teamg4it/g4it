@@ -8,7 +8,6 @@
 
 package com.soprasteria.g4it.backend.external.boavizta.model.response;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,10 +17,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class BoaResponseRest {
-    private BoaImpactsRest impacts;
-    /**
-     * Present only when verbose=true
-     */
-    private BoaVerboseRest verbose;
+public class BoaVerboseRest {
+
+    private BoaUsageVerboseRest usage;
 }
+

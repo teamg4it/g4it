@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -28,9 +29,10 @@ public class BoaviztapiService {
      * BoaviztapiClient
      */
     private BoaviztapiClient boaviztapiClient;
-    
+
     public static final String BOAVIZTAPI_VERSION = "1.3";
     public static final String BOAVIZTAPI_ENGINE = "BoaviztAPI";
+    private static final double HOURS_PER_YEAR = 24d * 365d;
 
     /**
      * Get BoaviztAPI countries with code.
@@ -71,5 +73,33 @@ public class BoaviztapiService {
     public BoaResponseRest runBoaviztCalculations(InVirtualEquipment virtualEquipment) {
         return boaviztapiClient.runCalculation(virtualEquipment);
     }
+
+    public double computeCloudElectricityKwh(BoaResponseRest response) {
+        return extractAvgPowerW(response)
+                .map(avgPowerW -> avgPowerW * HOURS_PER_YEAR / 1000d)
+                .orElse(0d);
+    }
+
+    private Optional<Double> extractAvgPowerW(BoaResponseRest response) {
+
+        if (response == null ||
+                response.getVerbose() == null ||
+                response.getVerbose().getUsage() == null ||
+                response.getVerbose().getUsage().getAvgPower() == null ||
+                response.getVerbose().getUsage().getAvgPower().getValue() == null) {
+
+            return Optional.empty();
+        }
+
+        return Optional.of(
+                response.getVerbose().getUsage().getAvgPower().getValue()
+        );
+    }
+
+    public double getAnnualCloudElectricityKwh(InVirtualEquipment ve) {
+        BoaResponseRest response = runBoaviztCalculations(ve);
+        return computeCloudElectricityKwh(response);
+    }
+
 
 }
