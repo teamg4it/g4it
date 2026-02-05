@@ -27,6 +27,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
@@ -108,6 +109,8 @@ public class EvaluateService {
     InternalToNumEcoEvalImpact internalToNumEcoEvalImpact;
     @Autowired
     BoaviztapiService boaviztapiService;
+    @Autowired
+    InventoryRepository inventoryRepository;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
     private Map<String, String> codeToCountryMapCache;
@@ -146,8 +149,16 @@ public class EvaluateService {
                         .filter(vm -> vm.getPhysicalEquipmentName() != null)
                         .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName));
 
-        final Inventory inventory = task.getInventory();
-        final String inventoryName = inventory == null ? context.getDigitalServiceName() : inventory.getName();
+        Inventory inventory = task.getInventory();
+        String inventoryName;
+        if (inventory == null) {
+            inventoryName = context.getDigitalServiceName();
+        } else {
+            inventory = inventoryRepository.findById(inventory.getId()).orElse(null);
+            inventoryName = (inventory == null)
+                    ? context.getDigitalServiceName()
+                    : inventory.getName();
+        }
         final long start = System.currentTimeMillis();
         final String organization = context.getOrganization();
         final Long taskId = task.getId();
@@ -158,9 +169,6 @@ public class EvaluateService {
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity())) :
                 inDatacenterRepository.findByInventoryId(context.getInventoryId()).stream()
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity()));
-
-        // Match referential if needed, with cache
-//        final List<String> lifecycleSteps = referentialService.getLifecycleSteps();
         final List<String> lifecycleSteps = lifecycleStepsCache;
 
         List<CriterionRest> activeCriteria = referentialService.getActiveCriteria(task.getCriteria().stream()
@@ -176,12 +184,6 @@ public class EvaluateService {
                 CriterionRest::getUnit
         ));
 
-//        RefShortcutBO refShortcutBO = new RefShortcutBO(
-//                criteriaUnitMap,
-//                getShortcutMap(criteriaCodes),
-//                getShortcutMap(lifecycleSteps),
-//                referentialService.getElectricityMixQuartiles()
-//        );
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
@@ -194,14 +196,6 @@ public class EvaluateService {
         log.info("Start evaluating impacts for {}/{}", context.log(), taskId);
 
         Map<String, Double> refSip = referentialService.getSipValueMap(criteriaCodes);
-//        Map<String, String> codeToCountryMap =
-//                boaviztapiService.getCountryMap()
-//                        .entrySet()
-//                        .stream()
-//                        .collect(Collectors.toMap(
-//                                Map.Entry::getValue,
-//                                Map.Entry::getKey
-//                        ));
         Map<String, String> codeToCountryMap = codeToCountryMapCache;
 
         Map<List<String>, AggValuesBO> aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPACITY);
