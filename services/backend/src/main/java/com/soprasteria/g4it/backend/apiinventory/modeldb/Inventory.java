@@ -74,7 +74,7 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
 
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(optional = false)
-    @JoinColumn(name = "organization_id", referencedColumnName = "id")
+    @JoinColumn(name = "workspace_id", referencedColumnName = "id")
     private Workspace workspace;
 
     @Builder.Default

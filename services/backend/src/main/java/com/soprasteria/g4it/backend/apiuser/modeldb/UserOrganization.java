@@ -26,7 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "g4it_user_subscriber")
+@Table(name = "g4it_user_organization")
 public class UserOrganization implements Serializable {
 
     /**
@@ -41,7 +41,7 @@ public class UserOrganization implements Serializable {
      */
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
+    @JoinColumn(name = "organization_id", referencedColumnName = "id")
     private Organization organization;
 
     /**
@@ -61,8 +61,8 @@ public class UserOrganization implements Serializable {
      * User role on subscriber.
      */
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "g4it_user_role_subscriber",
-            joinColumns = @JoinColumn(name = "user_subscriber_id",
+    @JoinTable(name = "g4it_user_role_organization",
+            joinColumns = @JoinColumn(name = "user_organization_id",
                     referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id",
                     referencedColumnName = "id"))

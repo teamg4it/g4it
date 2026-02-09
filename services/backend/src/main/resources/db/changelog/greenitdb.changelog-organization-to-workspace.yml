@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: changelog-sql-organization-to-workspace_1
+      author: G4IT Dev Team
+      changes:
+        - sqlFile:
+            path: db/changelog/greenitdb.changelog-sql-organization-to-workspace.sql
+            splitStatements: true
+            stripComments: false

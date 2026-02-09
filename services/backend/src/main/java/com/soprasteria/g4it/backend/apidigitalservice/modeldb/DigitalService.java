@@ -66,7 +66,7 @@ public class DigitalService {
      */
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "organization_id", referencedColumnName = "id")
+    @JoinColumn(name = "workspace_id", referencedColumnName = "id")
     private Workspace workspace;
 
     /**

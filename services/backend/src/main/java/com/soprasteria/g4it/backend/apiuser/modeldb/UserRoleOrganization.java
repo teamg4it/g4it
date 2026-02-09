@@ -21,7 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "g4it_user_role_subscriber")
+@Table(name = "g4it_user_role_organization")
 public class UserRoleOrganization implements Serializable {
     /**
      * Auto generated id
@@ -32,7 +32,7 @@ public class UserRoleOrganization implements Serializable {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "user_subscriber_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_organization_id", referencedColumnName = "id")
     private UserOrganization userOrganizations;
 
     @NotNull

@@ -26,7 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "g4it_user_organization")
+@Table(name = "g4it_user_workspace")
 public class UserWorkspace implements Serializable {
 
     /**
@@ -41,7 +41,7 @@ public class UserWorkspace implements Serializable {
      */
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "organization_id", referencedColumnName = "id")
+    @JoinColumn(name = "workspace_id", referencedColumnName = "id")
     private Workspace workspace;
 
     /**
@@ -61,8 +61,8 @@ public class UserWorkspace implements Serializable {
      * User role on organization.
      */
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "g4it_user_role_organization",
-            joinColumns = @JoinColumn(name = "user_organization_id",
+    @JoinTable(name = "g4it_user_role_workspace",
+            joinColumns = @JoinColumn(name = "user_workspace_id",
                     referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id",
                     referencedColumnName = "id"))

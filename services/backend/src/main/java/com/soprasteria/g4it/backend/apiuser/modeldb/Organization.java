@@ -27,7 +27,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
-@Table(name = "g4it_subscriber")
+@Table(name = "g4it_organization")
 public class Organization extends AbstractBaseEntity implements Serializable {
 
     /**

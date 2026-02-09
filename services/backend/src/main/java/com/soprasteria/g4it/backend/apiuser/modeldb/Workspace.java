@@ -31,7 +31,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "g4it_organization")
+@Table(name = "g4it_workspace")
 public class Workspace extends AbstractBaseEntity implements Serializable {
 
     /**
@@ -102,7 +102,7 @@ public class Workspace extends AbstractBaseEntity implements Serializable {
      * The workspace's organization.
      */
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
+    @JoinColumn(name = "organization_id", referencedColumnName = "id")
     private Organization organization;
 
     /**
