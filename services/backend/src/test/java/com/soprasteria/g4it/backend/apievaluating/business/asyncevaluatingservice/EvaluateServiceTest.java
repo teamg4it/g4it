@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
@@ -47,6 +48,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -84,6 +86,8 @@ class EvaluateServiceTest {
     BoaviztapiService boaviztapiService;
     @Mock
     private ImpactToCsvRecord impactToCsvRecord;
+    @Mock
+    InventoryRepository inventoryRepository;
     @InjectMocks
     EvaluateService evaluateService;
     @TempDir
@@ -91,8 +95,41 @@ class EvaluateServiceTest {
 
     @BeforeEach
     void setup() {
-        ReflectionTestUtils.setField(evaluateService, "localWorkingFolder", tempDir.toString());
+
+        ReflectionTestUtils.setField(
+                evaluateService,
+                "localWorkingFolder",
+                tempDir.toString()
+        );
+
+        // ---- MOCK REFERENTIAL BEFORE INIT ----
+        when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
+        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
+
+        // ---- MANUALLY CALL @PostConstruct ----
+        evaluateService.init();
+
+        // ---- Aggregation SAFE DEFAULTS ----
+        lenient().when(inventoryRepository.findById(any()))
+                .thenReturn(Optional.of(mock(Inventory.class)));
+        lenient().when(aggregationToOutput.keyPhysicalEquipment(
+                any(), any(), any(), any(), anyBoolean()
+        )).thenReturn(List.of("KEY"));
+
+        lenient().when(aggregationToOutput.keyVirtualEquipment(
+                any(), any(), any(), any(), any()
+        )).thenReturn(List.of("KEY"));
+
+        lenient().when(aggregationToOutput.keyCloudVirtualEquipment(
+                any(), any()
+        )).thenReturn(List.of("KEY"));
+
+        lenient().when(aggregationToOutput.keyApplication(
+                any(), any(), any(), any(), any()
+        )).thenReturn(List.of("KEY"));
     }
+
 
     private static CriterionRest criterion(String code, String unit) {
         CriterionRest c = new CriterionRest();
