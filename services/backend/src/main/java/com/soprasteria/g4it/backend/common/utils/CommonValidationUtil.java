@@ -35,8 +35,8 @@ public class CommonValidationUtil {
             return false;
         }
 
-        return countryMap.values().stream()
-                .filter(Objects::nonNull)
-                .anyMatch(value -> value.equalsIgnoreCase(trimmed));
+        return countryMap.entrySet().stream()
+                .filter(entry -> entry.getKey() != null && entry.getValue() != null)
+                .anyMatch(entry -> entry.getKey().equalsIgnoreCase(trimmed) || entry.getValue().equalsIgnoreCase(trimmed));
     }
 }
