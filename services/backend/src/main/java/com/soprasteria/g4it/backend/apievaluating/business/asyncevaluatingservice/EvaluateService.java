@@ -498,30 +498,6 @@ public class EvaluateService {
                                     virtualEquipment.getDurationHour(),
                                     virtualEquipment.getQuantity()
                             );
-                    log.info("""
-                                    [CLOUD ELECTRICITY CALCULATION]
-                                    VM name           : {}
-                                    Provider          : {}
-                                    Instance type     : {}
-                                    Location          : {}
-                                    Avg power (W)     : {}
-                                    Duration (h)      : {}
-                                    Quantity          : {}
-                                    Workload          : {}
-                                    Raw annual kWh    : {}
-                                    Effective kWh(*)  : {}
-                                    """,
-                            virtualEquipment.getName(),
-                            virtualEquipment.getProvider(),
-                            virtualEquipment.getInstanceType(),
-                            virtualEquipment.getLocation(),
-                            avgPowerW,
-                            virtualEquipment.getDurationHour(),
-                            virtualEquipment.getQuantity(),
-                            virtualEquipment.getWorkload(),
-                            cloudElectricityKwh * (virtualEquipment.getWorkload() == null ? 1 : virtualEquipment.getWorkload()),
-                            cloudElectricityKwh
-                    );
                 } else {
                     impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
                             virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage,
@@ -537,7 +513,7 @@ public class EvaluateService {
                 for (ImpactEquipementVirtuel impact : impactEquipementVirtuelList) {
 
                     Double sipValue = refSip.get(impact.getCritere());
-                    double electricity =
+                    Double electricity =
                             isCloudService
                                     ? cloudElectricityKwh : impact.getConsoElecMoyenne();
                     AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),

@@ -81,7 +81,7 @@ public class BoaviztapiService {
     ) {
         if (avgPowerW == null) return 0d;
 
-        return avgPowerW * durationHours / 1000d * quantity;
+        return avgPowerW * (durationHours / 1000d) * quantity;
     }
 
 
@@ -92,7 +92,8 @@ public class BoaviztapiService {
                 response.getVerbose().getAvgPower().getValue() == null) {
             return Optional.empty();
         }
-        return Optional.of(response.getVerbose().getAvgPower().getValue());
+        Double avgPower = response.getVerbose().getAvgPower().getValue();
+        return Optional.of(avgPower);
     }
 
 }
