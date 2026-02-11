@@ -248,6 +248,7 @@
             "ds-name": "Digital Service Name",
             "active-version-name": "Active Version Name",
             "version-name": "Version Name",
+            "version-date": "Version Date",
             "add-ds": "Add a digital service",
             "ds-text": "Want to build a digital service that’s both useful and responsible? Start by adding your resources and calculating the environmental impact of your project. It’s your chance to design a leaner, more transparent, and planet-friendly solution.",
             "ds-name-placeholder": "Type the name of your digital service here",
@@ -286,7 +287,8 @@
             "popup": {
                 "delete-question": "Are you sure you want to delete the digital service version",
                 "archived-text": "You are about to delete an archived version, you won't be able to use this version to track your progress."
-            }
+            },
+            "version-date-impact": "This date will enable you to visualise the impacts over time"
         },
         "error.digital-service-already-exists": "Digital Service already exists",
         "error.digital-service-version-already-exists": "Version already exists",

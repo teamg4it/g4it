@@ -21,6 +21,7 @@ export class CreateDigitalServicesSidebarComponent implements OnInit {
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);
     importDetails: CustomSidebarMenuForm = this.buildImportDetails();
     createForm!: FormGroup;
+    className: string = "default-calendar max-w-full";
 
     private buildImportDetails(): CustomSidebarMenuForm {
         const common = {
@@ -50,6 +51,7 @@ export class CreateDigitalServicesSidebarComponent implements OnInit {
         const existingNames = this.allDigitalServices().map((ds) =>
             this.isEcoMindAi() ? ds.name.replace(" AI", "") : ds.name,
         );
+        const now = new Date();
         this.createForm = new FormGroup({
             dsName: new FormControl<string | undefined>(
                 this.digitalServicesBusiness.getNextAvailableName(
@@ -66,6 +68,12 @@ export class CreateDigitalServicesSidebarComponent implements OnInit {
             ),
             dsVersionName: new FormControl<string | undefined>(
                 "Version 1",
+                Validators.required,
+            ),
+            dsVersionDate: new FormControl<Date | undefined>(
+                new Date(
+                    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+                ),
                 Validators.required,
             ),
         });

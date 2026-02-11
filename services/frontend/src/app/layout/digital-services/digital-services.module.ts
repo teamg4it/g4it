@@ -7,6 +7,7 @@
  */
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { ButtonModule } from "primeng/button";
+import { CalendarModule } from "primeng/calendar";
 import { CardModule } from "primeng/card";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { PaginatorModule } from "primeng/paginator";
@@ -31,6 +32,7 @@ import { digitalServicesRouter } from "./digital-services.router";
         SharedModule,
         ConfirmPopupModule,
         digitalServicesRouter,
+        CalendarModule,
     ],
     exports: [DigitalServicesComponent, DigitalServicesItemComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

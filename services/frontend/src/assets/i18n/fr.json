@@ -246,6 +246,7 @@
             "ds-name": "Nom du service numérique",
             "active-version-name": "Nom de la version active",
             "version-name": "Nom de la version",
+            "version-date": "Date de la version",
             "add-ds": "Ajouter un service numérique",
             "ds-text": "Envie de créer un service numérique utile et responsable ? Intégrez dès le départ l’ajout de vos ressources et faites le calcul de l’impact environnemental. C’est l’occasion de concevoir un service plus sobre, plus transparent et plus respectueux de la planète.",
             "ds-name-placeholder": "Saisir un nom de service numérique",
@@ -284,7 +285,8 @@
             "popup": {
                 "delete-question": "Etes vous sûr de vouloir supprimer cette version",
                 "archived-text": "Vous êtes sur le point de supprimer une verison archivée, vous ne pourrez plus intégrer cette version dans votre suivi d'évolution."
-            }
+            },
+            "version-date-impact": "Cette date vous permettra de visualiser les impacts dans le temps"
         },
         "error.digital-service-already-exists": "Le service numérique existe déjà",
         "error.digital-service-version-already-exists": "La version existe déjà",

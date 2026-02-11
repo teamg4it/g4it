@@ -99,6 +99,40 @@
                             {{ "common.mandatory" | translate }}
                         </span>
                     </div>
+
+                    <div class="my-5">
+                        <div class="flex w-7">
+                            <h4 class="mr-auto inline m-0 font-semibold">
+                                {{ "digital-services.version.version-date" | translate }}
+                            </h4>
+                            <span>{{
+                                "digital-services.version.required-field" | translate
+                            }}</span>
+                        </div>
+                        <p-calendar
+                            formControlName="dsVersionDate"
+                            dateFormat="dd/mm/yy"
+                            placeholder="20/02/2026"
+                            [showClear]="true"
+                            id="calendar"
+                            [class]="className"
+                            styleClass="w-7"
+                            [attr.aria-label]="'inventories.calendar' | translate"
+                        ></p-calendar>
+                        <span
+                            class="error-text block"
+                            *ngIf="createForm.get('dsVersionDate')?.hasError('required')"
+                        >
+                            {{ "digital-services.version.version-name" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </span>
+                        <span class="block mt-2">
+                            <i class="pi pi-exclamation-circle mt-1"></i>
+                            {{
+                                "digital-services.version.version-date-impact" | translate
+                            }}
+                        </span>
+                    </div>
                 </form>
             </p-scrollPanel>
             <!-- Footer Buttons -->
