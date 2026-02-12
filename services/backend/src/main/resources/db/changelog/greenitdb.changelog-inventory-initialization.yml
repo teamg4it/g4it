@@ -1088,3 +1088,17 @@ databaseChangeLog:
             referencedTableName: g4it_user
             referencedColumnNames: id
             onDelete: SET NULL
+
+  - changeSet:
+      id: add-enable-data-inconsistency-to-inventory
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: enable_data_inconsistency
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: true
