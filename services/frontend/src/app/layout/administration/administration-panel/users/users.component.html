@@ -66,27 +66,32 @@
             {{ "administration.user.search-user" | translate }}
         </h3>
         <div class="h-1rem border-top-2 border-primary p-0 mt-1"></div>
-        <input
-            class="input-width pl-2"
-            pInputText
-            placeholder="Email"
-            pInputText
-            formControlName="searchName"
-            name="searchName"
-            (keydown.enter)="searchList()"
-            ngDefaultControl
-            id="searchName"
-            [ariaLabel]="'administration.user.search-user' | translate"
-        />
-        <p-button
-            [disabled]="!searchForm.valid"
-            (onClick)="searchList()"
-            id="search-button"
-            >{{ "administration.user.search" | translate }}</p-button
-        >
-        <p class="error-text" *ngIf="filteredMembers.length === 0 && errorMessageVisible">
-            {{ "administration.user.no-results" | translate }}
-        </p>
+        <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 330px)' }">
+            <input
+                class="input-width pl-2"
+                pInputText
+                placeholder="Email"
+                pInputText
+                formControlName="searchName"
+                name="searchName"
+                (keydown.enter)="searchList()"
+                ngDefaultControl
+                id="searchName"
+                [ariaLabel]="'administration.user.search-user' | translate"
+            />
+            <p-button
+                [disabled]="!searchForm.valid"
+                (onClick)="searchList()"
+                id="search-button"
+                >{{ "administration.user.search" | translate }}</p-button
+            >
+            <p
+                class="error-text"
+                *ngIf="filteredMembers.length === 0 && errorMessageVisible"
+            >
+                {{ "administration.user.no-results" | translate }}
+            </p>
+        </p-scrollPanel>
     </form>
 
     <div *ngIf="workspace && filteredMembers.length > 0">

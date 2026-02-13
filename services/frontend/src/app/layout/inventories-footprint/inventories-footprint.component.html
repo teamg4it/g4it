@@ -2,13 +2,13 @@
     [inventoryId]="inventoryId"
     [indicatorType]="'inventories.details.equipment' | translate | titlecase"
 ></app-inventories-header-footprint>
-<p-scrollPanel [style]="{ width: '100%', height: '88%' }">
-    <dataviz-filter [allFilters]="allUnmodifiedFilters"></dataviz-filter>
-    @if (showTabMenu) {
-        <p-tabMenu [model]="criteres!" [scrollable]="true" class="footprint-tabmenu">
-        </p-tabMenu>
-    }
 
+<dataviz-filter [allFilters]="allUnmodifiedFilters"></dataviz-filter>
+@if (showTabMenu) {
+    <p-tabMenu [model]="criteres!" [scrollable]="true" class="footprint-tabmenu">
+    </p-tabMenu>
+}
+<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 280px)' }">
     @if (footprintStore.criteria() === multiCriteria) {
         <app-inventories-multicriteria-footprint
             [footprint]="allUnmodifiedFootprint"
