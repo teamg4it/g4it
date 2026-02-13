@@ -66,178 +66,180 @@
             {{ "administration.user.search-user" | translate }}
         </h3>
         <div class="h-1rem border-top-2 border-primary p-0 mt-1"></div>
-        <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 330px)' }">
-            <input
-                class="input-width pl-2"
-                pInputText
-                placeholder="Email"
-                pInputText
-                formControlName="searchName"
-                name="searchName"
-                (keydown.enter)="searchList()"
-                ngDefaultControl
-                id="searchName"
-                [ariaLabel]="'administration.user.search-user' | translate"
-            />
-            <p-button
-                [disabled]="!searchForm.valid"
-                (onClick)="searchList()"
-                id="search-button"
-                >{{ "administration.user.search" | translate }}</p-button
-            >
-            <p
-                class="error-text"
-                *ngIf="filteredMembers.length === 0 && errorMessageVisible"
-            >
-                {{ "administration.user.no-results" | translate }}
-            </p>
-        </p-scrollPanel>
+        <input
+            class="input-width pl-2"
+            pInputText
+            placeholder="Email"
+            pInputText
+            formControlName="searchName"
+            name="searchName"
+            (keydown.enter)="searchList()"
+            ngDefaultControl
+            id="searchName"
+            [ariaLabel]="'administration.user.search-user' | translate"
+        />
+        <p-button
+            [disabled]="!searchForm.valid"
+            (onClick)="searchList()"
+            id="search-button"
+            >{{ "administration.user.search" | translate }}</p-button
+        >
+        <p class="error-text" *ngIf="filteredMembers.length === 0 && errorMessageVisible">
+            {{ "administration.user.no-results" | translate }}
+        </p>
     </form>
 
-    <div *ngIf="workspace && filteredMembers.length > 0">
-        <p-table
-            [value]="filteredMembers"
-            [rows]="5"
-            [paginator]="true"
-            [scrollable]="true"
-            scrollHeight="50vh"
-            sortField="email"
-            [sortOrder]="1"
-            [rowsPerPageOptions]="[5, 10, 20, 50, 100]"
-            styleClass="mt-3 mr-3"
-            [(first)]="firstPage"
-        >
-            <ng-template pTemplate="caption">
-                <div class="table-header">
-                    <div class="table-head">
-                        {{ workspace.workspaceName }} - {{ membersList?.length }}
-                        {{
-                            membersList.length <= 1
-                                ? ("administration.user.member" | translate)
-                                : ("administration.user.members" | translate)
-                        }}
+    <p-scrollPanel
+        [style]="{ width: '100%', height: 'calc(100vh - 330px)' }"
+        *ngIf="workspace && filteredMembers.length > 0"
+    >
+        <div>
+            <p-table
+                [value]="filteredMembers"
+                [rows]="5"
+                [paginator]="true"
+                [scrollable]="true"
+                scrollHeight="50vh"
+                sortField="email"
+                [sortOrder]="1"
+                [rowsPerPageOptions]="[5, 10, 20, 50, 100]"
+                styleClass="mt-3 mr-3"
+                [(first)]="firstPage"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="table-header">
+                        <div class="table-head">
+                            {{ workspace.workspaceName }} - {{ membersList?.length }}
+                            {{
+                                membersList.length <= 1
+                                    ? ("administration.user.member" | translate)
+                                    : ("administration.user.members" | translate)
+                            }}
+                        </div>
                     </div>
-                </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-                <caption class="visually-hidden">
-                    {{
-                        "administration.user.title" | translate
-                    }}
-                </caption>
-                <tr>
-                    <th scope="col" id="id">
-                        {{ "digital-services-networks.id" | translate }}
-                    </th>
-
-                    <th scope="col" id="firstName" pSortableColumn="firstName">
-                        {{ "administration.user.first-name" | translate }}
-                        <p-sortIcon field="firstName"></p-sortIcon>
-                    </th>
-                    <th scope="col" id="lastName" pSortableColumn="lastName">
-                        {{ "administration.user.last-name" | translate }}
-                        <p-sortIcon field="lastName"></p-sortIcon>
-                    </th>
-                    <th scope="col" id="email" pSortableColumn="email">
-                        {{ "administration.user.mail" | translate }}
-                        <p-sortIcon field="email"></p-sortIcon>
-                    </th>
-                    <th scope="col" class="text-center">
-                        {{ "administration.user.is-module" | translate }}
-                    </th>
-                    <th scope="col" class="text-center">
-                        {{ "administration.user.ds-module" | translate }}
-                    </th>
-                    @if (
-                        isEcoMindModuleEnabled &&
-                        isEcoMindEnabledForCurrentOrganizationSelected
-                    ) {
-                        <th scope="col" class="text-center">
-                            {{ "administration.user.ecomind-module" | translate }}
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <caption class="visually-hidden">
+                        {{
+                            "administration.user.title" | translate
+                        }}
+                    </caption>
+                    <tr>
+                        <th scope="col" id="id">
+                            {{ "digital-services-networks.id" | translate }}
                         </th>
-                    }
-                    <th scope="col" class="text-center">
-                        {{ "administration.user.role" | translate }}
-                    </th>
-                    <th scope="col" class="text-center">
-                        {{ "administration.user.actions" | translate }}
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
-                <tr>
-                    <td class="grey-text">{{ rowIndex + 1 }}</td>
-                    <td>{{ user.firstName }}</td>
-                    <td>{{ user.lastName }}</td>
-                    <td>{{ user.email }}</td>
-                    <td class="text-center">{{ user?.isModule | translate }}</td>
-                    <td class="text-center">{{ user?.dsModule | translate }}</td>
-                    @if (
-                        isEcoMindModuleEnabled &&
-                        isEcoMindEnabledForCurrentOrganizationSelected
-                    ) {
-                        <td class="text-center">{{ user?.ecomindModule | translate }}</td>
-                    }
-                    <td class="text-center">{{ user?.role | translate }}</td>
-                    <td class="text-center">
-                        <div *ngIf="!user.isOrganizationAdmin">
-                            <p-button
-                                *ngIf="user.roles.length > 0"
-                                styleClass="p-button-text bg-white p-0 m-0"
-                                (onClick)="
-                                    openSidepanelForAddORUpdateOrg(
-                                        user,
-                                        isEcoMindEnabledForCurrentOrganizationSelected
-                                    )
-                                "
-                                id="edit-button"
-                            >
-                                <img
-                                    src="assets/images/icons/icon-edit.svg"
-                                    ariaLabel="{{ 'common.edit' | translate }} {{
-                                        user.firstName
-                                    }} {{ user.lastName }}"
-                                    alt="{{ 'common.edit' | translate }} {{
-                                        user.firstName
-                                    }} {{ user.lastName }}"
-                                />
-                            </p-button>
-                            <p-button
-                                *ngIf="user.roles.length > 0"
-                                styleClass="p-button-text bg-white py-0 my-0"
-                                (onClick)="deleteUserDetails($event, user)"
-                                id="delete-button"
-                            >
-                                <img
-                                    src="assets/images/icons/icon-bin.svg"
-                                    ariaLabel="{{ 'common.delete' | translate }} {{
-                                        user.firstName
-                                    }} {{ user.lastName }}"
-                                    alt="{{ 'common.delete' | translate }} {{
-                                        user.firstName
-                                    }} {{ user.lastName }}"
-                                />
-                            </p-button>
-                            @if (user.roles.length === 0) {
+
+                        <th scope="col" id="firstName" pSortableColumn="firstName">
+                            {{ "administration.user.first-name" | translate }}
+                            <p-sortIcon field="firstName"></p-sortIcon>
+                        </th>
+                        <th scope="col" id="lastName" pSortableColumn="lastName">
+                            {{ "administration.user.last-name" | translate }}
+                            <p-sortIcon field="lastName"></p-sortIcon>
+                        </th>
+                        <th scope="col" id="email" pSortableColumn="email">
+                            {{ "administration.user.mail" | translate }}
+                            <p-sortIcon field="email"></p-sortIcon>
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{ "administration.user.is-module" | translate }}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{ "administration.user.ds-module" | translate }}
+                        </th>
+                        @if (
+                            isEcoMindModuleEnabled &&
+                            isEcoMindEnabledForCurrentOrganizationSelected
+                        ) {
+                            <th scope="col" class="text-center">
+                                {{ "administration.user.ecomind-module" | translate }}
+                            </th>
+                        }
+                        <th scope="col" class="text-center">
+                            {{ "administration.user.role" | translate }}
+                        </th>
+                        <th scope="col" class="text-center">
+                            {{ "administration.user.actions" | translate }}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+                    <tr>
+                        <td class="grey-text">{{ rowIndex + 1 }}</td>
+                        <td>{{ user.firstName }}</td>
+                        <td>{{ user.lastName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td class="text-center">{{ user?.isModule | translate }}</td>
+                        <td class="text-center">{{ user?.dsModule | translate }}</td>
+                        @if (
+                            isEcoMindModuleEnabled &&
+                            isEcoMindEnabledForCurrentOrganizationSelected
+                        ) {
+                            <td class="text-center">
+                                {{ user?.ecomindModule | translate }}
+                            </td>
+                        }
+                        <td class="text-center">{{ user?.role | translate }}</td>
+                        <td class="text-center">
+                            <div *ngIf="!user.isOrganizationAdmin">
                                 <p-button
+                                    *ngIf="user.roles.length > 0"
+                                    styleClass="p-button-text bg-white p-0 m-0"
                                     (onClick)="
                                         openSidepanelForAddORUpdateOrg(
                                             user,
                                             isEcoMindEnabledForCurrentOrganizationSelected
                                         )
                                     "
-                                    icon="pi pi-plus"
-                                    styleClass="p-2"
-                                    id="actions-button"
+                                    id="edit-button"
                                 >
+                                    <img
+                                        src="assets/images/icons/icon-edit.svg"
+                                        ariaLabel="{{ 'common.edit' | translate }} {{
+                                            user.firstName
+                                        }} {{ user.lastName }}"
+                                        alt="{{ 'common.edit' | translate }} {{
+                                            user.firstName
+                                        }} {{ user.lastName }}"
+                                    />
                                 </p-button>
-                            }
-                        </div>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
+                                <p-button
+                                    *ngIf="user.roles.length > 0"
+                                    styleClass="p-button-text bg-white py-0 my-0"
+                                    (onClick)="deleteUserDetails($event, user)"
+                                    id="delete-button"
+                                >
+                                    <img
+                                        src="assets/images/icons/icon-bin.svg"
+                                        ariaLabel="{{ 'common.delete' | translate }} {{
+                                            user.firstName
+                                        }} {{ user.lastName }}"
+                                        alt="{{ 'common.delete' | translate }} {{
+                                            user.firstName
+                                        }} {{ user.lastName }}"
+                                    />
+                                </p-button>
+                                @if (user.roles.length === 0) {
+                                    <p-button
+                                        (onClick)="
+                                            openSidepanelForAddORUpdateOrg(
+                                                user,
+                                                isEcoMindEnabledForCurrentOrganizationSelected
+                                            )
+                                        "
+                                        icon="pi pi-plus"
+                                        styleClass="p-2"
+                                        id="actions-button"
+                                    >
+                                    </p-button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </p-scrollPanel>
     @if (sidebarVisible) {
         <p-sidebar
             [(visible)]="sidebarVisible"
