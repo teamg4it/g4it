@@ -8,7 +8,7 @@
     <p-tabMenu [model]="criteres!" [scrollable]="true" class="footprint-tabmenu">
     </p-tabMenu>
 }
-<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 280px)' }">
+<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
     @if (footprintStore.criteria() === multiCriteria) {
         <app-inventories-multicriteria-footprint
             [footprint]="allUnmodifiedFootprint"
