@@ -266,6 +266,14 @@ export class FootprintService {
                 return v.equipment;
             case "status":
                 return v.status;
+
+            // application
+            case "lifeCycle":
+                return (v as any).lifeCycle;
+            case "environment":
+                return (v as any).environment;
+            case "equipmentType":
+                return (v as any).equipmentType;
             default:
                 return null;
         }
