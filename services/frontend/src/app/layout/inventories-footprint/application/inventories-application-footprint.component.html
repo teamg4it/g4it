@@ -12,17 +12,88 @@
     ></p-tabMenu>
 }
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
-    @if (footprintStore.applicationCriteria() === multiCriteria) {
-        <app-application-multicriteria-footprint
-            [filterFields]="filterFields"
-            [footprint]="footprint"
-        ></app-application-multicriteria-footprint>
-    } @else {
-        <app-application-criteria-footprint
-            [filterFields]="filterFields"
-            [footprint]="criteriaFootprint"
-            [selectedInventoryId]="inventoryId"
-            [allUnmodifiedFilters]="allUnmodifiedFilters()"
-        ></app-application-criteria-footprint>
-    }
+    <div class="my-3 footprint-dashboard-container-app-criteria grid">
+        <div class="col-12 lg:col-4 bg-white">
+            <div class="bg-gray-color impact-buttons-div mx-auto mb-4 border-round-lg">
+                <h3
+                    class="border-bottom-2 border-primary text-base font-medium p-2 pt-3 text-center mt-2 mb-1 uppercase"
+                >
+                    {{ "digital-services.impacts" | translate }}
+                </h3>
+                <p-card styleClass="mb-3">
+                    <div class="text-center">
+                        <button
+                            class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
+                            [ngClass]="
+                                selectedUnit === 'Raw' ? 'bg-secondary' : 'bg-transparent'
+                            "
+                            (click)="selectedUnit = 'Raw'"
+                        >
+                            {{ "digital-services.raw" | translate }}
+                        </button>
+
+                        <button
+                            class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
+                            [ngClass]="
+                                selectedUnit === 'Peopleeq'
+                                    ? 'bg-secondary'
+                                    : 'bg-transparent'
+                            "
+                            (click)="selectedUnit = 'Peopleeq'"
+                        >
+                            {{ "common.peopleeq" | translate }}
+                        </button>
+                    </div>
+                </p-card>
+                <div class="flex flex-column w-full border-round">
+                    @for (impact of impacts(); track $index) {
+                        <app-impact-button
+                            [impact]="impact.name"
+                            [impactText]="impact.title"
+                            [impactUnite]="impact.unite"
+                            [value]="
+                                selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw
+                            "
+                            [selectedCriteria]="selectedCriteria"
+                            [selectedUnit]="selectedUnit"
+                        ></app-impact-button>
+                    }
+                    <!-- [disabled]="onlyOneCriteria"
+                            (selectedCriteriaChange)="handleChartChange($event)" -->
+
+                    <!-- @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                        <div class="mt-4 mb-2 text-center">
+                            <p-button
+                                (onClick)="displayPopupFct()"
+                                styleClass="cancel-creation-button uppercase px-3 py-2 mb-3 sm:mb-0"
+                                [label]="'digital-services.edit-criteria' | translate"
+                                icon="pi pi-plus-circle"
+                                id="criteria-button"
+                                [ariaLabel]="
+                                    'digital-services.choose-criteria'
+                                        | translate
+                                            : { digitalServiceName: digitalService.name }
+                                "
+                            />
+                        </div>
+                    } -->
+                </div>
+            </div>
+        </div>
+        <div class="chart-container col-12 lg:col-8 bg-gray-color">
+            @if (footprintStore.applicationCriteria() === multiCriteria) {
+                <app-application-multicriteria-footprint
+                    [filterFields]="filterFields"
+                    [footprint]="footprint()"
+                ></app-application-multicriteria-footprint>
+            } @else {
+                <app-application-criteria-footprint
+                    [filterFields]="filterFields"
+                    [footprint]="criteriaFootprint"
+                    [selectedInventoryId]="inventoryId"
+                    [allUnmodifiedFilters]="allUnmodifiedFilters()"
+                ></app-application-criteria-footprint>
+            }
+        </div>
+    </div>
 </p-scrollPanel>

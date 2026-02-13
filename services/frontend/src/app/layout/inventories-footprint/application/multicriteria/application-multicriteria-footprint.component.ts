@@ -115,7 +115,6 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     });
 
     options: Signal<EChartsOption> = computed(() => {
-        console.log(this.criteriaCalculated());
         return this.renderChart(this.criteriaCalculated(), this.selectedDimension());
     });
 

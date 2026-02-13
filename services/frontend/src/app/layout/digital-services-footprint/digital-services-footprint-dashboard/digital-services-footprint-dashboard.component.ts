@@ -294,7 +294,7 @@ export class DigitalServicesFootprintDashboardComponent
         }
     }
 
-    handleChartChange(criteria: string) {
+    handleChartChange(criteria: any) {
         if (this.selectedCriteria === "Global Vision") {
             this.selectedCriteria = criteria;
             this.chartType.set("pie");

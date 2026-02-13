@@ -16,10 +16,8 @@ import {
     TransformedDomain,
     TransformedDomainItem,
 } from "src/app/core/interfaces/filter.interface";
-import {
-    ApplicationCriteriaFootprint,
-    ApplicationFootprint,
-} from "src/app/core/interfaces/footprint.interface";
+import { ApplicationFootprint } from "src/app/core/interfaces/footprint.interface";
+import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
@@ -37,6 +35,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     private readonly userService = inject(UserService);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
+    private readonly filterService = inject(FilterService);
 
     selectedCriteria: string = "";
     criteres: MenuItem[] = [];
@@ -57,11 +56,34 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             this.footprintStore.appSubDomain(),
         );
     });
-    footprint: ApplicationFootprint[] = [];
+    footprint = signal<ApplicationFootprint[]>([]);
     criteriaFootprint: ApplicationFootprint = {} as ApplicationFootprint;
     allUnmodifiedFootprint: ApplicationFootprint[] = [];
     filterFields = Constants.APPLICATION_FILTERS;
+    selectedUnit: string = "Raw";
 
+    impacts: Signal<any> = computed(() => {
+        const filterImpacts = this.formatLifecycleCriteriaImpact(this.footprint()).map(
+            (f) => ({
+                ...f,
+                impacts: f.impacts.filter((impact) => {
+                    return this.filterService.getFilterincludes(
+                        this.footprintStore.applicationSelectedFilters(),
+                        impact,
+                    );
+                }),
+            }),
+        );
+        return this.footprintService
+            .filterCriteriaImpact(
+                filterImpacts,
+                this.footprintStore.applicationSelectedFilters(),
+            )
+            .sort(
+                (a, b) =>
+                    this.criteriakeys.indexOf(a.name) - this.criteriakeys.indexOf(b.name),
+            );
+    });
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         public readonly footprintService: FootprintService,
@@ -90,15 +112,17 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
 
         this.footprintStore.setApplicationCriteria(criteria || Constants.MUTLI_CRITERIA);
 
-        this.footprint = footprint;
+        this.footprint.set(footprint);
         this.allUnmodifiedFootprint = structuredClone(footprint);
-        this.footprint = this.footprint.map((footprintData) => ({
-            ...footprintData,
-            unit: this.translate.instant(`criteria.${footprintData.criteria}.unite`),
-        }));
+        this.footprint.set(
+            this.footprint().map((footprintData) => ({
+                ...footprintData,
+                unit: this.translate.instant(`criteria.${footprintData.criteria}.unite`),
+            })),
+        );
 
         const uniqueFilterSet = this.footprintService.getUniqueValues(
-            this.footprint,
+            this.footprint(),
             Constants.APPLICATION_FILTERS,
             false,
         );
@@ -145,7 +169,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             this.footprintStore.setApplicationCriteria(criteria);
 
             if (criteria !== Constants.MUTLI_CRITERIA) {
-                this.criteriaFootprint = this.footprint.find(
+                this.criteriaFootprint = this.footprint().find(
                     (f) => f.criteria === criteria,
                 )!;
             }
@@ -342,8 +366,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     }
 
     formatLifecycleCriteriaImpact(
-        footprint: ApplicationCriteriaFootprint[],
-    ): ApplicationCriteriaFootprint[] {
+        footprint: ApplicationFootprint[],
+    ): ApplicationFootprint[] {
         const lifecycleMap = LifeCycleUtils.getLifeCycleMap();
         const lifecyclesList = Array.from(lifecycleMap.keys());
 
