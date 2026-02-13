@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.10.0
+
+## Major changes
+
+### Minor Changes
+- 1833 | Country in error for Cloud Service and DC
+- 1876 | fix the header for digital service detail page / for inventory - Equipment and Application view / for ecomindIA / for administration
+
 ## 3.9.1
 
 ## Major changes
