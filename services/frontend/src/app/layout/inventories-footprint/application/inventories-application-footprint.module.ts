@@ -12,6 +12,7 @@ import { OverlayModule } from "primeng/overlay";
 import { TabMenuModule } from "primeng/tabmenu";
 import { TreeSelectModule } from "primeng/treeselect";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { ImpactButtonComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component";
 import { ApplicationCriteriaPieChartComponent } from "./application-criteria-pie-chart/application-criteria-pie-chart.component";
 import { CriteriaStatsComponent } from "./criteria-stats/criteria-stats.component";
 import { ApplicationCriteriaFootprintComponent } from "./criteria/application-criteria-footprint.component";
@@ -40,6 +41,7 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
         }),
         inventoriesApplicationRouteur,
         TabMenuModule,
+        ImpactButtonComponent,
     ],
     exports: [InventoriesApplicationFootprintComponent],
 })
