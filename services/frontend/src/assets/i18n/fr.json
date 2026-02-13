@@ -671,6 +671,11 @@
             "equipment": "Équipements",
             "status": "Statuts"
         },
+        "application-round-button": {
+            "environment": "Environnement",
+            "equipmentType": "Équipements",
+            "lifeCycle": "Cycle de vie"
+        },
         "global": {
             "global-vision": "Vision Globale",
             "global-vision-by": "Vision globale par {{variable}}",
