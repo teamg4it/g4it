@@ -8,7 +8,6 @@
 
 package com.soprasteria.g4it.backend.external.boavizta.model.response;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,10 +17,16 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class BoaResponseRest {
-    private BoaImpactsRest impacts;
+public class BoaPowerRest {
+
     /**
-     * Present only when verbose=true
+     * Power value (Watts)
      */
-    private BoaVerboseRest verbose;
+    private Double value;
+
+    /**
+     * Unit, usually "W"
+     */
+    private String unit;
 }
+

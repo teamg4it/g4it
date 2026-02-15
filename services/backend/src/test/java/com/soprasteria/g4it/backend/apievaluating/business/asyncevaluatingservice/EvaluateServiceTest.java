@@ -1,8 +1,13 @@
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
+import com.google.common.collect.BiMap;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.boaviztapi.EvaluateBoaviztapiService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
+import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
+import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
+import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
@@ -23,6 +28,7 @@ import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
 import org.apache.commons.csv.CSVPrinter;
@@ -33,6 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -51,8 +58,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -92,6 +98,12 @@ class EvaluateServiceTest {
     EvaluateService evaluateService;
     @TempDir
     Path tempDir;
+    @Mock
+    EvaluateBoaviztapiService evaluateBoaviztapiService;
+
+    @Mock
+    InternalToNumEcoEvalImpact internalToNumEcoEvalImpact;
+
 
     @BeforeEach
     void setup() {
@@ -833,6 +845,125 @@ class EvaluateServiceTest {
             assertThrows(AsyncTaskException.class,
                     () -> evaluateService.doEvaluate(context, task, tempDir));
         }
+    }
+
+    @Test
+    void shouldProcessCloudVmUsingBoavizta() throws Exception {
+
+        Context context = mockBaseContext(true, false);
+        when(context.getInventoryId()).thenReturn(1L); // ensure inventory path
+
+        Task task = mockTask(400L);
+        mockReferential();
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any())).thenReturn(printer);
+
+        InVirtualEquipment cloudVm = mock(InVirtualEquipment.class);
+        when(cloudVm.getName()).thenReturn("CLOUD_VM");
+        when(cloudVm.getInfrastructureType()).thenReturn(CLOUD_SERVICES.name());
+        when(cloudVm.getDurationHour()).thenReturn(8760d);
+        when(cloudVm.getQuantity()).thenReturn(2d);
+        when(cloudVm.getLocation()).thenReturn("FR");
+
+        when(inVirtualEquipmentRepository
+                .findByInventoryIdAndPhysicalEquipmentName(
+                        eq(1L), isNull(), any()))
+                .thenReturn(new ArrayList<>(List.of(cloudVm)))
+                .thenReturn(new ArrayList<>());
+
+
+        ImpactBO impactBO = mock(ImpactBO.class);
+        when(evaluateBoaviztapiService.evaluate(any(), any(), any()))
+                .thenReturn(List.of(impactBO));
+
+        ImpactEquipementVirtuel mappedImpact = mock(ImpactEquipementVirtuel.class);
+        when(mappedImpact.getCritere()).thenReturn("criterion_1");
+        when(mappedImpact.getStatutIndicateur()).thenReturn("OK");
+        when(mappedImpact.getImpactUnitaire()).thenReturn(10d);
+
+        when(internalToNumEcoEvalImpact.map(Mockito.<List<ImpactBO>>any()))
+                .thenReturn(List.of(mappedImpact));
+
+        BoaResponseRest response = mock(BoaResponseRest.class);
+        when(boaviztapiService.runBoaviztCalculations(any()))
+                .thenReturn(response);
+
+        when(boaviztapiService.extractAvgPowerW(any()))
+                .thenReturn(Optional.of(100d));
+
+        when(boaviztapiService.computeAnnualElectricityKwhRaw(100d, 8760d, 2d))
+                .thenReturn(1752d);
+
+        evaluateService.doEvaluate(context, task, tempDir);
+
+        verify(evaluateBoaviztapiService).evaluate(any(), any(), any());
+        verify(saveService).saveOutVirtualEquipments(anyMap(), eq(400L), any());
+    }
+
+
+    @Test
+    void createAggValuesBO_shouldMultiplyImpactForCloud() {
+
+        AggValuesBO result = ReflectionTestUtils.invokeMethod(
+                evaluateService,
+                "createAggValuesBO",
+                "OK", null,
+                2d, 100d, 10d,
+                5d, 1d, 10d, 0.5d, true
+        );
+
+        assertEquals(20d, result.getUnitImpact()); // 10 * 2
+    }
+
+    @Test
+    void createAggValuesBO_shouldNotMultiplyForNonCloud() {
+
+        AggValuesBO result = ReflectionTestUtils.invokeMethod(
+                evaluateService,
+                "createAggValuesBO",
+                "OK", null,
+                2d, 100d, 10d,
+                5d, 1d, 10d, 0.5d, false
+        );
+
+        assertEquals(10d, result.getUnitImpact());
+    }
+
+    @Test
+    void init_shouldInvertCountryMap() {
+
+        when(boaviztapiService.getCountryMap())
+                .thenReturn(Map.of("FR", "France"));
+
+        when(referentialService.getLifecycleSteps())
+                .thenReturn(List.of("STEP"));
+
+        when(referentialService.getElectricityMixQuartiles())
+                .thenReturn(Map.of());
+
+        evaluateService.init();
+
+        Map<String, String> cache =
+                (Map<String, String>) ReflectionTestUtils.getField(
+                        evaluateService, "codeToCountryMapCache");
+
+        assertEquals("FR", cache.get("France"));
+    }
+
+    @Test
+    void getShortcutMap_shouldMapIndexes() {
+
+        BiMap<String, String> map =
+                ReflectionTestUtils.invokeMethod(
+                        evaluateService,
+                        "getShortcutMap",
+                        List.of("A", "B", "C")
+                );
+
+        assertEquals("0", map.get("A"));
+        assertEquals("1", map.get("B"));
+        assertEquals("2", map.get("C"));
     }
 
     private Context mockBaseContext(boolean hasVms, boolean hasApps) {
