@@ -21,8 +21,10 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
@@ -185,11 +187,11 @@ public class InventoryService {
 
         List<String> currentCriteria = inventoryToSave.getCriteria();
         List<String> newCriteria = inventoryUpdateRest.getCriteria();
-        // Set criteria
+
         if (!Objects.equals(currentCriteria, newCriteria)) {
             inventoryToSave.setCriteria(newCriteria);
         }
-        // Set note
+
         Note note = inventoryToSave.getNote();
 
         if (inventoryUpdateRest.getNote() == null) {
@@ -216,9 +218,10 @@ public class InventoryService {
 
         Organization organization = organizationRepository.findByName(organizationName)
                 .orElseThrow(() -> new G4itRestException(
-                        "404",
-                        String.format("Organization %s not found", organizationName)
+                        ErrorConstants.NOT_FOUND,
+                        String.format(ErrorConstants.ORGANIZATION_NOT_FOUND, organizationName)
                 ));
+
 
         boolean isAdmin = roleService.hasAdminRightOnOrganizationOrWorkspace(
                 user,
@@ -232,10 +235,10 @@ public class InventoryService {
                     .orElseThrow();
 
             boolean hasWriteAccess = userWorkspace.getRoles().stream()
-                    .anyMatch(role -> "INVENTORY_READ".equals(role.getName()));
+                    .anyMatch(role -> Constants.INVENTORY_READ.equals(role.getName()));
 
             if (!(changeDataInconsistency || hasWriteAccess)) {
-                throw new G4itRestException("403", "Not authorized");
+                throw new G4itRestException("403", ErrorConstants.NOT_AUTHORIZED);
             }
         }
 

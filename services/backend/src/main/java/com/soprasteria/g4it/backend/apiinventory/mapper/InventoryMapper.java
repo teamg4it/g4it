@@ -35,6 +35,7 @@ public interface InventoryMapper {
     @Mapping(target = "workspace", source = "workspace.name")
     @Mapping(target = "workspaceId", source = "workspace.id")
     @Mapping(target = "workspaceStatus", source = "workspace.status")
+    @Mapping(target = "enableDataInconsistency", source = "enableDataInconsistency")
     InventoryBO toBusinessObject(final Inventory source);
 
     /**

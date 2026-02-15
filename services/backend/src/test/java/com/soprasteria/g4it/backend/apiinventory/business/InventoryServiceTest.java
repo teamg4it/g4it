@@ -30,6 +30,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.NoteUpsertRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -303,7 +304,6 @@ class InventoryServiceTest {
         when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L))
                 .thenReturn(Optional.of(inventory));
 
-        // 🔥 ADD THESE
         when(organizationRepository.findByName(organizationName))
                 .thenReturn(Optional.of(TestUtils.createOrganization()));
         when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
@@ -414,6 +414,7 @@ class InventoryServiceTest {
 
     @Test
     void shouldUpdateEnableDataInconsistencyWhenChanged() {
+
         Workspace workspace = TestUtils.createWorkspace();
         workspace.getOrganization().setName(ORGANIZATION);
 
@@ -431,20 +432,39 @@ class InventoryServiceTest {
                 .enableDataInconsistency(true)
                 .build();
 
-        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
-        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L)).thenReturn(Optional.of(inventory));
-        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any())).thenReturn(true);
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(workspace);
+
+        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L))
+                .thenReturn(Optional.of(inventory));
+
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(true);
+
         when(organizationRepository.findByName(ORGANIZATION))
                 .thenReturn(Optional.of(workspace.getOrganization()));
 
         InventoryBO result = inventoryService.updateInventory(
-                ORGANIZATION, WORKSPACE_ID, updateRest, user
+                ORGANIZATION,
+                WORKSPACE_ID,
+                updateRest,
+                user
         );
 
-        verify(inventoryRepo).save(any());
-        assertThat(result.getEnableDataInconsistency()).isTrue();
+        ArgumentCaptor<Inventory> captor = ArgumentCaptor.forClass(Inventory.class);
 
+        verify(inventoryRepo).save(captor.capture());
+
+        Inventory savedInventory = captor.getValue();
+
+        assertThat(savedInventory).isNotNull();
+        assertThat(savedInventory.isEnableDataInconsistency()).isTrue();
+
+        assertThat(savedInventory.getName()).isEqualTo("name");
+
+        assertThat(result).isNotNull();
     }
+
 
     @Test
     void shouldAllowNonAdminWithWriteRole() {

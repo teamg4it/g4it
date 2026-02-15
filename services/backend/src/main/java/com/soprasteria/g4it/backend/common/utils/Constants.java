@@ -71,6 +71,7 @@ public final class Constants {
     public static final String JWT_LAST_NAME = "family_name";
     public static final String JWT_SUB = "sub";
     public static final String ROLE_INVENTORY_READ = "ROLE_INVENTORY_READ";
+    public static final String INVENTORY_READ = "INVENTORY_READ";
     public static final String ROLE_INVENTORY_WRITE = "ROLE_INVENTORY_WRITE";
     public static final String ROLE_DIGITAL_SERVICE_READ = "ROLE_DIGITAL_SERVICE_READ";
     public static final String ROLE_DIGITAL_SERVICE_WRITE = "ROLE_DIGITAL_SERVICE_WRITE";
