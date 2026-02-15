@@ -20,6 +20,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -547,6 +548,110 @@ class InventoryServiceTest {
         inventoryService.updateInventory(ORGANIZATION, WORKSPACE_ID, updateRest, user);
 
         verify(inventoryRepo).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenOrganizationNotFound() {
+
+        Workspace workspace = TestUtils.createWorkspace();
+        UserBO user = TestUtils.createUserBONoRole();
+
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .workspace(workspace)
+                .build();
+
+        InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
+                .id(1L)
+                .name("name")
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(workspace);
+
+        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L))
+                .thenReturn(Optional.of(inventory));
+
+        when(organizationRepository.findByName(ORGANIZATION))
+                .thenReturn(Optional.empty());
+
+        G4itRestException exception = assertThrows(
+                G4itRestException.class,
+                () -> inventoryService.updateInventory(
+                        ORGANIZATION,
+                        WORKSPACE_ID,
+                        updateRest,
+                        user
+                )
+        );
+
+        assertThat(exception.getCode())
+                .isEqualTo(ErrorConstants.NOT_FOUND);
+
+        assertThat(exception.getMessage())
+                .isEqualTo(String.format(
+                        ErrorConstants.ORGANIZATION_NOT_FOUND,
+                        ORGANIZATION
+                ));
+
+        verify(inventoryRepo, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowForbiddenWhenNoWriteAccessAndNoFlagChange() {
+
+        Workspace workspace = TestUtils.createWorkspace();
+        workspace.getOrganization().setName(ORGANIZATION);
+
+        UserBO user = TestUtils.createUserBONoRole();
+
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .enableDataInconsistency(false)
+                .workspace(workspace)
+                .build();
+        
+        InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
+                .id(1L)
+                .name("name")
+                .enableDataInconsistency(false)
+                .build();
+
+        UserWorkspace userWorkspace = UserWorkspace.builder()
+                .workspace(workspace)
+                .roles(List.of())
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(workspace);
+
+        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L))
+                .thenReturn(Optional.of(inventory));
+
+        when(organizationRepository.findByName(ORGANIZATION))
+                .thenReturn(Optional.of(workspace.getOrganization()));
+
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(false);
+
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(WORKSPACE_ID, user.getId()))
+                .thenReturn(Optional.of(userWorkspace));
+
+        G4itRestException exception = assertThrows(
+                G4itRestException.class,
+                () -> inventoryService.updateInventory(
+                        ORGANIZATION,
+                        WORKSPACE_ID,
+                        updateRest,
+                        user
+                )
+        );
+
+        assertThat(exception.getCode()).isEqualTo("403");
+        assertThat(exception.getMessage())
+                .isEqualTo(ErrorConstants.NOT_AUTHORIZED);
+
+        verify(inventoryRepo, never()).save(any());
     }
 
 }
