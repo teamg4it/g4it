@@ -610,7 +610,7 @@ class InventoryServiceTest {
                 .enableDataInconsistency(false)
                 .workspace(workspace)
                 .build();
-        
+
         InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
                 .id(1L)
                 .name("name")
@@ -649,7 +649,7 @@ class InventoryServiceTest {
 
         assertThat(exception.getCode()).isEqualTo("403");
         assertThat(exception.getMessage())
-                .isEqualTo(ErrorConstants.NOT_AUTHORIZED);
+                .isEqualTo(ErrorConstants.NOT_AUTHORIZED_MESSAGE);
 
         verify(inventoryRepo, never()).save(any());
     }
