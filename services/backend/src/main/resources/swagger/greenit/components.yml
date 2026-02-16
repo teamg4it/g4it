@@ -415,6 +415,8 @@ components:
           type: array
           items:
             type: string
+        enableDataInconsistency:
+          type: boolean
         tasks:
           type: array
           items:
@@ -964,6 +966,9 @@ components:
           type: array
           items:
             type: string
+        enableDataInconsistency:
+          type: boolean
+          description: The flag to enable data consistency view
         note:
           $ref: "#/components/schemas/NoteUpsertRest"
 

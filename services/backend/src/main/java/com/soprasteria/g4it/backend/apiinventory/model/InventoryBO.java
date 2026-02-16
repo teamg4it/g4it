@@ -53,4 +53,6 @@ public class InventoryBO {
 
     private NoteBO note;
 
+    private Boolean enableDataInconsistency;
+
 }

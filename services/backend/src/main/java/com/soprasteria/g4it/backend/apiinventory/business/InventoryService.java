@@ -11,13 +11,20 @@ import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapper;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
@@ -58,6 +65,12 @@ public class InventoryService {
 
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private UserWorkspaceRepository userWorkspaceRepository;
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
 
     /**
@@ -76,8 +89,8 @@ public class InventoryService {
      * Retrieve all inventory of a workspace if inventoryId is null.
      * Filter on inventoryId if not null
      *
-     * @param workspaceId      the linked workspace id.
-     * @param inventoryId      the inventory id optional query param
+     * @param workspaceId the linked workspace id.
+     * @param inventoryId the inventory id optional query param
      * @return inventories BO.
      */
     public List<InventoryBO> getInventories(final Long workspaceId, final Long inventoryId) {
@@ -174,11 +187,11 @@ public class InventoryService {
 
         List<String> currentCriteria = inventoryToSave.getCriteria();
         List<String> newCriteria = inventoryUpdateRest.getCriteria();
-        // Set criteria
+
         if (!Objects.equals(currentCriteria, newCriteria)) {
             inventoryToSave.setCriteria(newCriteria);
         }
-        // Set note
+
         Note note = inventoryToSave.getNote();
 
         if (inventoryUpdateRest.getNote() == null) {
@@ -197,6 +210,41 @@ public class InventoryService {
         }
         inventoryToSave.setNote(note);
 
+        Boolean newEnableFlag = inventoryUpdateRest.getEnableDataInconsistency();
+
+        boolean changeDataInconsistency =
+                newEnableFlag != null &&
+                        !Objects.equals(inventoryToSave.isEnableDataInconsistency(), newEnableFlag);
+
+        Organization organization = organizationRepository.findByName(organizationName)
+                .orElseThrow(() -> new G4itRestException(
+                        ErrorConstants.NOT_FOUND,
+                        String.format(ErrorConstants.ORGANIZATION_NOT_FOUND, organizationName)
+                ));
+
+
+        boolean isAdmin = roleService.hasAdminRightOnOrganizationOrWorkspace(
+                user,
+                organization.getId(),
+                workspaceId
+        );
+
+        if (!isAdmin) {
+            UserWorkspace userWorkspace = userWorkspaceRepository
+                    .findByWorkspaceIdAndUserId(workspaceId, user.getId())
+                    .orElseThrow();
+
+            boolean hasWriteAccess = userWorkspace.getRoles().stream()
+                    .anyMatch(role -> Constants.INVENTORY_READ.equals(role.getName()));
+
+            if (!(changeDataInconsistency || hasWriteAccess)) {
+                throw new G4itRestException(ErrorConstants.NOT_AUTHORIZED, ErrorConstants.NOT_AUTHORIZED_MESSAGE);
+            }
+        }
+
+        if (newEnableFlag != null) {
+            inventoryToSave.setEnableDataInconsistency(newEnableFlag);
+        }
         inventoryRepository.save(inventoryToSave);
         return inventoryMapper.toBusinessObject(inventoryToSave);
     }
