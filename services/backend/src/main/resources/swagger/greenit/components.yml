@@ -521,6 +521,8 @@ components:
           type: string
         provider:
           type: string
+        location:
+          type: string
 
     ApplicationVmIndicatorRest:
       type: object
