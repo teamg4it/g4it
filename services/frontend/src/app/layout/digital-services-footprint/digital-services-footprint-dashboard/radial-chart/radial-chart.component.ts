@@ -115,6 +115,20 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         );
         const criteriaSetArray: string[] = Object.keys(this.criteriaMap);
         this.xAxisInput = criteriaSetArray;
+
+        // Calculate total unit values per criterion
+        const criteriaUnitValues: { [key: string]: { total: number; unit: string } } = {};
+        noErrorRadialChartData.forEach((tierData) => {
+            tierData.impacts.forEach((impact) => {
+                const twoWordsImpact = impact.criteria.split(" ").slice(0, 2).join(" ");
+                const criteriaName = this.getCriteriaTranslation(twoWordsImpact);
+                if (!criteriaUnitValues[criteriaName]) {
+                    criteriaUnitValues[criteriaName] = { total: 0, unit: impact.unit };
+                }
+                criteriaUnitValues[criteriaName].total += impact.unitValue;
+            });
+        });
+
         return {
             tooltip: {
                 show: true,
@@ -163,10 +177,14 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 axisLabel: {
                     formatter: (value: string) => {
                         const hasError = !!this.criteriaMap[value].status.error;
+                        const unitData = criteriaUnitValues[value];
+                        const unitValueText = unitData
+                            ? `\n${this.decimalsPipe.transform(unitData.total)} ${unitData.unit}`
+                            : "";
                         return getLabelFormatter(
                             hasError,
                             this.enableDataInconsistency,
-                            value,
+                            value + unitValueText,
                         );
                     },
                     rich: Constants.CHART_RICH as any,
@@ -182,8 +200,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 },
             },
             polar: {
-                radius: "76%",
-                center: ["50%", "55%"],
+                radius: "65%",
+                center: ["50%", "50%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({
                 name: item.tier,
