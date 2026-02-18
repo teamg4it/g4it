@@ -1,5 +1,3 @@
 <h1 class="mb-2">{{ "administration.title" | translate }}</h1>
-<p-scrollPanel [style]="{ width: '100%', height: '88%' }">
-    <p-tabMenu [model]="tabMenuList"></p-tabMenu>
-    <router-outlet></router-outlet>
-</p-scrollPanel>
+<p-tabMenu [model]="tabMenuList"></p-tabMenu>
+<router-outlet></router-outlet>

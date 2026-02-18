@@ -13,8 +13,10 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mte.numecoeval.calculs.domain.data.entree.Application;
 import org.mte.numecoeval.calculs.domain.data.entree.DataCenter;
 import org.mte.numecoeval.calculs.domain.data.entree.EquipementPhysique;
@@ -37,6 +39,17 @@ public interface InternalToNumEcoEvalCalculs {
     @Mapping(target = "quantite", source = "quantity")
     @Mapping(target = "nbCoeur", source = "cpuCoreNumber")
     EquipementPhysique map(InPhysicalEquipment inPhysicalEquipment);
+
+    @AfterMapping
+    default void ensureDataCenter(
+            @MappingTarget EquipementPhysique equipementPhysique,
+            InPhysicalEquipment source) {
+
+        if (equipementPhysique.getDataCenter() == null) {
+            equipementPhysique.setDataCenter(DataCenter.builder().build());
+        }
+    }
+
 
     @Mapping(target = "localisation", source = "location")
     @Mapping(target = "pue", source = "pue")

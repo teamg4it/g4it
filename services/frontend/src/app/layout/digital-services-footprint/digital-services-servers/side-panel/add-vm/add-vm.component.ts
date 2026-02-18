@@ -40,7 +40,7 @@ export class PanelAddVmComponent implements OnInit {
     vm: ServerVM = {} as ServerVM;
 
     vcpuControl = this._formBuilder.control(1, [Validators.required]);
-    diskControl = this._formBuilder.control(0, [Validators.required]);
+    diskControl = this._formBuilder.control(1, [Validators.required]);
     quantityControl = this._formBuilder.control(0, [Validators.required]);
     electricityConsumptionControl = this._formBuilder.control<number | undefined>(
         undefined,
@@ -74,7 +74,7 @@ export class PanelAddVmComponent implements OnInit {
                 uid: "",
                 name: "VM " + num,
                 vCpu: 1,
-                disk: 0,
+                disk: 1,
                 quantity: 1,
                 annualOperatingTime: 8760,
                 electricityConsumption: undefined as any,

@@ -7,6 +7,7 @@
  */
 
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalCalculs;
@@ -64,7 +65,7 @@ public class EvaluateNumEcoEvalService {
      *
      * @param physicalEquipment the physicalEquipment
      * @param datacenter        the datacenter
-     * @param organization        the organization
+     * @param organization      the organization
      * @param criteria          the criteria
      * @param lifecycleSteps    the lifecycleSteps
      * @param hypotheses        the hypotheses
@@ -115,6 +116,11 @@ public class EvaluateNumEcoEvalService {
                     equipementPhysique.setDataCenter(internalToNumEcoEvalCalculs.map(datacenter));
                 }
 
+                Double pue = datacenter != null ? datacenter.getPue() : null;
+                String location = datacenter != null ? datacenter.getLocation() : null;
+                equipementPhysique.getDataCenter().setPue(pue);
+                equipementPhysique.getDataCenter().setLocalisation(location);
+
                 DemandeCalculImpactEquipementPhysique demandeCalculImpactEquipementPhysique =
                         DemandeCalculImpactEquipementPhysique.builder()
                                 .dateCalcul(now)
@@ -135,17 +141,18 @@ public class EvaluateNumEcoEvalService {
 
                 updateTraceForImpact(impactEquipementPhysique, lifecycleStep, isModelMatched, objectMapper);
                 result.add(impactEquipementPhysique);
-                }
             }
+        }
 
         return result;
     }
 
     /**
      * Update trace information
+     *
      * @param impactEquipementPhysique the impactEquipementPhysique
-     * @param isModelMatched is MODELE or TYPE
-     * @param objectMapper the objectMapper
+     * @param isModelMatched           is MODELE or TYPE
+     * @param objectMapper             the objectMapper
      */
     private void updateTraceForImpact(ImpactEquipementPhysique impactEquipementPhysique,
                                       String lifecycleStep,
@@ -156,39 +163,41 @@ public class EvaluateNumEcoEvalService {
             return;
         }
         try {
-            Map<String, Object> traceMap = objectMapper.readValue(trace, new TypeReference<>() {});
+            Map<String, Object> traceMap = objectMapper.readValue(trace, new TypeReference<>() {
+            });
 
             boolean modified = false;
 
             if ("USING".equalsIgnoreCase(lifecycleStep) && traceMap.containsKey("consoElecAnMoyenne")) {
                 Object consObj = traceMap.get("consoElecAnMoyenne");
                 if (consObj != null) {
-                    Map<String, Object> consoMap = objectMapper.convertValue(consObj, new TypeReference<>() {});
-                        consoMap.put("impact source", "REELLE");
-                        traceMap.put("consoElecAnMoyenne", consoMap);
-                        modified = true;
+                    Map<String, Object> consoMap = objectMapper.convertValue(consObj, new TypeReference<>() {
+                    });
+                    consoMap.put("impact source", "REELLE");
+                    traceMap.put("consoElecAnMoyenne", consoMap);
+                    modified = true;
 
                 }
             } else if (traceMap.containsKey("valeurReferentielFacteurCaracterisation") &&
                     traceMap.containsKey("sourceReferentielFacteurCaracterisation")) {
 
-                        Double  value = Double.valueOf(traceMap.get("valeurReferentielFacteurCaracterisation").toString());
-                        String  sourceFacteur = traceMap.get("sourceReferentielFacteurCaracterisation").toString();
+                Double value = Double.valueOf(traceMap.get("valeurReferentielFacteurCaracterisation").toString());
+                String sourceFacteur = traceMap.get("sourceReferentielFacteurCaracterisation").toString();
 
-                        Map<String, Object> ReferentielFacteurCaracterisation= new HashMap<>();
-                        ReferentielFacteurCaracterisation.put("impact source", isModelMatched ? "MODELE" : "TYPE");
-                        ReferentielFacteurCaracterisation.put("valeur", value);
-                        ReferentielFacteurCaracterisation.put("source", sourceFacteur);
+                Map<String, Object> ReferentielFacteurCaracterisation = new HashMap<>();
+                ReferentielFacteurCaracterisation.put("impact source", isModelMatched ? "MODELE" : "TYPE");
+                ReferentielFacteurCaracterisation.put("valeur", value);
+                ReferentielFacteurCaracterisation.put("source", sourceFacteur);
 
-                        // Remove old  fields
-                        traceMap.remove("valeurReferentielFacteurCaracterisation");
-                        traceMap.remove("sourceReferentielFacteurCaracterisation");
+                // Remove old  fields
+                traceMap.remove("valeurReferentielFacteurCaracterisation");
+                traceMap.remove("sourceReferentielFacteurCaracterisation");
 
-                        // Insert new field
-                        traceMap.put("ReferentielFacteurCaracterisation", ReferentielFacteurCaracterisation);
+                // Insert new field
+                traceMap.put("ReferentielFacteurCaracterisation", ReferentielFacteurCaracterisation);
 
-                      modified = true;
-                    }
+                modified = true;
+            }
 
             if (modified) {
                 String updatedTrace = objectMapper.writeValueAsString(traceMap);
@@ -213,9 +222,14 @@ public class EvaluateNumEcoEvalService {
                                                                    final List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
                                                                    Integer virtualEquipmentNumber,
                                                                    Double totalVcpuNumber,
-                                                                   Double totalStorage) {
+                                                                   Double totalStorage,
+                                                                   Double pue,
+                                                                   String location) {
 
-        if (impactEquipementPhysiqueList.isEmpty()) return new ArrayList<>();
+        if (impactEquipementPhysiqueList.isEmpty()) {
+            log.warn("No physical equipment impacts provided → no virtual impact will be calculated");
+            return new ArrayList<>();
+        }
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -228,6 +242,9 @@ public class EvaluateNumEcoEvalService {
                                 .nbTotalVCPU(totalVcpuNumber)
                                 .stockageTotalVirtuel(totalStorage)
                                 .impactEquipement(impact)
+                                .pue(pue)
+                                .localisation(location)
+                                .facteurCaracterisations(impact.getFacteurCaracterisations())
                                 .build()))
                 .toList();
 

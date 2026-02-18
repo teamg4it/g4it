@@ -27,6 +27,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
@@ -37,10 +38,13 @@ import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactApplication;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
@@ -106,8 +110,27 @@ public class EvaluateService {
     InternalToNumEcoEvalImpact internalToNumEcoEvalImpact;
     @Autowired
     BoaviztapiService boaviztapiService;
+    @Autowired
+    InventoryRepository inventoryRepository;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
+    private Map<String, String> codeToCountryMapCache;
+    private List<String> lifecycleStepsCache;
+    private Map<Pair<String, String>, Integer> electricityMixQuartilesCache;
+
+    @PostConstruct
+    public void init() {
+        codeToCountryMapCache =
+                boaviztapiService.getCountryMap()
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getValue,
+                                Map.Entry::getKey
+                        ));
+        lifecycleStepsCache = referentialService.getLifecycleSteps();
+        electricityMixQuartilesCache = referentialService.getElectricityMixQuartiles();
+    }
 
     /**
      * Evaluate the inventory
@@ -118,8 +141,25 @@ public class EvaluateService {
      */
     public void doEvaluate(final Context context, final Task task, Path exportDirectory) {
 
-        final Inventory inventory = task.getInventory();
-        final String inventoryName = inventory == null ? context.getDigitalServiceName() : inventory.getName();
+        // retrieving the VM list for this DS
+        Map<String, List<InVirtualEquipment>> vmsByPhysical =
+                inVirtualEquipmentRepository
+                        .findByDigitalServiceVersionUid(context.getDigitalServiceVersionUid())
+                        .stream()
+                        // ONLY VMs attached to a physical equipment
+                        .filter(vm -> vm.getPhysicalEquipmentName() != null)
+                        .collect(Collectors.groupingBy(InVirtualEquipment::getPhysicalEquipmentName));
+
+        Inventory inventory = task.getInventory();
+        String inventoryName;
+        if (inventory == null) {
+            inventoryName = context.getDigitalServiceName();
+        } else {
+            inventory = inventoryRepository.findById(inventory.getId()).orElse(null);
+            inventoryName = (inventory == null)
+                    ? context.getDigitalServiceName()
+                    : inventory.getName();
+        }
         final long start = System.currentTimeMillis();
         final String organization = context.getOrganization();
         final Long taskId = task.getId();
@@ -130,9 +170,8 @@ public class EvaluateService {
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity())) :
                 inDatacenterRepository.findByInventoryId(context.getInventoryId()).stream()
                         .collect(Collectors.toMap(InDatacenter::getName, Function.identity()));
+        final List<String> lifecycleSteps = lifecycleStepsCache;
 
-        // Match referential if needed, with cache
-        final List<String> lifecycleSteps = referentialService.getLifecycleSteps();
         List<CriterionRest> activeCriteria = referentialService.getActiveCriteria(task.getCriteria().stream()
                 .map(StringUtils::kebabToSnakeCase).toList());
 
@@ -150,7 +189,7 @@ public class EvaluateService {
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
-                referentialService.getElectricityMixQuartiles()
+                electricityMixQuartilesCache
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);
@@ -158,14 +197,8 @@ public class EvaluateService {
         log.info("Start evaluating impacts for {}/{}", context.log(), taskId);
 
         Map<String, Double> refSip = referentialService.getSipValueMap(criteriaCodes);
-        Map<String, String> codeToCountryMap =
-                boaviztapiService.getCountryMap()
-                        .entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getValue,
-                                Map.Entry::getKey
-                        ));
+        Map<String, String> codeToCountryMap = codeToCountryMapCache;
+
         Map<List<String>, AggValuesBO> aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPACITY);
         Map<List<String>, AggValuesBO> aggregationVirtualEquipments = new HashMap<>(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPACITY : 0);
         Map<List<String>, AggValuesBO> aggregationApplications = new HashMap<>(context.isHasApplications() ? INITIAL_MAP_CAPACITY : 0);
@@ -221,7 +254,8 @@ public class EvaluateService {
             SaveResult saveResult = evaluateVirtualsEquipments(context, evaluateReportBO, null, null,
                     aggregationVirtualEquipments, aggregationApplications,
                     csvInVirtualEquipment, csvVirtualEquipment, csvInApplication, csvApplication, refSip, refShortcutBO,
-                    criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/);
+                    criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/,
+                    null, null);
             outVirtualEquipmentSize += saveResult.savedVirtualCount();
             outApplicationSize += saveResult.savedApplicationCount();
 
@@ -256,10 +290,22 @@ public class EvaluateService {
                         physicalEquipment.setLocation(datacenter.getLocation());
                     }
 
+                    Double equipmentPue = datacenter != null ? datacenter.getPue() : null;
+                    String equipmentLocation = datacenter != null ? datacenter.getLocation() : null;
+
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
                             organization, activeCriteria, lifecycleSteps, hypothesisRestList);
+
+                    // Identify NON-CLOUD VMs for this physical equipment
+                    List<InVirtualEquipment> allVMs = vmsByPhysical.getOrDefault(physicalEquipment.getName(), List.of());
+
+                    List<InVirtualEquipment> nonCloudVMs = allVMs.stream()
+                            .filter(vm -> !CLOUD_SERVICES.name().equals(vm.getInfrastructureType()))
+                            .toList();
+
+                    boolean hasNonCloudVM = !nonCloudVMs.isEmpty();
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(physicalEquipment, datacenter));
@@ -289,11 +335,24 @@ public class EvaluateService {
                         evaluateReportBO.setNbPhysicalEquipmentLines(evaluateReportBO.getNbPhysicalEquipmentLines() + 1);
                     }
 
+                    /**
+                     * ------------------------------------------------------------------
+                     * VM RULE:
+                     * A physical equipment must run VM calculations ONLY IF:
+                     *    - It has ≥ 1 NON-CLOUD VM
+                     * Cloud VMs do NOT count for this condition.
+                     * ------------------------------------------------------------------
+                     */
+                    if (!hasNonCloudVM) {
+                        log.info("Skipping VM calculation for physical equipment {} — contains no NON-cloud VMs", physicalEquipment.getName());
+                        continue;
+                    }
 
                     SaveResult saveResult2 = evaluateVirtualsEquipments(context, evaluateReportBO, physicalEquipment, impactEquipementPhysiqueList,
                             aggregationVirtualEquipments, aggregationApplications,
                             csvInVirtualEquipment, csvVirtualEquipment, csvInApplication, csvApplication,
-                            refSip, refShortcutBO, criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/);
+                            refSip, refShortcutBO, criteriaCodes, lifecycleSteps, codeToCountryMap/*, outVirtualEquipmentSize*/,
+                            equipmentPue, equipmentLocation);
                     outVirtualEquipmentSize += saveResult2.savedVirtualCount();
                     outApplicationSize += saveResult2.savedApplicationCount();
 
@@ -384,7 +443,9 @@ public class EvaluateService {
                                                   CSVPrinter csvApplication,
                                                   Map<String, Double> refSip, RefShortcutBO refShortcutBO,
                                                   final List<String> criteria, final List<String> lifecycleSteps,
-                                                  Map<String, String> codeToCountryMap) throws IOException {
+                                                  Map<String, String> codeToCountryMap,
+                                                  Double equipmentPue,
+                                                  String equipmentLocation) throws IOException {
 
         if (!context.isHasVirtualEquipments()) return new SaveResult(0, 0);
 
@@ -420,14 +481,27 @@ public class EvaluateService {
             int virtualSize = virtualEquipments.size();
             for (InVirtualEquipment virtualEquipment : virtualEquipments) {
                 List<ImpactEquipementVirtuel> impactEquipementVirtuelList;
+                Double cloudElectricityKwh = null;
                 boolean isCloudService = CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType());
                 if (isCloudService) {
                     List<ImpactBO> impactBOList = evaluateBoaviztapiService.evaluate(virtualEquipment, criteria, lifecycleSteps);
                     impactEquipementVirtuelList = internalToNumEcoEvalImpact.map(impactBOList);
+                    BoaResponseRest response =
+                            boaviztapiService.runBoaviztCalculations(virtualEquipment);
 
+                    Double avgPowerW =
+                            boaviztapiService.extractAvgPowerW(response).orElse(null);
+
+                    cloudElectricityKwh =
+                            boaviztapiService.computeAnnualElectricityKwhRaw(
+                                    avgPowerW,
+                                    virtualEquipment.getDurationHour(),
+                                    virtualEquipment.getQuantity()
+                            );
                 } else {
                     impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
-                            virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage
+                            virtualEquipment, impactEquipementPhysiqueList, virtualSize, totalVcpuCoreNumber, totalStorage,
+                            equipmentPue, equipmentLocation
                     );
                 }
                 String location = isCloudService ? codeToCountryMap.get(virtualEquipment.getLocation()) : virtualEquipment.getLocation();
@@ -439,8 +513,12 @@ public class EvaluateService {
                 for (ImpactEquipementVirtuel impact : impactEquipementVirtuelList) {
 
                     Double sipValue = refSip.get(impact.getCritere());
+                    Double electricity =
+                            isCloudService
+                                    ? cloudElectricityKwh : impact.getConsoElecMoyenne();
                     AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                            virtualEquipment.getQuantity(), impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
+                            virtualEquipment.getQuantity(),
+                            electricity, impact.getImpactUnitaire(),
                             sipValue,
                             null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload(), isCloudService);
 
@@ -464,7 +542,7 @@ public class EvaluateService {
 
                 virtualSaveCounter++;
 
-                if (virtualSaveCounter >= 50) {
+                if (virtualSaveCounter >= 10) {
                     savedVirtualCount += saveService.saveOutVirtualEquipments(
                             aggregationVirtualEquipments, evaluateReportBO.getTaskId(), refShortcutBO);
                     aggregationVirtualEquipments.clear();
@@ -541,7 +619,7 @@ public class EvaluateService {
 
             applicationSaveCounter++;
 
-            if (applicationSaveCounter >= 50) {
+            if (applicationSaveCounter >= 10) {
                 savedApplicationCount += saveService.saveOutApplications(
                         aggregationApplications,
                         evaluateReportBO.getTaskId(),

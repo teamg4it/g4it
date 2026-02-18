@@ -44,15 +44,7 @@ public class OutPhysicalEquipmentService {
     public List<OutPhysicalEquipmentRest> getByDigitalServiceVersionUid(final String digitalServiceVersionUid) {
 
         DigitalServiceVersion digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid).orElseThrow();
-        Optional<Task> task = Optional.empty();
-        for (int i = 0; i < 3 && task.isEmpty(); i++) {
-            task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
-            if (task.isEmpty()) {
-                try {
-                    Thread.sleep(700);
-                } catch (InterruptedException e) {/* ignore InterruptedException */ }
-            }
-        }
+        Optional<Task> task = taskRepository.findTopByDigitalServiceVersionOrderByIdDesc(digitalServiceVersion);
         if (task.isEmpty()) {
             return List.of();
         }

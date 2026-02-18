@@ -3,7 +3,7 @@
  * Copyright 2023 Sopra Steria
  *
  * This product includes software developed by
- * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
+ * French Ecological Ministery
  */
 package com.soprasteria.g4it.backend.common.filesystem.integration;
 
@@ -27,10 +27,11 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(
+@SpringBootTest(classes = LocalFileSystem.class,
         properties = {
                 "spring.cloud.azure.enabled=false",
-                "spring.liquibase.enabled=false"
+                "spring.liquibase.enabled=false",
+                "spring.cloud.azure.enabled=false"
         }
 )
 @ActiveProfiles({"local", "test"})
@@ -50,7 +51,9 @@ class LocalGreenItFileSystemApplicationTests {
     static void cleanup() {
         // remove local-filesystem folder
         FileSystemUtils.deleteRecursively(new File("target/local-filesystem"));
+
     }
+
 
     @Test
     void fileSystemShouldBeOfLocalFileSystemType() {
@@ -71,5 +74,4 @@ class LocalGreenItFileSystemApplicationTests {
         assertTrue(new File("target/local-filesystem/local/G4IT/output").exists());
         assertTrue(new File("target/local-filesystem/local/G4IT/templates").exists());
     }
-
 }

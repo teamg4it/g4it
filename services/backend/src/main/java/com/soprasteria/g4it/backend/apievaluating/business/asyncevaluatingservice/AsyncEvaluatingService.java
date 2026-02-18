@@ -45,9 +45,11 @@ public class AsyncEvaluatingService implements ITaskExecute {
      *
      * @param task the task
      */
-    public void execute(final Context context, final Task task) {
+    public void execute(final Context context, Task task) {
 
         final Long taskId = task.getId();
+        task = taskRepository.findById(taskId).orElseThrow();
+
 
         log.info("Start evaluating for {}/{}", context.log(), taskId);
 
