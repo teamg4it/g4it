@@ -1,0 +1,106 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-recommendation-table
+      author: INSA DEV Team
+      changes:
+        - createTable:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: id_recommendation
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                  remarks:
+                    "Unique id of the recommendation"
+
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                  remarks:
+                    "Title of the recommendation"
+
+              - column:
+                  name: description
+                  type: text
+                  remarks:
+                    "Description of the recommendation"
+
+              - column:
+                  name: category
+                  type: varchar(255)
+                  remarks:
+                    "Category: Terminaux, Infrastructures privées, Réseaux, Clouds publics - IaaS"
+                  # contrainte sur le type avec l'enum --> voir comment faire
+
+              - column:
+                  name: affected_attributes
+                  type: jsonb
+                  remarks:
+                    "List of affected evaluation attributes (eg: [PUE])"
+
+              - column:
+                  name: heuristic_range
+                  type: jsonb
+                  remarks:
+                    "List of ranges of affected attributes (eg: [(1,2),(2,4),(4,Inf)]"
+
+              - column:
+                  name: base_impact
+                  type: int
+                  remarks:
+                    "General estimated impact of the recommendation (0, 1, 2 <=> Low, Medium, High)"
+
+              - column:
+                  name: organisation_id #regarder le type de l'id d'une orgnisation
+                  type: bigint
+                  remarks:
+                    "Foreign key to the Organisation table"
+
+
+  - changeSet:
+      id: create-instanciated-recommendation
+      author: INSA DEV Team
+      changes:
+        - createTable:
+            tableName: instantiated_recommendation
+            columns:
+              - column:
+                  name: id_instanciated_recommendation
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                  remarks:
+                    "Unique id of the instanciated recommendation"
+
+              - column:
+                  name: id_recommendation
+                  type: bigint
+                  remarks:
+                    "Foreign key to recommendation"
+
+              - column:
+                  name: id_evaluation
+                  type: bigint
+                  remarks:
+                    "Foreign key of the relevant evaluation "
+
+              - column:
+                  name: priority
+                  type: decimal
+                  remarks:
+                    "Computed priority of this recommendation for this evaluation between 0 and 1"
+
+              - column:
+                  name: specific_affected_attributes
+                  type: jsonb
+                  remarks:
+                    "list of the affect attributes for this evaluation"
+
+
+
+
