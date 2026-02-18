@@ -197,10 +197,9 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                 inventoryIndicatorService
                         .getVirtualEquipmentsLowImpact(organization, workspace, inventoryId);
 
-        List<VirtualEquipmentLowImpactRest> rest =
-                indicatorRestMapper.toVirtualLowImpactDto(bos);
-
-        return ResponseEntity.ok(rest);
+        return ResponseEntity.ok(
+                indicatorRestMapper.toVirtualLowImpactDto(bos)
+        );
     }
 
     @Override

@@ -47,16 +47,12 @@ public interface IndicatorRestMapper {
     List<PhysicalEquipmentElecConsumptionRest> toElecConsumptionDto(final List<PhysicalEquipmentElecConsumptionBO> source);
 
 
-    @Mapping(target = "infrastructureType", source = "infrastructureType")
-    @Mapping(target = "nomEntite", source = "nomEntite")
-    @Mapping(target = "country", source = "country")
-    @Mapping(
-            target = "quantite",
-            expression = "java(bo.getQuantity() == null ? null : bo.getQuantity().intValue())"
-    )
-    VirtualEquipmentLowImpactRest toVirtualLowImpactDto(VirtualEquipmentLowImpactBO bo);
+    VirtualEquipmentLowImpactRest toVirtualLowImpactDto(
+            VirtualEquipmentLowImpactBO bo
+    );
 
     List<VirtualEquipmentLowImpactRest> toVirtualLowImpactDto(
             List<VirtualEquipmentLowImpactBO> bos
     );
+
 }

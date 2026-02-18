@@ -628,14 +628,16 @@ components:
     VirtualEquipmentLowImpactRest:
       type: object
       properties:
-        inventoryName:
+        id:
+          type: integer
+          format: int64
+        name:
           type: string
         country:
           type: string
-        nomEntite:
-          type: string
-        quantite:
-          type: integer
+        quantity:
+          type: number
+          format: double
         lowImpact:
           type: boolean
         lifecycleStep:
@@ -653,10 +655,6 @@ components:
         equipmentType:
           type: string
           description: equipment type
-        InfrastructureType:
-          type: string
-          description: Infrastructure type
-
 
     DigitalServiceRest:
       description: Information of a Digital Service

@@ -17,50 +17,72 @@ import org.hibernate.annotations.Immutable;
 @NoArgsConstructor
 @Entity
 @Immutable
-@IdClass(VirtualEquipmentLowImpactId.class)
 @NamedNativeQuery(
         name = "InVirtualEquipmentLowImpactView.findVirtualEquipmentLowImpactIndicatorsByInventoryId",
         query = """
+                WITH vm_base AS (
+                    SELECT
+                        ove.name,
+                        ove.task_id,
+                        ove.lifecycle_step,
+                        MAX(ove.quantity) AS quantity,
+                        AVG(ove.unit_impact) AS avg_impact
+                    FROM out_virtual_equipment ove
+                    GROUP BY
+                        ove.name,
+                        ove.task_id,
+                        ove.lifecycle_step
+                )
+                
                 SELECT
-                       ive.inventory_id                         AS inventory_id,
-                       inv.name                                 AS inventory_name,
-                       COALESCE(dc.location, ive.location, 'Unknown') AS country,                
-                       ive.infrastructure_type                  AS infrastructure_type,
-                       ive.provider                             AS provider,
-                       ive.common_filters[1]                    AS nom_entite,
-                       oa.lifecycle_step                        AS lifecycle_step,
-                       oa.filters[1]                            AS domain,
-                       oa.filters[2]                            AS sub_domain,
-                       oa.environment                           AS environment,
-                       oa.equipment_type                        AS equipment_type,
-                       SUM(ove.quantity)                        AS quantity,
-                       AVG(ove.unit_impact) <= 0.1              AS low_impact
-                   FROM in_virtual_equipment ive
-                   JOIN inventory inv
-                       ON inv.id = ive.inventory_id
-                   JOIN out_virtual_equipment ove
-                       ON ove.name = ive.name
-                   JOIN task t
-                       ON t.id = ove.task_id
-                      AND t.status = 'COMPLETED'
-                   JOIN out_application oa
-                       ON oa.task_id = t.id
-                   LEFT JOIN in_datacenter dc
-                       ON dc.inventory_id = ive.inventory_id
-                      AND dc.name = ive.datacenter_name
-                   WHERE ive.inventory_id = :inventoryId
-                   GROUP BY
-                       ive.inventory_id,
-                       inv.name,
-                       dc.location,
-                       ive.location,
-                       ive.infrastructure_type,
-                       ive.provider,
-                       ive.common_filters,
-                       oa.lifecycle_step,
-                       oa.filters,
-                       oa.environment,
-                       oa.equipment_type;
+                    ROW_NUMBER() OVER (
+                        ORDER BY
+                            vm_base.name,
+                            vm_base.lifecycle_step
+                    ) AS id,
+                
+                    vm_base.name                                   AS name,
+                    COALESCE(dc.location, ive.location, 'Unknown') AS country,
+                    vm_base.lifecycle_step                         AS lifecycle_step,
+                    oa.filters[1]                                  AS domain,
+                    oa.filters[2]                                  AS sub_domain,
+                    oa.environment                                 AS environment,
+                    oa.equipment_type                              AS equipment_type,
+                
+                    MAX(vm_base.quantity)                          AS quantity,
+                
+                    CASE
+                        WHEN AVG(vm_base.avg_impact) <= 0.1 THEN TRUE
+                        ELSE FALSE
+                    END                                            AS low_impact
+                
+                FROM vm_base
+                
+                JOIN task t
+                    ON t.id = vm_base.task_id
+                   AND t.status = 'COMPLETED'
+                
+                JOIN out_application oa
+                    ON oa.task_id = vm_base.task_id
+                   AND oa.virtual_equipment_name = vm_base.name
+                
+                JOIN in_virtual_equipment ive
+                    ON ive.name = vm_base.name
+                
+                LEFT JOIN in_datacenter dc
+                    ON dc.inventory_id = ive.inventory_id
+                   AND dc.name = ive.datacenter_name
+                
+                WHERE ive.inventory_id = :inventoryId
+                
+                GROUP BY
+                    vm_base.name,
+                    COALESCE(dc.location, ive.location, 'Unknown'),
+                    vm_base.lifecycle_step,
+                    oa.filters[1],
+                    oa.filters[2],
+                    oa.environment,
+                    oa.equipment_type;
                 
                 """,
         resultClass = InVirtualEquipmentLowImpactView.class
@@ -69,25 +91,15 @@ import org.hibernate.annotations.Immutable;
 public class InVirtualEquipmentLowImpactView {
 
     @Id
-    @Column(name = "inventory_id")
-    private Long inventoryId;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "inventory_name")
-    private String inventoryName;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "country")
     private String country;
 
-    @Column(name = "infrastructure_type")
-    private String infrastructureType;
-
-    @Column(name = "provider")
-    private String provider;
-
-    @Column(name = "nom_entite")
-    private String nomEntite;
-
-    @Id
     @Column(name = "lifecycle_step")
     private String lifecycleStep;
 
@@ -97,7 +109,6 @@ public class InVirtualEquipmentLowImpactView {
     @Column(name = "sub_domain")
     private String subDomain;
 
-    @Id
     @Column(name = "environment")
     private String environment;
 
