@@ -181,14 +181,21 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                         const unitValueText = unitData
                             ? `\n${this.decimalsPipe.transform(unitData.total)} ${unitData.unit}`
                             : "";
+
+                        const shortUnitValue =
+                            unitValueText.length > 20
+                                ? unitValueText.substring(0, 20) + "…"
+                                : unitValueText;
+
                         return getLabelFormatter(
                             hasError,
                             this.enableDataInconsistency,
-                            value + unitValueText,
+                            value + shortUnitValue,
                         );
                     },
                     rich: Constants.CHART_RICH as any,
                     margin: 15,
+                    hideOverlap: true,
                 },
             },
             radiusAxis: {
@@ -200,7 +207,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 },
             },
             polar: {
-                radius: "65%",
+                radius: "60%",
                 center: ["50%", "50%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({

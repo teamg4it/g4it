@@ -104,8 +104,7 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
                 labelName += ` (${this.decimalsPipe.transform(selectedImpactUnit.unitValue)} ${selectedImpactUnit.unit})`;
             }
             return {
-                // name: labelName,
-                name: nameValue,
+                name: labelName,
                 value: value,
                 tier: item.tier,
                 unitValue: selectedImpactUnit?.unitValue,
@@ -163,9 +162,8 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
                 formatter: (param: any) => {
                     // param may have unit values appended, strip them for legend display
                     // Try to extract the base name (before any parenthesis)
-                    // const nameValue = param.split(" (")[0];
-                    // return nameValue;
-                    return this.existingTranslation(param, "digital-services");
+                    const nameValue = param.split(" (")[0];
+                    return nameValue;
                 },
             },
             series: [
