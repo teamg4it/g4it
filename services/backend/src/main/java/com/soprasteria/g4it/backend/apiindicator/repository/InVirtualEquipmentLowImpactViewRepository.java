@@ -9,7 +9,6 @@
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
 import com.soprasteria.g4it.backend.apiindicator.modeldb.InVirtualEquipmentLowImpactView;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.VirtualEquipmentLowImpactId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,7 +17,7 @@ import java.util.List;
 
 @Repository
 public interface InVirtualEquipmentLowImpactViewRepository
-        extends JpaRepository<InVirtualEquipmentLowImpactView, VirtualEquipmentLowImpactId> {
+        extends JpaRepository<InVirtualEquipmentLowImpactView, Long> {
 
     @Query(
             name = "InVirtualEquipmentLowImpactView.findVirtualEquipmentLowImpactIndicatorsByInventoryId",

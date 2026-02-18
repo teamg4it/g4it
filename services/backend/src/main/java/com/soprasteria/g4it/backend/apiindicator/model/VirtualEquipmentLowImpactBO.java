@@ -21,19 +21,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class VirtualEquipmentLowImpactBO implements Serializable {
 
-    private Long inventoryId;
+    private Long id;
 
-    private String inventoryName;
+    private String name;
 
     private String country;
 
-    private String infrastructureType;
-
-    private String provider;
-
     private String lifecycleStep;
-
-    private String nomEntite;
 
     private String domain;
 
