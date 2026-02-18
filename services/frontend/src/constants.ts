@@ -200,6 +200,7 @@ export abstract class Constants {
         },
         grey: {
             color: Constants.GRAPH_GREY,
+            fontSize: 8,
         },
     };
 

@@ -98,7 +98,13 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             );
             const value = selectedImpact ? selectedImpact.sipValue : 0;
             const nameValue = this.existingTranslation(item.tier, "digital-services");
+            // Append unit value and unit to the label name
+            let labelName = nameValue;
+            if (selectedImpactUnit?.unitValue && selectedImpactUnit?.unit) {
+                labelName += ` (${this.decimalsPipe.transform(selectedImpactUnit.unitValue)} ${selectedImpactUnit.unit})`;
+            }
             return {
+                // name: labelName,
                 name: nameValue,
                 value: value,
                 tier: item.tier,
@@ -155,6 +161,10 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             legend: {
                 orient: "horizontal",
                 formatter: (param: any) => {
+                    // param may have unit values appended, strip them for legend display
+                    // Try to extract the base name (before any parenthesis)
+                    // const nameValue = param.split(" (")[0];
+                    // return nameValue;
                     return this.existingTranslation(param, "digital-services");
                 },
             },
@@ -162,7 +172,7 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
                 {
                     name: "Access From",
                     type: "pie",
-                    radius: "70%",
+                    radius: "60%",
                     data: seriesData,
 
                     emphasis: {
