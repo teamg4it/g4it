@@ -235,6 +235,7 @@
         "reset-settings": "Réinitialiser le paramétrage",
         "save-settings": "Enregistrer les paramètres",
         "configure-criteria": "Configurer la vue pour le service numérique {{digitalServiceName}}",
+        "configure-view": "Configurer la vue",
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
         "visualize-parameters": "Voir les paramètres",
@@ -641,7 +642,10 @@
             "starter-pack": "Kit de départ"
         },
         "choose-criteria": "Choisir les critères pour l'inventaire {{inventoryName}}",
-        "calendar": "Calendrier"
+        "calendar": "Calendrier",
+        "apply-selection": "Appliquer la sélection",
+        "unit-para1": "La valeur de l’impact peut être affichée soit dans l’unité propre aux critères d’impact sélectionnés, soit en habitants équivalents.",
+        "unit-para2": "Cette unité repose sur le principe des limites planétaires : elle correspond à un quota théorique d’impacts attribué de manière égale à chaque habitant de la planète afin de préserver l’équilibre du système Terre. Ce quota est calculé en divisant la quantité maximale d’externalités négatives que la Terre peut absorber telle que définie dans le rapport sur la consommation et l’empreinte du consommateur par le nombre total d’habitants."
     },
     "inventories-footprint": {
         "active-filters": "Filtres activés",
