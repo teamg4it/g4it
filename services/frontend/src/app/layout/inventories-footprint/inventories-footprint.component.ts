@@ -5,11 +5,25 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit, inject } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import {
+    Component,
+    DestroyRef,
+    OnInit,
+    Signal,
+    WritableSignal,
+    computed,
+    inject,
+    signal,
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
-import { finalize, firstValueFrom, forkJoin, map } from "rxjs";
+import { delay, finalize, firstValueFrom, forkJoin, map } from "rxjs";
+import {
+    OrganizationCriteriaRest,
+    WorkspaceCriteriaRest,
+} from "src/app/core/interfaces/administration.interfaces";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import {
     ChartData,
@@ -23,13 +37,19 @@ import {
     PhysicalEquipmentsElecConsumption,
 } from "src/app/core/interfaces/footprint.interface";
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
-import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
+import {
+    Inventory,
+    InventoryCriteriaRest,
+} from "src/app/core/interfaces/inventory.interfaces";
 import { OutVirtualEquipmentRest } from "src/app/core/interfaces/output.interface";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { InventoryUtilService } from "src/app/core/service/business/inventory-util.service";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
@@ -46,13 +66,20 @@ import { Constants } from "src/constants";
 })
 export class InventoriesFootprintComponent implements OnInit {
     protected footprintStore = inject(FootprintStoreService);
-    private readonly global = inject(GlobalStoreService);
+    private readonly globalStore = inject(GlobalStoreService);
     private readonly outVirtualEquipmentService = inject(OutVirtualEquipmentsService);
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
-    private readonly userService = inject(UserService);
+    protected readonly userService = inject(UserService);
     private readonly inventoryUtilService = inject(InventoryUtilService);
     private readonly inventoryService = inject(InventoryService);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
+    private readonly filterService = inject(FilterService);
+    private readonly evaluationService = inject(EvaluationDataService);
+    private readonly destroyRef = inject(DestroyRef);
+    filterSidebarVisible = false;
+    selectedUnit: string = "Raw";
 
     selectedView: string = "";
 
@@ -62,7 +89,10 @@ export class InventoriesFootprintComponent implements OnInit {
 
     selectedLang: string = this.translate.currentLang;
 
-    criterias = [Constants.MUTLI_CRITERIA, ...Object.keys(this.global.criteriaList())];
+    criterias = [
+        Constants.MUTLI_CRITERIA,
+        ...Object.keys(this.globalStore.criteriaList()),
+    ];
 
     criteres: MenuItem[] = [
         {
@@ -72,7 +102,7 @@ export class InventoriesFootprintComponent implements OnInit {
         },
     ];
 
-    allUnmodifiedFootprint: Criterias = {} as Criterias;
+    allUnmodifiedFootprint: WritableSignal<Criterias> = signal({} as Criterias);
     allUnmodifiedFilters: Filter<string> = {};
     allUnmodifiedDatacenters: Datacenter[] = [] as Datacenter[];
     allUnmodifiedEquipments: [
@@ -88,10 +118,45 @@ export class InventoriesFootprintComponent implements OnInit {
     filterFields = Constants.EQUIPMENT_FILTERS;
     multiCriteria = Constants.MUTLI_CRITERIA;
     inventoryId = +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
-    showTabMenu = false;
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     transformedInVirtualEquipments: InVirtualEquipmentRest[] = [];
-    inventory: Inventory = {} as Inventory;
+    inventory: WritableSignal<Inventory> = signal({} as Inventory);
+    selectedCriteria: string = "";
+    currentLang: string = this.translate.currentLang;
+    criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
+    displayPopup = false;
+    selectedCriterias: string[] = [];
+    organization: OrganizationCriteriaRest = { criteria: [] };
+    workspace: WorkspaceCriteriaRest = {
+        organizationId: 0,
+        name: "",
+        status: "",
+        dataRetentionDays: 0,
+        criteriaIs: [],
+        criteriaDs: [],
+    };
+
+    impacts: Signal<any> = computed(() => {
+        const allImpacts = Object.entries(this.allUnmodifiedFootprint()).flatMap(
+            ([criteriaName, criteriaData]) => ({
+                criteria: criteriaName,
+                unit: criteriaData.unit,
+                criteriaTitle: this.translate.instant(`criteria.${criteriaName}.title`),
+                impacts: criteriaData.impacts.filter((impact) => {
+                    return this.filterService.equipmentAllFilterMatch(
+                        this.footprintStore.filters(),
+                        impact as any,
+                    );
+                }),
+            }),
+        );
+        return this.footprintService
+            .filterCriteriaImpact(allImpacts as any)
+            .sort(
+                (a, b) =>
+                    this.criteriakeys.indexOf(a.name) - this.criteriakeys.indexOf(b.name),
+            );
+    });
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         private readonly footprintDataService: FootprintDataService,
@@ -105,18 +170,38 @@ export class InventoriesFootprintComponent implements OnInit {
     }
 
     async getOnInitData() {
+        await this.initInventory();
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
+        this.selectedCriteria = criteria!;
+        this.getOrganizationAndWorkspace();
         const currentWorkspaceName = (
             await firstValueFrom(this.userService.currentWorkspace$)
         ).name;
-        this.global.setLoading(true);
+        this.globalStore.setLoading(true);
         this.digitalBusinessService.initCountryMap();
         this.getDataApis(currentWorkspaceName, criteria);
     }
 
     async initInventory() {
         let result = await this.inventoryService.getInventories(this.inventoryId);
-        if (result.length > 0) this.inventory = result[0];
+        if (result.length > 0) this.inventory.set(result[0]);
+    }
+    getOrganizationAndWorkspace() {
+        this.userService.currentOrganization$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((organization: Organization) => {
+                this.organization.criteria = organization.criteria!;
+            });
+        this.userService.currentWorkspace$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((workspace: Workspace) => {
+                this.workspace.organizationId = workspace.organizationId!;
+                this.workspace.name = workspace.name;
+                this.workspace.status = workspace.status;
+                this.workspace.dataRetentionDays = workspace.dataRetentionDays!;
+                this.workspace.criteriaIs = workspace.criteriaIs!;
+                this.workspace.criteriaDs = workspace.criteriaDs!;
+            });
     }
 
     getDataApis(currentWorkspaceName: string, criteria: string | null) {
@@ -144,38 +229,36 @@ export class InventoriesFootprintComponent implements OnInit {
                 ),
             this.outVirtualEquipmentService.getByInventory(this.inventoryId),
             this.inVirtualEquipmentsService.getByInventory(this.inventoryId),
-        ])
-            .pipe(finalize(() => (this.showTabMenu = true)))
-            .subscribe((results) => {
-                const [
-                    footprint,
-                    datacenters,
-                    physicalEquipments,
-                    outVirtualEquipments,
-                    inVirtualEquipments,
-                ] = results;
+        ]).subscribe((results) => {
+            const [
+                footprint,
+                datacenters,
+                physicalEquipments,
+                outVirtualEquipments,
+                inVirtualEquipments,
+            ] = results;
 
-                this.processFootprintData(
-                    footprint,
-                    inVirtualEquipments,
-                    outVirtualEquipments,
-                );
+            this.processFootprintData(
+                footprint,
+                inVirtualEquipments,
+                outVirtualEquipments,
+            );
 
-                this.initializeCriteriaMenu(footprint, criteria!);
+            this.initializeCriteriaMenu(footprint, criteria!);
 
-                this.initializeFootprintData(footprint, datacenters, physicalEquipments);
+            this.initializeFootprintData(footprint, datacenters, physicalEquipments);
 
-                // React on criteria url param change
-                this.activatedRoute.paramMap.subscribe((params) => {
-                    const criteria = params.get("criteria")!;
-                    this.footprintStore.setCriteria(criteria);
-
-                    if (criteria !== Constants.MUTLI_CRITERIA) {
-                        this.allUnmodifiedCriteriaFootprint =
-                            this.allUnmodifiedFootprint[criteria];
-                    }
-                });
+            // React on criteria url param change
+            this.activatedRoute.paramMap.subscribe((params) => {
+                const criteria = params.get("criteria")!;
+                this.footprintStore.setCriteria(criteria);
+                this.selectedCriteria = criteria;
+                if (criteria !== Constants.MUTLI_CRITERIA) {
+                    this.allUnmodifiedCriteriaFootprint =
+                        this.allUnmodifiedFootprint()[criteria];
+                }
             });
+        });
     }
     processFootprintData(
         footprint: Criterias,
@@ -211,13 +294,13 @@ export class InventoriesFootprintComponent implements OnInit {
             PhysicalEquipmentsElecConsumption[],
         ],
     ) {
-        this.allUnmodifiedFootprint = structuredClone(footprint);
+        this.allUnmodifiedFootprint.set(structuredClone(footprint));
         this.allUnmodifiedDatacenters = datacenters;
         this.allUnmodifiedEquipments = physicalEquipments;
         this.allUnmodifiedFilters = {};
 
         const uniqueFilterSet = this.footprintService.getUniqueValues(
-            this.allUnmodifiedFootprint,
+            this.allUnmodifiedFootprint(),
             Constants.EQUIPMENT_FILTERS,
             true,
         );
@@ -234,13 +317,13 @@ export class InventoriesFootprintComponent implements OnInit {
             ];
         }
 
-        this.global.setLoading(false);
+        this.globalStore.setLoading(false);
     }
 
     initializeCriteriaMenu(footprint: Criterias, criteria: string) {
         const footprintCriteriaKeys = Object.keys(footprint);
-        const sortedCriteriaKeys = Object.keys(this.global.criteriaList()).filter((key) =>
-            footprintCriteriaKeys.includes(key),
+        const sortedCriteriaKeys = Object.keys(this.globalStore.criteriaList()).filter(
+            (key) => footprintCriteriaKeys.includes(key),
         );
         this.criteres = sortedCriteriaKeys.map((key: string) => {
             return {
@@ -317,5 +400,74 @@ export class InventoriesFootprintComponent implements OnInit {
                 });
             }
         }
+    }
+
+    displayPopupFct() {
+        const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
+        this.selectedCriterias =
+            this.inventory().criteria! ??
+            this.workspace?.criteriaIs ??
+            this.organization?.criteria ??
+            defaultCriteria;
+        this.displayPopup = true;
+    }
+
+    saveInventory(inventoryCriteria: InventoryCriteriaRest) {
+        this.displayPopup = false;
+        this.globalStore.setLoading(true);
+
+        this.inventoryService
+            .updateInventoryCriteria(inventoryCriteria)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((res: Inventory) => {
+                this.inventory().criteria = res.criteria;
+
+                this.evaluationService
+                    .launchEvaluating(this.inventory().id)
+                    .pipe(
+                        takeUntilDestroyed(this.destroyRef),
+                        delay(500),
+                        finalize(() => this.globalStore.setLoading(false)),
+                    )
+                    .subscribe((res: number) => {
+                        this.getOnInitData();
+                    });
+            });
+    }
+
+    handleFilters(event: { enableConsistency: boolean; unitType: string }) {
+        this.selectedUnit = event.unitType;
+        if (event.enableConsistency !== this.inventory().enableDataInconsistency) {
+            // update
+            this.globalStore.setLoading(true);
+            const inv: InventoryCriteriaRest = {
+                id: this.inventory().id,
+                enableDataInconsistency: event.enableConsistency,
+                name: this.inventory().name,
+                criteria: this.inventory().criteria!,
+                note: this.inventory().note!,
+            };
+            this.inventoryService
+                .updateInventoryCriteria(inv)
+                .pipe(
+                    takeUntilDestroyed(this.destroyRef),
+                    finalize(() => this.globalStore.setLoading(false)),
+                )
+                .subscribe((res: Inventory) => {
+                    this.inventory.set(res);
+                });
+        }
+    }
+
+    handleChartChange(criteria: any) {
+        if (this.activatedRoute.snapshot.paramMap.get("criteria") === criteria) {
+            this.router.navigate(["../", "multi-criteria"], {
+                relativeTo: this.route,
+            });
+            return;
+        }
+        this.router.navigate(["../", criteria], {
+            relativeTo: this.route,
+        });
     }
 }

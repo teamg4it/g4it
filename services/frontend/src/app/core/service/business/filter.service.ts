@@ -64,7 +64,17 @@ export class FilterService {
                 : Constants.APPLICATION_FILTERS
         ).every((filter) => {
             const field = filter.field;
-            return selectedFilters[field]?.includes(impact[field as any]);
+            let value: any = selectedFilters[field];
+            if (!value) value = Constants.EMPTY;
+            return value?.includes(impact[field as any]);
+        });
+    }
+
+    equipmentAllFilterMatch(selectedFilters: Filter, impact: any) {
+        return Constants.EQUIPMENT_FILTERS.every((field) => {
+            let value: any = selectedFilters[field];
+            if (!value) value = Constants.EMPTY;
+            return value?.includes(impact[field as any]);
         });
     }
 }

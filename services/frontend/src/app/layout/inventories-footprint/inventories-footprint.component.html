@@ -1,31 +1,144 @@
 <app-inventories-header-footprint
-    [inventory]="inventory"
+    [inventory]="inventory()"
     [inventoryId]="inventoryId"
     [indicatorType]="'inventories.details.equipment' | translate | titlecase"
 ></app-inventories-header-footprint>
 
 <dataviz-filter [allFilters]="allUnmodifiedFilters"></dataviz-filter>
-@if (showTabMenu) {
-    <p-tabMenu [model]="criteres!" [scrollable]="true" class="footprint-tabmenu">
-    </p-tabMenu>
-}
+
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
-    @if (footprintStore.criteria() === multiCriteria) {
-        <app-inventories-multicriteria-footprint
-            [footprint]="allUnmodifiedFootprint"
-            [filterFields]="filterFields"
-            [datacenters]="allUnmodifiedDatacenters"
-            [equipments]="allUnmodifiedEquipments"
-            [inVirtualEquipments]="transformedInVirtualEquipments"
-        ></app-inventories-multicriteria-footprint>
-    } @else {
-        <app-inventories-critere-footprint
-            [footprint]="allUnmodifiedFootprint"
-            [criteriaFootprint]="allUnmodifiedCriteriaFootprint"
-            [filterFields]="filterFields"
-            [datacenters]="allUnmodifiedDatacenters"
-            [equipments]="allUnmodifiedEquipments"
-            [inVirtualEquipments]="transformedInVirtualEquipments"
-        ></app-inventories-critere-footprint>
-    }
+    <div class="bg-white">
+        <div class="flex justify-content-between align-items-center">
+            <h3
+                class="pt-3 pl-4 pb-2"
+                attr.aria-label="{{
+                    'inventories-footprint.application.graph-title-global' | translate
+                }}"
+            >
+                @if (footprintStore.criteria() === multiCriteria) {
+                    {{ "inventories-footprint.global.global-vision" | translate }} <br />
+                    ({{ "common.peopleeq" | translate }})
+                } @else {
+                    {{ "inventories-footprint.critere.repartition" | translate }}
+                }
+            </h3>
+
+            @if (userService.isAllowedInventoryWrite$ | async) {
+                <p-button
+                    (onClick)="filterSidebarVisible = true"
+                    styleClass="p-button-secondary-blue uppercase"
+                    id="filter"
+                    icon="pi pi-filter"
+                    [label]="'digital-services.configure-view' | translate"
+                    [ariaLabel]="'digital-services.configure-view' | translate"
+                ></p-button>
+            }
+        </div>
+        <div class="mb-3 footprint-dashboard-container-app-criteria grid">
+            <div class="col-12 lg:col-4 bg-white">
+                <div
+                    class="bg-gray-color impact-buttons-div mx-auto mb-4 border-round-lg"
+                >
+                    <h3
+                        class="border-bottom-2 border-primary text-base font-medium p-2 pt-3 text-center mt-2 mb-1 uppercase"
+                    >
+                        {{ "digital-services.impacts" | translate }}
+                    </h3>
+
+                    <div class="flex flex-column w-full border-round">
+                        @for (impact of impacts(); track $index) {
+                            <app-impact-button
+                                [impact]="impact.name"
+                                [impactText]="impact.title"
+                                [impactUnite]="impact.unite"
+                                [value]="
+                                    selectedUnit === 'Peopleeq'
+                                        ? impact.peopleeq
+                                        : impact.raw
+                                "
+                                [selectedCriteria]="selectedCriteria"
+                                [selectedUnit]="selectedUnit"
+                                (selectedCriteriaChange)="handleChartChange($event)"
+                            ></app-impact-button>
+                        }
+                        <!-- [disabled]="onlyOneCriteria"
+                             -->
+
+                        @if (userService.isAllowedInventoryWrite$ | async) {
+                            <div class="mt-4 mb-2 text-center">
+                                <p-button
+                                    (onClick)="displayPopupFct()"
+                                    styleClass="cancel-creation-button uppercase px-3 py-2 mb-3 sm:mb-0"
+                                    [label]="'digital-services.edit-criteria' | translate"
+                                    icon="pi pi-plus-circle"
+                                    id="criteria-button"
+                                    [ariaLabel]="
+                                        'digital-services.choose-criteria'
+                                            | translate
+                                                : {
+                                                      digitalServiceName:
+                                                          inventory().name,
+                                                  }
+                                    "
+                                />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container col-12 lg:col-8 bg-gray-color mt-3">
+                @if (footprintStore.criteria() === multiCriteria) {
+                    <app-inventories-multicriteria-footprint
+                        [footprint]="allUnmodifiedFootprint()"
+                        [filterFields]="filterFields"
+                        [datacenters]="allUnmodifiedDatacenters"
+                        [equipments]="allUnmodifiedEquipments"
+                        [inVirtualEquipments]="transformedInVirtualEquipments"
+                        [inventory]="inventory()"
+                    ></app-inventories-multicriteria-footprint>
+                } @else {
+                    <app-inventories-critere-footprint
+                        [footprint]="allUnmodifiedFootprint()"
+                        [criteriaFootprint]="allUnmodifiedCriteriaFootprint"
+                        [filterFields]="filterFields"
+                        [datacenters]="allUnmodifiedDatacenters"
+                        [equipments]="allUnmodifiedEquipments"
+                        [inVirtualEquipments]="transformedInVirtualEquipments"
+                        [inventory]="inventory()"
+                    ></app-inventories-critere-footprint>
+                }
+            </div>
+        </div>
+    </div>
 </p-scrollPanel>
+
+@if (displayPopup) {
+    <app-criteria-popup
+        [displayPopup]="displayPopup"
+        [type]="'inventory'"
+        [organization]="organization"
+        [workspace]="workspace"
+        [inventory]="inventory()"
+        [selectedCriteriaIS]="selectedCriterias"
+        (outSaveInventory)="saveInventory($event)"
+        (outClose)="displayPopup = false"
+    ></app-criteria-popup>
+}
+
+@if (filterSidebarVisible) {
+    <p-sidebar
+        [(visible)]="filterSidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-5"
+        (onHide)="filterSidebarVisible = false"
+    >
+        <ng-template pTemplate="headless">
+            <app-configure-view-filters
+                (filtersApplied)="handleFilters($event)"
+                (sidebarVisibleChange)="filterSidebarVisible = $event"
+                [enableDataInconsistency]="inventory().enableDataInconsistency"
+                [selectedUnit]="selectedUnit"
+            ></app-configure-view-filters>
+        </ng-template>
+    </p-sidebar>
+}
