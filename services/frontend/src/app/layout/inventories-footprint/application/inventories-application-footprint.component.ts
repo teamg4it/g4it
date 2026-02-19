@@ -114,10 +114,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             }),
         );
         return this.footprintService
-            .filterCriteriaImpact(
-                filterImpacts,
-                this.footprintStore.applicationSelectedFilters(),
-            )
+            .filterCriteriaImpact(filterImpacts)
             .sort(
                 (a, b) =>
                     this.criteriakeys.indexOf(a.name) - this.criteriakeys.indexOf(b.name),
@@ -530,7 +527,6 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     }
 
     handleFilters(event: { enableConsistency: boolean; unitType: string }) {
-        console.log(event);
         this.selectedUnit = event.unitType;
         if (event.enableConsistency !== this.inventory().enableDataInconsistency) {
             // update

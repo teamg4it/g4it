@@ -131,7 +131,7 @@ export class FootprintService {
         }
     }
 
-    filterCriteriaImpact(footprint: ApplicationFootprint[], filters: Filter) {
+    filterCriteriaImpact(footprint: ApplicationFootprint[]) {
         return footprint.map((impact) => {
             const data = impact.impacts.reduce(
                 (sum, current) => this.addImpact(sum, current),
