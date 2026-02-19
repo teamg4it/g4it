@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, Input, signal, Signal } from "@angular/core";
+import { Component, computed, inject, input, Input, signal, Signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
@@ -22,10 +22,15 @@ import {
     Impact,
     Stat,
 } from "src/app/core/interfaces/footprint.interface";
+import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
+import {
+    getColorFormatter,
+    getLabelFormatter,
+} from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -39,6 +44,7 @@ import { InventoriesApplicationFootprintComponent } from "../inventories-applica
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
     @Input() footprint: ApplicationFootprint[] = [];
     @Input() filterFields: ConstantApplicationFilter[] = [];
+    inventory = input<Inventory>();
     showInconsitencyGraph = false;
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
@@ -173,13 +179,26 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             },
             angleAxis: {
                 type: "category",
-                data: footprintCalculated[0].impacts.map((impact) => impact.criteria),
+                data: footprintCalculated[0].impacts.map((impact) => {
+                    return {
+                        value: impact.criteria,
+                        textStyle: {
+                            color: getColorFormatter(
+                                !!criteriaCountMap[impact.criteria].status.error,
+                                this.inventory()?.enableDataInconsistency!,
+                            ),
+                        },
+                    };
+                }),
                 axisLabel: {
                     formatter: (value: any) => {
                         const title = this.translate.instant(`criteria.${value}`).title;
-                        return criteriaCountMap[value].status.error <= 0
-                            ? `{grey|${title}}`
-                            : `{redBold| \u24d8} {red|${title}}`;
+                        const hasError = !!criteriaCountMap[value].status.error;
+                        return getLabelFormatter(
+                            hasError,
+                            this.inventory()?.enableDataInconsistency!,
+                            title,
+                        );
                     },
                     rich: Constants.CHART_RICH as any,
                     margin: 15,

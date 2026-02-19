@@ -1,5 +1,5 @@
 <div class="flex flex-wrap align-items-center">
-    @if (criteriaCalculated().hasError) {
+    @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
         <p-button
             (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
             [rounded]="true"
@@ -11,21 +11,29 @@
         />
     }
     @if (!showInconsitencyGraph) {
-        <p-card class="rmv-padding-card">
-            <div class="round-button-container">
-                <button
-                    *ngFor="let dimension of dimensions"
-                    [class.round-button-selected]="dimension === selectedDimension()"
-                    [class.round-button]="dimension !== selectedDimension()"
-                    (click)="selectedDimension.set(dimension)"
-                >
+        <p-dropdown
+            [options]="dimensions"
+            [(ngModel)]="selectedDimension"
+            [placeholder]="'inventories-footprint.select-dimension' | translate"
+            styleClass="ml-auto mt-3 mb-2"
+        >
+            <ng-template pTemplate="selectedItem">
+                <div *ngIf="selectedDimension()">
+                    {{
+                        "inventories-footprint.application-round-button." +
+                            selectedDimension() | translate
+                    }}
+                </div>
+            </ng-template>
+            <ng-template let-dimension pTemplate="item">
+                <div>
                     {{
                         "inventories-footprint.application-round-button." + dimension
                             | translate
                     }}
-                </button>
-            </div>
-        </p-card>
+                </div>
+            </ng-template>
+        </p-dropdown>
     }
 </div>
 @if (showInconsitencyGraph) {

@@ -1,5 +1,5 @@
 <app-inventories-header-footprint
-    [inventory]="inventory"
+    [inventory]="inventory()"
     [inventoryId]="inventoryId"
     [indicatorType]="'inventories.details.application' | translate | titlecase"
 ></app-inventories-header-footprint>
@@ -8,22 +8,138 @@
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
     <div class="bg-white">
         <div class="flex justify-content-between align-items-center">
-            <h2
-                class="pt-3 pl-4 pb-2"
-                attr.aria-label="{{
-                    'inventories-footprint.application.graph-title-global' | translate
-                }}"
-            >
-                {{
-                    "inventories-footprint.global.global-vision-by"
-                        | translate
-                            : {
-                                  variable:
-                                      "inventories-footprint.global.criteria" | translate,
-                              }
-                }}
-                ({{ "common.peopleeq-min" | translate }})
-            </h2>
+            @if (footprintStore.applicationCriteria() === multiCriteria) {
+                <h3
+                    class="pt-3 pl-4 pb-2"
+                    attr.aria-label="{{
+                        'inventories-footprint.application.graph-title-global' | translate
+                    }}"
+                >
+                    {{
+                        "inventories-footprint.global.global-vision-by"
+                            | translate
+                                : {
+                                      variable:
+                                          "inventories-footprint.global.criteria"
+                                          | translate,
+                                  }
+                    }}
+                    ({{ "common.peopleeq-min" | translate }})
+                </h3>
+            } @else {
+                @if (footprintStore.appGraphType() === "global") {
+                    <h3
+                        class="pt-3 pl-4 pb-2"
+                        attr.aria-label="{{ selectedCriteria }}{{
+                            'inventories-footprint.application.critere.graph.title'
+                                | translate
+                        }}"
+                        class="inline"
+                    >
+                        {{
+                            "inventories-footprint.global.global-vision-by"
+                                | translate
+                                    : {
+                                          variable:
+                                              "inventories-footprint.global.type_" +
+                                                  footprintStore.appGraphType()
+                                              | translate,
+                                      }
+                        }}
+                        ({{ "common.peopleeq-min" | translate }})
+                    </h3>
+                } @else {
+                    <div class="inline">
+                        @if (footprintStore.appGraphType() === "domain") {
+                            <h3
+                                class="pt-3 pl-4 pb-2"
+                                attr.aria-label="{{
+                                    'inventories-footprint.application.domain-view'
+                                        | translate
+                                }}{{ selectedCriteria }}{{
+                                    'inventories-footprint.application.critere.graph.title'
+                                        | translate
+                                }}"
+                            >
+                                {{
+                                    !showBackButton()
+                                        ? ("inventories-footprint.global.global-vision-by"
+                                          | translate
+                                              : {
+                                                    variable:
+                                                        "inventories-footprint.global.type_" +
+                                                            footprintStore.appGraphType()
+                                                        | translate,
+                                                })
+                                        : ("inventories-footprint.global.impact-domain-by-subdomain"
+                                          | translate
+                                              : {
+                                                    domain: footprintStore.appDomain(),
+                                                })
+                                }}
+                                ({{ "common.peopleeq-min" | translate }})
+                            </h3>
+                        }
+                        @if (footprintStore.appGraphType() === "subdomain") {
+                            <h3
+                                class="pt-3 pl-4 pb-2"
+                                attr.aria-label="{{
+                                    'inventories-footprint.application.subdomain-view'
+                                        | translate
+                                }}{{ selectedCriteria }}{{
+                                    'inventories-footprint.application.critere.graph.title'
+                                        | translate
+                                }}"
+                            >
+                                {{
+                                    !showBackButton()
+                                        ? ("inventories-footprint.global.global-vision-by"
+                                          | translate
+                                              : {
+                                                    variable:
+                                                        "inventories-footprint.global.type_" +
+                                                            footprintStore.appGraphType()
+                                                        | translate,
+                                                })
+                                        : showDomainByApplication()
+                                          ? ("inventories-footprint.global.impact-domain-by-application"
+                                            | translate
+                                                : { domain: footprintStore.appDomain() })
+                                          : ("inventories-footprint.global.impact-subdomain-by-application"
+                                            | translate
+                                                : {
+                                                      subdomain:
+                                                          footprintStore.appSubDomain(),
+                                                  })
+                                }}
+                                ({{ "common.peopleeq-min" | translate }})
+                            </h3>
+                        }
+                        @if (footprintStore.appGraphType() === "application") {
+                            <h3
+                                class="pt-3 pl-4 pb-2"
+                                attr.aria-label="{{
+                                    'inventories-footprint.application.application-view'
+                                        | translate
+                                }}{{ selectedCriteria }}{{
+                                    'inventories-footprint.application.critere.graph.title'
+                                        | translate
+                                }}"
+                            >
+                                {{
+                                    "inventories-footprint.global.impact-application-by-equipment"
+                                        | translate
+                                            : {
+                                                  application:
+                                                      footprintStore.appApplication(),
+                                              }
+                                }}
+                                ({{ "common.peopleeq-min" | translate }})
+                            </h3>
+                        }
+                    </div>
+                }
+            }
             @if (userService.isAllowedInventoryWrite$ | async) {
                 <p-button
                     (onClick)="filterSidebarVisible = true"
@@ -45,33 +161,7 @@
                     >
                         {{ "digital-services.impacts" | translate }}
                     </h3>
-                    <p-card styleClass="mb-3">
-                        <div class="text-center">
-                            <button
-                                class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                                [ngClass]="
-                                    selectedUnit === 'Raw'
-                                        ? 'bg-secondary'
-                                        : 'bg-transparent'
-                                "
-                                (click)="selectedUnit = 'Raw'"
-                            >
-                                {{ "digital-services.raw" | translate }}
-                            </button>
 
-                            <button
-                                class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                                [ngClass]="
-                                    selectedUnit === 'Peopleeq'
-                                        ? 'bg-secondary'
-                                        : 'bg-transparent'
-                                "
-                                (click)="selectedUnit = 'Peopleeq'"
-                            >
-                                {{ "common.peopleeq" | translate }}
-                            </button>
-                        </div>
-                    </p-card>
                     <div class="flex flex-column w-full border-round">
                         @for (impact of impacts(); track $index) {
                             <app-impact-button
@@ -103,7 +193,8 @@
                                         'digital-services.choose-criteria'
                                             | translate
                                                 : {
-                                                      digitalServiceName: inventory.name,
+                                                      digitalServiceName:
+                                                          inventory().name,
                                                   }
                                     "
                                 />
@@ -117,6 +208,7 @@
                     <app-application-multicriteria-footprint
                         [filterFields]="filterFields"
                         [footprint]="footprint()"
+                        [inventory]="inventory()"
                     ></app-application-multicriteria-footprint>
                 } @else {
                     <app-application-criteria-footprint
@@ -124,6 +216,8 @@
                         [footprint]="criteriaFootprint"
                         [selectedInventoryId]="inventoryId"
                         [allUnmodifiedFilters]="allUnmodifiedFilters()"
+                        [inventory]="inventory()"
+                        [showDomainByApplication]="showDomainByApplication()"
                     ></app-application-criteria-footprint>
                 }
             </div>
@@ -137,7 +231,7 @@
         [type]="'inventory'"
         [organization]="organization"
         [workspace]="workspace"
-        [inventory]="inventory"
+        [inventory]="inventory()"
         [selectedCriteriaIS]="selectedCriterias"
         (outSaveInventory)="saveInventory($event)"
         (outClose)="displayPopup = false"
@@ -153,7 +247,10 @@
     >
         <ng-template pTemplate="headless">
             <app-configure-view-filters
+                (filtersApplied)="handleFilters($event)"
                 (sidebarVisibleChange)="filterSidebarVisible = $event"
+                [enableDataInconsistency]="inventory().enableDataInconsistency"
+                [selectedUnit]="selectedUnit"
             ></app-configure-view-filters>
         </ng-template>
     </p-sidebar>

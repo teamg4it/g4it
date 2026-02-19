@@ -13,6 +13,7 @@ import {
     OnInit,
     signal,
     Signal,
+    WritableSignal,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -61,7 +62,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
     private readonly filterService = inject(FilterService);
-    inventory: Inventory = {} as Inventory;
+    inventory: WritableSignal<Inventory> = signal({} as Inventory);
 
     selectedCriteria: string = "";
     criteres: MenuItem[] = [];
@@ -122,6 +123,38 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
                     this.criteriakeys.indexOf(a.name) - this.criteriakeys.indexOf(b.name),
             );
     });
+
+    showDomainByApplication = computed(() => {
+        if ((this.allUnmodifiedFilters() as any)["domain"]?.length > 2) {
+            const domainSelected: any = this.footprintStore
+                .applicationSelectedFilters()
+                [
+                    "domain"
+                ].find((d) => (d as TransformedDomain).label === this.footprintStore.appDomain());
+            if (domainSelected?.children.length <= 1) {
+                return true;
+            }
+        }
+        return false;
+    });
+
+    showBackButton = computed(() => {
+        if ((this.allUnmodifiedFilters() as any)["domain"]?.length <= 2) {
+            if (
+                ((this.allUnmodifiedFilters() as any)["domain"][1] as TransformedDomain)
+                    ?.children?.length <= 1 &&
+                this.footprintStore.appGraphType() === "subdomain"
+            ) {
+                return false;
+            }
+
+            if (this.footprintStore.appGraphType() === "domain") {
+                return false;
+            }
+        }
+        return true;
+    });
+
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         public readonly footprintService: FootprintService,
@@ -237,7 +270,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
 
     async initInventory() {
         let result = await this.inventoryService.getInventories(this.inventoryId);
-        if (result.length > 0) this.inventory = result[0];
+        if (result.length > 0) this.inventory.set(result[0]);
     }
 
     private mapCriteres(footprint: ApplicationFootprint[]): void {
@@ -466,7 +499,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
         this.selectedCriterias =
-            this.inventory.criteria! ??
+            this.inventory().criteria! ??
             this.workspace?.criteriaIs ??
             this.organization?.criteria ??
             defaultCriteria;
@@ -481,10 +514,10 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             .updateInventoryCriteria(inventoryCriteria)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res: Inventory) => {
-                this.inventory.criteria = res.criteria;
+                this.inventory().criteria = res.criteria;
 
                 this.evaluationService
-                    .launchEvaluating(this.inventory.id)
+                    .launchEvaluating(this.inventory().id)
                     .pipe(
                         takeUntilDestroyed(this.destroyRef),
                         delay(500),
@@ -496,5 +529,28 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             });
     }
 
-    customFilter() {}
+    handleFilters(event: { enableConsistency: boolean; unitType: string }) {
+        console.log(event);
+        this.selectedUnit = event.unitType;
+        if (event.enableConsistency !== this.inventory().enableDataInconsistency) {
+            // update
+            this.globalStore.setLoading(true);
+            const inv: InventoryCriteriaRest = {
+                id: this.inventory().id,
+                enableDataInconsistency: event.enableConsistency,
+                name: this.inventory().name,
+                criteria: this.inventory().criteria!,
+                note: this.inventory().note!,
+            };
+            this.inventoryService
+                .updateInventoryCriteria(inv)
+                .pipe(
+                    takeUntilDestroyed(this.destroyRef),
+                    finalize(() => this.globalStore.setLoading(false)),
+                )
+                .subscribe((res: Inventory) => {
+                    this.inventory.set(res);
+                });
+        }
+    }
 }
