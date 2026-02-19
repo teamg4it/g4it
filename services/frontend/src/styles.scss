@@ -919,12 +919,14 @@ div.label-input-div-medium {
     color: var(--tertiary-color);
 }
 
-.p-accordion .p-accordion-tab .p-accordion-toggle-icon {
-    margin-left: inherit !important;
-    transition: transform 0.2s;
-    order: 0;
+app-inventories,
+app-inventory-item {
+    .p-accordion .p-accordion-tab .p-accordion-toggle-icon {
+        margin-left: inherit !important;
+        transition: transform 0.2s;
+        order: 0;
+    }
 }
-
 .p-accordion p-accordiontab:first-child .p-accordion-header .p-accordion-header-link {
     height: 50px;
 }

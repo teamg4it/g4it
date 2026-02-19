@@ -293,6 +293,10 @@ export class FootprintService {
                 return (v as any).environment;
             case "equipmentType":
                 return (v as any).equipmentType;
+            case "domain":
+                return (v as any).domain;
+            case "subDomain":
+                return (v as any).subDomain;
             default:
                 return null;
         }

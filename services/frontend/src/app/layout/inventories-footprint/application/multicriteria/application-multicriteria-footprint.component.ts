@@ -74,6 +74,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         const filFields = this.filterFields
             .filter((fil) => !fil.children)
             .map((fil) => fil.field);
+
         const { footprintCalculated, criteriaCountMap } = this.footprintService.calculate(
             criteriaFootprint,
             this.footprintStore.applicationSelectedFilters(),

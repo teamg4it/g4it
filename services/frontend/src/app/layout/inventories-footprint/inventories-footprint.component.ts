@@ -23,10 +23,12 @@ import {
     PhysicalEquipmentsElecConsumption,
 } from "src/app/core/interfaces/footprint.interface";
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
+import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { OutVirtualEquipmentRest } from "src/app/core/interfaces/output.interface";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { InventoryUtilService } from "src/app/core/service/business/inventory-util.service";
+import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
@@ -50,6 +52,7 @@ export class InventoriesFootprintComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
     private readonly userService = inject(UserService);
     private readonly inventoryUtilService = inject(InventoryUtilService);
+    private readonly inventoryService = inject(InventoryService);
 
     selectedView: string = "";
 
@@ -88,6 +91,7 @@ export class InventoriesFootprintComponent implements OnInit {
     showTabMenu = false;
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     transformedInVirtualEquipments: InVirtualEquipmentRest[] = [];
+    inventory: Inventory = {} as Inventory;
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         private readonly footprintDataService: FootprintDataService,
@@ -108,6 +112,11 @@ export class InventoriesFootprintComponent implements OnInit {
         this.global.setLoading(true);
         this.digitalBusinessService.initCountryMap();
         this.getDataApis(currentWorkspaceName, criteria);
+    }
+
+    async initInventory() {
+        let result = await this.inventoryService.getInventories(this.inventoryId);
+        if (result.length > 0) this.inventory = result[0];
     }
 
     getDataApis(currentWorkspaceName: string, criteria: string | null) {
