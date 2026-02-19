@@ -19,6 +19,7 @@ export interface Inventory {
     physicalEquipmentCount: number;
     virtualEquipmentCount: number;
     applicationCount: number;
+    enableDataInconsistency: boolean;
     date?: Date;
     note?: Note;
     criteria?: string[];
@@ -74,4 +75,5 @@ export interface InventoryCriteriaRest {
     name: string;
     criteria: string[];
     note: Note;
+    enableDataInconsistency: boolean;
 }

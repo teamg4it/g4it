@@ -16,61 +16,69 @@
         <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 150px)' }">
             <p-accordion [multiple]="true" [activeIndex]="[0, 1]">
                 <!-- Enable Data Consistency -->
-                <p-accordionTab
-                    [header]="'digital-services.set-view' | translate"
-                    headerStyleClass="mt-3 ml-2 h-3rem bg-transparent font-bold"
-                    contentStyleClass="bg-transparent"
-                >
-                    <p class="text-base">
-                        {{ "digital-services.data-consistency-description" | translate }}
-                    </p>
-
-                    <form class="flex items-center gap-1 mt-3" [formGroup]="formGroup">
-                        <p-checkbox
-                            formControlName="dataConsistencyCheckbox"
-                            [binary]="true"
-                            inputId="ny"
-                            [ariaLabel]="
-                                'digital-services.data-consistency-checkbox-text'
+                <form [formGroup]="formGroup">
+                    <p-accordionTab
+                        [header]="'digital-services.set-view' | translate"
+                        headerStyleClass="mt-3 ml-2 h-3rem bg-transparent font-bold"
+                        contentStyleClass="bg-transparent"
+                    >
+                        <p class="text-base">
+                            {{
+                                "digital-services.data-consistency-description"
                                     | translate
-                            "
-                        ></p-checkbox>
-                        <label for="ny" class="ml-2">{{
-                            "digital-services.data-consistency-checkbox-text" | translate
-                        }}</label>
-                    </form>
-                </p-accordionTab>
+                            }}
+                        </p>
 
-                <!-- Units Management -->
-                <p-accordionTab
-                    header="Units management"
-                    tabStyleClass="mt-4 bg-transparent"
-                    headerStyleClass=" ml-2 h-3rem bg-transparent font-bold"
-                    contentStyleClass="bg-transparent"
-                >
-                    <p class="text-base">
-                        {{ "inventories.unit-para1" | translate }}
-                    </p>
-                    <p class="text-base">
-                        {{ "inventories.unit-para2" | translate }}
-                    </p>
+                        <div class="flex items-center gap-1 mt-3">
+                            <p-checkbox
+                                formControlName="dataConsistencyCheckbox"
+                                [binary]="true"
+                                inputId="ny"
+                                [ariaLabel]="
+                                    'digital-services.data-consistency-checkbox-text'
+                                        | translate
+                                "
+                            ></p-checkbox>
+                            <label for="ny" class="ml-2">{{
+                                "digital-services.data-consistency-checkbox-text"
+                                    | translate
+                            }}</label>
+                        </div>
+                    </p-accordionTab>
 
-                    <div class="mt-4 radio-group flex flex-column gap-2">
-                        <p-radioButton
-                            name="unit"
-                            value="people"
-                            [(ngModel)]="unitType"
-                            label="People equivalents"
-                        ></p-radioButton>
+                    <!-- Units Management -->
+                    <p-accordionTab
+                        header="Units management"
+                        tabStyleClass="mt-4 bg-transparent"
+                        headerStyleClass=" ml-2 h-3rem bg-transparent font-bold"
+                        contentStyleClass="bg-transparent"
+                    >
+                        <p class="text-base">
+                            {{ "inventories.unit-para1" | translate }}
+                        </p>
+                        <p class="text-base">
+                            {{ "inventories.unit-para2" | translate }}
+                        </p>
 
-                        <p-radioButton
-                            name="unit"
-                            value="raw"
-                            [(ngModel)]="unitType"
-                            label="Raw Value (example: kg CO₂ eq.)"
-                        ></p-radioButton>
-                    </div>
-                </p-accordionTab>
+                        <div class="mt-4 radio-group flex flex-column gap-2">
+                            <p-radioButton
+                                styleClass="m-1"
+                                name="unitType"
+                                value="Peopleeq"
+                                formControlName="unitType"
+                                label="People equivalents"
+                            ></p-radioButton>
+
+                            <p-radioButton
+                                styleClass="m-1"
+                                name="unitType"
+                                value="Raw"
+                                formControlName="unitType"
+                                label="Raw Value (example: kg CO₂ eq.)"
+                            ></p-radioButton>
+                        </div>
+                    </p-accordionTab>
+                </form>
             </p-accordion>
         </p-scrollPanel>
 
