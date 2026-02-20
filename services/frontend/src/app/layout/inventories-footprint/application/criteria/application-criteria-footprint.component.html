@@ -1,4 +1,11 @@
-<div class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3">
+<div
+    class="ml-auto block align-items-center lg:flex flex-row p-3 pb-0"
+    [ngClass]="
+        showDataConsistencyBtn && inventory()?.enableDataInconsistency
+            ? 'justify-content-end'
+            : 'justify-content-start'
+    "
+>
     @if (footprintStore.appGraphType() !== "global") {
         <div class="inline">
             @if (showBackButton()) {

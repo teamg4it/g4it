@@ -9,8 +9,8 @@
     <div class="bg-white">
         <div class="flex justify-content-between align-items-center">
             @if (footprintStore.applicationCriteria() === multiCriteria) {
-                <h3
-                    class="pt-3 pl-4 pb-2"
+                <h2
+                    class="pt-3 pl-4 pb-2 text-2xl"
                     attr.aria-label="{{
                         'inventories-footprint.application.graph-title-global' | translate
                     }}"
@@ -25,16 +25,15 @@
                                   }
                     }}
                     ({{ "common.peopleeq-min" | translate }})
-                </h3>
+                </h2>
             } @else {
                 @if (footprintStore.appGraphType() === "global") {
-                    <h3
-                        class="pt-3 pl-4 pb-2"
+                    <h2
+                        class="pt-3 pl-4 pb-2 text-2xl"
                         attr.aria-label="{{ selectedCriteria }}{{
                             'inventories-footprint.application.critere.graph.title'
                                 | translate
                         }}"
-                        class="inline"
                     >
                         {{
                             "inventories-footprint.global.global-vision-by"
@@ -47,12 +46,12 @@
                                       }
                         }}
                         ({{ "common.peopleeq-min" | translate }})
-                    </h3>
+                    </h2>
                 } @else {
                     <div class="inline">
                         @if (footprintStore.appGraphType() === "domain") {
-                            <h3
-                                class="pt-3 pl-4 pb-2"
+                            <h2
+                                class="pt-3 pl-4 pb-2 text-2xl"
                                 attr.aria-label="{{
                                     'inventories-footprint.application.domain-view'
                                         | translate
@@ -78,11 +77,11 @@
                                                 })
                                 }}
                                 ({{ "common.peopleeq-min" | translate }})
-                            </h3>
+                            </h2>
                         }
                         @if (footprintStore.appGraphType() === "subdomain") {
-                            <h3
-                                class="pt-3 pl-4 pb-2"
+                            <h2
+                                class="pt-3 pl-4 pb-2 text-2xl"
                                 attr.aria-label="{{
                                     'inventories-footprint.application.subdomain-view'
                                         | translate
@@ -113,11 +112,11 @@
                                                   })
                                 }}
                                 ({{ "common.peopleeq-min" | translate }})
-                            </h3>
+                            </h2>
                         }
                         @if (footprintStore.appGraphType() === "application") {
-                            <h3
-                                class="pt-3 pl-4 pb-2"
+                            <h2
+                                class="pt-3 pl-4 pb-2 text-2xl"
                                 attr.aria-label="{{
                                     'inventories-footprint.application.application-view'
                                         | translate
@@ -135,7 +134,7 @@
                                               }
                                 }}
                                 ({{ "common.peopleeq-min" | translate }})
-                            </h3>
+                            </h2>
                         }
                     </div>
                 }
@@ -176,7 +175,7 @@
                                 styleClass=" cancel-creation-button border-none mr-3 px-3 py-2 mb-3 sm:mb-0"
                                 icon="pi pi-angle-double-right"
                                 id="collapse-button"
-                                [outlined]="false"
+                                [ariaLabel]="'common.collapse-impact' | translate"
                             />
                         } @else {
                             <p-button
@@ -184,7 +183,7 @@
                                 styleClass=" cancel-creation-button border-none  px-3 py-2 my-3"
                                 icon="pi pi-angle-double-left"
                                 id="expand-button"
-                                [outlined]="false"
+                                [ariaLabel]="'common.expand-impact' | translate"
                             />
                         }
                     </div>
@@ -236,7 +235,7 @@
                 </div>
             </div>
             <div
-                class="bg-gray-color mt-3"
+                class="bg-gray-color mb-5 mt-2"
                 [ngClass]="!isCollapsed ? 'col-12 lg:col-8' : 'col'"
             >
                 <app-indicator-section
