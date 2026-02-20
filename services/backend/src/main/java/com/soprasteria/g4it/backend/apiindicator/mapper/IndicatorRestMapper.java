@@ -46,4 +46,22 @@ public interface IndicatorRestMapper {
 
     List<PhysicalEquipmentElecConsumptionRest> toElecConsumptionDto(final List<PhysicalEquipmentElecConsumptionBO> source);
 
+
+    VirtualEquipmentLowImpactRest toVirtualLowImpactDto(
+            VirtualEquipmentLowImpactBO bo
+    );
+
+    List<VirtualEquipmentLowImpactRest> toVirtualLowImpactDto(
+            List<VirtualEquipmentLowImpactBO> bos
+    );
+
+    @Mapping(source = "elecConsumption", target = "elecConsumption")
+    VirtualEquipmentElecConsumptionRest
+    toVirtualElecConsumptionDto(VirtualEquipmentElecConsumptionBO bo);
+
+
+    List<VirtualEquipmentElecConsumptionRest>
+    toVirtualElecConsumptionDto(List<VirtualEquipmentElecConsumptionBO> bos);
+
+
 }

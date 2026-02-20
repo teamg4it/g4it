@@ -627,6 +627,65 @@ components:
         lowImpact:
           type: boolean
 
+    VirtualEquipmentLowImpactRest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        country:
+          type: string
+        quantity:
+          type: number
+          format: double
+        lowImpact:
+          type: boolean
+        lifecycleStep:
+          type: string
+          description: lifecycle step of the application
+        domain:
+          type: string
+          description: domain from application filters
+        subDomain:
+          type: string
+          description: sub domain from application filters
+        environment:
+          type: string
+          description: environment
+        equipmentType:
+          type: string
+          description: equipment type
+
+    VirtualEquipmentElecConsumptionRest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        country:
+          type: string
+        lifecycleStep:
+          type: string
+          description: lifecycle step of the application
+        domain:
+          type: string
+          description: domain from application filters
+        subDomain:
+          type: string
+          description: sub domain from application filters
+        environment:
+          type: string
+          description: environment
+        equipmentType:
+          type: string
+          description: equipment type
+        elecConsumption:
+          type: double
+
     DigitalServiceRest:
       description: Information of a Digital Service
       type: object

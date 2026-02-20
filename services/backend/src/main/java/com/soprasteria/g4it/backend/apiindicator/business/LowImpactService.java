@@ -9,6 +9,8 @@
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.google.common.math.Quantiles;
+import com.soprasteria.g4it.backend.apiindicator.mapper.VirtualEquipmentIndicatorMapper;
+import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentLowImpactViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
@@ -48,6 +50,12 @@ public class LowImpactService {
      */
     @Autowired
     private ReferentialGetService referentialGetService;
+
+    @Autowired
+    InVirtualEquipmentLowImpactViewRepository inVirtualEquipmentLowImpactViewRepository;
+
+    @Autowired
+    VirtualEquipmentIndicatorMapper virtualEquipmentIndicatorMapper;
 
     /**
      * For a country, estimate the environment impact regarding electricity mix and returns true if the country has a low impact
@@ -92,4 +100,6 @@ public class LowImpactService {
 
         return totalImpact != null && totalImpact < firstQuartileValue;
     }
+
+
 }

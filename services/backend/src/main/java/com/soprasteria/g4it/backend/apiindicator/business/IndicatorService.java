@@ -41,6 +41,9 @@ public class IndicatorService {
     private PhysicalEquipmentIndicatorService physicalEquipmentIndicatorService;
 
     @Autowired
+    private VirtualEquipmentIndicatorService virtualEquipmentIndicatorService;
+
+    @Autowired
     private EquipmentIndicatorMapper equipmentIndicatorMapper;
 
     @Autowired
@@ -110,9 +113,9 @@ public class IndicatorService {
     /**
      * Retrieve low impact indicators.
      *
-     * @param organization     the organization.
-     * @param workspaceId the workspace id.
-     * @param inventoryId    the inventory id.
+     * @param organization the organization.
+     * @param workspaceId  the workspace id.
+     * @param inventoryId  the inventory id.
      * @return low impact indicators.
      */
     public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String organization,
@@ -130,6 +133,18 @@ public class IndicatorService {
     public List<PhysicalEquipmentElecConsumptionBO> getPhysicalEquipmentElecConsumption(final Long taskId,
                                                                                         final Long criteriaNumber) {
         return physicalEquipmentIndicatorService.getPhysicalEquipmentElecConsumption(taskId, criteriaNumber);
+    }
+
+    public List<VirtualEquipmentLowImpactBO> getVirtualEquipmentsLowImpact(final String organization,
+                                                                           final Long workspaceId,
+                                                                           final Long inventoryId) {
+
+        return virtualEquipmentIndicatorService.getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId);
+    }
+
+    public List<VirtualEquipmentElecConsumptionBO> getVirtualEquipmentElecConsumption(final Long taskId,
+                                                                                      final Long criteriaNumber) {
+        return virtualEquipmentIndicatorService.getVirtualEquipmentElecConsumption(taskId, criteriaNumber);
     }
 
 }
