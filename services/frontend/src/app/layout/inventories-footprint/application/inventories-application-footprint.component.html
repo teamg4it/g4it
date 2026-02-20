@@ -202,6 +202,10 @@
                 </div>
             </div>
             <div class="col-12 lg:col-8 bg-gray-color mt-3">
+                <app-indicator-section
+                    [statGroups]="statGroups()"
+                ></app-indicator-section>
+
                 <div class="bg-white m-3 pb-3">
                     @if (footprintStore.applicationCriteria() === multiCriteria) {
                         <app-application-multicriteria-footprint
