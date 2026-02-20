@@ -495,8 +495,7 @@ public class EvaluateService {
                     cloudElectricityKwh =
                             boaviztapiService.computeAnnualElectricityKwhRaw(
                                     avgPowerW,
-                                    virtualEquipment.getDurationHour(),
-                                    virtualEquipment.getQuantity()
+                                    virtualEquipment.getDurationHour()
                             );
                 } else {
                     impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
@@ -550,7 +549,7 @@ public class EvaluateService {
                 }
 
                 savedApplicationCount += this.evaluateApplications(context, evaluateReportBO, physicalEquipment, virtualEquipment, impactEquipementVirtuelList,
-                        aggregationApplications, csvInApplication, csvApplication, refSip, refShortcutBO);
+                        aggregationApplications, csvInApplication, csvApplication, refSip, refShortcutBO, cloudElectricityKwh);
             }
             pageNumber++;
             if (pageNumber > 0 && pageNumber % 5 == 0) {
@@ -575,7 +574,8 @@ public class EvaluateService {
                                      Map<List<String>, AggValuesBO> aggregationApplications,
                                      CSVPrinter csvInApplication,
                                      CSVPrinter csvApplication,
-                                     Map<String, Double> refSip, RefShortcutBO refShortcutBO) throws IOException {
+                                     Map<String, Double> refSip, RefShortcutBO refShortcutBO,
+                                     Double cloudElectricityKwh) throws IOException {
 
         if (!context.isHasApplications()) return 0;
         int savedApplicationCount = 0;
@@ -594,8 +594,16 @@ public class EvaluateService {
             for (ImpactApplication impact : impactApplicationList) {
 
                 Double sipValue = refSip.get(impact.getCritere());
+                Double electricity = impact.getConsoElecMoyenne();
+
+                if (electricity == null
+                        && cloudElectricityKwh != null
+                        && applicationList.size() > 0) {
+
+                    electricity = cloudElectricityKwh / applicationList.size();
+                }
                 AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                        null, impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
+                        null, electricity, impact.getImpactUnitaire(),
                         sipValue,
                         null, null, null, false);
 

@@ -9,14 +9,16 @@
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apiindicator.mapper.VirtualEquipmentIndicatorMapper;
-import com.soprasteria.g4it.backend.apiindicator.model.NumberOfVirtualEquipmentsBO;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentElecConsumptionBO;
 import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactBO;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.NumberOfVirtualEquipmentsView;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.InVirtualEquipmentLowImpactView;
+import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentElecConsumptionViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentLowImpactViewRepository;
-import com.soprasteria.g4it.backend.apiindicator.repository.NumberOfVirtualEquipmentsViewRepository;
-import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
-import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
+import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
+import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,43 +27,56 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VirtualEquipmentIndicatorService {
 
-    private final InVirtualEquipmentLowImpactViewRepository repository;
-    private final VirtualEquipmentIndicatorMapper mapper;
-    private final InventoryService inventoryService;
-    private final NumberOfVirtualEquipmentsViewRepository numberOfVirtualEquipmentsViewRepository;
+    @Autowired
+    private final InVirtualEquipmentLowImpactViewRepository inVirtualEquipmentLowImpactViewRepository;
+
+    @Autowired
+    private final InVirtualEquipmentElecConsumptionViewRepository inVirtualEquipmentElecConsumptionViewRepository;
+
+    @Autowired
+    private final VirtualEquipmentIndicatorMapper virtualEquipmentIndicatorMapper;
+
+    /**
+     * The Workspace Service
+     */
+    @Autowired
+    private WorkspaceService workspaceService;
+
+    /**
+     * The LowImpact Service
+     */
+    @Autowired
+    private LowImpactService lowImpactService;
+
 
     public List<VirtualEquipmentLowImpactBO> getVirtualEquipmentsLowImpact(
             final String organization,
             final Long workspaceId,
             final Long inventoryId
     ) {
-        InventoryBO inventory =
-                inventoryService.getInventory(organization, workspaceId, inventoryId);
-
-        List<VirtualEquipmentLowImpactBO> bos =
-                mapper.toLowImpactBO(repository.findByInventoryId(inventoryId));
-
-        return bos;
+        final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
+        final List<InVirtualEquipmentLowImpactView> indicators = inVirtualEquipmentLowImpactViewRepository.findVirtualEquipmentLowImpactIndicatorsByInventoryId(inventoryId);
+        indicators.forEach(indicator -> {
+                    indicator.setEquipmentType(TypeUtils.getShortType(organization, linkedWorkspace.getName(), indicator.getEquipmentType()));
+                    indicator.setLowImpact(lowImpactService.isLowImpact(indicator.getCountry()));
+                }
+        );
+        return virtualEquipmentIndicatorMapper.toLowImpactBO(indicators);
     }
 
-    public NumberOfVirtualEquipmentsBO getNumberOfVirtualEquipments(Long inventoryId) {
+    public List<VirtualEquipmentElecConsumptionBO>
+    getVirtualEquipmentElecConsumption(final Long taskId,
+                                       final Long criteriaNumber) {
 
-        NumberOfVirtualEquipmentsView view =
-                numberOfVirtualEquipmentsViewRepository.findByInventoryId(inventoryId);
+        final var indicators =
+                inVirtualEquipmentElecConsumptionViewRepository
+                        .findVirtualEquipmentElecConsumptionIndicators(
+                                taskId, criteriaNumber);
 
-        if (view == null) {
-            return NumberOfVirtualEquipmentsBO.builder()
-                    .inventoryId(inventoryId)
-                    .numberOfVirtualEquipments(0L)
-                    .build();
-        }
-
-        return NumberOfVirtualEquipmentsBO.builder()
-                .inventoryId(view.getInventoryId())
-                .inventoryName(view.getInventoryName())
-                .numberOfVirtualEquipments(view.getNumberOfVirtualEquipments())
-                .build();
+        return virtualEquipmentIndicatorMapper
+                .inVirtualEquipmentElecConsumptionToDto(indicators);
     }
+
 
 }
 

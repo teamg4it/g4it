@@ -23,6 +23,6 @@ public interface InVirtualEquipmentLowImpactViewRepository
             name = "InVirtualEquipmentLowImpactView.findVirtualEquipmentLowImpactIndicatorsByInventoryId",
             nativeQuery = true
     )
-    List<InVirtualEquipmentLowImpactView> findByInventoryId(Long inventoryId);
+    List<InVirtualEquipmentLowImpactView> findVirtualEquipmentLowImpactIndicatorsByInventoryId(Long inventoryId);
 }
 
