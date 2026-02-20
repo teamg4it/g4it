@@ -3,6 +3,7 @@
 ## 3.10.0
 
 ## Major changes
+- 1762 | New display for Inventory results
 
 ### Minor Changes
 - 1833 | Country in error for Cloud Service and DC
