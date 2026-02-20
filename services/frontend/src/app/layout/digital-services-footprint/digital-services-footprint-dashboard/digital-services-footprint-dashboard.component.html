@@ -1,6 +1,6 @@
 <div class="bg-white">
     <div
-        class="digital-service-chart-heading-container mt-4 block lg:flex bg-white px-4 pt-3 border-round"
+        class="digital-service-chart-heading-container mt-4 block lg:flex justify-content-between align-items-center bg-white px-4 pt-3 border-round"
     >
         <h3>
             <ng-container [ngSwitch]="chartType()">
@@ -16,6 +16,14 @@
                 </ng-container>
             </ng-container>
         </h3>
+        <p-button
+            (onClick)="filterSidebarVisible = true"
+            styleClass="p-button-secondary-blue uppercase"
+            id="filter"
+            icon="pi pi-filter"
+            [label]="'digital-services.configure-view' | translate"
+            [ariaLabel]="'digital-services.configure-view' | translate"
+        ></p-button>
     </div>
     <div class="footprint-digital-dashboard-container grid px-2">
         <div class="col-12 lg:col-4 bg-white">
@@ -25,31 +33,7 @@
                 >
                     {{ "digital-services.impacts" | translate }}
                 </h3>
-                <p-card styleClass="mb-3">
-                    <div class="text-center">
-                        <button
-                            class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                            [ngClass]="
-                                selectedUnit === 'Raw' ? 'bg-secondary' : 'bg-transparent'
-                            "
-                            (click)="selectedUnit = 'Raw'"
-                        >
-                            {{ "digital-services.raw" | translate }}
-                        </button>
 
-                        <button
-                            class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                            [ngClass]="
-                                selectedUnit === 'Peopleeq'
-                                    ? 'bg-secondary'
-                                    : 'bg-transparent'
-                            "
-                            (click)="selectedUnit = 'Peopleeq'"
-                        >
-                            {{ "common.peopleeq" | translate }}
-                        </button>
-                    </div>
-                </p-card>
                 <div class="flex flex-column w-full border-round">
                     @for (impact of impacts; track $index) {
                         <app-impact-button
@@ -204,17 +188,6 @@
         <div
             class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3"
         >
-            <p-button
-                (onClick)="displaySetViewPopup = !displaySetViewPopup"
-                styleClass="cancel-creation-button uppercase px-3 py-2 ml-0 sm:ml-3 mb-3 sm:mb-0"
-                [label]="'digital-services.set-view' | translate"
-                icon="pi pi-cog"
-                [ariaLabel]="
-                    'digital-services.configure-criteria'
-                        | translate: { digitalServiceName: digitalService.name }
-                "
-            />
-
             @if (showInconsitencyBtn && digitalService.enableDataInconsistency) {
                 <p-button
                     (onClick)="showInconsitency = !showInconsitency"
@@ -240,12 +213,22 @@
             (outClose)="displayCriteriaPopup = false"
         ></app-criteria-popup>
     }
-
-    @if (displaySetViewPopup) {
-        <app-set-view-popup
-            [displayPopup]="displaySetViewPopup"
-            (outClose)="displaySetViewPopup = false; updateDataConsistencyInDS($event)"
-            [digitalService]="digitalService"
-        ></app-set-view-popup>
-    }
 </div>
+
+@if (filterSidebarVisible) {
+    <p-sidebar
+        [(visible)]="filterSidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-5"
+        (onHide)="filterSidebarVisible = false"
+    >
+        <ng-template pTemplate="headless">
+            <app-configure-view-filters
+                (filtersApplied)="handleFilters($event)"
+                (sidebarVisibleChange)="filterSidebarVisible = $event"
+                [enableDataInconsistency]="digitalService.enableDataInconsistency"
+                [selectedUnit]="selectedUnit"
+            ></app-configure-view-filters>
+        </ng-template>
+    </p-sidebar>
+}

@@ -45,7 +45,7 @@
                             }}</label>
                         </div>
                     </p-accordionTab>
-
+                    <hr class="mx-3" />
                     <!-- Units Management -->
                     <p-accordionTab
                         header="Units management"
@@ -66,7 +66,7 @@
                                 name="unitType"
                                 value="Peopleeq"
                                 formControlName="unitType"
-                                label="People equivalents"
+                                [label]="'common.peopleeq-full-capital' | translate"
                             ></p-radioButton>
 
                             <p-radioButton
@@ -74,7 +74,7 @@
                                 name="unitType"
                                 value="Raw"
                                 formControlName="unitType"
-                                label="Raw Value (example: kg CO₂ eq.)"
+                                [label]="'common.unit-of-criterion' | translate"
                             ></p-radioButton>
                         </div>
                     </p-accordionTab>

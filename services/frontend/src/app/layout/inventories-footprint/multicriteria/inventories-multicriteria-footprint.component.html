@@ -1,4 +1,4 @@
-<div class="flex flex-wrap align-items-center">
+<div class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3">
     @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
         <p-button
             (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
@@ -6,6 +6,7 @@
             [label]="'inventories-footprint.data-consistency' | translate"
             [outlined]="!showInconsitencyGraph"
             severity="danger"
+            class="ml-auto mt-3 mb-2 pr-3"
             [ariaLabel]="'inventories-footprint.data-consistency' | translate"
         />
     }

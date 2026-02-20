@@ -1708,3 +1708,14 @@ app-version-type-tag {
 .bg-gray-color {
     background-color: #f8f8f8;
 }
+
+app-configure-view-filters {
+    .p-accordion .p-accordion-tab {
+        box-shadow: none;
+    }
+
+    .p-accordion-header,
+    .p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus {
+        outline: none;
+    }
+}

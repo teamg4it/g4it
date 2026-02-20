@@ -1,11 +1,12 @@
 import { Component, EventEmitter, input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
+import { DividerModule } from "primeng/divider";
 import { SharedModule } from "src/app/core/shared/shared.module";
 
 @Component({
     selector: "app-configure-view-filters",
     standalone: true,
-    imports: [SharedModule],
+    imports: [SharedModule, DividerModule],
     templateUrl: "./configure-view-filters.component.html",
     styleUrl: "./configure-view-filters.component.scss",
 })

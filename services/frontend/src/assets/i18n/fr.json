@@ -39,6 +39,8 @@
         "peopleeq": "Hab. eq.",
         "peopleeq-min": "hab. eq.",
         "peopleeq-full": "habitant équivalent",
+        "peopleeq-full-capital": "Habitant équivalent",
+        "unit-of-criterion": "Unité du critère",
         "no-data": "Aucun résultats disponibles",
         "loading": "Chargement en cours",
         "choose-file": "Importer un fichier",
@@ -172,7 +174,10 @@
         "plus-menu": "Plus",
         "add-button": "Ajouter",
         "actions": "Actions",
-        "nav-panel": "Ouvrir le menu de navigation"
+        "nav-panel": "Ouvrir le menu de navigation",
+        "key-indicator": "Indicateurs clés",
+        "infrastructure": "Infrastructure",
+        "energy": "Énergie"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
