@@ -30,17 +30,26 @@ import {
     TransformedDomain,
     TransformedDomainItem,
 } from "src/app/core/interfaces/filter.interface";
-import { ApplicationFootprint } from "src/app/core/interfaces/footprint.interface";
+import {
+    ApplicationFootprint,
+    Stat,
+    VirtualEquipmentElectricityConsumption,
+    VirtualEquipmentLowImpact,
+} from "src/app/core/interfaces/footprint.interface";
+import { StatGroup } from "src/app/core/interfaces/indicator.interface";
 import {
     Inventory,
     InventoryCriteriaRest,
 } from "src/app/core/interfaces/inventory.interfaces";
 import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
+import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
@@ -57,8 +66,11 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     private readonly inventoryService = inject(InventoryService);
+    private readonly footprintDataService = inject(FootprintDataService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly evaluationService = inject(EvaluationDataService);
+    private readonly decimalsPipe = inject(DecimalsPipe);
+    private readonly integerPipe = inject(IntegerPipe);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
     private readonly filterService = inject(FilterService);
@@ -100,6 +112,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     };
     selectedCriterias: string[] = [];
     filterSidebarVisible = false;
+    appCount: number = 0;
+    lowImpactData = signal<VirtualEquipmentLowImpact[]>([]);
+    elecConsumptionData = signal<VirtualEquipmentElectricityConsumption[]>([]);
 
     impacts: Signal<any> = computed(() => {
         const filterImpacts = this.formatLifecycleCriteriaImpact(this.footprint()).map(
@@ -150,6 +165,77 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             }
         }
         return true;
+    });
+
+    applicationStats = computed<Stat[]>(() => {
+        const localFootprint = this.formatLifecycleImpact(this.footprint());
+        return this.computeApplicationStats(
+            localFootprint,
+            this.footprintStore.applicationSelectedFilters(),
+        );
+    });
+
+    lowImpactStat = computed<Stat>(() => {
+        const lowImpact = this.filterLowImpact(
+            this.lowImpactData(),
+            this.footprintStore.applicationSelectedFilters(),
+        );
+        return {
+            label: `${this.integerPipe.transform(lowImpact)}`,
+            value: Number.isNaN(Number(lowImpact)) ? undefined : lowImpact,
+            unit: "%",
+            description: this.translate.instant(
+                "inventories-footprint.global.tooltip.low-impact",
+            ),
+            title: this.translate.instant("inventories-footprint.global.low-impact"),
+        };
+    });
+
+    electrictyConsumtion = computed<Stat>(() => {
+        const elecConsumption = this.filterElecConsumption(
+            this.elecConsumptionData(),
+            this.footprintStore.applicationSelectedFilters(),
+        );
+        return {
+            label: `${this.decimalsPipe.transform(elecConsumption)}`,
+            unit: this.translate.instant("inventories-footprint.global.kwh"),
+            value: Number.isNaN(Number(elecConsumption))
+                ? undefined
+                : Math.round(elecConsumption),
+            description: this.translate.instant(
+                "inventories-footprint.global.tooltip.elec-consumption",
+            ),
+            title: this.translate.instant(
+                "inventories-footprint.global.elec-consumption",
+            ),
+        };
+    });
+
+    equipments = computed<Stat>(() => {
+        const count = 0;
+        return {
+            label: this.decimalsPipe.transform(count),
+            value: Number.isNaN(Number(count)) ? undefined : count,
+            description: this.translate.instant(
+                "inventories-footprint.global.tooltip.nb-eq",
+            ),
+            title: this.translate.instant("inventories-footprint.global.equipments"),
+        };
+    });
+
+    statGroups: Signal<StatGroup[]> = computed(() => {
+        const appStats = this.applicationStats();
+
+        return [
+            {
+                subtitle: this.translate.instant("common.infrastructure"),
+                items: [this.equipments(), appStats[0]],
+            },
+            {
+                subtitle: this.translate.instant("common.energy"),
+                items: [this.electrictyConsumtion(), this.lowImpactStat()],
+            },
+        ] as StatGroup[];
     });
 
     constructor(
@@ -234,6 +320,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             this.footprintStore.setGraphType("global");
         }
         this.globalStore.setLoading(false);
+
+        this.getApplicationKeyIndicatorsData();
 
         // React on criteria url param change
         this.activatedRoute.paramMap.subscribe((params) => {
@@ -548,5 +636,108 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
                     this.inventory.set(res);
                 });
         }
+    }
+
+    private computeApplicationStats(
+        applications: ApplicationFootprint[],
+        filters: Filter,
+    ): Stat[] {
+        applications = applications || [];
+        let applicationCount = 0;
+        let appNameList: string[] = [];
+        for (const application of applications) {
+            for (const impact of application.impacts) {
+                let { applicationName } = impact;
+                if (
+                    this.filterService.getFilterincludes(filters, impact) &&
+                    !appNameList.includes(applicationName)
+                ) {
+                    appNameList.push(applicationName);
+                    applicationCount += 1;
+                }
+            }
+        }
+
+        this.appCount = applicationCount;
+        return [
+            {
+                label: this.decimalsPipe.transform(this.appCount),
+                value: Number.isNaN(this.appCount) ? undefined : this.appCount,
+                description: this.translate.instant(
+                    "inventories-footprint.application.tooltip.nb-app",
+                ),
+                title: this.translate.instant(
+                    "inventories-footprint.application.applications",
+                ),
+            },
+        ];
+    }
+
+    private checkAllFilters(filters: Filter): boolean {
+        return Object.keys(filters).every((key) => {
+            const filterValue = filters[key];
+            if (Array.isArray(filterValue)) {
+                return filterValue.some(
+                    (item) =>
+                        item === Constants.ALL || (item as any)?.label === Constants.ALL,
+                );
+            }
+            return false;
+        });
+    }
+
+    filterLowImpact(lowImpactData: VirtualEquipmentLowImpact[], filters: Filter) {
+        const hasAllFilters = this.checkAllFilters(filters);
+        const filteredEquipmentsLowImpact = lowImpactData.filter(
+            (equipment) =>
+                hasAllFilters ||
+                this.filterService.getFilterincludes(filters, equipment as any),
+        );
+
+        const { physicalEquipmentTotalCount, lowImpactPhysicalEquipmentCount } =
+            filteredEquipmentsLowImpact.reduce(
+                (acc, { quantity = 0, lowImpact }) => {
+                    acc.physicalEquipmentTotalCount += quantity;
+                    if (!lowImpact) acc.lowImpactPhysicalEquipmentCount += quantity;
+                    return acc;
+                },
+                { physicalEquipmentTotalCount: 0, lowImpactPhysicalEquipmentCount: 0 },
+            );
+
+        return (lowImpactPhysicalEquipmentCount / physicalEquipmentTotalCount) * 100;
+    }
+
+    filterElecConsumption(
+        elecConsumptionData: VirtualEquipmentElectricityConsumption[],
+        filters: Filter,
+    ) {
+        const hasAllFilters = this.checkAllFilters(filters);
+        const filteredEquipmentsElecConsumption = elecConsumptionData.filter(
+            (equipment) =>
+                hasAllFilters ||
+                this.filterService.getFilterincludes(filters, equipment as any),
+        );
+
+        const elecConsumptionSum = filteredEquipmentsElecConsumption.reduce(
+            (sum, { elecConsumption = 0 }) => sum + elecConsumption,
+            0,
+        );
+        return elecConsumptionSum;
+    }
+
+    getApplicationKeyIndicatorsData() {
+        this.footprintDataService
+            .getApplicationKeyIndicators(this.inventoryId)
+            .subscribe(
+                (
+                    data: [
+                        VirtualEquipmentLowImpact[],
+                        VirtualEquipmentElectricityConsumption[],
+                    ],
+                ) => {
+                    this.elecConsumptionData.set(data[1]);
+                    this.lowImpactData.set(data[0]);
+                },
+            );
     }
 }
