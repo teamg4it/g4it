@@ -233,3 +233,27 @@ export interface ApplicationGraphPosition {
     app: string;
     graph: string;
 }
+
+export interface VirtualEquipmentLowImpact {
+    country: string;
+    domain: string;
+    environment: string;
+    equipmentType: string;
+    id: number;
+    lifecycleStep: string;
+    lowImpact: boolean;
+    name: string;
+    quantity: number;
+    subDomain: string;
+}
+
+export interface VirtualEquipmentElectricityConsumption {
+    country: string;
+    domain: string;
+    elecConsumption: number;
+    environment: string;
+    equipmentType: string;
+    lifecycleStep: string;
+    name: string;
+    subDomain: string;
+}
