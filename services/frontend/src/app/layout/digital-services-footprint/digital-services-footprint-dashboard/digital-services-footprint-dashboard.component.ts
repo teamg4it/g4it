@@ -96,7 +96,7 @@ export class DigitalServicesFootprintDashboardComponent
     showDataButton = false;
     title = "";
     content = "";
-
+    isCollapsed = false;
     impacts: any[] = [];
     topThreeImpacts: any[] = [];
     topPieThreeImpacts: any[] = [];

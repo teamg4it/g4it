@@ -115,6 +115,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     appCount: number = 0;
     lowImpactData = signal<VirtualEquipmentLowImpact[]>([]);
     elecConsumptionData = signal<VirtualEquipmentElectricityConsumption[]>([]);
+    isCollapsed = false;
 
     impacts: Signal<any> = computed(() => {
         const filterImpacts = this.formatLifecycleCriteriaImpact(this.footprint()).map(
