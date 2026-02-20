@@ -22,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,11 +59,31 @@ public class VirtualEquipmentIndicatorService {
     ) {
         final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
         final List<InVirtualEquipmentLowImpactView> indicators = inVirtualEquipmentLowImpactViewRepository.findVirtualEquipmentLowImpactIndicatorsByInventoryId(inventoryId);
+        // Compute low impact per location only once
+        final Map<String, Boolean> locationLowImpactMap = indicators.stream()
+                .map(InVirtualEquipmentLowImpactView::getLocation)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toMap(
+                        location -> location,
+                        lowImpactService::isLowImpact
+                ));
+
+        // Enrich indicators
         indicators.forEach(indicator -> {
-                    indicator.setEquipmentType(TypeUtils.getShortType(organization, linkedWorkspace.getName(), indicator.getEquipmentType()));
-                    indicator.setLowImpact(lowImpactService.isLowImpact(indicator.getCountry()));
-                }
-        );
+
+            indicator.setEquipmentType(
+                    TypeUtils.getShortType(
+                            organization,
+                            linkedWorkspace.getName(),
+                            indicator.getEquipmentType()
+                    )
+            );
+
+            indicator.setLowImpact(
+                    locationLowImpactMap.getOrDefault(indicator.getLocation(), false)
+            );
+        });
         return virtualEquipmentIndicatorMapper.toLowImpactBO(indicators);
     }
 
