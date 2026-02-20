@@ -1,0 +1,40 @@
+.create-ds-sidebar {
+    display: flex;
+    height: 100vh;
+    .space-sidebar-close {
+        position: absolute;
+        right: 0;
+        top: 12px;
+        padding: 0.5rem;
+    }
+
+    .space-sidebar-close-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        color: rgba(0, 0, 0, 0.6);
+        border: 0 none;
+        background: transparent;
+        border-radius: 50%;
+        transition:
+            background-color 0.2s,
+            color 0.2s,
+            box-shadow 0.2s;
+        align-items: center;
+    }
+    .space-form {
+        padding: 1.5rem;
+        position: relative;
+        flex: 1 1 auto;
+    }
+
+    p {
+        font-size: 22px;
+        line-height: 140%; /* 30.8px */
+    }
+}
+
+.p-accordion .p-accordion-tab .p-accordion-toggle-icon {
+    margin-left: unset !important;
+    transition: none;
+    order: unset;
+}

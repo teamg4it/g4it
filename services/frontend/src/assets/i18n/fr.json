@@ -39,6 +39,8 @@
         "peopleeq": "Hab. eq.",
         "peopleeq-min": "hab. eq.",
         "peopleeq-full": "habitant équivalent",
+        "peopleeq-full-capital": "Habitant équivalent",
+        "unit-of-criterion": "Unité du critère",
         "no-data": "Aucun résultats disponibles",
         "loading": "Chargement en cours",
         "choose-file": "Importer un fichier",
@@ -172,7 +174,10 @@
         "plus-menu": "Plus",
         "add-button": "Ajouter",
         "actions": "Actions",
-        "nav-panel": "Ouvrir le menu de navigation"
+        "nav-panel": "Ouvrir le menu de navigation",
+        "key-indicator": "Indicateurs clés",
+        "infrastructure": "Infrastructure",
+        "energy": "Énergie"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -235,6 +240,7 @@
         "reset-settings": "Réinitialiser le paramétrage",
         "save-settings": "Enregistrer les paramètres",
         "configure-criteria": "Configurer la vue pour le service numérique {{digitalServiceName}}",
+        "configure-view": "Configurer la vue",
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
         "visualize-parameters": "Voir les paramètres",
@@ -641,7 +647,10 @@
             "starter-pack": "Kit de départ"
         },
         "choose-criteria": "Choisir les critères pour l'inventaire {{inventoryName}}",
-        "calendar": "Calendrier"
+        "calendar": "Calendrier",
+        "apply-selection": "Appliquer la sélection",
+        "unit-para1": "La valeur de l’impact peut être affichée soit dans l’unité propre aux critères d’impact sélectionnés, soit en habitants équivalents.",
+        "unit-para2": "Cette unité repose sur le principe des limites planétaires : elle correspond à un quota théorique d’impacts attribué de manière égale à chaque habitant de la planète afin de préserver l’équilibre du système Terre. Ce quota est calculé en divisant la quantité maximale d’externalités négatives que la Terre peut absorber telle que définie dans le rapport sur la consommation et l’empreinte du consommateur par le nombre total d’habitants."
     },
     "inventories-footprint": {
         "active-filters": "Filtres activés",
@@ -670,6 +679,11 @@
             "entity": "Entités",
             "equipment": "Équipements",
             "status": "Statuts"
+        },
+        "application-round-button": {
+            "environment": "Environnement",
+            "equipmentType": "Équipements",
+            "lifeCycle": "Cycle de vie"
         },
         "global": {
             "global-vision": "Vision Globale",

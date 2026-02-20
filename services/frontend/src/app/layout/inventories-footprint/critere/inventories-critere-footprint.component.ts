@@ -9,6 +9,7 @@ import {
     Component,
     computed,
     inject,
+    input,
     Input,
     OnChanges,
     Signal,
@@ -29,6 +30,7 @@ import {
     PhysicalEquipmentsElecConsumption,
 } from "src/app/core/interfaces/footprint.interface";
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
+import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
@@ -55,6 +57,7 @@ export class InventoriesCritereFootprintComponent
         PhysicalEquipmentsElecConsumption[],
     ] = [[], [], []];
     @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];
+    inventory = input<Inventory>();
     showInconsitencyGraph = false;
     allErrorData = false;
 
@@ -105,6 +108,7 @@ export class InventoriesCritereFootprintComponent
             this.criteriaCalculated(),
             this.selectedDimension(),
             this.footprintStore.unit(),
+            this.inventory()!,
         );
     });
 
@@ -157,6 +161,7 @@ export class InventoriesCritereFootprintComponent
         criteriaCalculated: CriteriaCalculated,
         selectedView: string,
         unit: string,
+        inventory: Inventory,
     ): EChartsOption {
         this.xAxisInput = [];
         this.criteriaMap = {};
@@ -278,7 +283,10 @@ export class InventoriesCritereFootprintComponent
                                 param.name,
                                 selectedView,
                             );
-                            if (param.data.status.error) {
+                            if (
+                                inventory.enableDataInconsistency &&
+                                param.data.status.error
+                            ) {
                                 return `{redBold|\u24d8} {red|${translatedLabel}} {grey|${param.percent.toFixed(1)}%}`;
                             } else {
                                 return `{grey|${translatedLabel} ${param.percent.toFixed(1)}%}`;

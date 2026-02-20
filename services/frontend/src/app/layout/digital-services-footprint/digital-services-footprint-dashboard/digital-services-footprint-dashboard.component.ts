@@ -94,7 +94,6 @@ export class DigitalServicesFootprintDashboardComponent
     digitalService: DigitalService = {} as DigitalService;
     aiRecommendation: AiRecommendation = {} as AiRecommendation;
     showDataButton = false;
-    displaySetViewPopup = false;
     title = "";
     content = "";
 
@@ -112,6 +111,7 @@ export class DigitalServicesFootprintDashboardComponent
     displayCriteriaPopup = false;
     workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
     organization!: Organization;
+    filterSidebarVisible = false;
     textDescriptionImpacts: {
         text: string;
         impactName: string;
@@ -294,7 +294,7 @@ export class DigitalServicesFootprintDashboardComponent
         }
     }
 
-    handleChartChange(criteria: string) {
+    handleChartChange(criteria: any) {
         if (this.selectedCriteria === "Global Vision") {
             this.selectedCriteria = criteria;
             this.chartType.set("pie");
@@ -682,6 +682,11 @@ export class DigitalServicesFootprintDashboardComponent
                 this.barChartChild = true;
             }
         }
+    }
+
+    handleFilters(event: { enableConsistency: boolean; unitType: string }) {
+        this.selectedUnit = event.unitType;
+        this.updateDataConsistencyInDS(event.enableConsistency);
     }
 
     ngOnDestroy() {

@@ -64,7 +64,21 @@ export class FilterService {
                 : Constants.APPLICATION_FILTERS
         ).every((filter) => {
             const field = filter.field;
-            return selectedFilters[field]?.includes(impact[field as any]);
+            let impactValue = impact[field as any];
+            let filterValue: any = selectedFilters[field];
+            if (!filterValue) filterValue = Constants.EMPTY;
+            if (!impactValue) impactValue = Constants.EMPTY;
+            return filterValue?.includes(impactValue);
+        });
+    }
+
+    equipmentAllFilterMatch(selectedFilters: Filter, impact: any) {
+        return Constants.EQUIPMENT_FILTERS.every((field) => {
+            let filterValue: any = selectedFilters[field];
+            let impactValue = impact[field as any];
+            if (!filterValue) filterValue = Constants.EMPTY;
+            if (!impactValue) impactValue = Constants.EMPTY;
+            return filterValue?.includes(impactValue);
         });
     }
 }

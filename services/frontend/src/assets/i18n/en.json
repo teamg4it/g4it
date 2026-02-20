@@ -39,6 +39,8 @@
         "peopleeq": "People eq.",
         "peopleeq-min": "people. eq.",
         "peopleeq-full": "people equivalent",
+        "peopleeq-full-capital": "People equivalent",
+        "unit-of-criterion": "Unit of the criterion",
         "no-data": "No results available",
         "loading": "Loading in progress",
         "choose-file": "Choose a file",
@@ -173,7 +175,10 @@
         "plus-menu": "Plus",
         "add-button": "Add",
         "actions": "Actions",
-        "nav-panel": "Show the navigation panel"
+        "nav-panel": "Show the navigation panel",
+        "key-indicator": "Key indicator",
+        "infrastructure": "Infrastructure",
+        "energy": "Energy"
     },
     "useful-information": {
         "computing-engines": "Computing engines",
@@ -237,6 +242,7 @@
         "reset-settings": "Reset settings",
         "save-settings": "Save settings",
         "configure-criteria": "Configure the view for digital service {{digitalServiceName}}",
+        "configure-view": "Configure the view",
         "view-resources": "Visualize my resources",
         "visualize-results": "Visualize my results",
         "visualize-parameters": "Visualize the parameters",
@@ -644,7 +650,10 @@
             "starter-pack": "Starter pack"
         },
         "choose-criteria": "Choose criteria for inventory {{inventoryName}}",
-        "calendar": "Calendar"
+        "calendar": "Calendar",
+        "apply-selection": "Apply the selection",
+        "unit-para1": "The impact value can be displayed either in the unit specific to the selected impact criteria or in people equivalent.",
+        "unit-para2": "This unit is based on the concept of planetary boundaries and represents a theoretical, equal impact allowance allocated to each person on Earth to maintain the balance of the Earth system. It is calculated by dividing the maximum amount of negative externalities the Earth can sustain as defined in the consumer consumption and footprint report by the total global population."
     },
     "inventories-footprint": {
         "active-filters": "Active filters",
@@ -673,6 +682,11 @@
             "entity": "Entity",
             "equipment": "Equipment",
             "status": "Status"
+        },
+        "application-round-button": {
+            "environment": "Environment",
+            "equipmentType": "Equipment",
+            "lifeCycle": "Lifecycle"
         },
         "global": {
             "global-vision": "Global Vision",

@@ -1,0 +1,40 @@
+.key-figures {
+    background: #f5f6f8;
+    padding: 16px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.value {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.label {
+    font-size: 13px;
+    color: #555;
+}
+@media (max-width: 900px) {
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+}

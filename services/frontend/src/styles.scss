@@ -130,6 +130,7 @@ main {
 .bg-light-gray {
     background-color: var(--gray-100);
 }
+
 .bg-black {
     background: var(--black-color);
 }
@@ -530,15 +531,13 @@ main {
 
 /* Footprint page */
 
-.footprint-dashboard-container,
-.footprint-dashboard-container-app-criteria {
+.footprint-dashboard-container {
     display: flex;
     flex-wrap: wrap;
 }
 
 @media screen and (min-width: 992px) {
-    .footprint-dashboard-container,
-    .footprint-dashboard-container-app-criteria {
+    .footprint-dashboard-container {
         margin-top: 25px;
         display: grid;
         grid-gap: 30px;
@@ -546,10 +545,6 @@ main {
 
     .footprint-dashboard-container {
         grid-template-columns: 60% 38%;
-    }
-
-    .footprint-dashboard-container-app-criteria {
-        grid-template-columns: 70% 28%;
     }
 }
 
@@ -924,12 +919,14 @@ div.label-input-div-medium {
     color: var(--tertiary-color);
 }
 
-.p-accordion .p-accordion-tab .p-accordion-toggle-icon {
-    margin-left: inherit !important;
-    transition: transform 0.2s;
-    order: 0;
+app-inventories,
+app-inventory-item {
+    .p-accordion .p-accordion-tab .p-accordion-toggle-icon {
+        margin-left: inherit !important;
+        transition: transform 0.2s;
+        order: 0;
+    }
 }
-
 .p-accordion p-accordiontab:first-child .p-accordion-header .p-accordion-header-link {
     height: 50px;
 }
@@ -1705,5 +1702,20 @@ app-version-type-tag {
         color: #9a5200;
         border: 1px solid #9a5200;
         background: #fff4d6;
+    }
+}
+
+.bg-gray-color {
+    background-color: #f8f8f8;
+}
+
+app-configure-view-filters {
+    .p-accordion .p-accordion-tab {
+        box-shadow: none;
+    }
+
+    .p-accordion-header,
+    .p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus {
+        outline: none;
     }
 }

@@ -1,78 +1,84 @@
-<div class="my-3 footprint-dashboard-container-app-criteria">
-    <div class="chart-container col-12">
-        <div class="flex flex-wrap align-items-center">
-            <h2
-                attr.aria-label="{{
-                    'inventories-footprint.application.graph-title-global' | translate
-                }}"
-            >
-                {{
-                    "inventories-footprint.global.global-vision-by"
-                        | translate
-                            : {
-                                  variable:
-                                      "inventories-footprint.global.criteria" | translate,
-                              }
-                }}
-                ({{ "common.peopleeq-min" | translate }})
-            </h2>
-            @if (showDataConsistencyBtn) {
-                <p-button
-                    (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
-                    [rounded]="true"
-                    [label]="'inventories-footprint.data-consistency' | translate"
-                    [outlined]="!showInconsitencyGraph"
-                    severity="danger"
-                    class="ml-auto mt-3 mb-2 pr-3"
-                    [ariaLabel]="'inventories-footprint.data-consistency' | translate"
-                />
-            }
+<div class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3">
+    @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
+        <p-button
+            (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
+            [rounded]="true"
+            [label]="'inventories-footprint.data-consistency' | translate"
+            [outlined]="!showInconsitencyGraph"
+            severity="danger"
+            class="ml-auto mt-3 mb-2 pr-3"
+            [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+        />
+    }
+    @if (!showInconsitencyGraph) {
+        <p-dropdown
+            [options]="dimensions"
+            [(ngModel)]="selectedDimension"
+            [placeholder]="'inventories-footprint.select-dimension' | translate"
+            styleClass="ml-auto mt-3 mb-2"
+        >
+            <ng-template pTemplate="selectedItem">
+                <div *ngIf="selectedDimension()">
+                    {{
+                        "inventories-footprint.application-round-button." +
+                            selectedDimension() | translate
+                    }}
+                </div>
+            </ng-template>
+            <ng-template let-dimension pTemplate="item">
+                <div>
+                    {{
+                        "inventories-footprint.application-round-button." + dimension
+                            | translate
+                    }}
+                </div>
+            </ng-template>
+        </p-dropdown>
+    }
+</div>
+@if (showInconsitencyGraph) {
+    @if (options().series && applicationStats()[0].value) {
+        <app-stack-bar-chart
+            [xAxisInput]="xAxisInput"
+            [statusCountMap]="criteriaCalculated().criteriasCount!"
+        />
+    } @else {
+        <div class="no-data-bar">
+            <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
         </div>
-        @if (showInconsitencyGraph) {
-            @if (options().series && applicationStats()[0].value) {
-                <app-stack-bar-chart
-                    [xAxisInput]="xAxisInput"
-                    [statusCountMap]="criteriaMap"
-                    (selectedStackBarClick)="selectedStackBarClick($event)"
-                />
-            } @else {
-                <div class="no-data-bar">
-                    <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
-                </div>
-            }
-        } @else {
-            @if (applicationStats()[0].value) {
-                <div
-                    id="graph"
-                    tabindex="0"
-                    echarts
-                    class="bar-stack m-0"
-                    [options]="options()"
-                    style="height: 53vh"
-                    (chartClick)="onChartClick($event)"
-                ></div>
-            } @else {
-                <div class="no-data-round">
-                    <p
-                        class="text-round-empty"
-                        tabindex="0"
-                        attr.aria-label="{{ 'common.no-data' | translate }}"
-                    >
-                        {{ "common.no-data" | translate }}
-                    </p>
-                </div>
-            }
-        }
-    </div>
-    <div class="col-12 mt-6 pt-0 lg:mt-0">
-        <app-information-card
+    }
+} @else {
+    @if (applicationStats()[0].value) {
+        <div
+            role="img"
+            attr.aria-label="{{
+                'inventories-footprint.round-button.' + selectedDimension() | translate
+            }} {{ 'inventories-footprint.global.global-vision' | translate }}"
+            echarts
+            class="m-0"
+            (chartClick)="onChartClick($event)"
+            [options]="options()"
+            style="height: 480px"
+        ></div>
+    } @else {
+        <div class="no-data-round">
+            <p
+                class="text-round-empty"
+                tabindex="0"
+                attr.aria-label="{{ 'common.no-data' | translate }}"
+            >
+                {{ "common.no-data" | translate }}
+            </p>
+        </div>
+    }
+}
+
+<!-- <app-information-card
             [title]="'inventories-footprint.global.info-fis-title' | translate"
             [content]="'inventories-footprint.global.info-fis-text' | translate"
-        ></app-information-card>
-        <app-stats
-            [stats]="applicationStats()"
-            icon="applications"
-            [title]="'inventories-footprint.application.applications.title' | translate"
-        ></app-stats>
-    </div>
-</div>
+        ></app-information-card> -->
+<app-stats
+    [stats]="applicationStats()"
+    icon="applications"
+    [title]="'inventories-footprint.application.applications.title' | translate"
+></app-stats>

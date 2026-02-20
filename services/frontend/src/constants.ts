@@ -151,6 +151,11 @@ export abstract class Constants {
         "equipment",
         "status",
     ];
+    static readonly APPLICATION_DIMENSIONS = [
+        "lifeCycle",
+        "environment",
+        "equipmentType",
+    ];
     static readonly EQUIPMENT_FILTERS = ["country", "entity", "equipment", "status"];
     static readonly EQUIPMENT_FILTERS_MAP: any = {
         country: "countries",

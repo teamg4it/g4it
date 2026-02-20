@@ -1,28 +1,257 @@
 <app-inventories-header-footprint
+    [inventory]="inventory()"
     [inventoryId]="inventoryId"
     [indicatorType]="'inventories.details.application' | translate | titlecase"
 ></app-inventories-header-footprint>
 <dataviz-filter-application [allFilters]="filteredFilters()"></dataviz-filter-application>
-@if (showTabMenu) {
-    <p-tabMenu
-        [model]="criteres!"
-        styleClass="px-1"
-        [scrollable]="true"
-        class="footprint-tabmenu"
-    ></p-tabMenu>
-}
+
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
-    @if (footprintStore.applicationCriteria() === multiCriteria) {
-        <app-application-multicriteria-footprint
-            [filterFields]="filterFields"
-            [footprint]="footprint"
-        ></app-application-multicriteria-footprint>
-    } @else {
-        <app-application-criteria-footprint
-            [filterFields]="filterFields"
-            [footprint]="criteriaFootprint"
-            [selectedInventoryId]="inventoryId"
-            [allUnmodifiedFilters]="allUnmodifiedFilters()"
-        ></app-application-criteria-footprint>
-    }
+    <div class="bg-white">
+        <div class="flex justify-content-between align-items-center">
+            @if (footprintStore.applicationCriteria() === multiCriteria) {
+                <h3
+                    class="pt-3 pl-4 pb-2"
+                    attr.aria-label="{{
+                        'inventories-footprint.application.graph-title-global' | translate
+                    }}"
+                >
+                    {{
+                        "inventories-footprint.global.global-vision-by"
+                            | translate
+                                : {
+                                      variable:
+                                          "inventories-footprint.global.criteria"
+                                          | translate,
+                                  }
+                    }}
+                    ({{ "common.peopleeq-min" | translate }})
+                </h3>
+            } @else {
+                @if (footprintStore.appGraphType() === "global") {
+                    <h3
+                        class="pt-3 pl-4 pb-2"
+                        attr.aria-label="{{ selectedCriteria }}{{
+                            'inventories-footprint.application.critere.graph.title'
+                                | translate
+                        }}"
+                        class="inline"
+                    >
+                        {{
+                            "inventories-footprint.global.global-vision-by"
+                                | translate
+                                    : {
+                                          variable:
+                                              "inventories-footprint.global.type_" +
+                                                  footprintStore.appGraphType()
+                                              | translate,
+                                      }
+                        }}
+                        ({{ "common.peopleeq-min" | translate }})
+                    </h3>
+                } @else {
+                    <div class="inline">
+                        @if (footprintStore.appGraphType() === "domain") {
+                            <h3
+                                class="pt-3 pl-4 pb-2"
+                                attr.aria-label="{{
+                                    'inventories-footprint.application.domain-view'
+                                        | translate
+                                }}{{ selectedCriteria }}{{
+                                    'inventories-footprint.application.critere.graph.title'
+                                        | translate
+                                }}"
+                            >
+                                {{
+                                    !showBackButton()
+                                        ? ("inventories-footprint.global.global-vision-by"
+                                          | translate
+                                              : {
+                                                    variable:
+                                                        "inventories-footprint.global.type_" +
+                                                            footprintStore.appGraphType()
+                                                        | translate,
+                                                })
+                                        : ("inventories-footprint.global.impact-domain-by-subdomain"
+                                          | translate
+                                              : {
+                                                    domain: footprintStore.appDomain(),
+                                                })
+                                }}
+                                ({{ "common.peopleeq-min" | translate }})
+                            </h3>
+                        }
+                        @if (footprintStore.appGraphType() === "subdomain") {
+                            <h3
+                                class="pt-3 pl-4 pb-2"
+                                attr.aria-label="{{
+                                    'inventories-footprint.application.subdomain-view'
+                                        | translate
+                                }}{{ selectedCriteria }}{{
+                                    'inventories-footprint.application.critere.graph.title'
+                                        | translate
+                                }}"
+                            >
+                                {{
+                                    !showBackButton()
+                                        ? ("inventories-footprint.global.global-vision-by"
+                                          | translate
+                                              : {
+                                                    variable:
+                                                        "inventories-footprint.global.type_" +
+                                                            footprintStore.appGraphType()
+                                                        | translate,
+                                                })
+                                        : showDomainByApplication()
+                                          ? ("inventories-footprint.global.impact-domain-by-application"
+                                            | translate
+                                                : { domain: footprintStore.appDomain() })
+                                          : ("inventories-footprint.global.impact-subdomain-by-application"
+                                            | translate
+                                                : {
+                                                      subdomain:
+                                                          footprintStore.appSubDomain(),
+                                                  })
+                                }}
+                                ({{ "common.peopleeq-min" | translate }})
+                            </h3>
+                        }
+                        @if (footprintStore.appGraphType() === "application") {
+                            <h3
+                                class="pt-3 pl-4 pb-2"
+                                attr.aria-label="{{
+                                    'inventories-footprint.application.application-view'
+                                        | translate
+                                }}{{ selectedCriteria }}{{
+                                    'inventories-footprint.application.critere.graph.title'
+                                        | translate
+                                }}"
+                            >
+                                {{
+                                    "inventories-footprint.global.impact-application-by-equipment"
+                                        | translate
+                                            : {
+                                                  application:
+                                                      footprintStore.appApplication(),
+                                              }
+                                }}
+                                ({{ "common.peopleeq-min" | translate }})
+                            </h3>
+                        }
+                    </div>
+                }
+            }
+            <p-button
+                (onClick)="filterSidebarVisible = true"
+                styleClass="p-button-secondary-blue uppercase"
+                id="filter"
+                icon="pi pi-filter"
+                [label]="'digital-services.configure-view' | translate"
+                [ariaLabel]="'digital-services.configure-view' | translate"
+            ></p-button>
+        </div>
+        <div class="mb-3 footprint-dashboard-container-app-criteria grid">
+            <div class="col-12 lg:col-4 bg-white">
+                <div
+                    class="bg-gray-color impact-buttons-div mx-auto mb-4 border-round-lg"
+                >
+                    <h3
+                        class="border-bottom-2 border-primary text-base font-medium p-2 pt-3 text-center mt-2 mb-1 uppercase"
+                    >
+                        {{ "digital-services.impacts" | translate }}
+                    </h3>
+
+                    <div class="flex flex-column w-full border-round">
+                        @for (impact of impacts(); track $index) {
+                            <app-impact-button
+                                [impact]="impact.name"
+                                [impactText]="impact.title"
+                                [impactUnite]="impact.unite"
+                                [value]="
+                                    selectedUnit === 'Peopleeq'
+                                        ? impact.peopleeq
+                                        : impact.raw
+                                "
+                                [selectedCriteria]="selectedCriteria"
+                                [selectedUnit]="selectedUnit"
+                                (selectedCriteriaChange)="handleChartChange($event)"
+                            ></app-impact-button>
+                        }
+                        <!-- [disabled]="onlyOneCriteria"
+                             -->
+
+                        @if (userService.isAllowedInventoryWrite$ | async) {
+                            <div class="mt-4 mb-2 text-center">
+                                <p-button
+                                    (onClick)="displayPopupFct()"
+                                    styleClass="cancel-creation-button uppercase px-3 py-2 mb-3 sm:mb-0"
+                                    [label]="'digital-services.edit-criteria' | translate"
+                                    icon="pi pi-plus-circle"
+                                    id="criteria-button"
+                                    [ariaLabel]="
+                                        'digital-services.choose-criteria'
+                                            | translate
+                                                : {
+                                                      digitalServiceName:
+                                                          inventory().name,
+                                                  }
+                                    "
+                                />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 lg:col-8 bg-gray-color mt-3">
+                <div class="bg-white m-3 pb-3">
+                    @if (footprintStore.applicationCriteria() === multiCriteria) {
+                        <app-application-multicriteria-footprint
+                            [filterFields]="filterFields"
+                            [footprint]="footprint()"
+                            [inventory]="inventory()"
+                        ></app-application-multicriteria-footprint>
+                    } @else {
+                        <app-application-criteria-footprint
+                            [filterFields]="filterFields"
+                            [footprint]="criteriaFootprint"
+                            [selectedInventoryId]="inventoryId"
+                            [allUnmodifiedFilters]="allUnmodifiedFilters()"
+                            [inventory]="inventory()"
+                            [showDomainByApplication]="showDomainByApplication()"
+                        ></app-application-criteria-footprint>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </p-scrollPanel>
+
+@if (displayPopup) {
+    <app-criteria-popup
+        [displayPopup]="displayPopup"
+        [type]="'inventory'"
+        [organization]="organization"
+        [workspace]="workspace"
+        [inventory]="inventory()"
+        [selectedCriteriaIS]="selectedCriterias"
+        (outSaveInventory)="saveInventory($event)"
+        (outClose)="displayPopup = false"
+    ></app-criteria-popup>
+}
+
+@if (filterSidebarVisible) {
+    <p-sidebar
+        [(visible)]="filterSidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-5"
+        (onHide)="filterSidebarVisible = false"
+    >
+        <ng-template pTemplate="headless">
+            <app-configure-view-filters
+                (filtersApplied)="handleFilters($event)"
+                (sidebarVisibleChange)="filterSidebarVisible = $event"
+                [enableDataInconsistency]="inventory().enableDataInconsistency"
+                [selectedUnit]="selectedUnit"
+            ></app-configure-view-filters>
+        </ng-template>
+    </p-sidebar>
+}
