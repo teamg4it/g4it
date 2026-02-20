@@ -9,18 +9,22 @@
 package com.soprasteria.g4it.backend.apiindicator.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NumberOfVirtualEquipmentsBO {
+@SuperBuilder
+public class VirtualEquipmentElecConsumptionBO {
 
-    private Long inventoryId;
-    private String inventoryName;
-    private Long numberOfVirtualEquipments;
+    private String name;
+    private String country;
+    private String lifecycleStep;
+    private String domain;
+    private String subDomain;
+    private String environment;
+    private String equipmentType;
+    private Double elecConsumption;
 }
-

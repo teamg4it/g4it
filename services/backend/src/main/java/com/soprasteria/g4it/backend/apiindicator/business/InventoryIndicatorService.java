@@ -161,7 +161,24 @@ public class InventoryIndicatorService {
         return indicatorService.getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId);
     }
 
-    public NumberOfVirtualEquipmentsBO getNumberOfVirtualEquipments(Long inventoryId) {
-        return indicatorService.getNumberOfVirtualEquipments(inventoryId);
+    public List<VirtualEquipmentElecConsumptionBO>
+    getVirtualEquipmentElecConsumption(final String organization,
+                                       final Long workspace,
+                                       final Long inventoryId) {
+
+        Task task = taskRepository
+                .findByInventoryAndLastCreationDate(
+                        Inventory.builder().id(inventoryId).build())
+                .orElseThrow();
+
+        final Long criteriaNumber = inventoryService.getCriteriaNumber(task.getId());
+
+        return indicatorService
+                .getVirtualEquipmentElecConsumption(
+                        task.getId(),
+                        criteriaNumber
+                );
     }
+
+
 }

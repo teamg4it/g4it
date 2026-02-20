@@ -142,8 +142,9 @@ public class IndicatorService {
         return virtualEquipmentIndicatorService.getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId);
     }
 
-    public NumberOfVirtualEquipmentsBO getNumberOfVirtualEquipments(Long inventoryId) {
-        return virtualEquipmentIndicatorService.getNumberOfVirtualEquipments(inventoryId);
+    public List<VirtualEquipmentElecConsumptionBO> getVirtualEquipmentElecConsumption(final Long taskId,
+                                                                                      final Long criteriaNumber) {
+        return virtualEquipmentIndicatorService.getVirtualEquipmentElecConsumption(taskId, criteriaNumber);
     }
 
 }
