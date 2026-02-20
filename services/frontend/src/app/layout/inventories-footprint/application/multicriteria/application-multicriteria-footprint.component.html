@@ -1,4 +1,4 @@
-<div class="flex flex-wrap align-items-center">
+<div class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3">
     @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
         <p-button
             (onClick)="showInconsitencyGraph = !showInconsitencyGraph"

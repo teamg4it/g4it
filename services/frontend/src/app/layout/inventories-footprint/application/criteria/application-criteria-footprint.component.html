@@ -1,4 +1,4 @@
-<div class="flex flex-wrap align-items-center">
+<div class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3">
     @if (footprintStore.appGraphType() !== "global") {
         <div class="inline">
             @if (showBackButton()) {
@@ -36,8 +36,8 @@
                 </a>
             }
         </div>
-        <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
     }
+    <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
 </div>
 @if (showInconsitencyGraph) {
     @if (options().series && !noData()) {

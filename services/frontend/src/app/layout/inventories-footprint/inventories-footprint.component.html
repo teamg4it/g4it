@@ -9,8 +9,8 @@
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
     <div class="bg-white">
         <div class="flex justify-content-between align-items-center">
-            <h3
-                class="pt-3 pl-4 pb-2"
+            <h2
+                class="pt-3 pl-4 pb-2 text-2xl line-height-1"
                 attr.aria-label="{{
                     'inventories-footprint.application.graph-title-global' | translate
                 }}"
@@ -21,18 +21,16 @@
                 } @else {
                     {{ "inventories-footprint.critere.repartition" | translate }}
                 }
-            </h3>
+            </h2>
 
-            @if (userService.isAllowedInventoryWrite$ | async) {
-                <p-button
-                    (onClick)="filterSidebarVisible = true"
-                    styleClass="p-button-secondary-blue uppercase"
-                    id="filter"
-                    icon="pi pi-filter"
-                    [label]="'digital-services.configure-view' | translate"
-                    [ariaLabel]="'digital-services.configure-view' | translate"
-                ></p-button>
-            }
+            <p-button
+                (onClick)="filterSidebarVisible = true"
+                styleClass="p-button-secondary-blue uppercase"
+                id="filter"
+                icon="pi pi-filter"
+                [label]="'digital-services.configure-view' | translate"
+                [ariaLabel]="'digital-services.configure-view' | translate"
+            ></p-button>
         </div>
         <div class="mb-3 footprint-dashboard-container-app-criteria grid">
             <div class="col-12 lg:col-4 bg-white">
@@ -86,27 +84,33 @@
                     </div>
                 </div>
             </div>
-            <div class="chart-container col-12 lg:col-8 bg-gray-color mt-3">
-                @if (footprintStore.criteria() === multiCriteria) {
-                    <app-inventories-multicriteria-footprint
-                        [footprint]="allUnmodifiedFootprint()"
-                        [filterFields]="filterFields"
-                        [datacenters]="allUnmodifiedDatacenters"
-                        [equipments]="allUnmodifiedEquipments"
-                        [inVirtualEquipments]="transformedInVirtualEquipments"
-                        [inventory]="inventory()"
-                    ></app-inventories-multicriteria-footprint>
-                } @else {
-                    <app-inventories-critere-footprint
-                        [footprint]="allUnmodifiedFootprint()"
-                        [criteriaFootprint]="allUnmodifiedCriteriaFootprint"
-                        [filterFields]="filterFields"
-                        [datacenters]="allUnmodifiedDatacenters"
-                        [equipments]="allUnmodifiedEquipments"
-                        [inVirtualEquipments]="transformedInVirtualEquipments"
-                        [inventory]="inventory()"
-                    ></app-inventories-critere-footprint>
-                }
+            <div class="col-12 lg:col-8 bg-gray-color mt-3">
+                <app-indicator-section
+                    [statGroups]="statGroups()"
+                ></app-indicator-section>
+
+                <div class="bg-white m-3 pb-3">
+                    @if (footprintStore.criteria() === multiCriteria) {
+                        <app-inventories-multicriteria-footprint
+                            [footprint]="allUnmodifiedFootprint()"
+                            [filterFields]="filterFields"
+                            [datacenters]="allUnmodifiedDatacenters()"
+                            [equipments]="allUnmodifiedEquipments()"
+                            [inVirtualEquipments]="transformedInVirtualEquipments()"
+                            [inventory]="inventory()"
+                        ></app-inventories-multicriteria-footprint>
+                    } @else {
+                        <app-inventories-critere-footprint
+                            [footprint]="allUnmodifiedFootprint()"
+                            [criteriaFootprint]="allUnmodifiedCriteriaFootprint"
+                            [filterFields]="filterFields"
+                            [datacenters]="allUnmodifiedDatacenters()"
+                            [equipments]="allUnmodifiedEquipments()"
+                            [inVirtualEquipments]="transformedInVirtualEquipments()"
+                            [inventory]="inventory()"
+                        ></app-inventories-critere-footprint>
+                    }
+                </div>
             </div>
         </div>
     </div>

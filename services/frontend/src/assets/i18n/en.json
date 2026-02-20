@@ -39,6 +39,8 @@
         "peopleeq": "People eq.",
         "peopleeq-min": "people. eq.",
         "peopleeq-full": "people equivalent",
+        "peopleeq-full-capital": "People equivalent",
+        "unit-of-criterion": "Unit of the criterion",
         "no-data": "No results available",
         "loading": "Loading in progress",
         "choose-file": "Choose a file",
@@ -173,7 +175,10 @@
         "plus-menu": "Plus",
         "add-button": "Add",
         "actions": "Actions",
-        "nav-panel": "Show the navigation panel"
+        "nav-panel": "Show the navigation panel",
+        "key-indicator": "Key indicator",
+        "infrastructure": "Infrastructure",
+        "energy": "Energy"
     },
     "useful-information": {
         "computing-engines": "Computing engines",

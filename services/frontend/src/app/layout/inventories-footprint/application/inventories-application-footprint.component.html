@@ -140,16 +140,14 @@
                     </div>
                 }
             }
-            @if (userService.isAllowedInventoryWrite$ | async) {
-                <p-button
-                    (onClick)="filterSidebarVisible = true"
-                    styleClass="p-button-secondary-blue uppercase"
-                    id="filter"
-                    icon="pi pi-filter"
-                    [label]="'digital-services.configure-view' | translate"
-                    [ariaLabel]="'digital-services.configure-view' | translate"
-                ></p-button>
-            }
+            <p-button
+                (onClick)="filterSidebarVisible = true"
+                styleClass="p-button-secondary-blue uppercase"
+                id="filter"
+                icon="pi pi-filter"
+                [label]="'digital-services.configure-view' | translate"
+                [ariaLabel]="'digital-services.configure-view' | translate"
+            ></p-button>
         </div>
         <div class="mb-3 footprint-dashboard-container-app-criteria grid">
             <div class="col-12 lg:col-4 bg-white">
@@ -203,23 +201,25 @@
                     </div>
                 </div>
             </div>
-            <div class="chart-container col-12 lg:col-8 bg-gray-color mt-3">
-                @if (footprintStore.applicationCriteria() === multiCriteria) {
-                    <app-application-multicriteria-footprint
-                        [filterFields]="filterFields"
-                        [footprint]="footprint()"
-                        [inventory]="inventory()"
-                    ></app-application-multicriteria-footprint>
-                } @else {
-                    <app-application-criteria-footprint
-                        [filterFields]="filterFields"
-                        [footprint]="criteriaFootprint"
-                        [selectedInventoryId]="inventoryId"
-                        [allUnmodifiedFilters]="allUnmodifiedFilters()"
-                        [inventory]="inventory()"
-                        [showDomainByApplication]="showDomainByApplication()"
-                    ></app-application-criteria-footprint>
-                }
+            <div class="col-12 lg:col-8 bg-gray-color mt-3">
+                <div class="bg-white m-3 pb-3">
+                    @if (footprintStore.applicationCriteria() === multiCriteria) {
+                        <app-application-multicriteria-footprint
+                            [filterFields]="filterFields"
+                            [footprint]="footprint()"
+                            [inventory]="inventory()"
+                        ></app-application-multicriteria-footprint>
+                    } @else {
+                        <app-application-criteria-footprint
+                            [filterFields]="filterFields"
+                            [footprint]="criteriaFootprint"
+                            [selectedInventoryId]="inventoryId"
+                            [allUnmodifiedFilters]="allUnmodifiedFilters()"
+                            [inventory]="inventory()"
+                            [showDomainByApplication]="showDomainByApplication()"
+                        ></app-application-criteria-footprint>
+                    }
+                </div>
             </div>
         </div>
     </div>

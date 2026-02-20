@@ -1,0 +1,20 @@
+<div class="key-figures">
+    <h3 class="mt-2 ml-0 mb-2 font-semibold">{{ "common.key-indicator" | translate }}</h3>
+
+    <ng-container *ngFor="let group of statGroups()">
+        <h4 class="subtitle font-semibold mb-2 mt-3">{{ group.subtitle }}</h4>
+
+        <div class="cards-grid">
+            <div class="stat-card" *ngFor="let item of group.items">
+                <div class="value">
+                    {{ item?.value || item?.value === 0 ? item?.label : "--" }}
+                    <span class="text-sm font-normal">
+                        {{ item?.value || item?.value === 0 ? item?.unit : "" }}
+                    </span>
+                </div>
+
+                <div class="label">{{ item?.title }}</div>
+            </div>
+        </div>
+    </ng-container>
+</div>

@@ -20,6 +20,7 @@ import { InventoryUtilService } from "src/app/core/service/business/inventory-ut
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { ImpactAggregateInfosComponent } from "src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component";
 import { ConfigureViewFiltersComponent } from "../common/configure-view-filters/configure-view-filters.component";
+import { IndicatorSectionComponent } from "../common/indicator-section/indicator-section.component";
 import { ImpactButtonComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component";
 import { InventoriesCritereFootprintComponent } from "./critere/inventories-critere-footprint.component";
 import { DataCenterEquipmentStatsComponent } from "./datacenter-equipment-stats/datacenter-equipment-stats.component";
@@ -57,6 +58,7 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
         inventoriesFootprintRouter,
         ConfigureViewFiltersComponent,
         ImpactButtonComponent,
+        IndicatorSectionComponent,
     ],
     providers: [InventoryUtilService],
     exports: [InventoriesFootprintComponent],

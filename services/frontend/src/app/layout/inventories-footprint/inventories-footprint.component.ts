@@ -12,6 +12,7 @@ import {
     Signal,
     WritableSignal,
     computed,
+    effect,
     inject,
     signal,
 } from "@angular/core";
@@ -35,7 +36,9 @@ import {
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
+    Stat,
 } from "src/app/core/interfaces/footprint.interface";
+import { StatGroup } from "src/app/core/interfaces/indicator.interface";
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import {
     Inventory,
@@ -102,14 +105,39 @@ export class InventoriesFootprintComponent implements OnInit {
         },
     ];
 
+    equipmentStats = signal<Stat[]>([]);
+    cloudStats = signal<Stat[]>([]);
+    datacenterStats = signal<Stat[]>([]);
+
+    statGroups: Signal<StatGroup[]> = computed(() => {
+        const eqStats = this.equipmentStats();
+        const clStats = this.cloudStats();
+        const dcStats = this.datacenterStats();
+        console.log(eqStats);
+        console.log(clStats);
+
+        return [
+            {
+                subtitle: this.translate.instant("common.infrastructure"),
+                items: [eqStats[0], eqStats[1], clStats[0]],
+            },
+            {
+                subtitle: this.translate.instant("common.energy"),
+                items: [eqStats[3], eqStats[2], dcStats[1]],
+            },
+        ] as StatGroup[];
+    });
+
     allUnmodifiedFootprint: WritableSignal<Criterias> = signal({} as Criterias);
     allUnmodifiedFilters: Filter<string> = {};
-    allUnmodifiedDatacenters: Datacenter[] = [] as Datacenter[];
-    allUnmodifiedEquipments: [
-        PhysicalEquipmentAvgAge[],
-        PhysicalEquipmentLowImpact[],
-        PhysicalEquipmentsElecConsumption[],
-    ] = [[], [], []];
+    allUnmodifiedDatacenters: WritableSignal<Datacenter[]> = signal([] as Datacenter[]);
+    allUnmodifiedEquipments: WritableSignal<
+        [
+            PhysicalEquipmentAvgAge[],
+            PhysicalEquipmentLowImpact[],
+            PhysicalEquipmentsElecConsumption[],
+        ]
+    > = signal([[], [], []]);
     allUnmodifiedCriteriaFootprint: Criteria = {} as Criteria;
 
     order = LifeCycleUtils.getLifeCycleList();
@@ -119,7 +147,7 @@ export class InventoriesFootprintComponent implements OnInit {
     multiCriteria = Constants.MUTLI_CRITERIA;
     inventoryId = +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
-    transformedInVirtualEquipments: InVirtualEquipmentRest[] = [];
+    transformedInVirtualEquipments: WritableSignal<InVirtualEquipmentRest[]> = signal([]);
     inventory: WritableSignal<Inventory> = signal({} as Inventory);
     selectedCriteria: string = "";
     currentLang: string = this.translate.currentLang;
@@ -163,7 +191,37 @@ export class InventoriesFootprintComponent implements OnInit {
         private readonly footprintService: FootprintService,
         private readonly translate: TranslateService,
         private readonly digitalBusinessService: DigitalServiceBusinessService,
-    ) {}
+    ) {
+        effect(() => {
+            (async () => {
+                const res = await this.inventoryUtilService.computeEquipmentStats(
+                    this.allUnmodifiedEquipments(),
+                    this.footprintStore.filters(),
+                    this.filterFields,
+                    this.allUnmodifiedFootprint(),
+                );
+                this.equipmentStats.set(res);
+            })();
+
+            (async () => {
+                const res = await this.inventoryUtilService.computeCloudStats(
+                    this.transformedInVirtualEquipments(),
+                    this.footprintStore.filters(),
+                    this.filterFields,
+                );
+                this.cloudStats.set(res);
+            })();
+
+            (async () => {
+                const res = await this.inventoryUtilService.computeDataCenterStats(
+                    this.footprintStore.filters(),
+                    this.filterFields,
+                    this.allUnmodifiedDatacenters(),
+                );
+                this.datacenterStats.set(res);
+            })();
+        });
+    }
 
     ngOnInit() {
         this.getOnInitData();
@@ -265,8 +323,9 @@ export class InventoriesFootprintComponent implements OnInit {
         inVirtualEquipments: InVirtualEquipmentRest[],
         outVirtualEquipments: OutVirtualEquipmentRest[],
     ) {
-        this.transformedInVirtualEquipments =
-            this.transformInVirtualEquipment(inVirtualEquipments);
+        this.transformedInVirtualEquipments.set(
+            this.transformInVirtualEquipment(inVirtualEquipments),
+        );
         const transformedOutVirtualEquipments =
             this.transformOutVirtualEquipment(outVirtualEquipments);
         this.tranformAcvStepFootprint(footprint);
@@ -295,8 +354,8 @@ export class InventoriesFootprintComponent implements OnInit {
         ],
     ) {
         this.allUnmodifiedFootprint.set(structuredClone(footprint));
-        this.allUnmodifiedDatacenters = datacenters;
-        this.allUnmodifiedEquipments = physicalEquipments;
+        this.allUnmodifiedDatacenters.set(datacenters);
+        this.allUnmodifiedEquipments.set(physicalEquipments);
         this.allUnmodifiedFilters = {};
 
         const uniqueFilterSet = this.footprintService.getUniqueValues(
@@ -316,8 +375,26 @@ export class InventoriesFootprintComponent implements OnInit {
                     .sort((a, b) => String(a).localeCompare(String(b))),
             ];
         }
-
+        // Compute stats after data is loaded
+        this.computeStats();
         this.globalStore.setLoading(false);
+    }
+
+    async computeStats() {
+        const eqStats = await this.inventoryUtilService.computeEquipmentStats(
+            this.allUnmodifiedEquipments(),
+            this.footprintStore.filters(),
+            this.filterFields,
+            this.allUnmodifiedFootprint(),
+        );
+        this.equipmentStats.set(eqStats);
+
+        const clStats = await this.inventoryUtilService.computeCloudStats(
+            this.transformedInVirtualEquipments(),
+            this.footprintStore.filters(),
+            this.filterFields,
+        );
+        this.cloudStats.set(clStats);
     }
 
     initializeCriteriaMenu(footprint: Criterias, criteria: string) {
