@@ -21,42 +21,49 @@ import org.hibernate.annotations.Immutable;
         name = "InVirtualEquipmentLowImpactView.findVirtualEquipmentLowImpactIndicatorsByInventoryId",
         query = """
                 SELECT
-                                         ROW_NUMBER() OVER (ORDER BY oa.virtual_equipment_name, oa.lifecycle_step) AS id,
-                                         oa.virtual_equipment_name                     AS name,
-                                         COALESCE(dc.location, ive.location, 'Unknown') AS location,
-                                         oa.lifecycle_step                             AS lifecycle_step,
-                                         oa.filters[1]                                 AS domain,
-                                         oa.filters[2]                                 AS sub_domain,
-                                         oa.environment                                AS environment,
-                                         oa.equipment_type                             AS equipment_type,
-                                         SUM(CAST(oa.quantity AS INT))                 AS quantity
+                                       ROW_NUMBER() OVER (
+                                           ORDER BY
+                                               oa.virtual_equipment_name,
+                                               oa.lifecycle_step,
+                                               oa.environment
+                                       ) AS id,
                 
-                                     FROM out_application oa
+                                       oa.virtual_equipment_name                     AS name,
+                                       COALESCE(dc.location, ive.location, 'Unknown') AS location,
+                                       oa.lifecycle_step                             AS lifecycle_step,
+                                       oa.filters[1]                                 AS domain,
+                                       oa.filters[2]                                 AS sub_domain,
+                                       oa.environment                                AS environment,
+                                       oa.equipment_type                             AS equipment_type,
                 
-                                     JOIN in_virtual_equipment ive
-                                       ON ive.name = oa.virtual_equipment_name
-                                      AND ive.inventory_id = :inventoryId
+                                       COUNT(*)                                      AS quantity
                 
-                                     LEFT JOIN in_datacenter dc
-                                       ON dc.inventory_id = ive.inventory_id
-                                      AND dc.name = ive.datacenter_name
+                                   FROM out_application oa
                 
-                                     WHERE oa.task_id = (
-                                             SELECT MAX(t2.id)
-                                             FROM task t2
-                                             WHERE t2.inventory_id = :inventoryId
-                                               AND t2.status = 'COMPLETED'
-                                           )
-                                       AND oa.status_indicator = 'OK'
+                                   JOIN in_virtual_equipment ive
+                                         ON ive.name = oa.virtual_equipment_name
+                                        AND ive.inventory_id = :inventoryId
                 
-                                     GROUP BY
-                                         oa.virtual_equipment_name,
-                                         COALESCE(dc.location, ive.location, 'Unknown'),
-                                         oa.lifecycle_step,
-                                         oa.filters[1],
-                                         oa.filters[2],
-                                         oa.environment,
-                                         oa.equipment_type;
+                                   LEFT JOIN in_datacenter dc
+                                         ON dc.inventory_id = ive.inventory_id
+                                        AND dc.name = ive.datacenter_name
+                
+                                   WHERE oa.task_id = (
+                                           SELECT MAX(t2.id)
+                                           FROM task t2
+                                           WHERE t2.inventory_id = :inventoryId
+                                             AND t2.status = 'COMPLETED'
+                                         )
+                                     AND oa.status_indicator = 'OK'
+                
+                                   GROUP BY
+                                       oa.virtual_equipment_name,
+                                       COALESCE(dc.location, ive.location, 'Unknown'),
+                                       oa.lifecycle_step,
+                                       oa.filters[1],
+                                       oa.filters[2],
+                                       oa.environment,
+                                       oa.equipment_type
                 """,
         resultClass = InVirtualEquipmentLowImpactView.class
 )
@@ -73,7 +80,7 @@ public class InVirtualEquipmentLowImpactView {
     private String location;
 
     @Column(name = "lifecycle_step")
-    private String lifecycleStep;
+    private String lifeCycle;
 
     @Column(name = "domain")
     private String domain;

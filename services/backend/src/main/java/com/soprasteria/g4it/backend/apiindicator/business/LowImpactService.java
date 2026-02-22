@@ -101,5 +101,4 @@ public class LowImpactService {
         return totalImpact != null && totalImpact < firstQuartileValue;
     }
 
-
 }

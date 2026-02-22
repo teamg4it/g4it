@@ -17,7 +17,10 @@ import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentLo
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VirtualEquipmentIndicatorService {
@@ -51,26 +55,67 @@ public class VirtualEquipmentIndicatorService {
     @Autowired
     private LowImpactService lowImpactService;
 
+    @Autowired
+    private BoaviztapiService boaviztapiService;
+
+    private Map<String, String> isoToCountry;
+
+    @PostConstruct
+    public void init() {
+        isoToCountry = boaviztapiService.getCountryMap()
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getValue,
+                        Map.Entry::getKey
+                ));
+    }
+
 
     public List<VirtualEquipmentLowImpactBO> getVirtualEquipmentsLowImpact(
             final String organization,
             final Long workspaceId,
             final Long inventoryId
     ) {
+
         final Workspace linkedWorkspace = workspaceService.getWorkspaceById(workspaceId);
-        final List<InVirtualEquipmentLowImpactView> indicators = inVirtualEquipmentLowImpactViewRepository.findVirtualEquipmentLowImpactIndicatorsByInventoryId(inventoryId);
-        // Compute low impact per location only once
+
+        final List<InVirtualEquipmentLowImpactView> indicators =
+                inVirtualEquipmentLowImpactViewRepository
+                        .findVirtualEquipmentLowImpactIndicatorsByInventoryId(inventoryId);
+
+        // Compute low impact per location (ISO → Full name) only once
         final Map<String, Boolean> locationLowImpactMap = indicators.stream()
                 .map(InVirtualEquipmentLowImpactView::getLocation)
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toMap(
-                        location -> location,
-                        lowImpactService::isLowImpact
+                        iso -> iso,
+                        iso -> {
+                            String resolvedCountry =
+                                    isoToCountry.getOrDefault(iso, iso);
+
+                            boolean result =
+                                    lowImpactService.isLowImpact(resolvedCountry);
+
+                            log.info("LOW IMPACT RESULT → ISO: {} | Country: {} | Result: {}",
+                                    iso, resolvedCountry, result);
+
+                            return result;
+                        }
                 ));
 
-        // Enrich indicators
         indicators.forEach(indicator -> {
+
+            String iso = indicator.getLocation();
+            String countryName = isoToCountry.getOrDefault(iso, iso);
+
+            log.info("VM: {} | ISO: {} | Country: {}",
+                    indicator.getName(),
+                    iso,
+                    countryName);
+
+            indicator.setLocation(countryName);
 
             indicator.setEquipmentType(
                     TypeUtils.getShortType(
@@ -81,9 +126,10 @@ public class VirtualEquipmentIndicatorService {
             );
 
             indicator.setLowImpact(
-                    locationLowImpactMap.getOrDefault(indicator.getLocation(), false)
+                    locationLowImpactMap.getOrDefault(iso, false)
             );
         });
+
         return virtualEquipmentIndicatorMapper.toLowImpactBO(indicators);
     }
 

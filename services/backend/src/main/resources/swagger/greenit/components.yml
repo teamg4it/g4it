@@ -637,14 +637,14 @@ components:
           format: int64
         name:
           type: string
-        country:
+        location:
           type: string
         quantity:
           type: number
           format: double
         lowImpact:
           type: boolean
-        lifecycleStep:
+        lifeCycle:
           type: string
           description: lifecycle step of the application
         domain:

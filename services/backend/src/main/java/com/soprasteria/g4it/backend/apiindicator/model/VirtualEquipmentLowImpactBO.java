@@ -25,9 +25,9 @@ public class VirtualEquipmentLowImpactBO implements Serializable {
 
     private String name;
 
-    private String country;
+    private String location;
 
-    private String lifecycleStep;
+    private String lifeCycle;
 
     private String domain;
 
