@@ -9,6 +9,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import {
     getColorFormatter,
     getLabelFormatter,
@@ -122,9 +123,40 @@ describe("RadialChartComponent", () => {
             }
         }
         expect(axisLabelFormatter).toBeDefined();
+        const decimalsPipe = new DecimalsPipe();
+        const maxCharacters = 20;
+        const criteriaUnitValues: Record<string, { total: number; unit: string }> = {};
+        radialChartData.forEach((tierData) => {
+            tierData.impacts.forEach((impact) => {
+                const twoWordsImpact = impact.criteria.split(" ").slice(0, 2).join(" ");
+                const criteriaName = component.getCriteriaTranslation(twoWordsImpact);
+                if (!criteriaUnitValues[criteriaName]) {
+                    criteriaUnitValues[criteriaName] = { total: 0, unit: impact.unit };
+                }
+                criteriaUnitValues[criteriaName].total += impact.unitValue;
+            });
+        });
+
         for (const criteria of Object.keys(criteriaMap)) {
+            const unitData = criteriaUnitValues[criteria];
+            const unitValueText = unitData
+                ? `\n (${decimalsPipe.transform(unitData.total)} ${unitData.unit})`
+                : "";
+            const truncatedValue =
+                criteria.length > maxCharacters
+                    ? criteria.substring(0, maxCharacters) + "…"
+                    : criteria;
+            const shortUnitValue =
+                unitValueText.length > maxCharacters
+                    ? unitValueText.substring(0, maxCharacters - 2) + "…"
+                    : unitValueText;
+
             expect(axisLabelFormatter!(criteria)).toBe(
-                getLabelFormatter(!!criteriaMap[criteria]?.status?.error, true, criteria),
+                getLabelFormatter(
+                    !!criteriaMap[criteria]?.status?.error,
+                    true,
+                    truncatedValue + shortUnitValue,
+                ),
             );
         }
     });
