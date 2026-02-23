@@ -139,7 +139,7 @@ describe("RadialChartComponent", () => {
         for (const criteria of Object.keys(criteriaMap)) {
             const unitData = criteriaUnitValues[criteria];
             const unitValueText = unitData
-                ? `\n${decimalsPipe.transform(unitData.total)} ${unitData.unit}`
+                ? `\n (${decimalsPipe.transform(unitData.total)} ${unitData.unit})`
                 : "";
             const shortUnitValue =
                 unitValueText.length > 20
