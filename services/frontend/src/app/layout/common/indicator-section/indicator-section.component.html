@@ -6,7 +6,15 @@
 
         <div class="cards-grid">
             <div class="stat-card" *ngFor="let item of group.items">
-                <div class="value">
+                <div
+                    class="value"
+                    [attr.aria-label]="
+                        item?.value || item?.value === 0
+                            ? item?.label + ' ' + item?.unit
+                            : '--'
+                    "
+                    tabIndex="0"
+                >
                     {{ item?.value || item?.value === 0 ? item?.label : "--" }}
                     <span class="text-sm font-normal">
                         {{ item?.value || item?.value === 0 ? item?.unit : "" }}
@@ -20,7 +28,11 @@
                     ></i>
                 </div>
 
-                <div class="label" [attr.lang]="item?.lang ? item.lang : null">
+                <div
+                    class="label"
+                    [attr.lang]="item?.lang ? item.lang : null"
+                    [attr.aria-label]="item?.title"
+                >
                     {{ item?.title }}
                 </div>
             </div>
