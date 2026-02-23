@@ -154,6 +154,9 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             },
             legend: {
                 orient: "horizontal",
+                formatter: (param: any) => {
+                    return this.existingTranslation(param, "digital-services");
+                },
             },
             series: [
                 {
