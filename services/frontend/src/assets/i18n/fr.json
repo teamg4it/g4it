@@ -177,7 +177,9 @@
         "nav-panel": "Ouvrir le menu de navigation",
         "key-indicator": "Indicateurs clés",
         "infrastructure": "Infrastructure",
-        "energy": "Énergie"
+        "energy": "Énergie",
+        "expand-impact": "Cliquez ici pour développer la section sur l'impact",
+        "collapse-impact": "Cliquez ici pour réduire la section d'impact"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",

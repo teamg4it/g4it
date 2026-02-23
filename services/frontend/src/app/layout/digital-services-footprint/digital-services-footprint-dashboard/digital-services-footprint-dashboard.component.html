@@ -26,14 +26,40 @@
         ></p-button>
     </div>
     <div class="footprint-digital-dashboard-container grid px-2">
-        <div class="col-12 lg:col-4 bg-white">
+        <div
+            class="bg-white"
+            [ngClass]="!isCollapsed ? 'col-12 lg:col-4' : 'col-fixed w-7rem'"
+        >
             <div class="bg-gray-color impact-buttons-div mx-auto mb-4 border-round-lg">
-                <h3
-                    class="border-bottom-2 border-primary text-base font-medium p-2 pt-3 text-center mt-2 mb-1 uppercase"
+                <div
+                    class="flex align-items-center"
+                    [ngClass]="
+                        !isCollapsed
+                            ? 'justify-content-between'
+                            : 'justify-content-center'
+                    "
                 >
-                    {{ "digital-services.impacts" | translate }}
-                </h3>
-
+                    @if (!isCollapsed) {
+                        <h3 class="text-base font-semibold p-2 pt-3 mt-2 mb-1 uppercase">
+                            {{ "digital-services.impacts" | translate }}
+                        </h3>
+                        <p-button
+                            (onClick)="isCollapsed = true"
+                            styleClass=" cancel-creation-button border-none mr-3 px-3 py-2 mb-3 sm:mb-0"
+                            icon="pi pi-angle-double-right"
+                            id="collapse-button"
+                            [outlined]="false"
+                        />
+                    } @else {
+                        <p-button
+                            (onClick)="isCollapsed = false"
+                            styleClass=" cancel-creation-button  border-none  px-3 py-2 my-3"
+                            icon="pi pi-angle-double-left"
+                            id="expand-button"
+                            [outlined]="false"
+                        />
+                    }
+                </div>
                 <div class="flex flex-column w-full border-round">
                     @for (impact of impacts; track $index) {
                         <app-impact-button
@@ -47,6 +73,7 @@
                             [selectedUnit]="selectedUnit"
                             [disabled]="onlyOneCriteria"
                             (selectedCriteriaChange)="handleChartChange($event)"
+                            [isCollapsed]="isCollapsed"
                         ></app-impact-button>
                     }
 
@@ -55,7 +82,10 @@
                             <p-button
                                 (onClick)="displayPopupFct()"
                                 styleClass="cancel-creation-button uppercase px-3 py-2 mb-3 sm:mb-0"
-                                [label]="'digital-services.edit-criteria' | translate"
+                                [label]="
+                                    (!isCollapsed ? 'digital-services.edit-criteria' : '')
+                                        | translate
+                                "
                                 icon="pi pi-plus-circle"
                                 id="criteria-button"
                                 [ariaLabel]="
@@ -70,7 +100,8 @@
             </div>
         </div>
         <div
-            class="digital-service-chart-container col-12 lg:col-8 mt-3 mb-5 bg-gray-color"
+            class="digital-service-chart-container mb-5 mt-2 bg-gray-color"
+            [ngClass]="!isCollapsed ? 'col-12 lg:col-8' : 'col'"
         >
             <div class="bg-white m-3 pb-3">
                 <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>

@@ -21,24 +21,30 @@
                 width="30"
             />
         </div>
-        <div class="flex flex-column align-items-start ml-2 pr-4">
-            <p class="text-xs uppercase text-left">{{ impactText }}</p>
-            @if ((value ?? 0) === 0) {
-                {{ value ? value : "--" }}
-                <span [innerHTML]="selectedUnit === 'Raw' ? impactUnite : ''"></span>
-            } @else {
-                <div class="text-xs">
-                    {{ selectedUnit === "Raw" ? (value | decimals) : (value | integer) }}
-                </div>
-                <div
-                    class="text-xs"
-                    [innerHTML]="selectedUnit === 'Raw' ? impactUnite : ''"
-                ></div>
-            }
-        </div>
-        <span
-            [ngClass]="{ 'light-green-color': selectedCriteria !== impact }"
-            class="pi pi-chevron-right absolute right-1rem font-bold"
-        ></span>
+        @if (!isCollapsed()) {
+            <div class="flex flex-column align-items-start ml-2 pr-4">
+                <p class="text-xs uppercase text-left">{{ impactText }}</p>
+                @if ((value ?? 0) === 0) {
+                    {{ value ? value : "--" }}
+                    <span [innerHTML]="selectedUnit === 'Raw' ? impactUnite : ''"></span>
+                } @else {
+                    <div class="text-xs">
+                        {{
+                            selectedUnit === "Raw"
+                                ? (value | decimals)
+                                : (value | integer)
+                        }}
+                    </div>
+                    <div
+                        class="text-xs"
+                        [innerHTML]="selectedUnit === 'Raw' ? impactUnite : ''"
+                    ></div>
+                }
+            </div>
+            <span
+                [ngClass]="{ 'light-green-color': selectedCriteria !== impact }"
+                class="pi pi-chevron-right absolute right-1rem font-bold"
+            ></span>
+        }
     </p-button>
 </div>

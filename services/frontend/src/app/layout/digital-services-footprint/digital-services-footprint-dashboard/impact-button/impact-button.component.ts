@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, input, Input, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { ButtonModule } from "primeng/button";
 import { SharedModule } from "src/app/core/shared/shared.module";
@@ -26,6 +26,7 @@ export class ImpactButtonComponent implements OnInit {
     @Output() selectedCriteriaChange: EventEmitter<any> = new EventEmitter();
     @Input() selectedUnit: string = "";
     @Input() disabled = false;
+    isCollapsed = input<boolean>(false);
     impactImage: string = "";
     selectedLang: string = "en";
 

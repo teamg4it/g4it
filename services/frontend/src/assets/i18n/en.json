@@ -178,7 +178,9 @@
         "nav-panel": "Show the navigation panel",
         "key-indicator": "Key indicator",
         "infrastructure": "Infrastructure",
-        "energy": "Energy"
+        "energy": "Energy",
+        "expand-impact": "Click here to expand impact section",
+        "collapse-impact": "Click here to collapse impact section"
     },
     "useful-information": {
         "computing-engines": "Computing engines",

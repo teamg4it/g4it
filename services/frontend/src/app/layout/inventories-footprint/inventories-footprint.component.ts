@@ -154,6 +154,7 @@ export class InventoriesFootprintComponent implements OnInit {
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
     displayPopup = false;
     selectedCriterias: string[] = [];
+    isCollapsed = false;
     organization: OrganizationCriteriaRest = { criteria: [] };
     workspace: WorkspaceCriteriaRest = {
         organizationId: 0,
