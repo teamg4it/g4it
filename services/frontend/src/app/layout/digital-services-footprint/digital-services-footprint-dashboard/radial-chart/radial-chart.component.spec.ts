@@ -124,6 +124,7 @@ describe("RadialChartComponent", () => {
         }
         expect(axisLabelFormatter).toBeDefined();
         const decimalsPipe = new DecimalsPipe();
+        const maxCharacters = 20;
         const criteriaUnitValues: Record<string, { total: number; unit: string }> = {};
         radialChartData.forEach((tierData) => {
             tierData.impacts.forEach((impact) => {
@@ -141,16 +142,20 @@ describe("RadialChartComponent", () => {
             const unitValueText = unitData
                 ? `\n (${decimalsPipe.transform(unitData.total)} ${unitData.unit})`
                 : "";
+            const truncatedValue =
+                criteria.length > maxCharacters
+                    ? criteria.substring(0, maxCharacters) + "…"
+                    : criteria;
             const shortUnitValue =
-                unitValueText.length > 20
-                    ? unitValueText.substring(0, 20) + "…"
+                unitValueText.length > maxCharacters
+                    ? unitValueText.substring(0, maxCharacters - 2) + "…"
                     : unitValueText;
 
             expect(axisLabelFormatter!(criteria)).toBe(
                 getLabelFormatter(
                     !!criteriaMap[criteria]?.status?.error,
                     true,
-                    criteria + shortUnitValue,
+                    truncatedValue + shortUnitValue,
                 ),
             );
         }

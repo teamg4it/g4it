@@ -216,8 +216,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 },
             },
             polar: {
-                radius: "76%",
-                center: ["50%", "55%"],
+                radius: "70%",
+                center: ["50%", "50%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({
                 name: item.tier,
