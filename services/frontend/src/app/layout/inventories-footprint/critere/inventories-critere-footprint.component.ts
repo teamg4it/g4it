@@ -364,8 +364,8 @@ export class InventoriesCritereFootprintComponent
         return `
             <div class="ml-1 mr-2">
                 ${this.getCircleColorHtml(color)}
-                <div class="font-bold">${name}:</div>
-                <div class="ml-2">${value}</div>
+                <span class="font-bold">${name}:</span>
+                <span class="ml-2">${value}</span>
             </div>
          `;
     }

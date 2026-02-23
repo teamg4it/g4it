@@ -1,25 +1,27 @@
-<div style="margin-bottom: 20px; margin-top: 20px">
-    <div class="side-data-title">
-        <img
-            src="assets/images/icons/icon-lifecycle-env.svg"
-            alt=""
-            class="w-3rem mr-3"
-        />
-        <span role="heading" [ariaLevel]="3">{{
-            "inventories-footprint.filter-tabs-application.lifeCycle" | translate
-        }}</span>
+<div class="grid my-3">
+    <div class="col-12 lg:col-6">
+        <div class="side-data-title">
+            <img
+                src="assets/images/icons/icon-lifecycle-env.svg"
+                alt=""
+                class="w-3rem mr-3"
+            />
+            <span role="heading" [ariaLevel]="3">{{
+                "inventories-footprint.filter-tabs-application.lifeCycle" | translate
+            }}</span>
+        </div>
+        <p-card>
+            <div
+                tabindex="0"
+                echarts
+                class="pie"
+                [options]="lifecycleOptions()"
+                style="height: 170px; margin: 0; width: 90%"
+            ></div>
+        </p-card>
     </div>
-    <p-card>
-        <div
-            tabindex="0"
-            echarts
-            class="pie"
-            [options]="lifecycleOptions()"
-            style="height: 170px; margin: 0; width: 90%"
-        ></div>
-    </p-card>
     @if (footprintStore.appGraphType() === "application") {
-        <div style="margin-bottom: 20px; margin-top: 20px">
+        <div class="col-12 lg:col-6">
             <div class="side-data-title">
                 <img
                     src="assets/images/icons/icon-lifecycle-env.svg"
