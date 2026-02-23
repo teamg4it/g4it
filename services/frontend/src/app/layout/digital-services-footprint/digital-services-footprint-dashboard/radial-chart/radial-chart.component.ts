@@ -115,6 +115,20 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
         );
         const criteriaSetArray: string[] = Object.keys(this.criteriaMap);
         this.xAxisInput = criteriaSetArray;
+
+        // Calculate total unit values per criterion
+        const criteriaUnitValues: { [key: string]: { total: number; unit: string } } = {};
+        noErrorRadialChartData.forEach((tierData) => {
+            tierData.impacts.forEach((impact) => {
+                const twoWordsImpact = impact.criteria.split(" ").slice(0, 2).join(" ");
+                const criteriaName = this.getCriteriaTranslation(twoWordsImpact);
+                if (!criteriaUnitValues[criteriaName]) {
+                    criteriaUnitValues[criteriaName] = { total: 0, unit: impact.unit };
+                }
+                criteriaUnitValues[criteriaName].total += impact.unitValue;
+            });
+        });
+
         return {
             tooltip: {
                 show: true,
@@ -163,27 +177,47 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 axisLabel: {
                     formatter: (value: string) => {
                         const hasError = !!this.criteriaMap[value].status.error;
+                        const unitData = criteriaUnitValues[value];
+                        const unitValueText = unitData
+                            ? `\n (${this.decimalsPipe.transform(unitData.total)} ${unitData.unit})`
+                            : "";
+
+                        const maxCharacters = 20; // Set the maximum number of characters to display
+
+                        const truncatedValue =
+                            value.length > maxCharacters
+                                ? value.substring(0, maxCharacters) + "…"
+                                : value;
+
+                        const shortUnitValue =
+                            unitValueText.length > maxCharacters
+                                ? unitValueText.substring(0, maxCharacters - 2) + "…"
+                                : unitValueText;
+
                         return getLabelFormatter(
                             hasError,
                             this.enableDataInconsistency,
-                            value,
+                            truncatedValue + shortUnitValue,
                         );
                     },
-                    rich: Constants.CHART_RICH as any,
                     margin: 15,
+                    hideOverlap: true,
+                    rich: Constants.CHART_RICH as any,
                 },
             },
             radiusAxis: {
                 ...(this.compareMax() > 0 ? { max: this.compareMax() } : {}),
                 name: this.translate.instant("common.peopleeq"),
                 nameLocation: "end",
+                // THIS increases distance from chart
+                nameGap: 30,
                 nameTextStyle: {
                     fontStyle: "italic",
                 },
             },
             polar: {
-                radius: "76%",
-                center: ["50%", "55%"],
+                radius: "70%",
+                center: ["50%", "50%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({
                 name: item.tier,
