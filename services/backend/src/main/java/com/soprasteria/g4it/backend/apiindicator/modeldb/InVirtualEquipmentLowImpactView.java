@@ -36,7 +36,7 @@ import org.hibernate.annotations.Immutable;
                                        oa.environment                                AS environment,
                                        oa.equipment_type                             AS equipment_type,
                 
-                                       COUNT(*)                                      AS quantity
+                                       COUNT(DISTINCT oa.name)                                      AS quantity
                 
                                    FROM out_application oa
                 
