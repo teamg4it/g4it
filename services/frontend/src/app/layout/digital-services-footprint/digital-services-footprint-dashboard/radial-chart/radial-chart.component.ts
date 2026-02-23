@@ -179,7 +179,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                         const hasError = !!this.criteriaMap[value].status.error;
                         const unitData = criteriaUnitValues[value];
                         const unitValueText = unitData
-                            ? `\n${this.decimalsPipe.transform(unitData.total)} ${unitData.unit}`
+                            ? `\n (${this.decimalsPipe.transform(unitData.total)} ${unitData.unit})`
                             : "";
 
                         const shortUnitValue =
@@ -207,7 +207,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 },
             },
             polar: {
-                radius: "60%",
+                radius: "70%",
                 center: ["50%", "50%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({

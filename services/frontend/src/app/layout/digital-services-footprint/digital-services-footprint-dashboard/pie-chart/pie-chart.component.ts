@@ -98,13 +98,8 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             );
             const value = selectedImpact ? selectedImpact.sipValue : 0;
             const nameValue = this.existingTranslation(item.tier, "digital-services");
-            // Append unit value and unit to the label name
-            let labelName = nameValue;
-            if (selectedImpactUnit?.unitValue && selectedImpactUnit?.unit) {
-                labelName += ` (${this.decimalsPipe.transform(selectedImpactUnit.unitValue)} ${selectedImpactUnit.unit})`;
-            }
             return {
-                name: labelName,
+                name: nameValue,
                 value: value,
                 tier: item.tier,
                 unitValue: selectedImpactUnit?.unitValue,
@@ -159,18 +154,12 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             },
             legend: {
                 orient: "horizontal",
-                formatter: (param: any) => {
-                    // param may have unit values appended, strip them for legend display
-                    // Try to extract the base name (before any parenthesis)
-                    const nameValue = param.split(" (")[0];
-                    return nameValue;
-                },
             },
             series: [
                 {
                     name: "Access From",
                     type: "pie",
-                    radius: "60%",
+                    radius: "70%",
                     data: seriesData,
 
                     emphasis: {
@@ -184,12 +173,20 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             ],
             label: {
                 formatter: (value: any) => {
+                    let nameWithUnit = value.name;
                     const hasError = !!dsTierOkmap[value.name]?.status?.error;
-                    return getLabelFormatter(
+                    if (value.data?.unitValue && value.data?.unit) {
+                        nameWithUnit = `${value.name}\n (${this.decimalsPipe.transform(value.data.unitValue)} ${value.data.unit})`;
+                    }
+                    console.log(nameWithUnit);
+                    const labelText = getLabelFormatter(
                         hasError,
                         this.enableDataInconsistency,
-                        value.name,
+                        nameWithUnit,
                     );
+                    // Add unit information to the label if available
+
+                    return labelText;
                 },
                 rich: Constants.CHART_RICH as any,
             },
