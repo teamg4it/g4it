@@ -113,8 +113,6 @@ export class InventoriesFootprintComponent implements OnInit {
         const eqStats = this.equipmentStats();
         const clStats = this.cloudStats();
         const dcStats = this.datacenterStats();
-        console.log(eqStats);
-        console.log(clStats);
 
         return [
             {

@@ -26,7 +26,7 @@ export const environment = {
         issuer: "http://localhost:8180/auth",
         realm: "g4it",
         clientId: "g4it",
-        enabled: "false",
+        enabled: "true",
     },
     subpath: "",
     subpathfront: "/",

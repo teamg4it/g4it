@@ -35,6 +35,7 @@ import {
     Stat,
     VirtualEquipmentElectricityConsumption,
     VirtualEquipmentLowImpact,
+    VirtualEquipmentNoOfVirtualEquipments,
 } from "src/app/core/interfaces/footprint.interface";
 import { StatGroup } from "src/app/core/interfaces/indicator.interface";
 import {
@@ -115,6 +116,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     appCount: number = 0;
     lowImpactData = signal<VirtualEquipmentLowImpact[]>([]);
     elecConsumptionData = signal<VirtualEquipmentElectricityConsumption[]>([]);
+    noOfVirtualEquipmentsData = signal<VirtualEquipmentNoOfVirtualEquipments[]>([]);
     isCollapsed = false;
 
     impacts: Signal<any> = computed(() => {
@@ -213,7 +215,10 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     });
 
     equipments = computed<Stat>(() => {
-        const count = 0;
+        const count = this.filterNoOfVirtualEquipments(
+            this.noOfVirtualEquipmentsData(),
+            this.footprintStore.applicationSelectedFilters(),
+        );
         return {
             label: this.decimalsPipe.transform(count),
             value: Number.isNaN(Number(count)) ? undefined : count,
@@ -726,6 +731,24 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         return elecConsumptionSum;
     }
 
+    filterNoOfVirtualEquipments(
+        noOfVirtualEquipmentsData: VirtualEquipmentNoOfVirtualEquipments[],
+        filters: Filter,
+    ) {
+        const hasAllFilters = this.checkAllFilters(filters);
+        const filteredEquipmentsNoOfVirtualEquipments = noOfVirtualEquipmentsData.filter(
+            (equipment) =>
+                hasAllFilters ||
+                this.filterService.getFilterincludes(filters, equipment as any),
+        );
+
+        const noOfVirtualEquipmentsSum = filteredEquipmentsNoOfVirtualEquipments.reduce(
+            (sum, { quantity = 0 }) => sum + quantity,
+            0,
+        );
+        return noOfVirtualEquipmentsSum;
+    }
+
     getApplicationKeyIndicatorsData() {
         this.footprintDataService
             .getApplicationKeyIndicators(this.inventoryId)
@@ -734,10 +757,12 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
                     data: [
                         VirtualEquipmentLowImpact[],
                         VirtualEquipmentElectricityConsumption[],
+                        VirtualEquipmentNoOfVirtualEquipments[],
                     ],
                 ) => {
                     this.elecConsumptionData.set(data[1]);
                     this.lowImpactData.set(data[0]);
+                    this.noOfVirtualEquipmentsData.set(data[2]);
                 },
             );
     }
