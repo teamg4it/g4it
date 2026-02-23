@@ -181,7 +181,6 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
                     if (value.data?.unitValue && value.data?.unit) {
                         nameWithUnit = `${value.name}\n (${this.decimalsPipe.transform(value.data.unitValue)} ${value.data.unit})`;
                     }
-                    console.log(nameWithUnit);
                     const labelText = getLabelFormatter(
                         hasError,
                         this.enableDataInconsistency,
