@@ -155,6 +155,7 @@ export abstract class Constants {
         "lifeCycle",
         "environment",
         "equipmentType",
+        "location",
     ];
     static readonly EQUIPMENT_FILTERS = ["country", "entity", "equipment", "status"];
     static readonly EQUIPMENT_FILTERS_MAP: any = {
@@ -169,6 +170,10 @@ export abstract class Constants {
         {
             field: "lifeCycle",
             translated: true,
+        },
+        {
+            field: "location",
+            translated: false,
         },
         {
             field: "domain",

@@ -673,6 +673,7 @@
             "environment": "Environment",
             "equipmentType": "Equipment",
             "lifeCycle": "Lifecycle",
+            "location": "Country",
             "domain": "Domain"
         },
         "header": {
@@ -691,7 +692,8 @@
         "application-round-button": {
             "environment": "Environment",
             "equipmentType": "Equipment",
-            "lifeCycle": "Lifecycle"
+            "lifeCycle": "Lifecycle",
+            "location": "Country"
         },
         "global": {
             "global-vision": "Global Vision",

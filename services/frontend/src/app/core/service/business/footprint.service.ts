@@ -297,6 +297,8 @@ export class FootprintService {
                 return (v as any).domain;
             case "subDomain":
                 return (v as any).subDomain;
+            case "location":
+                return (v as any).location;
             default:
                 return null;
         }
