@@ -23,7 +23,7 @@ import java.io.Serializable;
                 columns = {
                         @ColumnResult(name = "id", type = Long.class),
                         @ColumnResult(name = "name"),
-                        @ColumnResult(name = "country"),
+                        @ColumnResult(name = "location"),
                         @ColumnResult(name = "lifecycle_step"),
                         @ColumnResult(name = "domain"),
                         @ColumnResult(name = "sub_domain"),
@@ -43,7 +43,7 @@ import java.io.Serializable;
                 
                      oa.virtual_equipment_name AS name,
                 
-                     COALESCE(dc.location, ive.location, 'Unknown') AS country,
+                     COALESCE(dc.location, ive.location, 'Unknown') AS location,
                 
                      'USING' AS lifecycle_step,
                 
@@ -98,10 +98,10 @@ public class InVirtualEquipmentElecConsumptionView implements Serializable {
 
     private String name;
 
-    private String country;
+    private String location;
 
     @Column(name = "lifecycle_step")
-    private String lifecycleStep;
+    private String lifeCycle;
 
     private String domain;
 

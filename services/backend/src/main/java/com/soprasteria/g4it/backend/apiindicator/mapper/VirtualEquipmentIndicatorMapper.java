@@ -8,8 +8,10 @@
 
 package com.soprasteria.g4it.backend.apiindicator.mapper;
 
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentCountBO;
 import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentElecConsumptionBO;
 import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.InVirtualEquipmentCountView;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.InVirtualEquipmentElecConsumptionView;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.InVirtualEquipmentLowImpactView;
 import org.mapstruct.Mapper;
@@ -35,6 +37,13 @@ public interface VirtualEquipmentIndicatorMapper {
     List<VirtualEquipmentElecConsumptionBO>
     inVirtualEquipmentElecConsumptionToDto(
             List<InVirtualEquipmentElecConsumptionView> source
+    );
+
+    VirtualEquipmentCountBO inVirtualEquipmentCountToDto(InVirtualEquipmentCountView source);
+
+    List<VirtualEquipmentCountBO>
+    inVirtualEquipmentCountToDto(
+            List<InVirtualEquipmentCountView> source
     );
 }
 

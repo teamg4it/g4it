@@ -181,4 +181,8 @@ public class InventoryIndicatorService {
     }
 
 
+    public List<VirtualEquipmentCountBO> getVirtualEquipmentCount(String organization, Long workspace, Long inventoryId) {
+        return indicatorService.getVirtualEquipmentCount(inventoryId);
+
+    }
 }

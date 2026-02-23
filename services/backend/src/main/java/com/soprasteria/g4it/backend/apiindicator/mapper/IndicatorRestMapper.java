@@ -63,5 +63,9 @@ public interface IndicatorRestMapper {
     List<VirtualEquipmentElecConsumptionRest>
     toVirtualElecConsumptionDto(List<VirtualEquipmentElecConsumptionBO> bos);
 
+    VirtualEquipmentCountRest toVirtualCountDto(VirtualEquipmentCountBO bo);
+
+    List<VirtualEquipmentCountRest> toVirtualCountDto(List<VirtualEquipmentCountBO> bos);
+
 
 }

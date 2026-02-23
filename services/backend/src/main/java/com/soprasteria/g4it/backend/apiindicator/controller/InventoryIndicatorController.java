@@ -222,5 +222,20 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         );
     }
 
+    @Override
+    public ResponseEntity<List<VirtualEquipmentCountRest>> getVirtualEquipmentCount(final String organization,
+                                                                                    final Long workspace,
+                                                                                    final Long inventoryId) {
+        return ResponseEntity.ok(
+                indicatorRestMapper.toVirtualCountDto(
+                        inventoryIndicatorService.getVirtualEquipmentCount(
+                                organization,
+                                workspace,
+                                inventoryId
+                        )
+                )
+        );
+    }
+
 
 }

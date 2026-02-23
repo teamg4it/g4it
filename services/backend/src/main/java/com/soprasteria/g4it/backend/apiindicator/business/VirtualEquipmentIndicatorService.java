@@ -9,9 +9,11 @@
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apiindicator.mapper.VirtualEquipmentIndicatorMapper;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentCountBO;
 import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentElecConsumptionBO;
 import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.InVirtualEquipmentLowImpactView;
+import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentCountViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentElecConsumptionViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.InVirtualEquipmentLowImpactViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
@@ -42,6 +44,9 @@ public class VirtualEquipmentIndicatorService {
 
     @Autowired
     private final VirtualEquipmentIndicatorMapper virtualEquipmentIndicatorMapper;
+
+    @Autowired
+    private final InVirtualEquipmentCountViewRepository inVirtualEquipmentCountViewRepository;
 
     /**
      * The Workspace Service
@@ -133,9 +138,8 @@ public class VirtualEquipmentIndicatorService {
         return virtualEquipmentIndicatorMapper.toLowImpactBO(indicators);
     }
 
-    public List<VirtualEquipmentElecConsumptionBO>
-    getVirtualEquipmentElecConsumption(final Long taskId,
-                                       final Long criteriaNumber) {
+    public List<VirtualEquipmentElecConsumptionBO> getVirtualEquipmentElecConsumption(final Long taskId,
+                                                                                      final Long criteriaNumber) {
 
         final var indicators =
                 inVirtualEquipmentElecConsumptionViewRepository
@@ -147,5 +151,13 @@ public class VirtualEquipmentIndicatorService {
     }
 
 
+    public List<VirtualEquipmentCountBO> getVirtualEquipmentCount(final Long inventoryId) {
+        final var indicators =
+                inVirtualEquipmentCountViewRepository
+                        .findVirtualEquipmentCountIndicators(inventoryId);
+
+        return virtualEquipmentIndicatorMapper
+                .inVirtualEquipmentCountToDto(indicators);
+    }
 }
 

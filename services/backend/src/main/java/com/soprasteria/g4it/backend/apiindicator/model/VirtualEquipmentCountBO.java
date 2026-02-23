@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class VirtualEquipmentElecConsumptionBO {
+public class VirtualEquipmentCountBO {
 
     private String name;
     private String location;
@@ -26,5 +26,5 @@ public class VirtualEquipmentElecConsumptionBO {
     private String subDomain;
     private String environment;
     private String equipmentType;
-    private Double elecConsumption;
+    private Double quantity;
 }

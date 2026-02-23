@@ -147,4 +147,7 @@ public class IndicatorService {
         return virtualEquipmentIndicatorService.getVirtualEquipmentElecConsumption(taskId, criteriaNumber);
     }
 
+    public List<VirtualEquipmentCountBO> getVirtualEquipmentCount(final Long inventoryId) {
+        return virtualEquipmentIndicatorService.getVirtualEquipmentCount(inventoryId);
+    }
 }
