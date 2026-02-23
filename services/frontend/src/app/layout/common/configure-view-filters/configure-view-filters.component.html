@@ -71,9 +71,10 @@
                                 </p>
                             </div>
                         </ng-template>
-                        <p class="text-base">
-                            {{ "inventories.unit-para1" | translate }}
-                        </p>
+                        <p
+                            class="text-base"
+                            [innerHTML]="'inventories.unit-para1' | translate"
+                        ></p>
                         <p class="text-base">
                             {{ "inventories.unit-para2" | translate }}
                         </p>

@@ -206,7 +206,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
                 ? undefined
                 : Math.round(elecConsumption),
             description: this.translate.instant(
-                "inventories-footprint.global.tooltip.elec-consumption",
+                "inventories-footprint.global.tooltip.vEq-elec-consumption",
             ),
             title: this.translate.instant(
                 "inventories-footprint.global.elec-consumption",
@@ -223,9 +223,11 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             label: this.decimalsPipe.transform(count),
             value: Number.isNaN(Number(count)) ? undefined : count,
             description: this.translate.instant(
-                "inventories-footprint.global.tooltip.nb-eq",
+                "inventories-footprint.global.tooltip.qty-vEq",
             ),
-            title: this.translate.instant("inventories-footprint.global.equipments"),
+            title: this.translate.instant(
+                "inventories-footprint.global.qty-virtual-equipment",
+            ),
         };
     });
 

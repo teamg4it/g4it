@@ -11,6 +11,13 @@
                     <span class="text-sm font-normal">
                         {{ item?.value || item?.value === 0 ? item?.unit : "" }}
                     </span>
+                    <i
+                        class="pi pi-info-circle text-xs cursor-pointer vertical-align-top"
+                        pTooltip="{{ item?.description }}"
+                        tooltipEvent="focus"
+                        tooltipPosition="right"
+                        tabindex="0"
+                    ></i>
                 </div>
 
                 <div class="label" [attr.lang]="item?.lang ? item.lang : null">
