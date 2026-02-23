@@ -180,7 +180,10 @@
         "infrastructure": "Infrastructure",
         "energy": "Energy",
         "expand-impact": "Click here to expand impact section",
-        "collapse-impact": "Click here to collapse impact section"
+        "collapse-impact": "Click here to collapse impact section",
+        "unit-manage": "Units Management",
+        "data-consistency-text": "View data that could not be calculated",
+        "unit-manage-text": "Your choice will apply to all units"
     },
     "useful-information": {
         "computing-engines": "Computing engines",

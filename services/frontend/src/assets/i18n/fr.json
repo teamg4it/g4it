@@ -179,7 +179,10 @@
         "infrastructure": "Infrastructure",
         "energy": "Énergie",
         "expand-impact": "Cliquez ici pour développer la section sur l'impact",
-        "collapse-impact": "Cliquez ici pour réduire la section d'impact"
+        "collapse-impact": "Cliquez ici pour réduire la section d'impact",
+        "unit-manage": "Gestion des unités",
+        "data-consistency-text": "Afficher les données qui n'ont pas pu être calculées",
+        "unit-manage-text": "Votre choix s'appliquera à toutes les unités"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
