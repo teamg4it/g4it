@@ -182,33 +182,42 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                             ? `\n (${this.decimalsPipe.transform(unitData.total)} ${unitData.unit})`
                             : "";
 
+                        const maxCharacters = 20; // Set the maximum number of characters to display
+
+                        const truncatedValue =
+                            value.length > maxCharacters
+                                ? value.substring(0, maxCharacters) + "…"
+                                : value;
+
                         const shortUnitValue =
-                            unitValueText.length > 20
-                                ? unitValueText.substring(0, 20) + "…"
+                            unitValueText.length > maxCharacters
+                                ? unitValueText.substring(0, maxCharacters - 2) + "…"
                                 : unitValueText;
 
                         return getLabelFormatter(
                             hasError,
                             this.enableDataInconsistency,
-                            value + shortUnitValue,
+                            truncatedValue + shortUnitValue,
                         );
                     },
-                    rich: Constants.CHART_RICH as any,
                     margin: 15,
                     hideOverlap: true,
+                    rich: Constants.CHART_RICH as any,
                 },
             },
             radiusAxis: {
                 ...(this.compareMax() > 0 ? { max: this.compareMax() } : {}),
                 name: this.translate.instant("common.peopleeq"),
                 nameLocation: "end",
+                // THIS increases distance from chart
+                nameGap: 30,
                 nameTextStyle: {
                     fontStyle: "italic",
                 },
             },
             polar: {
-                radius: "70%",
-                center: ["50%", "50%"],
+                radius: "76%",
+                center: ["50%", "55%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({
                 name: item.tier,
