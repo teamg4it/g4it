@@ -203,15 +203,15 @@ export abstract class Constants {
         redBold: {
             color: Constants.GRAPH_RED,
             fontWeight: 600,
-            fontSize: 10,
+            fontSize: 8,
         },
         red: {
             color: Constants.GRAPH_RED,
-            fontSize: 10,
+            fontSize: 8,
         },
         grey: {
             color: Constants.GRAPH_GREY,
-            fontSize: 10,
+            fontSize: 8,
         },
     };
 
