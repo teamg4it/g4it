@@ -171,12 +171,9 @@ public class InventoryIndicatorService {
                         Inventory.builder().id(inventoryId).build())
                 .orElseThrow();
 
-        final Long criteriaNumber = inventoryService.getCriteriaNumber(task.getId());
-
         return indicatorService
                 .getVirtualEquipmentElecConsumption(
-                        task.getId(),
-                        criteriaNumber
+                        task.getId()
                 );
     }
 

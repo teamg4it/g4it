@@ -151,10 +151,7 @@ class InventoryIndicatorServiceTest {
         when(taskRepository.findByInventoryAndLastCreationDate(any()))
                 .thenReturn(Optional.of(task));
 
-        when(inventoryService.getCriteriaNumber(taskId))
-                .thenReturn(criteriaNumber);
-
-        when(indicatorService.getVirtualEquipmentElecConsumption(taskId, criteriaNumber))
+        when(indicatorService.getVirtualEquipmentElecConsumption(taskId))
                 .thenReturn(expected);
 
         List<VirtualEquipmentElecConsumptionBO> result =
@@ -164,9 +161,8 @@ class InventoryIndicatorServiceTest {
         assertThat(result).isEqualTo(expected);
 
         verify(taskRepository).findByInventoryAndLastCreationDate(any());
-        verify(inventoryService).getCriteriaNumber(taskId);
         verify(indicatorService)
-                .getVirtualEquipmentElecConsumption(taskId, criteriaNumber);
+                .getVirtualEquipmentElecConsumption(taskId);
     }
 
     @Test

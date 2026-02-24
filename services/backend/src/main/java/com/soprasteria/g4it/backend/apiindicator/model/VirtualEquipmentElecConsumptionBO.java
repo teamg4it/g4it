@@ -27,4 +27,5 @@ public class VirtualEquipmentElecConsumptionBO {
     private String environment;
     private String equipmentType;
     private Double elecConsumption;
+    private Integer quantity;
 }

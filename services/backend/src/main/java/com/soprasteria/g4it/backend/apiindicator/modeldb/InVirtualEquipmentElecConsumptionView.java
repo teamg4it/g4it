@@ -29,7 +29,8 @@ import java.io.Serializable;
                         @ColumnResult(name = "sub_domain"),
                         @ColumnResult(name = "environment"),
                         @ColumnResult(name = "equipment_type"),
-                        @ColumnResult(name = "elec_consumption", type = Double.class)
+                        @ColumnResult(name = "elec_consumption", type = Double.class),
+                        @ColumnResult(name = "quantity", type = Integer.class)
                 }
         )
 )
@@ -39,50 +40,70 @@ import java.io.Serializable;
         resultSetMapping = "InVirtualEquipmentElecConsumptionIndicatorsMapping",
         query = """
                 SELECT
-                     ROW_NUMBER() OVER () AS id,
+                                            ROW_NUMBER() OVER () AS id,
                 
-                     oa.virtual_equipment_name AS name,
+                                            sub.virtual_equipment_name AS name,
+                                            sub.location,
+                                            'USING' AS lifecycle_step,
+                                            sub.domain,
+                                            sub.sub_domain,
+                                            sub.environment,
+                                            sub.equipment_type,
                 
-                     COALESCE(dc.location, ive.location, 'Unknown') AS location,
+                                            /* VM electricity already scaled by VM quantity */
+                                            MAX(sub.vm_elec_scaled) AS elec_consumption,
                 
-                     'USING' AS lifecycle_step,
+                                            /* Number of applications */
+                                            COUNT(sub.application_name) AS quantity
                 
-                     oa.filters[1] AS domain,
-                     oa.filters[2] AS sub_domain,
-                     oa.environment,
-                     oa.equipment_type,
+                                        FROM (
+                                            SELECT
+                                                oa.virtual_equipment_name,
+                                                COALESCE(dc.location, ive.location, 'Unknown') AS location,
+                                                oa.filters[1] AS domain,
+                                                oa.filters[2] AS sub_domain,
+                                                oa.environment,
+                                                oa.equipment_type,
+                                                oa.name AS application_name,
                 
-                     SUM(
-                         (
-                             (oa.electricity_consumption * ive.quantity)
-                             / NULLIF(oa.count_value, 0)
-                         ) / :criteriaNumber
-                     ) AS elec_consumption
+                                                /* remove criteria duplication */
+                                                MAX(oa.electricity_consumption)
+                                                    * MAX(oa.quantity) AS vm_elec_scaled
                 
-                 FROM out_application oa
+                                            FROM out_application oa
                 
-                 JOIN task t
-                     ON t.id = oa.task_id
-                    AND t.status = 'COMPLETED'
-                    AND t.id = :taskId
+                                            JOIN task t
+                                                ON t.id = oa.task_id
+                                               AND t.status = 'COMPLETED'
+                                               AND t.id = :taskId
                 
-                 JOIN in_virtual_equipment ive
-                     ON ive.name = oa.virtual_equipment_name
-                     AND ive.inventory_id = t.inventory_id
+                                            JOIN in_virtual_equipment ive
+                                                ON ive.name = oa.virtual_equipment_name
+                                               AND ive.inventory_id = t.inventory_id
                 
-                 LEFT JOIN in_datacenter dc
-                     ON dc.name = ive.datacenter_name
-                    AND dc.inventory_id = ive.inventory_id
+                                            LEFT JOIN in_datacenter dc
+                                                ON dc.name = ive.datacenter_name
+                                               AND dc.inventory_id = ive.inventory_id
                 
-                 WHERE oa.lifecycle_step = 'USING'
+                                            WHERE oa.lifecycle_step = 'USING'
                 
-                 GROUP BY
-                     oa.virtual_equipment_name,
-                     COALESCE(dc.location, ive.location, 'Unknown'),
-                     oa.filters[1],
-                     oa.filters[2],
-                     oa.environment,
-                     oa.equipment_type
+                                            GROUP BY
+                                                oa.virtual_equipment_name,
+                                                COALESCE(dc.location, ive.location, 'Unknown'),
+                                                oa.filters[1],
+                                                oa.filters[2],
+                                                oa.environment,
+                                                oa.equipment_type,
+                                                oa.name
+                                        ) sub
+                
+                                        GROUP BY
+                                            sub.virtual_equipment_name,
+                                            sub.location,
+                                            sub.domain,
+                                            sub.sub_domain,
+                                            sub.environment,
+                                            sub.equipment_type;
                 """
 )
 
@@ -115,4 +136,6 @@ public class InVirtualEquipmentElecConsumptionView implements Serializable {
 
     @Column(name = "elec_consumption")
     private Double elecConsumption;
+
+    private Integer quantity;
 }

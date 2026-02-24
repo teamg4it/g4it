@@ -23,6 +23,6 @@ public interface InVirtualEquipmentElecConsumptionViewRepository
     @Query(nativeQuery = true)
     List<InVirtualEquipmentElecConsumptionView>
     findVirtualEquipmentElecConsumptionIndicators(
-            @Param("taskId") Long taskId, @Param("criteriaNumber") Long criteriaNumber);
+            @Param("taskId") Long taskId);
 }
 

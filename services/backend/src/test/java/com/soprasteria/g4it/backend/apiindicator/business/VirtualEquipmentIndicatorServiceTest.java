@@ -47,7 +47,6 @@ class VirtualEquipmentIndicatorServiceTest {
     void shouldReturnVirtualEquipmentElecConsumption() {
 
         Long taskId = 100L;
-        Long criteriaNumber = 3L;
 
         List<InVirtualEquipmentElecConsumptionView> repoResult =
                 List.of(new InVirtualEquipmentElecConsumptionView());
@@ -56,19 +55,19 @@ class VirtualEquipmentIndicatorServiceTest {
                 List.of(new VirtualEquipmentElecConsumptionBO());
 
         when(elecRepository
-                .findVirtualEquipmentElecConsumptionIndicators(taskId, criteriaNumber))
+                .findVirtualEquipmentElecConsumptionIndicators(taskId))
                 .thenReturn(repoResult);
 
         when(mapper.inVirtualEquipmentElecConsumptionToDto(repoResult))
                 .thenReturn(mapped);
 
         List<VirtualEquipmentElecConsumptionBO> result =
-                service.getVirtualEquipmentElecConsumption(taskId, criteriaNumber);
+                service.getVirtualEquipmentElecConsumption(taskId);
 
         assertThat(result).isEqualTo(mapped);
 
         verify(elecRepository)
-                .findVirtualEquipmentElecConsumptionIndicators(taskId, criteriaNumber);
+                .findVirtualEquipmentElecConsumptionIndicators(taskId);
 
         verify(mapper)
                 .inVirtualEquipmentElecConsumptionToDto(repoResult);
@@ -78,17 +77,16 @@ class VirtualEquipmentIndicatorServiceTest {
     void shouldReturnEmptyElecConsumptionList() {
 
         Long taskId = 200L;
-        Long criteriaNumber = 5L;
 
         when(elecRepository
-                .findVirtualEquipmentElecConsumptionIndicators(taskId, criteriaNumber))
+                .findVirtualEquipmentElecConsumptionIndicators(taskId))
                 .thenReturn(List.of());
 
         when(mapper.inVirtualEquipmentElecConsumptionToDto(List.of()))
                 .thenReturn(List.of());
 
         List<VirtualEquipmentElecConsumptionBO> result =
-                service.getVirtualEquipmentElecConsumption(taskId, criteriaNumber);
+                service.getVirtualEquipmentElecConsumption(taskId);
 
         assertThat(result).isEmpty();
     }

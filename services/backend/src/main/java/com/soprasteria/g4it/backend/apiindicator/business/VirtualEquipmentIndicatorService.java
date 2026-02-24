@@ -138,13 +138,11 @@ public class VirtualEquipmentIndicatorService {
         return virtualEquipmentIndicatorMapper.toLowImpactBO(indicators);
     }
 
-    public List<VirtualEquipmentElecConsumptionBO> getVirtualEquipmentElecConsumption(final Long taskId,
-                                                                                      final Long criteriaNumber) {
+    public List<VirtualEquipmentElecConsumptionBO> getVirtualEquipmentElecConsumption(final Long taskId) {
 
         final var indicators =
                 inVirtualEquipmentElecConsumptionViewRepository
-                        .findVirtualEquipmentElecConsumptionIndicators(
-                                taskId, criteriaNumber);
+                        .findVirtualEquipmentElecConsumptionIndicators(taskId);
 
         return virtualEquipmentIndicatorMapper
                 .inVirtualEquipmentElecConsumptionToDto(indicators);

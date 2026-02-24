@@ -687,6 +687,8 @@ components:
           description: equipment type
         elecConsumption:
           type: double
+        quantity:
+          type: integer
 
     VirtualEquipmentCountRest:
       type: object
