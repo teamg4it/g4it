@@ -6,7 +6,7 @@
             [label]="'inventories-footprint.data-consistency' | translate"
             [outlined]="!showInconsitencyGraph"
             severity="danger"
-            class="ml-auto mt-3 mb-2 pr-3"
+            class="ml-auto pr-3"
             [ariaLabel]="'inventories-footprint.data-consistency' | translate"
         />
     }
@@ -15,7 +15,7 @@
             [options]="dimensions"
             [(ngModel)]="selectedDimension"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
-            styleClass="ml-auto mt-3 mb-2"
+            styleClass="ml-auto"
         >
             <ng-template pTemplate="selectedItem">
                 <div *ngIf="selectedDimension()">
