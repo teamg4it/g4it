@@ -68,7 +68,9 @@ export class FilterService {
             let filterValue: any = selectedFilters[field];
             if (!filterValue) filterValue = Constants.EMPTY;
             if (!impactValue) impactValue = Constants.EMPTY;
-            return filterValue?.includes(impactValue);
+            return filterValue?.some((value: string) =>
+                value?.toLowerCase().includes(impactValue?.toLowerCase()),
+            );
         });
     }
 
