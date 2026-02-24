@@ -10,6 +10,7 @@ import {
     computed,
     DestroyRef,
     inject,
+    OnDestroy,
     OnInit,
     signal,
     Signal,
@@ -60,7 +61,7 @@ import { Constants } from "src/constants";
     selector: "app-inventories-application-footprint",
     templateUrl: "./inventories-application-footprint.component.html",
 })
-export class InventoriesApplicationFootprintComponent implements OnInit {
+export class InventoriesApplicationFootprintComponent implements OnInit, OnDestroy {
     protected readonly footprintStore = inject(FootprintStoreService);
     private readonly globalStore = inject(GlobalStoreService);
     protected readonly userService = inject(UserService);
@@ -246,6 +247,10 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         ] as StatGroup[];
     });
 
+    inventoryInterval: any;
+    waitingLoop = 10000;
+    toReloadInventory = false;
+
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         public readonly footprintService: FootprintService,
@@ -253,10 +258,61 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.asyncInit();
+        this.checkStatusAndLoopApis();
     }
-    private async asyncInit() {
+
+    async checkStatusAndLoopApis() {
+        await this.getInventoryStatus();
+        this.loopLoadInventory();
+    }
+
+    ngOnDestroy() {
+        if (this.inventoryInterval) {
+            clearInterval(this.inventoryInterval);
+        }
+    }
+
+    async getInventoryStatus() {
+        this.globalStore.setLoading(true);
         await this.initInventory();
+        let doAddTaskLoading = false;
+        let doAddTaskEvaluating = false;
+
+        if (this.inventory().lastTaskLoading) {
+            doAddTaskLoading =
+                !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
+                    this.inventory()?.lastTaskLoading?.status!,
+                );
+        }
+
+        if (this.inventory().lastTaskEvaluating) {
+            doAddTaskEvaluating =
+                !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
+                    this.inventory()?.lastTaskEvaluating?.status!,
+                );
+        }
+        this.toReloadInventory = doAddTaskLoading || doAddTaskEvaluating;
+        if (this.toReloadInventory) {
+            await this.initInventory();
+        } else if (!doAddTaskLoading && !doAddTaskEvaluating) {
+            await new Promise((resolve) => setTimeout(resolve, 600));
+            this.initializeOnInit();
+        }
+    }
+
+    async loopLoadInventory() {
+        this.globalStore.setLoading(true);
+
+        this.inventoryInterval = setInterval(async () => {
+            if (this.toReloadInventory) {
+                await this.getInventoryStatus();
+            } else {
+                clearInterval(this.inventoryInterval);
+            }
+        }, this.waitingLoop);
+    }
+
+    private async initializeOnInit() {
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
         this.selectedCriteria = criteria!;
         this.globalStore.setLoading(true);
@@ -362,6 +418,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     }
 
     async initInventory() {
+        this.inventoryId =
+            +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
         let result = await this.inventoryService.getInventories(this.inventoryId);
         if (result.length > 0) this.inventory.set(result[0]);
     }
@@ -611,13 +669,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
 
                 this.evaluationService
                     .launchEvaluating(this.inventory().id)
-                    .pipe(
-                        takeUntilDestroyed(this.destroyRef),
-                        delay(500),
-                        finalize(() => this.globalStore.setLoading(false)),
-                    )
-                    .subscribe((res: number) => {
-                        this.asyncInit();
+                    .pipe(takeUntilDestroyed(this.destroyRef), delay(500))
+                    .subscribe(async () => {
+                        await this.checkStatusAndLoopApis();
                     });
             });
     }
