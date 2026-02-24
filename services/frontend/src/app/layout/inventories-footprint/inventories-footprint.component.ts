@@ -20,7 +20,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
-import { delay, finalize, firstValueFrom, forkJoin, map } from "rxjs";
+import { finalize, firstValueFrom, forkJoin, map } from "rxjs";
 import {
     OrganizationCriteriaRest,
     WorkspaceCriteriaRest,
@@ -222,11 +222,65 @@ export class InventoriesFootprintComponent implements OnInit {
         });
     }
 
+    inventoryInterval: any;
+    waitingLoop = 10000;
+    toReloadInventory = false;
+
     ngOnInit() {
-        this.getOnInitData();
+        this.checkStatusAndLoopApis();
     }
 
-    async getOnInitData() {
+    async checkStatusAndLoopApis() {
+        await this.getInventoryStatus();
+        this.loopLoadInventory();
+    }
+
+    ngOnDestroy() {
+        if (this.inventoryInterval) {
+            clearInterval(this.inventoryInterval);
+        }
+    }
+
+    async getInventoryStatus() {
+        this.globalStore.setLoading(true);
+        await this.initInventory();
+        let doAddTaskLoading = false;
+        let doAddTaskEvaluating = false;
+
+        if (this.inventory().lastTaskLoading) {
+            doAddTaskLoading =
+                !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
+                    this.inventory()?.lastTaskLoading?.status!,
+                );
+        }
+
+        if (this.inventory().lastTaskEvaluating) {
+            doAddTaskEvaluating =
+                !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
+                    this.inventory()?.lastTaskEvaluating?.status!,
+                );
+        }
+        this.toReloadInventory = doAddTaskLoading || doAddTaskEvaluating;
+        if (this.toReloadInventory) {
+            await this.initInventory();
+        } else if (!doAddTaskLoading && !doAddTaskEvaluating) {
+            this.initializeOnInit();
+        }
+    }
+
+    async loopLoadInventory() {
+        this.globalStore.setLoading(true);
+
+        this.inventoryInterval = setInterval(async () => {
+            if (this.toReloadInventory) {
+                await this.getInventoryStatus();
+            } else {
+                clearInterval(this.inventoryInterval);
+            }
+        }, this.waitingLoop);
+    }
+
+    async initializeOnInit() {
         await this.initInventory();
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
         this.selectedCriteria = criteria!;
@@ -240,6 +294,8 @@ export class InventoriesFootprintComponent implements OnInit {
     }
 
     async initInventory() {
+        this.inventoryId =
+            +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
         let result = await this.inventoryService.getInventories(this.inventoryId);
         if (result.length > 0) this.inventory.set(result[0]);
     }
@@ -500,13 +556,9 @@ export class InventoriesFootprintComponent implements OnInit {
 
                 this.evaluationService
                     .launchEvaluating(this.inventory().id)
-                    .pipe(
-                        takeUntilDestroyed(this.destroyRef),
-                        delay(500),
-                        finalize(() => this.globalStore.setLoading(false)),
-                    )
-                    .subscribe((res: number) => {
-                        this.getOnInitData();
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe(async () => {
+                        await this.checkStatusAndLoopApis();
                     });
             });
     }

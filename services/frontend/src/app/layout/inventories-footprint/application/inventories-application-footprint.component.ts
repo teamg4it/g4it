@@ -20,7 +20,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
-import { delay, finalize, firstValueFrom } from "rxjs";
+import { finalize, firstValueFrom } from "rxjs";
 import {
     OrganizationCriteriaRest,
     WorkspaceCriteriaRest,
@@ -295,7 +295,6 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         if (this.toReloadInventory) {
             await this.initInventory();
         } else if (!doAddTaskLoading && !doAddTaskEvaluating) {
-            await new Promise((resolve) => setTimeout(resolve, 600));
             this.initializeOnInit();
         }
     }
@@ -669,7 +668,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
 
                 this.evaluationService
                     .launchEvaluating(this.inventory().id)
-                    .pipe(takeUntilDestroyed(this.destroyRef), delay(500))
+                    .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe(async () => {
                         await this.checkStatusAndLoopApis();
                     });
