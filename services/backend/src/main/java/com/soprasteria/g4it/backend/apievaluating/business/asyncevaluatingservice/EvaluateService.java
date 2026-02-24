@@ -601,7 +601,10 @@ public class EvaluateService {
                     if (cloudElectricityKwh != null) {
                         electricity = cloudElectricityKwh;
                     } else {
-                        electricity = impact.getConsoElecMoyenne();
+                        electricity = impactEquipementVirtuelList.stream()
+                                .filter(vmImpact -> "USING".equals(vmImpact.getEtapeACV()))
+                                .mapToDouble(ImpactEquipementVirtuel::getConsoElecMoyenne)
+                                .sum();
                     }
                 }
                 AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
