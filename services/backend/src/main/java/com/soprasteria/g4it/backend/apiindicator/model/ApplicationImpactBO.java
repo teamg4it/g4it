@@ -78,4 +78,6 @@ public class ApplicationImpactBO {
 
     private String provider;
 
+    private String location;
+
 }

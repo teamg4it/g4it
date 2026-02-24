@@ -176,12 +176,19 @@ export class PieChartComponent extends AbstractDashboard implements OnChanges {
             ],
             label: {
                 formatter: (value: any) => {
+                    let nameWithUnit = value.name;
                     const hasError = !!dsTierOkmap[value.name]?.status?.error;
-                    return getLabelFormatter(
+                    if (value.data?.unitValue && value.data?.unit) {
+                        nameWithUnit = `${value.name}\n (${this.decimalsPipe.transform(value.data.unitValue)} ${value.data.unit})`;
+                    }
+                    const labelText = getLabelFormatter(
                         hasError,
                         this.enableDataInconsistency,
-                        value.name,
+                        nameWithUnit,
                     );
+                    // Add unit information to the label if available
+
+                    return labelText;
                 },
                 rich: Constants.CHART_RICH as any,
             },

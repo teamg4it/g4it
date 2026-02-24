@@ -36,6 +36,7 @@ public interface ApplicationIndicatorMapper {
     @Mapping(target = "subDomain",
             expression = "java(java.util.Optional.ofNullable(source.getFilters().get(1)).filter(s -> !s.isEmpty()).orElse(\"Unknown\"))")
     @Mapping(target = "cluster", expression = "java(source.getFiltersVirtualEquipment().get(0))")
+    @Mapping(target = "location", source = "location")
     ApplicationImpactBO toOutImpact(final OutApplication source);
 
     @Mapping(target = "impacts", source = "source")

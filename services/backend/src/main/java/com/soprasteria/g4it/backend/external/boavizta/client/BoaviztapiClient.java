@@ -134,7 +134,7 @@ public class BoaviztapiClient {
 
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .path("/v1/cloud/instance")
-                .queryParam("verbose", false)
+                .queryParam("verbose", true)
                 .queryParam("duration", virtualEquipment.getDurationHour())
                 .queryParam(CRITERIA, "gwp")
                 .queryParam(CRITERIA, "adpe")

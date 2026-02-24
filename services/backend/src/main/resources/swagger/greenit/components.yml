@@ -415,6 +415,8 @@ components:
           type: array
           items:
             type: string
+        enableDataInconsistency:
+          type: boolean
         tasks:
           type: array
           items:
@@ -518,6 +520,8 @@ components:
         statusIndicator:
           type: string
         provider:
+          type: string
+        location:
           type: string
 
     ApplicationVmIndicatorRest:
@@ -964,6 +968,9 @@ components:
           type: array
           items:
             type: string
+        enableDataInconsistency:
+          type: boolean
+          description: The flag to enable data consistency view
         note:
           $ref: "#/components/schemas/NoteUpsertRest"
 

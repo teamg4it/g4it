@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -28,9 +29,10 @@ public class BoaviztapiService {
      * BoaviztapiClient
      */
     private BoaviztapiClient boaviztapiClient;
-    
+
     public static final String BOAVIZTAPI_VERSION = "1.3";
     public static final String BOAVIZTAPI_ENGINE = "BoaviztAPI";
+    private static final double HOURS_PER_YEAR = 24d * 365d;
 
     /**
      * Get BoaviztAPI countries with code.
@@ -70,6 +72,28 @@ public class BoaviztapiService {
      */
     public BoaResponseRest runBoaviztCalculations(InVirtualEquipment virtualEquipment) {
         return boaviztapiClient.runCalculation(virtualEquipment);
+    }
+
+    public double computeAnnualElectricityKwhRaw(
+            Double avgPowerW,
+            double durationHours,
+            double quantity
+    ) {
+        if (avgPowerW == null) return 0d;
+
+        return avgPowerW * (durationHours / 1000d) * quantity;
+    }
+
+
+    public Optional<Double> extractAvgPowerW(BoaResponseRest response) {
+        if (response == null ||
+                response.getVerbose() == null ||
+                response.getVerbose().getAvgPower() == null ||
+                response.getVerbose().getAvgPower().getValue() == null) {
+            return Optional.empty();
+        }
+        Double avgPower = response.getVerbose().getAvgPower().getValue();
+        return Optional.of(avgPower);
     }
 
 }
