@@ -706,7 +706,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
             filteredEquipmentsLowImpact.reduce(
                 (acc, { quantity = 0, lowImpact }) => {
                     acc.physicalEquipmentTotalCount += quantity;
-                    if (!lowImpact) acc.lowImpactPhysicalEquipmentCount += quantity;
+                    if (lowImpact) acc.lowImpactPhysicalEquipmentCount += quantity;
                     return acc;
                 },
                 { physicalEquipmentTotalCount: 0, lowImpactPhysicalEquipmentCount: 0 },
@@ -727,7 +727,8 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         );
 
         const elecConsumptionSum = filteredEquipmentsElecConsumption.reduce(
-            (sum, { elecConsumption = 0 }) => sum + elecConsumption,
+            (sum, { elecConsumption = 0, quantity = 0 }) =>
+                sum + elecConsumption * quantity,
             0,
         );
         return elecConsumptionSum;

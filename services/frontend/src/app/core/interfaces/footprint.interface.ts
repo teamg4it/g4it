@@ -256,6 +256,7 @@ export interface VirtualEquipmentElectricityConsumption {
     lifeCycle: string;
     name: string;
     subDomain: string;
+    quantity: number;
 }
 
 export interface VirtualEquipmentNoOfVirtualEquipments {
