@@ -1,10 +1,15 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -39,11 +44,35 @@ const mockActivatedRoute = {
 
 const mockUserService = {
     currentWorkspace$: of({ name: "Org1" }),
+    currentOrganization$: of({ criteria: [] }),
+};
+
+const mockInventoryService = {
+    getInventories: jasmine.createSpy().and.returnValue(
+        Promise.resolve([
+            {
+                id: 1,
+                name: "Test Inventory",
+                criteria: [],
+                enableDataInconsistency: false,
+            },
+        ]),
+    ),
+};
+
+const mockFootprintDataService = {
+    getApplicationKeyIndicators: jasmine.createSpy().and.returnValue(of([[], [], []])),
 };
 
 const mockFootprintService = {
     initApplicationFootprint: jasmine.createSpy().and.returnValue(of([])),
-    getUniqueValues: jasmine.createSpy().and.returnValue({}),
+    getUniqueValues: jasmine.createSpy().and.returnValue({
+        domain: [],
+        lifeCycle: [],
+        equipmentType: [],
+        environment: [],
+        location: [],
+    }),
 };
 
 const mockFootprintStore = {
@@ -68,13 +97,18 @@ describe("Inventory Application footprint", () => {
         await TestBed.configureTestingModule({
             declarations: [InventoriesApplicationFootprintComponent],
             imports: [HttpClientTestingModule, TranslateModule.forRoot()],
+            schemas: [NO_ERRORS_SCHEMA],
             providers: [
                 { provide: ActivatedRoute, useValue: mockActivatedRoute },
                 { provide: TranslateService, useValue: mockTranslateService },
                 { provide: UserService, useValue: mockUserService },
+                { provide: InventoryService, useValue: mockInventoryService },
+                { provide: FootprintDataService, useValue: mockFootprintDataService },
                 { provide: FootprintService, useValue: mockFootprintService },
                 { provide: FootprintStoreService, useValue: mockFootprintStore },
                 { provide: GlobalStoreService, useValue: mockGlobalStore },
+                DecimalsPipe,
+                IntegerPipe,
             ],
         }).compileComponents();
         fixture = TestBed.createComponent(InventoriesApplicationFootprintComponent);
@@ -101,6 +135,7 @@ describe("Inventory Application footprint", () => {
             lifeCycle: [],
             equipmentType: [],
             environment: [],
+            location: [],
         });
 
         await component["asyncInit"]();
@@ -120,6 +155,7 @@ describe("Inventory Application footprint", () => {
             lifeCycle: [],
             equipmentType: [],
             environment: [],
+            location: [],
         });
         await component["asyncInit"]();
 
@@ -142,6 +178,7 @@ describe("Inventory Application footprint", () => {
             lifeCycle: [],
             equipmentType: [],
             environment: [],
+            location: [],
         });
         await component["asyncInit"]();
 
