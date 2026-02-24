@@ -237,7 +237,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
         return [
             {
                 subtitle: this.translate.instant("common.infrastructure"),
-                items: [this.equipments(), appStats[0]],
+                items: [appStats[0], this.equipments()],
             },
             {
                 subtitle: this.translate.instant("common.energy"),
@@ -753,20 +753,19 @@ export class InventoriesApplicationFootprintComponent implements OnInit {
     }
 
     getApplicationKeyIndicatorsData() {
+        const translateLifeCycle = (item: any) => ({
+            ...item,
+            lifeCycle: this.translate.instant("acvStep." + item.lifeCycle),
+        });
+
         this.footprintDataService
             .getApplicationKeyIndicators(this.inventoryId)
-            .subscribe(
-                (
-                    data: [
-                        VirtualEquipmentLowImpact[],
-                        VirtualEquipmentElectricityConsumption[],
-                        VirtualEquipmentNoOfVirtualEquipments[],
-                    ],
-                ) => {
-                    this.elecConsumptionData.set(data[1]);
-                    this.lowImpactData.set(data[0]);
-                    this.noOfVirtualEquipmentsData.set(data[2]);
-                },
-            );
+            .subscribe(([lowImpact, elecConsumption, noOfVirtualEquipments]) => {
+                this.lowImpactData.set(lowImpact.map(translateLifeCycle));
+                this.elecConsumptionData.set(elecConsumption.map(translateLifeCycle));
+                this.noOfVirtualEquipmentsData.set(
+                    noOfVirtualEquipments.map(translateLifeCycle),
+                );
+            });
     }
 }
