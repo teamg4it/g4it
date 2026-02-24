@@ -17,6 +17,7 @@ import {
     SimpleChanges,
 } from "@angular/core";
 
+import { ActivatedRoute, Router } from "@angular/router";
 import { EChartsOption } from "echarts";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
@@ -47,6 +48,8 @@ export class InventoriesCritereFootprintComponent
 {
     protected footprintStore = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
     @Input() footprint: Criterias = {} as Criterias;
     @Input() criteriaFootprint: Criteria = {} as Criteria;
     @Input() filterFields: string[] = [];
@@ -368,5 +371,11 @@ export class InventoriesCritereFootprintComponent
                 <span class="ml-2">${value}</span>
             </div>
          `;
+    }
+
+    moveToMultiCriteria() {
+        this.router.navigate(["../", "multi-criteria"], {
+            relativeTo: this.route,
+        });
     }
 }

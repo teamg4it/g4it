@@ -718,6 +718,7 @@
             "qty-virtual-equipment": "Quantité d'équipements virtuels",
             "cloud-services": "Clouds Publics - IaaS",
             "cloud-instances": "Instances cloud",
+            "multi-criteria-view": "Vue multicritères",
             "tooltip": {
                 "nb-cloud": "Nombre d'instances Cloud",
                 "nb-dc": "Nombre de centre de données",

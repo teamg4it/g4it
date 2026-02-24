@@ -721,6 +721,7 @@
             "qty-virtual-equipment": "Quantity of Virtual Equipment",
             "cloud-services": "Public Clouds - IaaS",
             "cloud-instances": "Cloud Instances",
+            "multi-criteria-view": "Multi-criteria view",
             "tooltip": {
                 "nb-cloud": "Number of cloud instances",
                 "nb-dc": "Number of datacenters",

@@ -1,4 +1,25 @@
-<div class="ml-auto block align-items-end lg:flex flex-row justify-content-end px-3">
+<div
+    class="ml-auto block align-items-end lg:flex flex-row p-3"
+    [ngClass]="
+        criteriaCalculated().hasError && inventory()?.enableDataInconsistency
+            ? 'justify-content-end'
+            : 'justify-content-between'
+    "
+>
+    <div class="inline">
+        <a
+            class="cursor-pointer m-0 text-xl color-tertiary"
+            tabindex="0"
+            (click)="moveToMultiCriteria()"
+            (keydown.enter)="moveToMultiCriteria()"
+            attr.aria-label="{{
+                'inventories-footprint.global.multi-criteria-view' | translate
+            }}"
+        >
+            <i class="pi pi-arrow-left mr-2"></i>
+            {{ "inventories-footprint.global.multi-criteria-view" | translate }}
+        </a>
+    </div>
     @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
         <p-button
             (onClick)="showInconsitencyGraph = !showInconsitencyGraph"

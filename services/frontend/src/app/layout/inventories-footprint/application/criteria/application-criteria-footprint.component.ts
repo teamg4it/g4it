@@ -16,6 +16,7 @@ import {
     Signal,
     SimpleChanges,
 } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { sortByProperty } from "sort-by-property";
@@ -63,6 +64,8 @@ export class ApplicationCriteriaFootprintComponent
     allCriteriaMap: StatusCountMap = {};
     protected footprintStore = inject(FootprintStoreService);
     private readonly filterService = inject(FilterService);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
 
     selectedCriteria = computed(() => {
         return this.translate.instant(
@@ -574,5 +577,11 @@ export class ApplicationCriteriaFootprintComponent
 
     selectedStackBarClick(criteriaName: string): void {
         this.onChartClick({ name: criteriaName });
+    }
+
+    moveToMultiCriteria() {
+        this.router.navigate(["../", "multi-criteria"], {
+            relativeTo: this.route,
+        });
     }
 }

@@ -6,44 +6,52 @@
             : 'justify-content-start'
     "
 >
-    @if (footprintStore.appGraphType() !== "global") {
-        <div class="inline">
-            @if (showBackButton()) {
-                <a
-                    class="cursor-pointer m-0 text-xl color-tertiary"
-                    tabindex="0"
-                    (click)="onArrowClick()"
-                    (keydown.enter)="onArrowClick()"
-                    attr.aria-label="{{
-                        'inventories-footprint.application.selected-infos' | translate
-                    }}{{ footprintStore.appDomain() }}{{
-                        footprintStore.appSubDomain()
-                    }}{{ footprintStore.appApplication() }}"
-                >
-                    <p-image
-                        src="assets/images/icons/icon-green-arrow-left.svg"
-                        alt=""
-                        styleClass="mr-2"
-                    />
-                    {{ "inventories-footprint.global.global-vision" | translate }}
-                    {{
-                        footprintStore.appGraphType() === "subdomain"
-                            ? showDomainLabel()
+    <div class="inline">
+        @if (showBackButton() && footprintStore.appGraphType() !== "global") {
+            <a
+                class="cursor-pointer m-0 text-xl color-tertiary"
+                tabindex="0"
+                (click)="onArrowClick()"
+                (keydown.enter)="onArrowClick()"
+                attr.aria-label="{{
+                    'inventories-footprint.application.selected-infos' | translate
+                }}{{ footprintStore.appDomain() }}{{ footprintStore.appSubDomain() }}{{
+                    footprintStore.appApplication()
+                }}"
+            >
+                <i class="pi pi-arrow-left mr-2"></i>
+                {{ "inventories-footprint.global.global-vision" | translate }}
+                {{
+                    footprintStore.appGraphType() === "subdomain"
+                        ? showDomainLabel()
+                            ? " / " + footprintStore.appDomain()
+                            : ""
+                        : footprintStore.appGraphType() === "application"
+                          ? (showDomainLabel()
                                 ? " / " + footprintStore.appDomain()
-                                : ""
-                            : footprintStore.appGraphType() === "application"
-                              ? (showDomainLabel()
-                                    ? " / " + footprintStore.appDomain()
-                                    : "") +
-                                (!showDomainByApplication() && showSubDomainLabel()
-                                    ? " / " + footprintStore.appSubDomain()
-                                    : "")
-                              : ""
-                    }}
-                </a>
-            }
-        </div>
-    }
+                                : "") +
+                            (!showDomainByApplication() && showSubDomainLabel()
+                                ? " / " + footprintStore.appSubDomain()
+                                : "")
+                          : ""
+                }}
+            </a>
+        } @else {
+            <a
+                class="cursor-pointer m-0 text-xl color-tertiary"
+                tabindex="0"
+                (click)="moveToMultiCriteria()"
+                (keydown.enter)="moveToMultiCriteria()"
+                attr.aria-label="{{
+                    'inventories-footprint.global.multi-criteria-view' | translate
+                }}"
+            >
+                <i class="pi pi-arrow-left mr-2"></i>
+                {{ "inventories-footprint.global.multi-criteria-view" | translate }}
+            </a>
+        }
+    </div>
+
     <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
 </div>
 @if (showInconsitencyGraph) {
