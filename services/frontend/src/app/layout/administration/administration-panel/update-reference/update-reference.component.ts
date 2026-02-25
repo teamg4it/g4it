@@ -39,6 +39,7 @@ export class UpdateReferenceComponent implements OnInit {
 
     uploadedFile: File | null = null;
     isProcessing = false;
+    isDownloading = false;
     maxFileSize = 100 * 1024 * 1024; // 100MB
     csvEndpoints: CsvImportEndpoint[] = [];
     selectedEndpoint: CsvImportEndpoint | null = null;
@@ -149,6 +150,34 @@ export class UpdateReferenceComponent implements OnInit {
         });
     }
 
+    onDownload() {
+        if (!this.selectedEndpoint) {
+            return;
+        }
+
+        this.isDownloading = true;
+        this.csvImportService.downloadCsvFile(this.selectedEndpoint.name).subscribe({
+            next: (blob) => {
+                this.isDownloading = false;
+                const url = globalThis.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${this.selectedEndpoint!.name}.csv`;
+                a.click();
+                globalThis.URL.revokeObjectURL(url);
+            },
+            error: (error) => {
+                this.isDownloading = false;
+                console.error("Download error:", error);
+                this.messageService.add({
+                    severity: "error",
+                    summary: "Download Failed",
+                    detail: `Failed to download referential ${this.selectedEndpoint!.label}`,
+                });
+            },
+        });
+    }
+
     onError(event: any) {
         this.messageService.add({
             severity: "error",
@@ -176,7 +205,6 @@ export class UpdateReferenceComponent implements OnInit {
             return;
         }
 
-        // Vérifier que c'est un fichier CSV
         if (!file.name.toLowerCase().endsWith(".csv") && file.type !== "text/csv") {
             this.messageService.add({
                 severity: "error",

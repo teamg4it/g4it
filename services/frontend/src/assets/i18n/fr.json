@@ -1167,6 +1167,7 @@
             "supported-formats": "Formats supportés : .csv",
             "max-file-size": "Taille maximale : 100MB",
             "upload-button": "Télécharger le fichier",
+            "download-button": "Télécharger le référentiel actuel",
             "processing": "Traitement de votre fichier...",
             "success": "Fichier téléchargé avec succès",
             "error": "Erreur lors du téléchargement du fichier",
