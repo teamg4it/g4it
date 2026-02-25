@@ -25,7 +25,7 @@ It is also possible to display results for a single criteria only.
 
 ### View by equipment
 
-![uc5_visualize_footprint_view_byEquipment.png](../../images/uc5_visualize_non-cloud_footprint_view_byEquipment.png)
+![uc5_visualize_footprint_view_byEquipment.png](../../images/uc5_visualize_non-cloud_footprint_view_byEquipment_new.png)
 
 ### View by equipment and criteria
 

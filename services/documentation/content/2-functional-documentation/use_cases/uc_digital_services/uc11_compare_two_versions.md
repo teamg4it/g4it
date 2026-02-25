@@ -48,7 +48,7 @@ graph TD
     ![uc11_compare_digital_service_versions.png](../images/uc11_compare_digital_service_versions.png)
 
 -   **Comparison of evaluated Digital Service Versions**
-    ![uc11_compare_dsv.png](../images/uc11_compare_dsv.png)
+    ![uc11_compare_dsv.png](../images/uc11_compare_dsv_new.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
