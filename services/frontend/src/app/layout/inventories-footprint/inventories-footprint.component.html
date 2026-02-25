@@ -28,10 +28,15 @@
                 styleClass="p-button-secondary-blue uppercase"
                 id="filter"
                 icon="pi pi-filter"
+                styleClass="mr-3"
                 [label]="'digital-services.configure-view' | translate"
                 [ariaLabel]="'digital-services.configure-view' | translate"
             ></p-button>
         </div>
+        <app-indicator-section
+            [statGroups]="statGroups()"
+            [isApplication]="false"
+        ></app-indicator-section>
         <div class="mb-3 footprint-dashboard-container-app-criteria grid">
             <div
                 class="bg-white"
@@ -121,10 +126,6 @@
                 class="bg-gray-color mb-5 mt-2"
                 [ngClass]="!isCollapsed ? 'col-12 lg:col-9' : 'col'"
             >
-                <app-indicator-section
-                    [statGroups]="statGroups()"
-                ></app-indicator-section>
-
                 <div class="bg-white m-3 pb-3">
                     @if (footprintStore.criteria() === multiCriteria) {
                         <app-inventories-multicriteria-footprint

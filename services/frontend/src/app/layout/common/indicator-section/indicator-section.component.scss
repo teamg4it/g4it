@@ -1,26 +1,15 @@
-.key-figures {
-    background: #f5f6f8;
-    padding: 16px;
-}
-
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
 
-.stat-card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 16px;
-    text-align: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+.cards-grid-app {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-.value {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 4px;
+.stat-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .label {

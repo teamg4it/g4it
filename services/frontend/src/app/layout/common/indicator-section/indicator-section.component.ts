@@ -11,4 +11,5 @@ import { SharedModule } from "src/app/core/shared/shared.module";
 })
 export class IndicatorSectionComponent {
     statGroups = input<StatGroup[]>([]);
+    isApplication = input<boolean>(false);
 }

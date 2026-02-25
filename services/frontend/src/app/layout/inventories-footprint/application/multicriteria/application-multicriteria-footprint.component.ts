@@ -208,7 +208,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 name: this.translate.instant("common.peopleeq"),
                 nameLocation: "end",
                 // THIS increases distance from chart
-                nameGap: 22,
+                nameGap: 21,
                 nameTextStyle: {
                     fontStyle: "italic",
                 },
