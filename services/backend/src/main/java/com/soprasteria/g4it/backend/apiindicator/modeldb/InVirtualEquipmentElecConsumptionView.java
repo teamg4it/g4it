@@ -50,10 +50,22 @@ import java.io.Serializable;
                                             sub.environment,
                                             sub.equipment_type,
                 
-                                            /* VM electricity already scaled by VM quantity */
-                                            MAX(sub.vm_elec_scaled) AS elec_consumption,
+                                            SUM(
+                                                CASE
+                                                    WHEN sub.infrastructure_type = 'NON_CLOUD_SERVICES'
+                                                        THEN sub.vm_elec_scaled
+                                                    ELSE 0
+                                                END
+                                            )
+                                            +
+                                            MAX(
+                                                CASE
+                                                    WHEN sub.infrastructure_type <> 'NON_CLOUD_SERVICES'
+                                                        THEN sub.vm_elec_scaled
+                                                    ELSE NULL
+                                                END
+                                            ) AS elec_consumption,
                 
-                                            /* Number of applications */
                                             COUNT(sub.application_name) AS quantity
                 
                                         FROM (
@@ -66,7 +78,7 @@ import java.io.Serializable;
                                                 oa.equipment_type,
                                                 oa.name AS application_name,
                 
-                                                /* remove criteria duplication */
+                                                ive.infrastructure_type,
                                                 MAX(oa.electricity_consumption)
                                                     * MAX(oa.quantity) AS vm_elec_scaled
                 
@@ -94,7 +106,8 @@ import java.io.Serializable;
                                                 oa.filters[2],
                                                 oa.environment,
                                                 oa.equipment_type,
-                                                oa.name
+                                                oa.name,
+                                                ive.infrastructure_type
                                         ) sub
                 
                                         GROUP BY
