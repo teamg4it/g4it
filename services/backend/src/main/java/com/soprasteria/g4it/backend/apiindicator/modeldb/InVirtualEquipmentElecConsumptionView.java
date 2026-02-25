@@ -40,83 +40,82 @@ import java.io.Serializable;
         resultSetMapping = "InVirtualEquipmentElecConsumptionIndicatorsMapping",
         query = """
                 SELECT
-                                            ROW_NUMBER() OVER () AS id,
+                                                                   ROW_NUMBER() OVER () AS id,
                 
-                                            sub.virtual_equipment_name AS name,
-                                            sub.location,
-                                            'USING' AS lifecycle_step,
-                                            sub.domain,
-                                            sub.sub_domain,
-                                            sub.environment,
-                                            sub.equipment_type,
+                                                                   sub.virtual_equipment_name AS name,
+                                                                   sub.location,
+                                                                   'USING' AS lifecycle_step,
+                                                                   sub.domain,
+                                                                   sub.sub_domain,
+                                                                   sub.environment,
+                                                                   sub.equipment_type,
                 
-                                            SUM(
-                                                CASE
-                                                    WHEN sub.infrastructure_type = 'NON_CLOUD_SERVICES'
-                                                        THEN sub.vm_elec_scaled
-                                                    ELSE 0
-                                                END
-                                            )
-                                            +
-                                            MAX(
-                                                CASE
-                                                    WHEN sub.infrastructure_type <> 'NON_CLOUD_SERVICES'
-                                                        THEN sub.vm_elec_scaled
-                                                    ELSE NULL
-                                                END
-                                            ) AS elec_consumption,
+                                                                   SUM(
+                                                                       CASE
+                                                                           WHEN sub.infrastructure_type <> 'CLOUD_SERVICES'
+                                                                               THEN sub.vm_elec_scaled
+                                                                           ELSE 0
+                                                                       END
+                                                                   )
+                                                                   +
+                                                                   COALESCE(
+                                                                       MAX(
+                                                                           CASE
+                                                                               WHEN sub.infrastructure_type = 'CLOUD_SERVICES'
+                                                                                   THEN sub.vm_elec_scaled
+                                                                           END
+                                                                       ),
+                                                                       0
+                                                                   ) AS elec_consumption,
                 
-                                            COUNT(sub.application_name) AS quantity
+                                                                   COUNT(sub.application_name) AS quantity
                 
-                                        FROM (
-                                            SELECT
-                                                oa.virtual_equipment_name,
-                                                COALESCE(dc.location, ive.location, 'Unknown') AS location,
-                                                oa.filters[1] AS domain,
-                                                oa.filters[2] AS sub_domain,
-                                                oa.environment,
-                                                oa.equipment_type,
-                                                oa.name AS application_name,
+                                                               FROM (
+                                                                   SELECT
+                                                                       oa.virtual_equipment_name,
+                                                                       COALESCE(dc.location, ive.location, 'Unknown') AS location,
+                                                                       oa.filters[1] AS domain,
+                                                                       oa.filters[2] AS sub_domain,
+                                                                       oa.environment,
+                                                                       oa.equipment_type,
+                                                                       oa.name AS application_name,
+                                                                       ive.infrastructure_type,
                 
-                                                ive.infrastructure_type,
-                                                MAX(oa.electricity_consumption)
-                                                    * MAX(oa.quantity) AS vm_elec_scaled
+                                                                       MAX(oa.electricity_consumption) * MAX(oa.quantity) AS vm_elec_scaled
                 
-                                            FROM out_application oa
+                                                                   FROM out_application oa
                 
-                                            JOIN task t
-                                                ON t.id = oa.task_id
-                                               AND t.status = 'COMPLETED'
-                                               AND t.id = :taskId
+                                                                   JOIN task t
+                                                                       ON t.id = oa.task_id
+                                                                      AND t.status = 'COMPLETED'
+                                                                      AND t.id = :taskId
                 
-                                            JOIN in_virtual_equipment ive
-                                                ON ive.name = oa.virtual_equipment_name
-                                               AND ive.inventory_id = t.inventory_id
+                                                                   JOIN in_virtual_equipment ive
+                                                                       ON ive.name = oa.virtual_equipment_name
+                                                                      AND ive.inventory_id = t.inventory_id
                 
-                                            LEFT JOIN in_datacenter dc
-                                                ON dc.name = ive.datacenter_name
-                                               AND dc.inventory_id = ive.inventory_id
+                                                                   LEFT JOIN in_datacenter dc
+                                                                       ON dc.name = ive.datacenter_name
+                                                                      AND dc.inventory_id = ive.inventory_id
                 
-                                            WHERE oa.lifecycle_step = 'USING'
+                                                                   WHERE oa.lifecycle_step = 'USING'
                 
-                                            GROUP BY
-                                                oa.virtual_equipment_name,
-                                                COALESCE(dc.location, ive.location, 'Unknown'),
-                                                oa.filters[1],
-                                                oa.filters[2],
-                                                oa.environment,
-                                                oa.equipment_type,
-                                                oa.name,
-                                                ive.infrastructure_type
-                                        ) sub
-                
-                                        GROUP BY
-                                            sub.virtual_equipment_name,
-                                            sub.location,
-                                            sub.domain,
-                                            sub.sub_domain,
-                                            sub.environment,
-                                            sub.equipment_type;
+                                                                   GROUP BY
+                                                                       oa.virtual_equipment_name,
+                                                                       COALESCE(dc.location, ive.location, 'Unknown'),
+                                                                       oa.filters[1],
+                                                                       oa.filters[2],
+                                                                       oa.environment,
+                                                                       oa.equipment_type,
+                                                                       oa.name,
+                                                                       ive.infrastructure_type
+                                                               ) AS sub GROUP BY
+                                                                   sub.virtual_equipment_name,
+                                                                   sub.location,
+                                                                   sub.domain,
+                                                                   sub.sub_domain,
+                                                                   sub.environment,
+                                                                   sub.equipment_type;
                 """
 )
 
