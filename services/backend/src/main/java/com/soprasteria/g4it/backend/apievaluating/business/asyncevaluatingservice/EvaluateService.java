@@ -594,19 +594,10 @@ public class EvaluateService {
             for (ImpactApplication impact : impactApplicationList) {
 
                 Double sipValue = refSip.get(impact.getCritere());
-                Double electricity = 0d;
-
-                if ("USING".equals(impact.getEtapeACV()) && !applicationList.isEmpty()) {
-
-                    if (cloudElectricityKwh != null) {
-                        electricity = cloudElectricityKwh;
-                    } else {
-                        electricity = impactEquipementVirtuelList.stream()
-                                .filter(vmImpact -> "USING".equals(vmImpact.getEtapeACV()))
-                                .mapToDouble(ImpactEquipementVirtuel::getConsoElecMoyenne)
-                                .sum();
-                    }
-                }
+                Double electricity =
+                        cloudElectricityKwh != null
+                                ? cloudElectricityKwh
+                                : impact.getConsoElecMoyenne();
                 AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                         null, electricity, impact.getImpactUnitaire(),
                         sipValue,
