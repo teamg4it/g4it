@@ -138,7 +138,7 @@ describe("Inventory Application footprint", () => {
             location: [],
         });
 
-        await component["asyncInit"]();
+        await component["initializeOnInit"]();
 
         expect(mockFootprintStore.setDomain).toHaveBeenCalledWith("Domain1");
         expect(mockFootprintStore.setSubDomain).toHaveBeenCalledWith("SubDomain1");
@@ -157,7 +157,7 @@ describe("Inventory Application footprint", () => {
             environment: [],
             location: [],
         });
-        await component["asyncInit"]();
+        await component["initializeOnInit"]();
 
         expect(mockFootprintStore.setGraphType).toHaveBeenCalledWith("global");
     });
@@ -180,7 +180,7 @@ describe("Inventory Application footprint", () => {
             environment: [],
             location: [],
         });
-        await component["asyncInit"]();
+        await component["initializeOnInit"]();
 
         expect(mockFootprintStore.setDomain).toHaveBeenCalledWith("Domain1");
         expect(mockFootprintStore.setSubDomain).toHaveBeenCalledWith("");
