@@ -258,14 +258,3 @@ export interface VirtualEquipmentElectricityConsumption {
     subDomain: string;
     quantity: number;
 }
-
-export interface VirtualEquipmentNoOfVirtualEquipments {
-    domain: string;
-    subDomain: string;
-    environment: string;
-    equipmentType: string;
-    lifeCycle: string;
-    location: string;
-    name: string;
-    quantity: number;
-}

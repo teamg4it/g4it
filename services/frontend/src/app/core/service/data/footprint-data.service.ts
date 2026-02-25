@@ -8,7 +8,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, forkJoin } from "rxjs";
-import { map } from "rxjs/operators";
 import { Constants } from "src/constants";
 import {
     ApplicationCriteriaFootprint,
@@ -20,7 +19,6 @@ import {
     PhysicalEquipmentsElecConsumption,
     VirtualEquipmentElectricityConsumption,
     VirtualEquipmentLowImpact,
-    VirtualEquipmentNoOfVirtualEquipments,
 } from "../../interfaces/footprint.interface";
 import { transformEquipmentType } from "../mapper/array";
 
@@ -111,18 +109,7 @@ export class FootprintDataService {
         const elecConsumption$ = this.http.get<VirtualEquipmentElectricityConsumption[]>(
             `${endpoint}/${inventoryId}/indicators/virtualEquipmentsElecConsumption`,
         );
-        const count$ = this.http
-            .get<
-                VirtualEquipmentNoOfVirtualEquipments[]
-            >(`${endpoint}/${inventoryId}/indicators/virtualEquipmentsCount`)
-            .pipe(
-                map((data) => {
-                    return Array.from(
-                        new Map(data.map((item) => [item.name, item])).values(),
-                    );
-                }),
-            );
 
-        return forkJoin([lowImpact$, elecConsumption$, count$]);
+        return forkJoin([lowImpact$, elecConsumption$]);
     }
 }

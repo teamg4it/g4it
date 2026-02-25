@@ -36,7 +36,6 @@ import {
     Stat,
     VirtualEquipmentElectricityConsumption,
     VirtualEquipmentLowImpact,
-    VirtualEquipmentNoOfVirtualEquipments,
 } from "src/app/core/interfaces/footprint.interface";
 import { StatGroup } from "src/app/core/interfaces/indicator.interface";
 import {
@@ -117,7 +116,6 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     appCount: number = 0;
     lowImpactData = signal<VirtualEquipmentLowImpact[]>([]);
     elecConsumptionData = signal<VirtualEquipmentElectricityConsumption[]>([]);
-    noOfVirtualEquipmentsData = signal<VirtualEquipmentNoOfVirtualEquipments[]>([]);
     isCollapsed = false;
 
     impacts: Signal<any> = computed(() => {
@@ -217,7 +215,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
 
     equipments = computed<Stat>(() => {
         const count = this.filterNoOfVirtualEquipments(
-            this.noOfVirtualEquipmentsData(),
+            this.elecConsumptionData(),
             this.footprintStore.applicationSelectedFilters(),
         );
         return {
@@ -788,7 +786,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     }
 
     filterNoOfVirtualEquipments(
-        noOfVirtualEquipmentsData: VirtualEquipmentNoOfVirtualEquipments[],
+        noOfVirtualEquipmentsData: VirtualEquipmentElectricityConsumption[],
         filters: Filter,
     ) {
         const hasAllFilters = this.checkAllFilters(filters);
@@ -813,12 +811,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
 
         this.footprintDataService
             .getApplicationKeyIndicators(this.inventoryId)
-            .subscribe(([lowImpact, elecConsumption, noOfVirtualEquipments]) => {
+            .subscribe(([lowImpact, elecConsumption]) => {
                 this.lowImpactData.set(lowImpact.map(translateLifeCycle));
                 this.elecConsumptionData.set(elecConsumption.map(translateLifeCycle));
-                this.noOfVirtualEquipmentsData.set(
-                    noOfVirtualEquipments.map(translateLifeCycle),
-                );
             });
     }
 }
