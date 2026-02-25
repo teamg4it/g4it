@@ -1,0 +1,84 @@
+---
+title: "3.3.1 Import referential data"
+description: "This use case describes how to import referential data via CSV files in the administration module."
+weight: 10
+mermaid: true
+---
+
+## Table of contents
+
+- [Description](#description)
+- [State Diagram](#state-diagram)
+- [Behavior Rules](#behavior-rules)
+- [Sequence Diagram](#sequence-diagram)
+
+## Description
+
+As a **G4IT SuperAdmin**, the user can upload CSV files to update the core referential data used for environmental impact calculations.
+
+**Navigation Path**  
+Administration panel / Update Referential
+
+**Access Conditions**  
+The connected user must have the `ROLE_SUPER_ADMINISTRATOR`.
+
+## State Diagram
+
+{{< mermaid >}}
+stateDiagram-v2
+[*] --> Idle
+Idle --> SelectingType: Select Data Type
+SelectingType --> SelectingFile: Choose CSV File
+SelectingFile --> Uploading: Click Upload
+Uploading --> Processing: File Sent to Server
+Processing --> Success: 0 errors
+Processing --> Warning: Partial success (>0 lines imported, >0 errors)
+Processing --> Error: Technical error or 100% lines failed
+Success --> Idle: Clear / New Upload
+Warning --> Idle: Clear / New Upload
+Error --> Idle: Retry / New Upload
+{{< /mermaid >}}
+
+## Behavior Rules
+
+{{% expand title="Show the detail" expanded="false" %}}
+
+| Reference       | Element            | Type   | Description                                                                                                                                     |
+| :-------------- | :----------------- | :----- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dropdown**    | Data Type          | Select | Allows choosing between: Criterion, Lifecycle Step, Hypothesis, Item Type, Matching Item, Item Impact.                                          |
+| **FileUpload**  | Choose             | Button | Opens file picker. Filters for `.csv` files. Max size: 100MB.                                                                                   |
+| **FileUpload**  | Upload             | Button | Disabled if no file is selected or no data type is chosen. Triggers the POST request.                                                           |
+| **ProgressBar** | Upload Progress    | UI     | Displays the real-time progress of the file transfer.                                                                                           |
+| **Validation**  | Organization Check | Logic  | For specific types (Hypothesis, Item Type, Matching Item, Item Impact), the `subscriber` column in the CSV must match the current organization. |
+| **Result**      | Success Message    | UI     | Displays the number of lines successfully imported into the database.                                                                           |
+| **Result**      | Error List         | UI     | Displays a scrollable list of errors with line numbers and specific validation messages.                                                        |
+
+{{% /expand %}}
+
+## Sequence Diagram
+
+{{< mermaid >}}
+sequenceDiagram
+actor Admin as Administrator
+participant Front as G4IT Front-End
+participant Back as G4IT Back-End
+participant DB as Referential DB
+participant Cache as Cache Manager
+
+    Admin->>Front: Select Type (e.g., itemImpact)
+    Admin->>Front: Select CSV File
+    Admin->>Front: Click Upload
+    Front->>Back: POST /api/referential/itemImpact/csv (MultipartFile)
+    Note over Back: Parse CSV (Apache Commons CSV)
+    loop For each record
+        Back->>Back: Validate Format & Organization
+    end
+    alt If valid records found
+        Back->>DB: Delete existing organization data (for itemImpact)
+        Back->>DB: Save new records
+        Back->>Cache: Clear relevant caches (e.g., ref_getItemImpacts)
+    end
+    Back-->>Front: Return ImportReportRest (importedLines, errors)
+    Front-->>Admin: Display status and error details if any
+
+{{< /mermaid >}}
