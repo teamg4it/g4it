@@ -8,6 +8,7 @@
 import {
     Component,
     DestroyRef,
+    OnDestroy,
     OnInit,
     Signal,
     WritableSignal,
@@ -67,7 +68,7 @@ import { Constants } from "src/constants";
     selector: "app-inventories-footprint",
     templateUrl: "./inventories-footprint.component.html",
 })
-export class InventoriesFootprintComponent implements OnInit {
+export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     protected footprintStore = inject(FootprintStoreService);
     private readonly globalStore = inject(GlobalStoreService);
     private readonly outVirtualEquipmentService = inject(OutVirtualEquipmentsService);

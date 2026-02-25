@@ -172,6 +172,8 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             radiusAxis: {
                 name: this.translate.instant("common.peopleeq"),
                 nameLocation: "end",
+                // THIS increases distance from chart
+                nameGap: 22,
                 nameTextStyle: {
                     fontStyle: "italic",
                 },
