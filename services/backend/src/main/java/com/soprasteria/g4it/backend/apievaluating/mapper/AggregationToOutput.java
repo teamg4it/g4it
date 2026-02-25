@@ -160,16 +160,18 @@ public interface AggregationToOutput {
     }
 
     default List<String> keyApplication(InPhysicalEquipment physicalEquipment, InVirtualEquipment virtualEquipment, InApplication application,
-                                        ImpactApplication impact, RefShortcutBO refShortcutBO) {
+                                        ImpactApplication impact, RefShortcutBO refShortcutBO,String appLocation) {
 
         String equipmentType;
+        String location;
         if (CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType())) {
             equipmentType = "Cloud " + virtualEquipment.getProvider().toUpperCase();
+            location=appLocation;
         } else {
             equipmentType = physicalEquipment != null ? physicalEquipment.getType() : "";
+            location = physicalEquipment == null ? "" : physicalEquipment.getLocation();
         }
 
-        String location = physicalEquipment == null ? "" : physicalEquipment.getLocation();
         List<String> physicalEquipmentFilters = physicalEquipment == null ? List.of() : physicalEquipment.getFilters();
         List<String> virtualEquipmentFilters = virtualEquipment.getFilters() == null ? List.of() : virtualEquipment.getFilters();
         List<String> commonFilters = application.getCommonFilters() == null ? List.of() : application.getCommonFilters();
