@@ -28,6 +28,7 @@ describe("UpdateReferenceComponent", () => {
         csvImportServiceMock = jasmine.createSpyObj("CsvImportDataService", [
             "getCsvEndpoints",
             "uploadCsvFile",
+            "downloadCsvFile",
         ]);
         csvImportServiceMock.getCsvEndpoints.and.returnValue(mockEndpoints);
 
@@ -104,6 +105,10 @@ describe("UpdateReferenceComponent", () => {
 
             component.onUpload({ files: [mockFile] });
 
+            expect(csvImportServiceMock.uploadCsvFile).toHaveBeenCalledWith(
+                mockEndpoints[0].name,
+                mockFile,
+            );
             expect(component.isProcessing).toBeFalse();
             expect(component.uploadedFile).toBe(mockFile);
             expect(component.lastUploadResponse).toEqual(response);
@@ -126,6 +131,7 @@ describe("UpdateReferenceComponent", () => {
             component.onUpload({ files: [mockFile] });
 
             expect(component.isProcessing).toBeFalse();
+            expect(component.uploadedFile).toBe(mockFile);
             expect(component.uploadErrors).toEqual(response.errors);
             expect(component.importedLineNumber).toBe(3);
             expect(messageServiceMock.add).toHaveBeenCalledWith({
@@ -144,6 +150,8 @@ describe("UpdateReferenceComponent", () => {
 
             expect(component.isProcessing).toBeFalse();
             expect(component.uploadedFile).toBeNull();
+            expect(component.uploadErrors).toEqual([]);
+            expect(component.importedLineNumber).toBe(0);
             expect(messageServiceMock.add).toHaveBeenCalledWith({
                 severity: "error",
                 summary: "Upload Failed",
@@ -158,6 +166,10 @@ describe("UpdateReferenceComponent", () => {
 
             component.onUpload({ files: [mockFile] });
 
+            expect(component.isProcessing).toBeFalse();
+            expect(component.uploadedFile).toBeNull();
+            expect(component.uploadErrors).toEqual([]);
+            expect(component.importedLineNumber).toBe(0);
             expect(messageServiceMock.add).toHaveBeenCalledWith({
                 severity: "error",
                 summary: "Upload Failed",
@@ -172,11 +184,104 @@ describe("UpdateReferenceComponent", () => {
 
             component.onUpload({ files: [mockFile] });
 
+            expect(component.isProcessing).toBeFalse();
+            expect(component.uploadedFile).toBeNull();
+            expect(component.uploadErrors).toEqual([]);
+            expect(component.importedLineNumber).toBe(0);
             expect(messageServiceMock.add).toHaveBeenCalledWith({
                 severity: "error",
                 summary: "Upload Failed",
                 detail: `Failed to upload file ${mockFile.name}: String error message`,
             });
+        });
+
+        it("should use unknown error message as fallback", () => {
+            component.selectedEndpoint = mockEndpoints[0];
+            const error = {}; // no error.error, no error.message
+            csvImportServiceMock.uploadCsvFile.and.returnValue(throwError(() => error));
+
+            component.onUpload({ files: [mockFile] });
+
+            expect(messageServiceMock.add).toHaveBeenCalledWith({
+                severity: "error",
+                summary: "Upload Failed",
+                detail: `Failed to upload file ${mockFile.name}: Unknown error`,
+            });
+        });
+    });
+
+    describe("onDownload", () => {
+        it("should do nothing if no endpoint is selected", () => {
+            component.selectedEndpoint = null;
+
+            component.onDownload();
+
+            expect(csvImportServiceMock.downloadCsvFile).not.toHaveBeenCalled();
+            expect(component.isDownloading).toBeFalse();
+        });
+
+        it("should trigger file download on success", () => {
+            component.selectedEndpoint = mockEndpoints[0];
+            const mockBlob = new Blob(["col1,col2"], { type: "text/csv" });
+            csvImportServiceMock.downloadCsvFile.and.returnValue(of(mockBlob));
+
+            spyOn(globalThis.URL, "createObjectURL").and.returnValue("blob:fake-url");
+            spyOn(globalThis.URL, "revokeObjectURL");
+            const mockAnchor = {
+                href: "",
+                download: "",
+                click: jasmine.createSpy("click"),
+            };
+            spyOn(document, "createElement").and.returnValue(mockAnchor as any);
+
+            component.onDownload();
+
+            expect(csvImportServiceMock.downloadCsvFile).toHaveBeenCalledWith(
+                mockEndpoints[0].name,
+            );
+            expect(component.isDownloading).toBeFalse();
+            expect(globalThis.URL.createObjectURL).toHaveBeenCalledWith(mockBlob);
+            expect(mockAnchor.href).toBe("blob:fake-url");
+            expect(mockAnchor.download).toBe(`${mockEndpoints[0].name}.csv`);
+            expect(mockAnchor.click).toHaveBeenCalled();
+            expect(globalThis.URL.revokeObjectURL).toHaveBeenCalledWith("blob:fake-url");
+        });
+
+        it("should set isDownloading to false and show error on failure", () => {
+            component.selectedEndpoint = mockEndpoints[0];
+            const error = { message: "Network error" };
+            csvImportServiceMock.downloadCsvFile.and.returnValue(throwError(() => error));
+
+            component.onDownload();
+
+            expect(component.isDownloading).toBeFalse();
+            expect(messageServiceMock.add).toHaveBeenCalledWith({
+                severity: "error",
+                summary: "Download Failed",
+                detail: `Failed to download referential ${mockEndpoints[0].label}`,
+            });
+        });
+
+        it("should use endpoint name as downloaded filename", () => {
+            component.selectedEndpoint = mockEndpoints[1];
+            const mockBlob = new Blob(["col1,col2"], { type: "text/csv" });
+            csvImportServiceMock.downloadCsvFile.and.returnValue(of(mockBlob));
+
+            spyOn(globalThis.URL, "createObjectURL").and.returnValue("blob:fake-url");
+            spyOn(globalThis.URL, "revokeObjectURL");
+            const mockAnchor = {
+                href: "",
+                download: "",
+                click: jasmine.createSpy("click"),
+            };
+            spyOn(document, "createElement").and.returnValue(mockAnchor as any);
+
+            component.onDownload();
+
+            expect(csvImportServiceMock.downloadCsvFile).toHaveBeenCalledWith(
+                mockEndpoints[1].name,
+            );
+            expect(mockAnchor.download).toBe(`${mockEndpoints[1].name}.csv`);
         });
     });
 
@@ -200,9 +305,7 @@ describe("UpdateReferenceComponent", () => {
         });
 
         it("should show error if file is too large", () => {
-            const largeFile = new File(["x".repeat(101 * 1024 * 1024)], "large.csv", {
-                type: "text/csv",
-            });
+            const largeFile = new File(["data"], "large.csv", { type: "text/csv" });
             Object.defineProperty(largeFile, "size", { value: 101 * 1024 * 1024 });
 
             component.onSelect({ files: [largeFile] });
@@ -231,6 +334,17 @@ describe("UpdateReferenceComponent", () => {
 
             expect(messageServiceMock.add).not.toHaveBeenCalled();
         });
+
+        it("should not show error for file with .csv extension and wrong MIME type", () => {
+            // The condition uses &&: both name AND type must be wrong to trigger the error
+            const csvNameWrongMime = new File(["data"], "test.csv", {
+                type: "application/octet-stream",
+            });
+
+            component.onSelect({ files: [csvNameWrongMime] });
+
+            expect(messageServiceMock.add).not.toHaveBeenCalled();
+        });
     });
 
     describe("onRemove", () => {
@@ -253,11 +367,26 @@ describe("UpdateReferenceComponent", () => {
         it("should not reset state when removing a different file", () => {
             component.uploadedFile = mockFile;
             component.lastUploadResponse = { importedLineNumber: 10 };
+            component.uploadErrors = ["error"];
+            component.importedLineNumber = 10;
 
             component.onRemove({ file: { name: "other.csv" } });
 
             expect(component.uploadedFile).toBe(mockFile);
             expect(component.lastUploadResponse).toEqual({ importedLineNumber: 10 });
+            expect(component.uploadErrors).toEqual(["error"]);
+            expect(component.importedLineNumber).toBe(10);
+        });
+
+        it("should do nothing if no file is currently uploaded", () => {
+            component.uploadedFile = null;
+            component.lastUploadResponse = null;
+
+            component.onRemove({ file: { name: mockFile.name } });
+
+            expect(component.uploadedFile).toBeNull();
+            expect(component.lastUploadResponse).toBeNull();
+            expect(messageServiceMock.add).not.toHaveBeenCalled();
         });
     });
 });

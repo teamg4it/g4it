@@ -72,4 +72,13 @@ export class CsvImportDataService {
 
         return this.http.post(endpoint.url, formData);
     }
+
+    downloadCsvFile(endpointName: string): Observable<Blob> {
+        const endpoint = this.csvEndpoints.find((ep) => ep.name === endpointName);
+        if (!endpoint) {
+            throw new Error(`Endpoint ${endpointName} not found`);
+        }
+
+        return this.http.get(endpoint.url, { responseType: "blob" });
+    }
 }

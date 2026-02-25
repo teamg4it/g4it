@@ -46,27 +46,40 @@
         </p-dropdown>
     </div>
 
-    <p-fileUpload
-        #fileUpload
-        name="csvFile"
-        [multiple]="false"
-        accept=".csv"
-        [maxFileSize]="maxFileSize"
-        [customUpload]="true"
-        (uploadHandler)="onUpload($event)"
-        (onSelect)="onSelect($event)"
-        (onRemove)="onRemove($event)"
-        (onError)="onError($event)"
-        [auto]="false"
-        [disabled]="!selectedEndpoint"
-        chooseLabel="{{ 'common.choose-file' | translate }}"
-        uploadLabel="{{ 'administration.uploadcsv.upload-button' | translate }}"
-        cancelLabel="{{ 'common.cancel' | translate }}"
-        mode="basic"
-        [showUploadButton]="true"
-        [showCancelButton]="false"
-        styleClass="ml-1"
-    ></p-fileUpload>
+    <div class="flex align-items-center gap-2">
+        <p-fileUpload
+            #fileUpload
+            name="csvFile"
+            [multiple]="false"
+            accept=".csv"
+            [maxFileSize]="maxFileSize"
+            [customUpload]="true"
+            (uploadHandler)="onUpload($event)"
+            (onSelect)="onSelect($event)"
+            (onRemove)="onRemove($event)"
+            (onError)="onError($event)"
+            [auto]="false"
+            [disabled]="!selectedEndpoint"
+            chooseLabel="{{ 'common.choose-file' | translate }}"
+            uploadLabel="{{ 'administration.uploadcsv.upload-button' | translate }}"
+            cancelLabel="{{ 'common.cancel' | translate }}"
+            mode="basic"
+            [showUploadButton]="true"
+            [showCancelButton]="false"
+            styleClass="ml-1"
+        ></p-fileUpload>
+
+        <p-button
+            icon="pi pi-download"
+            [label]="'administration.uploadcsv.download-button' | translate"
+            [disabled]="!selectedEndpoint"
+            [loading]="isDownloading"
+            (click)="onDownload()"
+            (keydown.enter)="onDownload()"
+            (keydown.space)="onDownload()"
+            severity="info"
+        ></p-button>
+    </div>
 
     <!-- Information section -->
     <div class="mt-3">

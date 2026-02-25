@@ -1171,6 +1171,7 @@
             "supported-formats": "Supported formats: .csv",
             "max-file-size": "Maximum size: 100MB",
             "upload-button": "Upload file",
+            "download-button": "Download current referential",
             "processing": "Processing your file...",
             "success": "File uploaded successfully",
             "error": "Error uploading file",

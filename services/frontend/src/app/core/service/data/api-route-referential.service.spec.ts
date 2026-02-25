@@ -238,4 +238,96 @@ describe("CsvImportDataService", () => {
             req.flush(mockResponse);
         });
     });
+
+    describe("downloadCsvFile", () => {
+        const mockBlob = new Blob(["col1,col2\nval1,val2"], { type: "text/csv" });
+
+        it("should send GET request to itemImpact endpoint", () => {
+            service.downloadCsvFile("itemImpact").subscribe((blob) => {
+                expect(blob).toBeInstanceOf(Blob);
+            });
+
+            const req = httpMock.expectOne(`${endpoint}/itemImpact/csv`);
+            expect(req.request.method).toBe("GET");
+            expect(req.request.responseType).toBe("blob");
+            req.flush(mockBlob);
+        });
+
+        it("should send GET request to criterion endpoint", () => {
+            service.downloadCsvFile("criterion").subscribe((blob) => {
+                expect(blob).toBeInstanceOf(Blob);
+            });
+
+            const req = httpMock.expectOne(`${endpoint}/criterion/csv`);
+            expect(req.request.method).toBe("GET");
+            expect(req.request.responseType).toBe("blob");
+            req.flush(mockBlob);
+        });
+
+        it("should send GET request to lifecycleStep endpoint", () => {
+            service.downloadCsvFile("lifecycleStep").subscribe();
+
+            const req = httpMock.expectOne(`${endpoint}/lifecycleStep/csv`);
+            expect(req.request.method).toBe("GET");
+            req.flush(mockBlob);
+        });
+
+        it("should send GET request to hypothesis endpoint", () => {
+            service.downloadCsvFile("hypothesis").subscribe();
+
+            const req = httpMock.expectOne(`${endpoint}/hypothesis/csv`);
+            expect(req.request.method).toBe("GET");
+            req.flush(mockBlob);
+        });
+
+        it("should send GET request to itemType endpoint", () => {
+            service.downloadCsvFile("itemType").subscribe();
+
+            const req = httpMock.expectOne(`${endpoint}/itemType/csv`);
+            expect(req.request.method).toBe("GET");
+            req.flush(mockBlob);
+        });
+
+        it("should send GET request to matchingItem endpoint", () => {
+            service.downloadCsvFile("matchingItem").subscribe();
+
+            const req = httpMock.expectOne(`${endpoint}/matchingItem/csv`);
+            expect(req.request.method).toBe("GET");
+            req.flush(mockBlob);
+        });
+
+        it("should throw error for unknown endpoint", () => {
+            expect(() => service.downloadCsvFile("unknownEndpoint")).toThrowError(
+                "Endpoint unknownEndpoint not found",
+            );
+        });
+
+        it("should handle server error response", () => {
+            const errorResponse = { status: 500, statusText: "Internal Server Error" };
+
+            service.downloadCsvFile("itemImpact").subscribe({
+                next: () => fail("Expected an error"),
+                error: (error) => {
+                    expect(error.status).toBe(500);
+                },
+            });
+
+            const req = httpMock.expectOne(`${endpoint}/itemImpact/csv`);
+            req.flush(new Blob(["Server error"], { type: "text/plain" }), errorResponse);
+        });
+
+        it("should handle 404 not found response", () => {
+            const errorResponse = { status: 404, statusText: "Not Found" };
+
+            service.downloadCsvFile("criterion").subscribe({
+                next: () => fail("Expected an error"),
+                error: (error) => {
+                    expect(error.status).toBe(404);
+                },
+            });
+
+            const req = httpMock.expectOne(`${endpoint}/criterion/csv`);
+            req.flush(new Blob(["Not found"], { type: "text/plain" }), errorResponse);
+        });
+    });
 });
