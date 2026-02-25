@@ -16,16 +16,19 @@ The import process follows a standard flow:
 
 ## API Endpoints
 
-The referential API provides endpoints for importing CSV data. All import endpoints are `POST` requests and expect a `multipart/form-data` body containing a file.
+The referential API provides endpoints for importing and exporting CSV data. All endpoints use the same path structure but different HTTP methods.
 
-| Data Type      | Endpoint Path                        |
-| -------------- | ------------------------------------ |
-| Item Impact    | `/api/referential/itemImpact/csv`    |
-| Criterion      | `/api/referential/criterion/csv`     |
-| Lifecycle Step | `/api/referential/lifecycleStep/csv` |
-| Hypothesis     | `/api/referential/hypothesis/csv`    |
-| Item Type      | `/api/referential/itemType/csv`      |
-| Matching Item  | `/api/referential/matchingItem/csv`  |
+| Data Type      | Endpoint Path                                 | Methods       |
+| -------------- | --------------------------------------------- | ------------- |
+| Item Impact    | `{backend_url}/referential/itemImpact/csv`    | `GET`, `POST` |
+| Criterion      | `{backend_url}/referential/criterion/csv`     | `GET`, `POST` |
+| Lifecycle Step | `{backend_url}/referential/lifecycleStep/csv` | `GET`, `POST` |
+| Hypothesis     | `{backend_url}/referential/hypothesis/csv`    | `GET`, `POST` |
+| Item Type      | `{backend_url}/referential/itemType/csv`      | `GET`, `POST` |
+| Matching Item  | `{backend_url}/referential/matchingItem/csv`  | `GET`, `POST` |
+
+- **POST**: Used to import data. Expects a `multipart/form-data` body with a field named `file` containing the CSV. An optional `organization` query parameter is required for organization-scoped types (`hypothesis`, `itemType`, `matchingItem`, `itemImpact`).
+- **GET**: Used to export (download) the current referential data. Returns a CSV file stream. An optional `organization` query parameter is required for organization-scoped types. Global types (`lifecycleStep`, `criterion`) do not require it.
 
 ## Business Logic: `ReferentialImportService`
 
@@ -43,11 +46,11 @@ The parser is configured with the following settings:
 ### Processing Flow
 
 1. **Validation**: Each line is parsed and mapped to a REST DTO using `ReferentialMapper`. Validation constraints (JSR 303/380) are then checked using a `Validator`.
-2. **Organization Scope**: For organization-specific data, the service ensures that the `subscriber` column in the CSV matches the organization provided in the request.
+2. **Organization Scope**: Some types are **global** (`lifecycleStep`, `criterion`) and do not use an organization. Others are **organization-scoped** (`hypothesis`, `itemType`, `matchingItem`, `itemImpact`): the service validates that every row's `subscriber` column matches the `organization` parameter provided in the request.
 3. **Persistence**:
     - For some types, the data is appended or merged.
     - For **Item Impact**, the existing data for the organization is **deleted** before importing the new records to ensure consistency.
-4. **Caching**: After a successful import, the relevant caches (e.g., `ref_getAllCriteria`, `ref_getItemImpacts`) are cleared to ensure the new data is immediately available for calculations.
+4. **Caching**: After a successful import, the relevant cache is cleared per data type (e.g., `ref_getAllCriteria`, `ref_getItemImpacts`). For `itemImpact`, two caches are cleared: `ref_getItemImpacts` and `ref_getCountries`.
 
 ## CSV Schema Definitions
 
