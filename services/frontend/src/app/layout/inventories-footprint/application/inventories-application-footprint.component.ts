@@ -293,7 +293,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         if (this.toReloadInventory) {
             await this.initInventory();
         } else if (!doAddTaskLoading && !doAddTaskEvaluating) {
-            this.initializeOnInit();
+            await this.initializeOnInit();
         }
     }
 
