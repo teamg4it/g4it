@@ -517,6 +517,7 @@ export class ApplicationCriteriaFootprintComponent
             grid: {
                 left: "3%",
                 right: "4%",
+                bottom: 25,
                 containLabel: true,
             },
             dataZoom: [
