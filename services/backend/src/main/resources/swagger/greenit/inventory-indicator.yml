@@ -20,7 +20,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: deleteIndicators
-      x-custom-role: "hasRole('INVENTORY_READ')"
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
       responses:
         "204":
           description: Indicators and related data have been removed
