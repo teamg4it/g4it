@@ -194,6 +194,22 @@ representing one of the application|Step8[Visualize impact for an application by
 
 {{% /expand %}}
 
+### View dedicated for Configure the view
+
+![uc6_visualize_application_footprint_configure_view.png](../images/uc6_visualize_application_footprint_configure_view.png)
+
+![uc6_visualize_application_footprint_data_consistency_in_configure_view.png](../images/uc6_visualize_application_footprint_data_consistency_in_configure_view.png)
+
+{{% expand title="Show the behavior detail" expanded="false" center="true"%}}
+
+| Reference | Group | Elements                | Sub-Elements | Type   | Description                                                                                                             |
+|-----------| ----- |-------------------------| ------------ | ------ |-------------------------------------------------------------------------------------------------------------------------|
+| 1         |       | Configure the view      |              | button | <li><u>action rules</u>: Click on configure the view.</li>                                                              |
+| 2         |       | Enable Data consistency |              | bar    | Data consistency indicates where the evaluation was unable to produce indicators. User can enable the data consistency. |
+| 3         |       | Units Management        |              | bar    | The impact value can be displayed either in the unit specific to the selected impact criteria or in people equivalent. |
+
+{{% /expand %}}
+
 ## Sequence Diagram
 
 ### Show the Sequence Diagram
@@ -210,6 +226,10 @@ Database--> back: Get inventory information
 back -->> front: Send the details of selected inventory Id on my view related to my view
 front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications
 Database--> back: Get the indicators from out_application table
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowImpact
+Database--> back: Get the virtual equipments which are in low impact
+front ->> back: GET /api/organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentElecConsumption
+Database--> back: Get power of consumption of the virtual equipments
 back -->> front: Indicators aggregated to be displayed
 front --> RND: Display the list of filters related to my view
 front ->> RND: Display filtered graphs related to my view
