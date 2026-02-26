@@ -729,7 +729,7 @@
                 "nb-eq": "Number of equipments (Cloud instances excluded)",
                 "low-impact": "% of equipment used in a country with a low multi-criteria impact on the electricity mix (1st quartile, Cloud excluded)",
                 "ave-age": "Average equipment lifespan (Cloud instances excluded)",
-                "elec-consumption": "Total power consumption of my organization's equipment for one year (estimated for Cloud Service)",
+                "elec-consumption": "Total power consumption of my organization's equipment for one year (Cloud excluded)",
                 "qty-vEq": "Sum of the quantity of Virtual Equipment and Cloud Instance of the inventory",
                 "vEq-elec-consumption": "Sum of Virtual Equipement electricity consumption (estimated for Cloud Service)"
             }

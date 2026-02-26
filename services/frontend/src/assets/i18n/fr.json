@@ -726,7 +726,7 @@
                 "nb-eq": "Nombre d'équipements physiques (hors instances Cloud)",
                 "low-impact": "% d'équipements utilisés dans un pays à faible impact multicritère sur le mix électrique (1er quartile, hors Cloud)",
                 "ave-age": "Durée de vie moyenne des équipements (hors instances Cloud)",
-                "elec-consumption": "Consommation éléctrique totale de mes équipements sur une année (estimée pour les services cloud)",
+                "elec-consumption": "Consommation éléctrique totale de mes équipements sur une année (hors Cloud)",
                 "qty-vEq": "Somme les quantités d'équipements virtuels et d'instances Cloud de l'inventaire",
                 "vEq-elec-consumption": "Consommation electrique totale des équipements virtuels de l'inventaire (estimée pour les services cloud)"
             }
