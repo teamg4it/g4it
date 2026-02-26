@@ -537,8 +537,10 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
 
     displayPopupFct() {
         const defaultCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
+        const criteriasCalculated = Object.keys(this.allUnmodifiedFootprint());
         this.selectedCriterias =
             this.inventory().criteria! ??
+            criteriasCalculated ??
             this.workspace?.criteriaIs ??
             this.organization?.criteria ??
             defaultCriteria;
