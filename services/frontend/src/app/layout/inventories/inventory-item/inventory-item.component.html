@@ -223,25 +223,27 @@
                         closeOnEscape="true"
                     ></p-confirmPopup>
                 </p-button>
-                <!-- settings button -->
-                <div class="flex justify-content-end ml-auto">
-                    <p-button
-                        styleClass="white-button"
-                        styleClass="ml-2"
-                        [rounded]="true"
-                        [text]="true"
-                        [raised]="true"
-                        [plain]="true"
-                        (onClick)="displayPopupFct()"
-                        icon="pi pi-cog"
-                        [ariaLabel]="
-                            'inventories.choose-criteria'
-                                | translate
-                                    : { inventoryName: (inventory.name | monthYear) }
-                        "
-                    >
-                    </p-button>
-                </div>
+                @if (userService.isAllowedInventoryWrite$ | async) {
+                    <!-- settings button -->
+                    <div class="flex justify-content-end ml-auto">
+                        <p-button
+                            styleClass="white-button"
+                            styleClass="ml-2"
+                            [rounded]="true"
+                            [text]="true"
+                            [raised]="true"
+                            [plain]="true"
+                            (onClick)="displayPopupFct()"
+                            icon="pi pi-cog"
+                            [ariaLabel]="
+                                'inventories.choose-criteria'
+                                    | translate
+                                        : { inventoryName: (inventory.name | monthYear) }
+                            "
+                        >
+                        </p-button>
+                    </div>
+                }
             </div>
         </div>
         @if (displayPopup) {
