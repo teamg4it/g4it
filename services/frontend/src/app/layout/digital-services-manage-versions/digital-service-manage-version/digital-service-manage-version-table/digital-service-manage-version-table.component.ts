@@ -57,7 +57,12 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
         let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
         if (moduleType === "eco-mind-ai") {
             this.router.navigate(
-                ["eco-mind-ai", version, "footprint", "ecomind-parameters"],
+                [
+                    "eco-mind-ai",
+                    version,
+                    "footprint",
+                    calculationDone ? "dashboard" : "ecomind-parameters",
+                ],
                 { relativeTo: this.route.parent?.parent },
             );
             return;
