@@ -86,7 +86,7 @@ paths:
     put:
       summary: Update an inventory
       operationId: updateInventory
-      x-custom-role: "hasRole('INVENTORY_READ')"
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
       requestBody:
         description: Mandatory inventory details to update.
         required: true
