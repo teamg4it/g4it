@@ -38,6 +38,8 @@ export class InventoryService {
             id: inventory.id,
             name: inventory.name,
             note: inventory.note,
+            criteria: inventory.criteria!,
+            enableDataInconsistency: inventory.enableDataInconsistency,
         };
         return this.inventoryDataService.updateInventory(inventoryRest);
     }

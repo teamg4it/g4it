@@ -98,7 +98,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
         this.inventory.note = {
             content: event,
         } as Note;
-
         this.inventoryService
             .updateInventory(this.inventory)
             .pipe(takeUntil(this.ngUnsubscribe))

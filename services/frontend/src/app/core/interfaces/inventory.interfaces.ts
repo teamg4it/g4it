@@ -29,12 +29,6 @@ export interface Inventory {
     workspaceId?: number;
 }
 
-export interface InventoryUpdateRest {
-    id: number;
-    name: string;
-    note?: Note;
-}
-
 export interface CreateInventory {
     type: string;
     name: string;
@@ -68,6 +62,14 @@ export interface ExportReport {
 
 export interface InventoryFilterSet {
     [key: string]: Set<string>;
+}
+
+export interface InventoryUpdateRest {
+    id: number;
+    name: string;
+    note?: Note;
+    criteria: string[];
+    enableDataInconsistency: boolean;
 }
 
 export interface InventoryCriteriaRest {
