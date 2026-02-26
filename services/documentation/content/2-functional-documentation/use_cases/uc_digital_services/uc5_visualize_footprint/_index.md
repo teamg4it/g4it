@@ -52,7 +52,7 @@ Step8-->|Click on 'Global Vision' button|Step4
 
 ### Global view
 
-![uc5_visualize_footprint_visualize_Footprint.png](../images/uc5_visualize_footprint_visualizeFootprint.png)
+![uc5_visualize_footprint_visualize_Footprint.png](../images/uc5_visualize_footprint_visualizeFootprint_new.png)
 
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
@@ -81,7 +81,7 @@ Step8-->|Click on 'Global Vision' button|Step4
 
 ### View by criteria
 
-![uc5_visualize_footprint_criteria_view.png](../images/uc5_visualize_footprint_criteria_view.png)
+![uc5_visualize_footprint_criteria_view.png](../images/uc5_visualize_footprint_criteria_view_new.png)
 
 ### Data consistency view
 

@@ -6,6 +6,7 @@
 - 1762 | New display for Inventory results
 
 ### Minor Changes
+- 1885 | DS : Fix for Delete Network or Terminal via the Delete button on the Edit detail page doesn't work
 - 1833 | Country in error for Cloud Service and DC
 - 1876 | fix the header for digital service detail page / for inventory - Equipment and Application view / for ecomindIA / for administration
 - 1861 | Digital service : Add raw value into camembert
