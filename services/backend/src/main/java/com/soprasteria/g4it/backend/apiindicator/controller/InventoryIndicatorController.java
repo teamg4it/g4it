@@ -191,11 +191,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     }
 
     @Override
-    public ResponseEntity<List<VirtualEquipmentLowImpactRest>> getVirtualEquipmentsLowImpact(
-            String organization,
-            Long workspace,
-            Long inventoryId) {
-
+    public ResponseEntity<List<VirtualEquipmentLowImpactRest>> getVirtualEquipmentsLowImpact(String organization, Long workspace, Long inventoryId) {
         List<VirtualEquipmentLowImpactBO> bos =
                 inventoryIndicatorService
                         .getVirtualEquipmentsLowImpact(organization, workspace, inventoryId);
@@ -207,9 +203,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
 
     @Override
     public ResponseEntity<List<VirtualEquipmentElecConsumptionRest>>
-    getVirtualEquipmentElecConsumption(final String organization,
-                                       final Long workspace,
-                                       final Long inventoryId) {
+    getVirtualEquipmentElecConsumption(final String organization, final Long workspace, final Long inventoryId) {
 
         return ResponseEntity.ok(
                 indicatorRestMapper.toVirtualElecConsumptionDto(
@@ -221,21 +215,4 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                 )
         );
     }
-
-    @Override
-    public ResponseEntity<List<VirtualEquipmentCountRest>> getVirtualEquipmentCount(final String organization,
-                                                                                    final Long workspace,
-                                                                                    final Long inventoryId) {
-        return ResponseEntity.ok(
-                indicatorRestMapper.toVirtualCountDto(
-                        inventoryIndicatorService.getVirtualEquipmentCount(
-                                organization,
-                                workspace,
-                                inventoryId
-                        )
-                )
-        );
-    }
-
-
 }

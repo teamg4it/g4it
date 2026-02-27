@@ -487,7 +487,7 @@ class InventoryServiceTest {
                 .build();
 
         Role writeRole = Role.builder()
-                .name("INVENTORY_READ")
+                .name("ROLE_INVENTORY_WRITE")
                 .build();
 
         UserWorkspace userWorkspace = UserWorkspace.builder()
@@ -515,39 +515,49 @@ class InventoryServiceTest {
 
 
     @Test
-    void shouldAllowChangeWithoutWriteRole() {
+    void shouldAllowChangeWithoutWriteRole_whenChangingEnableDataInconsistency() {
+
         Workspace workspace = TestUtils.createWorkspace();
         workspace.getOrganization().setName(ORGANIZATION);
 
         UserBO user = TestUtils.createUserBONoRole();
+        user.setId(10L);
 
         Inventory inventory = Inventory.builder()
                 .id(1L)
-                .enableDataInconsistency(false)
+                .enableDataInconsistency(false) // initial value
                 .workspace(workspace)
                 .build();
 
         InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
                 .id(1L)
                 .name("name")
-                .enableDataInconsistency(true)
+                .enableDataInconsistency(true) // changed value
                 .build();
 
+        // No write role
         UserWorkspace userWorkspace = UserWorkspace.builder()
-                .roles(List.of()) // no write role
+                .roles(List.of())
                 .build();
 
-        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
-        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L)).thenReturn(Optional.of(inventory));
-        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any())).thenReturn(false);
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(workspace);
+
+        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L))
+                .thenReturn(Optional.of(inventory));
+
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(false);
+
         when(organizationRepository.findByName(ORGANIZATION))
                 .thenReturn(Optional.of(workspace.getOrganization()));
-        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(any(), any()))
+
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(WORKSPACE_ID, user.getId()))
                 .thenReturn(Optional.of(userWorkspace));
 
         inventoryService.updateInventory(ORGANIZATION, WORKSPACE_ID, updateRest, user);
 
-        verify(inventoryRepo).save(any());
+        verify(inventoryRepo).save(inventory);
     }
 
     @Test

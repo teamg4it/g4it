@@ -690,35 +690,6 @@ components:
         quantity:
           type: integer
 
-    VirtualEquipmentCountRest:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        location:
-          type: string
-        lifeCycle:
-          type: string
-          description: lifecycle step of the application
-        domain:
-          type: string
-          description: domain from application filters
-        subDomain:
-          type: string
-          description: sub domain from application filters
-        environment:
-          type: string
-          description: environment
-        equipmentType:
-          type: string
-          description: equipment type
-        quantity:
-          type: integer
-          description: number of virtual equipments
-
     DigitalServiceRest:
       description: Information of a Digital Service
       type: object

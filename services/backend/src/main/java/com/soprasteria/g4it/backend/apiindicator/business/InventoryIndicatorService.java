@@ -161,10 +161,7 @@ public class InventoryIndicatorService {
         return indicatorService.getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId);
     }
 
-    public List<VirtualEquipmentElecConsumptionBO>
-    getVirtualEquipmentElecConsumption(final String organization,
-                                       final Long workspace,
-                                       final Long inventoryId) {
+    public List<VirtualEquipmentElecConsumptionBO> getVirtualEquipmentElecConsumption(final String organization, final Long workspace, final Long inventoryId) {
 
         Task task = taskRepository
                 .findByInventoryAndLastCreationDate(
@@ -175,11 +172,5 @@ public class InventoryIndicatorService {
                 .getVirtualEquipmentElecConsumption(
                         task.getId()
                 );
-    }
-
-
-    public List<VirtualEquipmentCountBO> getVirtualEquipmentCount(String organization, Long workspace, Long inventoryId) {
-        return indicatorService.getVirtualEquipmentCount(inventoryId);
-
     }
 }
