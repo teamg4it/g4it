@@ -13,11 +13,14 @@ import com.google.common.collect.HashBiMap;
 import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.boaviztapi.EvaluateBoaviztapiService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
+import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
+import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
@@ -42,6 +45,8 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.HypothesisRest;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +65,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.soprasteria.g4it.backend.common.utils.InfrastructureType.CLOUD_SERVICES;
 
 @Service
 @Slf4j
@@ -106,6 +113,15 @@ public class EvaluateAiService {
 
     @Autowired
     ImpactToCsvRecord impactToCsvRecord;
+
+    @Autowired
+    EvaluateBoaviztapiService evaluateBoaviztapiService;
+
+    @Autowired
+    InternalToNumEcoEvalImpact internalToNumEcoEvalImpact;
+
+    @Autowired
+    BoaviztapiService boaviztapiService;
 
 
     @Value("${local.working.folder}")
@@ -372,32 +388,85 @@ public class EvaluateAiService {
                 Double totalVcpuCoreNumber = evaluateNumEcoEvalService.getTotalVcpuCoreNumber(virtualEquipments);
                 Double totalStorage = evaluateNumEcoEvalService.getTotalDiskSize(virtualEquipments);
 
-                List<ImpactEquipementVirtuel> impactEquipementVirtuelList = evaluateNumEcoEvalService.calculateVirtualEquipment(
-                        virtualEquipment, impactEquipementPhysiqueList,
-                        virtualEquipments.size(), totalVcpuCoreNumber, totalStorage,
-                        equipmentPue, equipmentLocation
-                );
+                boolean isCloudService =
+                        CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType());
 
+                List<ImpactEquipementVirtuel> impactEquipementVirtuelList;
+                Double cloudElectricityKwh = null;
+
+                if (isCloudService) {
+
+                    List<ImpactBO> impactBOList =
+                            evaluateBoaviztapiService.evaluate(
+                                    virtualEquipment,
+                                    refSip.keySet().stream().toList(),
+                                    referentialService.getLifecycleSteps()
+                            );
+
+                    impactEquipementVirtuelList =
+                            internalToNumEcoEvalImpact.map(impactBOList);
+
+                    BoaResponseRest response =
+                            boaviztapiService.runBoaviztCalculations(virtualEquipment);
+
+                    Double avgPowerW =
+                            boaviztapiService.extractAvgPowerW(response).orElse(null);
+
+                    cloudElectricityKwh =
+                            boaviztapiService.computeAnnualElectricityKwhRaw(
+                                    avgPowerW,
+                                    virtualEquipment.getDurationHour()
+                            );
+
+                } else {
+
+                    impactEquipementVirtuelList =
+                            evaluateNumEcoEvalService.calculateVirtualEquipment(
+                                    virtualEquipment,
+                                    impactEquipementPhysiqueList,
+                                    virtualEquipments.size(),
+                                    totalVcpuCoreNumber,
+                                    totalStorage,
+                                    equipmentPue,
+                                    equipmentLocation
+                            );
+                }
                 String location = virtualEquipment.getLocation();
 
                 if (evaluateReportBO.isExport()) {
                     csvInVirtualEquipment.printRecord(inputToCsvRecord.toCsv(virtualEquipment, location));
                 }
 
+
                 // Aggregate virtual equipment indicators in memory
                 for (ImpactEquipementVirtuel impact : impactEquipementVirtuelList) {
-                    AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
-                            virtualEquipment.getQuantity(), impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
-                            refSip.get(impact.getCritere()),
-                            null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload());
+                    Double quantity = virtualEquipment.getQuantity() == null ? 1d : virtualEquipment.getQuantity();
 
+                    Double electricity =
+                            isCloudService
+                                    ? cloudElectricityKwh
+                                    : impact.getConsoElecMoyenne();
+
+                    Double unitImpact = impact.getImpactUnitaire();
+
+                    Double totalImpact =
+                            unitImpact == null ? 0d :
+                                    (isCloudService ? unitImpact * quantity : unitImpact);
+
+                    Double totalElectricity =
+                            electricity == null ? 0d :
+                                    (isCloudService ? electricity * quantity : electricity);
+
+                    AggValuesBO values = createAggValuesBO(
+                            impact.getStatutIndicateur(), impact.getTrace(), quantity, totalElectricity, totalImpact, refSip.get(impact.getCritere()), null, virtualEquipment.getDurationHour(), virtualEquipment.getWorkload()
+                    );
                     aggregationVirtualEquipments
                             .computeIfAbsent(aggregationToOutput.keyVirtualEquipment(physicalEquipment, virtualEquipment, impact, refShortcutBO, evaluateReportBO), k -> new AggValuesBO())
                             .add(values);
 
                     if (evaluateReportBO.isExport()) {
                         csvOutVirtualEquipment.printRecord(impactToCsvRecord.toCsv(
-                                context, evaluateReportBO, virtualEquipment, impact, refSip.get(impact.getCritere()))
+                                context, evaluateReportBO, virtualEquipment, impact, refSip.get(impact.getCritere()), totalElectricity)
                         );
                     }
                     evaluateReportBO.setNbVirtualEquipmentLines(evaluateReportBO.getNbVirtualEquipmentLines() + 1);

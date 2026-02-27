@@ -87,9 +87,9 @@ public class InventoryIndicatorService {
     /**
      * Get inventory application indicators.
      *
-     * @param organization     the organization.
-     * @param workspaceId the workspaceId.
-     * @param inventoryId    the inventory id.
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
      * @return indicators.
      */
 
@@ -101,9 +101,9 @@ public class InventoryIndicatorService {
     /**
      * Delete inventory indicators.
      *
-     * @param organization     the organization.
-     * @param workspaceId the workspaceId.
-     * @param inventoryId    the inventory id.
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
      */
     public void deleteIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
         // clean all evaluating tasks
@@ -133,9 +133,9 @@ public class InventoryIndicatorService {
     /**
      * Get physical equipment low impact indicators.
      *
-     * @param organization     the organization.
-     * @param workspaceId the workspaceId.
-     * @param inventoryId    the inventory id.
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
      * @return indicators
      */
     public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String organization, final Long workspaceId, final Long inventoryId) {
@@ -145,9 +145,9 @@ public class InventoryIndicatorService {
     /**
      * Get electric consumption of physical equipments
      *
-     * @param organization     the organization
-     * @param workspaceId the workspace id
-     * @param inventoryId    the inventory id
+     * @param organization the organization
+     * @param workspaceId  the workspace id
+     * @param inventoryId  the inventory id
      * @return electric consumption indicators
      */
     public List<PhysicalEquipmentElecConsumptionBO> getPhysicalEquipmentElecConsumption(final String organization, final Long workspaceId, final Long inventoryId) {
@@ -155,5 +155,22 @@ public class InventoryIndicatorService {
         Long taskId = getLastTaskId(inventory);
         final Long criteriaNumber = inventoryService.getCriteriaNumber(taskId);
         return indicatorService.getPhysicalEquipmentElecConsumption(taskId, criteriaNumber);
+    }
+
+    public List<VirtualEquipmentLowImpactBO> getVirtualEquipmentsLowImpact(final String organization, final Long workspaceId, final Long inventoryId) {
+        return indicatorService.getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId);
+    }
+
+    public List<VirtualEquipmentElecConsumptionBO> getVirtualEquipmentElecConsumption(final String organization, final Long workspace, final Long inventoryId) {
+
+        Task task = taskRepository
+                .findByInventoryAndLastCreationDate(
+                        Inventory.builder().id(inventoryId).build())
+                .orElseThrow();
+
+        return indicatorService
+                .getVirtualEquipmentElecConsumption(
+                        task.getId()
+                );
     }
 }

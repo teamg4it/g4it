@@ -121,7 +121,7 @@ describe("Digital Service", () => {
         // delete the digital service
         cy.get('[id="return-button"]').click();
 
-        cy.contains('p-card[role="button"]', dsName).within(() => {
+        cy.contains("p-card", dsName).within(() => {
             cy.get('[id="delete-digital-service"]').click();
         });
         cy.get('[aria-label="Yes"]').click();

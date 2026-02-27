@@ -56,7 +56,7 @@ public interface ImpactToCsvRecord {
                 impact.getStatutIndicateur(),
                 verbose ? impact.getTrace() : "",
                 "1.0", // calculationVersion
-                print(impact.getConsoElecMoyenne() == null ? null :impact.getConsoElecMoyenne() * impact.getQuantite()),
+                print(impact.getConsoElecMoyenne() == null ? null : impact.getConsoElecMoyenne() * impact.getQuantite()),
                 print(impact.getImpactUnitaire()),
                 print(impact.getQuantite()),
                 printFirst(physicalEquipment.getFilters()), // status
@@ -76,7 +76,7 @@ public interface ImpactToCsvRecord {
     }
 
     default List<String> toCsv(Context context, EvaluateReportBO evaluateReportBO, InVirtualEquipment virtualEquipment,
-                               ImpactEquipementVirtuel impact, Double sipValue) {
+                               ImpactEquipementVirtuel impact, Double sipValue, Double electricity) {
         LocalDateTime now = context.getDatetime();
 
         Double peopleEqImpact = impact.getImpactUnitaire() == null ? null : impact.getImpactUnitaire() / sipValue;
@@ -103,7 +103,11 @@ public interface ImpactToCsvRecord {
                 "1.1", // calculationVersion
                 print(impact.getImpactUnitaire()),
                 print(impact.getUnite()),
-                print(impact.getConsoElecMoyenne()),
+                print(
+                        electricity == null
+                                ? null
+                                : electricity * virtualEquipment.getQuantity()
+                ),
                 printFirst(virtualEquipment.getFilters()), // cluster
                 now.toLocalDate().toString(),
                 context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
@@ -114,7 +118,7 @@ public interface ImpactToCsvRecord {
     }
 
     default List<String> toCsv(Context context, EvaluateReportBO evaluateReportBO, InApplication application,
-                               ImpactApplication impact, Double sipValue) {
+                               ImpactApplication impact, Double sipValue, Double electricity) {
         LocalDateTime now = context.getDatetime();
 
         Double peopleEqImpact = impact.getImpactUnitaire() == null ? null : impact.getImpactUnitaire() / sipValue;
@@ -141,7 +145,7 @@ public interface ImpactToCsvRecord {
                 printSecond(application.getFilters()), // sub domain
                 print(impact.getImpactUnitaire()),
                 print(impact.getUnite()),
-                print(impact.getConsoElecMoyenne()),
+                print(electricity),
                 now.toLocalDate().toString(),
                 context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
                 printFirst(application.getCommonFilters()), // entityName

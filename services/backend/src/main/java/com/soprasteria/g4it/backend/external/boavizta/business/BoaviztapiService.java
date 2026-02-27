@@ -76,12 +76,11 @@ public class BoaviztapiService {
 
     public double computeAnnualElectricityKwhRaw(
             Double avgPowerW,
-            double durationHours,
-            double quantity
+            double durationHours
     ) {
         if (avgPowerW == null) return 0d;
 
-        return avgPowerW * (durationHours / 1000d) * quantity;
+        return avgPowerW * (durationHours / 1000d);
     }
 
 

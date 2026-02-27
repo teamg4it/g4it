@@ -26,12 +26,12 @@ import { Constants } from "src/constants";
     providers: [ConfirmationService, MessageService],
 })
 export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
+    @Input() inventory: Inventory = {} as Inventory;
     @Input() inventoryId: number = 0;
     @Input() indicatorType: string = "";
 
     types = Constants.INVENTORY_TYPE;
     sidebarVisible = false;
-    inventory: Inventory = {} as Inventory;
     downloadInProgress = false;
 
     ngUnsubscribe = new Subject<void>();
@@ -53,7 +53,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     }
 
     private async onInitData(): Promise<void> {
-        await this.initInventory();
         this.userService.currentOrganization$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((organization: Organization) => {
@@ -64,11 +63,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
             .subscribe((workspace: Workspace) => {
                 this.selectedWorkspace = workspace.name;
             });
-    }
-
-    async initInventory() {
-        let result = await this.inventoryService.getInventories(this.inventoryId);
-        if (result.length > 0) this.inventory = result[0];
     }
 
     changePageToInventories() {
@@ -104,7 +98,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
         this.inventory.note = {
             content: event,
         } as Note;
-
         this.inventoryService
             .updateInventory(this.inventory)
             .pipe(takeUntil(this.ngUnsubscribe))

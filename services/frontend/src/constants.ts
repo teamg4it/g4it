@@ -151,6 +151,11 @@ export abstract class Constants {
         "equipment",
         "status",
     ];
+    static readonly APPLICATION_DIMENSIONS = [
+        "lifeCycle",
+        "environment",
+        "equipmentType",
+    ];
     static readonly EQUIPMENT_FILTERS = ["country", "entity", "equipment", "status"];
     static readonly EQUIPMENT_FILTERS_MAP: any = {
         country: "countries",
@@ -194,14 +199,17 @@ export abstract class Constants {
             color: Constants.GRAPH_RED,
             fontWeight: 600,
             fontSize: 8,
+            lineHeight: 12,
         },
         red: {
             color: Constants.GRAPH_RED,
             fontSize: 8,
+            lineHeight: 12,
         },
         grey: {
             color: Constants.GRAPH_GREY,
             fontSize: 8,
+            lineHeight: 12,
         },
     };
 

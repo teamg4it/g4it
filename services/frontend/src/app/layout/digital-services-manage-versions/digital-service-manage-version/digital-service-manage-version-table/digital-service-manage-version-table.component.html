@@ -70,7 +70,12 @@
             <td>
                 <p-button
                     class="p-0 m-0 text-left"
-                    (onClick)="redirectToVersionDetails(version.digitalServiceVersionUid)"
+                    (onClick)="
+                        redirectToVersionDetails(
+                            version.digitalServiceVersionUid,
+                            version.lastCalculationDate
+                        )
+                    "
                     [label]="version.versionName"
                     styleClass="p-button-link"
                 ></p-button>

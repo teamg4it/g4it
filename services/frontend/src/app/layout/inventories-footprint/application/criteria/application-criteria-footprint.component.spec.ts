@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ActivatedRoute } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
@@ -52,6 +53,10 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                 { provide: GlobalStoreService, useValue: {} },
                 { provide: FilterService, useValue: filterService },
                 { provide: FootprintStoreService, useValue: footprintStore },
+                {
+                    provide: ActivatedRoute,
+                    useValue: { snapshot: { paramMap: { get: () => "1" } } },
+                },
             ],
         }).compileComponents();
 
@@ -278,7 +283,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                 ],
             });
             (component["footprintStore"].appGraphType as any) = () => "subdomain";
-            expect(component.showBackButton()).toBeFalse();
+            expect(component.showBackButton()).toBeTrue();
         });
         it("should return false when showBackButton appGraphType is domain", () => {
             (component.allUnmodifiedFilters as any) = () => ({
@@ -288,7 +293,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                 ],
             });
             (component["footprintStore"].appGraphType as any) = () => "domain";
-            expect(component.showBackButton()).toBeFalse();
+            expect(component.showBackButton()).toBeTrue();
         });
     });
 

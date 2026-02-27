@@ -16,6 +16,7 @@ import {
     Signal,
     SimpleChanges,
 } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { sortByProperty } from "sort-by-property";
@@ -30,9 +31,14 @@ import {
     ApplicationImpact,
     ImpactGraph,
 } from "src/app/core/interfaces/footprint.interface";
+import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
+import {
+    getColorFormatter,
+    getLabelFormatter,
+} from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -49,6 +55,7 @@ export class ApplicationCriteriaFootprintComponent
     @Input() footprint: ApplicationFootprint = {} as ApplicationFootprint;
     @Input() filterFields: ConstantApplicationFilter[] = [];
     @Input() selectedInventoryId!: number;
+    inventory = input<Inventory>();
     allUnmodifiedFilters = input<Filter<string | TransformedDomain>>({});
     showDataConsistencyBtn = false;
     showInconsitencyGraph = false;
@@ -57,6 +64,8 @@ export class ApplicationCriteriaFootprintComponent
     allCriteriaMap: StatusCountMap = {};
     protected footprintStore = inject(FootprintStoreService);
     private readonly filterService = inject(FilterService);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
 
     selectedCriteria = computed(() => {
         return this.translate.instant(
@@ -91,19 +100,7 @@ export class ApplicationCriteriaFootprintComponent
         return true;
     });
 
-    showDomainByApplication = computed(() => {
-        if (this.allUnmodifiedFilters()["domain"]?.length > 2) {
-            const domainSelected: any = this.footprintStore
-                .applicationSelectedFilters()
-                [
-                    "domain"
-                ].find((d) => (d as TransformedDomain).label === this.footprintStore.appDomain());
-            if (domainSelected?.children.length <= 1) {
-                return true;
-            }
-        }
-        return false;
-    });
+    showDomainByApplication = input<boolean>(false);
 
     showDomainLabel = computed(() => {
         if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
@@ -130,6 +127,7 @@ export class ApplicationCriteriaFootprintComponent
             this.footprintStore.applicationSelectedFilters(),
             localFootprint,
             this.footprintStore.applicationCriteria(),
+            this.inventory()!,
         );
     });
 
@@ -406,6 +404,7 @@ export class ApplicationCriteriaFootprintComponent
         selectedFilters: Filter,
         footprint: ApplicationFootprint[],
         selectedCriteria: string,
+        inventory: Inventory,
     ): EChartsOption {
         const unit = this.selectedCriteria().unite;
         let result: any = {};
@@ -518,6 +517,7 @@ export class ApplicationCriteriaFootprintComponent
             grid: {
                 left: "3%",
                 right: "4%",
+                bottom: 25,
                 containLabel: true,
             },
             dataZoom: [
@@ -532,7 +532,21 @@ export class ApplicationCriteriaFootprintComponent
                     type: "category",
                     data: result.xAxis,
                     axisLabel: {
-                        formatter: (value: any) => this.checkImpacts(value),
+                        color: (value: any) => {
+                            const hasError = !!this.allCriteriaMap[value].status.error;
+                            return getColorFormatter(
+                                hasError,
+                                inventory.enableDataInconsistency,
+                            );
+                        },
+                        formatter: (value: any) => {
+                            const hasError = !!this.allCriteriaMap[value].status.error;
+                            return getLabelFormatter(
+                                hasError,
+                                inventory.enableDataInconsistency,
+                                value,
+                            );
+                        },
                         rich: Constants.CHART_RICH as any,
                         margin: 15,
                         rotate: 30,
@@ -564,5 +578,11 @@ export class ApplicationCriteriaFootprintComponent
 
     selectedStackBarClick(criteriaName: string): void {
         this.onChartClick({ name: criteriaName });
+    }
+
+    moveToMultiCriteria() {
+        this.router.navigate(["../", "multi-criteria"], {
+            relativeTo: this.route,
+        });
     }
 }

@@ -26,6 +26,7 @@ import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { CommonDigitalServicesSharedModule } from "src/app/core/shared/common-digital-services-shared.module";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { ConfigureViewFiltersComponent } from "../common/configure-view-filters/configure-view-filters.component";
 import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
@@ -61,7 +62,6 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesCloudServicesComponent,
         SetViewPopupComponent,
         DigitalServiceTableComponent,
-        ImpactButtonComponent,
         BarChartComponent,
         DigitalServicesTerminalsSidePanelComponent,
         DigitalServicesNetworksSidePanelComponent,
@@ -103,6 +103,8 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         TableModule,
         CommonDigitalServicesSharedModule,
         SharedChartsModule,
+        ImpactButtonComponent,
+        ConfigureViewFiltersComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],

@@ -3,6 +3,7 @@
 ## 3.10.0
 
 ## Major changes
+- 1762 | New display for Inventory results
 
 ### Minor Changes
 - 1885 | DS : Fix for Delete Network or Terminal via the Delete button on the Edit detail page doesn't work
