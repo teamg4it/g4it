@@ -1091,6 +1091,7 @@
         "manage-users": "Gérer les utilisateurs",
         "manage-workspaces": "Gérer les espaces de travail",
         "super-admin-title": "Super Admin",
+        "update-referential": "Mettre à jour le référentiel",
         "organization-placeholder": "Choisissez l'organisation",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
@@ -1157,6 +1158,23 @@
         },
         "super-admin": {
             "launch-release-script": "Lancer les scripts de la version"
+        },
+        "uploadcsv": {
+            "uploaded": "Fichier importé :",
+            "description": "Importez un fichier CSV pour alimenter les données de référentiel",
+            "select-endpoint": "Sélectionner le référentiel cible",
+            "select-endpoint-placeholder": "Choisissez le référentiel pour vos données CSV",
+            "supported-formats": "Formats supportés : .csv",
+            "max-file-size": "Taille maximale : 100MB",
+            "upload-button": "Télécharger le fichier",
+            "download-button": "Télécharger le référentiel actuel",
+            "processing": "Traitement de votre fichier...",
+            "success": "Fichier téléchargé avec succès",
+            "error": "Erreur lors du téléchargement du fichier",
+            "delete-file": "Supprimer le fichier",
+            "imported-lines": "Lignes importées",
+            "validation-errors": "Erreurs de validation",
+            "validation-errors-title": "Détails des erreurs"
         }
     },
     "error-graph": {
