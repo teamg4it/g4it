@@ -21,7 +21,6 @@ import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,29 +33,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VirtualEquipmentIndicatorService {
 
-    @Autowired
+
     private final InVirtualEquipmentLowImpactViewRepository inVirtualEquipmentLowImpactViewRepository;
-
-    @Autowired
     private final InVirtualEquipmentElecConsumptionViewRepository inVirtualEquipmentElecConsumptionViewRepository;
-
-    @Autowired
     private final VirtualEquipmentIndicatorMapper virtualEquipmentIndicatorMapper;
 
-    /**
-     * The Workspace Service
-     */
-    @Autowired
-    private WorkspaceService workspaceService;
-
-    /**
-     * The LowImpact Service
-     */
-    @Autowired
-    private LowImpactService lowImpactService;
-
-    @Autowired
-    private BoaviztapiService boaviztapiService;
+    private final WorkspaceService workspaceService;
+    private final LowImpactService lowImpactService;
+    private final BoaviztapiService boaviztapiService;
 
     private Map<String, String> isoToCountry;
 
