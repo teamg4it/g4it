@@ -527,7 +527,7 @@ public class EvaluateService {
 
                     if (evaluateReportBO.isExport()) {
                         csvVirtualEquipment.printRecord(impactToCsvRecord.toCsv(
-                                context, evaluateReportBO, virtualEquipment, impact, sipValue)
+                                context, evaluateReportBO, virtualEquipment, impact, sipValue, electricity)
                         );
                     }
 
@@ -609,7 +609,7 @@ public class EvaluateService {
 
                 if (evaluateReportBO.isExport()) {
                     csvApplication.printRecord(impactToCsvRecord.toCsv(
-                            context, evaluateReportBO, application, impact, sipValue)
+                            context, evaluateReportBO, application, impact, sipValue, electricity)
                     );
                 }
 
