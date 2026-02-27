@@ -50,7 +50,6 @@
 } @else {
     @if (applicationStats()[0].value) {
         <div
-            role="img"
             attr.aria-label="{{
                 'inventories-footprint.round-button.' + selectedDimension() | translate
             }} {{ 'inventories-footprint.global.global-vision' | translate }}"
@@ -72,13 +71,3 @@
         </div>
     }
 }
-
-<!-- <app-information-card
-            [title]="'inventories-footprint.global.info-fis-title' | translate"
-            [content]="'inventories-footprint.global.info-fis-text' | translate"
-        ></app-information-card> -->
-<!-- <app-stats
-    [stats]="applicationStats()"
-    icon="applications"
-    [title]="'inventories-footprint.application.applications.title' | translate"
-></app-stats> -->

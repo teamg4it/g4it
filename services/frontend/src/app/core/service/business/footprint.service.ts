@@ -226,17 +226,17 @@ export class FootprintService {
                     status: {
                         ok: filteredImpacts.filter(
                             (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
                                     dimension && i.statusIndicator === "OK",
                         ).length,
                         error: filteredImpacts.filter(
                             (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
                                     dimension && i.statusIndicator !== "OK",
                         ).length,
                         total: filteredImpacts.filter(
                             (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
                                 dimension,
                         ).length,
                     },
