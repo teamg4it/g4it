@@ -126,7 +126,7 @@ class AsyncEvaluatingServiceTest {
         when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
 
         doThrow(new AsyncTaskException("boom-async"))
-                .when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+                .when(evaluateService).doEvaluate(context,task, exportDir);
 
         asyncEvaluatingService.execute(context, task);
 
@@ -157,7 +157,7 @@ class AsyncEvaluatingServiceTest {
         when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
 
         doThrow(new RuntimeException("boom-runtime"))
-                .when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+                .when(evaluateService).doEvaluate(context, task, exportDir);
 
         asyncEvaluatingService.execute(context, task);
 
@@ -187,10 +187,10 @@ class AsyncEvaluatingServiceTest {
         Path exportDir = Path.of("target/test-export/101");
         when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
 
-        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
+        doNothing().when(evaluateService).doEvaluate(context, task, exportDir);
 
         doThrow(new UncheckedIOException("boom-io", new java.io.IOException("boom-io")))
-                .when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+                .when(exportService).uploadExportZip(101L, "ORG", "999");
 
         asyncEvaluatingService.execute(context, task);
 
@@ -234,7 +234,7 @@ class AsyncEvaluatingServiceTest {
         when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
 
         doThrow(new RuntimeException("boom-ai-runtime"))
-                .when(evaluateAiService).doEvaluateAi(eq(context), eq(task), eq(exportDir));
+                .when(evaluateAiService).doEvaluateAi(context, task, exportDir);
 
         asyncEvaluatingService.execute(context, task);
 
@@ -255,11 +255,11 @@ class AsyncEvaluatingServiceTest {
         Path exportDir = Path.of("target/test-export/101");
         when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
 
-        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
-        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
+        doNothing().when(evaluateService).doEvaluate(context, task, exportDir);
+        doNothing().when(exportService).uploadExportZip(101L, "ORG", "999");
 
         doThrow(new RuntimeException("clean-fail"))
-                .when(exportService).clean(eq(101L));
+                .when(exportService).clean(101L);
 
         asyncEvaluatingService.execute(context, task);
 
@@ -317,9 +317,9 @@ class AsyncEvaluatingServiceTest {
         Path exportDir = Path.of("target/test-export/101");
         when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
 
-        doNothing().when(evaluateService).doEvaluate(eq(context), eq(task), eq(exportDir));
-        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
-        doNothing().when(exportService).clean(eq(101L));
+        doNothing().when(evaluateService).doEvaluate(context, task, exportDir);
+        doNothing().when(exportService).uploadExportZip(101L, "ORG", "999");
+        doNothing().when(exportService).clean(101L);
 
         asyncEvaluatingService.execute(context, task);
 
@@ -340,9 +340,9 @@ class AsyncEvaluatingServiceTest {
         Path exportDir = Path.of("target/test-export/101");
         when(exportService.createExportDirectory(101L)).thenReturn(exportDir);
 
-        doNothing().when(evaluateAiService).doEvaluateAi(eq(context), eq(task), eq(exportDir));
-        doNothing().when(exportService).uploadExportZip(eq(101L), eq("ORG"), eq("999"));
-        doNothing().when(exportService).clean(eq(101L));
+        doNothing().when(evaluateAiService).doEvaluateAi(context, task, exportDir);
+        doNothing().when(exportService).uploadExportZip(101L, "ORG", "999");
+        doNothing().when(exportService).clean(101L);
 
         asyncEvaluatingService.execute(context, task);
 
@@ -371,7 +371,7 @@ class AsyncEvaluatingServiceTest {
 
         doThrow(new IOException("ai-io-failed"))
                 .when(evaluateAiService)
-                .doEvaluateAi(eq(context), eq(task), eq(exportDir));
+                .doEvaluateAi(context, task, exportDir);
 
         asyncEvaluatingService.execute(context, task);
 
