@@ -39,7 +39,6 @@ A new “Configure the view” button opens a left configuration panel including
 - Users can select:
     - People equivalent 
     - Unit of the criterion
-- Includes detailed explanation of the planetary boundaries concept.
 
 Buttons:
 
