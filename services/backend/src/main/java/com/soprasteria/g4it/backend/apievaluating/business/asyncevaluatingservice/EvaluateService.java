@@ -598,9 +598,12 @@ public class EvaluateService {
                         null, impact.getConsoElecMoyenne(), impact.getImpactUnitaire(),
                         sipValue,
                         null, null, null, false);
+                String location = "";
+                if (CLOUD_SERVICES.name().equals(virtualEquipment.getInfrastructureType()))
+                    location = codeToCountryMapCache.get(virtualEquipment.getLocation());
 
                 aggregationApplications
-                        .computeIfAbsent(aggregationToOutput.keyApplication(physicalEquipment, virtualEquipment, application, impact, refShortcutBO), k -> new AggValuesBO())
+                        .computeIfAbsent(aggregationToOutput.keyApplication(physicalEquipment, virtualEquipment, application, impact, refShortcutBO,location), k -> new AggValuesBO())
                         .add(values);
 
                 if (evaluateReportBO.isExport()) {
