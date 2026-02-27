@@ -4,9 +4,13 @@ import com.soprasteria.g4it.backend.apiaiinfra.modeldb.InAiInfrastructure;
 import com.soprasteria.g4it.backend.apiaiinfra.repository.InAiInfrastructureRepository;
 import com.soprasteria.g4it.backend.apiaiservice.business.AiService;
 import com.soprasteria.g4it.backend.apiaiservice.mapper.AiConfigurationMapper;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.boaviztapi.EvaluateBoaviztapiService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.mapper.ImpactToCsvRecord;
+import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalImpact;
+import com.soprasteria.g4it.backend.apievaluating.model.EvaluateReportBO;
+import com.soprasteria.g4it.backend.apievaluating.model.ImpactBO;
 import com.soprasteria.g4it.backend.apiinout.mapper.InputToCsvRecord;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -27,14 +31,14 @@ import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.AsyncTaskException;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
+import com.soprasteria.g4it.backend.external.boavizta.model.response.BoaResponseRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.AIConfigurationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.CriterionRest;
 import org.apache.commons.csv.CSVPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementPhysique;
 import org.mte.numecoeval.calculs.domain.data.indicateurs.ImpactEquipementVirtuel;
 
@@ -42,13 +46,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class EvaluateAiServiceTest {
@@ -97,6 +97,15 @@ class EvaluateAiServiceTest {
 
     @Mock
     private Path exportDirectory;
+
+    @Mock
+    private EvaluateBoaviztapiService evaluateBoaviztapiService;
+
+    @Mock
+    private InternalToNumEcoEvalImpact internalToNumEcoEvalImpact;
+
+    @Mock
+    private BoaviztapiService boaviztapiService;
 
     @BeforeEach
     void setUp() {
@@ -616,5 +625,202 @@ class EvaluateAiServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(), any()))
                 .thenReturn(printer);
+    }
+
+    @Test
+    void testCloudVirtualEquipmentBranchIsExecuted() throws Exception {
+
+        setupMinimalHappyPath();
+
+        when(context.isHasVirtualEquipments()).thenReturn(true);
+
+        // --- Force CLOUD type ---
+        InVirtualEquipment ve = new InVirtualEquipment();
+        ve.setLocation("FR");
+        ve.setQuantity(2.0);
+        ve.setDurationHour(10.0);
+        ve.setWorkload(0.5);
+        ve.setInfrastructureType("CLOUD_SERVICES");
+
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("uid"))
+                .thenReturn(new ArrayList<>(List.of(ve)));
+
+        // --- Mock BoaviztAPI evaluation ---
+        ImpactBO impactBO = mock(ImpactBO.class);
+
+        when(evaluateBoaviztapiService.evaluate(any(), any(), any()))
+                .thenReturn(List.of(impactBO));
+
+        ImpactEquipementVirtuel mappedImpact = mock(ImpactEquipementVirtuel.class);
+        when(mappedImpact.getStatutIndicateur()).thenReturn("OK");
+        when(mappedImpact.getTrace()).thenReturn("trace");
+        when(mappedImpact.getCritere()).thenReturn("CLIMATE_CHANGE");
+        when(mappedImpact.getImpactUnitaire()).thenReturn(5.0);
+
+        when(internalToNumEcoEvalImpact.map(anyList()))
+                .thenReturn(List.of(mappedImpact));
+
+        // --- Mock BoaviztAPI power calculation ---
+        when(boaviztapiService.runBoaviztCalculations(any()))
+                .thenReturn(mock(BoaResponseRest.class));
+
+        when(boaviztapiService.extractAvgPowerW(any()))
+                .thenReturn(java.util.Optional.of(100.0));
+
+        when(boaviztapiService.computeAnnualElectricityKwhRaw(100.0, 10.0))
+                .thenReturn(1.0);  // 1 kWh per instance
+
+        when(aggregationToOutput.keyVirtualEquipment(any(), any(), any(), any(), any()))
+                .thenReturn(List.of("CLOUD_KEY"));
+
+        when(saveService.saveOutPhysicalEquipments(any(), anyLong(), any()))
+                .thenReturn(1);
+
+        when(saveService.saveOutVirtualEquipments(any(), anyLong(), any()))
+                .thenReturn(1);
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any())).thenReturn(printer);
+
+        aiEvaluationService.doEvaluateAi(context, task, exportDirectory);
+
+        verify(evaluateBoaviztapiService).evaluate(any(), any(), any());
+        verify(boaviztapiService).runBoaviztCalculations(any());
+        verify(boaviztapiService).computeAnnualElectricityKwhRaw(100.0, 10.0);
+    }
+
+    @Test
+    void testCloudVirtualEquipment_MultipliesQuantityCorrectly() throws Exception {
+
+        setupMinimalHappyPath();
+
+        when(context.isHasVirtualEquipments()).thenReturn(true);
+
+        InVirtualEquipment ve = new InVirtualEquipment();
+        ve.setInfrastructureType("CLOUD_SERVICES");
+        ve.setQuantity(3.0);      // IMPORTANT
+        ve.setDurationHour(10.0);
+        ve.setWorkload(0.5);
+        ve.setLocation("FR");
+
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("uid"))
+                .thenReturn(new ArrayList<>(List.of(ve)));
+
+        // --- Cloud branch mocks ---
+        ImpactBO impactBO = mock(ImpactBO.class);
+        when(evaluateBoaviztapiService.evaluate(any(), any(), any()))
+                .thenReturn(List.of(impactBO));
+
+        ImpactEquipementVirtuel mappedImpact = mock(ImpactEquipementVirtuel.class);
+        when(mappedImpact.getStatutIndicateur()).thenReturn("OK");
+        when(mappedImpact.getTrace()).thenReturn("trace");
+        when(mappedImpact.getCritere()).thenReturn("CLIMATE_CHANGE");
+        when(mappedImpact.getImpactUnitaire()).thenReturn(2.0);
+
+        when(internalToNumEcoEvalImpact.map(anyList()))
+                .thenReturn(List.of(mappedImpact));
+
+        when(boaviztapiService.runBoaviztCalculations(any()))
+                .thenReturn(mock(BoaResponseRest.class));
+
+        when(boaviztapiService.extractAvgPowerW(any()))
+                .thenReturn(Optional.of(100.0));
+
+        when(boaviztapiService.computeAnnualElectricityKwhRaw(100.0, 10.0))
+                .thenReturn(5.0); // per instance
+
+        when(aggregationToOutput.keyVirtualEquipment(any(), any(), any(), any(), any()))
+                .thenReturn(List.of("CLOUD_KEY"));
+
+        when(saveService.saveOutPhysicalEquipments(any(), anyLong(), any())).thenReturn(1);
+        when(saveService.saveOutVirtualEquipments(any(), anyLong(), any())).thenReturn(1);
+
+        CSVPrinter printer = mock(CSVPrinter.class);
+        when(csvFileService.getPrinter(any(), any())).thenReturn(printer);
+
+        aiEvaluationService.doEvaluateAi(context, task, exportDirectory);
+
+        verify(impactToCsvRecord).toCsv(
+                ArgumentMatchers.any(Context.class),
+                ArgumentMatchers.any(EvaluateReportBO.class),
+                ArgumentMatchers.any(InVirtualEquipment.class),
+                ArgumentMatchers.any(ImpactEquipementVirtuel.class),
+                ArgumentMatchers.any(),
+                eq(15.0)
+        );
+    }
+
+    @Test
+    void testCloudVirtualEquipment_QuantityNullDefaultsToOne() throws Exception {
+
+        setupMinimalHappyPath();
+
+        when(context.isHasVirtualEquipments()).thenReturn(true);
+
+        // --- Cloud virtual equipment ---
+        InVirtualEquipment ve = new InVirtualEquipment();
+        ve.setInfrastructureType("CLOUD_SERVICES");
+        ve.setQuantity(null);           // important: should default to 1
+        ve.setDurationHour(10.0);
+        ve.setWorkload(0.5);
+        ve.setLocation("FR");
+
+        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUid("uid"))
+                .thenReturn(new ArrayList<>(List.of(ve)));
+
+        // --- Boavizt branch ---
+        when(evaluateBoaviztapiService.evaluate(any(), any(), any()))
+                .thenReturn(List.of(mock(ImpactBO.class)));
+
+        ImpactEquipementVirtuel mappedImpact = mock(ImpactEquipementVirtuel.class);
+        when(mappedImpact.getStatutIndicateur()).thenReturn("OK");
+        when(mappedImpact.getTrace()).thenReturn("trace");
+        when(mappedImpact.getCritere()).thenReturn("CLIMATE_CHANGE");
+        when(mappedImpact.getImpactUnitaire()).thenReturn(2.0);
+
+        when(internalToNumEcoEvalImpact.map(anyList()))
+                .thenReturn(List.of(mappedImpact));
+
+        when(boaviztapiService.runBoaviztCalculations(any()))
+                .thenReturn(mock(BoaResponseRest.class));
+
+        when(boaviztapiService.extractAvgPowerW(any()))
+                .thenReturn(Optional.of(100.0));
+        
+        when(boaviztapiService.computeAnnualElectricityKwhRaw(
+                anyDouble(),
+                anyDouble()
+        )).thenReturn(5.0);
+
+        when(aggregationToOutput.keyVirtualEquipment(any(), any(), any(), any(), any()))
+                .thenReturn(List.of("KEY"));
+
+        when(saveService.saveOutPhysicalEquipments(any(), anyLong(), any()))
+                .thenReturn(1);
+        when(saveService.saveOutVirtualEquipments(any(), anyLong(), any()))
+                .thenReturn(1);
+
+        when(csvFileService.getPrinter(any(), any()))
+                .thenReturn(mock(CSVPrinter.class));
+
+        // --- Capture electricity passed to CSV ---
+        ArgumentCaptor<Double> electricityCaptor =
+                ArgumentCaptor.forClass(Double.class);
+
+        // ACT
+        aiEvaluationService.doEvaluateAi(context, task, exportDirectory);
+
+        // ASSERT
+        verify(impactToCsvRecord).toCsv(
+                any(Context.class),
+                any(EvaluateReportBO.class),
+                any(InVirtualEquipment.class),
+                any(ImpactEquipementVirtuel.class),
+                any(),
+                electricityCaptor.capture()
+        );
+
+        // Should NOT be multiplied (quantity defaults to 1)
+        assertEquals(5.0, electricityCaptor.getValue());
     }
 }
