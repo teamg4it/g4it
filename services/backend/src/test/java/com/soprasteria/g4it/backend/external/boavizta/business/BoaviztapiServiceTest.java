@@ -79,22 +79,20 @@ class BoaviztapiServiceTest {
 
     @Test
     void computeAnnualElectricityKwhRaw_shouldReturnCorrectValue() {
-        // 100 W * 8760h / 1000 * 2 = 1752 kWh
+        // 100 W * 8760h / 1000 = 876 kWh
         double result = boaviztapiService.computeAnnualElectricityKwhRaw(
                 100d,
-                8760d,
-                2d
+                8760d
         );
 
-        assertThat(result).isEqualTo(1752d);
+        assertThat(result).isEqualTo(876d);
     }
 
     @Test
     void computeAnnualElectricityKwhRaw_shouldReturnZeroIfAvgPowerNull() {
         double result = boaviztapiService.computeAnnualElectricityKwhRaw(
                 null,
-                8760d,
-                2d
+                8760d
         );
 
         assertThat(result).isZero();

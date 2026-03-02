@@ -396,7 +396,7 @@ public class EvaluateAiService {
                             .add(values);
 
                     if (evaluateReportBO.isExport()) {
-                        csvOutVirtualEquipment.printRecord(impactToCsvRecord.toCsv(
+                        csvOutVirtualEquipment.printRecord(impactToCsvRecord.toCsvAi(
                                 context, evaluateReportBO, virtualEquipment, impact, refSip.get(impact.getCritere()))
                         );
                     }

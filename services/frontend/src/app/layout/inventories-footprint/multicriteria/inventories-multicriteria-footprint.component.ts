@@ -5,10 +5,11 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, Signal, computed, inject, signal } from "@angular/core";
+import { Component, Input, Signal, computed, inject, input, signal } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
+import { ActivatedRoute, Router } from "@angular/router";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     CriteriaCalculated,
@@ -21,7 +22,12 @@ import {
     PhysicalEquipmentsElecConsumption,
 } from "src/app/core/interfaces/footprint.interface";
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
+import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
+import {
+    getColorFormatter,
+    getLabelFormatter,
+} from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { AbstractDashboard } from "../abstract-dashboard";
 
@@ -32,6 +38,8 @@ import { AbstractDashboard } from "../abstract-dashboard";
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
     private readonly store = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
     @Input() footprint: Criterias = {} as Criterias;
@@ -43,7 +51,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         PhysicalEquipmentLowImpact[],
         PhysicalEquipmentsElecConsumption[],
     ] = [[], [], []];
-
+    inventory = input<Inventory>();
     showInconsitencyGraph = false;
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     selectedDimension = signal(this.dimensions[0]);
@@ -73,7 +81,6 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 acc[key] = criteriaCountMap[key];
                 return acc;
             }, {});
-
         return {
             footprints: footprintCalculated,
             hasError: footprintCalculated.some((f) => f.status.error),
@@ -137,13 +144,26 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             },
             angleAxis: {
                 type: "category",
-                data: footprintCalculated[0].impacts.map((impact) => impact.criteria),
+                data: footprintCalculated[0].impacts.map((impact) => {
+                    return {
+                        value: impact.criteria,
+                        textStyle: {
+                            color: getColorFormatter(
+                                !!criteriaCountMap[impact.criteria].status.error,
+                                this.inventory()?.enableDataInconsistency!,
+                            ),
+                        },
+                    };
+                }),
                 axisLabel: {
                     formatter: (value: any) => {
                         const title = this.translate.instant(`criteria.${value}`).title;
-                        return criteriaCountMap[value].status.error <= 0
-                            ? `{grey|${title}}`
-                            : `{redBold| \u24d8} {red|${title}}`;
+                        const hasError = !!criteriaCountMap[value].status.error;
+                        return getLabelFormatter(
+                            hasError,
+                            this.inventory()?.enableDataInconsistency!,
+                            title,
+                        );
                     },
                     rich: Constants.CHART_RICH as any,
                     margin: 15,
@@ -152,6 +172,8 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             radiusAxis: {
                 name: this.translate.instant("common.peopleeq"),
                 nameLocation: "end",
+                // THIS increases distance from chart
+                nameGap: 21,
                 nameTextStyle: {
                     fontStyle: "italic",
                 },
@@ -191,5 +213,13 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             },
             color: Constants.COLOR,
         };
+    }
+
+    onChartClick(event: any) {
+        if (event?.name) {
+            this.router.navigate([`../${event.name}`], {
+                relativeTo: this.route,
+            });
+        }
     }
 }

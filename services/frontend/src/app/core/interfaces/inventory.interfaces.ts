@@ -19,6 +19,7 @@ export interface Inventory {
     physicalEquipmentCount: number;
     virtualEquipmentCount: number;
     applicationCount: number;
+    enableDataInconsistency: boolean;
     date?: Date;
     note?: Note;
     criteria?: string[];
@@ -26,12 +27,6 @@ export interface Inventory {
     lastTaskLoading?: TaskRest;
     lastTaskEvaluating?: TaskRest;
     workspaceId?: number;
-}
-
-export interface InventoryUpdateRest {
-    id: number;
-    name: string;
-    note?: Note;
 }
 
 export interface CreateInventory {
@@ -69,9 +64,18 @@ export interface InventoryFilterSet {
     [key: string]: Set<string>;
 }
 
+export interface InventoryUpdateRest {
+    id: number;
+    name: string;
+    note?: Note;
+    criteria: string[];
+    enableDataInconsistency: boolean;
+}
+
 export interface InventoryCriteriaRest {
     id: number;
     name: string;
     criteria: string[];
     note: Note;
+    enableDataInconsistency: boolean;
 }

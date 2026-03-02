@@ -1,82 +1,65 @@
-<div class="footprint-dashboard-container my-3">
-    <div class="chart-container col-12">
-        <div class="flex flex-wrap align-items-center">
-            <h2 class="text-xl line-height-2">
-                {{ "inventories-footprint.global.global-vision" | translate }} <br />
-                ({{ "common.peopleeq" | translate }})
-            </h2>
-            @if (criteriaCalculated().hasError) {
-                <p-button
-                    (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
-                    [rounded]="true"
-                    [label]="'inventories-footprint.data-consistency' | translate"
-                    [outlined]="!showInconsitencyGraph"
-                    severity="danger"
-                    [ariaLabel]="'inventories-footprint.data-consistency' | translate"
-                />
-            }
-            @if (!showInconsitencyGraph) {
-                <p-card class="rmv-padding-card">
-                    <div class="round-button-container">
-                        <button
-                            *ngFor="let dimension of dimensions"
-                            [class.round-button-selected]="
-                                dimension === selectedDimension()
-                            "
-                            [class.round-button]="dimension !== selectedDimension()"
-                            (click)="selectedDimension.set(dimension)"
-                        >
-                            {{
-                                "inventories-footprint.round-button." + dimension
-                                    | translate
-                            }}
-                        </button>
-                    </div>
-                </p-card>
-            }
-        </div>
-        @if (showInconsitencyGraph) {
-            @if (options().series) {
-                <app-stack-bar-chart
-                    [xAxisInput]="xAxisInput"
-                    [statusCountMap]="criteriaCalculated().criteriasCount!"
-                />
-            } @else {
-                <div class="no-data-bar">
-                    <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
-                </div>
-            }
-        } @else {
-            @if (options().series) {
-                <div
-                    role="img"
-                    attr.aria-label="{{
-                        'inventories-footprint.round-button.' + selectedDimension()
-                            | translate
-                    }} {{ 'inventories-footprint.global.global-vision' | translate }}"
-                    echarts
-                    class="m-0"
-                    [options]="options()"
-                    style="height: 480px"
-                ></div>
-            } @else {
-                <div class="no-data-round">
-                    <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
-                </div>
-            }
-        }
-    </div>
-    <div class="col-12 mt-6 pt-0 lg:mt-0">
-        <app-information-card
-            [title]="'inventories-footprint.global.info-fis-title' | translate"
-            [content]="'inventories-footprint.global.info-fis-text' | translate"
-        ></app-information-card>
-        <app-datacenter-equipment-stats
-            [footprint]="footprint"
-            [filterFields]="filterFields"
-            [datacenters]="datacenters"
-            [equipments]="equipments"
-            [inVirtualEquipments]="inVirtualEquipments"
+<div class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3">
+    @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
+        <p-button
+            (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
+            [rounded]="true"
+            [label]="'inventories-footprint.data-consistency' | translate"
+            [outlined]="!showInconsitencyGraph"
+            severity="danger"
+            class="ml-auto pr-3"
+            [ariaLabel]="'inventories-footprint.data-consistency' | translate"
         />
-    </div>
+    }
+    @if (!showInconsitencyGraph) {
+        <p-dropdown
+            [options]="dimensions"
+            [(ngModel)]="selectedDimension"
+            [placeholder]="'inventories-footprint.select-dimension' | translate"
+            styleClass="ml-auto"
+        >
+            <ng-template pTemplate="selectedItem">
+                <div *ngIf="selectedDimension()">
+                    {{
+                        "inventories-footprint.round-button." + selectedDimension()
+                            | translate
+                    }}
+                </div>
+            </ng-template>
+            <ng-template let-dimension pTemplate="item">
+                <div>
+                    {{ "inventories-footprint.round-button." + dimension | translate }}
+                </div>
+            </ng-template>
+        </p-dropdown>
+    }
 </div>
+@if (showInconsitencyGraph) {
+    @if (options().series) {
+        <app-stack-bar-chart
+            [xAxisInput]="xAxisInput"
+            [statusCountMap]="criteriaCalculated().criteriasCount!"
+        />
+    } @else {
+        <div class="no-data-bar">
+            <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+        </div>
+    }
+} @else {
+    @if (options().series) {
+        <div
+            role="img"
+            attr.aria-label="{{
+                'inventories-footprint.round-button.' + selectedDimension() | translate
+            }} {{ 'inventories-footprint.global.global-vision' | translate }}"
+            echarts
+            class="m-0"
+            [options]="options()"
+            (chartClick)="onChartClick($event)"
+            style="height: 480px"
+        ></div>
+    } @else {
+        <div class="no-data-round">
+            <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+        </div>
+    }
+}

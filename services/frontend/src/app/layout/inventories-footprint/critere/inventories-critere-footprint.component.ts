@@ -9,6 +9,7 @@ import {
     Component,
     computed,
     inject,
+    input,
     Input,
     OnChanges,
     Signal,
@@ -16,6 +17,7 @@ import {
     SimpleChanges,
 } from "@angular/core";
 
+import { ActivatedRoute, Router } from "@angular/router";
 import { EChartsOption } from "echarts";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
@@ -29,6 +31,7 @@ import {
     PhysicalEquipmentsElecConsumption,
 } from "src/app/core/interfaces/footprint.interface";
 import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
+import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
@@ -45,6 +48,8 @@ export class InventoriesCritereFootprintComponent
 {
     protected footprintStore = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
     @Input() footprint: Criterias = {} as Criterias;
     @Input() criteriaFootprint: Criteria = {} as Criteria;
     @Input() filterFields: string[] = [];
@@ -55,6 +60,7 @@ export class InventoriesCritereFootprintComponent
         PhysicalEquipmentsElecConsumption[],
     ] = [[], [], []];
     @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];
+    inventory = input<Inventory>();
     showInconsitencyGraph = false;
     allErrorData = false;
 
@@ -105,6 +111,7 @@ export class InventoriesCritereFootprintComponent
             this.criteriaCalculated(),
             this.selectedDimension(),
             this.footprintStore.unit(),
+            this.inventory()!,
         );
     });
 
@@ -157,6 +164,7 @@ export class InventoriesCritereFootprintComponent
         criteriaCalculated: CriteriaCalculated,
         selectedView: string,
         unit: string,
+        inventory: Inventory,
     ): EChartsOption {
         this.xAxisInput = [];
         this.criteriaMap = {};
@@ -278,7 +286,10 @@ export class InventoriesCritereFootprintComponent
                                 param.name,
                                 selectedView,
                             );
-                            if (param.data.status.error) {
+                            if (
+                                inventory.enableDataInconsistency &&
+                                param.data.status.error
+                            ) {
                                 return `{redBold|\u24d8} {red|${translatedLabel}} {grey|${param.percent.toFixed(1)}%}`;
                             } else {
                                 return `{grey|${translatedLabel} ${param.percent.toFixed(1)}%}`;
@@ -356,9 +367,15 @@ export class InventoriesCritereFootprintComponent
         return `
             <div class="ml-1 mr-2">
                 ${this.getCircleColorHtml(color)}
-                <div class="font-bold">${name}:</div>
-                <div class="ml-2">${value}</div>
+                <span class="font-bold">${name}:</span>
+                <span class="ml-2">${value}</span>
             </div>
          `;
+    }
+
+    moveToMultiCriteria() {
+        this.router.navigate(["../", "multi-criteria"], {
+            relativeTo: this.route,
+        });
     }
 }

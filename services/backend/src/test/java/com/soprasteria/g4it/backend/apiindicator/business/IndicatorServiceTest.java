@@ -24,8 +24,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,11 +54,14 @@ class IndicatorServiceTest {
     @InjectMocks
     private IndicatorService indicatorService;
 
+    @Mock
+    private VirtualEquipmentIndicatorService virtualEquipmentIndicatorService;
+
     @Test
     void getEquipmentIndicatorsReturnsMappedIndicatorsWhenTaskIdIsValid() {
         Long taskId = 1L;
         List<OutPhysicalEquipment> equipmentList = List.of(OutPhysicalEquipment.builder().id(3L).criterion("Resource_Group").build());
-        
+
         EquipmentIndicatorBO indicatorBO = EquipmentIndicatorBO.builder().build();
 
         when(outPhysicalEquipmentRepository.findByTaskId(taskId)).thenReturn(equipmentList);
@@ -138,5 +143,26 @@ class IndicatorServiceTest {
 
         assertNotNull(result);
         assertEquals(elecConsumptionIndicators, result);
+    }
+
+    @Test
+    void shouldDelegateGetVirtualEquipmentElecConsumptionToVirtualService() {
+
+        Long taskId = 123L;
+
+        List<VirtualEquipmentElecConsumptionBO> expected =
+                List.of(new VirtualEquipmentElecConsumptionBO());
+
+        when(virtualEquipmentIndicatorService
+                .getVirtualEquipmentElecConsumption(taskId))
+                .thenReturn(expected);
+
+        List<VirtualEquipmentElecConsumptionBO> result =
+                indicatorService.getVirtualEquipmentElecConsumption(taskId);
+
+        assertThat(result).isEqualTo(expected);
+
+        verify(virtualEquipmentIndicatorService)
+                .getVirtualEquipmentElecConsumption(taskId);
     }
 }

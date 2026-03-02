@@ -207,13 +207,6 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
             },
             radiusAxis: {
                 ...(this.compareMax() > 0 ? { max: this.compareMax() } : {}),
-                name: this.translate.instant("common.peopleeq"),
-                nameLocation: "end",
-                // THIS increases distance from chart
-                nameGap: 30,
-                nameTextStyle: {
-                    fontStyle: "italic",
-                },
             },
             polar: {
                 radius: "70%",
