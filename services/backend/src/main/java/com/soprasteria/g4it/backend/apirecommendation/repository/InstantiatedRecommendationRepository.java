@@ -11,10 +11,10 @@ import java.util.List;
 @Repository
 public interface InstantiatedRecommendationRepository extends JpaRepository<InstantiatedRecommendation, Long>{
 
-    List<InstantiatedRecommendation> findByIdEvaluation(Long idEvaluation);
+    List<InstantiatedRecommendation> findByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
     @Transactional
     @Modifying
-    void deleteByIdEvaluation(Long idEvaluation);
+    void deleteByDigitalServiceVersionUid(String digitalServiceVersionUid);
 
 }
