@@ -39,6 +39,8 @@
         "peopleeq": "Hab. eq.",
         "peopleeq-min": "hab. eq.",
         "peopleeq-full": "habitant équivalent",
+        "peopleeq-full-capital": "Habitant équivalent",
+        "unit-of-criterion": "Unité du critère",
         "no-data": "Aucun résultats disponibles",
         "loading": "Chargement en cours",
         "choose-file": "Importer un fichier",
@@ -172,7 +174,15 @@
         "plus-menu": "Plus",
         "add-button": "Ajouter",
         "actions": "Actions",
-        "nav-panel": "Ouvrir le menu de navigation"
+        "nav-panel": "Ouvrir le menu de navigation",
+        "key-indicator": "Indicateurs clés",
+        "infrastructure": "Infrastructure",
+        "energy": "Énergie",
+        "expand-impact": "Cliquez ici pour développer la section sur l'impact",
+        "collapse-impact": "Cliquez ici pour réduire la section d'impact",
+        "unit-manage": "Gestion des unités",
+        "data-consistency-text": "Afficher les données qui n'ont pas pu être calculées",
+        "unit-manage-text": "Votre choix s'appliquera à toutes les unités"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -195,7 +205,7 @@
         "page-title": "Mes Services Numériques",
         "add": "Evaluer Un Nouveau Service",
         "empty-digital-services": "Vous n'avez pas de service numérique.",
-        "impacts": "IMPACTS",
+        "impacts": "Impacts",
         "raw": "Unité",
         "Terminal": "Terminaux",
         "Server": "Infrastructures privées",
@@ -235,6 +245,7 @@
         "reset-settings": "Réinitialiser le paramétrage",
         "save-settings": "Enregistrer les paramètres",
         "configure-criteria": "Configurer la vue pour le service numérique {{digitalServiceName}}",
+        "configure-view": "Configurer la vue",
         "view-resources": "Voir les ressources",
         "visualize-results": "Visualiser mes resultats",
         "visualize-parameters": "Voir les paramètres",
@@ -641,7 +652,10 @@
             "starter-pack": "Kit de départ"
         },
         "choose-criteria": "Choisir les critères pour l'inventaire {{inventoryName}}",
-        "calendar": "Calendrier"
+        "calendar": "Calendrier",
+        "apply-selection": "Appliquer la sélection",
+        "unit-para1": "La valeur de l’impact peut être affichée soit dans l’<strong>unité propre aux critères d’impact sélectionnés</strong>, soit en <strong>habitants équivalents</strong>.",
+        "unit-para2": "Cette unité repose sur le principe des limites planétaires : elle correspond à un quota théorique d’impacts attribué de manière égale à chaque habitant de la planète afin de préserver l’équilibre du système Terre. Ce quota est calculé en divisant la quantité maximale d’externalités négatives que la Terre peut absorber telle que définie dans le rapport sur la consommation et l’empreinte du consommateur par le nombre total d’habitants."
     },
     "inventories-footprint": {
         "active-filters": "Filtres activés",
@@ -656,6 +670,7 @@
             "environment": "Environnement",
             "equipmentType": "Équipements",
             "lifeCycle": "Cycle de vie",
+            "location": "Pays",
             "domain": "Domaine"
         },
         "header": {
@@ -670,6 +685,12 @@
             "entity": "Entités",
             "equipment": "Équipements",
             "status": "Statuts"
+        },
+        "application-round-button": {
+            "environment": "Environnement",
+            "equipmentType": "Équipements",
+            "lifeCycle": "Cycle de vie",
+            "location": "Pays"
         },
         "global": {
             "global-vision": "Vision Globale",
@@ -694,8 +715,10 @@
             "elec-consumption": "Consommation éléctrique totale",
             "equipment": "ÉQUIPEMENT",
             "equipments": "Équipements",
+            "qty-virtual-equipment": "Quantité d'équipements virtuels",
             "cloud-services": "Clouds Publics - IaaS",
             "cloud-instances": "Instances cloud",
+            "multi-criteria-view": "Vue multicritères",
             "tooltip": {
                 "nb-cloud": "Nombre d'instances Cloud",
                 "nb-dc": "Nombre de centre de données",
@@ -703,7 +726,9 @@
                 "nb-eq": "Nombre d'équipements physiques (hors instances Cloud)",
                 "low-impact": "% d'équipements utilisés dans un pays à faible impact multicritère sur le mix électrique (1er quartile, hors Cloud)",
                 "ave-age": "Durée de vie moyenne des équipements (hors instances Cloud)",
-                "elec-consumption": "Consommation éléctrique totale de mes équipements sur une année (hors Cloud)"
+                "elec-consumption": "Consommation éléctrique totale de mes équipements sur une année (hors Cloud)",
+                "qty-vEq": "Somme les quantités d'équipements virtuels et d'instances Cloud de l'inventaire",
+                "vEq-elec-consumption": "Consommation electrique totale des équipements virtuels de l'inventaire (estimée pour les services cloud)"
             }
         },
         "application": {

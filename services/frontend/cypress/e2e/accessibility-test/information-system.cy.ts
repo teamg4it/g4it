@@ -62,7 +62,7 @@ describe("Information System", () => {
 
         // tabs navigation
         cy.then(() => setPage("Equipment criteria page"));
-        cy.wait(10000).get('[id="climate-change"]').click();
+        cy.wait(10000).get('[id="Climate change"]').click();
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
 
         // filter on country
@@ -101,7 +101,7 @@ describe("Information System", () => {
 
         // tabs navigation
         cy.then(() => setPage("Application criteria page"));
-        cy.wait(10000).get('[id="climate-change"]').click();
+        cy.wait(10000).get('[id="Climate change"]').click();
         cy.checkA11y(undefined, undefined, reportA11yViolations, true);
         // filter on domain
         cy.then(() => setPage("Application filter page"));

@@ -39,6 +39,8 @@
         "peopleeq": "People eq.",
         "peopleeq-min": "people. eq.",
         "peopleeq-full": "people equivalent",
+        "peopleeq-full-capital": "People equivalent",
+        "unit-of-criterion": "Unit of the criterion",
         "no-data": "No results available",
         "loading": "Loading in progress",
         "choose-file": "Choose a file",
@@ -173,7 +175,15 @@
         "plus-menu": "Plus",
         "add-button": "Add",
         "actions": "Actions",
-        "nav-panel": "Show the navigation panel"
+        "nav-panel": "Show the navigation panel",
+        "key-indicator": "Key indicator",
+        "infrastructure": "Infrastructure",
+        "energy": "Energy",
+        "expand-impact": "Click here to expand impact section",
+        "collapse-impact": "Click here to collapse impact section",
+        "unit-manage": "Units Management",
+        "data-consistency-text": "View data that could not be calculated",
+        "unit-manage-text": "Your choice will apply to all units"
     },
     "useful-information": {
         "computing-engines": "Computing engines",
@@ -196,7 +206,7 @@
         "page-title": "My Digital Services",
         "add": "Evaluate New Service",
         "empty-digital-services": "You do not have any digital service.",
-        "impacts": "IMPACTS",
+        "impacts": "Impacts",
         "raw": "Raw value",
         "peopleeq": "People eq.",
         "Terminal": "Terminals",
@@ -237,6 +247,7 @@
         "reset-settings": "Reset settings",
         "save-settings": "Save settings",
         "configure-criteria": "Configure the view for digital service {{digitalServiceName}}",
+        "configure-view": "Configure the view",
         "view-resources": "Visualize my resources",
         "visualize-results": "Visualize my results",
         "visualize-parameters": "Visualize the parameters",
@@ -644,7 +655,10 @@
             "starter-pack": "Starter pack"
         },
         "choose-criteria": "Choose criteria for inventory {{inventoryName}}",
-        "calendar": "Calendar"
+        "calendar": "Calendar",
+        "apply-selection": "Apply the selection",
+        "unit-para1": "The impact value can be displayed either in the <strong>unit specific to the selected impact criteria</strong> or in <strong>people equivalent</strong>.",
+        "unit-para2": "This unit is based on the concept of planetary boundaries and represents a theoretical, equal impact allowance allocated to each person on Earth to maintain the balance of the Earth system. It is calculated by dividing the maximum amount of negative externalities the Earth can sustain as defined in the consumer consumption and footprint report by the total global population."
     },
     "inventories-footprint": {
         "active-filters": "Active filters",
@@ -659,6 +673,7 @@
             "environment": "Environment",
             "equipmentType": "Equipment",
             "lifeCycle": "Lifecycle",
+            "location": "Country",
             "domain": "Domain"
         },
         "header": {
@@ -673,6 +688,12 @@
             "entity": "Entity",
             "equipment": "Equipment",
             "status": "Status"
+        },
+        "application-round-button": {
+            "environment": "Environment",
+            "equipmentType": "Equipment",
+            "lifeCycle": "Lifecycle",
+            "location": "Country"
         },
         "global": {
             "global-vision": "Global Vision",
@@ -697,8 +718,10 @@
             "elec-consumption": "Total power consumption",
             "equipment": "EQUIPMENT",
             "equipments": "Equipments",
+            "qty-virtual-equipment": "Quantity of Virtual Equipment",
             "cloud-services": "Public Clouds - IaaS",
             "cloud-instances": "Cloud Instances",
+            "multi-criteria-view": "Multi-criteria view",
             "tooltip": {
                 "nb-cloud": "Number of cloud instances",
                 "nb-dc": "Number of datacenters",
@@ -706,7 +729,9 @@
                 "nb-eq": "Number of equipments (Cloud instances excluded)",
                 "low-impact": "% of equipment used in a country with a low multi-criteria impact on the electricity mix (1st quartile, Cloud excluded)",
                 "ave-age": "Average equipment lifespan (Cloud instances excluded)",
-                "elec-consumption": "Total power consumption of my organization's equipment for one year (Cloud excluded)"
+                "elec-consumption": "Total power consumption of my organization's equipment for one year (Cloud excluded)",
+                "qty-vEq": "Sum of the quantity of Virtual Equipment and Cloud Instance of the inventory",
+                "vEq-elec-consumption": "Sum of Virtual Equipement electricity consumption (estimated for Cloud Service)"
             }
         },
         "application": {

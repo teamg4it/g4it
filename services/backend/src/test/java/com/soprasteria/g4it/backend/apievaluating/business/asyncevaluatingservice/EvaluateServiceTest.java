@@ -892,8 +892,8 @@ class EvaluateServiceTest {
         when(boaviztapiService.extractAvgPowerW(any()))
                 .thenReturn(Optional.of(100d));
 
-        when(boaviztapiService.computeAnnualElectricityKwhRaw(100d, 8760d, 2d))
-                .thenReturn(1752d);
+        when(boaviztapiService.computeAnnualElectricityKwhRaw(100d, 8760d))
+                .thenReturn(876d);
 
         evaluateService.doEvaluate(context, task, tempDir);
 

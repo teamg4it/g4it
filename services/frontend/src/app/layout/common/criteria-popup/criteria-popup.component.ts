@@ -167,6 +167,7 @@ export class CriteriaPopupComponent implements OnChanges {
                     name: this.inventory.name,
                     criteria: this.selectedCriteriaIS,
                     note: this.inventory.note,
+                    enableDataInconsistency: this.inventory.enableDataInconsistency,
                 };
                 this.outSaveInventory.emit(inventoryCriteria);
                 break;
