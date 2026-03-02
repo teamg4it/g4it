@@ -192,4 +192,42 @@ public interface ImpactToCsvRecord {
         Arrays.stream(recommendationBOS).map(recommendationBO -> new String[]{recommendationBO.getType(), recommendationBO.getTopic(), recommendationBO.getExample(), recommendationBO.getExpectedReduction()}).forEach(result::add);
         return result;
     }
+
+    default List<String> toCsvAi(Context context, EvaluateReportBO evaluateReportBO, InVirtualEquipment virtualEquipment,
+                                 ImpactEquipementVirtuel impact, Double sipValue) {
+        LocalDateTime now = context.getDatetime();
+
+        Double peopleEqImpact = impact.getImpactUnitaire() == null ? null : impact.getImpactUnitaire() / sipValue;
+
+        return List.of(
+                evaluateReportBO.getName(),
+                now.format(Constants.LOCAL_DATE_TIME_FORMATTER_MS),
+                now.toLocalDate().toString(),
+                evaluateReportBO.getTaskId().toString(),
+                LifecycleStepUtils.getReverse(impact.getEtapeACV()),
+                CriteriaUtils.transformCriteriaKeyToCriteriaName(StringUtils.snakeToKebabCase(impact.getCritere())),
+                context.getWorkspaceId().toString(),
+                "", // dataSourceName
+                print(virtualEquipment.getPhysicalEquipmentName()),
+                virtualEquipment.getName(),
+                virtualEquipment.getInfrastructureType(),
+                print(virtualEquipment.getCloudProvider()),
+                print(virtualEquipment.getInstanceType()),
+                printFirst(virtualEquipment.getCommonFilters()), // entityName
+                "", // source
+                impact.getStatutIndicateur(),
+                evaluateReportBO.isVerbose() ? print(impact.getTrace()) : "",
+                print(virtualEquipment.getType()),
+                "1.1", // calculationVersion
+                print(impact.getImpactUnitaire()),
+                print(impact.getUnite()),
+                print(impact.getConsoElecMoyenne()),
+                printFirst(virtualEquipment.getFilters()), // cluster
+                now.toLocalDate().toString(),
+                context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
+                printFirst(virtualEquipment.getCommonFilters()), // entityName
+                "", // dataSourceName
+                print(peopleEqImpact) // peopleEqImpact
+        );
+    }
 }
