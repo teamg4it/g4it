@@ -11,7 +11,6 @@ package com.soprasteria.g4it.backend.apiinout.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinout.mapper.InPhysicalEquipmentMapper;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -44,9 +43,6 @@ class InPhysicalEquipmentServiceTest {
 
     @Mock
     private InPhysicalEquipmentMapper inPhysicalEquipmentMapper;
-
-    @Mock
-    private DigitalServiceRepository digitalServiceRepository;
 
     @Mock
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
@@ -349,7 +345,6 @@ class InPhysicalEquipmentServiceTest {
                 .location("InvalidCountry")
                 .build();
 
-        var digitalService = com.soprasteria.g4it.backend.apiuser.modeldb.Workspace.builder().build(); // minimal placeholder
         var digitalServiceVersion = com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion.builder()
                 .digitalService(com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService.builder().build())
                 .build();
