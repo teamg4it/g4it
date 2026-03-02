@@ -33,8 +33,8 @@ public class InstantiatedRecommendation{
     private Long idRecommendation;
 
     @NotNull
-    @Column(name = "id_evaluation")
-    private Long idEvaluation;
+    @Column(name = "digital_service_version_uid")
+    private String digitalServiceVersionUid;
 
     @Column(name = "priority")
     private Double priority;
