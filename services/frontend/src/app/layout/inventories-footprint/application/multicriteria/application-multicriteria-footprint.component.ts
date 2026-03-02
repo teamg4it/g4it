@@ -147,9 +147,12 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             this.xAxisInput = [];
             return {};
         }
-        this.xAxisInput = Object.keys(this.footprint)
+        this.xAxisInput = this.footprint
+            .flatMap((f) => f.criteria)
             .sort((a, b) => this.criteriakeys.indexOf(a) - this.criteriakeys.indexOf(b))
-            .map((criteria) => this.translate.instant(`criteria.${criteria}`).title);
+            .map((criteria) => {
+                return this.translate.instant(`criteria.${criteria}`).title;
+            });
 
         const criteriaCountMap = criteriaCalculated.criteriasCount || {};
 
@@ -248,6 +251,15 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             },
             color: Constants.COLOR,
         };
+    }
+
+    stackChartClick(event: string) {
+        const key = Object.keys(this.translate.instant("criteria")).find(
+            (key) => this.translate.instant("criteria")[key].title === event,
+        );
+        if (key) {
+            this.onChartClick({ name: key });
+        }
     }
 
     onChartClick(event: any) {
