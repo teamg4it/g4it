@@ -740,7 +740,9 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
             if (Array.isArray(filterValue)) {
                 return filterValue.some(
                     (item) =>
-                        item === Constants.ALL || (item as any)?.label === Constants.ALL,
+                        item === Constants.ALL ||
+                        ((item as any)?.label === Constants.ALL &&
+                            (item as any)?.checked),
                 );
             }
             return false;
