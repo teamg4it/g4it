@@ -235,7 +235,7 @@ public class InventoryService {
                     .orElseThrow();
 
             boolean hasWriteAccess = userWorkspace.getRoles().stream()
-                    .anyMatch(role -> Constants.INVENTORY_READ.equals(role.getName()));
+                    .anyMatch(role -> Constants.ROLE_INVENTORY_WRITE.equals(role.getName()));
 
             if (!(changeDataInconsistency || hasWriteAccess)) {
                 throw new G4itRestException(ErrorConstants.NOT_AUTHORIZED, ErrorConstants.NOT_AUTHORIZED_MESSAGE);

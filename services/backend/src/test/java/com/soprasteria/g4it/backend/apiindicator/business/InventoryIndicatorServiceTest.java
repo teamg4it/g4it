@@ -9,6 +9,8 @@
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentElecConsumptionBO;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentElecConsumptionBO;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualEquipmentLowImpactBO;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -23,10 +25,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class InventoryIndicatorServiceTest {
@@ -104,5 +109,75 @@ class InventoryIndicatorServiceTest {
         List<PhysicalEquipmentElecConsumptionBO> result = inventoryIndicatorService.getPhysicalEquipmentElecConsumption(organization, workspaceId, inventoryId);
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void shouldDelegateVirtualEquipmentsLowImpact() {
+
+        String organization = "ORG";
+        Long workspaceId = 1L;
+        Long inventoryId = 10L;
+
+        List<VirtualEquipmentLowImpactBO> expected =
+                List.of(new VirtualEquipmentLowImpactBO());
+
+        when(indicatorService
+                .getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId))
+                .thenReturn(expected);
+
+        List<VirtualEquipmentLowImpactBO> result =
+                inventoryIndicatorService
+                        .getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId);
+
+        assertThat(result).isEqualTo(expected);
+
+        verify(indicatorService)
+                .getVirtualEquipmentsLowImpact(organization, workspaceId, inventoryId);
+    }
+
+    @Test
+    void shouldReturnVirtualEquipmentElecConsumption() {
+
+        Long inventoryId = 10L;
+        Long taskId = 100L;
+        Long criteriaNumber = 5L;
+
+        Task task = new Task();
+        task.setId(taskId);
+
+        List<VirtualEquipmentElecConsumptionBO> expected =
+                List.of(new VirtualEquipmentElecConsumptionBO());
+
+        when(taskRepository.findByInventoryAndLastCreationDate(any()))
+                .thenReturn(Optional.of(task));
+
+        when(indicatorService.getVirtualEquipmentElecConsumption(taskId))
+                .thenReturn(expected);
+
+        List<VirtualEquipmentElecConsumptionBO> result =
+                inventoryIndicatorService
+                        .getVirtualEquipmentElecConsumption("ORG", 1L, inventoryId);
+
+        assertThat(result).isEqualTo(expected);
+
+        verify(taskRepository).findByInventoryAndLastCreationDate(any());
+        verify(indicatorService)
+                .getVirtualEquipmentElecConsumption(taskId);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTaskNotFound() {
+
+        when(taskRepository.findByInventoryAndLastCreationDate(any()))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+                inventoryIndicatorService
+                        .getVirtualEquipmentElecConsumption("ORG", 1L, 10L)
+        ).isInstanceOf(NoSuchElementException.class);
+
+        verify(taskRepository).findByInventoryAndLastCreationDate(any());
+        verifyNoInteractions(inventoryService);
+        verifyNoInteractions(indicatorService);
     }
 }

@@ -221,3 +221,61 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         "500":
           $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowImpact:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      summary: endpoint to retrieve the number of virtual equipment and if they are low impact
+      description: endpoint to retrieve the number of virtual equipment and if they are low impact
+      tags:
+        - inventory-indicator
+      operationId: getVirtualEquipmentsLowImpact
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      responses:
+        "200":
+          description: return virtual equipment with Low impact and number
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VirtualEquipmentLowImpactRest'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      summary: endpoint to retrieve the electric consumption of virtual equipments
+      description: endpoint to retrieve the electric consumption of virtual equipments
+      tags:
+        - inventory-indicator
+      operationId: getVirtualEquipmentElecConsumption
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      responses:
+        "200":
+          description: return electric consumption of virtual equipments
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VirtualEquipmentElecConsumptionRest'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+

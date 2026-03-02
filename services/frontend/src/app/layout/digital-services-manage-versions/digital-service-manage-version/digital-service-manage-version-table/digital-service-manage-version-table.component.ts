@@ -53,17 +53,27 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
             });
     }
 
-    redirectToVersionDetails(version: string): void {
+    redirectToVersionDetails(version: string, calculationDone?: boolean): void {
         let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
         if (moduleType === "eco-mind-ai") {
             this.router.navigate(
-                ["eco-mind-ai", version, "footprint", "ecomind-parameters"],
+                [
+                    "eco-mind-ai",
+                    version,
+                    "footprint",
+                    calculationDone ? "dashboard" : "ecomind-parameters",
+                ],
                 { relativeTo: this.route.parent?.parent },
             );
             return;
         }
         this.router.navigate(
-            ["digital-service-version", version, "footprint", "resources"],
+            [
+                "digital-service-version",
+                version,
+                "footprint",
+                calculationDone ? "dashboard" : "resources",
+            ],
             { relativeTo: this.route.parent?.parent },
         );
     }
@@ -104,7 +114,7 @@ export class DigitalServiceManageVersionTableComponent implements OnInit {
             .duplicateVersion(dsvUid)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((version) => {
-                this.redirectToVersionDetails(version.uid);
+                this.redirectToVersionDetails(version.uid, false);
             });
     }
 

@@ -27,7 +27,7 @@
             [network]="network"
             [networkData]="networkData()"
             (update)="actionNetwork('update', $event)"
-            (delete)="actionNetwork('delete', $event)"
+            (delete)="deleteItem($event); sidebarVisible = false"
             (outCancel)="actionNetwork('cancel', $event)"
         ></app-digital-services-networks-side-panel>
     </p-sidebar>

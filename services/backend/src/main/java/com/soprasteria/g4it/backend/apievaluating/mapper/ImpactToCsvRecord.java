@@ -56,7 +56,7 @@ public interface ImpactToCsvRecord {
                 impact.getStatutIndicateur(),
                 verbose ? impact.getTrace() : "",
                 "1.0", // calculationVersion
-                print(impact.getConsoElecMoyenne() == null ? null :impact.getConsoElecMoyenne() * impact.getQuantite()),
+                print(impact.getConsoElecMoyenne() == null ? null : impact.getConsoElecMoyenne() * impact.getQuantite()),
                 print(impact.getImpactUnitaire()),
                 print(impact.getQuantite()),
                 printFirst(physicalEquipment.getFilters()), // status
@@ -76,7 +76,7 @@ public interface ImpactToCsvRecord {
     }
 
     default List<String> toCsv(Context context, EvaluateReportBO evaluateReportBO, InVirtualEquipment virtualEquipment,
-                               ImpactEquipementVirtuel impact, Double sipValue) {
+                               ImpactEquipementVirtuel impact, Double sipValue, Double electricity) {
         LocalDateTime now = context.getDatetime();
 
         Double peopleEqImpact = impact.getImpactUnitaire() == null ? null : impact.getImpactUnitaire() / sipValue;
@@ -103,7 +103,11 @@ public interface ImpactToCsvRecord {
                 "1.1", // calculationVersion
                 print(impact.getImpactUnitaire()),
                 print(impact.getUnite()),
-                print(impact.getConsoElecMoyenne()),
+                print(
+                        electricity == null
+                                ? null
+                                : electricity * virtualEquipment.getQuantity()
+                ),
                 printFirst(virtualEquipment.getFilters()), // cluster
                 now.toLocalDate().toString(),
                 context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
@@ -114,7 +118,7 @@ public interface ImpactToCsvRecord {
     }
 
     default List<String> toCsv(Context context, EvaluateReportBO evaluateReportBO, InApplication application,
-                               ImpactApplication impact, Double sipValue) {
+                               ImpactApplication impact, Double sipValue, Double electricity) {
         LocalDateTime now = context.getDatetime();
 
         Double peopleEqImpact = impact.getImpactUnitaire() == null ? null : impact.getImpactUnitaire() / sipValue;
@@ -141,7 +145,7 @@ public interface ImpactToCsvRecord {
                 printSecond(application.getFilters()), // sub domain
                 print(impact.getImpactUnitaire()),
                 print(impact.getUnite()),
-                print(impact.getConsoElecMoyenne()),
+                print(electricity),
                 now.toLocalDate().toString(),
                 context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
                 printFirst(application.getCommonFilters()), // entityName
@@ -187,5 +191,43 @@ public interface ImpactToCsvRecord {
 
         Arrays.stream(recommendationBOS).map(recommendationBO -> new String[]{recommendationBO.getType(), recommendationBO.getTopic(), recommendationBO.getExample(), recommendationBO.getExpectedReduction()}).forEach(result::add);
         return result;
+    }
+
+    default List<String> toCsvAi(Context context, EvaluateReportBO evaluateReportBO, InVirtualEquipment virtualEquipment,
+                                 ImpactEquipementVirtuel impact, Double sipValue) {
+        LocalDateTime now = context.getDatetime();
+
+        Double peopleEqImpact = impact.getImpactUnitaire() == null ? null : impact.getImpactUnitaire() / sipValue;
+
+        return List.of(
+                evaluateReportBO.getName(),
+                now.format(Constants.LOCAL_DATE_TIME_FORMATTER_MS),
+                now.toLocalDate().toString(),
+                evaluateReportBO.getTaskId().toString(),
+                LifecycleStepUtils.getReverse(impact.getEtapeACV()),
+                CriteriaUtils.transformCriteriaKeyToCriteriaName(StringUtils.snakeToKebabCase(impact.getCritere())),
+                context.getWorkspaceId().toString(),
+                "", // dataSourceName
+                print(virtualEquipment.getPhysicalEquipmentName()),
+                virtualEquipment.getName(),
+                virtualEquipment.getInfrastructureType(),
+                print(virtualEquipment.getCloudProvider()),
+                print(virtualEquipment.getInstanceType()),
+                printFirst(virtualEquipment.getCommonFilters()), // entityName
+                "", // source
+                impact.getStatutIndicateur(),
+                evaluateReportBO.isVerbose() ? print(impact.getTrace()) : "",
+                print(virtualEquipment.getType()),
+                "1.1", // calculationVersion
+                print(impact.getImpactUnitaire()),
+                print(impact.getUnite()),
+                print(impact.getConsoElecMoyenne()),
+                printFirst(virtualEquipment.getFilters()), // cluster
+                now.toLocalDate().toString(),
+                context.getWorkspaceId().toString(), // workspaceName (actually workspaceId)
+                printFirst(virtualEquipment.getCommonFilters()), // entityName
+                "", // dataSourceName
+                print(peopleEqImpact) // peopleEqImpact
+        );
     }
 }

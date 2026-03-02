@@ -1,0 +1,58 @@
+<div class="bg-white p-2">
+    <div class="bg-gray-color p-3">
+        <h3 class="mt-2 ml-0 mb-2 font-semibold">
+            {{ "common.key-indicator" | translate }}
+        </h3>
+        <div class="grid">
+            <ng-container *ngFor="let group of statGroups()">
+                <div class="col-12" [ngClass]="{ 'md:col-6': isApplication() }">
+                    <h4 class="subtitle font-semibold mb-2 mt-3">{{ group.subtitle }}</h4>
+
+                    <div
+                        class="cards-grid"
+                        [ngClass]="{ 'cards-grid-app': isApplication() }"
+                    >
+                        <div
+                            class="stat-card bg-white text-center p-3 border-round-lg"
+                            *ngFor="let item of group.items"
+                        >
+                            <div
+                                class="mb-1 font-semibold text-xl"
+                                [attr.aria-label]="
+                                    item?.value || item?.value === 0
+                                        ? item?.label + ' ' + item?.unit
+                                        : '--'
+                                "
+                                tabIndex="0"
+                            >
+                                {{
+                                    item?.value || item?.value === 0 ? item?.label : "--"
+                                }}
+                                <span class="text-sm font-normal">
+                                    {{
+                                        item?.value || item?.value === 0 ? item?.unit : ""
+                                    }}
+                                </span>
+                                <i
+                                    class="pi pi-info-circle text-xs cursor-pointer vertical-align-top"
+                                    pTooltip="{{ item?.description }}"
+                                    tooltipEvent="focus"
+                                    tooltipPosition="right"
+                                    tabindex="0"
+                                ></i>
+                            </div>
+
+                            <div
+                                class="label"
+                                [attr.lang]="item?.lang ? item.lang : null"
+                                [attr.aria-label]="item?.title"
+                            >
+                                {{ item?.title }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

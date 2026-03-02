@@ -17,6 +17,8 @@ import {
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
+    VirtualEquipmentElectricityConsumption,
+    VirtualEquipmentLowImpact,
 } from "../../interfaces/footprint.interface";
 import { transformEquipmentType } from "../mapper/array";
 
@@ -98,5 +100,16 @@ export class FootprintDataService {
             responseType: "blob",
             headers: { Accept: "application/zip" },
         });
+    }
+
+    getApplicationKeyIndicators(inventoryId: number) {
+        const lowImpact$ = this.http.get<VirtualEquipmentLowImpact[]>(
+            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsLowImpact`,
+        );
+        const elecConsumption$ = this.http.get<VirtualEquipmentElectricityConsumption[]>(
+            `${endpoint}/${inventoryId}/indicators/virtualEquipmentsElecConsumption`,
+        );
+
+        return forkJoin([lowImpact$, elecConsumption$]);
     }
 }

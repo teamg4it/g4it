@@ -131,6 +131,25 @@ export class FootprintService {
         }
     }
 
+    filterCriteriaImpact(footprint: ApplicationFootprint[]) {
+        return footprint.map((impact) => {
+            const data = impact.impacts.reduce(
+                (sum, current) => this.addImpact(sum, current),
+                {
+                    impact: 0,
+                    sip: 0,
+                },
+            );
+            return {
+                name: impact.criteria,
+                title: impact.criteriaTitle,
+                unite: impact.unit,
+                raw: data.impact,
+                peopleeq: data.sip,
+            };
+        });
+    }
+
     calculate(
         footprint: Criterias,
         filters: Filter,
@@ -207,17 +226,17 @@ export class FootprintService {
                     status: {
                         ok: filteredImpacts.filter(
                             (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
                                     dimension && i.statusIndicator === "OK",
                         ).length,
                         error: filteredImpacts.filter(
                             (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
                                     dimension && i.statusIndicator !== "OK",
                         ).length,
                         total: filteredImpacts.filter(
                             (i) =>
-                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)) ===
                                 dimension,
                         ).length,
                     },
@@ -266,6 +285,20 @@ export class FootprintService {
                 return v.equipment;
             case "status":
                 return v.status;
+
+            // application
+            case "lifeCycle":
+                return (v as any).lifeCycle;
+            case "environment":
+                return (v as any).environment;
+            case "equipmentType":
+                return (v as any).equipmentType;
+            case "domain":
+                return (v as any).domain;
+            case "subDomain":
+                return (v as any).subDomain;
+            case "location":
+                return (v as any).location;
             default:
                 return null;
         }

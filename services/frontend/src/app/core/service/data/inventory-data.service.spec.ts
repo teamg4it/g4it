@@ -59,6 +59,7 @@ describe("InventoryDataService", () => {
                 physicalEquipmentCount: 17,
                 virtualEquipmentCount: 21,
                 applicationCount: 24,
+                enableDataInconsistency: false,
                 tasks: [],
             },
             {
@@ -74,6 +75,7 @@ describe("InventoryDataService", () => {
                 virtualEquipmentCount: 21,
                 applicationCount: 24,
                 tasks: [],
+                enableDataInconsistency: false,
             },
         ];
 
