@@ -48,6 +48,13 @@ public class EvaluateBoaviztapiService {
             return getErrors(criteria, lifecycleSteps, e.getStatusCode(), e.getMessage());
         }
 
+        String successTrace = JsonUtils.toJson(
+                ExternalTraceBO.builder()
+                        .externalApi("boaviztapi/v1/cloud/instance")
+                        .code(200)
+                        .build()
+        );
+
         var criteriaImpactMap = response == null ?
                 new HashMap<String, BoaImpactRest>() :
                 Map.ofEntries(
@@ -82,6 +89,7 @@ public class EvaluateBoaviztapiService {
                         .unitImpact(unitImpact)
                         .unit(unit)
                         .indicatorStatus(indicatorStatus)
+                        .trace(successTrace)
                         .build());
             }
         }
