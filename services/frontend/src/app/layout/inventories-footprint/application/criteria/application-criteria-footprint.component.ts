@@ -144,7 +144,7 @@ export class ApplicationCriteriaFootprintComponent
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes) {
+        if (changes && !changes["showDomainByApplication"]) {
             this.showInconsitencyGraph = false;
         }
     }
