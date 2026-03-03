@@ -128,7 +128,7 @@ public interface ImpactToCsvRecord {
                 now.format(Constants.LOCAL_DATE_TIME_FORMATTER_MS),
                 now.toLocalDate().toString(),
                 evaluateReportBO.getTaskId().toString(),
-                impact.getEtapeACV(),
+                LifecycleStepUtils.get(impact.getEtapeACV(), impact.getEtapeACV()),
                 CriteriaUtils.transformCriteriaKeyToCriteriaName(StringUtils.snakeToKebabCase(impact.getCritere())),
                 context.getWorkspaceId().toString(),
                 "", // dataSourceName
