@@ -22,7 +22,8 @@ import java.io.Serializable;
                 targetClass = InVirtualEquipmentElecConsumptionView.class,
                 columns = {
                         @ColumnResult(name = "id", type = Long.class),
-                        @ColumnResult(name = "name"),
+                        @ColumnResult(name = "virtualEquipmentName"),
+                        @ColumnResult(name = "application_name"),
                         @ColumnResult(name = "location"),
                         @ColumnResult(name = "lifecycle_step"),
                         @ColumnResult(name = "domain"),
@@ -42,7 +43,8 @@ import java.io.Serializable;
                 SELECT
                                                                    ROW_NUMBER() OVER () AS id,
                 
-                                                                   sub.virtual_equipment_name AS name,
+                                                                   sub.virtual_equipment_name AS virtualEquipmentName,
+                                                                   sub.name As applicationName,
                                                                    sub.location,
                                                                    'USING' AS lifecycle_step,
                                                                    sub.domain,
@@ -73,6 +75,7 @@ import java.io.Serializable;
                                                                FROM (
                                                                    SELECT
                                                                        oa.virtual_equipment_name,
+                                                                       oa.name,
                                                                        COALESCE(dc.location, ive.location, 'Unknown') AS location,
                                                                        oa.filters[1] AS domain,
                                                                        oa.filters[2] AS sub_domain,
@@ -111,6 +114,7 @@ import java.io.Serializable;
                                                                        ive.infrastructure_type
                                                                ) AS sub GROUP BY
                                                                    sub.virtual_equipment_name,
+                                                                   sub.name,
                                                                    sub.location,
                                                                    sub.domain,
                                                                    sub.sub_domain,
@@ -129,7 +133,9 @@ public class InVirtualEquipmentElecConsumptionView implements Serializable {
     @Id
     private Long id;
 
-    private String name;
+    private String virtualEquipmentName;
+
+    private  String applicationName;
 
     private String location;
 

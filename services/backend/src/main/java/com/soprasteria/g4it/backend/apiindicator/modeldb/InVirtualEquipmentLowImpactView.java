@@ -28,7 +28,8 @@ import org.hibernate.annotations.Immutable;
                                                oa.environment
                                        ) AS id,
                 
-                                       oa.virtual_equipment_name                     AS name,
+                                       oa.virtual_equipment_name                     AS virtualEquipmentName,
+                                       oa.name                                       AS applicationName,
                                        COALESCE(dc.location, ive.location, 'Unknown') AS location,
                                        oa.lifecycle_step                             AS lifecycle_step,
                                        oa.filters[1]                                 AS domain,
@@ -58,6 +59,7 @@ import org.hibernate.annotations.Immutable;
                 
                                    GROUP BY
                                        oa.virtual_equipment_name,
+                                       oa.name,
                                        COALESCE(dc.location, ive.location, 'Unknown'),
                                        oa.lifecycle_step,
                                        oa.filters[1],
@@ -73,8 +75,8 @@ public class InVirtualEquipmentLowImpactView {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "virtualEquipmentName")
+    private String virtualEquipmentName;
 
     @Column(name = "location")
     private String location;
@@ -99,4 +101,7 @@ public class InVirtualEquipmentLowImpactView {
 
     @Transient
     private Boolean lowImpact;
+
+    @Column(name = "applicationName")
+    private String applicationName;
 }

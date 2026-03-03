@@ -23,7 +23,7 @@ public class VirtualEquipmentLowImpactBO implements Serializable {
 
     private Long id;
 
-    private String name;
+    private String virtualEquipmentName;
 
     private String location;
 
@@ -40,6 +40,8 @@ public class VirtualEquipmentLowImpactBO implements Serializable {
     private Double quantity;
 
     private Boolean lowImpact;
+
+    private String applicationName;
 
 
 }

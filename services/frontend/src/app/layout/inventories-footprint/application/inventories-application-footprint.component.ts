@@ -178,8 +178,15 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     });
 
     lowImpactStat = computed<Stat>(() => {
+        const filteredDomainSubdomain =
+            this.getFilterByDomainSubDomain<VirtualEquipmentLowImpact>(
+                this.lowImpactData(),
+                this.footprintStore.appDomain(),
+                this.footprintStore.appSubDomain(),
+                this.footprintStore.appApplication(),
+            );
         const lowImpact = this.filterLowImpact(
-            this.lowImpactData(),
+            filteredDomainSubdomain,
             this.footprintStore.applicationSelectedFilters(),
         );
         return {
@@ -193,41 +200,48 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         };
     });
 
-    electrictyConsumtion = computed<Stat>(() => {
+    electrictyConsumtion = computed<Stat[]>(() => {
+        const filteredDomainSubdomain =
+            this.getFilterByDomainSubDomain<VirtualEquipmentElectricityConsumption>(
+                this.elecConsumptionData(),
+                this.footprintStore.appDomain(),
+                this.footprintStore.appSubDomain(),
+                this.footprintStore.appApplication(),
+            );
         const elecConsumption = this.filterElecConsumption(
-            this.elecConsumptionData(),
+            filteredDomainSubdomain,
             this.footprintStore.applicationSelectedFilters(),
         );
-        return {
-            label: `${this.decimalsPipe.transform(elecConsumption)}`,
-            unit: this.translate.instant("inventories-footprint.global.kwh"),
-            value: Number.isNaN(Number(elecConsumption))
-                ? undefined
-                : Math.round(elecConsumption),
-            description: this.translate.instant(
-                "inventories-footprint.global.tooltip.vEq-elec-consumption",
-            ),
-            title: this.translate.instant(
-                "inventories-footprint.global.elec-consumption",
-            ),
-        };
-    });
 
-    equipments = computed<Stat>(() => {
         const count = this.filterNoOfVirtualEquipments(
-            this.elecConsumptionData(),
+            filteredDomainSubdomain,
             this.footprintStore.applicationSelectedFilters(),
         );
-        return {
-            label: this.decimalsPipe.transform(count),
-            value: Number.isNaN(Number(count)) ? undefined : count,
-            description: this.translate.instant(
-                "inventories-footprint.global.tooltip.qty-vEq",
-            ),
-            title: this.translate.instant(
-                "inventories-footprint.global.qty-virtual-equipment",
-            ),
-        };
+        return [
+            {
+                label: `${this.decimalsPipe.transform(elecConsumption)}`,
+                unit: this.translate.instant("inventories-footprint.global.kwh"),
+                value: Number.isNaN(Number(elecConsumption))
+                    ? undefined
+                    : Math.round(elecConsumption),
+                description: this.translate.instant(
+                    "inventories-footprint.global.tooltip.vEq-elec-consumption",
+                ),
+                title: this.translate.instant(
+                    "inventories-footprint.global.elec-consumption",
+                ),
+            },
+            {
+                label: this.decimalsPipe.transform(count),
+                value: Number.isNaN(Number(count)) ? undefined : count,
+                description: this.translate.instant(
+                    "inventories-footprint.global.tooltip.qty-vEq",
+                ),
+                title: this.translate.instant(
+                    "inventories-footprint.global.qty-virtual-equipment",
+                ),
+            },
+        ];
     });
 
     statGroups: Signal<StatGroup[]> = computed(() => {
@@ -236,11 +250,11 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
         return [
             {
                 subtitle: this.translate.instant("common.infrastructure"),
-                items: [appStats[0], this.equipments()],
+                items: [appStats[0], this.electrictyConsumtion()[1]],
             },
             {
                 subtitle: this.translate.instant("common.energy"),
-                items: [this.electrictyConsumtion(), this.lowImpactStat()],
+                items: [this.electrictyConsumtion()[0], this.lowImpactStat()],
             },
         ] as StatGroup[];
     });
@@ -819,5 +833,29 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                 this.lowImpactData.set(lowImpact.map(translateLifeCycle));
                 this.elecConsumptionData.set(elecConsumption.map(translateLifeCycle));
             });
+    }
+
+    getFilterByDomainSubDomain<
+        V extends { domain?: string; subDomain?: string; applicationName: string },
+    >(equipments: V[], domain: string, subDomain: string, applicationName: string): V[] {
+        switch (this.footprintStore.appGraphType()) {
+            case "global":
+                return equipments;
+            case "domain":
+                return equipments?.filter((d) => d?.domain === domain);
+            case "subdomain":
+                return equipments?.filter(
+                    (d) => d?.domain === domain && d?.subDomain === subDomain,
+                );
+            case "application":
+                return equipments?.filter(
+                    (d) =>
+                        d?.applicationName === applicationName &&
+                        d?.domain === domain &&
+                        d?.subDomain === subDomain,
+                );
+        }
+
+        return equipments;
     }
 }
