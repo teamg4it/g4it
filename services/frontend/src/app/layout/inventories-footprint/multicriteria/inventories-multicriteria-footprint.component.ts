@@ -215,6 +215,15 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         };
     }
 
+    stackChartClick(event: string) {
+        const key = Object.keys(this.translate.instant("criteria")).find(
+            (key) => this.translate.instant("criteria")[key].title === event,
+        );
+        if (key) {
+            this.onChartClick({ name: key });
+        }
+    }
+
     onChartClick(event: any) {
         if (event?.name) {
             this.router.navigate([`../${event.name}`], {

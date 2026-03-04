@@ -13,6 +13,7 @@ import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfac
 import {
     ConstantApplicationFilter,
     Filter,
+    TransformedDomain,
 } from "src/app/core/interfaces/filter.interface";
 import {
     ApplicationFootprint,
@@ -80,10 +81,18 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         const filFields = this.filterFields
             .filter((fil) => !fil.children)
             .map((fil) => fil.field);
+        filFields.push("subDomain");
+        const filtersWithSubdomain: Filter<string | TransformedDomain> = {
+            ...this.footprintStore.applicationSelectedFilters(),
+            subDomain: this.extractCheckedLabels(
+                this.footprintStore.applicationSelectedFilters()["domain"] as any,
+            ),
+        };
+        delete filtersWithSubdomain["domain"];
 
         const { footprintCalculated, criteriaCountMap } = this.footprintService.calculate(
             criteriaFootprint,
-            this.footprintStore.applicationSelectedFilters(),
+            filtersWithSubdomain,
             this.selectedDimension(),
             filFields,
         );
@@ -315,5 +324,28 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 ),
             },
         ];
+    }
+
+    extractCheckedLabels(data: any[]): string[] {
+        if (!data) return [];
+        const result: string[] = [];
+
+        for (const item of data) {
+            // Include "All" if checked
+            if (item?.label === "All" && item?.checked) {
+                result.push(item?.label);
+            }
+
+            // Include all checked children labels (including 'unknown')
+            if (Array.isArray(item?.children)) {
+                for (const child of item.children) {
+                    if (child?.checked && child?.label) {
+                        result.push(child?.label);
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 }

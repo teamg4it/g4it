@@ -41,7 +41,7 @@
         <app-stack-bar-chart
             [xAxisInput]="xAxisInput"
             [statusCountMap]="criteriaCalculated().criteriasCount!"
-            (selectedStackBarClick)="onChartClick($event)"
+            (selectedStackBarClick)="stackChartClick($event)"
         />
     } @else {
         <div class="no-data-bar">
