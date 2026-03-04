@@ -685,6 +685,11 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
                     .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe(async () => {
                         await this.checkStatusAndLoopApis();
+                        if (this.inventory().criteria?.length === 1) {
+                            this.router.navigate(["../", this.inventory().criteria![0]], {
+                                relativeTo: this.route,
+                            });
+                        }
                     });
             });
     }
