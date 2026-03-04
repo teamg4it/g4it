@@ -179,7 +179,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 },
             },
             polar: {
-                radius: "70%",
+                radius: "65%",
                 center: ["50%", "47%"],
             },
             series: footprintCalculated.map((item: FootprintCalculated) => ({
