@@ -20,6 +20,7 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.common.utils.CommonValidationUtil;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
 import org.junit.jupiter.api.Test;
@@ -33,8 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class InPhysicalEquipmentServiceTest {
@@ -56,6 +56,10 @@ class InPhysicalEquipmentServiceTest {
 
     @InjectMocks
     private InPhysicalEquipmentService inPhysicalEquipmentService;
+
+    @Mock
+    private CommonValidationUtil commonValidationUtil;
+
 
     @Test
     void getByInventory_returnsPhysicalEquipmentList_whenInventoryIdExists() {
@@ -335,5 +339,124 @@ class InPhysicalEquipmentServiceTest {
         assertNotNull(responseRest);
     }
 
+    @Test
+    void createInPhysicalEquipmentDigitalServiceVersion_throwsBadRequest_whenLocationInvalid() {
+        String digitalServiceId = "dummy_id";
+        InPhysicalEquipmentRest inVirtualEquipmentRest = InPhysicalEquipmentRest.builder()
+                .datacenterName("default")
+                .name("MyPE")
+                .id(1L)
+                .location("InvalidCountry")
+                .build();
+
+        var digitalService = com.soprasteria.g4it.backend.apiuser.modeldb.Workspace.builder().build(); // minimal placeholder
+        var digitalServiceVersion = com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion.builder()
+                .digitalService(com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService.builder().build())
+                .build();
+
+        when(digitalServiceVersionRepository.findById(digitalServiceId)).thenReturn(Optional.of(digitalServiceVersion));
+        when(commonValidationUtil.validateCountry("InvalidCountry")).thenReturn(false);
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inPhysicalEquipmentService.createInPhysicalEquipmentDigitalServiceVersion(digitalServiceId, inVirtualEquipmentRest));
+
+        assertEquals("400", exception.getCode());
+        verify(digitalServiceVersionRepository).findById(digitalServiceId);
+        verify(commonValidationUtil).validateCountry("InvalidCountry");
+    }
+
+    @Test
+    void createInPhysicalEquipmentDigitalServiceVersion_allowsNullLocation_andCreates() {
+        String digitalServiceId = "dummy_id";
+        InPhysicalEquipmentRest inVirtualEquipmentRest = InPhysicalEquipmentRest.builder()
+                .datacenterName("default")
+                .name("MyPE")
+                .id(1L)
+                .location(null)
+                .build();
+
+        var digitalService = com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService.builder().build();
+        var digitalServiceVersion = com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion.builder()
+                .digitalService(digitalService)
+                .build();
+
+        InPhysicalEquipment inVirtualEquipment = InPhysicalEquipment.builder()
+                .id(1L)
+                .name("MyPE")
+                .datacenterName("default")
+                .build();
+
+        when(digitalServiceVersionRepository.findById(digitalServiceId)).thenReturn(Optional.of(digitalServiceVersion));
+        when(inPhysicalEquipmentMapper.toEntity(inVirtualEquipmentRest)).thenReturn(inVirtualEquipment);
+        when(inPhysicalEquipmentMapper.toRest(inVirtualEquipment)).thenReturn(inVirtualEquipmentRest);
+
+        InPhysicalEquipmentRest response = inPhysicalEquipmentService.createInPhysicalEquipmentDigitalServiceVersion(digitalServiceId, inVirtualEquipmentRest);
+
+        assertNotNull(response);
+        verify(digitalServiceVersionRepository).findById(digitalServiceId);
+        verify(commonValidationUtil, never()).validateCountry(anyString());
+        verify(inPhysicalEquipmentRepository).save(inVirtualEquipment);
+        verify(inPhysicalEquipmentMapper).toRest(inVirtualEquipment);
+    }
+
+    @Test
+    void updateInPhysicalEquipment_throwsBadRequest_whenLocationInvalid() {
+        String digitalServiceUid = "service-123";
+        Long id = 1L;
+        InPhysicalEquipment existing = InPhysicalEquipment.builder()
+                .id(id)
+                .digitalServiceVersionUid(digitalServiceUid)
+                .build();
+
+        InPhysicalEquipmentRest updateRest = InPhysicalEquipmentRest.builder()
+                .location("InvalidCountry")
+                .build();
+
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id))
+                .thenReturn(Optional.of(existing));
+        when(commonValidationUtil.validateCountry("InvalidCountry")).thenReturn(false);
+
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceUid, id, updateRest));
+
+        assertEquals("400", exception.getCode());
+        assertTrue(exception.getMessage().contains("Selected Country : InvalidCountry"));
+        verify(commonValidationUtil).validateCountry("InvalidCountry");
+        verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidAndId(digitalServiceUid, id);
+    }
+
+    @Test
+    void updateInPhysicalEquipment_updatesSuccessfully() {
+        String digitalServiceUid = "service-123";
+        Long id = 1L;
+        InPhysicalEquipment existing = InPhysicalEquipment.builder()
+                .id(id)
+                .digitalServiceVersionUid(digitalServiceUid)
+                .name("oldName")
+                .build();
+
+        InPhysicalEquipmentRest updateRest = InPhysicalEquipmentRest.builder()
+                .name("newName")
+                .location(null) // skip validation
+                .build();
+
+        InPhysicalEquipment updates = InPhysicalEquipment.builder()
+                .name("newName")
+                .build();
+
+        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidAndId(digitalServiceUid, id))
+                .thenReturn(Optional.of(existing));
+        when(inPhysicalEquipmentMapper.toEntity(updateRest)).thenReturn(updates);
+        when(inPhysicalEquipmentMapper.toRest(existing)).thenReturn(updateRest);
+
+        InPhysicalEquipmentRest response = inPhysicalEquipmentService.updateInPhysicalEquipment(digitalServiceUid, id, updateRest);
+
+        assertNotNull(response);
+        verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidAndId(digitalServiceUid, id);
+        verify(inPhysicalEquipmentMapper).toEntity(updateRest);
+        verify(inPhysicalEquipmentMapper).merge(existing, updates);
+        verify(inPhysicalEquipmentRepository).save(existing);
+        verify(inPhysicalEquipmentMapper).toRest(existing);
+    }
 
 }

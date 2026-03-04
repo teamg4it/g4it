@@ -38,7 +38,7 @@ export class InventoryUtilService {
         let maxCriteria = "climate-change";
 
         for (let criteria in footprint) {
-            if (!footprint[criteria] || !footprint[criteria].impacts) continue;
+            if (!footprint[criteria]?.impacts) continue;
             const criteriaLength = footprint[criteria].impacts.length;
             if (criteriaLength > maxCriteriaLength) {
                 maxCriteriaLength = criteriaLength;

@@ -173,6 +173,12 @@
             </div>
         </div>
         <div class="button-bottom-right">
+            <div
+                class="error-text block"
+                *ngIf="addVmForm.hasError('xssDetected') && addVmForm.dirty"
+            >
+                {{ "digital-services.error.xss-detected" | translate }}
+            </div>
             <p-button styleClass="white-button" (onClick)="close()">{{
                 "common.cancel" | translate
             }}</p-button>

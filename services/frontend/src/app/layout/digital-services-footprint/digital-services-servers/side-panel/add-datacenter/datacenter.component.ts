@@ -8,6 +8,7 @@
 import { Component, computed, EventEmitter, inject, Input, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
+import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import { ServerDC } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
@@ -44,11 +45,17 @@ export default class PanelDatacenterComponent {
     });
 
     initForm() {
-        return this._formBuilder.group({
-            name: ["", [Validators.required, Validators.pattern("[^|]*")]],
-            pue: [2, [Validators.required]],
-            country: ["France", Validators.required],
-        });
+        return this._formBuilder.group(
+            {
+                name: ["", [Validators.required, Validators.pattern("[^|]*")]],
+                pue: [2, [Validators.required]],
+                country: ["France", Validators.required],
+            },
+            {
+                validators: [xssFormGroupValidator()],
+                updateOn: "blur",
+            },
+        );
     }
 
     constructor(

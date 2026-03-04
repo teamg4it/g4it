@@ -233,6 +233,12 @@
 
             <div class="flex flex-column my-3">
                 <div class="flex flex-row mt-3 justify-content-end">
+                    <div
+                        class="error-text block"
+                        *ngIf="cloudForm.hasError('xssDetected') && cloudForm.dirty"
+                    >
+                        {{ "digital-services.error.xss-detected" | translate }}
+                    </div>
                     <p-button
                         styleClass="grey-button  "
                         *ngIf="

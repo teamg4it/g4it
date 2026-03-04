@@ -48,7 +48,6 @@ import { LeftSidebarComponent } from "../left-sidebar/left-sidebar.component";
     standalone: true,
     selector: "app-top-header",
     templateUrl: "./top-header.component.html",
-    styleUrls: ["./top-header.component.scss"],
     imports: [
         ButtonModule,
         MenuModule,
@@ -414,7 +413,7 @@ export class TopHeaderComponent implements OnInit {
             skipLocationChange: true,
             queryParamsHandling: "merge",
         });
-        window.location.reload();
+        globalThis.location.reload();
     }
 
     async logout() {

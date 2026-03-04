@@ -7,8 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiinventory.modeldb;
 
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -101,5 +101,10 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     private User createdBy;
+
+    /**
+     * Specifies whether data consistency view is enabled
+     */
+    private boolean enableDataInconsistency;
 
 }

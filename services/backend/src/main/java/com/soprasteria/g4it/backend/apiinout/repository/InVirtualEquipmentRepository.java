@@ -224,4 +224,10 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
             WHERE digital_service_version_uid = :oldUid
             """, nativeQuery = true)
     void copyForVersion(@Param("oldUid") String oldUid, @Param("newUid") String newUid);
+
+    List<InVirtualEquipment> findByDigitalServiceVersionUidAndPhysicalEquipmentNameIsNull(
+            String digitalServiceVersionUid,
+            Pageable pageable
+    );
+
 }

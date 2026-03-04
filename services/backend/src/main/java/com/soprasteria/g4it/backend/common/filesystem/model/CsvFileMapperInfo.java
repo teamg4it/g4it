@@ -22,10 +22,22 @@ import java.util.stream.Collectors;
 @ConfigurationProperties(prefix = "filesystem.config.headers")
 public class CsvFileMapperInfo implements FileMapperInfo {
 
-    private List<Header> application;
-    private List<Header> datacenter;
-    private List<Header> equipementPhysique;
-    private List<Header> equipementVirtuel;
+    private List<Header> application = List.of(
+            Header.builder().name("nomApplication").optional(false).build()
+    );
+
+    private List<Header> datacenter = List.of(
+            Header.builder().name("nomCourtDatacenter").optional(false).build()
+    );
+
+    private List<Header> equipementPhysique = List.of(
+            Header.builder().name("nomEquipementPhysique").optional(false).build()
+    );
+
+    private List<Header> equipementVirtuel = List.of(
+            Header.builder().name("nomEquipementVirtuel").optional(false).build()
+    );
+
     private List<Header> virtualEquipment;
 
     private List<Header> inventory;
@@ -45,24 +57,25 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     public List<Header> getMapping(final FileType type) {
         return switch (type) {
             case UNKNOWN -> Collections.emptyList();
-            case DATACENTER -> new ArrayList<>(List.copyOf(datacenter));
-            case EQUIPEMENT_VIRTUEL -> new ArrayList<>(List.copyOf(equipementVirtuel));
-            case VIRTUAL_EQUIPMENT -> new ArrayList<>(List.copyOf(virtualEquipment));
-            case EQUIPEMENT_PHYSIQUE -> new ArrayList<>(List.copyOf(equipementPhysique));
-            case APPLICATION -> new ArrayList<>(List.copyOf(application));
-            case PHYSICAL_EQUIPMENT_INDICATOR -> new ArrayList<>(physicalEquipmentIndicator);
-            case VIRTUAL_EQUIPMENT_INDICATOR -> new ArrayList<>(virtualEquipmentIndicator);
-            case APPLICATION_INDICATOR -> new ArrayList<>(applicationIndicator);
-            case INVENTORY -> new ArrayList<>(List.copyOf(inventory));
+            case DATACENTER -> new ArrayList<>(safe(datacenter));
+            case EQUIPEMENT_VIRTUEL -> new ArrayList<>(safe(equipementVirtuel));
+            case VIRTUAL_EQUIPMENT -> new ArrayList<>(safe(virtualEquipment));
+            case EQUIPEMENT_PHYSIQUE -> new ArrayList<>(safe(equipementPhysique));
+            case APPLICATION -> new ArrayList<>(safe(application));
+            case PHYSICAL_EQUIPMENT_INDICATOR -> new ArrayList<>(safe(physicalEquipmentIndicator));
+            case VIRTUAL_EQUIPMENT_INDICATOR -> new ArrayList<>(safe(virtualEquipmentIndicator));
+            case APPLICATION_INDICATOR -> new ArrayList<>(safe(applicationIndicator));
+            case INVENTORY -> new ArrayList<>(safe(inventory));
             case PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
-                    new ArrayList<>(List.copyOf(physicalEquipmentIndicatorDigitalService));
+                    new ArrayList<>(safe(physicalEquipmentIndicatorDigitalService));
             case VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
-                    new ArrayList<>(List.copyOf(virtualEquipmentIndicatorDigitalService));
-            case OUT_AI_RECO -> new ArrayList<>(List.copyOf(outAiReco));
-            case IN_AI_PARAMETERS -> new ArrayList<>(List.copyOf(aiParameters));
-            case IN_AI_INFRASTRUCTURE -> new ArrayList<>(List.copyOf(aiInfrastructure));
+                    new ArrayList<>(safe(virtualEquipmentIndicatorDigitalService));
+            case OUT_AI_RECO -> new ArrayList<>(safe(outAiReco));
+            case IN_AI_PARAMETERS -> new ArrayList<>(safe(aiParameters));
+            case IN_AI_INFRASTRUCTURE -> new ArrayList<>(safe(aiInfrastructure));
         };
     }
+
 
     public Set<String> getHeaderFields(final FileType fileType, final boolean mandatory) {
         return getMapping(fileType).stream()
@@ -70,4 +83,9 @@ public class CsvFileMapperInfo implements FileMapperInfo {
                 .map(Header::getName)
                 .collect(Collectors.toSet());
     }
+
+    private List<Header> safe(List<Header> list) {
+        return list == null ? Collections.emptyList() : list;
+    }
+
 }

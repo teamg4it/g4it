@@ -20,4 +20,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class BoaResponseRest {
     private BoaImpactsRest impacts;
+    /**
+     * Present only when verbose=true
+     */
+    private BoaVerboseRest verbose;
 }

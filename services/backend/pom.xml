@@ -29,7 +29,7 @@
     </repositories>
 
     <properties>
-        <numecoeval.version>2.2.1-SNAPSHOT</numecoeval.version>
+        <numecoeval.version>2.2.1</numecoeval.version>
         <java.version>21</java.version>
         <swagger.version>2.2.30</swagger.version>
         <mapstruct.dependency.version>1.6.3</mapstruct.dependency.version>
@@ -292,6 +292,11 @@
             <artifactId>awaitility</artifactId>
             <version>4.3.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.17.2</version>
         </dependency>
     </dependencies>
 

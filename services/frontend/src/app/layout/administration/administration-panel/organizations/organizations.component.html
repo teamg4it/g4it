@@ -84,133 +84,135 @@
         }
 
         <div
-            class="h-2rem border-top-2 border-primary p-0 mt-3"
+            class="h-0rem border-top-2 border-primary p-0 mt-3"
             style="color: lightgray"
         ></div>
     </div>
-
-    <div *ngIf="organization" class="my-2">
-        <div *ngIf="editable">
-            @if (
-                organization.roles.includes(Role.OrganizationAdmin) ||
-                organization.authorizedDomains?.includes(myDomain)
-            ) {
-                <input
-                    class="label-input-div-medium input-width inline-block p-2 mx-1"
-                    pInputText
-                    [(ngModel)]="newWorkspace.name"
-                    [placeholder]="'administration.organization.new' | translate"
-                    name="newOrg"
-                    ngDefaultControl
-                    (ngModelChange)="
-                        checkOrganization($event, newWorkspace, organization)
-                    "
-                    id="new-organization-input"
-                />
-                <p-button
-                    class="mx-2"
-                    styleClass="black-button-sidebar"
-                    (onClick)="addWorkplace(newWorkspace)"
-                    [disabled]="newWorkspace.uiStatus !== 'OK'"
-                    id="add-organization-button"
-                    [ariaLabel]="
-                        'administration.organization.accessibility.addAnOrganization'
-                            | translate
-                    "
-                    >{{
-                        "administration.organization.addAnOrganization" | translate
-                    }}</p-button
-                >
-            }
-        </div>
-        <p class="error-text" *ngIf="newWorkspace.uiStatus === 'DUPLICATE'">
-            {{
-                "administration.organization.duplicateOrganizationValidation" | translate
-            }}
-        </p>
-        <p class="error-text" *ngIf="newWorkspace.uiStatus === 'SPACE'">
-            {{ "administration.organization.spaceValidation" | translate }}
-        </p>
-
-        <div *ngFor="let workspace of organization.workspaces">
-            <input
-                class="label-input-div-medium input-width inline-block p-2 mx-1"
-                [class.ng-invalid]="
-                    workspace.uiStatus !== undefined && workspace.uiStatus !== 'OK'
-                "
-                [class.ng-dirty]="
-                    workspace.uiStatus !== undefined && workspace.uiStatus !== 'OK'
-                "
-                [(ngModel)]="workspace.name"
-                name="name"
-                placeholder="Name"
-                pInputText
-                [disabled]="
-                    !editable ||
-                    (!workspace?.roles?.includes(Role.OrganizationAdmin) &&
-                        workspace.status === status.TO_BE_DELETED)
-                "
-                (ngModelChange)="checkOrganization($event, workspace, organization)"
-            />
-            <p-button
-                styleClass="p-button-text"
-                [ariaLabel]="'administration.accessibility.on-deletion' | translate"
-                class="mx-1"
-                *ngIf="editable && workspace.status === status.ACTIVE"
-                (onClick)="confirmDelete($event, workspace)"
-                id="delete-organization-button"
-            >
-                <img
-                    src="assets/images/icons/icon-bin.svg"
-                    alt="{{ 'common.delete' | translate }}"
-                />
-            </p-button>
-            <p-button
-                [ariaLabel]="
-                    'administration.cancel-deletion-accessibility'
-                        | translate: { organizationName: workspace.name }
-                "
-                class="mx-2"
-                styleClass="black-button-sidebar"
-                *ngIf="workspace.status === status.TO_BE_DELETED"
-                (onClick)="confirmToActive(workspace)"
-                [disabled]="!organization.roles.includes(Role.OrganizationAdmin)"
-                >{{ "administration.cancel-deletion" | translate }}</p-button
-            >
-
-            <small class="mx-1" *ngIf="workspace.status === status.TO_BE_DELETED">
-                {{
-                    "administration.cancel-deletion-message"
-                        | translate
-                            : {
-                                  date: workspace.deletionDate | date: "dd/MM/yyyy",
-                              }
-                }}</small
-            >
-            @if (
-                !organization.roles.includes(Role.OrganizationAdmin) &&
-                workspace.status === status.TO_BE_DELETED
-            ) {
-                <small class="mx-1"
-                    >{{
-                        "administration.cancel-deletion-non-SubscriberAdmin"
-                            | translate: { organizationName: workspace.name }
-                    }}
-                </small>
-            }
-            <p class="error-text" *ngIf="workspace.uiStatus === 'DUPLICATE'">
+    <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 330px)' }">
+        <div *ngIf="organization" class="my-2">
+            <div *ngIf="editable">
+                @if (
+                    organization.roles.includes(Role.OrganizationAdmin) ||
+                    organization.authorizedDomains?.includes(myDomain)
+                ) {
+                    <input
+                        class="label-input-div-medium input-width inline-block p-2 mx-1"
+                        pInputText
+                        [(ngModel)]="newWorkspace.name"
+                        [placeholder]="'administration.organization.new' | translate"
+                        name="newOrg"
+                        ngDefaultControl
+                        (ngModelChange)="
+                            checkOrganization($event, newWorkspace, organization)
+                        "
+                        id="new-organization-input"
+                    />
+                    <p-button
+                        class="mx-2"
+                        styleClass="black-button-sidebar"
+                        (onClick)="addWorkplace(newWorkspace)"
+                        [disabled]="newWorkspace.uiStatus !== 'OK'"
+                        id="add-organization-button"
+                        [ariaLabel]="
+                            'administration.organization.accessibility.addAnOrganization'
+                                | translate
+                        "
+                        >{{
+                            "administration.organization.addAnOrganization" | translate
+                        }}</p-button
+                    >
+                }
+            </div>
+            <p class="error-text" *ngIf="newWorkspace.uiStatus === 'DUPLICATE'">
                 {{
                     "administration.organization.duplicateOrganizationValidation"
                         | translate
                 }}
             </p>
-            <p class="error-text" *ngIf="workspace.uiStatus === 'SPACE'">
+            <p class="error-text" *ngIf="newWorkspace.uiStatus === 'SPACE'">
                 {{ "administration.organization.spaceValidation" | translate }}
             </p>
+
+            <div *ngFor="let workspace of organization.workspaces">
+                <input
+                    class="label-input-div-medium input-width inline-block p-2 mx-1"
+                    [class.ng-invalid]="
+                        workspace.uiStatus !== undefined && workspace.uiStatus !== 'OK'
+                    "
+                    [class.ng-dirty]="
+                        workspace.uiStatus !== undefined && workspace.uiStatus !== 'OK'
+                    "
+                    [(ngModel)]="workspace.name"
+                    name="name"
+                    placeholder="Name"
+                    pInputText
+                    [disabled]="
+                        !editable ||
+                        (!workspace?.roles?.includes(Role.OrganizationAdmin) &&
+                            workspace.status === status.TO_BE_DELETED)
+                    "
+                    (ngModelChange)="checkOrganization($event, workspace, organization)"
+                />
+                <p-button
+                    styleClass="p-button-text"
+                    [ariaLabel]="'administration.accessibility.on-deletion' | translate"
+                    class="mx-1"
+                    *ngIf="editable && workspace.status === status.ACTIVE"
+                    (onClick)="confirmDelete($event, workspace)"
+                    id="delete-organization-button"
+                >
+                    <img
+                        src="assets/images/icons/icon-bin.svg"
+                        alt="{{ 'common.delete' | translate }}"
+                    />
+                </p-button>
+                <p-button
+                    [ariaLabel]="
+                        'administration.cancel-deletion-accessibility'
+                            | translate: { organizationName: workspace.name }
+                    "
+                    class="mx-2"
+                    styleClass="black-button-sidebar"
+                    *ngIf="workspace.status === status.TO_BE_DELETED"
+                    (onClick)="confirmToActive(workspace)"
+                    [disabled]="!organization.roles.includes(Role.OrganizationAdmin)"
+                    >{{ "administration.cancel-deletion" | translate }}</p-button
+                >
+
+                <small class="mx-1" *ngIf="workspace.status === status.TO_BE_DELETED">
+                    {{
+                        "administration.cancel-deletion-message"
+                            | translate
+                                : {
+                                      date: workspace.deletionDate | date: "dd/MM/yyyy",
+                                  }
+                    }}</small
+                >
+                @if (
+                    !organization.roles.includes(Role.OrganizationAdmin) &&
+                    workspace.status === status.TO_BE_DELETED
+                ) {
+                    <small class="mx-1"
+                        >{{
+                            "administration.cancel-deletion-non-SubscriberAdmin"
+                                | translate: { organizationName: workspace.name }
+                        }}
+                    </small>
+                }
+                <p class="error-text" *ngIf="workspace.uiStatus === 'DUPLICATE'">
+                    {{
+                        "administration.organization.duplicateOrganizationValidation"
+                            | translate
+                    }}
+                </p>
+                <p class="error-text" *ngIf="workspace.uiStatus === 'SPACE'">
+                    {{ "administration.organization.spaceValidation" | translate }}
+                </p>
+            </div>
         </div>
+    </p-scrollPanel>
+    <div class="card flex justify-content-center gap-2">
+        <p-toast></p-toast>
+        <p-confirmDialog [style]="{ width: '40vw' }"></p-confirmDialog>
     </div>
-</div>
-<div class="card flex justify-content-center gap-2">
-    <p-toast></p-toast>
-    <p-confirmDialog [style]="{ width: '40vw' }"></p-confirmDialog>
 </div>

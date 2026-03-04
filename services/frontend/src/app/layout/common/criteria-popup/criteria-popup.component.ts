@@ -96,7 +96,7 @@ export class CriteriaPopupComponent implements OnChanges {
                 this.organizationDetails?.criteria ??
                 this.defaultCriteria;
             this.selectedCriteriaDS =
-                this.workspaceDetails.criteriaIs ??
+                this.workspaceDetails.criteriaDs ??
                 this.organizationDetails?.criteria ??
                 this.defaultCriteria;
         }
@@ -223,18 +223,11 @@ export class CriteriaPopupComponent implements OnChanges {
     }
 
     onAllSelectedChange(selectedValue: string[], isIs: boolean): void {
-        if (selectedValue.includes("All")) {
-            if (isIs) {
-                this.selectedCriteriaIS = this.criteriaList;
-            } else {
-                this.selectedCriteriaDS = this.criteriaList;
-            }
+        const allSelected = selectedValue.includes("All");
+        if (isIs) {
+            this.selectedCriteriaIS = allSelected ? this.criteriaList : [];
         } else {
-            if (isIs) {
-                this.selectedCriteriaIS = [];
-            } else {
-                this.selectedCriteriaDS = [];
-            }
+            this.selectedCriteriaDS = allSelected ? this.criteriaList : [];
         }
         this.hasChanged = true;
     }

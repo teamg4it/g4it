@@ -13,10 +13,14 @@ import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapperImpl;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.business.RoleService;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.modeldb.*;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -27,6 +31,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.NoteUpsertRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -58,6 +63,16 @@ class InventoryServiceTest {
     private InventoryRepository inventoryRepo;
     @Mock
     private TaskRepository taskRepo;
+
+    @Mock
+    private RoleService roleService;
+
+    @Mock
+    private UserWorkspaceRepository userWorkspaceRepository;
+
+    @Mock
+    private OrganizationRepository organizationRepository;
+
 
     @BeforeEach
     void init() {
@@ -129,7 +144,7 @@ class InventoryServiceTest {
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
         when(inventoryRepo.findByWorkspace(linkedWorkspace)).thenReturn(inventorysEntitiesList);
 
-        final List<InventoryBO> result = inventoryService.getInventories( WORKSPACE_ID, null);
+        final List<InventoryBO> result = inventoryService.getInventories(WORKSPACE_ID, null);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
@@ -176,6 +191,7 @@ class InventoryServiceTest {
                 .virtualEquipmentCount(0L)
                 .applicationCount(0L)
                 .tasks(List.of())
+                .enableDataInconsistency(false)
                 .build();
 
         when(inventoryRepo.findByWorkspaceAndId(any(), eq(INVENTORY_ID))).thenReturn(Optional.of(inventory));
@@ -185,7 +201,7 @@ class InventoryServiceTest {
         assertThat(result).isEqualTo(expected);
 
         verify(inventoryRepo, times(1)).findByWorkspaceAndId(any(), eq(INVENTORY_ID));
-  }
+    }
 
     @Test
     void testGetInventoryThrowsExceptionWhenInventoryNotFound() {
@@ -199,7 +215,7 @@ class InventoryServiceTest {
         );
         assertThat(exception.getCode()).isEqualTo("404");
         assertThat(exception.getMessage()).isEqualTo(String.format("inventory %d not found in %s/%s",
-                        INVENTORY_ID, ORGANIZATION, WORKSPACE_ID));
+                INVENTORY_ID, ORGANIZATION, WORKSPACE_ID));
         verify(workspaceService).getWorkspaceById(WORKSPACE_ID);
         verify(inventoryRepo).findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID);
 
@@ -270,89 +286,111 @@ class InventoryServiceTest {
     @Test
     void shouldUpdateInventoryUpdateCriteria() {
         Long workspaceId = 1L;
-        final Workspace linkedWorkspace = TestUtils.createWorkspace();
+        Workspace linkedWorkspace = TestUtils.createWorkspace();
         UserBO userBo = TestUtils.createUserBONoRole();
-        final String inventoryName = "03-2023";
         String organizationName = "ORGANIZATION";
 
-        final InventoryUpdateRest inventoryUpdateRest = InventoryUpdateRest.builder()
+        InventoryUpdateRest inventoryUpdateRest = InventoryUpdateRest.builder()
                 .id(1L)
-                .name(inventoryName)
+                .name("03-2023")
                 .criteria(List.of("criteria"))
                 .build();
-        final Inventory inventory = Inventory
-                .builder()
+
+        Inventory inventory = Inventory.builder()
                 .id(1L)
-                .workspace(linkedWorkspace).build();
+                .workspace(linkedWorkspace)
+                .build();
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
-        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L)).thenReturn(Optional.of(inventory));
+        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L))
+                .thenReturn(Optional.of(inventory));
 
-        InventoryBO result = inventoryService.updateInventory(organizationName, workspaceId, inventoryUpdateRest, userBo);
+        when(organizationRepository.findByName(organizationName))
+                .thenReturn(Optional.of(TestUtils.createOrganization()));
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(true);
+
+        InventoryBO result = inventoryService.updateInventory(
+                organizationName, workspaceId, inventoryUpdateRest, userBo
+        );
 
         verify(inventoryRepo, times(1)).save(any());
-
         assertThat(result.getCriteria()).isEqualTo(List.of("criteria"));
     }
 
     @Test
     void shouldUpdateInventoryCreateNote() {
         Long workspaceId = 1L;
-        final Workspace linkedWorkspace = TestUtils.createWorkspace();
+        Workspace linkedWorkspace = TestUtils.createWorkspace();
         UserBO userBo = TestUtils.createUserBONoRole();
-        final String inventoryName = "03-2023";
         String organizationName = "ORGANIZATION";
 
-        final InventoryUpdateRest inventoryUpdateRest = InventoryUpdateRest.builder()
+        InventoryUpdateRest inventoryUpdateRest = InventoryUpdateRest.builder()
                 .id(1L)
-                .name(inventoryName)
+                .name("03-2023")
                 .note(NoteUpsertRest.builder().content("newNote").build())
                 .build();
-        final Inventory inventory = Inventory
-                .builder()
-                .id(1L)
-                .workspace(linkedWorkspace).build();
 
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .workspace(linkedWorkspace)
+                .build();
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
-        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L)).thenReturn(Optional.of(inventory));
+        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L))
+                .thenReturn(Optional.of(inventory));
 
-        InventoryBO result = inventoryService.updateInventory(organizationName, workspaceId, inventoryUpdateRest, userBo);
+        // 🔥 ADD THESE
+        when(organizationRepository.findByName(organizationName))
+                .thenReturn(Optional.of(TestUtils.createOrganization()));
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(true);
 
-        verify(inventoryRepo, times(1)).save(any());
+        InventoryBO result = inventoryService.updateInventory(
+                organizationName, workspaceId, inventoryUpdateRest, userBo
+        );
+
+        verify(inventoryRepo).save(any());
         assertThat(result.getNote().getContent()).isEqualTo("newNote");
-
     }
 
     @Test
     void shouldUpdateInventoryUpdateNote() {
         Long workspaceId = 1L;
-        final Workspace linkedWorkspace = TestUtils.createWorkspace();
+        Workspace linkedWorkspace = TestUtils.createWorkspace();
         UserBO userBo = TestUtils.createUserBONoRole();
-        final String inventoryName = "03-2023";
-        String organizationName = "ORGANIZATION";
 
-        final InventoryUpdateRest inventoryUpdateRest = InventoryUpdateRest.builder()
+        InventoryUpdateRest inventoryUpdateRest = InventoryUpdateRest.builder()
                 .id(1L)
-                .name(inventoryName)
+                .name("03-2023")
                 .note(NoteUpsertRest.builder().content("newNote").build())
                 .build();
-        final Inventory inventory = Inventory
-                .builder()
+
+        Inventory inventory = Inventory.builder()
                 .id(1L)
                 .note(Note.builder().content("note").build())
-                .workspace(linkedWorkspace).build();
-
+                .workspace(linkedWorkspace)
+                .build();
 
         when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
-        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L)).thenReturn(Optional.of(inventory));
+        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, 1L))
+                .thenReturn(Optional.of(inventory));
 
-        InventoryBO result = inventoryService.updateInventory(organizationName, workspaceId, inventoryUpdateRest, userBo);
+        // 👇 ADD THESE TWO LINES
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(true);
+        when(organizationRepository.findByName(ORGANIZATION))
+                .thenReturn(Optional.of(TestUtils.createOrganization()));
 
-        verify(inventoryRepo, times(1)).save(any());
+        InventoryBO result = inventoryService.updateInventory(
+                ORGANIZATION, workspaceId, inventoryUpdateRest, userBo
+        );
+
+        verify(inventoryRepo).save(any());
         assertThat(result.getNote().getContent()).isEqualTo("newNote");
-
     }
+
+
     @Test
     void UpdateInventoryNotFoundThrow() {
         UserBO userBo = TestUtils.createUserBONoRole();
@@ -361,18 +399,259 @@ class InventoryServiceTest {
                 .name("03-2023")
                 .build();
         final Workspace linkedWorkspace = TestUtils.createWorkspace();
-            when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
-            when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID)).thenReturn(Optional.empty());
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(linkedWorkspace);
+        when(inventoryRepo.findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID)).thenReturn(Optional.empty());
 
-            G4itRestException exception = assertThrows(G4itRestException.class, () ->
-                    inventoryService.updateInventory(ORGANIZATION, WORKSPACE_ID, inventoryUpdateRest, userBo)
-            );
-            assertThat(exception.getCode()).isEqualTo("404");
-            assertThat(exception.getMessage()).isEqualTo(String.format("inventory %d not found in %s/%s",
-                    INVENTORY_ID, ORGANIZATION, WORKSPACE_ID));
-            verify(workspaceService).getWorkspaceById(WORKSPACE_ID);
-            verify(inventoryRepo).findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID);
+        G4itRestException exception = assertThrows(G4itRestException.class, () ->
+                inventoryService.updateInventory(ORGANIZATION, WORKSPACE_ID, inventoryUpdateRest, userBo)
+        );
+        assertThat(exception.getCode()).isEqualTo("404");
+        assertThat(exception.getMessage()).isEqualTo(String.format("inventory %d not found in %s/%s",
+                INVENTORY_ID, ORGANIZATION, WORKSPACE_ID));
+        verify(workspaceService).getWorkspaceById(WORKSPACE_ID);
+        verify(inventoryRepo).findByWorkspaceAndId(linkedWorkspace, INVENTORY_ID);
 
+    }
+
+    @Test
+    void shouldUpdateEnableDataInconsistencyWhenChanged() {
+
+        Workspace workspace = TestUtils.createWorkspace();
+        workspace.getOrganization().setName(ORGANIZATION);
+
+        UserBO user = TestUtils.createUserBONoRole();
+
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .enableDataInconsistency(false)
+                .workspace(workspace)
+                .build();
+
+        InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
+                .id(1L)
+                .name("name")
+                .enableDataInconsistency(true)
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(workspace);
+
+        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L))
+                .thenReturn(Optional.of(inventory));
+
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(true);
+
+        when(organizationRepository.findByName(ORGANIZATION))
+                .thenReturn(Optional.of(workspace.getOrganization()));
+
+        InventoryBO result = inventoryService.updateInventory(
+                ORGANIZATION,
+                WORKSPACE_ID,
+                updateRest,
+                user
+        );
+
+        ArgumentCaptor<Inventory> captor = ArgumentCaptor.forClass(Inventory.class);
+
+        verify(inventoryRepo).save(captor.capture());
+
+        Inventory savedInventory = captor.getValue();
+
+        assertThat(savedInventory).isNotNull();
+        assertThat(savedInventory.isEnableDataInconsistency()).isTrue();
+
+        assertThat(savedInventory.getName()).isEqualTo("name");
+
+        assertThat(result).isNotNull();
+    }
+
+
+    @Test
+    void shouldAllowNonAdminWithWriteRole() {
+        // GIVEN
+        Workspace workspace = TestUtils.createWorkspace();
+        Organization organization = workspace.getOrganization();
+        UserBO user = TestUtils.createUserBONoRole();
+
+        Inventory inventory = Inventory.builder()
+                .id(INVENTORY_ID)
+                .enableDataInconsistency(false)
+                .workspace(workspace)
+                .build();
+
+        InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
+                .id(INVENTORY_ID)
+                .name("updated-name")
+                .enableDataInconsistency(false)
+                .build();
+
+        Role writeRole = Role.builder()
+                .name("INVENTORY_READ")
+                .build();
+
+        UserWorkspace userWorkspace = UserWorkspace.builder()
+                .workspace(workspace)
+                .user(User.builder().id(user.getId()).build())
+                .roles(List.of(writeRole))
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(inventoryRepo.findByWorkspaceAndId(workspace, INVENTORY_ID))
+                .thenReturn(Optional.of(inventory));
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(false);
+        when(organizationRepository.findByName(ORGANIZATION))
+                .thenReturn(Optional.of(organization));
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(WORKSPACE_ID, user.getId()))
+                .thenReturn(Optional.of(userWorkspace));
+
+        // WHEN
+        inventoryService.updateInventory(ORGANIZATION, WORKSPACE_ID, updateRest, user);
+
+        // THEN
+        verify(inventoryRepo).save(any(Inventory.class));
+    }
+
+
+    @Test
+    void shouldAllowChangeWithoutWriteRole() {
+        Workspace workspace = TestUtils.createWorkspace();
+        workspace.getOrganization().setName(ORGANIZATION);
+
+        UserBO user = TestUtils.createUserBONoRole();
+
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .enableDataInconsistency(false)
+                .workspace(workspace)
+                .build();
+
+        InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
+                .id(1L)
+                .name("name")
+                .enableDataInconsistency(true)
+                .build();
+
+        UserWorkspace userWorkspace = UserWorkspace.builder()
+                .roles(List.of()) // no write role
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L)).thenReturn(Optional.of(inventory));
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any())).thenReturn(false);
+        when(organizationRepository.findByName(ORGANIZATION))
+                .thenReturn(Optional.of(workspace.getOrganization()));
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(any(), any()))
+                .thenReturn(Optional.of(userWorkspace));
+
+        inventoryService.updateInventory(ORGANIZATION, WORKSPACE_ID, updateRest, user);
+
+        verify(inventoryRepo).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenOrganizationNotFound() {
+
+        Workspace workspace = TestUtils.createWorkspace();
+        UserBO user = TestUtils.createUserBONoRole();
+
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .workspace(workspace)
+                .build();
+
+        InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
+                .id(1L)
+                .name("name")
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(workspace);
+
+        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L))
+                .thenReturn(Optional.of(inventory));
+
+        when(organizationRepository.findByName(ORGANIZATION))
+                .thenReturn(Optional.empty());
+
+        G4itRestException exception = assertThrows(
+                G4itRestException.class,
+                () -> inventoryService.updateInventory(
+                        ORGANIZATION,
+                        WORKSPACE_ID,
+                        updateRest,
+                        user
+                )
+        );
+
+        assertThat(exception.getCode())
+                .isEqualTo(ErrorConstants.NOT_FOUND);
+
+        assertThat(exception.getMessage())
+                .isEqualTo(String.format(
+                        ErrorConstants.ORGANIZATION_NOT_FOUND,
+                        ORGANIZATION
+                ));
+
+        verify(inventoryRepo, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowForbiddenWhenNoWriteAccessAndNoFlagChange() {
+
+        Workspace workspace = TestUtils.createWorkspace();
+        workspace.getOrganization().setName(ORGANIZATION);
+
+        UserBO user = TestUtils.createUserBONoRole();
+
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .enableDataInconsistency(false)
+                .workspace(workspace)
+                .build();
+
+        InventoryUpdateRest updateRest = InventoryUpdateRest.builder()
+                .id(1L)
+                .name("name")
+                .enableDataInconsistency(false)
+                .build();
+
+        UserWorkspace userWorkspace = UserWorkspace.builder()
+                .workspace(workspace)
+                .roles(List.of())
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID))
+                .thenReturn(workspace);
+
+        when(inventoryRepo.findByWorkspaceAndId(workspace, 1L))
+                .thenReturn(Optional.of(inventory));
+
+        when(organizationRepository.findByName(ORGANIZATION))
+                .thenReturn(Optional.of(workspace.getOrganization()));
+
+        when(roleService.hasAdminRightOnOrganizationOrWorkspace(any(), any(), any()))
+                .thenReturn(false);
+
+        when(userWorkspaceRepository.findByWorkspaceIdAndUserId(WORKSPACE_ID, user.getId()))
+                .thenReturn(Optional.of(userWorkspace));
+
+        G4itRestException exception = assertThrows(
+                G4itRestException.class,
+                () -> inventoryService.updateInventory(
+                        ORGANIZATION,
+                        WORKSPACE_ID,
+                        updateRest,
+                        user
+                )
+        );
+
+        assertThat(exception.getCode()).isEqualTo("403");
+        assertThat(exception.getMessage())
+                .isEqualTo(ErrorConstants.NOT_AUTHORIZED_MESSAGE);
+
+        verify(inventoryRepo, never()).save(any());
     }
 
 }

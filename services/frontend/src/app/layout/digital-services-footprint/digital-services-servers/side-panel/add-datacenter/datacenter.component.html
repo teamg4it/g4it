@@ -57,7 +57,7 @@
                     {{ "digital-services-servers.pue" | translate }}
                     {{ "digital-services-servers.pue.rule" | translate }}
                 </p>
-                <label>
+                <label for="minmaxfraction">
                     {{ "digital-services-servers.pue.label" | translate }}
                     <a
                         href="{{ 'digital-services-servers.link' | translate }}"
@@ -95,6 +95,12 @@
             </div>
         </div>
         <div class="button-bottom-right">
+            <div
+                class="error-text block"
+                *ngIf="datacenterForm.hasError('xssDetected') && datacenterForm.dirty"
+            >
+                {{ "digital-services.error.xss-detected" | translate }}
+            </div>
             <p-button styleClass="white-button" (onClick)="close()">{{
                 "common.cancel" | translate
             }}</p-button>

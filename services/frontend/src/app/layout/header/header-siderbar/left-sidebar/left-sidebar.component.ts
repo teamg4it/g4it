@@ -36,7 +36,6 @@ import { environment } from "src/environments/environment";
     standalone: true,
     selector: "app-left-sidebar",
     templateUrl: "./left-sidebar.component.html",
-    styleUrls: ["./left-sidebar.component.scss"],
     imports: [CommonModule, TranslateModule, RouterModule],
 })
 export class LeftSidebarComponent implements OnInit {

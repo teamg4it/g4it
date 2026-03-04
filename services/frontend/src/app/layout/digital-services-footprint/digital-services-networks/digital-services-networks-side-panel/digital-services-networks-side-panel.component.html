@@ -100,6 +100,12 @@
             </p>
         </div>
         <div class="button-bottom-right">
+            <div
+                class="error-text block"
+                *ngIf="networksForm.hasError('xssDetected') && networksForm.dirty"
+            >
+                {{ "digital-services.error.xss-detected" | translate }}
+            </div>
             <p-button
                 *ngIf="
                     network.idFront && (userService.isAllowedDigitalServiceWrite$ | async)

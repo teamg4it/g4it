@@ -11,15 +11,12 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
-import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
-import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
-import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import jakarta.persistence.EntityManager;
@@ -63,21 +60,13 @@ class SaveServiceTest {
     @InjectMocks
     private SaveService saveService;
 
-    @Mock
-    private FileSystemService fileSystemService;
-
-    @Mock
-    private FileSystem fileSystem;
-
-    @Mock
-    private FileStorage fileStorage;
-
     @Test
     void saveOutPhysicalEquipments_savesAllEntriesWhenAggregationIsNotEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = Map.of(
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
                 List.of("key1"), new AggValuesBO(),
                 List.of("key2"), new AggValuesBO()
-        );
+        ));
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 null, null,
                 null,
@@ -96,7 +85,8 @@ class SaveServiceTest {
 
     @Test
     void saveOutPhysicalEquipments_doesNotSaveWhenAggregationIsEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = Map.of();
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>();
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(
                 null, null,
                 null,
@@ -134,10 +124,11 @@ class SaveServiceTest {
 
     @Test
     void saveOutApplications_savesAllEntriesWhenAggregationIsNotEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = Map.of(
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
                 List.of("key1"), new AggValuesBO(),
                 List.of("key2"), new AggValuesBO()
-        );
+        ));
+
         RefShortcutBO refShortcutBO = new RefShortcutBO(null, null, null, null);
         Long taskId = 1L;
 
@@ -152,10 +143,11 @@ class SaveServiceTest {
 
     @Test
     void saveOutCloudVirtualEquipments_savesAllEntriesWhenAggregationIsNotEmpty() {
-        Map<List<String>, AggValuesBO> aggregation = Map.of(
+        Map<List<String>, AggValuesBO> aggregation = new HashMap<>(Map.of(
                 List.of("key1"), new AggValuesBO(),
                 List.of("key2"), new AggValuesBO()
-        );
+        ));
+
         Long taskId = 1L;
 
         when(aggregationToOutput.mapCloudVirtualEquipment(any(), any(), eq(taskId)))
@@ -184,7 +176,6 @@ class SaveServiceTest {
 
         int result = saveService.saveOutPhysicalEquipments(aggregation, taskId, ref);
 
-        // at least 1 flush inside the loop + 1 final save
         verify(outPhysicalEquipmentRepository, times(2)).saveAll(anyList());
         verify(taskRepository, atLeastOnce()).updateLastUpdateDate(eq(taskId), any(LocalDateTime.class));
         verify(entityManager, atLeastOnce()).flush();

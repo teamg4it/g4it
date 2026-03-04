@@ -9,7 +9,7 @@ components:
     InDatacenterRest:
       description: Version
       type: object
-      required: [name, location, pue]
+      required: [ name, location, pue ]
       properties:
         id:
           type: integer
@@ -32,7 +32,7 @@ components:
         location:
           type: string
           maxLength: 50
-          pattern: "^[A-Za-z ]*$"
+          pattern: "^[A-Za-zÀ-ÖØ-öø-ÿ' ,-]+$"
         pue:
           type: number
           format: double
@@ -52,7 +52,7 @@ components:
     InPhysicalEquipmentRest:
       description: Version
       type: object
-      required: [name, quantity]
+      required: [ name, quantity ]
       properties:
         id:
           type: integer
@@ -75,7 +75,7 @@ components:
         location:
           type: string
           maxLength: 50
-          pattern: "^[A-Za-z ,()'\\-]*$"
+          pattern: "^[A-Za-zÀ-ÖØ-öø-ÿ' ,-]+$"
         quantity:
           type: number
           format: double
@@ -153,7 +153,7 @@ components:
     InVirtualEquipmentRest:
       description: Version
       type: object
-      required: [name, quantity, infrastructureType]
+      required: [ name, quantity, infrastructureType ]
       properties:
         id:
           type: integer
@@ -195,7 +195,7 @@ components:
         location:
           type: string
           maxLength: 50
-          pattern: "^[A-Za-z ]*$"
+          pattern: "^[A-Za-zÀ-ÖØ-öø-ÿ' ,-]+$"
         durationHour:
           type: number
           format: double
@@ -247,7 +247,7 @@ components:
     InApplicationRest:
       description: Version
       type: object
-      required: [name, environment]
+      required: [ name, environment ]
       properties:
         id:
           type: integer
@@ -536,33 +536,33 @@ components:
           type: string
 
     DigitalServiceVersionComparison:
-        type: object
-        description: "Comparison data of a single digital service version"
-        properties:
-          versionId:
-            type: string
-          versionName:
-            type: string
-          physicalEquipment:
-            type: array
-            items:
-              $ref: "#/components/schemas/OutPhysicalEquipmentRest"
-          virtualEquipment:
-            type: array
-            items:
-              $ref: "#/components/schemas/OutVirtualEquipmentRest"
+      type: object
+      description: "Comparison data of a single digital service version"
+      properties:
+        versionId:
+          type: string
+        versionName:
+          type: string
+        physicalEquipment:
+          type: array
+          items:
+            $ref: "#/components/schemas/OutPhysicalEquipmentRest"
+        virtualEquipment:
+          type: array
+          items:
+            $ref: "#/components/schemas/OutVirtualEquipmentRest"
 
     DigitalServiceVersionComparisonRest:
-        type: array
-        minItems: 2
-        maxItems: 2
-        items:
-          $ref: "#/components/schemas/DigitalServiceVersionComparison"
+      type: array
+      minItems: 2
+      maxItems: 2
+      items:
+        $ref: "#/components/schemas/DigitalServiceVersionComparison"
 
     digitalServiceVersionUidPathParam:
-        in: path
-        name: digitalServiceVersionUid
-        schema:
-          type: string
-        required: true
-        description: The digital service version uid.
+      in: path
+      name: digitalServiceVersionUid
+      schema:
+        type: string
+      required: true
+      description: The digital service version uid.

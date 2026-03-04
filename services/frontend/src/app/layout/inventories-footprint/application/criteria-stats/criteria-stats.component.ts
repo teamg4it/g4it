@@ -179,6 +179,14 @@ export class CriteriaStatsComponent {
             }
         }
 
+        return this.getComputeApplicationStats(appNameList, sipAvgImpact, unitAvgImpact);
+    }
+
+    getComputeApplicationStats(
+        appNameList: Set<string>,
+        sipAvgImpact: { value: number },
+        unitAvgImpact: { value: number },
+    ): CriteriaData {
         let appCount = appNameList.size;
         let averageImpactSip = 0;
         let averageImpactUnit = 0;
