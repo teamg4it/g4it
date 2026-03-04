@@ -200,8 +200,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                             truncatedValue + shortUnitValue,
                         );
                     },
-                    margin: 15,
-                    hideOverlap: true,
+                    margin: 26,
                     rich: Constants.CHART_RICH as any,
                 },
             },
@@ -209,8 +208,8 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 ...(this.compareMax() > 0 ? { max: this.compareMax() } : {}),
             },
             polar: {
-                radius: "70%",
-                center: ["50%", "50%"],
+                radius: "62%",
+                center: ["50%", "47%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({
                 name: item.tier,

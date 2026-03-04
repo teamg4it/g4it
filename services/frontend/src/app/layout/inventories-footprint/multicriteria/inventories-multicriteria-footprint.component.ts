@@ -166,7 +166,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                         );
                     },
                     rich: Constants.CHART_RICH as any,
-                    margin: 15,
+                    margin: 26,
                 },
             },
             radiusAxis: {
@@ -179,6 +179,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 },
             },
             polar: {
+                radius: "62%",
                 center: ["50%", "47%"],
             },
             series: footprintCalculated.map((item: FootprintCalculated) => ({
