@@ -226,7 +226,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 },
             },
             polar: {
-                radius: "65%",
+                radius: "62%",
                 center: ["50%", "47%"],
             },
             series: footprintCalculated.map((item: FootprintCalculated) => ({
