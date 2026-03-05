@@ -160,7 +160,10 @@
     </div>
     <ng-template #dataConsistencyRef>
         <div
-            class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3"
+            class="ml-auto block align-items-end lg:flex flex-row justify-content-end"
+            [ngClass]="{
+                'p-3': showInconsitencyBtn && digitalService.enableDataInconsistency,
+            }"
         >
             @if (showInconsitencyBtn && digitalService.enableDataInconsistency) {
                 <p-button
