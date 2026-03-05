@@ -36,6 +36,7 @@ import { TooltipModule } from "primeng/tooltip";
 import { CommonEditorComponent } from "src/app/layout/common/common-editor/common-editor.component";
 import { CriteriaPopupComponent } from "src/app/layout/common/criteria-popup/criteria-popup.component";
 import { FormNavComponent } from "src/app/layout/common/form-nav/form-nav.component";
+import { ImpactSidebarComponent } from "src/app/layout/common/impact-sidebar/impact-sidebar.component";
 import { InformationCardComponent } from "src/app/layout/common/information-card/information-card.component";
 import { PromoteVersionDialogComponent } from "src/app/layout/common/promote-version-dialog/promote-version-dialog.component";
 import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
@@ -44,6 +45,7 @@ import { StatsComponent } from "src/app/layout/common/stats/stats.component";
 import { WorkspaceComponent } from "src/app/layout/common/workspace/workspace.component";
 import { DatavizFilterComponent } from "src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component";
 import { InventoriesHeaderFootprintComponent } from "src/app/layout/inventories-footprint/header/inventories-header-footprint.component";
+import { ImpactButtonComponent } from "../../layout/digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component";
 import { AutofocusDirective } from "../directives/auto-focus.directive";
 import { BusinessHoursRendererPipe } from "../pipes/business-hours-renderer.pipe";
 import { DecimalsPipe } from "../pipes/decimal.pipe";
@@ -68,6 +70,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         StackBarChartComponent,
         WorkspaceComponent,
         FormNavComponent,
+        ImpactSidebarComponent,
     ],
     imports: [
         CommonModule,
@@ -99,6 +102,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         }),
         DialogModule,
         FocusTrapModule,
+        ImpactButtonComponent,
     ],
     exports: [
         TooltipModule,
@@ -140,6 +144,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         StackBarChartComponent,
         WorkspaceComponent,
         FormNavComponent,
+        ImpactSidebarComponent,
         DialogModule,
     ],
     providers: [DecimalsPipe, IntegerPipe],

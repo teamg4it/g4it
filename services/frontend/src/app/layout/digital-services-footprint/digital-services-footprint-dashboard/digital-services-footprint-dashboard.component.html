@@ -30,74 +30,17 @@
             class="bg-white"
             [ngClass]="!isCollapsed ? 'col-12 lg:col-3' : 'col-fixed w-7rem'"
         >
-            <div class="bg-gray-color impact-buttons-div mx-auto mb-4 border-round-lg">
-                <div
-                    class="flex align-items-center"
-                    [ngClass]="
-                        !isCollapsed
-                            ? 'justify-content-between'
-                            : 'justify-content-center'
-                    "
-                >
-                    @if (!isCollapsed) {
-                        <h3 class="font-semibold p-2 pt-3 mt-2 mb-1">
-                            {{ "digital-services.impacts" | translate }}
-                        </h3>
-                        <p-button
-                            (onClick)="isCollapsed = true"
-                            styleClass=" cancel-creation-button border-none mr-3 px-3 py-2 mb-3 sm:mb-0"
-                            icon="pi  pi-angle-double-left"
-                            id="collapse-button"
-                            [outlined]="false"
-                        />
-                    } @else {
-                        <p-button
-                            (onClick)="isCollapsed = false"
-                            styleClass=" cancel-creation-button  border-none  px-3 py-2 my-3"
-                            icon="pi pi-angle-double-right"
-                            id="expand-button"
-                            [outlined]="false"
-                        />
-                    }
-                </div>
-                <div class="flex flex-column w-full border-round">
-                    @for (impact of impacts; track $index) {
-                        <app-impact-button
-                            [impact]="impact.name"
-                            [impactText]="impact.title"
-                            [impactUnite]="impact.unite"
-                            [value]="
-                                selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw
-                            "
-                            [selectedCriteria]="selectedCriteria"
-                            [selectedUnit]="selectedUnit"
-                            [disabled]="onlyOneCriteria"
-                            (selectedCriteriaChange)="handleChartChange($event)"
-                            [isCollapsed]="isCollapsed"
-                        ></app-impact-button>
-                    }
-
-                    @if (userService.isAllowedDigitalServiceWrite$ | async) {
-                        <div class="mt-4 mb-2 text-center">
-                            <p-button
-                                (onClick)="displayPopupFct()"
-                                styleClass="cancel-creation-button uppercase px-3 py-2 mb-3 sm:mb-0"
-                                [label]="
-                                    (!isCollapsed ? 'digital-services.edit-criteria' : '')
-                                        | translate
-                                "
-                                icon="pi pi-plus-circle"
-                                id="criteria-button"
-                                [ariaLabel]="
-                                    'digital-services.choose-criteria'
-                                        | translate
-                                            : { digitalServiceName: digitalService.name }
-                                "
-                            />
-                        </div>
-                    }
-                </div>
-            </div>
+            <app-impact-sidebar
+                [(isCollapsed)]="isCollapsed"
+                [impacts]="impacts"
+                [selectedCriteria]="selectedCriteria"
+                [selectedUnit]="selectedUnit"
+                [entityName]="digitalService.name"
+                [isAllowedWrite$]="userService.isAllowedDigitalServiceWrite$"
+                [onlyOneCriteria]="onlyOneCriteria"
+                (selectedCriteriaChange)="handleChartChange($event)"
+                (displayPopup)="displayPopupFct()"
+            ></app-impact-sidebar>
         </div>
         <div
             class="digital-service-chart-container mb-5 mt-2 bg-gray-color"
