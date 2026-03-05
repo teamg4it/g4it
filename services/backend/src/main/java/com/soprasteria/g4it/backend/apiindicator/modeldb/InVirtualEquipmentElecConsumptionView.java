@@ -22,7 +22,7 @@ import java.io.Serializable;
                 targetClass = InVirtualEquipmentElecConsumptionView.class,
                 columns = {
                         @ColumnResult(name = "id", type = Long.class),
-                        @ColumnResult(name = "name"),
+                        @ColumnResult(name = "virtual_equipment_name"),
                         @ColumnResult(name = "location"),
                         @ColumnResult(name = "lifecycle_step"),
                         @ColumnResult(name = "domain"),
@@ -30,7 +30,8 @@ import java.io.Serializable;
                         @ColumnResult(name = "environment"),
                         @ColumnResult(name = "equipment_type"),
                         @ColumnResult(name = "elec_consumption", type = Double.class),
-                        @ColumnResult(name = "quantity", type = Integer.class)
+                        @ColumnResult(name = "quantity", type = Integer.class),
+                        @ColumnResult(name = "application_name", type = String.class)
                 }
         )
 )
@@ -42,7 +43,7 @@ import java.io.Serializable;
                 SELECT
                                                                    ROW_NUMBER() OVER () AS id,
                 
-                                                                   sub.virtual_equipment_name AS name,
+                                                                   sub.virtual_equipment_name AS virtual_equipment_name,
                                                                    sub.location,
                                                                    'USING' AS lifecycle_step,
                                                                    sub.domain,
@@ -68,7 +69,8 @@ import java.io.Serializable;
                                                                        0
                                                                    ) AS elec_consumption,
                 
-                                                                   COUNT(sub.application_name) AS quantity
+                                                                   COUNT(sub.application_name) AS quantity,
+                                                                   sub.name AS application_name
                 
                                                                FROM (
                                                                    SELECT
@@ -81,7 +83,8 @@ import java.io.Serializable;
                                                                        oa.name AS application_name,
                                                                        ive.infrastructure_type,
                 
-                                                                       MAX(oa.electricity_consumption) * MAX(oa.quantity) AS vm_elec_scaled
+                                                                       MAX(oa.electricity_consumption) * MAX(oa.quantity) AS vm_elec_scaled,
+                                                                       oa.name
                 
                                                                    FROM out_application oa
                 
@@ -115,7 +118,8 @@ import java.io.Serializable;
                                                                    sub.domain,
                                                                    sub.sub_domain,
                                                                    sub.environment,
-                                                                   sub.equipment_type;
+                                                                   sub.equipment_type,
+                                                                   sub.name;
                 """
 )
 
@@ -129,7 +133,8 @@ public class InVirtualEquipmentElecConsumptionView implements Serializable {
     @Id
     private Long id;
 
-    private String name;
+    @Column(name = "virtual_equipment_name")
+    private String virtualEquipmentName;
 
     private String location;
 
@@ -150,4 +155,7 @@ public class InVirtualEquipmentElecConsumptionView implements Serializable {
     private Double elecConsumption;
 
     private Integer quantity;
+
+    @Column(name = "application_name")
+    private String applicationName;
 }

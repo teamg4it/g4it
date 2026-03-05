@@ -37,6 +37,7 @@ import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../abstract-dashboard";
+import { InventoriesFootprintComponent } from "../inventories-footprint.component";
 
 @Component({
     selector: "app-inventories-critere-footprint",
@@ -48,6 +49,7 @@ export class InventoriesCritereFootprintComponent
 {
     protected footprintStore = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
+    protected readonly inventoryComponent = inject(InventoriesFootprintComponent);
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     @Input() footprint: Criterias = {} as Criterias;
@@ -70,6 +72,10 @@ export class InventoriesCritereFootprintComponent
     totalValue = 0;
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
+
+    allFootprintsCriteriaKeys = computed(() => {
+        return Object.keys(this.inventoryComponent.allUnmodifiedFootprint());
+    });
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes) {
