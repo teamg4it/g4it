@@ -213,7 +213,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                         );
                     },
                     rich: Constants.CHART_RICH as any,
-                    margin: 15,
+                    margin: 26,
                 },
             },
             radiusAxis: {
@@ -226,6 +226,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 },
             },
             polar: {
+                radius: "65%",
                 center: ["50%", "47%"],
             },
             series: footprintCalculated.map((item: FootprintCalculated) => ({

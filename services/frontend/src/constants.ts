@@ -198,18 +198,18 @@ export abstract class Constants {
         redBold: {
             color: Constants.GRAPH_RED,
             fontWeight: 600,
-            fontSize: 8,
-            lineHeight: 12,
+            fontSize: 15,
+            lineHeight: 18,
         },
         red: {
             color: Constants.GRAPH_RED,
-            fontSize: 8,
-            lineHeight: 12,
+            fontSize: 15,
+            lineHeight: 18,
         },
         grey: {
             color: Constants.GRAPH_GREY,
-            fontSize: 8,
-            lineHeight: 12,
+            fontSize: 15,
+            lineHeight: 18,
         },
     };
 
