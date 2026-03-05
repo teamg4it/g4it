@@ -93,11 +93,7 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [
-                DigitalServicesFootprintDashboardComponent,
-                IntegerPipe,
-                DecimalsPipe,
-            ],
+            declarations: [DigitalServicesFootprintDashboardComponent],
             imports: [
                 HttpClientTestingModule,
                 RouterTestingModule,
@@ -105,6 +101,8 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
                 InputTextModule,
                 SharedModule,
                 TranslateModule.forRoot(),
+                IntegerPipe,
+                DecimalsPipe,
             ],
             providers: [
                 {

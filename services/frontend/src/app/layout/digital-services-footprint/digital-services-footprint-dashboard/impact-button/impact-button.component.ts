@@ -5,16 +5,8 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { CommonModule, DecimalPipe } from "@angular/common";
-import {
-    Component,
-    EventEmitter,
-    inject,
-    input,
-    Input,
-    OnInit,
-    Output,
-} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Component, EventEmitter, input, Input, OnInit, Output } from "@angular/core";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ButtonModule } from "primeng/button";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
@@ -24,12 +16,9 @@ import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
     selector: "app-impact-button",
     templateUrl: "./impact-button.component.html",
     standalone: true,
-    imports: [CommonModule, ButtonModule, TranslateModule],
-    providers: [DecimalsPipe, IntegerPipe],
+    imports: [CommonModule, ButtonModule, TranslateModule, DecimalsPipe, IntegerPipe],
 })
 export class ImpactButtonComponent implements OnInit {
-    protected readonly decimalPipe = inject(DecimalPipe);
-    protected readonly integerPipe = inject(IntegerPipe);
     @Input() impact: string = "...";
     @Input() impactText: string = "Other";
     @Input() impactUnite: string = "";

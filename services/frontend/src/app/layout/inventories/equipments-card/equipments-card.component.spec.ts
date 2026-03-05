@@ -8,9 +8,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { MonthYearPipe } from "src/app/core/pipes/monthyear.pipe";
 import { EquipmentsCardComponent } from "./equipments-card.component";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 describe("EquipmentsCardComponent", () => {
     let component: EquipmentsCardComponent;
@@ -18,8 +18,8 @@ describe("EquipmentsCardComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [EquipmentsCardComponent, MonthYearPipe, DecimalsPipe],
-            imports: [TranslateModule.forRoot()],
+            declarations: [EquipmentsCardComponent, MonthYearPipe],
+            imports: [TranslateModule.forRoot(), DecimalsPipe],
             providers: [TranslatePipe, TranslateService],
         }).compileComponents();
 

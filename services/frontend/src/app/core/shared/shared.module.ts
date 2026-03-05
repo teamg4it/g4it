@@ -55,8 +55,6 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
     declarations: [
         SpinnerComponent,
         MonthYearPipe,
-        DecimalsPipe,
-        IntegerPipe,
         InformationCardComponent,
         InventoriesHeaderFootprintComponent,
         DatavizFilterComponent,
@@ -101,6 +99,8 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         DialogModule,
         FocusTrapModule,
         ImpactSidebarComponent,
+        DecimalsPipe,
+        IntegerPipe,
     ],
     exports: [
         TooltipModule,
