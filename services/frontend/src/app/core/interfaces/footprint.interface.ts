@@ -242,7 +242,8 @@ export interface VirtualEquipmentLowImpact {
     id: number;
     lifeCycle: string;
     lowImpact: boolean;
-    name: string;
+    virtualEquipmentName: string;
+    applicationName: string;
     quantity: number;
     subDomain: string;
 }
@@ -254,7 +255,8 @@ export interface VirtualEquipmentElectricityConsumption {
     environment: string;
     equipmentType: string;
     lifeCycle: string;
-    name: string;
+    virtualEquipmentName: string;
     subDomain: string;
     quantity: number;
+    applicationName: string;
 }

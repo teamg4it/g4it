@@ -46,7 +46,10 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             providers: [
                 {
                     provide: InventoriesApplicationFootprintComponent,
-                    useValue: { formatLifecycleImpact: (x: any) => x },
+                    useValue: {
+                        formatLifecycleImpact: (x: any) => x,
+                        allUnmodifiedFootprint: [],
+                    },
                 },
                 { provide: IntegerPipe, useValue: { transform: (v: any) => v } },
                 { provide: DecimalsPipe, useValue: { transform: (v: any) => v } },

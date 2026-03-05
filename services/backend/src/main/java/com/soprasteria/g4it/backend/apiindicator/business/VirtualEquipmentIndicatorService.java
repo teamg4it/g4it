@@ -82,9 +82,6 @@ public class VirtualEquipmentIndicatorService {
                             boolean result =
                                     lowImpactService.isLowImpact(resolvedCountry);
 
-                            log.info("LOW IMPACT RESULT → ISO: {} | Country: {} | Result: {}",
-                                    iso, resolvedCountry, result);
-
                             return result;
                         }
                 ));
@@ -93,12 +90,6 @@ public class VirtualEquipmentIndicatorService {
 
             String iso = indicator.getLocation();
             String countryName = isoToCountry.getOrDefault(iso, iso);
-
-            log.info("VM: {} | ISO: {} | Country: {}",
-                    indicator.getName(),
-                    iso,
-                    countryName);
-
             indicator.setLocation(countryName);
 
             indicator.setEquipmentType(

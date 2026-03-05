@@ -134,7 +134,7 @@ export class ApplicationCriteriaFootprintComponent
     maxNumberOfBarsToBeDisplayed: number = 10;
 
     constructor(
-        private readonly appComponent: InventoriesApplicationFootprintComponent,
+        protected readonly appComponent: InventoriesApplicationFootprintComponent,
         override translate: TranslateService,
         override integerPipe: IntegerPipe,
         override decimalsPipe: DecimalsPipe,
