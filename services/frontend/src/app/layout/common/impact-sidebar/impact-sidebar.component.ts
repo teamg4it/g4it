@@ -5,8 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { TranslateModule } from "@ngx-translate/core";
+import { ButtonModule } from "primeng/button";
 import { Observable } from "rxjs";
+import { ImpactButtonComponent } from "src/app/layout/digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component";
 
 export interface ImpactData {
     name: string;
@@ -19,6 +23,8 @@ export interface ImpactData {
 @Component({
     selector: "app-impact-sidebar",
     templateUrl: "./impact-sidebar.component.html",
+    standalone: true,
+    imports: [CommonModule, ButtonModule, TranslateModule, ImpactButtonComponent],
 })
 export class ImpactSidebarComponent {
     @Input() isCollapsed: boolean = false;

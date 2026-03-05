@@ -32,8 +32,8 @@
                     <div class="text-xs">
                         {{
                             selectedUnit === "Raw"
-                                ? (value | decimals)
-                                : (value | integer)
+                                ? decimalPipe.transform(value)
+                                : integerPipe.transform(value)
                         }}
                     </div>
                     <div
