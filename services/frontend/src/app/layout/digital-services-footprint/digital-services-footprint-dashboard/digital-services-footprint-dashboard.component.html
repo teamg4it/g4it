@@ -49,7 +49,7 @@
             <div class="bg-white m-3 pb-3">
                 <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
                 <ng-container [ngSwitch]="chartType()">
-                    <div *ngSwitchCase="'bar'" class="flex">
+                    <div *ngSwitchCase="'bar'" class="flex ml-1">
                         @if (barChartChild) {
                             <p-button
                                 (onClick)="barChartChild = false"
@@ -78,7 +78,7 @@
                             />
                         }
                     </div>
-                    <div *ngSwitchCase="'pie'" class="flex">
+                    <div *ngSwitchCase="'pie'" class="flex ml-1">
                         <p-button
                             *ngIf="!onlyOneCriteria"
                             (onClick)="
@@ -161,9 +161,11 @@
     <ng-template #dataConsistencyRef>
         <div
             class="ml-auto block align-items-end lg:flex flex-row justify-content-end"
-            [ngClass]="{
-                'p-3': showInconsitencyBtn && digitalService.enableDataInconsistency,
-            }"
+            [ngClass]="
+                showInconsitencyBtn && digitalService.enableDataInconsistency
+                    ? 'p-3'
+                    : 'p-1'
+            "
         >
             @if (showInconsitencyBtn && digitalService.enableDataInconsistency) {
                 <p-button
