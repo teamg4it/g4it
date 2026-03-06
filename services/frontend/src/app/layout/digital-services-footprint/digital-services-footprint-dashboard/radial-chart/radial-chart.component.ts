@@ -201,16 +201,18 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                             truncatedValue + shortUnitValue,
                         );
                     },
-                    margin: 26,
-                    rich: Constants.CHART_RICH as any,
+                    margin: this.isCompareScreen ? 20 : 26,
+                    rich: this.isCompareScreen
+                        ? (Constants.CHART_RICH_SMALL as any)
+                        : (Constants.CHART_RICH as any),
                 },
             },
             radiusAxis: {
                 ...(this.compareMax() > 0 ? { max: this.compareMax() } : {}),
             },
             polar: {
-                radius: this.isCompareScreen ? "40%" : "62%",
-                center: ["50%", "47%"],
+                radius: this.isCompareScreen ? "48%" : "62%",
+                center: this.isCompareScreen ? ["50%", "50%"] : ["50%", "47%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({
                 name: item.tier,
