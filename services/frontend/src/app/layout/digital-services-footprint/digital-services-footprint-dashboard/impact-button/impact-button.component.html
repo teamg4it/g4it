@@ -2,8 +2,8 @@
     <p-button
         [styleClass]="
             selectedCriteria === impact
-                ? 'w-full letter-spacing-2 h-5rem bg-light-green border-noround'
-                : 'w-full force-bg-white letter-spacing-2 h-5rem border-noround bg-light-gray border-bottom-gray'
+                ? 'w-full letter-spacing-2 min-h-5rem bg-light-green border-noround'
+                : 'w-full force-bg-white letter-spacing-2 min-h-5rem border-noround bg-light-gray border-bottom-gray'
         "
         [id]="impactText"
         [ngClass]="{ 'pointer-events-none': value === null || value === 0 || disabled }"
@@ -13,7 +13,7 @@
     >
         <div
             [ngClass]="selectedCriteria === impact ? 'bg-tertiary' : 'bg-gray-100'"
-            class="border-circle p-3 h-4rem"
+            class="border-circle p-3 min-h-4rem"
         >
             <img
                 [ngClass]="{ 'selected-img-white': selectedCriteria === impact }"

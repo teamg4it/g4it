@@ -213,6 +213,25 @@ export abstract class Constants {
         },
     };
 
+    static readonly CHART_RICH_SMALL = {
+        redBold: {
+            color: Constants.GRAPH_RED,
+            fontWeight: 600,
+            fontSize: 12,
+            lineHeight: 15,
+        },
+        red: {
+            color: Constants.GRAPH_RED,
+            fontSize: 12,
+            lineHeight: 15,
+        },
+        grey: {
+            color: Constants.GRAPH_GREY,
+            fontSize: 12,
+            lineHeight: 15,
+        },
+    };
+
     static readonly DATA_QUALITY_STATUS = {
         ok: "OK",
         err: "ERROR",
