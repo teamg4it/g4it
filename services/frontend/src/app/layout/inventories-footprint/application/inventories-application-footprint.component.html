@@ -155,7 +155,7 @@
         <div class="mb-3 footprint-dashboard-container-app-criteria grid w-full">
             <div
                 class="bg-white"
-                [ngClass]="!isCollapsed ? 'col-12 lg:col-3' : 'col-fixed w-7rem'"
+                [ngClass]="!isCollapsed ? 'col-12 xl:col-3' : 'col-fixed w-7rem'"
             >
                 <app-impact-sidebar
                     [(isCollapsed)]="isCollapsed"
@@ -171,7 +171,7 @@
 
             <div
                 class="bg-gray-color mb-5 mt-2 flex-1 min-w-0"
-                [ngClass]="!isCollapsed ? 'col-12 lg:col-9' : 'col'"
+                [ngClass]="!isCollapsed ? 'col-12 xl:col-9' : 'col'"
             >
                 <div class="bg-white m-3 pb-3">
                     @if (footprintStore.applicationCriteria() === multiCriteria) {
