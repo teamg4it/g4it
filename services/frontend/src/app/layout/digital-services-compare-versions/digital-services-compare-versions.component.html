@@ -5,7 +5,7 @@
         <div class="h-full bg-gray-color p-4 pt-5">
             <div class="h-full bg-white grid">
                 @for (version of compareApi; track $index) {
-                    <div class="col-12 lg:col-6">
+                    <div class="col-12 xl:col-6">
                         <h3 class="text-center">
                             <a
                                 href="javascript:void(0)"
@@ -26,6 +26,7 @@
                                 [showInconsitency]="false"
                                 [enableDataInconsistency]="false"
                                 [compareMax]="maxSipUnitValue"
+                                [isCompareScreen]="true"
                             ></app-radial-chart>
                         } @else {
                             <app-pie-chart

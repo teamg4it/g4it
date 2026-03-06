@@ -36,6 +36,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
     @Output() selectedCriteriaChange: EventEmitter<string> = new EventEmitter();
     @Input() enableDataInconsistency: boolean = false;
+    @Input() isCompareScreen = false;
     compareMax = input<number>(0);
     showInconsitency = input<boolean>();
     selectedCriteria = input<string>();
@@ -208,7 +209,7 @@ export class RadialChartComponent extends AbstractDashboard implements OnChanges
                 ...(this.compareMax() > 0 ? { max: this.compareMax() } : {}),
             },
             polar: {
-                radius: "62%",
+                radius: this.isCompareScreen ? "40%" : "62%",
                 center: ["50%", "47%"],
             },
             series: noErrorRadialChartData.map((item: any) => ({
