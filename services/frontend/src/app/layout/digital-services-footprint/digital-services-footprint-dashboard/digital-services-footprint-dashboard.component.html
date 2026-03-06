@@ -25,7 +25,7 @@
             [ariaLabel]="'digital-services.configure-view' | translate"
         ></p-button>
     </div>
-    <div class="footprint-digital-dashboard-container grid px-2">
+    <div class="footprint-digital-dashboard-container grid px-2 w-full">
         <div
             class="bg-white"
             [ngClass]="!isCollapsed ? 'col-12 lg:col-3' : 'col-fixed w-7rem'"
@@ -43,7 +43,7 @@
             ></app-impact-sidebar>
         </div>
         <div
-            class="digital-service-chart-container mb-5 mt-2 bg-gray-color"
+            class="digital-service-chart-container mb-5 mt-2 bg-gray-color flex-1 min-w-0"
             [ngClass]="!isCollapsed ? 'col-12 lg:col-9' : 'col'"
         >
             <div class="bg-white m-3 pb-3">
