@@ -77,7 +77,8 @@ public class EvaluateNumEcoEvalService {
                                                                      final String organization,
                                                                      List<CriterionRest> criteria,
                                                                      List<String> lifecycleSteps,
-                                                                     List<HypothesisRest> hypotheses) {
+                                                                     List<HypothesisRest> hypotheses,
+                                                                     boolean showReferenceValue) {
 
         MatchingItemRest matchingItem = null;
         boolean isModelMatched = true;
@@ -111,6 +112,9 @@ public class EvaluateNumEcoEvalService {
                         criterion.getCode(), lifecycleStep, itemImpactName,
                         physicalEquipment.getLocation(), organization);
 
+                boolean isHidden = itemImpacts.stream().findFirst().map(ItemImpactRest::getHidden)
+                        .orElse(true);
+
                 EquipementPhysique equipementPhysique = internalToNumEcoEvalCalculs.map(physicalEquipment);
                 if (datacenter != null) {
                     equipementPhysique.setDataCenter(internalToNumEcoEvalCalculs.map(datacenter));
@@ -138,8 +142,11 @@ public class EvaluateNumEcoEvalService {
 
                 ImpactEquipementPhysique impactEquipementPhysique =
                         calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(demandeCalculImpactEquipementPhysique);
-
-                updateTraceForImpact(impactEquipementPhysique, lifecycleStep, isModelMatched, objectMapper);
+                String refName = itemImpacts.stream()
+                        .findFirst()
+                        .map(ItemImpactRest::getName)
+                        .orElse(null);
+                updateTraceForImpact(impactEquipementPhysique, lifecycleStep, isModelMatched,refName,showReferenceValue, objectMapper);
                 result.add(impactEquipementPhysique);
             }
         }
@@ -157,6 +164,8 @@ public class EvaluateNumEcoEvalService {
     private void updateTraceForImpact(ImpactEquipementPhysique impactEquipementPhysique,
                                       String lifecycleStep,
                                       boolean isModelMatched,
+                                      String refName,
+                                      boolean showReferenceValue,
                                       ObjectMapper objectMapper) {
         String trace = impactEquipementPhysique.getTrace();
         if (StringUtils.isEmpty(trace) || trace.contains("erreur")) {
@@ -167,6 +176,7 @@ public class EvaluateNumEcoEvalService {
             });
 
             boolean modified = false;
+            boolean hideValue = !showReferenceValue;
 
             if ("USING".equalsIgnoreCase(lifecycleStep) && traceMap.containsKey("consoElecAnMoyenne")) {
                 Object consObj = traceMap.get("consoElecAnMoyenne");
@@ -174,11 +184,41 @@ public class EvaluateNumEcoEvalService {
                     Map<String, Object> consoMap = objectMapper.convertValue(consObj, new TypeReference<>() {
                     });
                     consoMap.put("impact source", "REELLE");
+                    if (hideValue) {
+                        consoMap.put("valeur", "hidden data");
+                        consoMap.put("valeurReferentielConsoElecMoyenne", "hidden data");
+
+                        if (traceMap.containsKey("formule")) {
+                            String formule = traceMap.get("formule").toString();
+                            formule = formule.replaceAll(
+                                    "ConsoElecAnMoyenne\\((.*?)\\)",
+                                    "ConsoElecAnMoyenne(\"hidden data\")"
+                            );
+                            traceMap.put("formule", formule);
+                        }
+                    }
                     traceMap.put("consoElecAnMoyenne", consoMap);
                     modified = true;
 
                 }
-            } else if (traceMap.containsKey("valeurReferentielFacteurCaracterisation") &&
+                if (traceMap.containsKey("mixElectrique")) {
+
+                    Object mixObj = traceMap.get("mixElectrique");
+
+                    if (mixObj != null) {
+
+                        Map<String, Object> mixMap = objectMapper.convertValue(mixObj, new TypeReference<>() {});
+                        mixMap.put("name", refName);
+                        if (!showReferenceValue && mixMap.containsKey("valeurReferentielMixElectrique")) {
+                            mixMap.put("valeurReferentielMixElectrique", "hidden data");
+                        }
+
+                        traceMap.put("mixElectrique", mixMap);
+                        modified = true;
+                    }
+                }
+            }
+            else if (traceMap.containsKey("valeurReferentielFacteurCaracterisation") &&
                     traceMap.containsKey("sourceReferentielFacteurCaracterisation")) {
 
                 Double value = Double.valueOf(traceMap.get("valeurReferentielFacteurCaracterisation").toString());
@@ -186,8 +226,32 @@ public class EvaluateNumEcoEvalService {
 
                 Map<String, Object> ReferentielFacteurCaracterisation = new HashMap<>();
                 ReferentielFacteurCaracterisation.put("impact source", isModelMatched ? "MODELE" : "TYPE");
-                ReferentielFacteurCaracterisation.put("valeur", value);
+                ReferentielFacteurCaracterisation.put("name", refName);
                 ReferentielFacteurCaracterisation.put("source", sourceFacteur);
+
+                if (hideValue) {
+
+                    ReferentielFacteurCaracterisation.put("valeur", "hidden data");
+
+                    if (traceMap.containsKey("formule")) {
+                        String formule = traceMap.get("formule").toString();
+
+                        formule = formule.replaceAll(
+                                "referentielFacteurCaracterisation\\((.*?)\\)",
+                                "referentielFacteurCaracterisation(\"hidden data\")"
+                        );
+
+                        traceMap.put("formule", formule);
+                    }
+
+                } else {
+
+                    ReferentielFacteurCaracterisation.put(
+                            "valeur",
+                            Double.valueOf(value.toString())
+                    );
+                }
+
 
                 // Remove old  fields
                 traceMap.remove("valeurReferentielFacteurCaracterisation");
@@ -206,6 +270,12 @@ public class EvaluateNumEcoEvalService {
         } catch (Exception e) {
             log.warn("Failed to update trace for impact equipment: {}", impactEquipementPhysique, e);
         }
+    }
+
+    private boolean shouldHideValue(boolean showReferenceValue, boolean isHidden, String source) {
+        return !showReferenceValue
+                && isHidden
+                && !"Base IMPACTS ®Version 2.01".equals(source);
     }
 
     /**
