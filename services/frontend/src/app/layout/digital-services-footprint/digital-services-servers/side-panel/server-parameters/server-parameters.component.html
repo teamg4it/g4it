@@ -291,6 +291,7 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
         <div class="button-bottom-right">
             <div
                 class="error-text block"
@@ -298,6 +299,9 @@
             >
                 {{ "digital-services.error.xss-detected" | translate }}
             </div>
+=======
+        <div class="button-bottom-right" *ngIf="!embedded">
+>>>>>>> 27d405b3 (feat : apply-recommendations v0)
             <p-button styleClass="white-button" (onClick)="close()">
                 {{ "common.cancel" | translate }}
             </p-button>

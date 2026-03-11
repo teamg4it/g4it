@@ -190,7 +190,7 @@
         "renew-button-extended": "Prolongée",
         "renew-service-success-message": "prolongée avec succès",
         "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation",
-        "compare": "Comparer"
+        "compare": "Appliquez les recommendations"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -526,9 +526,10 @@
         "recommendations": "Recommandations",
         "recommendation": "Recommandation",
         "title": "Titre",
+        "priority": "Priorité",
         "category": "Catégorie",
-        "globalReduction": "Réduction globale",
-        "description": "Description"
+        "implementationDifficulty": "Difficulté d'implémentation",
+        "description": "Description"      
     },
     "digital-services-import": {
         "import": "Importer des données",

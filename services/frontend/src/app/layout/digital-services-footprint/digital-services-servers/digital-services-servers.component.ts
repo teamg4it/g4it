@@ -9,10 +9,12 @@ import {
     Component,
     computed,
     DestroyRef,
+    EventEmitter,
     inject,
     input,
     OnDestroy,
     OnInit,
+    Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -46,6 +48,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);
 
     dsVersionUid = input("");
+    embedded = input(false);
 
     digitalService: DigitalService = {} as DigitalService;
     sidebarVisible: boolean = false;
@@ -157,7 +160,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
                 this.sidebarVisible = res;
-                if (res === false && !this.router.url.endsWith("/resources")) {
+                if (!this.embedded() && res === false && !this.router.url.endsWith("/resources")) {
                     this.router.navigate(["../resources"], { relativeTo: this.route });
                 }
             });
@@ -197,6 +200,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     }
 
     addNewServer() {
+        if (this.embedded()) return;
         let newServer: DigitalServiceServerConfig = {
             uid: "",
             name: this.digitalServicesBusiness.getNextAvailableName(
@@ -222,10 +226,16 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         this.digitalServicesBusiness.openPanel();
     }
 
+    @Output() editEmbedded = new EventEmitter<DigitalServiceServerConfig>();
     updateServer(server: DigitalServiceServerConfig) {
+
+        if (this.embedded()) {
+            this.editEmbedded.emit(server);
+            return;
+        }
+
         this.digitalServiceStore.setServer(server);
         this.router.navigate(["panel-parameters"], { relativeTo: this.route });
-
         this.digitalServicesBusiness.openPanel();
     }
 

@@ -52,6 +52,7 @@ import { PanelServerParametersComponent } from "./digital-services-servers/side-
 import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals/digital-services-terminals-side-panel/digital-services-terminals-side-panel.component";
 import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/digital-services-terminals.component";
 import { DigitalServicesRecommendationsComponent } from "./digital-services-recommendations/digital-services-recommendations.component";
+import { DigitalServicesApplyRecommendationsComponent } from "./digital-services-apply-recommendations/digital-services-apply-recommendations.component";
 
 @NgModule({
     declarations: [
@@ -78,6 +79,7 @@ import { DigitalServicesRecommendationsComponent } from "./digital-services-reco
         DigitalServicesFootprintFooterComponent,
         DigitalServicesEcomindParametersComponent,
         DigitalServicesRecommendationsComponent,
+        DigitalServicesApplyRecommendationsComponent,
     ],
     imports: [
         CommonModule,

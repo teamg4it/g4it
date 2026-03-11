@@ -191,7 +191,7 @@
         "renew-button-extended": "Extended",
         "renew-service-success-message": "Extended Successfully",
         "renew-service-not-renewed-message": "Could not extend the retention period",
-        "compare": "Compare"
+        "compare": "Apply recommendations"
     },
     "useful-information": {
         "computing-engines": "Computing engines",
@@ -529,9 +529,11 @@
         "recommendations": "Recommendations",
         "recommendation": "Recommendation",
         "title": "Title",
+        "priority": "Priority",
         "category": "Category",
-        "globalReduction": "Global reduction",
+        "implementationDifficulty": "Implementation Difficulty",
         "description": "Description"
+        
     },
     "digital-services-import": {
         "import": "Import Data",

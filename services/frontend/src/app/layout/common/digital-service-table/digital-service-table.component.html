@@ -95,7 +95,7 @@
             [ngStyle]="{ 'text-align': isMobileView() ? 'left' : 'right' }"
         >
             <div class="flex">
-                @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                @if (!hideActions && userService.isAllowedDigitalServiceWrite$ ) {
                     <p-button
                         (onClick)="doSetItem(data, rowIndex + 1); sidebarVisible(true)"
                         styleClass="p-button-text mx-1 p-1 pt-2"
