@@ -11,7 +11,7 @@ import { MessageService } from "primeng/api";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
-import { DigitalServiceCloudServiceConfig, DigitalServiceNetworkConfig } from "src/app/core/interfaces/digital-service.interfaces";
+import { DigitalServiceNetworkConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 
@@ -43,58 +43,33 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
         public userService: UserService,
     ) {}
 
-ngOnInit() {
-  const isNew = this.network.idFront === undefined;
-  this.existingNames = this.networkData
-    .filter((c) => (isNew ? true : this.network.name !== c.name))
-    .map((cloud) => cloud.name);
-
-  this.networksForm = this._formBuilder.group({
-            name: [
-                "",
-                [
-                    Validators.required,
-                    uniqueNameValidator(this.existingNames),
-                    noWhitespaceValidator(),
+    ngOnInit() {
+        const isNew = this.network.idFront === undefined;
+        this.existingNames = this.networkData
+            .filter((c) => (isNew ? true : this.network.name !== c.name))
+            .map((cloud) => cloud.name);
+        this.networksForm = this._formBuilder.group(
+            {
+                name: [
+                    "",
+                    [
+                        Validators.required,
+                        uniqueNameValidator(this.existingNames),
+                        noWhitespaceValidator(),
+                    ],
                 ],
-            ],
-            type: [
-                { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
-                Validators.required,
-            ],
-    yearlyQuantityOfGbExchanged: [0, [Validators.required]],
-  },            {
+                type: [
+                    { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
+                    Validators.required,
+                ],
+                yearlyQuantityOfGbExchanged: [0, [Validators.required]],
+            },
+            {
                 validators: [xssFormGroupValidator()],
                 updateOn: "blur",
-            },);
-
-  if (this.network.idFront) {
-    this.networksForm.patchValue({
-      name: this.network.name,
-      type: this.network.type,
-      yearlyQuantityOfGbExchanged: this.network.yearlyQuantityOfGbExchanged,
-    });
-  }
-  if (this.onlyQuantityEditable) {
-  this.networksForm.get('name')?.disable();
-  this.networksForm.get('type')?.disable();
-    this.networksForm.get('name')?.updateValueAndValidity();
-    this.networksForm.get('type')?.updateValueAndValidity();
-}
-  this.applyEditableFields();
-}
-private applyEditableFields() {
-  const controls = this.networksForm.controls;
-
-  Object.keys(controls).forEach((key) => {
-    if (this.editableFields.length && !this.editableFields.includes(key)) {
-      controls[key].disable({ emitEvent: false });
-    } else {
-      controls[key].enable({ emitEvent: false });
+            },
+        );
     }
-  });
-}
-    
 
     deleteNetwork() {
         this.delete.emit(this.network);
@@ -115,6 +90,7 @@ private applyEditableFields() {
 
      ngOnChanges(changes: SimpleChanges) {
     if (changes['network'] && this.network) {
+      // patch values chaque fois qu'on reçoit un nouveau réseau
       if (!this.networksForm) this.initForm();
       this.networksForm.patchValue({
         name: this.network.name ?? '',
