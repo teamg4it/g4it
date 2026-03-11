@@ -419,7 +419,8 @@ export interface DuplicateNames {
 export interface DigitalServiceRecommendation {
     id?: number;
     title: string;
+    priority:number;
     category: string;
     description : string ; 
-    globalReduction: number;
+    implementationDifficulty: string;
 }

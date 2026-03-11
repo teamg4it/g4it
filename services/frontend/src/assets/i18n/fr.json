@@ -183,7 +183,7 @@
         "unit-manage": "Gestion des unités",
         "data-consistency-text": "Afficher les données qui n'ont pas pu être calculées",
         "unit-manage-text": "Votre choix s'appliquera à toutes les unités",
-        "compare": "Comparer"
+        "compare": "Appliquez les recommendations"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -519,9 +519,10 @@
         "recommendations": "Recommandations",
         "recommendation": "Recommandation",
         "title": "Titre",
+        "priority": "Priorité",
         "category": "Catégorie",
-        "globalReduction": "Réduction globale",
-        "description": "Description"
+        "implementationDifficulty": "Difficulté d'implémentation",
+        "description": "Description"      
     },
     "digital-services-import": {
         "import": "Importer des données",

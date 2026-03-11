@@ -27,6 +27,7 @@ export class DigitalServiceTableComponent {
     @Input() selectable = false;
     @Input() compareMode = false;
     @Input() paginator = true;
+    @Input() hideActions = false;
 
 
 
@@ -35,6 +36,7 @@ export class DigitalServiceTableComponent {
     @Output() resetItem: EventEmitter<boolean> = new EventEmitter();
     @Output() setItem: EventEmitter<any> = new EventEmitter();
     @Output() deleteItem: EventEmitter<any> = new EventEmitter();
+    @Output() compareClicked: EventEmitter<void> = new EventEmitter();
 
     isMobileView = computed(() => this.globalStoreService.mobileView());
 
@@ -80,11 +82,12 @@ export class DigitalServiceTableComponent {
     }
 
     onMainButtonClick() {
-    if (this.compareMode) {
-        return;
-    }
+        if (this.compareMode) {
+            this.compareClicked.emit();
+            return;
+        }
 
-    this.doResetItem();
-    this.sidebarVisible(true);
-}
+        this.doResetItem();
+        this.sidebarVisible(true);
+    }
 }

@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, input, OnInit, signal } from "@angular/core";
+import { Component, computed, EventEmitter, inject, input, OnInit, Output, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -26,6 +26,9 @@ export class DigitalServicesCloudServicesComponent implements OnInit {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
 
     dsVersionUid = input("");
+    embedded = input(false);
+    @Output() editEmbedded = new EventEmitter<DigitalServiceCloudServiceConfig>();
+    
 
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";

@@ -8,9 +8,11 @@
 import {
     Component,
     computed,
+    EventEmitter,
     inject,
     input,
     OnInit,
+    Output,
     signal,
     ViewChild,
 } from "@angular/core";
@@ -77,6 +79,8 @@ export class DigitalServicesNetworksComponent implements OnInit {
             });
     });
 
+    embedded = input(false);
+
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
         public userService: UserService,
@@ -101,8 +105,14 @@ export class DigitalServicesNetworksComponent implements OnInit {
         const index = event.index;
         delete event.index;
 
+        delete event.index;
+        if (this.embedded()) {
+            this.editEmbedded.emit(event);
+            return;
+        }
+
         this.network = { ...event, idFront: index };
-    }
+            }
 
     async deleteItem(event: DigitalServiceNetworkConfig) {
         await firstValueFrom(
@@ -185,4 +195,17 @@ export class DigitalServicesNetworksComponent implements OnInit {
         }
         return 0;
     }
+
+
+    @Output() editEmbedded = new EventEmitter<DigitalServiceNetworkConfig>();
+    openNetworkEditor(network: DigitalServiceNetworkConfig) {
+    if (this.embedded()) {
+        this.editEmbedded.emit(network);
+        return;
+    }
+
+    this.network = network;
+    this.sidebarVisible = true;
+    }
+    
 }

@@ -33,10 +33,8 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
         {} as DigitalServiceCloudServiceConfig;
     @Input() cloudServices: DigitalServiceCloudServiceConfig[] = [];
     @Output() sidebarVisibleChange: EventEmitter<boolean> = new EventEmitter();
-    @Output() updateCloudServices: EventEmitter<DigitalServiceCloudServiceConfig> =
-        new EventEmitter();
-    @Output() deleteCloudServices: EventEmitter<DigitalServiceCloudServiceConfig> =
-        new EventEmitter();
+    @Output() updateCloudServices: EventEmitter<DigitalServiceCloudServiceConfig> = new EventEmitter();
+    @Output() deleteCloudServices: EventEmitter<DigitalServiceCloudServiceConfig> = new EventEmitter();
 
     cloudForm!: FormGroup;
     countries: DropdownValue[] = [];
@@ -146,13 +144,19 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
         this.sidebarVisibleChange.emit(false);
     }
 
+    @Input() embedded = false;
+
     async submitFormData() {
         this.updateCloudServices.emit(this.cloud);
+        if (!this.embedded) {
         this.close();
+        }
     }
 
     async deleteServerCloud() {
         this.deleteCloudServices.emit(this.cloud);
+        if (!this.embedded) {
         this.close();
+        }
     }
 }

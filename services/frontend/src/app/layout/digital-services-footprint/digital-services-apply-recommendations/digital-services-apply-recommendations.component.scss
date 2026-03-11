@@ -1,0 +1,183 @@
+.import-digital {
+    display: flex;
+    height: 100vh;
+
+    .space-sidebar-close {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 0.5rem;
+    }
+
+    .space-sidebar-close-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        color: rgba(0, 0, 0, 0.6);
+        border: 0 none;
+        background: transparent;
+        border-radius: 50%;
+        transition:
+            background-color 0.2s,
+            color 0.2s,
+            box-shadow 0.2s;
+        align-items: center;
+    }
+
+    .space-sidebar-close-button:enabled:hover {
+        border-color: transparent;
+        background: rgba(0, 0, 0, 0.04);
+    }
+
+    .space-form {
+        padding: 1.5rem;
+        position: relative;
+        min-width: 0;
+        flex: 1 1 auto;
+        min-width: 0;
+        // display: flex;
+        // flex-direction: column;
+    }
+    .import-digital-content {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    }
+    .embedded-server-panel {
+        max-height: 50vh;
+        overflow: auto;
+        border: 5px solid #ddd;
+    }
+
+    .embedded-server-panel > form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.embedded-server-panel .panel-content {
+  flex: 1;          /* prend tout l’espace restant */
+  overflow-y: auto; /* scroll si le contenu est trop long */
+  padding: 1rem;
+}
+
+.embedded-server-panel .panel-footer {
+  flex-shrink: 0;       /* ne se réduit pas */
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+
+.embedded-server-panel form > .lg-file-panel-margin {
+  flex: 1;            /* prend tout l’espace disponible */
+  overflow-y: auto;   /* scroll si trop grand */
+  padding-right: 8px; /* pour éviter que le scroll cache le contenu */
+}
+
+.embedded-server-panel .button-bottom-right {
+  flex-shrink: 0;     /* reste visible même si le contenu scroll */
+  margin-top: 8px;
+}
+
+    .space-form--input:not(.active) {
+        display: none;
+    }
+
+    .space-form--input.active,
+    .help-text {
+        display: block;
+    }
+
+    .space-form--button-group {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        min-width: 100%;
+        gap: 8px;
+        padding: 1rem 1.5rem 1rem;
+    }
+
+    h2,
+    h3,
+    h4,
+    p {
+        color: var(--tints-black-100);
+    }
+}
+/*  new */
+.status-tag {
+    border-radius: 4px;
+    display: inline;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.green-tag {
+    color: var(--light-green-color);
+    border: 1px solid var(--light-green-color);
+    background: rgba(0, 135, 0, 0.03);
+}
+
+.red-tag {
+    color: #cb2525;
+    border: 1px solid #cb2525;
+    background: rgba(224, 47, 47, 0.06);
+}
+
+.yellow-tag {
+    color: #eebb16;
+    border: 1px solid #eebb16;
+    background: rgba(0, 135, 0, 0.03);
+}
+
+.orange-tag {
+    color: var(--warning-color);
+    border: 1px solid var(--warning-color);
+    background: rgba(232, 143, 22, 0.06);
+}
+
+.bg-light-grey-color {
+    background: var(--light-grey-color);
+}
+
+.background-none {
+    background: none;
+}
+
+.light-black-color {
+    color: var(--tints-black-80);
+}
+
+@media screen and (max-width: 630px) {
+    .import-digital {
+        width: 100vw;
+        overflow: auto;
+    }
+
+
+    .embedded-network-panel {
+  max-height: 50vh;
+  overflow: auto;
+  border: 5px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.embedded-network-panel .panel-content {
+  flex: 1;          /* prend tout l’espace restant */
+  overflow-y: auto; /* scroll si le contenu est trop long */
+  padding: 1rem;
+}
+
+.embedded-network-panel .panel-footer {
+  flex-shrink: 0;       /* ne se réduit pas */
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+}

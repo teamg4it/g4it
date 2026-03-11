@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, ViewChild } from "@angular/core";
+import { Component, computed, effect, EventEmitter, inject, Injector, Input, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -33,6 +33,10 @@ export class PanelServerParametersComponent {
     public translate = inject(TranslateService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
     private readonly inDatacentersService = inject(InDatacentersService);
+    @Output() save = new EventEmitter<DigitalServiceServerConfig>();
+    @Output() cancel = new EventEmitter<void>();
+    @Input() editingServer!: DigitalServiceServerConfig | null;
+    @Input() embedded = false;
 
     @ViewChild("childSidePanel", { static: false })
     childSidePanel!: PanelDatacenterComponent;
@@ -81,7 +85,7 @@ export class PanelServerParametersComponent {
             .filter((st) => st.type === this.digitalServiceStore.server().type);
     });
 
-    server = computed(() => {
+    server = computed(() => {  
         const srv = this.digitalServiceStore.server();
         const datacenters = this.datacenterOptions();
         const serverTypes = this.digitalServiceStore.serverTypes();
@@ -257,7 +261,8 @@ export class PanelServerParametersComponent {
 
         this.digitalServiceStore.setServer(server);
         if (this.server().mutualizationType === "Dedicated") {
-            this.digitalServiceBusiness.submitServerForm(
+            this.save.emit(server);
+                        this.digitalServiceBusiness.submitServerForm(
                 this.server(),
                 this.digitalServiceStore.digitalService(),
             );
@@ -269,6 +274,6 @@ export class PanelServerParametersComponent {
 
     close() {
         this.digitalServiceStore.setServer({} as DigitalServiceServerConfig);
-        this.digitalServiceBusiness.closePanel();
+        this.digitalServiceBusiness.closePanel(); 
     }
 }

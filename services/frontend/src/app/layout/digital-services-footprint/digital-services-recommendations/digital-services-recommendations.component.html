@@ -11,7 +11,24 @@
     [selectable]="true"
      [compareMode]="true"
      [paginator]="false"
+     (compareClicked)="compareSelected()"
   >
   </app-digital-service-table>
 </div>
 
+<p-sidebar
+        [(visible)]="showApplyComponent"
+        position="right"
+        styleClass="p-sidebar-lg"
+        [showCloseIcon]="true"
+        (onHide)="showApplyComponent = false"
+        ariaCloseLabel="Close"
+        [fullScreen]="isZoom125()"
+    >
+        <ng-template pTemplate="headless">
+            <app-digital-services-apply-recommendations
+            *ngIf="showApplyComponent"
+            [selectedRecommendations]="selectedRecommendationsForApply"
+        />
+        </ng-template>
+    </p-sidebar>
