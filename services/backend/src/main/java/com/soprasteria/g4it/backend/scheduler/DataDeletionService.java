@@ -13,14 +13,17 @@ import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
+import com.soprasteria.g4it.backend.common.utils.AzureEmailService;
 import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -30,20 +33,38 @@ public class DataDeletionService {
     @Value("${g4it.data.retention.day}")
     private Integer dataRetentiondDay;
 
-    @Autowired
-    private WorkspaceRepository workspaceRepository;
+    @Value("${g4it.data.retention.first-reminder-day:30}")
+    private Integer firstReminderDay;
+
+    @Value("${g4it.data.retention.second-reminder-day:2}")
+    private Integer secondReminderDay;
+
+    private final WorkspaceRepository workspaceRepository;
+    private final InventoryRepository inventoryRepository;
+    private final InventoryDeleteService inventoryDeleteService;
+    private final DigitalServiceService digitalServiceService;
+    private final DigitalServiceRepository digitalServiceRepository;
+    private final AzureEmailService azureEmailService;
+    private final MessageSource messageSource;
 
     @Autowired
-    private InventoryRepository inventoryRepository;
-
-    @Autowired
-    private InventoryDeleteService inventoryDeleteService;
-
-    @Autowired
-    private DigitalServiceService digitalServiceService;
-
-    @Autowired
-    private DigitalServiceRepository digitalServiceRepository;
+    public DataDeletionService(
+        WorkspaceRepository workspaceRepository,
+        InventoryRepository inventoryRepository,
+        InventoryDeleteService inventoryDeleteService,
+        DigitalServiceService digitalServiceService,
+        DigitalServiceRepository digitalServiceRepository,
+        AzureEmailService azureEmailService,
+        MessageSource messageSource
+    ) {
+        this.workspaceRepository = workspaceRepository;
+        this.inventoryRepository = inventoryRepository;
+        this.inventoryDeleteService = inventoryDeleteService;
+        this.digitalServiceService = digitalServiceService;
+        this.digitalServiceRepository = digitalServiceRepository;
+        this.azureEmailService = azureEmailService;
+        this.messageSource = messageSource;
+    }
 
     /**
      * Execute the deletion
@@ -66,27 +87,69 @@ public class DataDeletionService {
             final Integer retentionDay = Optional.ofNullable(workspaceEntity.getDataRetentionDay())
                     .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getDataRetentionDay())
                             .orElse(dataRetentiondDay));
-
-            // Inventories
-            nbInventoriesDeleted += inventoryRepository.findByWorkspace(workspaceEntity).stream()
-                    .filter(inventory -> now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate()))
-                    .mapToInt(inventory -> {
-                        inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
-                        return 1;
-                    })
-                    .sum();
-
-            // Digital services
-            nbDigitalServicesDeleted += digitalServiceRepository.findByWorkspace(workspaceEntity).stream()
-                    .filter(digitalServiceBO -> now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate()))
-                    .mapToInt(digitalServiceBO -> {
-                        digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
-                        return 1;
-                    })
-                    .sum();
+            nbInventoriesDeleted += handleInventoryDeletion(workspaceEntity, organization, workspaceId, retentionDay, now);
+            nbDigitalServicesDeleted += handleDigitalServiceDeletion(workspaceEntity, retentionDay, now);
         }
 
         log.info("Deletion of {} inventories and {} digital-services in database, execution time={} ms", nbInventoriesDeleted, nbDigitalServicesDeleted, System.currentTimeMillis() - start);
+    }
+
+    private void sendRetentionReminderEmail(String recipientEmail, String itemName, String expirationDate, Integer retentionDay) {
+        // Send email notification
+        log.info("Sending retention reminder email to {} for item {} expiring on {}", recipientEmail, itemName, expirationDate);
+        azureEmailService.sendEmail(
+            recipientEmail,
+            messageSource.getMessage("email.subject", new String[]{}, Locale.ENGLISH),
+            messageSource.getMessage("email.body", new String[]{itemName, expirationDate, String.valueOf(retentionDay)}, Locale.ENGLISH)
+        );
+    }
+
+    private int handleInventoryDeletion(Workspace workspaceEntity, String organization, Long workspaceId, Integer retentionDay, LocalDateTime now) {
+        return inventoryRepository.findByWorkspace(workspaceEntity).stream()
+            .mapToInt(inventory -> {
+                long daysSinceLastUpdate = java.time.Duration.between(
+                    inventory.getLastUpdateDate(), now
+                ).toDays();
+                if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
+                    String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+                    sendRetentionReminderEmail(
+                        inventory.getCreatedBy().getEmail(),
+                        inventory.getName(),
+                        expirationDate,
+                        retentionDay
+                    );
+                    return 0;
+                } else if (now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate())) {
+                    inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
+                    return 1;
+                }
+                return 0;
+            })
+            .sum();
+    }
+
+    private int handleDigitalServiceDeletion(Workspace workspaceEntity, Integer retentionDay, LocalDateTime now) {
+        return digitalServiceRepository.findByWorkspace(workspaceEntity).stream()
+            .mapToInt(digitalServiceBO -> {
+                long daysSinceLastUpdate = java.time.Duration.between(
+                    digitalServiceBO.getLastUpdateDate(), now
+                ).toDays();
+                if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
+                    String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+                    sendRetentionReminderEmail(
+                       digitalServiceBO.getUser().getEmail(),
+                        digitalServiceBO.getName(),
+                        expirationDate,
+                        retentionDay
+                    );
+                    return 0;
+                } else if (now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate())) {
+                    digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
+                    return 1;
+                }
+                return 0;
+            })
+            .sum();
     }
 
 }
