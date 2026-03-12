@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class VirtualEquipmentElecConsumptionBO {
 
-    private String name;
+    private String virtualEquipmentName;
     private String location;
     private String lifeCycle;
     private String domain;
@@ -28,4 +28,5 @@ public class VirtualEquipmentElecConsumptionBO {
     private String equipmentType;
     private Double elecConsumption;
     private Integer quantity;
+    private String applicationName;
 }

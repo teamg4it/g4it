@@ -635,7 +635,9 @@ components:
         id:
           type: integer
           format: int64
-        name:
+        virtualEquipmentName:
+          type: string
+        applicationName:
           type: string
         location:
           type: string
@@ -666,7 +668,9 @@ components:
         id:
           type: integer
           format: int64
-        name:
+        virtualEquipmentName:
+          type: string
+        applicationName:
           type: string
         location:
           type: string

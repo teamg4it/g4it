@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
     name: "decimals",
+    standalone: true,
 })
 export class DecimalsPipe implements PipeTransform {
     transform(value: number): string {

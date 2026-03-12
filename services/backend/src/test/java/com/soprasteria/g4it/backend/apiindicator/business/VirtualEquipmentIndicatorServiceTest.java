@@ -120,12 +120,14 @@ class VirtualEquipmentIndicatorServiceTest {
                 .thenReturn(workspace);
 
         InVirtualEquipmentLowImpactView view1 = new InVirtualEquipmentLowImpactView();
-        view1.setName("VM1");
+        view1.setVirtualEquipmentName("VM1");
+        view1.setApplicationName("App1");
         view1.setLocation("FRA");
         view1.setEquipmentType("Server");
 
         InVirtualEquipmentLowImpactView view2 = new InVirtualEquipmentLowImpactView();
-        view2.setName("VM2");
+        view1.setVirtualEquipmentName("VM2");
+        view1.setApplicationName("App2");
         view2.setLocation("FRA");
         view2.setEquipmentType("Server");
 
@@ -176,7 +178,8 @@ class VirtualEquipmentIndicatorServiceTest {
                 .thenReturn(workspace);
 
         InVirtualEquipmentLowImpactView view = new InVirtualEquipmentLowImpactView();
-        view.setName("VM1");
+        view.setVirtualEquipmentName("VM1");
+        view.setApplicationName("App1");
         view.setLocation("UNKNOWN");
         view.setEquipmentType("Server");
 

@@ -7,15 +7,16 @@
  */
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, input, Input, OnInit, Output } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ButtonModule } from "primeng/button";
-import { SharedModule } from "src/app/core/shared/shared.module";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 
 @Component({
     selector: "app-impact-button",
     templateUrl: "./impact-button.component.html",
     standalone: true,
-    imports: [CommonModule, ButtonModule, SharedModule],
+    imports: [CommonModule, ButtonModule, TranslateModule, DecimalsPipe, IntegerPipe],
 })
 export class ImpactButtonComponent implements OnInit {
     @Input() impact: string = "...";
