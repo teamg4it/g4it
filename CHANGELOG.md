@@ -1,5 +1,12 @@
 # G4IT
 
+## 3.11.0
+
+## Major changes
+- 1837 | Application View improvement
+
+### Minor Changes
+
 ## 3.10.0
 
 ## Major changes
