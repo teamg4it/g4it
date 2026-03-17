@@ -514,7 +514,7 @@ class EvaluateNumEcoEvalServiceTest {
     }
 
     @Test
-    void shouldUpdateMixElectrique_andHideValue_whenHideValueTrue() throws Exception {
+    void shouldUpdateMixElectrique_andHideValue_whenHideValueTrue() {
 
         InPhysicalEquipment physical = new InPhysicalEquipment();
         physical.setType("SERVER");
@@ -642,7 +642,7 @@ class EvaluateNumEcoEvalServiceTest {
 
         ItemImpactRest impactRest = new ItemImpactRest();
         impactRest.setIsHidden(true);
-        impactRest.setSource("Base IMPACTS ®Version 2.01"); // 🔑
+        impactRest.setSource("Base IMPACTS ®Version 2.01");
 
         when(referentialService.getItemType(any(), any()))
                 .thenReturn(new ItemTypeRest());
