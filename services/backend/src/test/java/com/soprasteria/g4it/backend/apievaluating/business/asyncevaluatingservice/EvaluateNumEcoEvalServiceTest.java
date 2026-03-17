@@ -245,7 +245,8 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),
+                        true
                 );
 
         assertEquals(1, result.size());
@@ -291,7 +292,8 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of()
+                List.of(),
+                true
         );
 
         // THEN
@@ -323,7 +325,8 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion, criterion),
                         List.of("FABRICATION", "USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),
+                        true
                 );
 
         assertEquals(4, result.size());
@@ -370,7 +373,8 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),
+                        true
                 );
 
         // THEN
@@ -429,7 +433,8 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of()
+                List.of(),
+                true
         );
 
         // THEN
@@ -463,7 +468,8 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("FABRICATION"),
-                        Collections.emptyList()
+                        Collections.emptyList(),
+                        true
                 )
         );
     }
