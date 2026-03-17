@@ -213,7 +213,7 @@ public class EvaluateNumEcoEvalService {
                 consoMap.put(Constants.VALEUR_REF_CONSO, Constants.HIDDEN_DATA);
 
                 updateFormula(traceMap,
-                        "ConsoElecAnMoyenne\\((.*?)\\)",
+                        "ConsoElecAnMoyenne\\([^)]*\\)",
                         "ConsoElecAnMoyenne(\"hidden data\")");
             }
 
