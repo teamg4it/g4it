@@ -18,8 +18,8 @@ describe("InformationCardComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [InformationCardComponent],
-        }).compileComponents();
+    imports: [InformationCardComponent],
+}).compileComponents();
 
         fixture = TestBed.createComponent(InformationCardComponent);
         component = fixture.componentInstance;

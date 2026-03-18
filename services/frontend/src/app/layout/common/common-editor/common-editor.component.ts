@@ -8,13 +8,32 @@ import {
     SimpleChanges,
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { ConfirmationService, MessageService, Header } from "primeng/api";
+import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
+import { EditorModule } from "primeng/editor";
+import { FormsModule } from "@angular/forms";
+import { ToastModule } from "primeng/toast";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { NgIf } from "@angular/common";
+import { Button } from "primeng/button";
 
 @Component({
     selector: "app-common-editor",
     templateUrl: "./common-editor.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        EditorModule,
+        FormsModule,
+        Header,
+        ToastModule,
+        ConfirmPopupModule,
+        NgIf,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class CommonEditorComponent implements OnChanges {
     @Input() styleClass = "";

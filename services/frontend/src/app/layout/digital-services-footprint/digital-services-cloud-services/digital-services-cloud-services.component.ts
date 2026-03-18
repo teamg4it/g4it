@@ -15,11 +15,20 @@ import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface"
 import { UserService } from "src/app/core/service/business/user.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { DigitalServiceTableComponent } from "../../common/digital-service-table/digital-service-table.component";
+import { SidebarModule } from "primeng/sidebar";
+import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 
 @Component({
     selector: "app-digital-services-cloud-services",
     templateUrl: "./digital-services-cloud-services.component.html",
     providers: [MessageService],
+    standalone: true,
+    imports: [
+        DigitalServiceTableComponent,
+        SidebarModule,
+        DigitalServicesCloudServicesSidePanelComponent,
+    ],
 })
 export class DigitalServicesCloudServicesComponent implements OnInit {
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);

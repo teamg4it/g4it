@@ -44,7 +44,7 @@ import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-ne
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
 import { DigitalServicesResourcesComponent } from "./digital-services-resources/digital-services-resources.component";
 import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
-import PanelDatacenterComponent from "./digital-services-servers/side-panel/add-datacenter/datacenter.component";
+import { PanelDatacenterComponent } from "./digital-services-servers/side-panel/add-datacenter/datacenter.component";
 import { PanelAddVmComponent } from "./digital-services-servers/side-panel/add-vm/add-vm.component";
 import { PanelCreateServerComponent } from "./digital-services-servers/side-panel/create-server/create-server.component";
 import { PanelListVmComponent } from "./digital-services-servers/side-panel/list-vm/list-vm.component";
@@ -53,30 +53,6 @@ import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-t
 import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/digital-services-terminals.component";
 
 @NgModule({
-    declarations: [
-        DigitalServicesFootprintComponent,
-        DigitalServicesFootprintDashboardComponent,
-        DigitalServicesTerminalsComponent,
-        DigitalServicesNetworksComponent,
-        DigitalServicesServersComponent,
-        DigitalServicesCloudServicesComponent,
-        SetViewPopupComponent,
-        DigitalServiceTableComponent,
-        BarChartComponent,
-        DigitalServicesTerminalsSidePanelComponent,
-        DigitalServicesNetworksSidePanelComponent,
-        DigitalServicesCloudServicesSidePanelComponent,
-        DigitalServicesResourcesComponent,
-        PanelCreateServerComponent,
-        PanelDatacenterComponent,
-        PanelServerParametersComponent,
-        PanelAddVmComponent,
-        PanelListVmComponent,
-        DigitalServicesAiParametersComponent,
-        DigitalServicesAiInfrastructureComponent,
-        DigitalServicesFootprintFooterComponent,
-        DigitalServicesEcomindParametersComponent,
-    ],
     imports: [
         CommonModule,
         FormsModule,
@@ -105,6 +81,28 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         SharedChartsModule,
         ImpactButtonComponent,
         ConfigureViewFiltersComponent,
+        DigitalServicesFootprintComponent,
+        DigitalServicesFootprintDashboardComponent,
+        DigitalServicesTerminalsComponent,
+        DigitalServicesNetworksComponent,
+        DigitalServicesServersComponent,
+        DigitalServicesCloudServicesComponent,
+        SetViewPopupComponent,
+        DigitalServiceTableComponent,
+        BarChartComponent,
+        DigitalServicesTerminalsSidePanelComponent,
+        DigitalServicesNetworksSidePanelComponent,
+        DigitalServicesCloudServicesSidePanelComponent,
+        DigitalServicesResourcesComponent,
+        PanelCreateServerComponent,
+        PanelDatacenterComponent,
+        PanelServerParametersComponent,
+        PanelAddVmComponent,
+        PanelListVmComponent,
+        DigitalServicesAiParametersComponent,
+        DigitalServicesAiInfrastructureComponent,
+        DigitalServicesFootprintFooterComponent,
+        DigitalServicesEcomindParametersComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],

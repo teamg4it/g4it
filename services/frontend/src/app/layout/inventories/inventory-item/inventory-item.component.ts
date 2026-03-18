@@ -5,10 +5,15 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe, CommonModule, NgFor, NgIf, UpperCasePipe } from "@angular/common";
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { AccordionModule } from "primeng/accordion";
+import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { ProgressBarModule } from "primeng/progressbar";
 import { lastValueFrom } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -26,11 +31,34 @@ import { FootprintDataService } from "src/app/core/service/data/footprint-data.s
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
+import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
+import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
+import { BatchStatusComponent } from "../batch-status/batch-status.component";
+import { EquipmentsCardComponent } from "../equipments-card/equipments-card.component";
 
 @Component({
     selector: "app-inventory-item",
     templateUrl: "./inventory-item.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        AccordionModule,
+        PrimeTemplate,
+        NgIf,
+        Button,
+        EquipmentsCardComponent,
+        NgFor,
+        BatchStatusComponent,
+        ProgressBarModule,
+        ConfirmPopupModule,
+        CriteriaPopupComponent,
+        MonthYearPipe,
+        AsyncPipe,
+        UpperCasePipe,
+        TranslatePipe,
+        CommonModule,
+        RouterModule,
+    ],
 })
 export class InventoryItemComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);
@@ -161,7 +189,6 @@ export class InventoryItemComponent implements OnInit {
                 }
                 break;
         }
-
         if (uri === undefined) return;
 
         this.router.navigate([`${this.inventory.id}/footprint/${uri}`], {

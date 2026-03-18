@@ -9,13 +9,10 @@ import { UsersComponent } from "./administration-panel/users/users.component";
 import { administrationRouter } from "./administration.router";
 
 @NgModule({
-    declarations: [
-        AdministrationPanelComponent,
+    imports: [CommonModule, SharedModule, administrationRouter, AdministrationPanelComponent,
         OrganizationsComponent,
         UsersComponent,
         SuperAdminComponent,
-        AddWorkspaceComponent,
-    ],
-    imports: [CommonModule, SharedModule, administrationRouter],
+        AddWorkspaceComponent],
 })
 export class AdministrationModule {}

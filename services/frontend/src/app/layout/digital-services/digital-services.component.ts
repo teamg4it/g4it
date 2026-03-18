@@ -9,9 +9,9 @@ import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { PaginatorState } from "primeng/paginator";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { PaginatorState, PaginatorModule } from "primeng/paginator";
 import { finalize, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
@@ -20,11 +20,32 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { environment } from "src/environments/environment";
+import { ToastModule } from "primeng/toast";
+import { NgIf, AsyncPipe } from "@angular/common";
+import { Button } from "primeng/button";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
+import { SidebarModule } from "primeng/sidebar";
+import { CreateDigitalServicesSidebarComponent } from "./create-digital-services-sidebar/create-digital-services-sidebar.component";
 
 @Component({
     selector: "app-digital-services",
     templateUrl: "./digital-services.component.html",
     providers: [MessageService, ConfirmationService],
+    standalone: true,
+    imports: [
+        ToastModule,
+        NgIf,
+        Button,
+        ScrollPanelModule,
+        DigitalServicesItemComponent,
+        PaginatorModule,
+        SidebarModule,
+        PrimeTemplate,
+        CreateDigitalServicesSidebarComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

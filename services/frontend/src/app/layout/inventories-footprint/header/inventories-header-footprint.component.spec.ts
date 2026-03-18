@@ -28,18 +28,18 @@ describe("InventoriesHeaderFootprintComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [InventoriesHeaderFootprintComponent],
-            imports: [
-                RouterTestingModule,
-                ButtonModule,
-                ConfirmPopupModule,
-                ToastModule,
-                SharedModule,
-                HttpClientTestingModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [TranslatePipe, TranslateService,UserService,MessageService],
-        }).compileComponents();
+    imports: [
+        RouterTestingModule,
+        ButtonModule,
+        ConfirmPopupModule,
+        ToastModule,
+        SharedModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
+        InventoriesHeaderFootprintComponent,
+    ],
+    providers: [TranslatePipe, TranslateService, UserService, MessageService],
+}).compileComponents();
 
         fixture = TestBed.createComponent(InventoriesHeaderFootprintComponent);
         component = fixture.componentInstance;

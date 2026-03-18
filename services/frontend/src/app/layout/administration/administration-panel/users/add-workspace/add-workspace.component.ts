@@ -17,7 +17,7 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { map, switchMap, take } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
@@ -28,11 +28,27 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
+import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
+import { NgIf } from "@angular/common";
+import { InputTextModule } from "primeng/inputtext";
+import { DropdownModule } from "primeng/dropdown";
+import { FormsModule } from "@angular/forms";
+import { Button } from "primeng/button";
 
 @Component({
     selector: "app-add-workspace",
     templateUrl: "./add-workspace.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        NgIf,
+        InputTextModule,
+        DropdownModule,
+        FormsModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class AddWorkspaceComponent implements OnInit, OnChanges {
     @Input() userDetail!: UserDetails;

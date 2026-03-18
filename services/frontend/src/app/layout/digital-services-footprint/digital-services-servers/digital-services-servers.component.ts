@@ -15,7 +15,7 @@ import {
     OnInit,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
 import { differenceInDays } from "date-fns";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, lastValueFrom } from "rxjs";
@@ -34,10 +34,18 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in-physical-equipments.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { DigitalServiceTableComponent } from "../../common/digital-service-table/digital-service-table.component";
+import { SidebarModule } from "primeng/sidebar";
 @Component({
     selector: "app-digital-services-servers",
     templateUrl: "./digital-services-servers.component.html",
     providers: [MessageService],
+    standalone: true,
+    imports: [
+        DigitalServiceTableComponent,
+        SidebarModule,
+        RouterOutlet,
+    ],
 })
 export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     protected digitalServiceStore = inject(DigitalServiceStoreService);

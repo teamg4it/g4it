@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
@@ -19,11 +19,31 @@ import { DigitalServiceBusinessService } from "src/app/core/service/business/dig
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { AutofocusDirective } from "../../../../core/directives/auto-focus.directive";
+import { InputTextModule } from "primeng/inputtext";
+import { NgIf, AsyncPipe } from "@angular/common";
+import { DropdownModule } from "primeng/dropdown";
+import { InputNumberModule } from "primeng/inputnumber";
+import { Button } from "primeng/button";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "app-digital-services-cloud-services-side-panel",
     templateUrl: "./digital-services-cloud-services-side-panel.component.html",
     providers: [MessageService],
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        NgIf,
+        DropdownModule,
+        InputNumberModule,
+        Button,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

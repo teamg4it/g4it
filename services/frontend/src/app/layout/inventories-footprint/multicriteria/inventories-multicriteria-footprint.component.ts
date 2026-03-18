@@ -30,10 +30,29 @@ import {
 } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { AbstractDashboard } from "../abstract-dashboard";
+import { Button } from "primeng/button";
+import { DropdownModule } from "primeng/dropdown";
+import { FormsModule } from "@angular/forms";
+import { PrimeTemplate } from "primeng/api";
+import { NgIf } from "@angular/common";
+import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "app-inventories-multicriteria-footprint",
     templateUrl: "./inventories-multicriteria-footprint.component.html",
+    standalone: true,
+    imports: [
+        Button,
+        DropdownModule,
+        FormsModule,
+        PrimeTemplate,
+        NgIf,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        TranslatePipe,
+    ],
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
     private readonly store = inject(FootprintStoreService);

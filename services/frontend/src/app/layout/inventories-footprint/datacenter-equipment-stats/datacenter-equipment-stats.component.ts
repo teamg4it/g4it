@@ -7,7 +7,7 @@
  */
 import { Component, Input, effect, inject, signal } from "@angular/core";
 
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import {
     Criterias,
     Datacenter,
@@ -23,10 +23,13 @@ import { InventoryUtilService } from "src/app/core/service/business/inventory-ut
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { AbstractDashboard } from "../abstract-dashboard";
+import { StatsComponent } from "../../common/stats/stats.component";
 
 @Component({
     selector: "app-datacenter-equipment-stats",
     templateUrl: "./datacenter-equipment-stats.component.html",
+    standalone: true,
+    imports: [StatsComponent, TranslatePipe],
 })
 export class DataCenterEquipmentStatsComponent extends AbstractDashboard {
     private readonly store = inject(FootprintStoreService);

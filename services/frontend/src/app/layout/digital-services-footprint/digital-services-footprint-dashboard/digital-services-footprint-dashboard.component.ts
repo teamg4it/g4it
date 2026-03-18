@@ -20,7 +20,7 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { firstValueFrom, lastValueFrom, Subscription } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
@@ -60,11 +60,41 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
+import { NgSwitch, NgSwitchCase, NgSwitchDefault, NgClass, NgTemplateOutlet, NgIf } from "@angular/common";
+import { Button } from "primeng/button";
+import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
+import { RadialChartComponent } from "./radial-chart/radial-chart.component";
+import { PieChartComponent } from "./pie-chart/pie-chart.component";
+import { GraphDescriptionComponent } from "./graph-description/graph-description.component";
+import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
+import { SidebarModule } from "primeng/sidebar";
+import { PrimeTemplate } from "primeng/api";
+import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
 
 @Component({
     selector: "app-digital-services-footprint-dashboard",
     templateUrl: "./digital-services-footprint-dashboard.component.html",
     styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
+    standalone: true,
+    imports: [
+        NgSwitch,
+        NgSwitchCase,
+        NgSwitchDefault,
+        Button,
+        NgClass,
+        ImpactSidebarComponent,
+        NgTemplateOutlet,
+        NgIf,
+        RadialChartComponent,
+        PieChartComponent,
+        BarChartComponent,
+        GraphDescriptionComponent,
+        CriteriaPopupComponent,
+        SidebarModule,
+        PrimeTemplate,
+        ConfigureViewFiltersComponent,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard

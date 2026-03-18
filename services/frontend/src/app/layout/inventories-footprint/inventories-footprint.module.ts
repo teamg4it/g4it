@@ -29,13 +29,6 @@ import { inventoriesFootprintRouter } from "./inventories-footprint.router";
 import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inventories-multicriteria-footprint.component";
 
 @NgModule({
-    declarations: [
-        InventoriesFootprintComponent,
-        InventoriesMultiCriteriaFootprintComponent,
-        InventoriesCritereFootprintComponent,
-        DataCenterEquipmentStatsComponent,
-        ImpactAggregateInfosComponent,
-    ],
     imports: [
         SharedModule,
         ButtonModule,
@@ -48,17 +41,20 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
         CheckboxModule,
         ConfirmPopupModule,
         NgxEchartsModule.forRoot({
-            echarts: () =>
-                import(
-                    /* webpackChunkName: "echarts" */
-                    /* webpackMode: "lazy" */
-                    "src/app/core/shared/echarts.module"
-                ).then((m) => m.default),
+            echarts: () => import(
+            /* webpackChunkName: "echarts" */
+            /* webpackMode: "lazy" */
+            "src/app/core/shared/echarts.module").then((m) => m.default),
         }),
         inventoriesFootprintRouter,
         ConfigureViewFiltersComponent,
         ImpactButtonComponent,
         IndicatorSectionComponent,
+        InventoriesFootprintComponent,
+        InventoriesMultiCriteriaFootprintComponent,
+        InventoriesCritereFootprintComponent,
+        DataCenterEquipmentStatsComponent,
+        ImpactAggregateInfosComponent,
     ],
     providers: [InventoryUtilService],
     exports: [InventoriesFootprintComponent],

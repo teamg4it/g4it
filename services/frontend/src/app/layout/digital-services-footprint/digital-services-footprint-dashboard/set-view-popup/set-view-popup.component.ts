@@ -1,10 +1,25 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { TranslatePipe } from "@ngx-translate/core";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { CheckboxModule } from "primeng/checkbox";
+import { DialogModule } from "primeng/dialog";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 
 @Component({
     selector: "app-set-view-popup",
     templateUrl: "./set-view-popup.component.html",
+    standalone: true,
+    imports: [
+        DialogModule,
+        PrimeTemplate,
+        FormsModule,
+        ReactiveFormsModule,
+        CheckboxModule,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class SetViewPopupComponent implements OnInit {
     @Input() displayPopup: boolean = false;

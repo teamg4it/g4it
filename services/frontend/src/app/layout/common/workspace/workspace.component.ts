@@ -6,9 +6,9 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
-import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom, take } from "rxjs";
 import { DomainOrganizations } from "src/app/core/interfaces/administration.interfaces";
@@ -19,11 +19,29 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
+import { FocusTrapModule } from "primeng/focustrap";
+import { FormNavComponent } from "../form-nav/form-nav.component";
+import { Button } from "primeng/button";
+import { NgClass } from "@angular/common";
+import { InputTextModule } from "primeng/inputtext";
+import { DropdownModule } from "primeng/dropdown";
 
 @Component({
     selector: "app-workspace",
     templateUrl: "./workspace.component.html",
     styleUrls: ["./workspace.component.scss"],
+    standalone: true,
+    imports: [
+        FocusTrapModule,
+        FormNavComponent,
+        Button,
+        FormsModule,
+        ReactiveFormsModule,
+        NgClass,
+        InputTextModule,
+        DropdownModule,
+        TranslatePipe,
+    ],
 })
 export class WorkspaceComponent implements OnInit {
     private readonly userDataService = inject(UserDataService);

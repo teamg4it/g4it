@@ -16,6 +16,7 @@ import {
 } from "@angular/core";
 import { addYears } from "date-fns";
 import { MessageService } from "primeng/api";
+import { SidebarModule } from "primeng/sidebar";
 import { firstValueFrom } from "rxjs";
 import {
     DigitalService,
@@ -28,11 +29,18 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in-physical-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { DigitalServiceTableComponent } from "../../common/digital-service-table/digital-service-table.component";
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 @Component({
     selector: "app-digital-services-networks",
     templateUrl: "./digital-services-networks.component.html",
     providers: [MessageService],
+    standalone: true,
+    imports: [
+        DigitalServiceTableComponent,
+        SidebarModule,
+        DigitalServicesNetworksSidePanelComponent,
+    ],
 })
 export class DigitalServicesNetworksComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);

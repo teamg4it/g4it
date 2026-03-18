@@ -6,17 +6,25 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, computed, inject, input, Signal } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { ApplicationFootprint } from "src/app/core/interfaces/footprint.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { Constants } from "src/constants";
+import { CardModule } from "primeng/card";
+import { NgxEchartsDirective } from "ngx-echarts";
 
 @Component({
     selector: "app-application-criteria-pie-chart",
     templateUrl: "./application-criteria-pie-chart.component.html",
+    standalone: true,
+    imports: [
+        CardModule,
+        NgxEchartsDirective,
+        TranslatePipe,
+    ],
 })
 export class ApplicationCriteriaPieChartComponent {
     protected footprintStore = inject(FootprintStoreService);

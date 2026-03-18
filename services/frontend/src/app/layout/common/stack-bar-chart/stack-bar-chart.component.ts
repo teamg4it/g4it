@@ -3,9 +3,12 @@ import { EChartsOption } from "echarts";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
+import { NgxEchartsDirective } from "ngx-echarts";
 @Component({
     selector: "app-stack-bar-chart",
     templateUrl: "./stack-bar-chart.component.html",
+    standalone: true,
+    imports: [NgxEchartsDirective],
 })
 export class StackBarChartComponent extends AbstractDashboard {
     @Output() selectedStackBarClick: EventEmitter<string> = new EventEmitter();

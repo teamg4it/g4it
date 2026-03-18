@@ -50,44 +50,42 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintHeaderComponent],
-            imports: [
-                HttpClientTestingModule,
-                RouterTestingModule,
-                InplaceModule,
-                FormsModule,
-                InputTextModule,
-                SharedModule,
-                ConfirmPopupModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: digitalServiceDataMock,
+    imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        InplaceModule,
+        FormsModule,
+        InputTextModule,
+        SharedModule,
+        ConfirmPopupModule,
+        TranslateModule.forRoot(),
+        DigitalServicesFootprintHeaderComponent,
+    ],
+    providers: [
+        {
+            provide: DigitalServicesDataService,
+            useValue: digitalServiceDataMock,
+        },
+        TranslatePipe,
+        TranslateService,
+        UserService,
+        MessageService,
+        ConfirmationService,
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    paramMap: convertToParamMap({
+                        digitalServiceVersionId: "12345",
+                    }),
                 },
-                TranslatePipe,
-                TranslateService,
-                UserService,
-                MessageService,
-                ConfirmationService,
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        snapshot: {
-                            paramMap: convertToParamMap({
-                                digitalServiceVersionId: "12345",
-                            }),
-                        },
-                        paramMap: of(
-                            convertToParamMap({
-                                digitalServiceVersionId: "12345",
-                            }),
-                        ),
-                    },
-                },
-            ],
-        });
+                paramMap: of(convertToParamMap({
+                    digitalServiceVersionId: "12345",
+                })),
+            },
+        },
+    ],
+});
         fixture = TestBed.createComponent(DigitalServicesFootprintHeaderComponent);
         component = fixture.componentInstance;
 

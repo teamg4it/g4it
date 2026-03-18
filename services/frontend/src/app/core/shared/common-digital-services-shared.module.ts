@@ -17,14 +17,11 @@ import { MultiFileImportComponent } from "src/app/layout/digital-services-footpr
 import { SharedModule } from "./shared.module";
 
 @NgModule({
-    declarations: [
-        DigitalServicesFootprintHeaderComponent,
+    imports: [SharedModule, FileUploadModule, ProgressSpinnerModule, InplaceModule, DigitalServicesFootprintHeaderComponent,
         LinkCreatePopupComponent,
         DigitalServicesImportComponent,
         MultiFileImportComponent,
-        VersionTypeTagComponent,
-    ],
-    imports: [SharedModule, FileUploadModule, ProgressSpinnerModule, InplaceModule],
+        VersionTypeTagComponent],
     exports: [
         DigitalServicesFootprintHeaderComponent,
         LinkCreatePopupComponent,

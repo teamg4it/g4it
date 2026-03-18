@@ -5,23 +5,49 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe, NgIf } from "@angular/common";
 import { Component, computed, EventEmitter, inject, Input, Output } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
+import { TranslatePipe } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { DropdownModule } from "primeng/dropdown";
+import { InputNumberModule } from "primeng/inputnumber";
+import { InputTextModule } from "primeng/inputtext";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import { ServerDC } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
 
 @Component({
     selector: "app-panel-datacenter",
     templateUrl: "./datacenter.component.html",
     providers: [MessageService],
+    standalone: true,
+    imports: [
+        AutofocusDirective,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        NgIf,
+        InputNumberModule,
+        DropdownModule,
+        Button,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
-export default class PanelDatacenterComponent {
+export class PanelDatacenterComponent {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);
 
     @Input() addSidebarVisible: boolean = false;
+    @Input() server: any;
     @Output() addSidebarVisibleChange: EventEmitter<boolean> = new EventEmitter();
     @Output() serverChange: EventEmitter<ServerDC> = new EventEmitter();
 

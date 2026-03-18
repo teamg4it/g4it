@@ -10,22 +10,20 @@ describe("DigitalServicesResourcesComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesResourcesComponent],
-            providers: [
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        parent: {
-                            paramMap: of(
-                                convertToParamMap({
-                                    digitalServiceVersionId: "12345",
-                                }),
-                            ),
-                        },
-                    },
+    imports: [DigitalServicesResourcesComponent],
+    providers: [
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                parent: {
+                    paramMap: of(convertToParamMap({
+                        digitalServiceVersionId: "12345",
+                    })),
                 },
-            ],
-        }).compileComponents();
+            },
+        },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesResourcesComponent);
         component = fixture.componentInstance;

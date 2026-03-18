@@ -1,13 +1,31 @@
 import { Component, computed, EventEmitter, inject, Input, Output } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfirmationService } from "primeng/api";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { ConfirmationService, PrimeTemplate } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { TableModule } from "primeng/table";
+import { NgIf, NgTemplateOutlet, NgStyle, AsyncPipe } from "@angular/common";
+import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { DecimalsPipe } from "../../../core/pipes/decimal.pipe";
 
 @Component({
     selector: "app-digital-service-table",
     templateUrl: "./digital-service-table.component.html",
     providers: [ConfirmationService],
+    standalone: true,
+    imports: [
+        TableModule,
+        PrimeTemplate,
+        NgIf,
+        Button,
+        NgTemplateOutlet,
+        NgStyle,
+        ConfirmPopupModule,
+        AsyncPipe,
+        DecimalsPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServiceTableComponent {
     protected userService = inject(UserService);

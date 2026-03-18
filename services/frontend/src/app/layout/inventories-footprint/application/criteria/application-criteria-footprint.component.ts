@@ -17,7 +17,7 @@ import {
     SimpleChanges,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { sortByProperty } from "sort-by-property";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
@@ -44,9 +44,24 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
+import { NgClass, NgTemplateOutlet } from "@angular/common";
+import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { ApplicationCriteriaPieChartComponent } from "../application-criteria-pie-chart/application-criteria-pie-chart.component";
+import { Button } from "primeng/button";
 @Component({
     selector: "app-application-criteria-footprint",
     templateUrl: "./application-criteria-footprint.component.html",
+    standalone: true,
+    imports: [
+        NgClass,
+        NgTemplateOutlet,
+        StackBarChartComponent,
+        NgxEchartsDirective,
+        ApplicationCriteriaPieChartComponent,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class ApplicationCriteriaFootprintComponent
     extends AbstractDashboard

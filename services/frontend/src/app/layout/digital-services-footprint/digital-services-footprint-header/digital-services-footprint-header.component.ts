@@ -18,9 +18,9 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
 import { finalize, lastValueFrom } from "rxjs";
 import { DigitalServiceVersionType } from "src/app/core/interfaces/digital-service-version.interface";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
@@ -32,11 +32,46 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { AIFormsStore } from "src/app/core/store/ai-forms.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { ToastModule } from "primeng/toast";
+import { SidebarModule } from "primeng/sidebar";
+import { CommonEditorComponent } from "../../common/common-editor/common-editor.component";
+import { DigitalServicesImportComponent } from "../digital-services-import/digital-services-import.component";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { Button } from "primeng/button";
+import { NgClass, NgIf, AsyncPipe } from "@angular/common";
+import { InplaceModule } from "primeng/inplace";
+import { FormsModule } from "@angular/forms";
+import { InputTextModule } from "primeng/inputtext";
+import { VersionTypeTagComponent } from "./version-type-tag/version-type-tag.component";
+import { TooltipModule } from "primeng/tooltip";
+import { LinkCreatePopupComponent } from "./link-create-popup/link-create-popup.component";
+import { PromoteVersionDialogComponent } from "../../common/promote-version-dialog/promote-version-dialog.component";
 
 @Component({
     selector: "app-digital-services-footprint-header",
     templateUrl: "./digital-services-footprint-header.component.html",
     providers: [MessageService, ConfirmationService],
+    standalone: true,
+    imports: [
+        ToastModule,
+        SidebarModule,
+        CommonEditorComponent,
+        PrimeTemplate,
+        DigitalServicesImportComponent,
+        ConfirmPopupModule,
+        Button,
+        NgClass,
+        NgIf,
+        InplaceModule,
+        FormsModule,
+        InputTextModule,
+        VersionTypeTagComponent,
+        TooltipModule,
+        LinkCreatePopupComponent,
+        PromoteVersionDialogComponent,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);

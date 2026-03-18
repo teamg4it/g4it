@@ -21,29 +21,29 @@ describe("ApplicationCriteriaPieChartComponent", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [ApplicationCriteriaPieChartComponent],
-            imports: [
-                TranslateModule.forRoot(),
-                RouterTestingModule,
-                HttpClientTestingModule,
-            ],
-            providers: [
-                TranslatePipe,
-                TranslateService,
-                InventoriesApplicationFootprintComponent,
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        snapshot: {
-                            paramMap: {
-                                get: () => inventoryDate,
-                            },
-                        },
+    imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        HttpClientTestingModule,
+        ApplicationCriteriaPieChartComponent,
+    ],
+    providers: [
+        TranslatePipe,
+        TranslateService,
+        InventoriesApplicationFootprintComponent,
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    paramMap: {
+                        get: () => inventoryDate,
                     },
                 },
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-        });
+            },
+        },
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+});
         fixture = TestBed.createComponent(ApplicationCriteriaPieChartComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

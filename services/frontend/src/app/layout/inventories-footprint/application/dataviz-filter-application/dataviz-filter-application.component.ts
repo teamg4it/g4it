@@ -13,17 +13,35 @@ import {
     OnChanges,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { CheckboxChangeEvent } from "primeng/checkbox";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { CheckboxChangeEvent, CheckboxModule } from "primeng/checkbox";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { Constants } from "src/constants";
+import { OverlayModule } from "primeng/overlay";
+import { TabViewModule } from "primeng/tabview";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { NgFor, NgClass } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { Button } from "primeng/button";
 
 @Component({
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
+    standalone: true,
+    imports: [
+        OverlayModule,
+        TabViewModule,
+        ScrollPanelModule,
+        NgFor,
+        CheckboxModule,
+        FormsModule,
+        NgClass,
+        Button,
+        TranslatePipe,
+    ],
 })
 export class DatavizFilterApplicationComponent implements OnChanges {
     @Input() allFilters: Filter<string | TransformedDomain> = {};

@@ -26,33 +26,31 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [DigitalServicesTerminalsSidePanelComponent],
-            providers: [
-                {
-                    provide: NG_VALUE_ACCESSOR,
-                    useExisting: forwardRef(
-                        () => DigitalServicesTerminalsSidePanelComponent,
-                    ),
-                    multi: true,
-                },
-                DigitalServicesDataService,
-                TranslatePipe,
-                TranslateService,
-                MessageService,
-                UserService,
-            ],
-            imports: [
-                SharedModule,
-                ReactiveFormsModule,
-                ButtonModule,
-                DropdownModule,
-                InputNumberModule,
-                InputTextModule,
-                HttpClientTestingModule,
-                TranslateModule.forRoot(),
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        });
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => DigitalServicesTerminalsSidePanelComponent),
+            multi: true,
+        },
+        DigitalServicesDataService,
+        TranslatePipe,
+        TranslateService,
+        MessageService,
+        UserService,
+    ],
+    imports: [
+        SharedModule,
+        ReactiveFormsModule,
+        ButtonModule,
+        DropdownModule,
+        InputNumberModule,
+        InputTextModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
+        DigitalServicesTerminalsSidePanelComponent,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+});
         fixture = TestBed.createComponent(DigitalServicesTerminalsSidePanelComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

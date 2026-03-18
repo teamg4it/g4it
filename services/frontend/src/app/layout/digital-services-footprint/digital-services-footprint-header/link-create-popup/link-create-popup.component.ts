@@ -8,11 +8,28 @@ import {
     Output,
 } from "@angular/core";
 import { ClipboardService } from "ngx-clipboard";
+import { DialogModule } from "primeng/dialog";
+import { PrimeTemplate } from "primeng/api";
+import { InputTextModule } from "primeng/inputtext";
+import { FormsModule } from "@angular/forms";
+import { Button } from "primeng/button";
+import { DatePipe } from "@angular/common";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "app-link-create-popup",
     templateUrl: "./link-create-popup.component.html",
     styleUrls: ["./link-create-popup.component.scss"],
+    standalone: true,
+    imports: [
+        DialogModule,
+        PrimeTemplate,
+        InputTextModule,
+        FormsModule,
+        Button,
+        DatePipe,
+        TranslatePipe,
+    ],
 })
 export class LinkCreatePopupComponent {
     private readonly clipboardService = inject(ClipboardService);

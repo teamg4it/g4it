@@ -52,22 +52,6 @@ import { IntegerPipe } from "../pipes/integer.pipe";
 import { MonthYearPipe } from "../pipes/monthyear.pipe";
 
 @NgModule({
-    declarations: [
-        SpinnerComponent,
-        MonthYearPipe,
-        InformationCardComponent,
-        InventoriesHeaderFootprintComponent,
-        DatavizFilterComponent,
-        CommonEditorComponent,
-        BusinessHoursRendererPipe,
-        StatsComponent,
-        CriteriaPopupComponent,
-        PromoteVersionDialogComponent,
-        AutofocusDirective,
-        StackBarChartComponent,
-        WorkspaceComponent,
-        FormNavComponent,
-    ],
     imports: [
         CommonModule,
         FormsModule,
@@ -101,6 +85,20 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         ImpactSidebarComponent,
         DecimalsPipe,
         IntegerPipe,
+        SpinnerComponent,
+        MonthYearPipe,
+        InformationCardComponent,
+        InventoriesHeaderFootprintComponent,
+        DatavizFilterComponent,
+        CommonEditorComponent,
+        BusinessHoursRendererPipe,
+        StatsComponent,
+        CriteriaPopupComponent,
+        PromoteVersionDialogComponent,
+        AutofocusDirective,
+        StackBarChartComponent,
+        WorkspaceComponent,
+        FormNavComponent,
     ],
     exports: [
         TooltipModule,

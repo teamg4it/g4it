@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgFor, NgIf } from "@angular/common";
 import {
     AfterViewInit,
     Component,
@@ -20,10 +21,19 @@ import {
     ViewChild,
     ViewContainerRef,
 } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { RadioButton } from "primeng/radiobutton";
+import { Button } from "primeng/button";
+import { CalendarModule } from "primeng/calendar";
+import { InputTextModule } from "primeng/inputtext";
+import { RadioButton, RadioButtonModule } from "primeng/radiobutton";
 import { delay, Subject, takeUntil } from "rxjs";
 import {
     FileDescription,
@@ -35,11 +45,26 @@ import { InventoryDataService } from "src/app/core/service/data/inventory-data.s
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { Constants } from "src/constants";
+import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
 import { SelectFileComponent } from "./select-file/select-file.component";
 
 @Component({
     selector: "app-file-panel",
     templateUrl: "./file-panel.component.html",
+    standalone: true,
+    imports: [
+        NgIf,
+        AutofocusDirective,
+        FormsModule,
+        RadioButtonModule,
+        CalendarModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        Button,
+        NgFor,
+        TranslatePipe,
+        SelectFileComponent,
+    ],
 })
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     className: string = "default-calendar max-w-full";

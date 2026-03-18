@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { lastValueFrom } from "rxjs";
 import { CompareVersion } from "src/app/core/interfaces/digital-service-version.interface";
@@ -13,11 +13,25 @@ import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceVersionDataService } from "src/app/core/service/data/digital-service-version-data-service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { convertToGlobalVision } from "src/app/core/service/mapper/digital-service";
+import { DigitalServicesFootprintHeaderComponent } from "../digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { RadialChartComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/radial-chart/radial-chart.component";
+import { PieChartComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/pie-chart/pie-chart.component";
+import { GraphDescriptionComponent } from "../digital-services-footprint/digital-services-footprint-dashboard/graph-description/graph-description.component";
 
 @Component({
     selector: "app-digital-services-compare-versions",
     templateUrl: "./digital-services-compare-versions.component.html",
     styleUrl: "./digital-services-compare-versions.component.scss",
+    standalone: true,
+    imports: [
+        DigitalServicesFootprintHeaderComponent,
+        ScrollPanelModule,
+        RouterLink,
+        RadialChartComponent,
+        PieChartComponent,
+        GraphDescriptionComponent,
+    ],
 })
 export class DigitalServicesCompareVersionsComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);

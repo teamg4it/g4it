@@ -7,10 +7,13 @@
  */
 import { Component, computed, input } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { CardModule } from "primeng/card";
 
 @Component({
     selector: "app-information-card",
     templateUrl: "./information-card.component.html",
+    standalone: true,
+    imports: [CardModule],
 })
 export class InformationCardComponent {
     title = input<string>();

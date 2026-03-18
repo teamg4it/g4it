@@ -16,10 +16,10 @@ import {
     signal,
     ViewChild,
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
-import { ScrollPanel } from "primeng/scrollpanel";
+import { ScrollPanel, ScrollPanelModule } from "primeng/scrollpanel";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
@@ -29,9 +29,25 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { InDatacentersService } from "src/app/core/service/data/in-out/in-datacenters.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header/digital-services-footprint-header.component";
+import { TabMenuModule } from "primeng/tabmenu";
+import { DropdownModule } from "primeng/dropdown";
+import { FormsModule } from "@angular/forms";
+import { DigitalServicesFootprintFooterComponent } from "./digital-services-footprint-footer/digital-services-footprint-footer.component";
 @Component({
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
+    standalone: true,
+    imports: [
+        DigitalServicesFootprintHeaderComponent,
+        TabMenuModule,
+        DropdownModule,
+        FormsModule,
+        ScrollPanelModule,
+        RouterOutlet,
+        DigitalServicesFootprintFooterComponent,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesFootprintComponent
     implements OnInit, AfterViewInit, OnDestroy

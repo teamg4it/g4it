@@ -19,8 +19,8 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { MenuItem } from "primeng/api";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { MenuItem, PrimeTemplate } from "primeng/api";
 import { finalize, firstValueFrom, forkJoin, map } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -63,10 +63,40 @@ import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
+import { InventoriesHeaderFootprintComponent } from "./header/inventories-header-footprint.component";
+import { DatavizFilterComponent } from "./dataviz-filter/dataviz-filter.component";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { Button } from "primeng/button";
+import { IndicatorSectionComponent } from "../common/indicator-section/indicator-section.component";
+import { NgClass, TitleCasePipe } from "@angular/common";
+import { ImpactSidebarComponent } from "../common/impact-sidebar/impact-sidebar.component";
+import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inventories-multicriteria-footprint.component";
+import { InventoriesCritereFootprintComponent } from "./critere/inventories-critere-footprint.component";
+import { CriteriaPopupComponent } from "../common/criteria-popup/criteria-popup.component";
+import { SidebarModule } from "primeng/sidebar";
+import { ConfigureViewFiltersComponent } from "../common/configure-view-filters/configure-view-filters.component";
 
 @Component({
     selector: "app-inventories-footprint",
     templateUrl: "./inventories-footprint.component.html",
+    standalone: true,
+    imports: [
+        InventoriesHeaderFootprintComponent,
+        DatavizFilterComponent,
+        ScrollPanelModule,
+        Button,
+        IndicatorSectionComponent,
+        NgClass,
+        ImpactSidebarComponent,
+        InventoriesMultiCriteriaFootprintComponent,
+        InventoriesCritereFootprintComponent,
+        CriteriaPopupComponent,
+        SidebarModule,
+        PrimeTemplate,
+        ConfigureViewFiltersComponent,
+        TitleCasePipe,
+        TranslatePipe,
+    ],
 })
 export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     protected footprintStore = inject(FootprintStoreService);

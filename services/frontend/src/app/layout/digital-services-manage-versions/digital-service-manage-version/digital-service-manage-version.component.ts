@@ -3,10 +3,14 @@ import { ActivatedRoute } from "@angular/router";
 import { lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { DigitalServicesFootprintHeaderComponent } from "../../digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component";
+import { DigitalServiceManageVersionTableComponent } from "./digital-service-manage-version-table/digital-service-manage-version-table.component";
 
 @Component({
     selector: "app-digital-service-manage-version",
     templateUrl: "./digital-service-manage-version.component.html",
+    standalone: true,
+    imports: [DigitalServicesFootprintHeaderComponent, DigitalServiceManageVersionTableComponent],
 })
 export class DigitalServiceManageVersionComponent implements OnInit {
     digitalService: DigitalService = {} as DigitalService;

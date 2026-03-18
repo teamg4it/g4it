@@ -14,11 +14,24 @@ import {
     Output,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { NgClass, NgIf } from "@angular/common";
+import { CardModule } from "primeng/card";
+import { DecimalsPipe } from "../../../core/pipes/decimal.pipe";
+import { IntegerPipe } from "../../../core/pipes/integer.pipe";
 
 @Component({
     selector: "app-impact-aggregate-infos",
     templateUrl: "./impact-aggregate-infos.component.html",
+    standalone: true,
+    imports: [
+        NgClass,
+        NgIf,
+        CardModule,
+        DecimalsPipe,
+        IntegerPipe,
+        TranslatePipe,
+    ],
 })
 export class ImpactAggregateInfosComponent implements OnChanges {
     private readonly translate = inject(TranslateService);

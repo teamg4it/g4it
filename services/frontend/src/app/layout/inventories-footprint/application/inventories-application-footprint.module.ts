@@ -24,14 +24,6 @@ import { inventoriesApplicationRouteur } from "./inventories-application-footpri
 import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/application-multicriteria-footprint.component";
 
 @NgModule({
-    declarations: [
-        InventoriesApplicationFootprintComponent,
-        ApplicationMulticriteriaFootprintComponent,
-        ApplicationCriteriaFootprintComponent,
-        DatavizFilterApplicationComponent,
-        CriteriaStatsComponent,
-        ApplicationCriteriaPieChartComponent,
-    ],
     imports: [
         SharedModule,
         TabMenuModule,
@@ -46,6 +38,12 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
         ImpactButtonComponent,
         ConfigureViewFiltersComponent,
         IndicatorSectionComponent,
+        InventoriesApplicationFootprintComponent,
+        ApplicationMulticriteriaFootprintComponent,
+        ApplicationCriteriaFootprintComponent,
+        DatavizFilterApplicationComponent,
+        CriteriaStatsComponent,
+        ApplicationCriteriaPieChartComponent,
     ],
     exports: [InventoriesApplicationFootprintComponent],
 })

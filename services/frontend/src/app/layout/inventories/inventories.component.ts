@@ -15,8 +15,8 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Event, NavigationEnd, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfirmationService, MessageService } from "primeng/api";
+import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
 import { Subject, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
@@ -31,11 +31,39 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { FilePanelComponent } from "./file-panel/file-panel.component";
+import { ToastModule } from "primeng/toast";
+import { SidebarModule } from "primeng/sidebar";
+import { CommonEditorComponent } from "../common/common-editor/common-editor.component";
+import { NgIf, NgFor, AsyncPipe } from "@angular/common";
+import { Button } from "primeng/button";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { AccordionModule } from "primeng/accordion";
+import { InventoryItemComponent } from "./inventory-item/inventory-item.component";
+import { FormsModule } from "@angular/forms";
+import { InputTextModule } from "primeng/inputtext";
 
 @Component({
     selector: "app-inventories",
     templateUrl: "./inventories.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [
+        ToastModule,
+        SidebarModule,
+        FilePanelComponent,
+        CommonEditorComponent,
+        NgIf,
+        Button,
+        ScrollPanelModule,
+        AccordionModule,
+        NgFor,
+        InventoryItemComponent,
+        PrimeTemplate,
+        FormsModule,
+        InputTextModule,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);

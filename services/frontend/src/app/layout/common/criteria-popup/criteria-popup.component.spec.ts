@@ -30,13 +30,13 @@ describe("CriteriaPopupComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            declarations: [CriteriaPopupComponent],
-            providers: [
-                MonthYearPipe,
-                { provide: TranslateService, useValue: translateMock },
-                { provide: GlobalStoreService, useValue: globalStoreMock },
-            ],
-        }).compileComponents();
+    imports: [CriteriaPopupComponent],
+    providers: [
+        MonthYearPipe,
+        { provide: TranslateService, useValue: translateMock },
+        { provide: GlobalStoreService, useValue: globalStoreMock },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(CriteriaPopupComponent);
         component = fixture.componentInstance;

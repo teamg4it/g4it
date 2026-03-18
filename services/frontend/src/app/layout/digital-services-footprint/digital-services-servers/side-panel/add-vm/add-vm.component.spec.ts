@@ -44,17 +44,17 @@ describe("PanelAddVmComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                ReactiveFormsModule,
-                HttpClientTestingModule,
-                TranslateModule.forRoot(),
-            ],
-            declarations: [PanelAddVmComponent],
-            providers: [
-                { provide: UserService, useValue: mockUserService },
-                { provide: DigitalServiceStoreService, useValue: mockDigitalServiceStore },
-            ],
-        }).compileComponents();
+    imports: [
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
+        PanelAddVmComponent,
+    ],
+    providers: [
+        { provide: UserService, useValue: mockUserService },
+        { provide: DigitalServiceStoreService, useValue: mockDigitalServiceStore },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(PanelAddVmComponent);
         component = fixture.componentInstance;

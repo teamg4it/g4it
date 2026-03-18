@@ -7,9 +7,10 @@
  */
 import { Component, HostListener, inject, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
+import { ToastModule } from "primeng/toast";
 import { delay, filter, firstValueFrom, map, of, Subject, switchMap } from "rxjs";
 import { environment } from "src/environments/environment";
 import { CustomAuthService } from "./core/service/business/custom-auth.service";
@@ -20,6 +21,8 @@ import { GlobalStoreService } from "./core/store/global.store";
 @Component({
     selector: "app-root",
     templateUrl: "./app.component.html",
+    standalone: true,
+    imports: [RouterOutlet, ToastModule],
 })
 export class AppComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
@@ -35,7 +38,9 @@ export class AppComponent implements OnInit {
         private readonly activatedRoute: ActivatedRoute,
         private readonly titleService: Title,
         private readonly customAuthService: CustomAuthService,
-    ) {}
+    ) {
+        this.customAuthService.setupRouteGuard();
+    }
 
     ngOnInit(): void {
         this.initializeAsync();
