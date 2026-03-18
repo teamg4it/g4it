@@ -49,13 +49,13 @@ public class DataDeletionService {
 
     @Autowired
     public DataDeletionService(
-        WorkspaceRepository workspaceRepository,
-        InventoryRepository inventoryRepository,
-        InventoryDeleteService inventoryDeleteService,
-        DigitalServiceService digitalServiceService,
-        DigitalServiceRepository digitalServiceRepository,
-        AzureEmailService azureEmailService,
-        MessageSource messageSource
+            WorkspaceRepository workspaceRepository,
+            InventoryRepository inventoryRepository,
+            InventoryDeleteService inventoryDeleteService,
+            DigitalServiceService digitalServiceService,
+            DigitalServiceRepository digitalServiceRepository,
+            AzureEmailService azureEmailService,
+            MessageSource messageSource
     ) {
         this.workspaceRepository = workspaceRepository;
         this.inventoryRepository = inventoryRepository;
@@ -97,59 +97,67 @@ public class DataDeletionService {
     private void sendRetentionReminderEmail(String recipientEmail, String itemName, String expirationDate, Integer retentionDay) {
         // Send email notification
         log.info("Sending retention reminder email to {} for item {} expiring on {}", recipientEmail, itemName, expirationDate);
-        azureEmailService.sendEmail(
-            recipientEmail,
-            messageSource.getMessage("email.subject", new String[]{}, Locale.ENGLISH),
-            messageSource.getMessage("email.body", new String[]{itemName, expirationDate, String.valueOf(retentionDay)}, Locale.ENGLISH)
-        );
+        String emailContentEn = messageSource.getMessage("email.body", new String[]{itemName, expirationDate, String.valueOf(retentionDay)}, Locale.ENGLISH);
+        String emailContentFr = messageSource.getMessage("email.body", new String[]{itemName, expirationDate, String.valueOf(retentionDay)}, Locale.FRENCH);
+        String emailSubjectEn = messageSource.getMessage("email.subject", new String[]{}, Locale.ENGLISH);
+        String emailSubjectFr = messageSource.getMessage("email.subject", new String[]{}, Locale.FRENCH);
+        // Combine both English and French subjects with a separator
+        String combinedSubject = emailSubjectEn + " / " + emailSubjectFr;
+        // Combine both English and French content with custom formatting
+        String combinedBody = emailContentEn + """
+                
+                ———————
+                
+                """ + emailContentFr;
+        azureEmailService.sendEmail(recipientEmail, combinedSubject, combinedBody);
     }
 
     private int handleInventoryDeletion(Workspace workspaceEntity, String organization, Long workspaceId, Integer retentionDay, LocalDateTime now) {
         return inventoryRepository.findByWorkspace(workspaceEntity).stream()
-            .mapToInt(inventory -> {
-                long daysSinceLastUpdate = java.time.Duration.between(
-                    inventory.getLastUpdateDate(), now
-                ).toDays();
-                if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
-                    String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
-                    sendRetentionReminderEmail(
-                        inventory.getCreatedBy().getEmail(),
-                        inventory.getName(),
-                        expirationDate,
-                        retentionDay
-                    );
+                .mapToInt(inventory -> {
+                    long daysSinceLastUpdate = java.time.Duration.between(
+                            inventory.getLastUpdateDate(), now
+                    ).toDays();
+                    if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
+                        String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+                        sendRetentionReminderEmail(
+                                inventory.getCreatedBy().getEmail(),
+                                inventory.getName(),
+                                expirationDate,
+                                retentionDay
+                        );
+                        return 0;
+                    } else if (now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate())) {
+                        inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
+                        return 1;
+                    }
                     return 0;
-                } else if (now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate())) {
-                    inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
-                    return 1;
-                }
-                return 0;
-            })
-            .sum();
+                })
+                .sum();
     }
 
     private int handleDigitalServiceDeletion(Workspace workspaceEntity, Integer retentionDay, LocalDateTime now) {
         return digitalServiceRepository.findByWorkspace(workspaceEntity).stream()
-            .mapToInt(digitalServiceBO -> {
-                long daysSinceLastUpdate = java.time.Duration.between(
-                    digitalServiceBO.getLastUpdateDate(), now
-                ).toDays();
-                if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
-                    String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
-                    sendRetentionReminderEmail(
-                       digitalServiceBO.getUser().getEmail(),
-                        digitalServiceBO.getName(),
-                        expirationDate,
-                        retentionDay
-                    );
+                .mapToInt(digitalServiceBO -> {
+                    long daysSinceLastUpdate = java.time.Duration.between(
+                            digitalServiceBO.getLastUpdateDate(), now
+                    ).toDays();
+                    if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
+                        String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+                        sendRetentionReminderEmail(
+                                digitalServiceBO.getUser().getEmail(),
+                                digitalServiceBO.getName(),
+                                expirationDate,
+                                retentionDay
+                        );
+                        return 0;
+                    } else if (now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate())) {
+                        digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
+                        return 1;
+                    }
                     return 0;
-                } else if (now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate())) {
-                    digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
-                    return 1;
-                }
-                return 0;
-            })
-            .sum();
+                })
+                .sum();
     }
 
 }
