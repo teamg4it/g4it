@@ -33,9 +33,7 @@
             }}
         </caption>
         <tr>
-             @if (selectable) {
-            <th scope="col"></th>
-        }
+            
             @if (showId && !isMobileView()) {
                 <th scope="col" id="id">
                     {{ "digital-services-terminals.id" | translate }}
@@ -55,19 +53,15 @@
                     {{ "common.button" | translate }}
                 </th>
             }
+              @if (selectable) {
+            <th scope="col"></th>
+        }
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
         <tr>
 
-            @if (selectable) {
-            <td>
-                <p-checkbox
-                    [(ngModel)]="data.selected"
-                    binary="true"
-                ></p-checkbox>
-            </td>
-        }
+           
 
             @if (showId && !isMobileView()) {
                 <td class="grey-text">{{ rowIndex + 1 }}</td>
@@ -87,6 +81,14 @@
                     [ngTemplateOutletContext]="{ data: data, rowIndex: rowIndex }"
                 ></ng-template>
             }
+             @if (selectable) {
+            <td>
+                <p-checkbox
+                    [(ngModel)]="data.selected"
+                    binary="true"
+                ></p-checkbox>
+            </td>
+        }
         </tr>
     </ng-template>
     <ng-template #dataConsistencyRef let-data="data" let-rowIndex="rowIndex">

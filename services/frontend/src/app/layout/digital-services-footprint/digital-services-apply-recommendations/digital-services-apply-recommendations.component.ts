@@ -1,9 +1,12 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, computed, Host, inject, Input, OnInit, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UserService } from 'src/app/core/service/business/user.service';
-import { of } from 'rxjs';
-import { DigitalServiceCloudServiceConfig, DigitalServiceNetworkConfig, DigitalServiceServerConfig } from 'src/app/core/interfaces/digital-service.interfaces';
+import { lastValueFrom, of } from 'rxjs';
+import { DigitalServiceCloudServiceConfig, DigitalServiceNetworkConfig, DigitalServiceServerConfig, ServerDC } from 'src/app/core/interfaces/digital-service.interfaces';
 import { DigitalServiceStoreService } from 'src/app/core/store/digital-service.store';
+import { DigitalServicesDataService } from 'src/app/core/service/data/digital-services-data.service';
+import PanelDatacenterComponent from '../digital-services-servers/side-panel/add-datacenter/datacenter.component';
+import { InDatacenterRest } from 'src/app/core/interfaces/input.interface';
 
 
 @Component({
@@ -24,10 +27,50 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
 
   @Input() selectedRecommendations: any[] = [];
   @Input() dsVersionUid!: string;
-
+  addSidebarVisible: boolean = false;
   selectedMenuIndex: number | null = 0;
+  digitalServiceStore = inject(DigitalServiceStoreService);
+      datacenterOptions = computed(() => {
+          return this.digitalServiceStore.inDatacenters().map((datacenter) => {
+              return {
+                  location: datacenter.location,
+                  name: datacenter.name,
+                  pue: datacenter.pue,
+                  displayLabel: datacenter.displayLabel,
+                  uid: "",
+              } as ServerDC;
+          });
+      });
+          current = {
+              host: {} as Host,
+              datacenter: {} as ServerDC,
+          };
+          addDatacenterVisible = false;
   
+  private readonly digitalDataService = inject(DigitalServicesDataService);
+  
+  refreshDatacenters() {
+    this.digitalServiceStore.inDatacenters(); 
+  }
 
+  addDatacenter(newDc: ServerDC) {
+   
+    const digitalServiceUid = this.digitalServiceStore.digitalService().uid;
+    const datacenterName = `${newDc.name}|${crypto.randomUUID()}`;
+  const currentList = this.digitalServiceStore.inDatacenters();
+
+  const newDatacenter: InDatacenterRest = {
+    ...newDc,
+    digitalServiceUid: this.digitalServiceStore.digitalService().uid,
+    displayLabel: `${newDc.name.split("|")[0]} (${newDc.location} - PUE = ${newDc.pue})`,
+  };
+
+  this.digitalServiceStore.setInDatacenters([...currentList, newDatacenter]);
+
+  this.addDatacenterVisible = false;
+
+
+  }
 
 
   importForm!: FormGroup;
@@ -36,7 +79,9 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildImportDetails();
+    this.loadCloudInstanceTypes();
   }
+  instanceTypesLoaded = signal(false);
   
 
   buildImportDetails() {
@@ -70,6 +115,28 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
     });
   }
 
+  private async loadCloudInstanceTypes() {
+    const providers = await lastValueFrom(
+      this.digitalDataService.getBoaviztapiCloudProviders()
+    );
+
+    const map = new Map<string, string[]>();
+    for (const provider of providers) {
+      const types = await lastValueFrom(
+        this.digitalDataService.getBoaviztapiInstanceTypes(provider)
+      );
+      map.set(provider, types);
+    }
+    map.forEach((v, k) =>
+    console.log(`Providerelrjhvbezkrhvbjfbkhbe;j: ${v} → ${v.length} types`)
+  );
+  this.instanceTypesByProvider.set(map);
+  this.instanceTypesLoaded.set(true);
+    console.log('[FINAL] Signal mis à jour — providers chargés :', map.size);
+
+  
+}
+
   previousTab(index: number) {
     if (index > 0) {
       this.selectTab(index - 1);
@@ -87,7 +154,6 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
 }
 
 editingServer: DigitalServiceServerConfig | null = null;
-private digitalServiceStore = inject(DigitalServiceStoreService);
 openServerEditor(server: DigitalServiceServerConfig) {
   console.log('[PARENT] editEmbedded reçu', server);
   this.editingServer = structuredClone(server);
@@ -100,7 +166,12 @@ closeEditor() {
 }
 
 onServerSaved() {
+    if (this.editingServer) {
+    this.digitalServiceStore.setServer(this.editingServer);
+  }
   this.closeEditor();
+  
+  this.digitalServiceStore.setRefresh(Date.now());
 }
 
 editingNetwork: DigitalServiceNetworkConfig | null = null;
@@ -143,9 +214,16 @@ get allNetworks(): DigitalServiceNetworkConfig[] {
 }
 
 editingCloud: DigitalServiceCloudServiceConfig | null = null;
+instanceTypesByProvider = signal<Map<string, string[]>>(new Map());
+  get editingCloudInstanceTypes() {
+    return this.editingCloud 
+      ? this.instanceTypesByProvider().get(this.editingCloud.cloudProvider) ?? []
+      : [];
+  }
 
 openCloudEditor(cloud: DigitalServiceCloudServiceConfig) {
   this.editingCloud = structuredClone(cloud);
+    const current = this.instanceTypesByProvider();
 }
 
 closeCloudEditor() {
@@ -172,5 +250,14 @@ get cloudServices(): DigitalServiceCloudServiceConfig[] {
       averageWorkload: e.workload! * 100,
     } as DigitalServiceCloudServiceConfig));
 }
+
+ recommendationParameters: Record<string, string[]> = {
+  'Clouds Publics - IaaS': ['quantity', 'instanceType', 'annualUsage', 'averageWorkload'],
+  'Réseaux': ['yearlyQuantityOfGbExchanged', 'type'],
+  'Infrastructure Privée': ['datacenter'],
+};
+
+@ViewChild(PanelDatacenterComponent)
+datacenterPanel!: PanelDatacenterComponent;
 
 }

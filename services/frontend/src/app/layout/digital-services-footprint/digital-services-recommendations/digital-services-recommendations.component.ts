@@ -24,10 +24,10 @@ export class DigitalServicesRecommendationsComponent {
   isZoom125 = computed(() => this.global.zoomLevel() >= 125);
 
   headerFields = [
-    'title',
     'priority',
-    'category',
+    'title',
     'description',
+    'category',
     'implementationDifficulty',
     
   ];

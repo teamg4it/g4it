@@ -105,7 +105,7 @@
                 "common.cancel" | translate
             }}</p-button>
             <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                *ngIf="canWrite$ | async"
                 styleClass="yellow-button"
                 [disabled]="datacenterForm.invalid || isToLow || disableButton"
                 type="submit"

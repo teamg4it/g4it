@@ -34,29 +34,34 @@
         min-width: 0;
         flex: 1 1 auto;
         min-width: 0;
+         min-height: 0; 
         // display: flex;
         // flex-direction: column;
     }
+    p-scrollPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
     .import-digital-content {
     display: flex;
     flex: 1;
     min-width: 0;
     }
     .embedded-server-panel {
-        max-height: 50vh;
+        //max-height: 100vh;
         overflow: auto;
-        border: 5px solid #ddd;
+        // border: 5px solid #ddd;
+          height: 100%;    
+  flex: 1;       
+  min-height: 0;      
+  height: 10;
     }
 
     .embedded-server-panel > form {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-.embedded-server-panel .panel-content {
-  flex: 1;          /* prend tout l’espace restant */
-  overflow-y: auto; /* scroll si le contenu est trop long */
-  padding: 1rem;
 }
 
 .embedded-server-panel .panel-footer {
@@ -78,6 +83,31 @@
 .embedded-server-panel .button-bottom-right {
   flex-shrink: 0;     /* reste visible même si le contenu scroll */
   margin-top: 8px;
+}
+
+
+.add-datacenter-inline {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+
+  .side-panel-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+}
+
+/* Pour que le bouton "Ajouter" reste aligné proprement */
+:host ::ng-deep .p-button.black-button {
+  white-space: nowrap;
 }
 
     .space-form--input:not(.active) {
