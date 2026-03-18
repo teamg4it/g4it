@@ -81,7 +81,8 @@ function initializeAuth(authService: CustomAuthService) {
         DatePipe,
         providePrimeNG({
             theme: {
-                preset: Aura
+                preset: Aura,
+                options: {            darkModeSelector: false || 'none'}
         }})
     ],
     bootstrap: [AppComponent],
