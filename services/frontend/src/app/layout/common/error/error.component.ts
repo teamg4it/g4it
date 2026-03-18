@@ -13,8 +13,7 @@ import { Subject, takeUntil } from "rxjs";
 
 @Component({
     selector: "app-error",
-    templateUrl: "./error.component.html",
-    standalone: false
+    templateUrl: "./error.component.html"
 })
 export class ErrorComponent implements OnInit, OnDestroy {
     errorTitle: string = "";

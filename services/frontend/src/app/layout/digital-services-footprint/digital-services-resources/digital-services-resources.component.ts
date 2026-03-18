@@ -4,8 +4,7 @@ import { Subscription } from "rxjs";
 
 @Component({
     selector: "app-digital-services-resources",
-    templateUrl: "./digital-services-resources.component.html",
-    standalone: false
+    templateUrl: "./digital-services-resources.component.html"
 })
 export class DigitalServicesResourcesComponent implements OnInit, OnDestroy {
     private readonly route = inject(ActivatedRoute);

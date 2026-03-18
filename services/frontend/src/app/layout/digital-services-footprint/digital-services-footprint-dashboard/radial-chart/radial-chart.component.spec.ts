@@ -26,41 +26,39 @@ describe("RadialChartComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [RadialChartComponent],
-            imports: [
-                ButtonModule,
-                SharedModule,
-                NgxEchartsModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                TranslatePipe,
-                {
-                    provide: TranslateService,
-                    useValue: {
-                        currentLang: "en",
-                        translations: {
-                            en: {
-                                criteria: {
-                                    "criteria.climate-change.title": "Climate Change",
-                                    "criteria.resource-use.title": "Resource Use",
-                                    "criteria.ionising-radiation.title":
-                                        "Ionising Radiation",
-                                    "criteria.acidification.title": "Acidification",
-                                    "criteria.particulate-matter.title":
-                                        "Particulate Matter",
-                                },
-                            },
+    imports: [
+        ButtonModule,
+        SharedModule,
+        NgxEchartsModule,
+        TranslateModule.forRoot(),
+        RadialChartComponent,
+    ],
+    providers: [
+        TranslatePipe,
+        {
+            provide: TranslateService,
+            useValue: {
+                currentLang: "en",
+                translations: {
+                    en: {
+                        criteria: {
+                            "criteria.climate-change.title": "Climate Change",
+                            "criteria.resource-use.title": "Resource Use",
+                            "criteria.ionising-radiation.title": "Ionising Radiation",
+                            "criteria.acidification.title": "Acidification",
+                            "criteria.particulate-matter.title": "Particulate Matter",
                         },
-                        instant: (key: string) => key,
                     },
                 },
-                {
-                    provide: NGX_ECHARTS_CONFIG,
-                    useFactory: () => ({ echarts: () => import("echarts") }),
-                },
-            ],
-        }).compileComponents();
+                instant: (key: string) => key,
+            },
+        },
+        {
+            provide: NGX_ECHARTS_CONFIG,
+            useFactory: () => ({ echarts: () => import("echarts") }),
+        },
+    ],
+}).compileComponents();
     });
 
     beforeEach(async () => {

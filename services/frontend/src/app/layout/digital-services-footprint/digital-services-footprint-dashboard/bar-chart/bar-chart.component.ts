@@ -36,8 +36,7 @@ import { Constants } from "src/constants";
 
 @Component({
     selector: "app-bar-chart",
-    templateUrl: "./bar-chart.component.html",
-    standalone: false
+    templateUrl: "./bar-chart.component.html"
 })
 export class BarChartComponent extends AbstractDashboard implements OnChanges {
     @Input() barChartChild: boolean = false;

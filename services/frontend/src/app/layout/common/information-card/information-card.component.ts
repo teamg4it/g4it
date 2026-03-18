@@ -10,8 +10,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
     selector: "app-information-card",
-    templateUrl: "./information-card.component.html",
-    standalone: false
+    templateUrl: "./information-card.component.html"
 })
 export class InformationCardComponent {
     title = input<string>();

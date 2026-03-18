@@ -4,8 +4,7 @@ import { FormGroup } from "@angular/forms";
 @Component({
     selector: "app-form-nav",
     templateUrl: "./form-nav.component.html",
-    styleUrl: "./form-nav.component.scss",
-    standalone: false
+    styleUrl: "./form-nav.component.scss"
 })
 export class FormNavComponent {
     @Input() spaceDetails: any;

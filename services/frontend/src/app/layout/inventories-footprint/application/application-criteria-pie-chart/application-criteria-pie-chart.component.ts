@@ -16,8 +16,7 @@ import { Constants } from "src/constants";
 
 @Component({
     selector: "app-application-criteria-pie-chart",
-    templateUrl: "./application-criteria-pie-chart.component.html",
-    standalone: false
+    templateUrl: "./application-criteria-pie-chart.component.html"
 })
 export class ApplicationCriteriaPieChartComponent {
     protected footprintStore = inject(FootprintStoreService);

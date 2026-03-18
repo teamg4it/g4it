@@ -27,8 +27,7 @@ import PanelDatacenterComponent from "../add-datacenter/datacenter.component";
 @Component({
     selector: "app-side-panel-server-parameters",
     templateUrl: "./server-parameters.component.html",
-    providers: [MessageService],
-    standalone: false
+    providers: [MessageService]
 })
 export class PanelServerParametersComponent {
     public translate = inject(TranslateService);

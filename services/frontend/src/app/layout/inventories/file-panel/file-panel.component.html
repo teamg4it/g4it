@@ -1,196 +1,214 @@
 <div class="px-4">
+  @if (purpose === 'new') {
     <div
-        appAutofocus
-        class="side-panel-title"
-        *ngIf="purpose === 'new'"
-        tabIndex="-1"
-        [attr.aria-label]="'new-inventory-choose' | translate"
-    >
-        <h2>
-            {{ "inventories.add" | translate }}
-        </h2>
+      appAutofocus
+      class="side-panel-title"
+      tabIndex="-1"
+      [attr.aria-label]="'new-inventory-choose' | translate"
+      >
+      <h2>
+        {{ "inventories.add" | translate }}
+      </h2>
     </div>
-    <div class="side-panel-title" *ngIf="purpose === 'upload'" appAutofocus tabIndex="-1">
-        <h2>
-            {{ "inventories.load-files-on" | translate }}
-            {{ name }}
-        </h2>
+  }
+  @if (purpose === 'upload') {
+    <div class="side-panel-title" appAutofocus tabIndex="-1">
+      <h2>
+        {{ "inventories.load-files-on" | translate }}
+        {{ name }}
+      </h2>
     </div>
-    <div>
-        <form action="" method="post">
-            <fieldset
-                class="flex flex-wrap gap-3 border-black-alpha-90 bg-white w-7 border-round-xl border-1 cursor-pointer"
-                *ngIf="purpose === 'new'"
-                role="group"
-                [attr.aria-label]="'inventories.type.name' | translate"
+  }
+  <div>
+    <form action="" method="post">
+      @if (purpose === 'new') {
+        <fieldset
+          class="flex flex-wrap gap-3 border-black-alpha-90 bg-white w-7 border-round-xl border-1 cursor-pointer"
+          role="group"
+          [attr.aria-label]="'inventories.type.name' | translate"
+          >
+          <div
+            class="flex align-items-center p-2"
+            (click)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
+            (keydown.enter)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
+            (keydown.space)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
             >
-                <div
-                    class="flex align-items-center p-2"
-                    (click)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
-                    (keydown.enter)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
-                    (keydown.space)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
-                >
-                    <label for="information-system" class="mr-1 cursor-pointer">{{
-                        "inventories.type.is-version" | translate
-                    }}</label>
-                    <p-radioButton
-                        #firstInputElement
-                        name="inventoryType"
-                        value="INFORMATION_SYSTEM"
-                        [(ngModel)]="selectedType"
-                        inputId="information-system"
-                    ></p-radioButton>
-                </div>
+            <label for="information-system" class="mr-1 cursor-pointer">{{
+              "inventories.type.is-version" | translate
+            }}</label>
+            <p-radioButton
+              #firstInputElement
+              name="inventoryType"
+              value="INFORMATION_SYSTEM"
+              [(ngModel)]="selectedType"
+              inputId="information-system"
+            ></p-radioButton>
+          </div>
+          <div class="border-left-1"></div>
+          <div
+            class="flex align-items-center p-2"
+            (click)="selectedType = 'SIMULATION'; name = ''"
+            (keydown.enter)="selectedType = 'SIMULATION'; name = ''"
+            (keydown.space)="selectedType = 'SIMULATION'; name = ''"
+            >
+            <label for="simulation" class="mr-1 cursor-pointer">{{
+              "inventories.type.simulation" | translate
+            }}</label>
+            <p-radioButton
+              name="inventoryType"
+              value="SIMULATION"
+              [(ngModel)]="selectedType"
+              inputId="simulation"
+              id="simulation-radio-button"
+            ></p-radioButton>
+          </div>
+        </fieldset>
+      }
 
-                <div class="border-left-1"></div>
-                <div
-                    class="flex align-items-center p-2"
-                    (click)="selectedType = 'SIMULATION'; name = ''"
-                    (keydown.enter)="selectedType = 'SIMULATION'; name = ''"
-                    (keydown.space)="selectedType = 'SIMULATION'; name = ''"
-                >
-                    <label for="simulation" class="mr-1 cursor-pointer">{{
-                        "inventories.type.simulation" | translate
-                    }}</label>
-                    <p-radioButton
-                        name="inventoryType"
-                        value="SIMULATION"
-                        [(ngModel)]="selectedType"
-                        inputId="simulation"
-                        id="simulation-radio-button"
-                    ></p-radioButton>
-                </div>
-            </fieldset>
-
-            <br />
-            <div class="flex flex-row align-items-start ml-1" *ngIf="purpose === 'new'">
-                <p-calendar
-                    dateFormat="MM yy"
-                    (onSelect)="onSelectToDate($event)"
-                    view="month"
-                    placeholder="Oct 2023"
-                    [class]="className"
-                    [disabledDates]="invalidDates"
-                    [showClear]="true"
-                    (onClear)="onClearDate()"
-                    *ngIf="selectedType === inventoryType.INFORMATION_SYSTEM"
-                    id="calendar"
-                    [attr.aria-label]="'inventories.calendar' | translate"
-                ></p-calendar>
-                <div [formGroup]="inventoriesForm">
-                    <input
-                        *ngIf="selectedType === inventoryType.SIMULATION"
-                        pInputText
-                        class="w-15rem md:w-30rem"
-                        type="text"
-                        name="name"
-                        formControlName="name"
-                        placeholder="Name"
-                        [attr.aria-label]="'input-simulation-aria' | translate"
-                        [(ngModel)]="name"
-                        [maxlength]="255"
-                        (keyup)="checkForDuplicate()"
-                        id="input-simulation-text"
-                    />
-                    <p class="error-text" *ngIf="inventoriesFormControls['name'].invalid">
-                        {{ "inventories.nameValidation" | translate }}
-                    </p>
-                    <p class="error-text" *ngIf="checkForDuplicate()">
-                        {{ "inventories.duplicateSimulation" | translate }}
-                    </p>
-                </div>
-                <p
-                    *ngIf="className === 'ng-invalid ng-dirty' && purpose === 'new'"
-                    class="error-text"
-                >
-                    {{ "inventories.inventory-date" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
+      <br />
+      @if (purpose === 'new') {
+        <div class="flex flex-row align-items-start ml-1">
+          @if (selectedType === inventoryType.INFORMATION_SYSTEM) {
+            <p-calendar
+              dateFormat="MM yy"
+              (onSelect)="onSelectToDate($event)"
+              view="month"
+              placeholder="Oct 2023"
+              [class]="className"
+              [disabledDates]="invalidDates"
+              [showClear]="true"
+              (onClear)="onClearDate()"
+              id="calendar"
+              [attr.aria-label]="'inventories.calendar' | translate"
+            ></p-calendar>
+          }
+          <div [formGroup]="inventoriesForm">
+            @if (selectedType === inventoryType.SIMULATION) {
+              <input
+                pInputText
+                class="w-15rem md:w-30rem"
+                type="text"
+                name="name"
+                formControlName="name"
+                placeholder="Name"
+                [attr.aria-label]="'input-simulation-aria' | translate"
+                [(ngModel)]="name"
+                [maxlength]="255"
+                (keyup)="checkForDuplicate()"
+                id="input-simulation-text"
+                />
+            }
+            @if (inventoriesFormControls['name'].invalid) {
+              <p class="error-text">
+                {{ "inventories.nameValidation" | translate }}
+              </p>
+            }
+            @if (checkForDuplicate()) {
+              <p class="error-text">
+                {{ "inventories.duplicateSimulation" | translate }}
+              </p>
+            }
+          </div>
+          @if (className === 'ng-invalid ng-dirty' && purpose === 'new') {
             <p
-                class="error-text"
-                *ngIf="!name && selectedType === inventoryType.INFORMATION_SYSTEM"
-            >
-                {{ "inventories.date" | translate }}
-                {{ "common.mandatory" | translate }}
+              class="error-text"
+              >
+              {{ "inventories.inventory-date" | translate }}
+              {{ "common.mandatory" | translate }}
             </p>
+          }
+        </div>
+      }
+      @if (!name && selectedType === inventoryType.INFORMATION_SYSTEM) {
+        <p
+          class="error-text"
+          >
+          {{ "inventories.date" | translate }}
+          {{ "common.mandatory" | translate }}
+        </p>
+      }
 
-            <div class="input-loading-files overflow-auto max-h-21rem mt-4">
-                <ng-container #uploaderContainer> </ng-container>
-            </div>
+      <div class="input-loading-files overflow-auto max-h-21rem mt-4">
+        <ng-container #uploaderContainer> </ng-container>
+      </div>
 
-            <div class="mt-4 mb-4 font-italic">
-                <p>
-                    {{ "common.allowed-extensions" | translate }}
-                    {{ allowedFileExtensions.join(", ") }}
-                </p>
-            </div>
+      <div class="mt-4 mb-4 font-italic">
+        <p>
+          {{ "common.allowed-extensions" | translate }}
+          {{ allowedFileExtensions.join(", ") }}
+        </p>
+      </div>
 
-            <p-button
-                (onClick)="addComponent()"
-                label="+ {{ 'common.add' | translate }}"
-                styleClass="px-4 py-2 border-round-3xl text-xs font-semibold yellow-button-file"
-            />
-            <hr class="mb-1" />
-            <div>
-                <div id="openTitle" class="text-xl">
-                    {{ "inventories.templates.starter-pack" | translate }}
-                </div>
-                <div>
-                    <ul aria-labelledby="openTitle" tabindex="0">
-                        <li class="my-1" *ngFor="let data of templateFiles">
-                            <span
+      <p-button
+        (onClick)="addComponent()"
+        label="+ {{ 'common.add' | translate }}"
+        styleClass="px-4 py-2 border-round-3xl text-xs font-semibold yellow-button-file"
+        />
+      <hr class="mb-1" />
+      <div>
+        <div id="openTitle" class="text-xl">
+          {{ "inventories.templates.starter-pack" | translate }}
+        </div>
+        <div>
+          <ul aria-labelledby="openTitle" tabindex="0">
+            @for (data of templateFiles; track data) {
+              <li class="my-1">
+                <span
                                 [class.font-semibold]="
                                     ['zip', 'xlsx'].includes(data.type)
                                 "
-                                [class.text-lg]="['zip', 'xlsx'].includes(data.type)"
-                                class="vertical-align-middle my-1"
-                            >
-                                {{ data.displayFileName }}
-                            </span>
-
-                            <button
-                                type="button"
-                                class="bg-transparent border-none cursor-pointer vertical-align-middle"
-                                (click)="downloadTemplateFile(data.name)"
-                            >
-                                <img
-                                    src="assets/images/icons/icon-download.svg"
-                                    height="24px"
-                                    [alt]="'inventories.download-alt' | translate"
+                  [class.text-lg]="['zip', 'xlsx'].includes(data.type)"
+                  class="vertical-align-middle my-1"
+                  >
+                  {{ data.displayFileName }}
+                </span>
+                <button
+                  type="button"
+                  class="bg-transparent border-none cursor-pointer vertical-align-middle"
+                  (click)="downloadTemplateFile(data.name)"
+                  >
+                  <img
+                    src="assets/images/icons/icon-download.svg"
+                    height="24px"
+                    [alt]="'inventories.download-alt' | translate"
                                     ariaLabel="{{
                                         'inventories-footprint.header.download'
                                             | translate
                                     }} {{ data.displayFileName }}"
-                                />
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="text-right">
-                <p-button
-                    id="cancel-new-inventory"
-                    styleClass="white-button"
-                    (onClick)="close()"
-                    >{{ "common.cancel" | translate }}</p-button
-                >
-                <p-button
-                    styleClass="black-button"
-                    type="submit"
-                    (onClick)="submitFormData()"
+                    />
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+      <div class="text-right">
+        <p-button
+          id="cancel-new-inventory"
+          styleClass="white-button"
+          (onClick)="close()"
+          >{{ "common.cancel" | translate }}</p-button
+          >
+          <p-button
+            styleClass="black-button"
+            type="submit"
+            (onClick)="submitFormData()"
                     [disabled]="
                         (purpose === 'new' && (name === '' || checkForDuplicate())) ||
                         (purpose === 'upload' && !isFileUploaded())
                     "
-                    id="add-new-inventory"
-                >
-                    <span *ngIf="purpose === 'new'">{{ "common.add" | translate }}</span>
-                    <span *ngIf="purpose === 'upload'">{{
-                        "common.upload" | translate
-                    }}</span>
-                </p-button>
-            </div>
-        </form>
+            id="add-new-inventory"
+            >
+            @if (purpose === 'new') {
+              <span>{{ "common.add" | translate }}</span>
+            }
+            @if (purpose === 'upload') {
+              <span>{{
+                "common.upload" | translate
+              }}</span>
+            }
+          </p-button>
+        </div>
+      </form>
     </div>
-</div>
+  </div>

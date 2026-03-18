@@ -1,143 +1,153 @@
 <div class="lg-file-panel-margin">
+  @if (server.uid === '') {
     <div
-        class="side-panel-title"
-        *ngIf="server.uid === ''"
-        role="heading"
-        aria-level="2"
-        appAutofocus
-        tabindex="-1"
-    >
-        {{ "digital-services-servers.new" | translate }}
+      class="side-panel-title"
+      role="heading"
+      aria-level="2"
+      appAutofocus
+      tabindex="-1"
+      >
+      {{ "digital-services-servers.new" | translate }}
     </div>
+  }
+  @if (server.uid !== '') {
     <div
-        class="side-panel-title"
-        *ngIf="server.uid !== ''"
-        role="heading"
-        aria-level="2"
-        appAutofocus
-        tabindex="-1"
-    >
-        {{ "digital-services-servers.edit" | translate }}
+      class="side-panel-title"
+      role="heading"
+      aria-level="2"
+      appAutofocus
+      tabindex="-1"
+      >
+      {{ "digital-services-servers.edit" | translate }}
     </div>
-    <form [formGroup]="serverForm" (ngSubmit)="nextStep()">
-        <div class="label-input-div-full">
-            <label for="name">{{ "digital-services-servers.name" | translate }}</label>
-            <input
-                pInputText
-                type="text"
-                formControlName="name"
-                [(ngModel)]="server.name"
-                [required]="true"
-                id="name"
-            />
-            <p class="error-text" *ngIf="serverForm.get('name')?.hasError('required')">
-                {{ "digital-services-servers.name" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
-            <p class="error-text" *ngIf="serverForm.get('name')?.hasError('uniqueName')">
-                {{ "digital-services-servers.error.server-already-exists" | translate }}
-            </p>
+  }
+  <form [formGroup]="serverForm" (ngSubmit)="nextStep()">
+    <div class="label-input-div-full">
+      <label for="name">{{ "digital-services-servers.name" | translate }}</label>
+      <input
+        pInputText
+        type="text"
+        formControlName="name"
+        [(ngModel)]="server.name"
+        [required]="true"
+        id="name"
+        />
+      @if (serverForm.get('name')?.hasError('required')) {
+        <p class="error-text">
+          {{ "digital-services-servers.name" | translate }}
+          {{ "common.mandatory" | translate }}
+        </p>
+      }
+      @if (serverForm.get('name')?.hasError('uniqueName')) {
+        <p class="error-text">
+          {{ "digital-services-servers.error.server-already-exists" | translate }}
+        </p>
+      }
+    </div>
+    <div style="display: flex; margin-top: 25px">
+      <div>
+        <div
+          class="radio-button-selection flex border-1 border-solid border-300 border-round-xl align-items-center bg-white cursor-pointer"
+          role="group"
+          [attr.aria-label]="'digital-services-servers.allocation' | translate"
+          >
+          <label for="Dedicated" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
+            "digital-services-servers.Dedicated" | translate
+          }}</label>
+          <p-radioButton
+            class="relative radio-button-right"
+            name="mutualizationType"
+            formControlName="mutualizationType"
+            value="Dedicated"
+            inputId="Dedicated"
+            [(ngModel)]="server.mutualizationType"
+          ></p-radioButton>
+          <p-divider layout="vertical"></p-divider>
+          <label for="Shared" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
+            "digital-services-servers.Shared" | translate
+          }}</label>
+          <p-radioButton
+            class="relative radio-button-right"
+            name="mutualizationType"
+            formControlName="mutualizationType"
+            value="Shared"
+            inputId="Shared"
+            [(ngModel)]="server.mutualizationType"
+          ></p-radioButton>
         </div>
-        <div style="display: flex; margin-top: 25px">
-            <div>
-                <div
-                    class="radio-button-selection flex border-1 border-solid border-300 border-round-xl align-items-center bg-white cursor-pointer"
-                    role="group"
-                    [attr.aria-label]="'digital-services-servers.allocation' | translate"
-                >
-                    <label for="Dedicated" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
-                        "digital-services-servers.Dedicated" | translate
-                    }}</label>
-                    <p-radioButton
-                        class="relative radio-button-right"
-                        name="mutualizationType"
-                        formControlName="mutualizationType"
-                        value="Dedicated"
-                        inputId="Dedicated"
-                        [(ngModel)]="server.mutualizationType"
-                    ></p-radioButton>
-                    <p-divider layout="vertical"></p-divider>
-                    <label for="Shared" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
-                        "digital-services-servers.Shared" | translate
-                    }}</label>
-                    <p-radioButton
-                        class="relative radio-button-right"
-                        name="mutualizationType"
-                        formControlName="mutualizationType"
-                        value="Shared"
-                        inputId="Shared"
-                        [(ngModel)]="server.mutualizationType"
-                    ></p-radioButton>
-                </div>
-                <p
-                    class="error-text"
-                    *ngIf="serverForm.get('mutualizationType')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.allocation" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
-            <p-divider layout="vertical"></p-divider>
-            <div>
-                <div
-                    class="radio-button-selection flex border-1 border-solid border-300 border-round-xl align-items-center bg-white cursor-pointer"
-                    role="group"
-                    [attr.aria-label]="'digital-services-servers.type' | translate"
-                >
-                    <label for="Compute" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
-                        "digital-services-servers.Compute" | translate
-                    }}</label>
-                    <p-radioButton
-                        class="relative radio-button-right"
-                        name="type"
-                        [(ngModel)]="server.type"
-                        formControlName="type"
-                        value="Compute"
-                        inputId="Compute"
-                    ></p-radioButton>
-                    <p-divider layout="vertical"></p-divider>
-                    <label for="Storage" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
-                        "digital-services-servers.Storage" | translate
-                    }}</label>
-                    <p-radioButton
-                        class="relative radio-button-right"
-                        name="type"
-                        [(ngModel)]="server.type"
-                        formControlName="type"
-                        value="Storage"
-                        inputId="Storage"
-                    ></p-radioButton>
-                </div>
-                <p
-                    class="error-text"
-                    *ngIf="serverForm.get('type')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.type" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
-        </div>
-
-        <div class="button-bottom-right">
-            <div
-                class="error-text block"
-                *ngIf="serverForm.hasError('xssDetected') && serverForm.dirty"
+        @if (serverForm.get('mutualizationType')?.hasError('required')) {
+          <p
+            class="error-text"
             >
-                {{ "digital-services.error.xss-detected" | translate }}
-            </div>
-            <p-button styleClass="white-button" (onClick)="close()">
-                {{ "common.cancel" | translate }}
-            </p-button>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="black-button"
-                [disabled]="serverForm.invalid"
-                type="submit"
-                icon="pi pi-arrow-right"
-                [label]="'common.next' | translate"
-                iconPos="right"
-                id="next-servers"
-            />
+            {{ "digital-services-servers.allocation" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+      </div>
+      <p-divider layout="vertical"></p-divider>
+      <div>
+        <div
+          class="radio-button-selection flex border-1 border-solid border-300 border-round-xl align-items-center bg-white cursor-pointer"
+          role="group"
+          [attr.aria-label]="'digital-services-servers.type' | translate"
+          >
+          <label for="Compute" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
+            "digital-services-servers.Compute" | translate
+          }}</label>
+          <p-radioButton
+            class="relative radio-button-right"
+            name="type"
+            [(ngModel)]="server.type"
+            formControlName="type"
+            value="Compute"
+            inputId="Compute"
+          ></p-radioButton>
+          <p-divider layout="vertical"></p-divider>
+          <label for="Storage" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
+            "digital-services-servers.Storage" | translate
+          }}</label>
+          <p-radioButton
+            class="relative radio-button-right"
+            name="type"
+            [(ngModel)]="server.type"
+            formControlName="type"
+            value="Storage"
+            inputId="Storage"
+          ></p-radioButton>
         </div>
-    </form>
+        @if (serverForm.get('type')?.hasError('required')) {
+          <p
+            class="error-text"
+            >
+            {{ "digital-services-servers.type" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <div class="button-bottom-right">
+      @if (serverForm.hasError('xssDetected') && serverForm.dirty) {
+        <div
+          class="error-text block"
+          >
+          {{ "digital-services.error.xss-detected" | translate }}
+        </div>
+      }
+      <p-button styleClass="white-button" (onClick)="close()">
+        {{ "common.cancel" | translate }}
+      </p-button>
+      @if (userService.isAllowedDigitalServiceWrite$ | async) {
+        <p-button
+          styleClass="black-button"
+          [disabled]="serverForm.invalid"
+          type="submit"
+          icon="pi pi-arrow-right"
+          [label]="'common.next' | translate"
+          iconPos="right"
+          id="next-servers"
+          />
+      }
+    </div>
+  </form>
 </div>

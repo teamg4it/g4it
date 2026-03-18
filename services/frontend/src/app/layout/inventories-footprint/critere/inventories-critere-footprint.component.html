@@ -1,73 +1,75 @@
 <div
-    class="ml-auto block align-items-end lg:flex flex-row p-3"
+  class="ml-auto block align-items-end lg:flex flex-row p-3"
     [ngClass]="
         criteriaCalculated().hasError && inventory()?.enableDataInconsistency
             ? 'justify-content-end'
             : 'justify-content-between'
     "
->
-    <div class="inline">
-        @if (allFootprintsCriteriaKeys().length !== 1) {
-            <a
-                class="cursor-pointer m-0 text-xl color-tertiary"
-                tabindex="0"
-                (click)="moveToMultiCriteria()"
-                (keydown.enter)="moveToMultiCriteria()"
+  >
+  <div class="inline">
+    @if (allFootprintsCriteriaKeys().length !== 1) {
+      <a
+        class="cursor-pointer m-0 text-xl color-tertiary"
+        tabindex="0"
+        (click)="moveToMultiCriteria()"
+        (keydown.enter)="moveToMultiCriteria()"
                 attr.aria-label="{{
                     'inventories-footprint.global.multi-criteria-view' | translate
                 }}"
-            >
-                <i class="pi pi-arrow-left mr-2"></i>
-                {{ "inventories-footprint.global.multi-criteria-view" | translate }}
-            </a>
-        }
-    </div>
-    @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
-        <p-button
-            (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
-            [rounded]="true"
-            [label]="'inventories-footprint.data-consistency' | translate"
-            [outlined]="!showInconsitencyGraph"
-            severity="danger"
-            class="ml-auto pr-3"
-            [ariaLabel]="'inventories-footprint.data-consistency' | translate"
-        />
+        >
+        <i class="pi pi-arrow-left mr-2"></i>
+        {{ "inventories-footprint.global.multi-criteria-view" | translate }}
+      </a>
     }
-    <p-dropdown
-        [options]="dimensions"
-        [(ngModel)]="selectedDimension"
-        [placeholder]="'inventories-footprint.select-dimension' | translate"
-        styleClass="ml-auto"
+  </div>
+  @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
+    <p-button
+      (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
+      [rounded]="true"
+      [label]="'inventories-footprint.data-consistency' | translate"
+      [outlined]="!showInconsitencyGraph"
+      severity="danger"
+      class="ml-auto pr-3"
+      [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+      />
+  }
+  <p-dropdown
+    [options]="dimensions"
+    [(ngModel)]="selectedDimension"
+    [placeholder]="'inventories-footprint.select-dimension' | translate"
+    styleClass="ml-auto"
     >
-        <ng-template pTemplate="selectedItem">
-            <div *ngIf="selectedDimension()">
-                {{
-                    "inventories-footprint.round-button." + selectedDimension()
-                        | translate
-                }}
-            </div>
-        </ng-template>
-        <ng-template let-dimension pTemplate="item">
-            <div>
-                {{ "inventories-footprint.round-button." + dimension | translate }}
-            </div>
-        </ng-template>
-    </p-dropdown>
+    <ng-template pTemplate="selectedItem">
+      @if (selectedDimension()) {
+        <div>
+          {{
+          "inventories-footprint.round-button." + selectedDimension()
+          | translate
+          }}
+        </div>
+      }
+    </ng-template>
+    <ng-template let-dimension pTemplate="item">
+      <div>
+        {{ "inventories-footprint.round-button." + dimension | translate }}
+      </div>
+    </ng-template>
+  </p-dropdown>
 </div>
 @if (showInconsitencyGraph) {
-    @if (options().series && xAxisInput.length) {
-        <app-stack-bar-chart [xAxisInput]="xAxisInput" [statusCountMap]="criteriaMap" />
-    } @else {
-        <div class="no-data-bar">
-            <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
-        </div>
-    }
+  @if (options().series && xAxisInput.length) {
+    <app-stack-bar-chart [xAxisInput]="xAxisInput" [statusCountMap]="criteriaMap" />
+  } @else {
+    <div class="no-data-bar">
+      <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+    </div>
+  }
 } @else {
-    @if (options().series && !allErrorData) {
-        <div echarts class="m-0" [options]="options()" style="height: 480px"></div>
-    } @else {
-        <div class="no-data-half">
-            <p class="text-half-empty">{{ "common.no-data" | translate }}</p>
-        </div>
-    }
+  @if (options().series && !allErrorData) {
+    <div echarts class="m-0" [options]="options()" style="height: 480px"></div>
+  } @else {
+    <div class="no-data-half">
+      <p class="text-half-empty">{{ "common.no-data" | translate }}</p>
+    </div>
+  }
 }

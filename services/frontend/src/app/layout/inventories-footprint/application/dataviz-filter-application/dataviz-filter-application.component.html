@@ -1,62 +1,63 @@
 <div
-    class="filter-component"
-    (click)="overlayVisible = !overlayVisible"
-    (keydown.enter)="overlayVisible = !overlayVisible"
-    label="Show Overlay"
-    tabindex="0"
-    role="button"
-    [attr.aria-label]="'common.access-filters' | translate"
-    id="filter-component"
->
-    <div>
-        @if (selectedFilterNames().length) {
-            <i class="pi pi-filter-fill"></i>
-        } @else {
-            <i class="pi pi-filter"></i>
-        }
+  class="filter-component"
+  (click)="overlayVisible = !overlayVisible"
+  (keydown.enter)="overlayVisible = !overlayVisible"
+  label="Show Overlay"
+  tabindex="0"
+  role="button"
+  [attr.aria-label]="'common.access-filters' | translate"
+  id="filter-component"
+  >
+  <div>
+    @if (selectedFilterNames().length) {
+      <i class="pi pi-filter-fill"></i>
+    } @else {
+      <i class="pi pi-filter"></i>
+    }
 
-        <span class="ml-3">
-            {{ "inventories-footprint.filter" | translate }}
-            @if (selectedFilterNames().length) {
-                <i>
-                    {{ "-" }}
-                    {{ "inventories-footprint.active-filters" | translate }}
-                    {{ ": " + selectedFilterNames() }}
-                </i>
-            }
-        </span>
-    </div>
-    <i class="pi pi-chevron-down font-bold mx-3"></i>
+    <span class="ml-3">
+      {{ "inventories-footprint.filter" | translate }}
+      @if (selectedFilterNames().length) {
+        <i>
+          {{ "-" }}
+          {{ "inventories-footprint.active-filters" | translate }}
+          {{ ": " + selectedFilterNames() }}
+        </i>
+      }
+    </span>
+  </div>
+  <i class="pi pi-chevron-down font-bold mx-3"></i>
 </div>
 <p-overlay
-    [(visible)]="overlayVisible"
+  [(visible)]="overlayVisible"
     [responsive]="{
         breakpoint: '1280px',
         direction: 'bottom',
         contentStyleClass: 'h-22rem',
     }"
-    contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
->
-    <p-tabView>
-        @for (tab of tabs; track $index) {
-            <p-tabPanel
+  contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
+  >
+  <p-tabView>
+    @for (tab of tabs; track $index) {
+      <p-tabPanel
                 header="{{
                     'inventories-footprint.filter-tabs-application.' + tab.field
                         | translate
                 }}"
-            >
-                <p-scrollPanel
-                    mode="vertical"
-                    [style]="{ width: '96%', height: '240px' }"
-                >
-                    <ul>
-                        <li *ngFor="let item of allUnusedFilters[tab.field]">
-                            @if (!tab?.children?.length) {
-                                <div class="field-checkbox flex align-items-center">
-                                    <p-checkbox
-                                        [ariaLabel]="item?.toString()"
-                                        name="groupname"
-                                        [value]="item"
+        >
+        <p-scrollPanel
+          mode="vertical"
+          [style]="{ width: '96%', height: '240px' }"
+          >
+          <ul>
+            @for (item of allUnusedFilters[tab.field]; track item) {
+              <li>
+                @if (!tab?.children?.length) {
+                  <div class="field-checkbox flex align-items-center">
+                    <p-checkbox
+                      [ariaLabel]="item?.toString()"
+                      name="groupname"
+                      [value]="item"
                                         [(ngModel)]="
                                             footprintStore.applicationSelectedFilters()[
                                                 tab.field
@@ -69,35 +70,36 @@
                                                 item.toString()
                                             )
                                         "
-                                        [inputId]="'filter-app-' + tab.field + '-' + item"
-                                    ></p-checkbox>
-                                    <label [for]="'filter-app-' + tab.field + '-' + item" class="ml-2">{{
-                                            item?.toString() === all
-                                                ? ('common.all' | translate)
-                                                : item?.toString() === empty
-                                                  ? ('common.empty' | translate)
-                                                  : item
-                                        }}</label>
-                                </div>
-                            }
-                        </li>
-                        @if (tab?.children?.length) {
-                            <li>
-                                @for (
-                                    filter of allUnusedFilters[tab.field];
-                                    track $index
-                                ) {
-                                    <li
+                      [inputId]="'filter-app-' + tab.field + '-' + item"
+                    ></p-checkbox>
+                    <label [for]="'filter-app-' + tab.field + '-' + item" class="ml-2">{{
+                      item?.toString() === all
+                      ? ('common.all' | translate)
+                      : item?.toString() === empty
+                      ? ('common.empty' | translate)
+                      : item
+                    }}</label>
+                  </div>
+                }
+              </li>
+            }
+            @if (tab?.children?.length) {
+              <li>
+                @for (
+                  filter of allUnusedFilters[tab.field];
+                  track $index
+                  ) {
+                  <li
                                         [ngClass]="
                                             !filter?.children?.length ? 'ml-6 pl-2' : ''
                                         "
-                                    >
-                                        @if (filter.visible) {
-                                            @if (filter?.children?.length) {
-                                                <p-button
-                                                    styleClass="mx-1"
-                                                    [rounded]="true"
-                                                    [text]="true"
+                    >
+                    @if (filter.visible) {
+                      @if (filter?.children?.length) {
+                        <p-button
+                          styleClass="mx-1"
+                          [rounded]="true"
+                          [text]="true"
                                                     (onClick)="
                                                         filter.collapsed =
                                                             !filter.collapsed
@@ -113,53 +115,53 @@
                                                             : 'common.accessibility.accordion-close'
                                                         ) | translate
                                                     "
-                                                />
-                                            }
-                                            <div class="field-checkbox flex align-items-center mb-3">
-                                                <p-checkbox
-                                                    [binary]="true"
-                                                    [(ngModel)]="filter.checked"
-                                                    (onChange)="onTreeChange($event, filter)"
-                                                    [inputId]="'filter-tree-' + filter.key"
-                                                    [ariaLabel]="filter.label"
-                                                ></p-checkbox>
-                                                <label [for]="'filter-tree-' + filter.key" class="ml-2">{{filter.label}}</label>
-                                            </div>
-                                            <div
+                          />
+                      }
+                      <div class="field-checkbox flex align-items-center mb-3">
+                        <p-checkbox
+                          [binary]="true"
+                          [(ngModel)]="filter.checked"
+                          (onChange)="onTreeChange($event, filter)"
+                          [inputId]="'filter-tree-' + filter.key"
+                          [ariaLabel]="filter.label"
+                        ></p-checkbox>
+                        <label [for]="'filter-tree-' + filter.key" class="ml-2">{{filter.label}}</label>
+                      </div>
+                      <div
                                                 [ngClass]="
                                                     filter.collapsed ? 'hidden' : ''
                                                 "
-                                            >
-                                                @if (filter.children) {
-                                                    @for (
-                                                        child of filter.children;
-                                                        track $index
-                                                    ) {
-                                                        <li class="ml-8">
-                                                            @if (child.visible) {
-                                                                <div class="field-checkbox flex align-items-center">
-                                                                    <p-checkbox
-                                                                        [binary]="true"
-                                                                        [(ngModel)]="child.checked"
-                                                                        (onChange)="onTreeChildChanged($event, filter)"
-                                                                        [inputId]="'filter-child-' + filter.key + '-' + child.key"
-                                                                        [ariaLabel]="child.label"
-                                                                    ></p-checkbox>
-                                                                    <label [for]="'filter-child-' + filter.key + '-' + child.key" class="ml-2">{{child.label}}</label>
-                                                                </div>
-                                                            }
-                                                        </li>
-                                                    }
-                                                }
-                                            </div>
-                                        }
-                                    </li>
-                                }
+                        >
+                        @if (filter.children) {
+                          @for (
+                            child of filter.children;
+                            track $index
+                            ) {
+                            <li class="ml-8">
+                              @if (child.visible) {
+                                <div class="field-checkbox flex align-items-center">
+                                  <p-checkbox
+                                    [binary]="true"
+                                    [(ngModel)]="child.checked"
+                                    (onChange)="onTreeChildChanged($event, filter)"
+                                    [inputId]="'filter-child-' + filter.key + '-' + child.key"
+                                    [ariaLabel]="child.label"
+                                  ></p-checkbox>
+                                  <label [for]="'filter-child-' + filter.key + '-' + child.key" class="ml-2">{{child.label}}</label>
+                                </div>
+                              }
                             </li>
+                          }
                         }
-                    </ul>
-                </p-scrollPanel>
-            </p-tabPanel>
-        }
-    </p-tabView>
+                      </div>
+                    }
+                  </li>
+                }
+              </li>
+            }
+          </ul>
+        </p-scrollPanel>
+      </p-tabPanel>
+    }
+  </p-tabView>
 </p-overlay>

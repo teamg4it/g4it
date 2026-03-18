@@ -92,23 +92,22 @@ describe("DigitalServiceManageVersionTableComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            declarations: [DigitalServiceManageVersionTableComponent],
-            imports: [TranslateModule.forRoot(), HttpClientTestingModule],
-            schemas: [NO_ERRORS_SCHEMA],
-            providers: [
-                { provide: DigitalServiceVersionDataService, useValue: dataServiceSpy },
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: digitalServicesDataServiceSpy,
-                },
-                { provide: Router, useValue: routerSpy },
-                { provide: ActivatedRoute, useValue: activatedRoute },
-                { provide: TranslateService, useValue: translateSpy },
-                { provide: UserService, useValue: userServiceSpy },
-                { provide: ConfirmationService, useValue: confirmationServiceSpy },
-                { provide: GlobalStoreService, useValue: globalStoreSpy },
-            ],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), HttpClientTestingModule, DigitalServiceManageVersionTableComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    providers: [
+        { provide: DigitalServiceVersionDataService, useValue: dataServiceSpy },
+        {
+            provide: DigitalServicesDataService,
+            useValue: digitalServicesDataServiceSpy,
+        },
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: TranslateService, useValue: translateSpy },
+        { provide: UserService, useValue: userServiceSpy },
+        { provide: ConfirmationService, useValue: confirmationServiceSpy },
+        { provide: GlobalStoreService, useValue: globalStoreSpy },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServiceManageVersionTableComponent);
         component = fixture.componentInstance;

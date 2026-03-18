@@ -1,67 +1,68 @@
 <p-toast #toast position="bottom-center"></p-toast>
 <ul>
-    <li class="loading-data-container">
-        <div
-            [class]="cssClass"
-            pTooltip="{{ toolTip }}"
-            tooltipPosition="left"
-            role="application"
-            [attr.aria-label]="toolTip"
+  <li class="loading-data-container">
+    <div
+      [class]="cssClass"
+      pTooltip="{{ toolTip }}"
+      tooltipPosition="left"
+      role="application"
+      [attr.aria-label]="toolTip"
+      >
+      {{ this.betweenDiv }}
+    </div>
+    @if (type == 'estimation') {
+      <p>
+        {{ "inventories.estimate-date" | translate }}
+        {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
+      </p>
+    } @else {
+      <p>
+        {{ "inventories.loading-date" | translate }}
+        {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
+      </p>
+    }
+    @if (
+      (userService.isAllowedInventoryWrite$ | async) &&
+      (batchStatusCode === "COMPLETED_WITH_ERRORS" ||
+      batchStatusCode === "SKIPPED") &&
+      batchLoading
+      ) {
+      <p-button
+        styleClass="p-button-text bg-white py-0 my-0"
+        (onClick)="downloadFile()"
         >
-            {{ this.betweenDiv }}
-        </div>
-        <p *ngIf="type == 'estimation'; else loading">
-            {{ "inventories.estimate-date" | translate }}
-            {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
-        </p>
-        <ng-template #loading>
-            <p>
-                {{ "inventories.loading-date" | translate }}
-                {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
-            </p>
-        </ng-template>
-        @if (
-            (userService.isAllowedInventoryWrite$ | async) &&
-            (batchStatusCode === "COMPLETED_WITH_ERRORS" ||
-                batchStatusCode === "SKIPPED") &&
-            batchLoading
-        ) {
-            <p-button
-                styleClass="p-button-text bg-white py-0 my-0"
-                (onClick)="downloadFile()"
-            >
-                <img
-                    src="assets/images/icons/icon-download.svg"
+        <img
+          src="assets/images/icons/icon-download.svg"
                     alt="{{ 'inventories.download-result' | translate }} {{
                         localCreateTime | date: 'dd/MM/yyyy HH:mm'
                     }}"
                     ariaLabel="{{ 'inventories.download-result' | translate }} {{
                         localCreateTime | date: 'dd/MM/yyyy HH:mm'
                     }}"
-                />
-            </p-button>
-        }
+          />
+      </p-button>
+    }
 
-        @if (isNumeric(taskId)) {
-            @if (
-                (userService.isAllowedInventoryWrite$ | async) &&
-                batchStatusCode === "FAILED"
-            ) {
-                <p-button
-                    styleClass="p-button-text bg-white py-0 my-0"
-                    (onClick)="getTaskDetail(taskId)"
-                >
-                    <img
-                        src="assets/images/icons/icon-download.svg"
+    @if (isNumeric(taskId)) {
+      @if (
+        (userService.isAllowedInventoryWrite$ | async) &&
+        batchStatusCode === "FAILED"
+        ) {
+        <p-button
+          styleClass="p-button-text bg-white py-0 my-0"
+          (onClick)="getTaskDetail(taskId)"
+          >
+          <img
+            src="assets/images/icons/icon-download.svg"
                         alt="{{ 'inventories.download-result' | translate }} {{
                             localCreateTime | date: 'dd/MM/yyyy HH:mm'
                         }}"
                         ariaLabel="{{ 'inventories.download-result' | translate }} {{
                             localCreateTime | date: 'dd/MM/yyyy HH:mm'
                         }}"
-                    />
-                </p-button>
-            }
-        }
-    </li>
+            />
+        </p-button>
+      }
+    }
+  </li>
 </ul>

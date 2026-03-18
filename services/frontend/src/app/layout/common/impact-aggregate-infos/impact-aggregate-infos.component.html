@@ -1,45 +1,47 @@
 <div class="flex flex-column align-items-center">
-    <div class="bg-gray-100 border-circle p-3 h-4rem">
-        <img src="assets/images/icons/icon-{{ icon }}.svg" alt="" width="30" />
-    </div>
-    <div
-        class="text-base uppercase line-height-2 font-semibold letter-spacing-2 my-1"
-        [ngClass]="{ 'grey-text': displayValue === 0 }"
+  <div class="bg-gray-100 border-circle p-3 h-4rem">
+    <img src="assets/images/icons/icon-{{ icon }}.svg" alt="" width="30" />
+  </div>
+  <div
+    class="text-base uppercase line-height-2 font-semibold letter-spacing-2 my-1"
+    [ngClass]="{ 'grey-text': displayValue === 0 }"
     >
-        {{ criteriaLabel }}
-    </div>
-    <div class="text-3xl line-height-2 font-medium my-1 align-items-center">
+    {{ criteriaLabel }}
+  </div>
+  <div class="text-3xl line-height-2 font-medium my-1 align-items-center">
+    <div>
+      @if ((displayValue ?? 0) === 0) {
         <div>
-            <div *ngIf="(displayValue ?? 0) === 0; else valueNotNull">
-                <p class="text-grey text-3xl">--</p>
-            </div>
-            <ng-template #valueNotNull>
-                <div *ngIf="unit === 'Peopleeq'; else elseBlock">
-                    {{ displayValue | integer }}
-                </div>
-                <ng-template #elseBlock>
-                    <div>
-                        {{ displayValue | decimals }}
-                    </div>
-                </ng-template>
-            </ng-template>
+          <p class="text-grey text-3xl">--</p>
         </div>
+      } @else {
+        @if (unit === 'Peopleeq') {
+          <div>
+            {{ displayValue | integer }}
+          </div>
+        } @else {
+          <div>
+            {{ displayValue | decimals }}
+          </div>
+        }
+      }
     </div>
-    <p-card>
-        <div>
-            <button
-                class="border-none border-round-3xl p-2 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                [ngClass]="unit === 'impact' ? 'bg-secondary' : 'bg-transparent'"
-                (click)="setUnit('impact')"
-                [innerHTML]="unitOfCriteria"
-            ></button>
-            <button
-                (click)="setUnit('Peopleeq')"
-                class="border-none border-round-3xl p-2 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                [ngClass]="unit === 'Peopleeq' ? 'bg-secondary' : 'bg-transparent'"
-            >
-                {{ "common.peopleeq" | translate }}
-            </button>
-        </div>
-    </p-card>
+  </div>
+  <p-card>
+    <div>
+      <button
+        class="border-none border-round-3xl p-2 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
+        [ngClass]="unit === 'impact' ? 'bg-secondary' : 'bg-transparent'"
+        (click)="setUnit('impact')"
+        [innerHTML]="unitOfCriteria"
+      ></button>
+      <button
+        (click)="setUnit('Peopleeq')"
+        class="border-none border-round-3xl p-2 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
+        [ngClass]="unit === 'Peopleeq' ? 'bg-secondary' : 'bg-transparent'"
+        >
+        {{ "common.peopleeq" | translate }}
+      </button>
+    </div>
+  </p-card>
 </div>

@@ -6,8 +6,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 
 @Component({
     selector: "app-digital-service-manage-version",
-    templateUrl: "./digital-service-manage-version.component.html",
-    standalone: false
+    templateUrl: "./digital-service-manage-version.component.html"
 })
 export class DigitalServiceManageVersionComponent implements OnInit {
     digitalService: DigitalService = {} as DigitalService;

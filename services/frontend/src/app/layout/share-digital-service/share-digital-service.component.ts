@@ -10,8 +10,7 @@ import { ShareDigitalServiceDataService } from "src/app/core/service/data/share-
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 @Component({
     selector: "app-share-digital-service",
-    templateUrl: "./share-digital-service.component.html",
-    standalone: false
+    templateUrl: "./share-digital-service.component.html"
 })
 export class ShareDigitalServiceComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);

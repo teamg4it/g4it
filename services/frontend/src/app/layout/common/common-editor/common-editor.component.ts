@@ -14,8 +14,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
 @Component({
     selector: "app-common-editor",
     templateUrl: "./common-editor.component.html",
-    providers: [ConfirmationService, MessageService],
-    standalone: false
+    providers: [ConfirmationService, MessageService]
 })
 export class CommonEditorComponent implements OnChanges {
     @Input() styleClass = "";

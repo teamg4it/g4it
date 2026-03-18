@@ -19,8 +19,7 @@ import { GlobalStoreService } from "./core/store/global.store";
 
 @Component({
     selector: "app-root",
-    templateUrl: "./app.component.html",
-    standalone: false
+    templateUrl: "./app.component.html"
 })
 export class AppComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();

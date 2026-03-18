@@ -1,272 +1,284 @@
 <div class="lg-file-panel-margin">
-    @if (isNew) {
-        <div
-            class="side-panel-title"
-            role="heading"
-            aria-level="2"
-            appAutofocus
-            tabindex="-1"
-        >
-            {{ "digital-services-cloud-services.new" | translate }}
-        </div>
-    } @else {
-        <div
-            class="side-panel-title"
-            role="heading"
-            aria-level="2"
-            appAutofocus
-            tabindex="-1"
-        >
-            {{ "digital-services-cloud-services.edit" | translate }}
-        </div>
-    }
+  @if (isNew) {
+    <div
+      class="side-panel-title"
+      role="heading"
+      aria-level="2"
+      appAutofocus
+      tabindex="-1"
+      >
+      {{ "digital-services-cloud-services.new" | translate }}
+    </div>
+  } @else {
+    <div
+      class="side-panel-title"
+      role="heading"
+      aria-level="2"
+      appAutofocus
+      tabindex="-1"
+      >
+      {{ "digital-services-cloud-services.edit" | translate }}
+    </div>
+  }
 
-    <form [formGroup]="cloudForm" (ngSubmit)="submitFormData()">
-        <div class="w-30rem">
-            <div class="flex flex-column">
-                <label for="cloudName">{{
-                    "digital-services-cloud-services.name" | translate
-                }}</label>
-                <input
-                    pInputText
-                    formControlName="name"
-                    [required]="true"
-                    [(ngModel)]="cloud.name"
-                    name="name"
-                    ngDefaultControl
-                    locale="fr-FR"
-                    id="cloudName"
-                />
-                <p class="error-text" *ngIf="cloudForm.get('name')?.hasError('required')">
-                    {{ "digital-services-cloud-services.name" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-                <p
-                    class="error-text"
-                    *ngIf="cloudForm.get('name')?.hasError('uniqueName')"
-                >
-                    {{
-                        "digital-services-cloud-services.error.service-already-exists"
-                            | translate
-                    }}
-                </p>
-            </div>
+  <form [formGroup]="cloudForm" (ngSubmit)="submitFormData()">
+    <div class="w-30rem">
+      <div class="flex flex-column">
+        <label for="cloudName">{{
+          "digital-services-cloud-services.name" | translate
+        }}</label>
+        <input
+          pInputText
+          formControlName="name"
+          [required]="true"
+          [(ngModel)]="cloud.name"
+          name="name"
+          ngDefaultControl
+          locale="fr-FR"
+          id="cloudName"
+          />
+        @if (cloudForm.get('name')?.hasError('required')) {
+          <p class="error-text">
+            {{ "digital-services-cloud-services.name" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+        @if (cloudForm.get('name')?.hasError('uniqueName')) {
+          <p
+            class="error-text"
+            >
+            {{
+            "digital-services-cloud-services.error.service-already-exists"
+            | translate
+            }}
+          </p>
+        }
+      </div>
 
-            <div class="underlined-div">
-                <p>{{ "digital-services-cloud-services.configuration" | translate }}</p>
-            </div>
+      <div class="underlined-div">
+        <p>{{ "digital-services-cloud-services.configuration" | translate }}</p>
+      </div>
 
-            <div class="flex flex-column my-2">
-                <label for="cloudProvider" class="text-xs">{{
-                    "digital-services-cloud-services.cloud-provider" | translate
-                }}</label>
-                <p-dropdown
-                    appendTo="body"
-                    [options]="cloudProviders"
-                    styleClass="w-full"
-                    formControlName="cloudProvider"
-                    [required]="true"
-                    [(ngModel)]="cloud.cloudProvider"
-                    [filter]="true"
-                    filterPlaceholder="Search"
-                    name="cloudProvider"
-                    ngDefaultControl
-                    id="cloudProvider"
+      <div class="flex flex-column my-2">
+        <label for="cloudProvider" class="text-xs">{{
+          "digital-services-cloud-services.cloud-provider" | translate
+        }}</label>
+        <p-dropdown
+          appendTo="body"
+          [options]="cloudProviders"
+          styleClass="w-full"
+          formControlName="cloudProvider"
+          [required]="true"
+          [(ngModel)]="cloud.cloudProvider"
+          [filter]="true"
+          filterPlaceholder="Search"
+          name="cloudProvider"
+          ngDefaultControl
+          id="cloudProvider"
                     [ariaLabel]="
                         'digital-services-cloud-services.cloud-provider' | translate
                     "
-                >
-                </p-dropdown>
-                <p
-                    class="error-text"
-                    *ngIf="cloudForm.get('cloudProvider')?.hasError('required')"
-                >
-                    {{ "digital-services-cloud-services.cloud-provider" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
-            <div class="flex flex-column my-2">
-                <label class="text-xs" for="cloudInstance">{{
-                    "digital-services-cloud-services.instance-type" | translate
-                }}</label>
-                <p-dropdown
-                    appendTo="body"
-                    [options]="instanceTypesByProvider.get(cloud.cloudProvider)"
-                    styleClass="w-full"
-                    formControlName="instanceType"
-                    [required]="true"
-                    [(ngModel)]="cloud.instanceType"
-                    [filter]="true"
-                    filterPlaceholder="Search"
-                    name="instanceType"
-                    ngDefaultControl
-                    [virtualScroll]="true"
-                    [virtualScrollItemSize]="50"
-                    id="cloudInstance"
+          >
+        </p-dropdown>
+        @if (cloudForm.get('cloudProvider')?.hasError('required')) {
+          <p
+            class="error-text"
+            >
+            {{ "digital-services-cloud-services.cloud-provider" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+      </div>
+      <div class="flex flex-column my-2">
+        <label class="text-xs" for="cloudInstance">{{
+          "digital-services-cloud-services.instance-type" | translate
+        }}</label>
+        <p-dropdown
+          appendTo="body"
+          [options]="instanceTypesByProvider.get(cloud.cloudProvider)"
+          styleClass="w-full"
+          formControlName="instanceType"
+          [required]="true"
+          [(ngModel)]="cloud.instanceType"
+          [filter]="true"
+          filterPlaceholder="Search"
+          name="instanceType"
+          ngDefaultControl
+          [virtualScroll]="true"
+          [virtualScrollItemSize]="50"
+          id="cloudInstance"
                     [ariaLabel]="
                         'digital-services-cloud-services.instance-type' | translate
                     "
-                >
-                </p-dropdown>
-                <p
-                    class="error-text"
-                    *ngIf="cloudForm.get('instanceType')?.hasError('required')"
-                >
-                    {{ "digital-services-cloud-services.instance-type" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
+          >
+        </p-dropdown>
+        @if (cloudForm.get('instanceType')?.hasError('required')) {
+          <p
+            class="error-text"
+            >
+            {{ "digital-services-cloud-services.instance-type" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+      </div>
 
-            <div class="underlined-div">
-                <p>{{ "digital-services-cloud-services.usage" | translate }}</p>
-            </div>
+      <div class="underlined-div">
+        <p>{{ "digital-services-cloud-services.usage" | translate }}</p>
+      </div>
 
-            <div class="flex flex-column my-2">
-                <label class="text-xs" for="quantity">{{
-                    "digital-services-cloud-services.quantity" | translate
-                }}</label>
-                <p-inputNumber
-                    formControlName="quantity"
-                    [required]="true"
-                    [min]="1"
-                    [(ngModel)]="cloud.quantity"
-                    styleClass="w-full"
-                    name="quantity"
-                    ngDefaultControl
-                    locale="fr-FR"
-                    id="quantity"
-                    [ariaLabel]="'digital-services-cloud-services.quantity' | translate"
-                />
-                <p
-                    class="error-text"
-                    *ngIf="cloudForm.get('quantity')?.hasError('required')"
-                >
-                    {{ "digital-services-cloud-services.quantity" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
+      <div class="flex flex-column my-2">
+        <label class="text-xs" for="quantity">{{
+          "digital-services-cloud-services.quantity" | translate
+        }}</label>
+        <p-inputNumber
+          formControlName="quantity"
+          [required]="true"
+          [min]="1"
+          [(ngModel)]="cloud.quantity"
+          styleClass="w-full"
+          name="quantity"
+          ngDefaultControl
+          locale="fr-FR"
+          id="quantity"
+          [ariaLabel]="'digital-services-cloud-services.quantity' | translate"
+          />
+        @if (cloudForm.get('quantity')?.hasError('required')) {
+          <p
+            class="error-text"
+            >
+            {{ "digital-services-cloud-services.quantity" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+      </div>
 
-            <div class="flex flex-column my-2">
-                <label class="text-xs" for="location">{{
-                    "digital-services-cloud-services.location" | translate
-                }}</label>
-                <p-dropdown
-                    appendTo="body"
-                    [options]="countries"
-                    optionLabel="name"
-                    styleClass="w-full"
-                    formControlName="location"
-                    [required]="true"
-                    [(ngModel)]="cloud.location"
-                    [filter]="true"
-                    filterPlaceholder="Search"
-                    name="location"
-                    ngDefaultControl
-                    id="location"
-                    [ariaLabel]="'digital-services-cloud-services.location' | translate"
-                >
-                </p-dropdown>
-                <p
-                    class="error-text"
-                    *ngIf="cloudForm.get('location')?.hasError('required')"
-                >
-                    {{ "digital-services-cloud-services.location" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
+      <div class="flex flex-column my-2">
+        <label class="text-xs" for="location">{{
+          "digital-services-cloud-services.location" | translate
+        }}</label>
+        <p-dropdown
+          appendTo="body"
+          [options]="countries"
+          optionLabel="name"
+          styleClass="w-full"
+          formControlName="location"
+          [required]="true"
+          [(ngModel)]="cloud.location"
+          [filter]="true"
+          filterPlaceholder="Search"
+          name="location"
+          ngDefaultControl
+          id="location"
+          [ariaLabel]="'digital-services-cloud-services.location' | translate"
+          >
+        </p-dropdown>
+        @if (cloudForm.get('location')?.hasError('required')) {
+          <p
+            class="error-text"
+            >
+            {{ "digital-services-cloud-services.location" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+      </div>
 
-            <div class="flex flex-column my-2">
-                <label class="text-xs" for="annualUsage">{{
-                    "digital-services-cloud-services.annual-usage" | translate
-                }}</label>
-                <p-inputNumber
-                    formControlName="annualUsage"
-                    [required]="true"
-                    styleClass="w-full"
-                    [min]="0"
-                    [max]="8760"
-                    [(ngModel)]="cloud.annualUsage"
-                    name="annualUsage"
-                    ngDefaultControl
-                    locale="fr-FR"
-                    id="annualUsage"
+      <div class="flex flex-column my-2">
+        <label class="text-xs" for="annualUsage">{{
+          "digital-services-cloud-services.annual-usage" | translate
+        }}</label>
+        <p-inputNumber
+          formControlName="annualUsage"
+          [required]="true"
+          styleClass="w-full"
+          [min]="0"
+          [max]="8760"
+          [(ngModel)]="cloud.annualUsage"
+          name="annualUsage"
+          ngDefaultControl
+          locale="fr-FR"
+          id="annualUsage"
                     [ariaLabel]="
                         'digital-services-cloud-services.annual-usage' | translate
                     "
-                />
-                <p
-                    class="error-text"
-                    *ngIf="cloudForm.get('annualUsage')?.hasError('required')"
-                >
-                    {{ "digital-services-cloud-services.annual-usage" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
+          />
+        @if (cloudForm.get('annualUsage')?.hasError('required')) {
+          <p
+            class="error-text"
+            >
+            {{ "digital-services-cloud-services.annual-usage" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+      </div>
 
-            <div class="flex flex-column my-2">
-                <label class="text-xs" for="averageWorkload">{{
-                    "digital-services-cloud-services.average-workload" | translate
-                }}</label>
-                <p-inputNumber
-                    formControlName="averageWorkload"
-                    [required]="true"
-                    styleClass="w-full"
-                    [min]="0"
-                    [max]="100"
-                    [(ngModel)]="cloud.averageWorkload"
-                    name="averageWorkload"
-                    ngDefaultControl
-                    locale="fr-FR"
-                    id="averageWorkload"
+      <div class="flex flex-column my-2">
+        <label class="text-xs" for="averageWorkload">{{
+          "digital-services-cloud-services.average-workload" | translate
+        }}</label>
+        <p-inputNumber
+          formControlName="averageWorkload"
+          [required]="true"
+          styleClass="w-full"
+          [min]="0"
+          [max]="100"
+          [(ngModel)]="cloud.averageWorkload"
+          name="averageWorkload"
+          ngDefaultControl
+          locale="fr-FR"
+          id="averageWorkload"
                     [ariaLabel]="
                         'digital-services-cloud-services.average-workload' | translate
                     "
-                />
-                <p
-                    class="error-text"
-                    *ngIf="cloudForm.get('averageWorkload')?.hasError('required')"
-                >
-                    {{ "digital-services-cloud-services.average-workload" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
+          />
+        @if (cloudForm.get('averageWorkload')?.hasError('required')) {
+          <p
+            class="error-text"
+            >
+            {{ "digital-services-cloud-services.average-workload" | translate }}
+            {{ "common.mandatory" | translate }}
+          </p>
+        }
+      </div>
 
-            <div class="flex flex-column my-3">
-                <div class="flex flex-row mt-3 justify-content-end">
-                    <div
-                        class="error-text block"
-                        *ngIf="cloudForm.hasError('xssDetected') && cloudForm.dirty"
-                    >
-                        {{ "digital-services.error.xss-detected" | translate }}
-                    </div>
-                    <p-button
-                        styleClass="grey-button  "
-                        *ngIf="
-                            !isNew && (userService.isAllowedDigitalServiceWrite$ | async)
-                        "
-                        (onClick)="deleteServerCloud()"
-                        >{{ "common.delete" | translate }}</p-button
-                    >
-                    <p-button
-                        styleClass="white-button"
-                        (onClick)="close()"
-                        id="cloud-cancel"
-                        >{{ "common.cancel" | translate }}</p-button
-                    >
-                    <p-button
-                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        styleClass="yellow-button"
-                        [disabled]="cloudForm.invalid"
-                        type="submit"
-                    >
-                        @if (isNew) {
-                            <span>{{ "common.add" | translate }}</span>
-                        } @else {
-                            <span>{{ "common.save" | translate }}</span>
-                        }
-                    </p-button>
-                </div>
+      <div class="flex flex-column my-3">
+        <div class="flex flex-row mt-3 justify-content-end">
+          @if (cloudForm.hasError('xssDetected') && cloudForm.dirty) {
+            <div
+              class="error-text block"
+              >
+              {{ "digital-services.error.xss-detected" | translate }}
             </div>
+          }
+          @if (
+            !isNew && (userService.isAllowedDigitalServiceWrite$ | async)
+            ) {
+            <p-button
+              styleClass="grey-button  "
+              (onClick)="deleteServerCloud()"
+              >{{ "common.delete" | translate }}</p-button
+              >
+            }
+            <p-button
+              styleClass="white-button"
+              (onClick)="close()"
+              id="cloud-cancel"
+              >{{ "common.cancel" | translate }}</p-button
+              >
+              @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <p-button
+                  styleClass="yellow-button"
+                  [disabled]="cloudForm.invalid"
+                  type="submit"
+                  >
+                  @if (isNew) {
+                    <span>{{ "common.add" | translate }}</span>
+                  } @else {
+                    <span>{{ "common.save" | translate }}</span>
+                  }
+                </p-button>
+              }
+            </div>
+          </div>
         </div>
-    </form>
-</div>
+      </form>
+    </div>

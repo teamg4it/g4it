@@ -12,8 +12,7 @@ import { ClipboardService } from "ngx-clipboard";
 @Component({
     selector: "app-link-create-popup",
     templateUrl: "./link-create-popup.component.html",
-    styleUrls: ["./link-create-popup.component.scss"],
-    standalone: false
+    styleUrls: ["./link-create-popup.component.scss"]
 })
 export class LinkCreatePopupComponent {
     private readonly clipboardService = inject(ClipboardService);

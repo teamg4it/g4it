@@ -54,6 +54,10 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
 
 @NgModule({
     declarations: [
+
+    ],
+    imports: [
+        SharedChartsModule,
         DigitalServicesFootprintComponent,
         DigitalServicesFootprintDashboardComponent,
         DigitalServicesTerminalsComponent,
@@ -76,9 +80,6 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesAiInfrastructureComponent,
         DigitalServicesFootprintFooterComponent,
         DigitalServicesEcomindParametersComponent,
-    ],
-    imports: [
-        SharedChartsModule,
         CommonModule,
         FormsModule,
         RouterModule,

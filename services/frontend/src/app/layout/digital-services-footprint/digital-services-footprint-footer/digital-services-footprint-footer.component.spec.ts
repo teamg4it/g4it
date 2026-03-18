@@ -67,49 +67,47 @@ describe("DigitalServicesFootprintFooterComponent", () => {
         mockGlobalStore = jasmine.createSpyObj("GlobalStoreService", ["setLoading"]);
 
         TestBed.configureTestingModule({
-            declarations: [DigitalServicesFootprintFooterComponent],
-            imports: [HttpClientTestingModule, RouterTestingModule],
-            providers: [
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        snapshot: {
-                            paramMap: {
-                                get: (key: string) => {
-                                    if (key === "digitalServiceVersionId") return "1";
-                                    return null;
-                                },
-                            },
+    imports: [HttpClientTestingModule, RouterTestingModule, DigitalServicesFootprintFooterComponent],
+    providers: [
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    paramMap: {
+                        get: (key: string) => {
+                            if (key === "digitalServiceVersionId")
+                                return "1";
+                            return null;
                         },
-                        paramMap: of(
-                            new Map<string, string>([["digitalServiceVersionId", "1"]]),
-                        ),
                     },
                 },
-                { provide: Router, useValue: mockRouter },
-                { provide: TranslateService, useValue: mockTranslate },
-                { provide: MessageService, useValue: mockMessageService },
-                {
-                    provide: DigitalServicesDataService,
-                    useValue: mockDigitalServicesData,
-                },
-                {
-                    provide: DigitalServiceBusinessService,
-                    useValue: mockDigitalServiceBusinessService,
-                },
-                {
-                    provide: DigitalServicesAiDataService,
-                    useValue: mockDigitalServicesAiData,
-                },
-                {
-                    provide: DigitalServiceStoreService,
-                    useValue: mockDigitalServiceStore,
-                },
-                { provide: AIFormsStore, useValue: mockAiFormsStore },
-                { provide: GlobalStoreService, useValue: mockGlobalStore },
-            ],
-            schemas: [NO_ERRORS_SCHEMA],
-        }).compileComponents();
+                paramMap: of(new Map<string, string>([["digitalServiceVersionId", "1"]])),
+            },
+        },
+        { provide: Router, useValue: mockRouter },
+        { provide: TranslateService, useValue: mockTranslate },
+        { provide: MessageService, useValue: mockMessageService },
+        {
+            provide: DigitalServicesDataService,
+            useValue: mockDigitalServicesData,
+        },
+        {
+            provide: DigitalServiceBusinessService,
+            useValue: mockDigitalServiceBusinessService,
+        },
+        {
+            provide: DigitalServicesAiDataService,
+            useValue: mockDigitalServicesAiData,
+        },
+        {
+            provide: DigitalServiceStoreService,
+            useValue: mockDigitalServiceStore,
+        },
+        { provide: AIFormsStore, useValue: mockAiFormsStore },
+        { provide: GlobalStoreService, useValue: mockGlobalStore },
+    ],
+    schemas: [NO_ERRORS_SCHEMA],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesFootprintFooterComponent);
         component = fixture.componentInstance;

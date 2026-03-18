@@ -1,164 +1,173 @@
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 80px)' }">
-    <section class="useful-page">
-        @if (!isShared) {
-            <div class="breadcrumb mb-4">
-                <span>{{ "common.home" | translate }}</span>
-                <i class="pi pi-angle-right separator"></i>
-                <span>{{ "common.about" | translate }}</span>
-                <i class="pi pi-angle-right separator"></i>
-                <span class="active">{{ "common.useful-info" | translate }} </span>
+  <section class="useful-page">
+    @if (!isShared) {
+      <div class="breadcrumb mb-4">
+        <span>{{ "common.home" | translate }}</span>
+        <i class="pi pi-angle-right separator"></i>
+        <span>{{ "common.about" | translate }}</span>
+        <i class="pi pi-angle-right separator"></i>
+        <span class="active">{{ "common.useful-info" | translate }} </span>
+      </div>
+    }
+    <h1 class="font-semibold" [ngClass]="{ 'mt-5': isShared }">
+      {{ "common.useful-info" | translate }}
+    </h1>
+    <div class="my-4">
+      <span class="text-2xl">{{ "common.useful-line" | translate }}</span>
+    </div>
+    @if (isShared) {
+      <h2 class="font-semibold">{{ "useful-information.overview" | translate }}</h2>
+      <p
+        class="text-2xl line-height-3"
+        [innerHTML]="'welcome-page.about-g4it' | translate"
+      ></p>
+
+      <h3 class="font-semibold">
+        {{ "useful-information.module-available" | translate }}
+      </h3>
+      <div class="flex flex-column lg:flex-row">
+        <!-- Inventories -->
+        <p-card
+          class="selection-card-container col md:col-12 lg:col-6"
+          styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
+          >
+          <ng-template pTemplate="header">
+            <div class="py-4 sm:pl-5">
+              <div class="custom-icon custom-globe-icon"></div>
             </div>
-        }
-        <h1 class="font-semibold" [ngClass]="{ 'mt-5': isShared }">
-            {{ "common.useful-info" | translate }}
-        </h1>
-        <div class="my-4">
-            <span class="text-2xl">{{ "common.useful-line" | translate }}</span>
+          </ng-template>
+          <div class="p-card-title font-normal line-height-1">
+            {{ "welcome-page.inventories.title" | translate }}
+          </div>
+          <p class="selection-card-content text-lg mt-3">
+            {{ "welcome-page.inventories.description" | translate }}
+          </p>
+        </p-card>
+        <!-- Digital Services -->
+        <p-card
+          class="selection-card-container col md:col-12 lg:col-6"
+          styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
+          >
+          <ng-template pTemplate="header">
+            <div class="py-4 sm:pl-5">
+              <div class="custom-icon custom-at-symbol-icon"></div>
+            </div>
+          </ng-template>
+          <div class="p-card-title font-normal line-height-1">
+            {{ "welcome-page.digital-service.title" | translate }}
+          </div>
+          <p class="selection-card-content text-lg mt-3">
+            {{ "welcome-page.digital-service.description" | translate }}
+          </p>
+        </p-card>
+      </div>
+    }
+    <div class="my-4">
+      <div class="text-4xl font-semibold">
+        {{ "common.versions" | translate }}
+      </div>
+
+      <div class="w-25rem">
+        @for (software of versions; track software) {
+          <div
+            class="flex justify-content-between gap-1 flex-wrap text-base"
+            >
+            <span class="flex w-7rem">{{ software.name | uppercase }}</span>
+            <span class="flex">{{ software.version }}</span>
+            <span class="flex"
+              ><a
+              [href]="repoUrls[software.name]"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ "useful-information.link-to-github" | translate }}</a
+              ></span
+              >
+            </div>
+          }
         </div>
-        @if (isShared) {
-            <h2 class="font-semibold">{{ "useful-information.overview" | translate }}</h2>
-            <p
-                class="text-2xl line-height-3"
-                [innerHTML]="'welcome-page.about-g4it' | translate"
-            ></p>
+        <p>
+          {{ "useful-information.g4it-line" | translate }}
+          <a
+            href="https://saas-g4it.com/documentation/5-releases/index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >{{ "useful-information.documentation" | translate }}</a
+            >.
+          </p>
+        </div>
 
-            <h3 class="font-semibold">
-                {{ "useful-information.module-available" | translate }}
-            </h3>
-            <div class="flex flex-column lg:flex-row">
-                <!-- Inventories -->
-                <p-card
-                    class="selection-card-container col md:col-12 lg:col-6"
-                    styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
-                >
-                    <ng-template pTemplate="header">
-                        <div class="py-4 sm:pl-5">
-                            <div class="custom-icon custom-globe-icon"></div>
-                        </div>
-                    </ng-template>
-                    <div class="p-card-title font-normal line-height-1">
-                        {{ "welcome-page.inventories.title" | translate }}
-                    </div>
-                    <p class="selection-card-content text-lg mt-3">
-                        {{ "welcome-page.inventories.description" | translate }}
-                    </p>
-                </p-card>
-                <!-- Digital Services -->
-                <p-card
-                    class="selection-card-container col md:col-12 lg:col-6"
-                    styleClass="selection-card flex h-full flex-column sm:flex-row lg:flex-column xl:flex-row"
-                >
-                    <ng-template pTemplate="header">
-                        <div class="py-4 sm:pl-5">
-                            <div class="custom-icon custom-at-symbol-icon"></div>
-                        </div>
-                    </ng-template>
-                    <div class="p-card-title font-normal line-height-1">
-                        {{ "welcome-page.digital-service.title" | translate }}
-                    </div>
-                    <p class="selection-card-content text-lg mt-3">
-                        {{ "welcome-page.digital-service.description" | translate }}
-                    </p>
-                </p-card>
-            </div>
-        }
         <div class="my-4">
-            <div class="text-4xl font-semibold">
-                {{ "common.versions" | translate }}
-            </div>
+          <div class="text-4xl font-semibold">
+            {{ "useful-information.computing-engines" | translate }}
+          </div>
 
-            <div class="w-25rem">
-                <div
-                    class="flex justify-content-between gap-1 flex-wrap text-base"
-                    *ngFor="let software of versions"
-                >
-                    <span class="flex w-7rem">{{ software.name | uppercase }}</span>
-                    <span class="flex">{{ software.version }}</span>
-                    <span class="flex"
+          <div class="w-25rem">
+            <ul aria-labelledby="openVersion">
+              @for (software of externalVersions; track software) {
+                <div>
+                  @if (software.name != 'ecomindai' || isEcoMindModuleEnabled) {
+                    <li
+                      class="flex justify-content-between gap-1 flex-wrap text-base"
+                      >
+                      <span class="flex w-7rem">{{
+                        software.name | uppercase
+                      }}</span>
+                      <span class="flex">{{ software.version }}</span>
+                      <span class="flex"
                         ><a
-                            [href]="repoUrls[software.name]"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            >{{ "useful-information.link-to-github" | translate }}</a
+                        [href]="repoUrls[software.name]"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >{{
+                        "useful-information.link-to-github" | translate
+                        }}</a
                         ></span
-                    >
-                </div>
-            </div>
-            <p>
-                {{ "useful-information.g4it-line" | translate }}
-                <a
-                    href="https://saas-g4it.com/documentation/5-releases/index.html"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >{{ "useful-information.documentation" | translate }}</a
-                >.
-            </p>
-        </div>
-
-        <div class="my-4">
-            <div class="text-4xl font-semibold">
-                {{ "useful-information.computing-engines" | translate }}
-            </div>
-
-            <div class="w-25rem">
-                <ul aria-labelledby="openVersion">
-                    <div *ngFor="let software of externalVersions">
-                        <li
-                            class="flex justify-content-between gap-1 flex-wrap text-base"
-                            *ngIf="software.name != 'ecomindai' || isEcoMindModuleEnabled"
                         >
-                            <span class="flex w-7rem">{{
-                                software.name | uppercase
-                            }}</span>
-                            <span class="flex">{{ software.version }}</span>
-                            <span class="flex"
-                                ><a
-                                    [href]="repoUrls[software.name]"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    >{{
-                                        "useful-information.link-to-github" | translate
-                                    }}</a
-                                ></span
-                            >
-                        </li>
-                    </div>
-                </ul>
+                      </li>
+                    }
+                  </div>
+                }
+              </ul>
             </div>
-        </div>
+          </div>
 
-        <div class="my-4">
+          <div class="my-4">
             <div class="text-4xl font-semibold">
-                {{ "common.open-hours" | translate }}
+              {{ "common.open-hours" | translate }}
             </div>
 
             <div class="w-20rem">
-                <ul aria-labelledby="openTitle">
-                    <li
-                        class="flex justify-content-between flex-wrap text-base"
-                        *ngFor="let data of businessHoursData"
+              <ul aria-labelledby="openTitle">
+                @for (data of businessHoursData; track data) {
+                  <li
+                    class="flex justify-content-between flex-wrap text-base"
                     >
-                        <span>{{ "common.week." + data.day | translate }}</span
-                        ><span *ngIf="data.start_time"
-                            >{{ data.start_time | businessHoursRenderer }} -
-                            {{ data.end_time | businessHoursRenderer
-                            }}<span *ngIf="selectedLanguage === 'en'"> UTC</span>
-                        </span>
-                    </li>
-                </ul>
-            </div>
+                    <span>{{ "common.week." + data.day | translate }}</span
+                      >@if (data.start_time) {
+                      <span
+                        >{{ data.start_time | businessHoursRenderer }} -
+                        {{ data.end_time | businessHoursRenderer
+                        }}@if (selectedLanguage === 'en') {
+                        <span> UTC</span>
+                      }
+                    </span>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
         </div>
 
         <div class="my-4">
-            <div class="text-4xl font-semibold mb-4">
-                {{ "common.support" | translate }}
-            </div>
-            <p-button
-                autofocus="true"
-                styleClass="bg-light-green text-white"
-                (onClick)="composeEmail()"
-                >{{ "common.mailTo" | translate }}
-            </p-button>
+          <div class="text-4xl font-semibold mb-4">
+            {{ "common.support" | translate }}
+          </div>
+          <p-button
+            autofocus="true"
+            styleClass="bg-light-green text-white"
+            (onClick)="composeEmail()"
+            >{{ "common.mailTo" | translate }}
+          </p-button>
         </div>
-    </section>
-</p-scrollPanel>
+      </section>
+    </p-scrollPanel>

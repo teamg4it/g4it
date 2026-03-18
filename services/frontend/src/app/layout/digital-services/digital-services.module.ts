@@ -18,11 +18,6 @@ import { DigitalServicesComponent } from "./digital-services.component";
 import { digitalServicesRouter } from "./digital-services.router";
 
 @NgModule({
-    declarations: [
-        DigitalServicesComponent,
-        DigitalServicesItemComponent,
-        CreateDigitalServicesSidebarComponent,
-    ],
     imports: [
         ButtonModule,
         ScrollPanelModule,
@@ -31,6 +26,9 @@ import { digitalServicesRouter } from "./digital-services.router";
         SharedModule,
         ConfirmPopupModule,
         digitalServicesRouter,
+        DigitalServicesComponent,
+        DigitalServicesItemComponent,
+        CreateDigitalServicesSidebarComponent,
     ],
     exports: [DigitalServicesComponent, DigitalServicesItemComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

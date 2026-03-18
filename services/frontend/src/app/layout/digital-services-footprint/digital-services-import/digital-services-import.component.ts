@@ -34,8 +34,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "app-digital-services-import",
     templateUrl: "./digital-services-import.component.html",
-    styleUrl: "./digital-services-import.component.scss",
-    standalone: false
+    styleUrl: "./digital-services-import.component.scss"
 })
 export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);

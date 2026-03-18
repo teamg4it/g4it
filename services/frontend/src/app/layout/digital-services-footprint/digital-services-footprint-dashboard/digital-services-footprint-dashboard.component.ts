@@ -64,8 +64,7 @@ import { BarChartComponent } from "./bar-chart/bar-chart.component";
 @Component({
     selector: "app-digital-services-footprint-dashboard",
     templateUrl: "./digital-services-footprint-dashboard.component.html",
-    styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
-    standalone: false
+    styleUrls: ["./digital-services-footprint-dashboard.component.scss"]
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard

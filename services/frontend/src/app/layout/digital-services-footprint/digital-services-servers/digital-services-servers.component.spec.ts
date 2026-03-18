@@ -19,22 +19,22 @@ describe("DigitalServicesServersComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DigitalServicesServersComponent],
-            imports: [
-                RouterTestingModule,
-                TranslateModule.forRoot(),
-                HttpClientTestingModule,
-            ],
-            providers: [
-                MessageService,
-                DigitalServiceStoreService,
-                InPhysicalEquipmentsService,
-                InVirtualEquipmentsService,
-                DigitalServicesDataService,
-                DigitalServiceBusinessService,
-                UserService,
-            ],
-        }).compileComponents();
+    imports: [
+        RouterTestingModule,
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+        DigitalServicesServersComponent,
+    ],
+    providers: [
+        MessageService,
+        DigitalServiceStoreService,
+        InPhysicalEquipmentsService,
+        InVirtualEquipmentsService,
+        DigitalServicesDataService,
+        DigitalServiceBusinessService,
+        UserService,
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesServersComponent);
         component = fixture.componentInstance;

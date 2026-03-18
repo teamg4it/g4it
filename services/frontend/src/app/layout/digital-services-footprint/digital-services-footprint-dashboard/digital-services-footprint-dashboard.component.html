@@ -1,61 +1,62 @@
 <div class="bg-white">
-    <div
-        class="digital-service-chart-heading-container mt-4 block lg:flex justify-content-between align-items-center bg-white px-4 pt-3 pb-0 border-round"
+  <div
+    class="digital-service-chart-heading-container mt-4 block lg:flex justify-content-between align-items-center bg-white px-4 pt-3 pb-0 border-round"
     >
-        <h3 class="mb-0">
-            <ng-container [ngSwitch]="chartType()">
-                <ng-container *ngSwitchCase="'bar'">
-                    {{
-                        barChartChild
-                            ? selectedDetailName
-                            : getTNSTranslation(selectedParam)
-                    }}
-                </ng-container>
-                <ng-container *ngSwitchDefault>
-                    {{ getCriteriaTranslation(selectedCriteria) }}
-                </ng-container>
-            </ng-container>
-        </h3>
-        <p-button
-            (onClick)="filterSidebarVisible = true"
-            styleClass="p-button-secondary-blue uppercase mr-3"
-            id="filter"
-            icon="pi pi-filter"
-            [label]="'digital-services.configure-view' | translate"
-            [ariaLabel]="'digital-services.configure-view' | translate"
-        ></p-button>
+    <h3 class="mb-0">
+      @switch (chartType()) {
+        @case ('bar') {
+          {{
+          barChartChild
+          ? selectedDetailName
+          : getTNSTranslation(selectedParam)
+          }}
+        }
+        @default {
+          {{ getCriteriaTranslation(selectedCriteria) }}
+        }
+      }
+    </h3>
+    <p-button
+      (onClick)="filterSidebarVisible = true"
+      styleClass="p-button-secondary-blue uppercase mr-3"
+      id="filter"
+      icon="pi pi-filter"
+      [label]="'digital-services.configure-view' | translate"
+      [ariaLabel]="'digital-services.configure-view' | translate"
+    ></p-button>
+  </div>
+  <div class="footprint-digital-dashboard-container grid px-2 w-full">
+    <div
+      class="bg-white"
+      [ngClass]="!isCollapsed ? 'col-12 xl:col-3' : 'col-fixed w-7rem'"
+      >
+      <app-impact-sidebar
+        [(isCollapsed)]="isCollapsed"
+        [impacts]="impacts"
+        [selectedCriteria]="selectedCriteria"
+        [selectedUnit]="selectedUnit"
+        [entityName]="digitalService.name"
+        [isAllowedWrite$]="userService.isAllowedDigitalServiceWrite$"
+        [onlyOneCriteria]="onlyOneCriteria"
+        (selectedCriteriaChange)="handleChartChange($event)"
+        (displayPopup)="displayPopupFct()"
+      ></app-impact-sidebar>
     </div>
-    <div class="footprint-digital-dashboard-container grid px-2 w-full">
-        <div
-            class="bg-white"
-            [ngClass]="!isCollapsed ? 'col-12 xl:col-3' : 'col-fixed w-7rem'"
-        >
-            <app-impact-sidebar
-                [(isCollapsed)]="isCollapsed"
-                [impacts]="impacts"
-                [selectedCriteria]="selectedCriteria"
-                [selectedUnit]="selectedUnit"
-                [entityName]="digitalService.name"
-                [isAllowedWrite$]="userService.isAllowedDigitalServiceWrite$"
-                [onlyOneCriteria]="onlyOneCriteria"
-                (selectedCriteriaChange)="handleChartChange($event)"
-                (displayPopup)="displayPopupFct()"
-            ></app-impact-sidebar>
-        </div>
-        <div
-            class="digital-service-chart-container mb-5 mt-2 bg-gray-color flex-1 min-w-0"
-            [ngClass]="!isCollapsed ? 'col-12 xl:col-9' : 'col'"
-        >
-            <div class="bg-white m-3 pb-3">
-                <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
-                <ng-container [ngSwitch]="chartType()">
-                    <div *ngSwitchCase="'bar'" class="flex ml-1">
-                        @if (barChartChild) {
-                            <p-button
-                                (onClick)="barChartChild = false"
-                                styleClass="color-tertiary font-semibold p-2"
-                                [text]="true"
-                                icon="pi pi-arrow-left"
+    <div
+      class="digital-service-chart-container mb-5 mt-2 bg-gray-color flex-1 min-w-0"
+      [ngClass]="!isCollapsed ? 'col-12 xl:col-9' : 'col'"
+      >
+      <div class="bg-white m-3 pb-3">
+        <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
+        @switch (chartType()) {
+          @case ('bar') {
+            <div class="flex ml-1">
+              @if (barChartChild) {
+                <p-button
+                  (onClick)="barChartChild = false"
+                  styleClass="color-tertiary font-semibold p-2"
+                  [text]="true"
+                  icon="pi pi-arrow-left"
                                 [aria-label]="
                                     getCriteriaTranslation(selectedCriteria) +
                                     ' / ' +
@@ -66,148 +67,155 @@
                                     ' / ' +
                                     getTNSTranslation(selectedParam)
                                 "
-                            />
-                        } @else {
-                            <p-button
-                                (onClick)="chartType.set('pie')"
-                                styleClass="color-tertiary font-semibold p-2"
-                                [text]="true"
-                                icon="pi pi-arrow-left"
-                                [aria-label]="getCriteriaTranslation(selectedCriteria)"
-                                [label]="getCriteriaTranslation(selectedCriteria)"
-                            />
-                        }
-                    </div>
-                    <div *ngSwitchCase="'pie'" class="flex ml-1">
-                        <p-button
-                            *ngIf="!onlyOneCriteria"
+                  />
+              } @else {
+                <p-button
+                  (onClick)="chartType.set('pie')"
+                  styleClass="color-tertiary font-semibold p-2"
+                  [text]="true"
+                  icon="pi pi-arrow-left"
+                  [aria-label]="getCriteriaTranslation(selectedCriteria)"
+                  [label]="getCriteriaTranslation(selectedCriteria)"
+                  />
+              }
+            </div>
+          }
+          @case ('pie') {
+            <div class="flex ml-1">
+              @if (!onlyOneCriteria) {
+                <p-button
                             (onClick)="
                                 chartType.set('radial');
                                 selectedCriteria = 'Global Vision'
                             "
-                            styleClass="color-tertiary font-semibold p-2"
-                            [text]="true"
-                            icon="pi pi-arrow-left"
+                  styleClass="color-tertiary font-semibold p-2"
+                  [text]="true"
+                  icon="pi pi-arrow-left"
                             [aria-label]="
                                 'criteria-title.global-vision.title' | translate
                             "
-                            [label]="'criteria-title.global-vision.title' | translate"
-                        />
-                    </div>
-                </ng-container>
-                <div
-                    *ngIf="noData; else chart"
-                    class="no-data-round no-data-digital-service"
-                >
-                    <p class="grey-text text-round-empty">
-                        {{ "common.no-data" | translate }}
-                    </p>
-                </div>
-
-                <ng-template #chart>
-                    <app-radial-chart
-                        *ngIf="chartType() == 'radial'"
-                        [globalVisionChartData]="globalVisionChartData"
-                        [selectedCriteria]="selectedCriteria"
-                        [showInconsitency]="showInconsitency"
-                        (selectedCriteriaChange)="handleChartChange($event)"
-                        [enableDataInconsistency]="digitalService.enableDataInconsistency"
-                    ></app-radial-chart>
-                    <app-pie-chart
-                        *ngIf="chartType() == 'pie'"
-                        [globalVisionChartData]="globalVisionChartData"
-                        [selectedCriteria]="selectedCriteria"
-                        [showInconsitency]="showInconsitency"
-                        (selectedParamChange)="selectedParam = $event"
-                        (chartTypeChange)="chartType.set($event)"
-                        (topPieThreeImpacts)="topPieThreeImpacts = $event"
-                        [enableDataInconsistency]="digitalService.enableDataInconsistency"
-                    ></app-pie-chart>
-                    <app-bar-chart
-                        *ngIf="chartType() == 'bar'"
-                        [barChartChild]="barChartChild"
-                        [selectedParam]="selectedParam"
-                        [selectedDetailParam]="selectedDetailParam"
-                        [selectedDetailName]="selectedDetailName"
-                        [selectedCriteria]="selectedCriteria"
-                        [networkData]="networkData()"
-                        [serverData]="serverData()"
-                        [cloudData]="cloudData()"
-                        [terminalData]="terminalData()"
-                        [enableDataInconsistency]="digitalService.enableDataInconsistency"
-                        [showInconsitency]="showInconsitency"
-                        (barChartChildChange)="barChartChild = $event"
-                        (selectedDetailParamChange)="selectedDetailParam = $event"
-                        (selectedDetailNameChange)="selectedDetailName = $event"
-                        (barChartTopThreeImpact)="barChartTopThreeImpact = $event"
+                  [label]="'criteria-title.global-vision.title' | translate"
+                  />
+              }
+            </div>
+          }
+        }
+        @if (noData) {
+          <div
+            class="no-data-round no-data-digital-service"
+            >
+            <p class="grey-text text-round-empty">
+              {{ "common.no-data" | translate }}
+            </p>
+          </div>
+        } @else {
+          @if (chartType() == 'radial') {
+            <app-radial-chart
+              [globalVisionChartData]="globalVisionChartData"
+              [selectedCriteria]="selectedCriteria"
+              [showInconsitency]="showInconsitency"
+              (selectedCriteriaChange)="handleChartChange($event)"
+              [enableDataInconsistency]="digitalService.enableDataInconsistency"
+            ></app-radial-chart>
+          }
+          @if (chartType() == 'pie') {
+            <app-pie-chart
+              [globalVisionChartData]="globalVisionChartData"
+              [selectedCriteria]="selectedCriteria"
+              [showInconsitency]="showInconsitency"
+              (selectedParamChange)="selectedParam = $event"
+              (chartTypeChange)="chartType.set($event)"
+              (topPieThreeImpacts)="topPieThreeImpacts = $event"
+              [enableDataInconsistency]="digitalService.enableDataInconsistency"
+            ></app-pie-chart>
+          }
+          @if (chartType() == 'bar') {
+            <app-bar-chart
+              [barChartChild]="barChartChild"
+              [selectedParam]="selectedParam"
+              [selectedDetailParam]="selectedDetailParam"
+              [selectedDetailName]="selectedDetailName"
+              [selectedCriteria]="selectedCriteria"
+              [networkData]="networkData()"
+              [serverData]="serverData()"
+              [cloudData]="cloudData()"
+              [terminalData]="terminalData()"
+              [enableDataInconsistency]="digitalService.enableDataInconsistency"
+              [showInconsitency]="showInconsitency"
+              (barChartChildChange)="barChartChild = $event"
+              (selectedDetailParamChange)="selectedDetailParam = $event"
+              (selectedDetailNameChange)="selectedDetailName = $event"
+              (barChartTopThreeImpact)="barChartTopThreeImpact = $event"
                         (barChartTopThreeResourceImpact)="
                             barChartTopThreeResourceImpact = $event
                         "
-                    ></app-bar-chart>
-                </ng-template>
-            </div>
-            <app-graph-description
-                [ecoMindRecomendation]="getEcoMindRecomendation()"
-                [contentText]="getContentText()"
-                [textDescriptionImpacts]="textDescriptionImpacts"
-                [textDescriptionResourceImpacts]="textDescriptionResourceImpacts"
-                [chartType]="chartType()"
-                [barChartChild]="barChartChild"
-                [selectedParam]="selectedParam"
-                (impactSelectedEvent)="handleImpactClick($event)"
-            ></app-graph-description>
-        </div>
+            ></app-bar-chart>
+          }
+        }
+
+      </div>
+      <app-graph-description
+        [ecoMindRecomendation]="getEcoMindRecomendation()"
+        [contentText]="getContentText()"
+        [textDescriptionImpacts]="textDescriptionImpacts"
+        [textDescriptionResourceImpacts]="textDescriptionResourceImpacts"
+        [chartType]="chartType()"
+        [barChartChild]="barChartChild"
+        [selectedParam]="selectedParam"
+        (impactSelectedEvent)="handleImpactClick($event)"
+      ></app-graph-description>
     </div>
-    <ng-template #dataConsistencyRef>
-        <div
-            class="ml-auto block align-items-end lg:flex flex-row justify-content-end"
+  </div>
+  <ng-template #dataConsistencyRef>
+    <div
+      class="ml-auto block align-items-end lg:flex flex-row justify-content-end"
             [ngClass]="
                 showInconsitencyBtn && digitalService.enableDataInconsistency
                     ? 'p-3'
                     : 'p-1'
             "
-        >
-            @if (showInconsitencyBtn && digitalService.enableDataInconsistency) {
-                <p-button
-                    (onClick)="showInconsitency = !showInconsitency"
-                    [rounded]="true"
-                    [label]="'inventories-footprint.data-consistency' | translate"
-                    [outlined]="!showInconsitency"
-                    severity="danger"
-                    class="ml-0 sm:ml-3"
-                    [ariaLabel]="'inventories-footprint.data-consistency' | translate"
-                />
-            }
-        </div>
-    </ng-template>
-    @if (displayCriteriaPopup) {
-        <app-criteria-popup
-            [displayPopup]="displayCriteriaPopup"
-            [type]="'ds'"
-            [organizationDetails]="organization"
-            [workspaceDetails]="workspace"
-            [ds]="digitalService"
-            [selectedCriteriaIS]="selectedCriteriaPopup"
-            (outSaveDS)="handleSaveDs($event)"
-            (outClose)="displayCriteriaPopup = false"
-        ></app-criteria-popup>
-    }
+      >
+      @if (showInconsitencyBtn && digitalService.enableDataInconsistency) {
+        <p-button
+          (onClick)="showInconsitency = !showInconsitency"
+          [rounded]="true"
+          [label]="'inventories-footprint.data-consistency' | translate"
+          [outlined]="!showInconsitency"
+          severity="danger"
+          class="ml-0 sm:ml-3"
+          [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+          />
+      }
+    </div>
+  </ng-template>
+  @if (displayCriteriaPopup) {
+    <app-criteria-popup
+      [displayPopup]="displayCriteriaPopup"
+      [type]="'ds'"
+      [organizationDetails]="organization"
+      [workspaceDetails]="workspace"
+      [ds]="digitalService"
+      [selectedCriteriaIS]="selectedCriteriaPopup"
+      (outSaveDS)="handleSaveDs($event)"
+      (outClose)="displayCriteriaPopup = false"
+    ></app-criteria-popup>
+  }
 </div>
 
 @if (filterSidebarVisible) {
-    <p-sidebar
-        [(visible)]="filterSidebarVisible"
-        position="right"
-        styleClass="p-sidebar-md w-5"
-        (onHide)="filterSidebarVisible = false"
+  <p-sidebar
+    [(visible)]="filterSidebarVisible"
+    position="right"
+    styleClass="p-sidebar-md w-5"
+    (onHide)="filterSidebarVisible = false"
     >
-        <ng-template pTemplate="headless">
-            <app-configure-view-filters
-                (filtersApplied)="handleFilters($event)"
-                (sidebarVisibleChange)="filterSidebarVisible = $event"
-                [enableDataInconsistency]="digitalService.enableDataInconsistency"
-                [selectedUnit]="selectedUnit"
-            ></app-configure-view-filters>
-        </ng-template>
-    </p-sidebar>
+    <ng-template pTemplate="headless">
+      <app-configure-view-filters
+        (filtersApplied)="handleFilters($event)"
+        (sidebarVisibleChange)="filterSidebarVisible = $event"
+        [enableDataInconsistency]="digitalService.enableDataInconsistency"
+        [selectedUnit]="selectedUnit"
+      ></app-configure-view-filters>
+    </ng-template>
+  </p-sidebar>
 }

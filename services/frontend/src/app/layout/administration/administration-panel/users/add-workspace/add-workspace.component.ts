@@ -32,8 +32,7 @@ import { environment } from "src/environments/environment";
 @Component({
     selector: "app-add-workspace",
     templateUrl: "./add-workspace.component.html",
-    providers: [ConfirmationService, MessageService],
-    standalone: false
+    providers: [ConfirmationService, MessageService]
 })
 export class AddWorkspaceComponent implements OnInit, OnChanges {
     @Input() userDetail!: UserDetails;

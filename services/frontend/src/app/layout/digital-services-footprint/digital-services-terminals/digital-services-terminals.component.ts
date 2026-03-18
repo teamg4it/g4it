@@ -22,8 +22,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 @Component({
     selector: "app-digital-services-terminals",
     templateUrl: "./digital-services-terminals.component.html",
-    providers: [MessageService],
-    standalone: false
+    providers: [MessageService]
 })
 export class DigitalServicesTerminalsComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);

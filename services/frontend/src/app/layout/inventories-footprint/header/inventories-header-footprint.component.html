@@ -1,78 +1,85 @@
 <p-toast #toast position="bottom-center"></p-toast>
 <div class="flex justify-content-between align-items-center flex-wrap">
-    <div>
-        <p-button
-            styleClass="color-tertiary text-2xl font-semibold p-2"
-            [routerLink]="changePageToInventories()"
-            [text]="true"
-            [ariaLabel]="'inventories.return' | translate"
-            icon="pi pi-arrow-left"
+  <div>
+    <p-button
+      styleClass="color-tertiary text-2xl font-semibold p-2"
+      [routerLink]="changePageToInventories()"
+      [text]="true"
+      [ariaLabel]="'inventories.return' | translate"
+      icon="pi pi-arrow-left"
             [label]="
                 'inventories.title' | translate: { WorkspaceName: selectedWorkspace }
             "
-            id="my-is-return-button"
-        />
-        <h1 *ngIf="inventory.type === types.INFORMATION_SYSTEM" class="px-2">
-            {{ (inventory.name | monthYear) + " - " + indicatorType }}
-        </h1>
-        <h1 *ngIf="inventory.type === types.SIMULATION" class="px-2">
-            {{ inventory.name + " - " + indicatorType }}
-        </h1>
-    </div>
-    <div>
-        <p-button
-            *ngIf="!inventory.note && (userService.isAllowedInventoryWrite$ | async)"
-            (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button"
-            [text]="true"
-            [plain]="true"
-            [ariaLabel]="'common.accessibility.addNote' | translate"
-            [label]="'common.note.add' | translate"
-            icon="pi pi-plus-circle"
-        />
-
-        <p-button
-            *ngIf="inventory.note"
-            (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button"
-            [text]="true"
-            [plain]="true"
-            [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            [label]="'common.note.attached' | translate"
-            icon="pi pi-clipboard"
-        />
-
-        <p-button
-            [ariaLabel]="'common.accessibility.download' | translate"
-            styleClass="bg-black text-white header-button"
-            (onClick)="download($event)"
-            [disabled]="downloadInProgress"
-            *ngIf="userService.isAllowedInventoryRead$ | async"
-            id="export-inventory-button"
-            icon="pi pi-download"
-            [label]="'inventories-footprint.header.export' | translate"
-        />
-    </div>
-    @if (sidebarVisible) {
-        <p-sidebar
-            [(visible)]="sidebarVisible"
-            position="right"
-            tabIndex="0"
-            styleClass="p-sidebar-md w-7"
-            (onHide)="sidebarVisible = false"
-            ariaCloseLabel="Close"
-        >
-            <app-common-editor
-                [content]="inventory.note?.content"
-                [title]="'Note - ' + inventory.name"
-                [showButtons]="userService.isAllowedInventoryWrite$ | async"
-                (saveValue)="noteSaveValue($event)"
-                (outClose)="sidebarVisible = $event"
-                (delete)="noteDelete($event); sidebarVisible = $event"
-                styleClass="mx-7"
-            >
-            </app-common-editor>
-        </p-sidebar>
+      id="my-is-return-button"
+      />
+    @if (inventory.type === types.INFORMATION_SYSTEM) {
+      <h1 class="px-2">
+        {{ (inventory.name | monthYear) + " - " + indicatorType }}
+      </h1>
     }
+    @if (inventory.type === types.SIMULATION) {
+      <h1 class="px-2">
+        {{ inventory.name + " - " + indicatorType }}
+      </h1>
+    }
+  </div>
+  <div>
+    @if (!inventory.note && (userService.isAllowedInventoryWrite$ | async)) {
+      <p-button
+        (onClick)="sidebarVisible = true"
+        styleClass="text-gray-900 header-button"
+        [text]="true"
+        [plain]="true"
+        [ariaLabel]="'common.accessibility.addNote' | translate"
+        [label]="'common.note.add' | translate"
+        icon="pi pi-plus-circle"
+        />
+    }
+
+    @if (inventory.note) {
+      <p-button
+        (onClick)="sidebarVisible = true"
+        styleClass="text-gray-900 header-button"
+        [text]="true"
+        [plain]="true"
+        [ariaLabel]="'common.accessibility.attachedNote' | translate"
+        [label]="'common.note.attached' | translate"
+        icon="pi pi-clipboard"
+        />
+    }
+
+    @if (userService.isAllowedInventoryRead$ | async) {
+      <p-button
+        [ariaLabel]="'common.accessibility.download' | translate"
+        styleClass="bg-black text-white header-button"
+        (onClick)="download($event)"
+        [disabled]="downloadInProgress"
+        id="export-inventory-button"
+        icon="pi pi-download"
+        [label]="'inventories-footprint.header.export' | translate"
+        />
+    }
+  </div>
+  @if (sidebarVisible) {
+    <p-sidebar
+      [(visible)]="sidebarVisible"
+      position="right"
+      tabIndex="0"
+      styleClass="p-sidebar-md w-7"
+      (onHide)="sidebarVisible = false"
+      ariaCloseLabel="Close"
+      >
+      <app-common-editor
+        [content]="inventory.note?.content"
+        [title]="'Note - ' + inventory.name"
+        [showButtons]="userService.isAllowedInventoryWrite$ | async"
+        (saveValue)="noteSaveValue($event)"
+        (outClose)="sidebarVisible = $event"
+        (delete)="noteDelete($event); sidebarVisible = $event"
+        styleClass="mx-7"
+        >
+      </app-common-editor>
+    </p-sidebar>
+  }
 </div>
 <p-confirmPopup ariaCloseLabel="close" [style]="{ width: '450px' }"></p-confirmPopup>

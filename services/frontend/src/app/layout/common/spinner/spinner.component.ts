@@ -3,8 +3,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-spinner",
-    templateUrl: "./spinner.component.html",
-    standalone: false
+    templateUrl: "./spinner.component.html"
 })
 export class SpinnerComponent {
     protected store = inject(GlobalStoreService);

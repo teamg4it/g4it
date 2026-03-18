@@ -5,8 +5,7 @@ import { GraphDescriptionContent } from "src/app/core/interfaces/digital-service
 @Component({
     selector: "app-graph-description",
     templateUrl: "./graph-description.component.html",
-    styleUrl: "./graph-description.component.scss",
-    standalone: false
+    styleUrl: "./graph-description.component.scss"
 })
 export class GraphDescriptionComponent {
     private readonly translate = inject(TranslateService);

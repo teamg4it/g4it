@@ -36,8 +36,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 @Component({
     selector: "app-digital-services-footprint-header",
     templateUrl: "./digital-services-footprint-header.component.html",
-    providers: [MessageService, ConfirmationService],
-    standalone: false
+    providers: [MessageService, ConfirmationService]
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);

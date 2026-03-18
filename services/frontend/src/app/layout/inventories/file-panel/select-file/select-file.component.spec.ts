@@ -24,20 +24,20 @@ describe("SelectFileComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [SelectFileComponent],
-            imports: [
-                CommonModule,
-                ReactiveFormsModule,
-                HttpClientTestingModule,
-                FileUploadModule,
-                DropdownModule,
-                ButtonModule,
-                FormsModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [TranslatePipe, TranslateService],
-            schemas: [NO_ERRORS_SCHEMA],
-        }).compileComponents();
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        HttpClientTestingModule,
+        FileUploadModule,
+        DropdownModule,
+        ButtonModule,
+        FormsModule,
+        TranslateModule.forRoot(),
+        SelectFileComponent,
+    ],
+    providers: [TranslatePipe, TranslateService],
+    schemas: [NO_ERRORS_SCHEMA],
+}).compileComponents();
 
         fixture = TestBed.createComponent(SelectFileComponent);
         component = fixture.componentInstance;

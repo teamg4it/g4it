@@ -2,8 +2,7 @@ import { Pipe, PipeTransform } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 @Pipe({
-    name: "businessHoursRenderer",
-    standalone: false
+    name: "businessHoursRenderer"
 })
 export class BusinessHoursRendererPipe implements PipeTransform {
     constructor(private readonly translate: TranslateService) {}

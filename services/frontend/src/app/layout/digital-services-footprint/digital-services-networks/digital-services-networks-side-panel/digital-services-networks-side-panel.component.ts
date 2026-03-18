@@ -18,8 +18,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 @Component({
     selector: "app-digital-services-networks-side-panel",
     templateUrl: "./digital-services-networks-side-panel.component.html",
-    providers: [MessageService],
-    standalone: false
+    providers: [MessageService]
 })
 export class DigitalServicesNetworksSidePanelComponent implements OnInit {
     protected digitalServiceStore = inject(DigitalServiceStoreService);

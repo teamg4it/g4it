@@ -14,8 +14,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 
 @Component({
-    template: "",
-    standalone: false
+    template: ""
 })
 export class AbstractDashboard {
     ngUnsubscribe = new Subject<void>();

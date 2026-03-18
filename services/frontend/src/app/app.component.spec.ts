@@ -63,20 +63,19 @@ describe("AppComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            declarations: [AppComponent],
-            imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-            providers: [
-                { provide: KeycloakService, useValue: mockKeycloak },
-                { provide: UserDataService, useValue: mockUserService },
-                { provide: TranslateService, useValue: mockTranslate },
-                { provide: GlobalStoreService, useValue: mockGlobalStore },
-                { provide: Router, useValue: mockRouter },
-                { provide: ActivatedRoute, useValue: { firstChild: null } },
-                { provide: Title, useValue: mockTitle },
-                { provide: MatomoScriptService, useValue: mockMatomo },
-            ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        }).compileComponents();
+    imports: [HttpClientTestingModule, TranslateModule.forRoot(), AppComponent],
+    providers: [
+        { provide: KeycloakService, useValue: mockKeycloak },
+        { provide: UserDataService, useValue: mockUserService },
+        { provide: TranslateService, useValue: mockTranslate },
+        { provide: GlobalStoreService, useValue: mockGlobalStore },
+        { provide: Router, useValue: mockRouter },
+        { provide: ActivatedRoute, useValue: { firstChild: null } },
+        { provide: Title, useValue: mockTitle },
+        { provide: MatomoScriptService, useValue: mockMatomo },
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+}).compileComponents();
 
         fixture = TestBed.createComponent(AppComponent);
         component = fixture.componentInstance;

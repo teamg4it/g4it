@@ -9,8 +9,7 @@ import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
     selector: "app-equipments-card",
-    templateUrl: "./equipments-card.component.html",
-    standalone: false
+    templateUrl: "./equipments-card.component.html"
 })
 export class EquipmentsCardComponent implements OnInit {
     @Input() type: string = "";

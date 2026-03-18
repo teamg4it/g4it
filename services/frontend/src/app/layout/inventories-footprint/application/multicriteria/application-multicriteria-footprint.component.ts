@@ -40,8 +40,7 @@ import { InventoriesApplicationFootprintComponent } from "../inventories-applica
 
 @Component({
     selector: "app-application-multicriteria-footprint",
-    templateUrl: "./application-multicriteria-footprint.component.html",
-    standalone: false
+    templateUrl: "./application-multicriteria-footprint.component.html"
 })
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
     @Input() footprint: ApplicationFootprint[] = [];

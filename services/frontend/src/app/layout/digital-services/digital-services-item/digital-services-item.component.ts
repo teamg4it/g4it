@@ -8,8 +8,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 @Component({
     selector: "app-digital-services-item",
     templateUrl: "./digital-services-item.component.html",
-    providers: [MessageService, ConfirmationService],
-    standalone: false
+    providers: [MessageService, ConfirmationService]
 })
 export class DigitalServicesItemComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;

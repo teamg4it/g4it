@@ -23,8 +23,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "app-workspace",
     templateUrl: "./workspace.component.html",
-    styleUrls: ["./workspace.component.scss"],
-    standalone: false
+    styleUrls: ["./workspace.component.scss"]
 })
 export class WorkspaceComponent implements OnInit {
     private readonly userDataService = inject(UserDataService);

@@ -18,8 +18,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: "app-impact-aggregate-infos",
-    templateUrl: "./impact-aggregate-infos.component.html",
-    standalone: false
+    templateUrl: "./impact-aggregate-infos.component.html"
 })
 export class ImpactAggregateInfosComponent implements OnChanges {
     private readonly translate = inject(TranslateService);

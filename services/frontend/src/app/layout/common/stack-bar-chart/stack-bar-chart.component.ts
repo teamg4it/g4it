@@ -5,8 +5,7 @@ import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract
 import { Constants } from "src/constants";
 @Component({
     selector: "app-stack-bar-chart",
-    templateUrl: "./stack-bar-chart.component.html",
-    standalone: false
+    templateUrl: "./stack-bar-chart.component.html"
 })
 export class StackBarChartComponent extends AbstractDashboard {
     @Output() selectedStackBarClick: EventEmitter<string> = new EventEmitter();

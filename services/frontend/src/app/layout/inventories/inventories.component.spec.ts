@@ -48,41 +48,41 @@ describe("InventoryComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [InventoriesComponent, MonthYearPipe, FilePanelComponent],
-            imports: [
-                HttpClientTestingModule,
-                ToastModule,
-                ButtonModule,
-                AccordionModule,
-                SidebarModule,
-                ScrollPanelModule,
-                ProgressSpinnerModule,
-                ConfirmPopupModule,
-                DropdownModule,
-                BrowserAnimationsModule,
-                FileUploadModule,
-                TranslateModule.forRoot(),
-            ],
-            providers: [
-                TranslatePipe,
-                TranslateService,
-                MessageService,
-                UserService,
-                {
-                    provide: InventoryDataService,
-                    useClass: InventoryServiceMock,
-                },
-                LoadingDataService,
-                EvaluationDataService,
-                Location,
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        params: from([{ inventoryDate: inventoryDate }]),
-                    },
-                },
-            ],
-        }).compileComponents();
+    imports: [
+        HttpClientTestingModule,
+        ToastModule,
+        ButtonModule,
+        AccordionModule,
+        SidebarModule,
+        ScrollPanelModule,
+        ProgressSpinnerModule,
+        ConfirmPopupModule,
+        DropdownModule,
+        BrowserAnimationsModule,
+        FileUploadModule,
+        TranslateModule.forRoot(),
+        InventoriesComponent, MonthYearPipe, FilePanelComponent,
+    ],
+    providers: [
+        TranslatePipe,
+        TranslateService,
+        MessageService,
+        UserService,
+        {
+            provide: InventoryDataService,
+            useClass: InventoryServiceMock,
+        },
+        LoadingDataService,
+        EvaluationDataService,
+        Location,
+        {
+            provide: ActivatedRoute,
+            useValue: {
+                params: from([{ inventoryDate: inventoryDate }]),
+            },
+        },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(InventoriesComponent);
         component = fixture.componentInstance;

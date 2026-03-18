@@ -41,7 +41,8 @@ function initializeAuth(authService: CustomAuthService) {
     return () => authService.init();
 }
 
-@NgModule({
+@NgModule(/* TODO(standalone-migration): clean up removed NgModule class manually. 
+{
     declarations: [AppComponent],
     imports: [
         BrowserModule,
@@ -86,7 +87,7 @@ function initializeAuth(authService: CustomAuthService) {
         }})
     ],
     bootstrap: [AppComponent],
-})
+} */)
 export class AppModule {
     constructor(
         private readonly translate: TranslateService,

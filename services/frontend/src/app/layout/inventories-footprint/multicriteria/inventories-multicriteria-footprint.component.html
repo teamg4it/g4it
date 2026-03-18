@@ -1,66 +1,68 @@
 <div class="ml-auto block align-items-end lg:flex flex-row justify-content-end p-3">
-    @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
-        <p-button
-            (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
-            [rounded]="true"
-            [label]="'inventories-footprint.data-consistency' | translate"
-            [outlined]="!showInconsitencyGraph"
-            severity="danger"
-            class="ml-auto pr-3"
-            [ariaLabel]="'inventories-footprint.data-consistency' | translate"
-        />
-    }
-    @if (!showInconsitencyGraph) {
-        <p-dropdown
-            [options]="dimensions"
-            [(ngModel)]="selectedDimension"
-            [placeholder]="'inventories-footprint.select-dimension' | translate"
-            styleClass="ml-auto"
-        >
-            <ng-template pTemplate="selectedItem">
-                <div *ngIf="selectedDimension()">
-                    {{
-                        "inventories-footprint.round-button." + selectedDimension()
-                            | translate
-                    }}
-                </div>
-            </ng-template>
-            <ng-template let-dimension pTemplate="item">
-                <div>
-                    {{ "inventories-footprint.round-button." + dimension | translate }}
-                </div>
-            </ng-template>
-        </p-dropdown>
-    }
+  @if (criteriaCalculated().hasError && inventory()?.enableDataInconsistency) {
+    <p-button
+      (onClick)="showInconsitencyGraph = !showInconsitencyGraph"
+      [rounded]="true"
+      [label]="'inventories-footprint.data-consistency' | translate"
+      [outlined]="!showInconsitencyGraph"
+      severity="danger"
+      class="ml-auto pr-3"
+      [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+      />
+  }
+  @if (!showInconsitencyGraph) {
+    <p-dropdown
+      [options]="dimensions"
+      [(ngModel)]="selectedDimension"
+      [placeholder]="'inventories-footprint.select-dimension' | translate"
+      styleClass="ml-auto"
+      >
+      <ng-template pTemplate="selectedItem">
+        @if (selectedDimension()) {
+          <div>
+            {{
+            "inventories-footprint.round-button." + selectedDimension()
+            | translate
+            }}
+          </div>
+        }
+      </ng-template>
+      <ng-template let-dimension pTemplate="item">
+        <div>
+          {{ "inventories-footprint.round-button." + dimension | translate }}
+        </div>
+      </ng-template>
+    </p-dropdown>
+  }
 </div>
 @if (showInconsitencyGraph) {
-    @if (options().series) {
-        <app-stack-bar-chart
-            [xAxisInput]="xAxisInput"
-            [statusCountMap]="criteriaCalculated().criteriasCount!"
-            (selectedStackBarClick)="stackChartClick($event)"
-        />
-    } @else {
-        <div class="no-data-bar">
-            <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
-        </div>
-    }
+  @if (options().series) {
+    <app-stack-bar-chart
+      [xAxisInput]="xAxisInput"
+      [statusCountMap]="criteriaCalculated().criteriasCount!"
+      (selectedStackBarClick)="stackChartClick($event)"
+      />
+  } @else {
+    <div class="no-data-bar">
+      <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+    </div>
+  }
 } @else {
-    @if (options().series) {
-        <div
-            role="img"
+  @if (options().series) {
+    <div
+      role="img"
             attr.aria-label="{{
                 'inventories-footprint.round-button.' + selectedDimension() | translate
             }} {{ 'inventories-footprint.global.global-vision' | translate }}"
-            echarts
-            class="m-0"
-            [options]="options()"
-            (chartClick)="onChartClick($event)"
-            style="height: 520px"
-        ></div>
-    } @else {
-        <div class="no-data-round">
-            <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
-        </div>
-    }
+      echarts
+      class="m-0"
+      [options]="options()"
+      (chartClick)="onChartClick($event)"
+      style="height: 520px"
+    ></div>
+  } @else {
+    <div class="no-data-round">
+      <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+    </div>
+  }
 }

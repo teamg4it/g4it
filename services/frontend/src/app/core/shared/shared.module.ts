@@ -53,6 +53,9 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
 
 @NgModule({
     declarations: [
+
+    ],
+    imports: [
         SpinnerComponent,
         MonthYearPipe,
         InformationCardComponent,
@@ -67,8 +70,6 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         StackBarChartComponent,
         WorkspaceComponent,
         FormNavComponent,
-    ],
-    imports: [
         CommonModule,
         FormsModule,
         RouterModule,
@@ -78,7 +79,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         ToastModule,
         CardModule,
         ScrollPanelModule,
-        SidebarModule,
+        SidebarComponent,
         RadioButtonModule,
         ConfirmPopupModule,
         ButtonModule,

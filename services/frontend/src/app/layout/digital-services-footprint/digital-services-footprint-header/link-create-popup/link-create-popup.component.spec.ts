@@ -13,10 +13,9 @@ describe("LinkCreatePopupComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [TranslateModule.forRoot()],
-            declarations: [LinkCreatePopupComponent],
-            providers: [{ provide: ClipboardService, useValue: mockClipboard }],
-        }).compileComponents();
+    imports: [TranslateModule.forRoot(), LinkCreatePopupComponent],
+    providers: [{ provide: ClipboardService, useValue: mockClipboard }],
+}).compileComponents();
 
         fixture = TestBed.createComponent(LinkCreatePopupComponent);
         component = fixture.componentInstance;

@@ -37,8 +37,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 @Component({
     selector: "app-digital-services-servers",
     templateUrl: "./digital-services-servers.component.html",
-    providers: [MessageService],
-    standalone: false
+    providers: [MessageService]
 })
 export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     protected digitalServiceStore = inject(DigitalServiceStoreService);

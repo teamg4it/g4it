@@ -41,27 +41,26 @@ describe("ApplicationCriteriaFootprintComponent", () => {
         };
 
         await TestBed.configureTestingModule({
-            declarations: [ApplicationCriteriaFootprintComponent],
-            imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-            providers: [
-                {
-                    provide: InventoriesApplicationFootprintComponent,
-                    useValue: {
-                        formatLifecycleImpact: (x: any) => x,
-                        allUnmodifiedFootprint: [],
-                    },
-                },
-                { provide: IntegerPipe, useValue: { transform: (v: any) => v } },
-                { provide: DecimalsPipe, useValue: { transform: (v: any) => v } },
-                { provide: GlobalStoreService, useValue: {} },
-                { provide: FilterService, useValue: filterService },
-                { provide: FootprintStoreService, useValue: footprintStore },
-                {
-                    provide: ActivatedRoute,
-                    useValue: { snapshot: { paramMap: { get: () => "1" } } },
-                },
-            ],
-        }).compileComponents();
+    imports: [HttpClientTestingModule, TranslateModule.forRoot(), ApplicationCriteriaFootprintComponent],
+    providers: [
+        {
+            provide: InventoriesApplicationFootprintComponent,
+            useValue: {
+                formatLifecycleImpact: (x: any) => x,
+                allUnmodifiedFootprint: [],
+            },
+        },
+        { provide: IntegerPipe, useValue: { transform: (v: any) => v } },
+        { provide: DecimalsPipe, useValue: { transform: (v: any) => v } },
+        { provide: GlobalStoreService, useValue: {} },
+        { provide: FilterService, useValue: filterService },
+        { provide: FootprintStoreService, useValue: footprintStore },
+        {
+            provide: ActivatedRoute,
+            useValue: { snapshot: { paramMap: { get: () => "1" } } },
+        },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(ApplicationCriteriaFootprintComponent);
         component = fixture.componentInstance;

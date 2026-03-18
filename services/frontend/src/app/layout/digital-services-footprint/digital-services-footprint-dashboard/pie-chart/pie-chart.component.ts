@@ -27,8 +27,7 @@ import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract
 import { Constants } from "src/constants";
 @Component({
     selector: "app-pie-chart",
-    templateUrl: "./pie-chart.component.html",
-    standalone: false
+    templateUrl: "./pie-chart.component.html"
 })
 export class PieChartComponent extends AbstractDashboard implements OnChanges {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;

@@ -33,8 +33,7 @@ import { AbstractDashboard } from "../abstract-dashboard";
 
 @Component({
     selector: "app-inventories-multicriteria-footprint",
-    templateUrl: "./inventories-multicriteria-footprint.component.html",
-    standalone: false
+    templateUrl: "./inventories-multicriteria-footprint.component.html"
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
     private readonly store = inject(FootprintStoreService);

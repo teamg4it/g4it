@@ -29,23 +29,22 @@ describe("FilePanelComponent", () => {
         mockMessageService = jasmine.createSpyObj("MessageService", ["add"]);
 
         await TestBed.configureTestingModule({
-            declarations: [FilePanelComponent],
-            imports: [
-                HttpClientTestingModule,
-                RouterTestingModule,
-                ReactiveFormsModule,
-                SharedModule,
-                TranslateModule.forRoot(),
-            ],
-
-            providers: [
-                FormBuilder,
-                TranslateService,
-                { provide: TemplateFileService, useValue: mockTemplateFileService },
-                { provide: LoadingDataService, useValue: mockLoadingService },
-                { provide: MessageService, useValue: mockMessageService },
-            ],
-        }).compileComponents();
+    imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        ReactiveFormsModule,
+        SharedModule,
+        TranslateModule.forRoot(),
+        FilePanelComponent,
+    ],
+    providers: [
+        FormBuilder,
+        TranslateService,
+        { provide: TemplateFileService, useValue: mockTemplateFileService },
+        { provide: LoadingDataService, useValue: mockLoadingService },
+        { provide: MessageService, useValue: mockMessageService },
+    ],
+}).compileComponents();
 
         fixture = TestBed.createComponent(FilePanelComponent);
         component = fixture.componentInstance;

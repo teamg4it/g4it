@@ -26,8 +26,7 @@ import { AbstractDashboard } from "../abstract-dashboard";
 
 @Component({
     selector: "app-datacenter-equipment-stats",
-    templateUrl: "./datacenter-equipment-stats.component.html",
-    standalone: false
+    templateUrl: "./datacenter-equipment-stats.component.html"
 })
 export class DataCenterEquipmentStatsComponent extends AbstractDashboard {
     private readonly store = inject(FootprintStoreService);

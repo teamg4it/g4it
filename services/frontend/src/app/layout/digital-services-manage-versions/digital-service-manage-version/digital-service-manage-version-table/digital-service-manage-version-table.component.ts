@@ -13,8 +13,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 @Component({
     selector: "app-digital-service-manage-version-table",
     templateUrl: "./digital-service-manage-version-table.component.html",
-    providers: [ConfirmationService],
-    standalone: false
+    providers: [ConfirmationService]
 })
 export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly digitalServiceVersionDataService = inject(
