@@ -9,6 +9,8 @@ RUN npm ci \
 FROM nginx:latest
 COPY --from=build /app/dist/browser /usr/share/nginx/html
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
+# ADD (for custom error page)
+COPY nginx/error.html /usr/share/nginx/html/error.html
 ENV JSFOLDER=/usr/share/nginx/html
 COPY nginx/25-inject-env-var.sh /docker-entrypoint.d/25-inject-env-var.sh
 
