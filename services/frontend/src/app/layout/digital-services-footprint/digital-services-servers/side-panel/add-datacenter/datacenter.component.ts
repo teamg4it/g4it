@@ -8,6 +8,7 @@
 import { Component, computed, EventEmitter, inject, Input, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
+import { of } from "rxjs";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import { ServerDC } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -24,11 +25,19 @@ export default class PanelDatacenterComponent {
     @Input() addSidebarVisible: boolean = false;
     @Output() addSidebarVisibleChange: EventEmitter<boolean> = new EventEmitter();
     @Output() serverChange: EventEmitter<ServerDC> = new EventEmitter();
+@Output() cancel = new EventEmitter<void>();
 
     datacenterForm = this.initForm();
 
     isToLow: boolean = false;
     disableButton: boolean = false;
+    @Input() forceWriteAccess: boolean | null = null;
+    get canWrite$() {
+  if (this.forceWriteAccess !== null) {
+    return of(this.forceWriteAccess);
+  }
+  return this.userService.isAllowedDigitalServiceWrite$;
+}
 
     countries = computed(() => {
         const countryList = [];
@@ -53,6 +62,7 @@ export default class PanelDatacenterComponent {
             },
             {
                 validators: [xssFormGroupValidator()],
+                // updateOn: "blur",
             },
         );
     }
@@ -84,5 +94,8 @@ export default class PanelDatacenterComponent {
     close() {
         this.datacenterForm = this.initForm();
         this.addSidebarVisibleChange.emit(false);
+    }
+    submit() {
+    this.submitFormData();
     }
 }

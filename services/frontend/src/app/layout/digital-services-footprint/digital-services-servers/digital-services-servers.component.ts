@@ -11,6 +11,7 @@ import {
     DestroyRef,
     EventEmitter,
     inject,
+    Input,
     input,
     OnDestroy,
     OnInit,
@@ -27,6 +28,7 @@ import {
     ServerVM,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import {
+    InDatacenterRest,
     InPhysicalEquipmentRest,
     InVirtualEquipmentRest,
 } from "src/app/core/interfaces/input.interface";
@@ -230,6 +232,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     updateServer(server: DigitalServiceServerConfig) {
 
         if (this.embedded()) {
+            this.digitalServiceStore.setServer(server);
             this.editEmbedded.emit(server);
             return;
         }

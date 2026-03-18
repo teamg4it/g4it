@@ -13,7 +13,6 @@
 
       <div class="space-form">
 
-        <p-scrollPanel [style]="{ width: '100%', height: '100%' }" >
 
           <h2>
             Modifiez les paramètres de vos ressources selon la recommandation sélectionnée
@@ -44,6 +43,7 @@
   </ng-container>
 
 <ng-template #editNetworkMode>
+  <div class="embedded-server-panel">
     <div class="panel-header">
     </div>
 
@@ -67,6 +67,7 @@
         [label]="'common.save' | translate"
       ></p-button>
     </div>
+  </div>
 </ng-template>
 
 </ng-container>
@@ -81,32 +82,46 @@
   </ng-container>
 
   <ng-template #editCloudMode>
-   
+    <div class="embedded-server-panel">
       <div class="panel-header">
         <h3>{{ "digital-services-cloud-services.edit" | translate }}</h3>
       </div>
 
-      <div class="panel-content">
-        <app-digital-services-cloud-services-side-panel
-          [embedded]="true"
-          [cloud]="editingCloud ? editingCloud : { 
-                    id: 0, 
-                    digitalServiceUid: dsVersionUid,
-                    name: '', 
-                    cloudProvider: '', 
-                    instanceType: '', 
-                    quantity: 0, 
-                    location: { code:'', name:'' }, 
-                    locationValue: '', 
-                    annualUsage: 0, 
-                    averageWorkload: 0 
-                }"
-          [cloudServices]="cloudServices"
-          (updateCloudServices)="onCloudSaved()"
-          (deleteCloudServices)="onCloudSaved()"
-          (sidebarVisibleChange)="closeCloudEditor()"
-        />
+<div *ngFor="let param of recommendationParameters[currentRecommendation.category]">
+    <ng-container [ngSwitch]="param" *ngIf="editingCloud">
+
+      <div *ngSwitchCase="'quantity'">
+        <label>{{ 'digital-services-cloud-services.quantity' | translate }}</label>
+        <p-inputNumber  [(ngModel)]="editingCloud.quantity" />
       </div>
+
+      <div *ngSwitchCase="'instanceType'">
+        <label>{{ 'digital-services-cloud-services.instance-type' | translate }}</label>
+  <p-dropdown 
+    [options]="editingCloudInstanceTypes" 
+    [(ngModel)]="editingCloud.instanceType" 
+    [disabled]="!editingCloud.cloudProvider"
+    [filter]="true"                
+    filterPlaceholder="Rechercher un type d'instance..."
+    name="instanceType"
+    ngDefaultControl
+    [virtualScroll]="true"
+    >
+
+  </p-dropdown>      </div>
+
+      <div *ngSwitchCase="'annualUsage'">
+        <label>{{ 'digital-services-cloud-services.annual-usage' | translate }}</label>
+        <p-inputNumber [(ngModel)]="editingCloud.annualUsage" />
+      </div>
+
+      <div *ngSwitchCase="'averageWorkload'">
+        <label>{{ 'digital-services-cloud-services.average-workload' | translate }}</label>
+        <p-inputNumber [(ngModel)]="editingCloud.averageWorkload" />
+      </div>
+
+    </ng-container>
+  </div>
 
       <div class="panel-footer">
         <p-button styleClass="white-button" (onClick)="closeCloudEditor()">
@@ -118,7 +133,7 @@
           [label]="'common.save' | translate"
         ></p-button>
       </div>
-    
+    </div>
   </ng-template>
 </ng-container>
 
@@ -134,32 +149,75 @@
               </ng-container>
 
               <ng-template #editMode>
-              
-                  <div class="panel-header">
-                    <h3>Modifier le serveur</h3>
-                  </div>
+                <div class="embedded-server-panel">
 
-                  <div class="panel-content">
-                    <app-side-panel-server-parameters
-                      [editingServer]="editingServer"
-                      [embedded]="true"
-                      (save)="onServerSaved()"
-                      (cancel)="closeEditor()"
-                    />
-                  </div>
+  <div class="panel-header">
+    <h3>Modifier le serveur</h3>
+  </div>
 
-                  <div class="panel-footer">
-                    <p-button styleClass="white-button" (onClick)="closeEditor()">
-                      {{ "common.cancel" | translate }}
-                    </p-button>
+  <div class="panel-content">
 
-                    <p-button
-                      styleClass="yellow-button"
-                      (onClick)="onServerSaved()"
-                      [label]="'common.save' | translate"
-                    ></p-button>
-                  </div>
-               
+  
+  <ng-container *ngIf="!addDatacenterVisible; else addDatacenterMode">
+
+    <div class="flex flex-row align-items-center gap-2">
+
+      <p-dropdown
+        [options]="datacenterOptions()"
+        optionLabel="displayLabel"
+        [(ngModel)]="current.datacenter"
+        name="datacenter"
+        [filter]="true"
+        placeholder="Choisir un datacenter"
+      ></p-dropdown>
+
+      <p-button
+        styleClass="black-button"
+        (onClick)="addDatacenterVisible = true"
+      >
+        {{ "common.add" | translate }}
+        {{ "digital-services-servers.datacenter" | translate }}
+      </p-button>
+
+    </div>
+
+  </ng-container>
+
+  
+  <ng-template #addDatacenterMode>
+    <app-panel-datacenter
+      #datacenterPanel 
+      [forceWriteAccess]="true"
+      [server]="editingServer"
+      [addSidebarVisible]="addDatacenterVisible"
+      (addSidebarVisibleChange)="addDatacenterVisible = $event"
+      (serverChange)="addDatacenter($event)"
+      (cancel)="addDatacenterVisible = false"
+    ></app-panel-datacenter>
+  </ng-template>
+</div>
+
+  <div class="panel-footer">
+
+ 
+  <ng-container *ngIf="!addDatacenterVisible">
+
+    <p-button styleClass="white-button" (onClick)="closeEditor()">
+      {{ "common.cancel" | translate }}
+    </p-button>
+
+    <p-button
+      styleClass="yellow-button"
+      (onClick)="onServerSaved()"
+      [label]="'common.save' | translate"
+    ></p-button>
+
+  </ng-container>
+
+
+</div>
+
+</div>
               </ng-template>
 
             </ng-container>
@@ -168,7 +226,6 @@
 
           </ng-container>
 
-        </p-scrollPanel>
 
         <div class="mt-3" *ngIf="!editingServer && !editingNetwork">
 

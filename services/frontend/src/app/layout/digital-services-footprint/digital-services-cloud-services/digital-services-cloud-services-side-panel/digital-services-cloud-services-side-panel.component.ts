@@ -59,6 +59,7 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
         if (!this.cloud.idFront) {
             this.resetCloudServices();
         }
+        this.loadInstanceTypes();
     }
 
     async getBoaviztaReferentials() {
@@ -88,6 +89,23 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
             this.instanceTypesByProvider.set(cloudProvider, instances);
         }
     }
+
+    private async loadInstanceTypes() {
+  const providers = await lastValueFrom(
+    this.digitalDataService.getBoaviztapiCloudProviders()
+  );
+
+
+  for (const provider of providers) {
+    const types = await lastValueFrom(
+      this.digitalDataService.getBoaviztapiInstanceTypes(provider)
+    );
+      this.instanceTypesByProvider.set(provider, types);
+
+  }
+
+}
+ 
 
     async resetCloudServices() {
         this.cloud = {
