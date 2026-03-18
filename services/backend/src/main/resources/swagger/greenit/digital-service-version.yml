@@ -184,12 +184,19 @@ paths:
       post:
         tags:
           - digital-service-version
-        summary: Duplicate a digital service version
+        summary: Duplicate a digital service version and modify it
         x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE') || hasRole('ROLE_ECO_MIND_AI_WRITE')"
         operationId: duplicateDigitalServiceVersion
+        requestBody:
+        description: Mandatory digital service modifications to apply.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DigitalServiceVersionRest"
         responses:
           "201":
-            description: Return the duplicated digital service version
+            description: Return the duplicated and modified digital service version
             content:
               application/json:
                 schema:
