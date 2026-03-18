@@ -64,7 +64,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         "hostValue",
         "datacenterName",
     ];
-
+    
     serverData = computed(() => {
         const serverTypes = this.digitalServiceStore.serverTypes();
         const datacenters = this.digitalServiceStore.inDatacenters();
@@ -86,7 +86,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
             .filter((item) => item.type.endsWith(" Server"));
 
         this.existingNames = inPhysicalEquipments.map((pe) => pe.name);
-
+   
         return inPhysicalEquipments.map((item) => {
             let serverType = serverTypes.find(
                 (server) => server.value === item.description,
@@ -141,7 +141,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                     } as ServerVM;
                 }),
             } as DigitalServiceServerConfig;
-        });
+        });     
     });
 
     constructor(
@@ -199,7 +199,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         );
         await this.digitalServiceStore.initInPhysicalEquipments(digitalServiceVersionUid);
         this.digitalServiceStore.setEnableCalcul(true);
-    }
+    } 
 
     addNewServer() {
         if (this.embedded()) return;
