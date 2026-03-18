@@ -15,18 +15,19 @@ import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.common.utils.AuthorizationUtils;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceVersionApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import java.net.URI;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.net.URI;
-import java.util.List;
 
 /**
  * Digital Service endpoints.
  */
 @Service
-public class DigitalServiceVersionController implements DigitalServiceVersionApiDelegate {
+public class DigitalServiceVersionController
+    implements DigitalServiceVersionApiDelegate
+{
 
     /**
      * Auth Service.
@@ -45,6 +46,7 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
      */
     @Autowired
     private DigitalServiceRestMapper digitalServiceRestMapper;
+
     /**
      * DigitalServiceRest Mapper.
      */
@@ -58,32 +60,56 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<DigitalServiceVersionRest> createDigitalServiceVersion(final String organization,
-                                                                                 final Long workspace,
-                                                                                 final InDigitalServiceVersionRest inDigitalServiceVersionRest
+    public ResponseEntity<
+        DigitalServiceVersionRest
+    > createDigitalServiceVersion(
+        final String organization,
+        final Long workspace,
+        final InDigitalServiceVersionRest inDigitalServiceVersionRest
     ) {
-        if (inDigitalServiceVersionRest.getIsAi() != null && inDigitalServiceVersionRest.getIsAi()) {
+        if (
+            inDigitalServiceVersionRest.getIsAi() != null &&
+            inDigitalServiceVersionRest.getIsAi()
+        ) {
             authorizationUtils.checkEcomindAuthorization();
             authorizationUtils.checkEcomindEnabledForOrganization(organization);
         }
 
-        final DigitalServiceVersionBO digitalServiceVersionBO = digitalServiceVersionService.createDigitalServiceVersion(
+        final DigitalServiceVersionBO digitalServiceVersionBO =
+            digitalServiceVersionService.createDigitalServiceVersion(
                 workspace,
                 authService.getUser().getId(),
                 inDigitalServiceVersionRest
-        );
+            );
 
-        DigitalServiceVersionRest digitalServiceVersionDTO = digitalServiceVersionRestMapper.toDto(digitalServiceVersionBO);
-        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", digitalServiceVersionBO.getUid())))).body(digitalServiceVersionDTO);
+        DigitalServiceVersionRest digitalServiceVersionDTO =
+            digitalServiceVersionRestMapper.toDto(digitalServiceVersionBO);
+        return ResponseEntity.created(
+            URI.create(
+                "/".concat(
+                    String.join(
+                        "/",
+                        workspace.toString(),
+                        "digital-service-version",
+                        digitalServiceVersionBO.getUid()
+                    )
+                )
+            )
+        ).body(digitalServiceVersionDTO);
     }
-
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteDigitalServiceVersion(final String organization, final Long workspace, final String digitalServiceVersionUid) {
-        digitalServiceVersionService.deleteDigitalServiceVersion(digitalServiceVersionUid);
+    public ResponseEntity<Void> deleteDigitalServiceVersion(
+        final String organization,
+        final Long workspace,
+        final String digitalServiceVersionUid
+    ) {
+        digitalServiceVersionService.deleteDigitalServiceVersion(
+            digitalServiceVersionUid
+        );
         return ResponseEntity.noContent().build();
     }
 
@@ -91,83 +117,174 @@ public class DigitalServiceVersionController implements DigitalServiceVersionApi
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<DigitalServiceVersionRest> getDigitalServiceVersion(final String organization,
-                                                                              final Long workspace,
-                                                                              final String digitalServiceVersionUid) {
-        return ResponseEntity.ok(digitalServiceVersionRestMapper.toDto(digitalServiceVersionService.getDigitalServiceVersion(digitalServiceVersionUid)));
+    public ResponseEntity<DigitalServiceVersionRest> getDigitalServiceVersion(
+        final String organization,
+        final Long workspace,
+        final String digitalServiceVersionUid
+    ) {
+        return ResponseEntity.ok(
+            digitalServiceVersionRestMapper.toDto(
+                digitalServiceVersionService.getDigitalServiceVersion(
+                    digitalServiceVersionUid
+                )
+            )
+        );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<DigitalServiceVersionRest> updateDigitalServiceVersion(final String organization,
-                                                                                 final Long workspace,
-                                                                                 final String digitalServiceVersionUid,
-                                                                                 final DigitalServiceVersionRest digitalServiceVersion) {
+    public ResponseEntity<
+        DigitalServiceVersionRest
+    > updateDigitalServiceVersion(
+        final String organization,
+        final Long workspace,
+        final String digitalServiceVersionUid,
+        final DigitalServiceVersionRest digitalServiceVersion
+    ) {
         digitalServiceVersion.setUid(digitalServiceVersionUid);
-        return ResponseEntity.ok(digitalServiceVersionRestMapper.toDto(digitalServiceVersionService.updateDigitalServiceVersion(
-                digitalServiceVersionRestMapper.toBusinessObject(digitalServiceVersion), organization, workspace,
-                authService.getUser()
-        )));
+        return ResponseEntity.ok(
+            digitalServiceVersionRestMapper.toDto(
+                digitalServiceVersionService.updateDigitalServiceVersion(
+                    digitalServiceVersionRestMapper.toBusinessObject(
+                        digitalServiceVersion
+                    ),
+                    organization,
+                    workspace,
+                    authService.getUser()
+                )
+            )
+        );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<DigitalServiceShareRest> shareDigitalServiceVersion(final String organization,
-                                                                              final Long workspace,
-                                                                              final String digitalServiceVersionUid,
-                                                                              final Boolean extendLink) {
-        return ResponseEntity.ok(digitalServiceVersionService.shareDigitalService(organization, workspace, digitalServiceVersionUid,
-                authService.getUser(), extendLink));
+    public ResponseEntity<DigitalServiceShareRest> shareDigitalServiceVersion(
+        final String organization,
+        final Long workspace,
+        final String digitalServiceVersionUid,
+        final Boolean extendLink
+    ) {
+        return ResponseEntity.ok(
+            digitalServiceVersionService.shareDigitalService(
+                organization,
+                workspace,
+                digitalServiceVersionUid,
+                authService.getUser(),
+                extendLink
+            )
+        );
     }
 
     @Override
-    public ResponseEntity<List<DigitalServiceVersionsListRest>> getDigitalServiceVersions(final String organization,
-                                                                                          final Long workspace,
-                                                                                          final String digitalServiceVersionUid) {
-
-        return ResponseEntity.ok(digitalServiceVersionService.getDigitalServiceVersions(digitalServiceVersionUid));
+    public ResponseEntity<
+        List<DigitalServiceVersionsListRest>
+    > getDigitalServiceVersions(
+        final String organization,
+        final Long workspace,
+        final String digitalServiceVersionUid
+    ) {
+        return ResponseEntity.ok(
+            digitalServiceVersionService.getDigitalServiceVersions(
+                digitalServiceVersionUid
+            )
+        );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<DigitalServiceVersionRest> duplicateDigitalServiceVersion(
-            final String organization,
-            final Long workspace,
-            final String digitalServiceVersionUid) {
-
+    public ResponseEntity<
+        DigitalServiceVersionRest
+    > duplicateDigitalServiceVersion(
+        final String organization,
+        final Long workspace,
+        final String digitalServiceVersionUid
+    ) {
         final DigitalServiceVersionBO duplicatedVersion =
-                digitalServiceVersionService.duplicateDigitalServiceVersion(digitalServiceVersionUid);
+            digitalServiceVersionService.duplicateDigitalServiceVersion(
+                digitalServiceVersionUid
+            );
 
-        final DigitalServiceVersionRest digitalServiceVersionDTO = digitalServiceVersionRestMapper.toDto(duplicatedVersion);
-        return ResponseEntity.created(URI.create("/".concat(String.join("/", workspace.toString(), "digital-service-version", duplicatedVersion.getUid())))).body(digitalServiceVersionDTO);
+        final DigitalServiceVersionRest digitalServiceVersionDTO =
+            digitalServiceVersionRestMapper.toDto(duplicatedVersion);
+        return ResponseEntity.created(
+            URI.create(
+                "/".concat(
+                    String.join(
+                        "/",
+                        workspace.toString(),
+                        "digital-service-version",
+                        duplicatedVersion.getUid()
+                    )
+                )
+            )
+        ).body(digitalServiceVersionDTO);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<
+        DigitalServiceVersionRest
+    > duplicateAndModifyDigitalServiceVersion(
+        final String organization,
+        final Long workspace,
+        final String digitalServiceVersionUid,
+        final DigitalServiceVersionRest digitalServiceVersion
+    ) {
+        final DigitalServiceVersionBO duplicatedVersion =
+            digitalServiceVersionService.duplicateDigitalServiceVersion(
+                digitalServiceVersionUid
+            );
+
+        final DigitalServiceVersionRest digitalServiceVersionDTO =
+            digitalServiceVersionRestMapper.toDto(duplicatedVersion);
+
+        return ResponseEntity.ok(
+            digitalServiceVersionRestMapper.toDto(
+                digitalServiceVersionService.updateDigitalServiceVersion(
+                    duplicatedVersion,
+                    organization,
+                    workspace,
+                    authService.getUser()
+                )
+            )
+        );
     }
 
     @Override
-    public ResponseEntity<PromoteDigitalServiceVersionRest> promoteDigitalServiceVersion(final String organization,
-                                                                                         final Long workspace,
-                                                                                         final String digitalServiceVersionUid) {
-
+    public ResponseEntity<
+        PromoteDigitalServiceVersionRest
+    > promoteDigitalServiceVersion(
+        final String organization,
+        final Long workspace,
+        final String digitalServiceVersionUid
+    ) {
         PromoteDigitalServiceVersionRest result =
-                digitalServiceVersionService.promoteDigitalServiceVersion(digitalServiceVersionUid);
+            digitalServiceVersionService.promoteDigitalServiceVersion(
+                digitalServiceVersionUid
+            );
 
         return ResponseEntity.ok(result);
     }
 
     @Override
-    public ResponseEntity<ValidateDuplicatesRest> getDigitalServiceNames(final String organization,
-                                                                         final Long workspace, String digitalServiceVersionUid) {
-
+    public ResponseEntity<ValidateDuplicatesRest> getDigitalServiceNames(
+        final String organization,
+        final Long workspace,
+        String digitalServiceVersionUid
+    ) {
         ValidateDuplicatesRest result =
-                digitalServiceVersionService.getDigitalServiceNames(digitalServiceVersionUid);
+            digitalServiceVersionService.getDigitalServiceNames(
+                digitalServiceVersionUid
+            );
 
         return ResponseEntity.ok(result);
     }
 }
-
-
