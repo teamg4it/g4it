@@ -3,7 +3,7 @@
 
   <div pFocusTrap class="import-digital-content">
 
-    <app-form-nav
+    <app-form-nav 
       [spaceDetails]="importDetails"
       [spaceForm]="importForm"
       (tabSelected)="selectTab($event)"
@@ -166,6 +166,7 @@
         [options]="datacenterOptions()"
         optionLabel="displayLabel"
         [(ngModel)]="current.datacenter"
+        (onChange)="onDatacenterChange($event.value)"
         name="datacenter"
         [filter]="true"
         placeholder="Choisir un datacenter"

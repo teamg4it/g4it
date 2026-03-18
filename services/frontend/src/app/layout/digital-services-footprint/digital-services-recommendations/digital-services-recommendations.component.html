@@ -28,6 +28,7 @@
         <ng-template pTemplate="headless">
             <app-digital-services-apply-recommendations
             *ngIf="showApplyComponent"
+            [dsVersionUid]="digitalServiceStore.digitalService().uid"
             [selectedRecommendations]="selectedRecommendationsForApply"
         />
         </ng-template>

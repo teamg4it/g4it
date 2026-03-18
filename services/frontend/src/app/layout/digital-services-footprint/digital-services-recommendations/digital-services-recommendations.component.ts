@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { UserService } from 'src/app/core/service/business/user.service';
 import { of } from 'rxjs';
 import { GlobalStoreService } from 'src/app/core/store/global.store';
+import { DigitalServiceStoreService } from 'src/app/core/store/digital-service.store';
 
 @Component({
   selector: 'app-digital-services-recommendations',
@@ -71,6 +72,7 @@ compareSelected() {
   this.selectedRecommendationsForApply = selected;
   this.showApplyComponent = selected.length > 0;
 }
+   digitalServiceStore = inject(DigitalServiceStoreService);
 
 
 }
