@@ -97,18 +97,15 @@ public class DataDeletionService {
     private void sendRetentionReminderEmail(String recipientEmail, String itemName, String expirationDate, Integer retentionDay) {
         // Send email notification
         log.info("Sending retention reminder email to {} for item {} expiring on {}", recipientEmail, itemName, expirationDate);
-        String emailContentEn = messageSource.getMessage("email.body", new String[]{itemName, expirationDate, String.valueOf(retentionDay)}, Locale.ENGLISH);
-        String emailContentFr = messageSource.getMessage("email.body", new String[]{itemName, expirationDate, String.valueOf(retentionDay)}, Locale.FRENCH);
+        String[] args = new String[]{itemName, expirationDate, String.valueOf(retentionDay)};
+        String emailContentEn = messageSource.getMessage("email.body", args, Locale.ENGLISH);
+        String emailContentFr = messageSource.getMessage("email.body", args, Locale.FRANCE);
         String emailSubjectEn = messageSource.getMessage("email.subject", new String[]{}, Locale.ENGLISH);
-        String emailSubjectFr = messageSource.getMessage("email.subject", new String[]{}, Locale.FRENCH);
+        String emailSubjectFr = messageSource.getMessage("email.subject", new String[]{}, Locale.FRANCE);
         // Combine both English and French subjects with a separator
         String combinedSubject = emailSubjectEn + " / " + emailSubjectFr;
         // Combine both English and French content with custom formatting
-        String combinedBody = emailContentEn + """
-                
-                ———————
-                
-                """ + emailContentFr;
+        String combinedBody = emailContentEn + "\n\n" + emailContentFr;
         azureEmailService.sendEmail(recipientEmail, combinedSubject, combinedBody);
     }
 

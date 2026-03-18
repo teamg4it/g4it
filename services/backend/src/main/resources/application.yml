@@ -38,7 +38,6 @@ g4it:
       cron: "0 0 0 * * *"
       oninit: "false"
       day: "730"
-
   storage:
     retention:
       cron: "0 0 0 * * *"
@@ -143,5 +142,5 @@ numecoevalmodule:
 
 azure:
   communication:
-    connection-string: endpoint=https://communication-services-parent.france.communication.azure.com/;accesskey=8a2eeud
-    sender-email: test@g4it.com
+    connection-string: endpoint=https://test.azure.com/;accesskey=xyz
+    sender-email: test@test.com

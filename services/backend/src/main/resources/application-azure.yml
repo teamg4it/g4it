@@ -10,8 +10,3 @@ spring:
           client-secret: ${AZURE_CLIENT_SECRET}
         secret:
           endpoint: ${SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT}
-
-azure:
-  communication:
-    connection-string: ${AZURE_COMMUNICATION_CONNECTION_STRING}
-    sender-email: ${AZURE_COMMUNICATION_SENDER_EMAIL}
