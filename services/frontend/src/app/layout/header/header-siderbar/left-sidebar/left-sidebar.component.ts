@@ -33,10 +33,9 @@ import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 
 @Component({
-    standalone: true,
     selector: "app-left-sidebar",
     templateUrl: "./left-sidebar.component.html",
-    imports: [CommonModule, TranslateModule, RouterModule],
+    imports: [CommonModule, TranslateModule, RouterModule]
 })
 export class LeftSidebarComponent implements OnInit {
     isSharedDs = input<boolean>(false);

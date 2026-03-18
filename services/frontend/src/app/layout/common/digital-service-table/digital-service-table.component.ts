@@ -8,6 +8,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     selector: "app-digital-service-table",
     templateUrl: "./digital-service-table.component.html",
     providers: [ConfirmationService],
+    standalone: false
 })
 export class DigitalServiceTableComponent {
     protected userService = inject(UserService);

@@ -45,7 +45,6 @@ import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import { LeftSidebarComponent } from "../left-sidebar/left-sidebar.component";
 @Component({
-    standalone: true,
     selector: "app-top-header",
     templateUrl: "./top-header.component.html",
     imports: [
@@ -59,7 +58,7 @@ import { LeftSidebarComponent } from "../left-sidebar/left-sidebar.component";
         SharedModule,
         DialogModule,
         LeftSidebarComponent,
-    ],
+    ]
 })
 export class TopHeaderComponent implements OnInit {
     isSharedDs = input<boolean>(false);

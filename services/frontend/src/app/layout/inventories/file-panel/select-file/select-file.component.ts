@@ -13,6 +13,7 @@ import { FileEmitter } from "src/app/core/model/file-emitter.model";
 @Component({
     selector: "app-select-file",
     templateUrl: "./select-file.component.html",
+    standalone: false
 })
 export class SelectFileComponent {
     @Input() fileTypes: FileType[] = [];

@@ -10,6 +10,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 @Pipe({
     name: "monthYear",
+    standalone: false
 })
 export class MonthYearPipe implements PipeTransform {
     constructor(private readonly translate: TranslateService) {}

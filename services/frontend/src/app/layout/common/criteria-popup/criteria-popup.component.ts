@@ -22,6 +22,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     selector: "app-criteria-popup",
     templateUrl: "./criteria-popup.component.html",
     providers: [MonthYearPipe],
+    standalone: false
 })
 export class CriteriaPopupComponent implements OnChanges {
     @Input() displayPopup: boolean = false;

@@ -103,27 +103,29 @@
             <h3>{{ "digital-services-ai-parameter.stages" | translate }}</h3>
             <div class="form-row">
                 <!-- Inference -->
-                <div class="checkbox-item">
+                <div class="checkbox-item flex align-items-center">
                     <p-checkbox
                         inputId="inference"
                         binary="true"
                         formControlName="isInference"
-                        [label]="'digital-services-ai-parameter.inference' | translate"
                         (onChange)="onCheckboxChange('isInference')"
+                        [ariaLabel]="'digital-services-ai-parameter.inference' | translate"
                     >
                     </p-checkbox>
+                    <label for="inference" class="ml-2">{{ 'digital-services-ai-parameter.inference' | translate }}</label>
                 </div>
 
                 <!-- Finetuning -->
-                <div class="checkbox-item">
+                <div class="checkbox-item flex align-items-center">
                     <p-checkbox
                         inputId="finetuning"
                         binary="true"
                         formControlName="isFinetuning"
-                        [label]="'digital-services-ai-parameter.fintuning' | translate"
                         (onChange)="onCheckboxChange('isFinetuning')"
+                        [ariaLabel]="'digital-services-ai-parameter.fintuning' | translate"
                     >
                     </p-checkbox>
+                    <label for="finetuning" class="ml-2">{{ 'digital-services-ai-parameter.fintuning' | translate }}</label>
                 </div>
                 <span class="pi pi-info-circle text-red-900">
                     {{

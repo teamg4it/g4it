@@ -24,6 +24,7 @@ import { Constants } from "src/constants";
     selector: "app-inventories-header-footprint",
     templateUrl: "./inventories-header-footprint.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: false
 })
 export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     @Input() inventory: Inventory = {} as Inventory;

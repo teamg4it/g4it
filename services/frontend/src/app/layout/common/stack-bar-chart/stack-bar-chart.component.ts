@@ -6,6 +6,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "app-stack-bar-chart",
     templateUrl: "./stack-bar-chart.component.html",
+    standalone: false
 })
 export class StackBarChartComponent extends AbstractDashboard {
     @Output() selectedStackBarClick: EventEmitter<string> = new EventEmitter();

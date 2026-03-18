@@ -15,6 +15,7 @@ import { SuperAdminDataService } from "src/app/core/service/data/super-admin-dat
 @Component({
     selector: "app-super-admin",
     templateUrl: "./super-admin.component.html",
+    standalone: false
 })
 export class SuperAdminComponent implements OnInit {
     public translate = inject(TranslateService);

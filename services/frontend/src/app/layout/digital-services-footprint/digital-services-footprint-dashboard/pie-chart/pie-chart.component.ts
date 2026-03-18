@@ -28,6 +28,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "app-pie-chart",
     templateUrl: "./pie-chart.component.html",
+    standalone: false
 })
 export class PieChartComponent extends AbstractDashboard implements OnChanges {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;

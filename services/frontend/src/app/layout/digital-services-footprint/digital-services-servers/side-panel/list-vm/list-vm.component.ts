@@ -16,6 +16,7 @@ import { PanelAddVmComponent } from "../add-vm/add-vm.component";
 @Component({
     selector: "app-panel-list-vm",
     templateUrl: "./list-vm.component.html",
+    standalone: false
 })
 export class PanelListVmComponent {
     @ViewChild("vmSidePanel", { static: false })

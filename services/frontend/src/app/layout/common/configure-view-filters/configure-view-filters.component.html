@@ -80,21 +80,29 @@
                         </p>
 
                         <div class="mt-4 radio-group flex flex-column gap-2">
-                            <p-radioButton
-                                styleClass="m-1"
-                                name="unitType"
-                                value="Peopleeq"
-                                formControlName="unitType"
-                                [label]="'common.peopleeq-full-capital' | translate"
-                            ></p-radioButton>
+                            <div class="flex align-items-center">
+                                <p-radioButton
+                                    styleClass="m-1"
+                                    name="unitType"
+                                    value="Peopleeq"
+                                    formControlName="unitType"
+                                    inputId="unitType-peopleeq"
+                                    [ariaLabel]="'common.peopleeq-full-capital' | translate"
+                                ></p-radioButton>
+                                <label for="unitType-peopleeq" class="ml-2">{{'common.peopleeq-full-capital' | translate}}</label>
+                            </div>
 
-                            <p-radioButton
-                                styleClass="m-1"
-                                name="unitType"
-                                value="Raw"
-                                formControlName="unitType"
-                                [label]="'common.unit-of-criterion' | translate"
-                            ></p-radioButton>
+                            <div class="flex align-items-center">
+                                <p-radioButton
+                                    styleClass="m-1"
+                                    name="unitType"
+                                    value="Raw"
+                                    formControlName="unitType"
+                                    inputId="unitType-raw"
+                                    [ariaLabel]="'common.unit-of-criterion' | translate"
+                                ></p-radioButton>
+                                <label for="unitType-raw" class="ml-2">{{'common.unit-of-criterion' | translate}}</label>
+                            </div>
                         </div>
                     </p-accordionTab>
                 </form>

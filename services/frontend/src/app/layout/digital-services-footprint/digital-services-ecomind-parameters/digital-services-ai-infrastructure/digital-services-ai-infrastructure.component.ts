@@ -25,6 +25,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 @Component({
     selector: "app-digital-services-ai-infrastructure",
     templateUrl: "./digital-services-ai-infrastructure.component.html",
+    standalone: false
 })
 export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestroy {
     infrastructureForm!: FormGroup;

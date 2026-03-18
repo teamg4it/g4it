@@ -5,6 +5,7 @@ import { FormGroup } from "@angular/forms";
     selector: "app-form-nav",
     templateUrl: "./form-nav.component.html",
     styleUrl: "./form-nav.component.scss",
+    standalone: false
 })
 export class FormNavComponent {
     @Input() spaceDetails: any;

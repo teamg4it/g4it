@@ -27,6 +27,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 @Component({
     selector: "app-digital-services-footprint-footer",
     templateUrl: "./digital-services-footprint-footer.component.html",
+    standalone: false
 })
 export class DigitalServicesFootprintFooterComponent implements OnInit {
     isEcoMindAi = input<boolean>(false);

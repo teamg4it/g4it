@@ -33,6 +33,7 @@ import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-ne
     selector: "app-digital-services-networks",
     templateUrl: "./digital-services-networks.component.html",
     providers: [MessageService],
+    standalone: false
 })
 export class DigitalServicesNetworksComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);

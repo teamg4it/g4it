@@ -23,6 +23,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "dataviz-filter",
     templateUrl: "./dataviz-filter.component.html",
+    standalone: false
 })
 export class DatavizFilterComponent implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);

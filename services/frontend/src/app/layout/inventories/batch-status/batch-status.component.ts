@@ -18,6 +18,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "app-batch-status",
     templateUrl: "./batch-status.component.html",
+    standalone: false
 })
 export class BatchStatusComponent implements OnInit {
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);

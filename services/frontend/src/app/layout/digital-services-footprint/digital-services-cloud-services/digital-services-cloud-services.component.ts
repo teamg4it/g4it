@@ -20,6 +20,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     selector: "app-digital-services-cloud-services",
     templateUrl: "./digital-services-cloud-services.component.html",
     providers: [MessageService],
+    standalone: false
 })
 export class DigitalServicesCloudServicesComponent implements OnInit {
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);

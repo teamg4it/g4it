@@ -59,6 +59,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "app-inventories-application-footprint",
     templateUrl: "./inventories-application-footprint.component.html",
+    standalone: false
 })
 export class InventoriesApplicationFootprintComponent implements OnInit, OnDestroy {
     protected readonly footprintStore = inject(FootprintStoreService);

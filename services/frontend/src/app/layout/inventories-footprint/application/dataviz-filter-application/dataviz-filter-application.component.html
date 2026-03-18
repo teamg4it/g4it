@@ -52,31 +52,33 @@
                     <ul>
                         <li *ngFor="let item of allUnusedFilters[tab.field]">
                             @if (!tab?.children?.length) {
-                                <p-checkbox
-                                    [ariaLabel]="item?.toString()"
-                                    name="groupname"
-                                    [value]="item"
-                                    label="{{
-                                        item?.toString() === all
-                                            ? ('common.all' | translate)
-                                            : item?.toString() === empty
-                                              ? ('common.empty' | translate)
-                                              : item
-                                    }}"
-                                    [(ngModel)]="
-                                        footprintStore.applicationSelectedFilters()[
-                                            tab.field
-                                        ]
-                                    "
-                                    (ngModelChange)="
-                                        onFilterSelected(
-                                            $event,
-                                            tab.field,
-                                            item.toString()
-                                        )
-                                    "
-                                    [id]="item"
-                                ></p-checkbox>
+                                <div class="field-checkbox flex align-items-center">
+                                    <p-checkbox
+                                        [ariaLabel]="item?.toString()"
+                                        name="groupname"
+                                        [value]="item"
+                                        [(ngModel)]="
+                                            footprintStore.applicationSelectedFilters()[
+                                                tab.field
+                                            ]
+                                        "
+                                        (ngModelChange)="
+                                            onFilterSelected(
+                                                $event,
+                                                tab.field,
+                                                item.toString()
+                                            )
+                                        "
+                                        [inputId]="'filter-app-' + tab.field + '-' + item"
+                                    ></p-checkbox>
+                                    <label [for]="'filter-app-' + tab.field + '-' + item" class="ml-2">{{
+                                            item?.toString() === all
+                                                ? ('common.all' | translate)
+                                                : item?.toString() === empty
+                                                  ? ('common.empty' | translate)
+                                                  : item
+                                        }}</label>
+                                </div>
                             }
                         </li>
                         @if (tab?.children?.length) {
@@ -113,13 +115,16 @@
                                                     "
                                                 />
                                             }
-                                            <p-checkbox
-                                                [binary]="true"
-                                                [(ngModel)]="filter.checked"
-                                                [label]="filter.label"
-                                                (onChange)="onTreeChange($event, filter)"
-                                                class="mb-3"
-                                            ></p-checkbox>
+                                            <div class="field-checkbox flex align-items-center mb-3">
+                                                <p-checkbox
+                                                    [binary]="true"
+                                                    [(ngModel)]="filter.checked"
+                                                    (onChange)="onTreeChange($event, filter)"
+                                                    [inputId]="'filter-tree-' + filter.key"
+                                                    [ariaLabel]="filter.label"
+                                                ></p-checkbox>
+                                                <label [for]="'filter-tree-' + filter.key" class="ml-2">{{filter.label}}</label>
+                                            </div>
                                             <div
                                                 [ngClass]="
                                                     filter.collapsed ? 'hidden' : ''
@@ -132,19 +137,16 @@
                                                     ) {
                                                         <li class="ml-8">
                                                             @if (child.visible) {
-                                                                <p-checkbox
-                                                                    [binary]="true"
-                                                                    [label]="child.label"
-                                                                    [(ngModel)]="
-                                                                        child.checked
-                                                                    "
-                                                                    (onChange)="
-                                                                        onTreeChildChanged(
-                                                                            $event,
-                                                                            filter
-                                                                        )
-                                                                    "
-                                                                ></p-checkbox>
+                                                                <div class="field-checkbox flex align-items-center">
+                                                                    <p-checkbox
+                                                                        [binary]="true"
+                                                                        [(ngModel)]="child.checked"
+                                                                        (onChange)="onTreeChildChanged($event, filter)"
+                                                                        [inputId]="'filter-child-' + filter.key + '-' + child.key"
+                                                                        [ariaLabel]="child.label"
+                                                                    ></p-checkbox>
+                                                                    <label [for]="'filter-child-' + filter.key + '-' + child.key" class="ml-2">{{child.label}}</label>
+                                                                </div>
                                                             }
                                                         </li>
                                                     }

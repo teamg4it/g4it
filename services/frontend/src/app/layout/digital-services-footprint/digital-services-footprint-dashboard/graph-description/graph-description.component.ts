@@ -6,6 +6,7 @@ import { GraphDescriptionContent } from "src/app/core/interfaces/digital-service
     selector: "app-graph-description",
     templateUrl: "./graph-description.component.html",
     styleUrl: "./graph-description.component.scss",
+    standalone: false
 })
 export class GraphDescriptionComponent {
     private readonly translate = inject(TranslateService);

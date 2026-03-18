@@ -15,6 +15,7 @@ import { Constants } from "src/constants";
 
 @Component({
     template: "",
+    standalone: false
 })
 export class AbstractDashboard {
     ngUnsubscribe = new Subject<void>();

@@ -24,6 +24,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
     selector: "app-digital-services-terminals-side-panel",
     templateUrl: "./digital-services-terminals-side-panel.component.html",
     providers: [MessageService],
+    standalone: false
 })
 export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);

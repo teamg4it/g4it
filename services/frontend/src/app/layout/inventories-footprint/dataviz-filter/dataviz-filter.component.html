@@ -50,24 +50,26 @@
                     <ul>
                         @for (item of allFilters[tab]; track $index) {
                             <li>
-                                <p-checkbox
-                                    tabindex="0"
-                                    [ariaLabel]="item?.toString()"
-                                    name="groupname"
-                                    [value]="item"
-                                    label="{{
-                                        item === all
-                                            ? ('common.all' | translate)
-                                            : item === empty
-                                              ? ('common.empty' | translate)
-                                              : item
-                                    }}"
-                                    [ngModel]="footprintStore.filters()[tab]"
-                                    (ngModelChange)="
-                                        onCheckboxChange($event, tab, item.toString())
-                                    "
-                                    [id]="item"
-                                ></p-checkbox>
+                                <div class="field-checkbox flex align-items-center">
+                                    <p-checkbox
+                                        tabindex="0"
+                                        [ariaLabel]="item?.toString()"
+                                        name="groupname"
+                                        [value]="item"
+                                        [ngModel]="footprintStore.filters()[tab]"
+                                        (ngModelChange)="
+                                            onCheckboxChange($event, tab, item.toString())
+                                        "
+                                        [inputId]="'filter-' + tab + '-' + item"
+                                    ></p-checkbox>
+                                    <label [for]="'filter-' + tab + '-' + item" class="ml-2">{{
+                                            item === all
+                                                ? ('common.all' | translate)
+                                                : item === empty
+                                                  ? ('common.empty' | translate)
+                                                  : item
+                                        }}</label>
+                                </div>
                             </li>
                         }
                     </ul>

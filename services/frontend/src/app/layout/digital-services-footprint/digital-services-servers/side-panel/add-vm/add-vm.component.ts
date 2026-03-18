@@ -25,6 +25,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     selector: "app-panel-add-vm",
     templateUrl: "./add-vm.component.html",
     providers: [MessageService],
+    standalone: false
 })
 export class PanelAddVmComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

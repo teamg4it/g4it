@@ -24,6 +24,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     selector: "app-digital-services-cloud-services-side-panel",
     templateUrl: "./digital-services-cloud-services-side-panel.component.html",
     providers: [MessageService],
+    standalone: false
 })
 export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

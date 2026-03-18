@@ -42,6 +42,7 @@ import { InventoriesFootprintComponent } from "../inventories-footprint.componen
 @Component({
     selector: "app-inventories-critere-footprint",
     templateUrl: "./inventories-critere-footprint.component.html",
+    standalone: false
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard

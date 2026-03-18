@@ -15,8 +15,7 @@ import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 @Component({
     selector: "app-impact-button",
     templateUrl: "./impact-button.component.html",
-    standalone: true,
-    imports: [CommonModule, ButtonModule, TranslateModule, DecimalsPipe, IntegerPipe],
+    imports: [CommonModule, ButtonModule, TranslateModule, DecimalsPipe, IntegerPipe]
 })
 export class ImpactButtonComponent implements OnInit {
     @Input() impact: string = "...";

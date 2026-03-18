@@ -29,6 +29,7 @@ import { environment } from "src/environments/environment";
     selector: "app-users",
     templateUrl: "./users.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: false
 })
 export class UsersComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);

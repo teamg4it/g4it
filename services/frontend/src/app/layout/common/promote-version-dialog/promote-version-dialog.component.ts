@@ -4,6 +4,7 @@ import { DigitalServiceVersionDataService } from "src/app/core/service/data/digi
 @Component({
     selector: "app-promote-version-dialog",
     templateUrl: "./promote-version-dialog.component.html",
+    standalone: false
 })
 export class PromoteVersionDialogComponent {
     private readonly digitalServiceVersionDataService = inject(

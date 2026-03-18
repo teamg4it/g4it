@@ -11,6 +11,7 @@ import { Stat } from "src/app/core/interfaces/footprint.interface";
 @Component({
     selector: "app-stats",
     templateUrl: "./stats.component.html",
+    standalone: false
 })
 export class StatsComponent {
     @Input() stats: Stat[] = [];

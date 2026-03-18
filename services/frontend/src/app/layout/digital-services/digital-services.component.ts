@@ -25,6 +25,7 @@ import { environment } from "src/environments/environment";
     selector: "app-digital-services",
     templateUrl: "./digital-services.component.html",
     providers: [MessageService, ConfirmationService],
+    standalone: false
 })
 export class DigitalServicesComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

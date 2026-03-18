@@ -7,7 +7,6 @@ import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-
 
 @Component({
     selector: "app-share-landing-page",
-    standalone: true,
     imports: [
         RouterOutlet,
         CommonModule,
@@ -17,7 +16,7 @@ import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-
         LeftSidebarComponent,
         SharedModule,
     ],
-    templateUrl: "./share-landing-page.component.html",
+    templateUrl: "./share-landing-page.component.html"
 })
 export class ShareLandingPageComponent {
     @ViewChild("mainContent") mainContent!: ElementRef;

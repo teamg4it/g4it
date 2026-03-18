@@ -78,6 +78,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesEcomindParametersComponent,
     ],
     imports: [
+        SharedChartsModule,
         CommonModule,
         FormsModule,
         RouterModule,

@@ -24,6 +24,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
+    standalone: false
 })
 export class DatavizFilterApplicationComponent implements OnChanges {
     @Input() allFilters: Filter<string | TransformedDomain> = {};

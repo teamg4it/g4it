@@ -16,10 +16,9 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 import { environment } from "src/environments/environment";
 @Component({
     selector: "app-useful-information",
-    standalone: true,
     imports: [SharedModule],
     templateUrl: "./useful-information.component.html",
-    styleUrls: ["./useful-information.component.scss"],
+    styleUrls: ["./useful-information.component.scss"]
 })
 export class UsefulInformationComponent implements OnInit {
     private readonly translate = inject(TranslateService);

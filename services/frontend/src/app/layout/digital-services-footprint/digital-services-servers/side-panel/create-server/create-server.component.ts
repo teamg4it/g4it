@@ -21,6 +21,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     selector: "app-create-server",
     templateUrl: "./create-server.component.html",
     providers: [MessageService],
+    standalone: false
 })
 export class PanelCreateServerComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

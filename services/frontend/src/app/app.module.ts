@@ -7,13 +7,15 @@
  */
 import { APP_BASE_HREF, DatePipe } from "@angular/common";
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from "@angular/common/http";
-import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { NgModule, inject, provideAppInitializer } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import Aura from '@primeuix/themes/aura';
 import { KeycloakAngularModule } from "keycloak-angular";
 import { MessageService } from "primeng/api";
+import { providePrimeNG } from "primeng/config";
 import { ProgressBarModule } from "primeng/progressbar";
 import { TableModule } from "primeng/table";
 import { ToastModule } from "primeng/toast";
@@ -57,14 +59,13 @@ function initializeAuth(authService: CustomAuthService) {
         ProgressBarModule,
         KeycloakAngularModule,
         TableModule,
+
     ],
     providers: [
-        {
-            provide: APP_INITIALIZER,
-            useFactory: initializeAuth,
-            multi: true,
-            deps: [CustomAuthService],
-        },
+        provideAppInitializer(() => {
+        const initializerFn = (initializeAuth)(inject(CustomAuthService));
+        return initializerFn();
+      }),
         MessageService,
         {
             provide: HTTP_INTERCEPTORS,
@@ -78,6 +79,10 @@ function initializeAuth(authService: CustomAuthService) {
             multi: true,
         },
         DatePipe,
+        providePrimeNG({
+            theme: {
+                preset: Aura
+        }})
     ],
     bootstrap: [AppComponent],
 })

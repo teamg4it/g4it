@@ -31,6 +31,7 @@ import { Constants } from "src/constants";
     selector: "app-inventory-item",
     templateUrl: "./inventory-item.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: false
 })
 export class InventoryItemComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

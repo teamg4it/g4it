@@ -25,6 +25,7 @@ interface CriteriaData {
 @Component({
     selector: "app-criteria-stats",
     templateUrl: "./criteria-stats.component.html",
+    standalone: false
 })
 export class CriteriaStatsComponent {
     protected footprintStore = inject(FootprintStoreService);

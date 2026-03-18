@@ -111,6 +111,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         FormsModule,
         ReactiveFormsModule,
         TranslateModule,
+        RouterModule,
         ToastModule,
         InformationCardComponent,
         CardModule,

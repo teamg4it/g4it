@@ -31,6 +31,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "app-radial-chart",
     templateUrl: "./radial-chart.component.html",
+    standalone: false
 })
 export class RadialChartComponent extends AbstractDashboard implements OnChanges {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;

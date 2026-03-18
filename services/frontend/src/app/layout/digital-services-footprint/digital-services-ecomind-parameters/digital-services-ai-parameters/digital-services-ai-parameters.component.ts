@@ -14,6 +14,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 @Component({
     selector: "app-digital-services-ai-parameters",
     templateUrl: "./digital-services-ai-parameters.component.html",
+    standalone: false
 })
 export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     terminalsForm!: FormGroup;

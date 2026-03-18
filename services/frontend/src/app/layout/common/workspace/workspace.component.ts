@@ -24,6 +24,7 @@ import { Constants } from "src/constants";
     selector: "app-workspace",
     templateUrl: "./workspace.component.html",
     styleUrls: ["./workspace.component.scss"],
+    standalone: false
 })
 export class WorkspaceComponent implements OnInit {
     private readonly userDataService = inject(UserDataService);

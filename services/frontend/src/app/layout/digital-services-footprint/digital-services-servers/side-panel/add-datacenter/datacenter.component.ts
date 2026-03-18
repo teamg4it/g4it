@@ -17,6 +17,7 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     selector: "app-panel-datacenter",
     templateUrl: "./datacenter.component.html",
     providers: [MessageService],
+    standalone: false
 })
 export default class PanelDatacenterComponent {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

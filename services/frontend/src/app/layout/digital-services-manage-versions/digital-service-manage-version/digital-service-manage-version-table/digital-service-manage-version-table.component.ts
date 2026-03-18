@@ -14,6 +14,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
     selector: "app-digital-service-manage-version-table",
     templateUrl: "./digital-service-manage-version-table.component.html",
     providers: [ConfirmationService],
+    standalone: false
 })
 export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly digitalServiceVersionDataService = inject(

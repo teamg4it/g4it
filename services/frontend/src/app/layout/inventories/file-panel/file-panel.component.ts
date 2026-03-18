@@ -40,6 +40,7 @@ import { SelectFileComponent } from "./select-file/select-file.component";
 @Component({
     selector: "app-file-panel",
     templateUrl: "./file-panel.component.html",
+    standalone: false
 })
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     className: string = "default-calendar max-w-full";

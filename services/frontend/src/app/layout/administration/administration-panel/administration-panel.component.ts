@@ -13,6 +13,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 @Component({
     selector: "app-administration-panel",
     templateUrl: "./administration-panel.component.html",
+    standalone: false
 })
 export class AdministrationPanelComponent implements OnInit {
     tabMenuList!: MenuItem[];

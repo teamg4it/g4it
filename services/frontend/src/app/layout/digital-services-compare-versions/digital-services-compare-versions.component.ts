@@ -18,6 +18,7 @@ import { convertToGlobalVision } from "src/app/core/service/mapper/digital-servi
     selector: "app-digital-services-compare-versions",
     templateUrl: "./digital-services-compare-versions.component.html",
     styleUrl: "./digital-services-compare-versions.component.scss",
+    standalone: false
 })
 export class DigitalServicesCompareVersionsComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);

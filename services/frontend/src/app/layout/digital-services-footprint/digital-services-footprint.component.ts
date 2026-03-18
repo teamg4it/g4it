@@ -32,6 +32,7 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 @Component({
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
+    standalone: false
 })
 export class DigitalServicesFootprintComponent
     implements OnInit, AfterViewInit, OnDestroy

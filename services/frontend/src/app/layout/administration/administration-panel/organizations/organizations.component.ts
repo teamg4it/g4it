@@ -29,6 +29,7 @@ import { Constants } from "src/constants";
     selector: "app-organizations",
     templateUrl: "./organizations.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: false
 })
 export class OrganizationsComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);

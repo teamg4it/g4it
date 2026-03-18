@@ -11,6 +11,7 @@ import { DigitalServiceBusinessService } from "src/app/core/service/business/dig
     selector: "app-create-digital-services-sidebar",
     templateUrl: "./create-digital-services-sidebar.component.html",
     styleUrls: ["./create-digital-services-sidebar.component.scss"],
+    standalone: false
 })
 export class CreateDigitalServicesSidebarComponent implements OnInit {
     allDigitalServices = input<DigitalService[]>([]);

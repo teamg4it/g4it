@@ -36,6 +36,7 @@ import { FilePanelComponent } from "./file-panel/file-panel.component";
     selector: "app-inventories",
     templateUrl: "./inventories.component.html",
     providers: [ConfirmationService, MessageService],
+    standalone: false
 })
 export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);
