@@ -75,7 +75,6 @@ import { ConfigureViewFiltersComponent } from "../../common/configure-view-filte
     selector: "app-digital-services-footprint-dashboard",
     templateUrl: "./digital-services-footprint-dashboard.component.html",
     styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
-    standalone: true,
     imports: [
         NgSwitch,
         NgSwitchCase,
@@ -94,7 +93,7 @@ import { ConfigureViewFiltersComponent } from "../../common/configure-view-filte
         PrimeTemplate,
         ConfigureViewFiltersComponent,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard

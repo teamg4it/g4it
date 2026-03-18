@@ -20,7 +20,6 @@ import { TranslatePipe } from "@ngx-translate/core";
     selector: "app-link-create-popup",
     templateUrl: "./link-create-popup.component.html",
     styleUrls: ["./link-create-popup.component.scss"],
-    standalone: true,
     imports: [
         DialogModule,
         PrimeTemplate,
@@ -29,7 +28,7 @@ import { TranslatePipe } from "@ngx-translate/core";
         Button,
         DatePipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class LinkCreatePopupComponent {
     private readonly clipboardService = inject(ClipboardService);

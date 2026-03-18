@@ -31,7 +31,6 @@ import { TranslatePipe } from "@ngx-translate/core";
     selector: "app-panel-add-vm",
     templateUrl: "./add-vm.component.html",
     providers: [MessageService],
-    standalone: true,
     imports: [
         AutofocusDirective,
         FormsModule,
@@ -42,7 +41,7 @@ import { TranslatePipe } from "@ngx-translate/core";
         Button,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class PanelAddVmComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

@@ -39,7 +39,6 @@ import { PanelDatacenterComponent } from "../add-datacenter/datacenter.component
     selector: "app-side-panel-server-parameters",
     templateUrl: "./server-parameters.component.html",
     providers: [MessageService],
-    standalone: true,
     imports: [
         AutofocusDirective,
         FormsModule,
@@ -53,7 +52,7 @@ import { PanelDatacenterComponent } from "../add-datacenter/datacenter.component
         InputNumberModule,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class PanelServerParametersComponent {
     public translate = inject(TranslateService);

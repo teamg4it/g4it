@@ -4,10 +4,9 @@ import { SharedModule } from "src/app/core/shared/shared.module";
 
 @Component({
     selector: "app-indicator-section",
-    standalone: true,
     imports: [SharedModule],
     templateUrl: "./indicator-section.component.html",
-    styleUrl: "./indicator-section.component.scss",
+    styleUrl: "./indicator-section.component.scss"
 })
 export class IndicatorSectionComponent {
     statGroups = input<StatGroup[]>([]);

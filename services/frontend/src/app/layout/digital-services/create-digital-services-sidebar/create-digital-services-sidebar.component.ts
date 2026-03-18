@@ -16,7 +16,6 @@ import { NgIf } from "@angular/common";
     selector: "app-create-digital-services-sidebar",
     templateUrl: "./create-digital-services-sidebar.component.html",
     styleUrls: ["./create-digital-services-sidebar.component.scss"],
-    standalone: true,
     imports: [
         FormNavComponent,
         ScrollPanelModule,
@@ -26,7 +25,7 @@ import { NgIf } from "@angular/common";
         InputTextModule,
         NgIf,
         TranslatePipe,
-    ],
+    ]
 })
 export class CreateDigitalServicesSidebarComponent implements OnInit {
     allDigitalServices = input<DigitalService[]>([]);

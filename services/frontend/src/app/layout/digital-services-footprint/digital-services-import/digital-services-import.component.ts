@@ -43,7 +43,6 @@ import { TooltipModule } from "primeng/tooltip";
     selector: "app-digital-services-import",
     templateUrl: "./digital-services-import.component.html",
     styleUrl: "./digital-services-import.component.scss",
-    standalone: true,
     imports: [
         FormNavComponent,
         ScrollPanelModule,
@@ -56,7 +55,7 @@ import { TooltipModule } from "primeng/tooltip";
         NgClass,
         DatePipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesImportComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);

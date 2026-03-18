@@ -40,7 +40,6 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     selector: "app-users",
     templateUrl: "./users.component.html",
     providers: [ConfirmationService, MessageService],
-    standalone: true,
     imports: [
         DropdownModule,
         FormsModule,
@@ -57,7 +56,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
         ToastModule,
         ConfirmDialogModule,
         TranslatePipe,
-    ],
+    ]
 })
 export class UsersComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);

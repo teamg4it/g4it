@@ -40,12 +40,11 @@ import { SidebarModule } from "primeng/sidebar";
     selector: "app-digital-services-servers",
     templateUrl: "./digital-services-servers.component.html",
     providers: [MessageService],
-    standalone: true,
     imports: [
         DigitalServiceTableComponent,
         SidebarModule,
         RouterOutlet,
-    ],
+    ]
 })
 export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     protected digitalServiceStore = inject(DigitalServiceStoreService);

@@ -9,10 +9,9 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
 
 @Component({
     selector: "app-declarations",
-    standalone: true,
     imports: [SharedModule],
     templateUrl: "./declarations.component.html",
-    styleUrls: ["./declarations.component.scss"],
+    styleUrls: ["./declarations.component.scss"]
 })
 export class DeclarationsComponent implements OnInit {
     private readonly translate = inject(TranslateService);

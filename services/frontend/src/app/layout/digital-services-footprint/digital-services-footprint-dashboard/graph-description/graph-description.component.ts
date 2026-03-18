@@ -8,12 +8,11 @@ import { RouterLink } from "@angular/router";
     selector: "app-graph-description",
     templateUrl: "./graph-description.component.html",
     styleUrl: "./graph-description.component.scss",
-    standalone: true,
     imports: [
         Button,
         RouterLink,
         TranslatePipe,
-    ],
+    ]
 })
 export class GraphDescriptionComponent {
     private readonly translate = inject(TranslateService);

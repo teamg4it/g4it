@@ -16,7 +16,6 @@ import { FormsModule } from "@angular/forms";
 @Component({
     selector: "app-share-digital-service",
     templateUrl: "./share-digital-service.component.html",
-    standalone: true,
     imports: [
         DigitalServicesFootprintHeaderComponent,
         ScrollPanelModule,
@@ -25,7 +24,7 @@ import { FormsModule } from "@angular/forms";
         FormsModule,
         RouterOutlet,
         TranslatePipe,
-    ],
+    ]
 })
 export class ShareDigitalServiceComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);

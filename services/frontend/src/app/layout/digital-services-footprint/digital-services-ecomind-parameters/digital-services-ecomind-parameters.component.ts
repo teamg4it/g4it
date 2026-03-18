@@ -5,7 +5,6 @@ import { DigitalServicesAiParametersComponent } from "./digital-services-ai-para
 @Component({
     selector: "app-digital-services-ecomind-parameters",
     templateUrl: "./digital-services-ecomind-parameters.component.html",
-    standalone: true,
-    imports: [DigitalServicesAiInfrastructureComponent, DigitalServicesAiParametersComponent],
+    imports: [DigitalServicesAiInfrastructureComponent, DigitalServicesAiParametersComponent]
 })
 export class DigitalServicesEcomindParametersComponent {}

@@ -85,16 +85,20 @@
                                 name="unitType"
                                 value="Peopleeq"
                                 formControlName="unitType"
-                                [label]="'common.peopleeq-full-capital' | translate"
-                            ></p-radioButton>
+                                ><label>{{
+                                    "common.peopleeq-full-capital" | translate
+                                }}</label></p-radioButton
+                            >
 
                             <p-radioButton
                                 styleClass="m-1"
                                 name="unitType"
                                 value="Raw"
                                 formControlName="unitType"
-                                [label]="'common.unit-of-criterion' | translate"
-                            ></p-radioButton>
+                                ><label>{{
+                                    "common.unit-of-criterion" | translate
+                                }}</label></p-radioButton
+                            >
                         </div>
                     </p-accordionTab>
                 </form>

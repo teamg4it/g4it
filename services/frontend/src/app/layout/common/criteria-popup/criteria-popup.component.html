@@ -23,9 +23,9 @@
                             "
                             (ngModelChange)="onAllSelectedChange($event, true)"
                             value="All"
-                            [label]="'common.all' | translate"
                             [ariaLabel]="'common.all' | translate"
-                        />
+                            ><label>{{ "common.all" | translate }}</label></p-checkbox
+                        >
                     </div>
                 </div>
                 <div class="flex gap-2 flex-wrap mx-3">
@@ -34,9 +34,11 @@
                             [(ngModel)]="selectedCriteriaIS"
                             [value]="criteria"
                             (onChange)="onCriteriaChange()"
-                            [label]="'criteria.' + criteria + '.title' | translate"
                             [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                        ></p-checkbox>
+                            ><label>{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label></p-checkbox
+                        >
                     </div>
                 </div>
             } @else {
@@ -52,9 +54,9 @@
                                 "
                                 (ngModelChange)="onAllSelectedChange($event, true)"
                                 value="All"
-                                [label]="'common.all' | translate"
                                 [ariaLabel]="'common.all' | translate"
-                            />
+                                ><label>{{ "common.all" | translate }}</label></p-checkbox
+                            >
                         </div>
                     </div>
                 </div>
@@ -65,9 +67,11 @@
                             [(ngModel)]="selectedCriteriaIS"
                             [value]="criteria"
                             (onChange)="onCriteriaChange()"
-                            [label]="'criteria.' + criteria + '.title' | translate"
                             [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                        ></p-checkbox>
+                            ><label>{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label></p-checkbox
+                        >
                     </div>
                 </div>
                 <div>
@@ -82,9 +86,9 @@
                                 "
                                 (ngModelChange)="onAllSelectedChange($event, false)"
                                 value="All"
-                                [label]="'common.all' | translate"
                                 [ariaLabel]="'common.all' | translate"
-                            />
+                                ><label>{{ "common.all" | translate }}</label></p-checkbox
+                            >
                         </div>
                     </div>
                 </div>
@@ -95,9 +99,11 @@
                             [(ngModel)]="selectedCriteriaDS"
                             [value]="criteria"
                             (onChange)="onCriteriaChange()"
-                            [label]="'criteria.' + criteria + '.title' | translate"
                             [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                        ></p-checkbox>
+                            ><label>{{
+                                "criteria." + criteria + ".title" | translate
+                            }}</label></p-checkbox
+                        >
                     </div>
                 </div>
             }

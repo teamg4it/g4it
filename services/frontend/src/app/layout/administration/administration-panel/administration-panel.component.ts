@@ -15,12 +15,11 @@ import { RouterOutlet } from "@angular/router";
 @Component({
     selector: "app-administration-panel",
     templateUrl: "./administration-panel.component.html",
-    standalone: true,
     imports: [
         TabMenuModule,
         RouterOutlet,
         TranslatePipe,
-    ],
+    ]
 })
 export class AdministrationPanelComponent implements OnInit {
     tabMenuList!: MenuItem[];

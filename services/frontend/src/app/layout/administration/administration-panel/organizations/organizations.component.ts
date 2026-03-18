@@ -38,7 +38,6 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     selector: "app-organizations",
     templateUrl: "./organizations.component.html",
     providers: [ConfirmationService, MessageService],
-    standalone: true,
     imports: [
         DropdownModule,
         FormsModule,
@@ -52,7 +51,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
         ConfirmDialogModule,
         DatePipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class OrganizationsComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);

@@ -5,8 +5,7 @@ import { TranslatePipe } from "@ngx-translate/core";
 @Component({
     selector: "app-version-type-tag",
     templateUrl: "./version-type-tag.component.html",
-    standalone: true,
-    imports: [TranslatePipe],
+    imports: [TranslatePipe]
 })
 export class VersionTypeTagComponent {
     versionType = input<string>();

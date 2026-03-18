@@ -30,7 +30,6 @@ import { Button } from "primeng/button";
 @Component({
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
-    standalone: true,
     imports: [
         OverlayModule,
         TabViewModule,
@@ -41,7 +40,7 @@ import { Button } from "primeng/button";
         NgClass,
         Button,
         TranslatePipe,
-    ],
+    ]
 })
 export class DatavizFilterApplicationComponent implements OnChanges {
     @Input() allFilters: Filter<string | TransformedDomain> = {};

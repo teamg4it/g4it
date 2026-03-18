@@ -8,13 +8,12 @@ import { TranslatePipe } from "@ngx-translate/core";
 @Component({
     selector: "app-promote-version-dialog",
     templateUrl: "./promote-version-dialog.component.html",
-    standalone: true,
     imports: [
         DialogModule,
         PrimeTemplate,
         Button,
         TranslatePipe,
-    ],
+    ]
 })
 export class PromoteVersionDialogComponent {
     private readonly digitalServiceVersionDataService = inject(

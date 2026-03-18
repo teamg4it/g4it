@@ -23,12 +23,11 @@ import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-servic
     selector: "app-digital-services-cloud-services",
     templateUrl: "./digital-services-cloud-services.component.html",
     providers: [MessageService],
-    standalone: true,
     imports: [
         DigitalServiceTableComponent,
         SidebarModule,
         DigitalServicesCloudServicesSidePanelComponent,
-    ],
+    ]
 })
 export class DigitalServicesCloudServicesComponent implements OnInit {
     private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);

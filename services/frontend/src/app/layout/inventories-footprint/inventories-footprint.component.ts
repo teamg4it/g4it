@@ -79,7 +79,6 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
 @Component({
     selector: "app-inventories-footprint",
     templateUrl: "./inventories-footprint.component.html",
-    standalone: true,
     imports: [
         InventoriesHeaderFootprintComponent,
         DatavizFilterComponent,
@@ -96,7 +95,7 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
         ConfigureViewFiltersComponent,
         TitleCasePipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     protected footprintStore = inject(FootprintStoreService);

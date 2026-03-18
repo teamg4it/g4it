@@ -22,7 +22,6 @@ import { TranslatePipe } from "@ngx-translate/core";
 @Component({
     selector: "app-panel-list-vm",
     templateUrl: "./list-vm.component.html",
-    standalone: true,
     imports: [
         AutofocusDirective,
         DigitalServiceTableComponent,
@@ -32,7 +31,7 @@ import { TranslatePipe } from "@ngx-translate/core";
         PanelAddVmComponent,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class PanelListVmComponent {
     @ViewChild("vmSidePanel", { static: false })

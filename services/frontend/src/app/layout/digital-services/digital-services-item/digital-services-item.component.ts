@@ -13,7 +13,6 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
     selector: "app-digital-services-item",
     templateUrl: "./digital-services-item.component.html",
     providers: [MessageService, ConfirmationService],
-    standalone: true,
     imports: [
         CardModule,
         Button,
@@ -21,7 +20,7 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
         ConfirmPopupModule,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesItemComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;

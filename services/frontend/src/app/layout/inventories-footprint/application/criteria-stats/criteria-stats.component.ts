@@ -28,14 +28,13 @@ interface CriteriaData {
 @Component({
     selector: "app-criteria-stats",
     templateUrl: "./criteria-stats.component.html",
-    standalone: true,
     imports: [
         CardModule,
         NgIf,
         NgClass,
         TooltipModule,
         TranslatePipe,
-    ],
+    ]
 })
 export class CriteriaStatsComponent {
     protected footprintStore = inject(FootprintStoreService);

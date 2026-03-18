@@ -1,3 +1,4 @@
+import { NgIf } from "@angular/common";
 import {
     Component,
     EventEmitter,
@@ -7,27 +8,24 @@ import {
     SecurityContext,
     SimpleChanges,
 } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
-import { ConfirmationService, MessageService, Header } from "primeng/api";
-import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
-import { EditorModule } from "primeng/editor";
 import { FormsModule } from "@angular/forms";
-import { ToastModule } from "primeng/toast";
-import { ConfirmPopupModule } from "primeng/confirmpopup";
-import { NgIf } from "@angular/common";
+import { DomSanitizer } from "@angular/platform-browser";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { EditorModule } from "primeng/editor";
+import { ToastModule } from "primeng/toast";
+import { AutofocusDirective } from "../../../core/directives/auto-focus.directive";
 
 @Component({
     selector: "app-common-editor",
     templateUrl: "./common-editor.component.html",
     providers: [ConfirmationService, MessageService],
-    standalone: true,
     imports: [
         AutofocusDirective,
         EditorModule,
         FormsModule,
-        Header,
         ToastModule,
         ConfirmPopupModule,
         NgIf,

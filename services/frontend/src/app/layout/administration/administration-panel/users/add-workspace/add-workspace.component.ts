@@ -39,7 +39,6 @@ import { Button } from "primeng/button";
     selector: "app-add-workspace",
     templateUrl: "./add-workspace.component.html",
     providers: [ConfirmationService, MessageService],
-    standalone: true,
     imports: [
         AutofocusDirective,
         NgIf,
@@ -48,7 +47,7 @@ import { Button } from "primeng/button";
         FormsModule,
         Button,
         TranslatePipe,
-    ],
+    ]
 })
 export class AddWorkspaceComponent implements OnInit, OnChanges {
     @Input() userDetail!: UserDetails;

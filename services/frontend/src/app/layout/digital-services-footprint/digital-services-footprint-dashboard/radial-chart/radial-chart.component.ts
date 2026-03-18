@@ -33,8 +33,7 @@ import { NgxEchartsDirective } from "ngx-echarts";
 @Component({
     selector: "app-radial-chart",
     templateUrl: "./radial-chart.component.html",
-    standalone: true,
-    imports: [StackBarChartComponent, NgxEchartsDirective],
+    imports: [StackBarChartComponent, NgxEchartsDirective]
 })
 export class RadialChartComponent extends AbstractDashboard implements OnChanges {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;

@@ -42,7 +42,6 @@ import { FormsModule } from "@angular/forms";
 @Component({
     selector: "app-bar-chart",
     templateUrl: "./bar-chart.component.html",
-    standalone: true,
     imports: [
         StackBarChartComponent,
         NgxEchartsDirective,
@@ -50,7 +49,7 @@ import { FormsModule } from "@angular/forms";
         NgFor,
         RadioButtonModule,
         FormsModule,
-    ],
+    ]
 })
 export class BarChartComponent extends AbstractDashboard implements OnChanges {
     @Input() barChartChild: boolean = false;

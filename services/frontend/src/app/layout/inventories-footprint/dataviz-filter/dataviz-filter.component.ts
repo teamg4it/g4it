@@ -28,7 +28,6 @@ import { FormsModule } from "@angular/forms";
 @Component({
     selector: "dataviz-filter",
     templateUrl: "./dataviz-filter.component.html",
-    standalone: true,
     imports: [
         OverlayModule,
         TabViewModule,
@@ -36,7 +35,7 @@ import { FormsModule } from "@angular/forms";
         CheckboxModule,
         FormsModule,
         TranslatePipe,
-    ],
+    ]
 })
 export class DatavizFilterComponent implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);

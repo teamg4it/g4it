@@ -37,7 +37,6 @@ import { DigitalServicesFootprintFooterComponent } from "./digital-services-foot
 @Component({
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
-    standalone: true,
     imports: [
         DigitalServicesFootprintHeaderComponent,
         TabMenuModule,
@@ -47,7 +46,7 @@ import { DigitalServicesFootprintFooterComponent } from "./digital-services-foot
         RouterOutlet,
         DigitalServicesFootprintFooterComponent,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesFootprintComponent
     implements OnInit, AfterViewInit, OnDestroy

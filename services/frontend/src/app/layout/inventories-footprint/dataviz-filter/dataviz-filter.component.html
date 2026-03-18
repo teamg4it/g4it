@@ -55,19 +55,19 @@
                                     [ariaLabel]="item?.toString()"
                                     name="groupname"
                                     [value]="item"
-                                    label="{{
-                                        item === all
-                                            ? ('common.all' | translate)
-                                            : item === empty
-                                              ? ('common.empty' | translate)
-                                              : item
-                                    }}"
                                     [ngModel]="footprintStore.filters()[tab]"
                                     (ngModelChange)="
                                         onCheckboxChange($event, tab, item.toString())
                                     "
                                     [id]="item"
-                                ></p-checkbox>
+                                    ><label>{{
+                                        item === all
+                                            ? ("common.all" | translate)
+                                            : item === empty
+                                              ? ("common.empty" | translate)
+                                              : item
+                                    }}</label></p-checkbox
+                                >
                             </li>
                         }
                     </ul>

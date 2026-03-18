@@ -13,7 +13,6 @@ import { DecimalsPipe } from "../../../core/pipes/decimal.pipe";
     selector: "app-digital-service-table",
     templateUrl: "./digital-service-table.component.html",
     providers: [ConfirmationService],
-    standalone: true,
     imports: [
         TableModule,
         PrimeTemplate,
@@ -25,7 +24,7 @@ import { DecimalsPipe } from "../../../core/pipes/decimal.pipe";
         AsyncPipe,
         DecimalsPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServiceTableComponent {
     protected userService = inject(UserService);

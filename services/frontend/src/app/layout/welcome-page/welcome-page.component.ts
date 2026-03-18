@@ -22,7 +22,6 @@ import { environment } from "src/environments/environment";
     selector: "app-welcome-page",
     templateUrl: "./welcome-page.component.html",
     styleUrls: ["./welcome-page.component.scss"],
-    standalone: true,
     imports: [
         CommonModule,
         ButtonModule,
@@ -30,7 +29,7 @@ import { environment } from "src/environments/environment";
         CardModule,
         ScrollPanelModule,
         RouterModule,
-    ],
+    ]
 })
 export class WelcomePageComponent implements OnInit {
     userName: string = "";

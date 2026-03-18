@@ -1,5 +1,5 @@
-@import "primeflex/primeflex.scss";
-@import "variables";
+@use "primeflex/primeflex.scss";
+@use "variables";
 
 /* General */
 
@@ -75,13 +75,14 @@ p {
 }
 
 main {
-    @include styleclass("py-4 px-5");
+    padding: 1.5rem 3rem;
     background-color: var(--light-grey-color);
     overflow-y: clip;
     height: calc(100vh - 70px);
     width: calc(100vw - 80px);
     margin-top: 70px;
-    background-image: url("assets/images/background/blue-elipse.svg"),
+    background-image:
+        url("assets/images/background/blue-elipse.svg"),
         url("assets/images/background/yellow-elipse.svg"),
         url("assets/images/background/fingerprint-background.svg");
     background-repeat: no-repeat;
@@ -184,7 +185,10 @@ main {
 }
 
 .header-button {
-    @include styleclass("uppercase py-3 px-4 letter-spacing-2 mx-2");
+    text-transform: uppercase;
+    padding: 0.75rem 1rem;
+    letter-spacing: 2px;
+    margin: 0 0.5rem;
 }
 
 .footer-calculate-button {
@@ -241,7 +245,8 @@ main {
     flex-shrink: 0;
     background-color: var(--header-color);
     width: 100%;
-    background-image: url("assets/images/background/fingerprint.svg"),
+    background-image:
+        url("assets/images/background/fingerprint.svg"),
         url("assets/images/background/fingerprint.svg");
     background-repeat: no-repeat;
     background-position:
@@ -424,7 +429,7 @@ main {
 }
 
 .footprint-data-application span {
-    @include styleclass("text-2xl");
+    font-size: 1.5rem;
 }
 
 /* Inventories page */
@@ -642,7 +647,7 @@ main {
 
 .rmv-padding-card .p-card-content,
 .rmv-padding-card .p-card-body {
-    @include styleclass("p-0");
+    padding: 0;
 }
 
 .round-button-container {

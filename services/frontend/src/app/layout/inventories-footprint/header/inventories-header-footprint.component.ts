@@ -31,7 +31,6 @@ import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
     selector: "app-inventories-header-footprint",
     templateUrl: "./inventories-header-footprint.component.html",
     providers: [ConfirmationService, MessageService],
-    standalone: true,
     imports: [
         ToastModule,
         Button,
@@ -43,7 +42,7 @@ import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
         AsyncPipe,
         TranslatePipe,
         MonthYearPipe,
-    ],
+    ]
 })
 export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     @Input() inventory: Inventory = {} as Inventory;

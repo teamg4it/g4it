@@ -13,8 +13,7 @@ import { TooltipModule } from "primeng/tooltip";
 @Component({
     selector: "app-stats",
     templateUrl: "./stats.component.html",
-    standalone: true,
-    imports: [CardModule, TooltipModule],
+    imports: [CardModule, TooltipModule]
 })
 export class StatsComponent {
     @Input() stats: Stat[] = [];

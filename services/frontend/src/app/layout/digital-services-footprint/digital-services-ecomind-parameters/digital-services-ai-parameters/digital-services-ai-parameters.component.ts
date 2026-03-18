@@ -19,7 +19,6 @@ import { InputNumberModule } from "primeng/inputnumber";
 @Component({
     selector: "app-digital-services-ai-parameters",
     templateUrl: "./digital-services-ai-parameters.component.html",
-    standalone: true,
     imports: [
         CardModule,
         FormsModule,
@@ -29,7 +28,7 @@ import { InputNumberModule } from "primeng/inputnumber";
         CheckboxModule,
         InputNumberModule,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     terminalsForm!: FormGroup;

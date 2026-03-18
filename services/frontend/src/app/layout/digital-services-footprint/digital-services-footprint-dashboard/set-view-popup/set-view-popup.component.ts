@@ -10,7 +10,6 @@ import { DigitalService } from "src/app/core/interfaces/digital-service.interfac
 @Component({
     selector: "app-set-view-popup",
     templateUrl: "./set-view-popup.component.html",
-    standalone: true,
     imports: [
         DialogModule,
         PrimeTemplate,
@@ -19,7 +18,7 @@ import { DigitalService } from "src/app/core/interfaces/digital-service.interfac
         CheckboxModule,
         Button,
         TranslatePipe,
-    ],
+    ]
 })
 export class SetViewPopupComponent implements OnInit {
     @Input() displayPopup: boolean = false;

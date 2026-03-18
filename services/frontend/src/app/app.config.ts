@@ -26,6 +26,8 @@ import { ApiInterceptor } from "./core/interceptors/api-request.interceptor";
 import { HttpErrorInterceptor } from "./core/interceptors/http-error.interceptor";
 import { CustomAuthService } from "./core/service/business/custom-auth.service";
 
+import Aura from "@primeuix/themes/aura";
+import { providePrimeNG } from "primeng/config";
 import { Constants } from "src/constants";
 import { AppRoutingModule } from "./app-routing.module";
 
@@ -66,6 +68,9 @@ export function initializeLanguage(translate: TranslateService) {
 
 export const appConfig: ApplicationConfig = {
     providers: [
+        providePrimeNG({
+            theme: { preset: Aura, options: { darkModeSelector: false || "none" } },
+        }),
         provideHttpClient(withInterceptorsFromDi()),
         importProvidersFrom(
             BrowserAnimationsModule,

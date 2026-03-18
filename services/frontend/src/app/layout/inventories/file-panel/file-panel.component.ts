@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { NgFor, NgIf } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import {
     AfterViewInit,
     Component,
@@ -51,9 +51,7 @@ import { SelectFileComponent } from "./select-file/select-file.component";
 @Component({
     selector: "app-file-panel",
     templateUrl: "./file-panel.component.html",
-    standalone: true,
     imports: [
-        NgIf,
         AutofocusDirective,
         FormsModule,
         RadioButtonModule,
@@ -61,9 +59,8 @@ import { SelectFileComponent } from "./select-file/select-file.component";
         ReactiveFormsModule,
         InputTextModule,
         Button,
-        NgFor,
+        CommonModule,
         TranslatePipe,
-        SelectFileComponent,
     ],
 })
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {

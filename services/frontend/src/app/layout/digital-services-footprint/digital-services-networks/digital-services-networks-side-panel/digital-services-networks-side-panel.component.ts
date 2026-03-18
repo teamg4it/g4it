@@ -32,7 +32,6 @@ import { AutofocusDirective } from "../../../../core/directives/auto-focus.direc
     selector: "app-digital-services-networks-side-panel",
     templateUrl: "./digital-services-networks-side-panel.component.html",
     providers: [MessageService],
-    standalone: true,
     imports: [
         NgIf,
         AutofocusDirective,
@@ -44,7 +43,7 @@ import { AutofocusDirective } from "../../../../core/directives/auto-focus.direc
         Button,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesNetworksSidePanelComponent implements OnInit {
     protected digitalServiceStore = inject(DigitalServiceStoreService);

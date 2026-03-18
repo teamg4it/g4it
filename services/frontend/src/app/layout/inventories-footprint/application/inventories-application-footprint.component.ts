@@ -71,7 +71,6 @@ import { ConfigureViewFiltersComponent } from "../../common/configure-view-filte
 @Component({
     selector: "app-inventories-application-footprint",
     templateUrl: "./inventories-application-footprint.component.html",
-    standalone: true,
     imports: [
         InventoriesHeaderFootprintComponent,
         DatavizFilterApplicationComponent,
@@ -88,7 +87,7 @@ import { ConfigureViewFiltersComponent } from "../../common/configure-view-filte
         ConfigureViewFiltersComponent,
         TitleCasePipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class InventoriesApplicationFootprintComponent implements OnInit, OnDestroy {
     protected readonly footprintStore = inject(FootprintStoreService);

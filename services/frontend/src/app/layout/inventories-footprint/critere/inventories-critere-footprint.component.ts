@@ -50,7 +50,6 @@ import { TranslatePipe } from "@ngx-translate/core";
 @Component({
     selector: "app-inventories-critere-footprint",
     templateUrl: "./inventories-critere-footprint.component.html",
-    standalone: true,
     imports: [
         NgClass,
         Button,
@@ -61,7 +60,7 @@ import { TranslatePipe } from "@ngx-translate/core";
         StackBarChartComponent,
         NgxEchartsDirective,
         TranslatePipe,
-    ],
+    ]
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard

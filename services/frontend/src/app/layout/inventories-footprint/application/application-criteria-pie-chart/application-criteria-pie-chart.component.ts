@@ -19,12 +19,11 @@ import { NgxEchartsDirective } from "ngx-echarts";
 @Component({
     selector: "app-application-criteria-pie-chart",
     templateUrl: "./application-criteria-pie-chart.component.html",
-    standalone: true,
     imports: [
         CardModule,
         NgxEchartsDirective,
         TranslatePipe,
-    ],
+    ]
 })
 export class ApplicationCriteriaPieChartComponent {
     protected footprintStore = inject(FootprintStoreService);

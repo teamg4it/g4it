@@ -46,7 +46,6 @@ import { InputTextModule } from "primeng/inputtext";
     selector: "app-inventories",
     templateUrl: "./inventories.component.html",
     providers: [ConfirmationService, MessageService],
-    standalone: true,
     imports: [
         ToastModule,
         SidebarModule,
@@ -63,7 +62,7 @@ import { InputTextModule } from "primeng/inputtext";
         InputTextModule,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);

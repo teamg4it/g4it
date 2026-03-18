@@ -12,8 +12,7 @@ import { CardModule } from "primeng/card";
 @Component({
     selector: "app-information-card",
     templateUrl: "./information-card.component.html",
-    standalone: true,
-    imports: [CardModule],
+    imports: [CardModule]
 })
 export class InformationCardComponent {
     title = input<string>();

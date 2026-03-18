@@ -40,7 +40,6 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
     selector: "app-inventory-item",
     templateUrl: "./inventory-item.component.html",
     providers: [ConfirmationService, MessageService],
-    standalone: true,
     imports: [
         AccordionModule,
         PrimeTemplate,
@@ -58,7 +57,7 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
         TranslatePipe,
         CommonModule,
         RouterModule,
-    ],
+    ]
 })
 export class InventoryItemComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

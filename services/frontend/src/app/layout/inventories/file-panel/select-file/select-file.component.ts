@@ -17,14 +17,13 @@ import { Button } from "primeng/button";
 @Component({
     selector: "app-select-file",
     templateUrl: "./select-file.component.html",
-    standalone: true,
     imports: [
         DropdownModule,
         FormsModule,
         FileUploadModule,
         Button,
         TranslatePipe,
-    ],
+    ]
 })
 export class SelectFileComponent {
     @Input() fileTypes: FileType[] = [];

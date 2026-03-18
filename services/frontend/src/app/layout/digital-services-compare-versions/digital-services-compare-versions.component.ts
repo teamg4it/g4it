@@ -23,7 +23,6 @@ import { GraphDescriptionComponent } from "../digital-services-footprint/digital
     selector: "app-digital-services-compare-versions",
     templateUrl: "./digital-services-compare-versions.component.html",
     styleUrl: "./digital-services-compare-versions.component.scss",
-    standalone: true,
     imports: [
         DigitalServicesFootprintHeaderComponent,
         ScrollPanelModule,
@@ -31,7 +30,7 @@ import { GraphDescriptionComponent } from "../digital-services-footprint/digital
         RadialChartComponent,
         PieChartComponent,
         GraphDescriptionComponent,
-    ],
+    ]
 })
 export class DigitalServicesCompareVersionsComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);

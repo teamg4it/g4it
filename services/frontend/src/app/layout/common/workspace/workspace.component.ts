@@ -30,7 +30,6 @@ import { DropdownModule } from "primeng/dropdown";
     selector: "app-workspace",
     templateUrl: "./workspace.component.html",
     styleUrls: ["./workspace.component.scss"],
-    standalone: true,
     imports: [
         FocusTrapModule,
         FormNavComponent,
@@ -41,7 +40,7 @@ import { DropdownModule } from "primeng/dropdown";
         InputTextModule,
         DropdownModule,
         TranslatePipe,
-    ],
+    ]
 })
 export class WorkspaceComponent implements OnInit {
     private readonly userDataService = inject(UserDataService);

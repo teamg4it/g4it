@@ -42,7 +42,6 @@ import { TranslatePipe } from "@ngx-translate/core";
 @Component({
     selector: "app-inventories-multicriteria-footprint",
     templateUrl: "./inventories-multicriteria-footprint.component.html",
-    standalone: true,
     imports: [
         Button,
         DropdownModule,
@@ -52,7 +51,7 @@ import { TranslatePipe } from "@ngx-translate/core";
         StackBarChartComponent,
         NgxEchartsDirective,
         TranslatePipe,
-    ],
+    ]
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
     private readonly store = inject(FootprintStoreService);

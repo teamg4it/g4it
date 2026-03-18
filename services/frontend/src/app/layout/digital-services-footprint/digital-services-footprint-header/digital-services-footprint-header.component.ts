@@ -51,7 +51,6 @@ import { PromoteVersionDialogComponent } from "../../common/promote-version-dial
     selector: "app-digital-services-footprint-header",
     templateUrl: "./digital-services-footprint-header.component.html",
     providers: [MessageService, ConfirmationService],
-    standalone: true,
     imports: [
         ToastModule,
         SidebarModule,
@@ -71,7 +70,7 @@ import { PromoteVersionDialogComponent } from "../../common/promote-version-dial
         PromoteVersionDialogComponent,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);

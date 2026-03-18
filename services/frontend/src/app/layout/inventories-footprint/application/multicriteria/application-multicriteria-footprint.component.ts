@@ -48,7 +48,6 @@ import { NgxEchartsDirective } from "ngx-echarts";
 @Component({
     selector: "app-application-multicriteria-footprint",
     templateUrl: "./application-multicriteria-footprint.component.html",
-    standalone: true,
     imports: [
         Button,
         DropdownModule,
@@ -58,7 +57,7 @@ import { NgxEchartsDirective } from "ngx-echarts";
         StackBarChartComponent,
         NgxEchartsDirective,
         TranslatePipe,
-    ],
+    ]
 })
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
     @Input() footprint: ApplicationFootprint[] = [];

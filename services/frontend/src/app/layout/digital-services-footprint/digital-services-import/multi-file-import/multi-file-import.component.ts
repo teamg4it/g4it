@@ -9,13 +9,12 @@ import { Button } from "primeng/button";
 @Component({
     selector: "app-multi-file-import",
     templateUrl: "./multi-file-import.component.html",
-    standalone: true,
     imports: [
         InputTextModule,
         FileUploadModule,
         Button,
         TranslatePipe,
-    ],
+    ]
 })
 export class MultiFileImportComponent implements OnChanges {
     private readonly loadingService = inject(LoadingDataService);

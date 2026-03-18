@@ -28,7 +28,6 @@ import { Button } from "primeng/button";
     selector: "app-criteria-popup",
     templateUrl: "./criteria-popup.component.html",
     providers: [MonthYearPipe],
-    standalone: true,
     imports: [
         DialogModule,
         CheckboxModule,
@@ -37,7 +36,7 @@ import { Button } from "primeng/button";
         PrimeTemplate,
         Button,
         TranslatePipe,
-    ],
+    ]
 })
 export class CriteriaPopupComponent implements OnChanges {
     @Input() displayPopup: boolean = false;

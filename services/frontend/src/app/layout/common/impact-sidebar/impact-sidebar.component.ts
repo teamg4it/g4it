@@ -23,8 +23,7 @@ export interface ImpactData {
 @Component({
     selector: "app-impact-sidebar",
     templateUrl: "./impact-sidebar.component.html",
-    standalone: true,
-    imports: [CommonModule, ButtonModule, TranslateModule, ImpactButtonComponent],
+    imports: [CommonModule, ButtonModule, TranslateModule, ImpactButtonComponent]
 })
 export class ImpactSidebarComponent {
     @Input() isCollapsed: boolean = false;

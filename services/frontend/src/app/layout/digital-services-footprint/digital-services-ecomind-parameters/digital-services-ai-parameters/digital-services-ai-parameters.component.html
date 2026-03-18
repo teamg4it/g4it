@@ -108,9 +108,11 @@
                         inputId="inference"
                         binary="true"
                         formControlName="isInference"
-                        [label]="'digital-services-ai-parameter.inference' | translate"
                         (onChange)="onCheckboxChange('isInference')"
                     >
+                        <label>{{
+                            "digital-services-ai-parameter.inference" | translate
+                        }}</label>
                     </p-checkbox>
                 </div>
 
@@ -120,9 +122,10 @@
                         inputId="finetuning"
                         binary="true"
                         formControlName="isFinetuning"
-                        [label]="'digital-services-ai-parameter.fintuning' | translate"
                         (onChange)="onCheckboxChange('isFinetuning')"
-                    >
+                        ><label>{{
+                            "digital-services-ai-parameter.fintuning" | translate
+                        }}</label>
                     </p-checkbox>
                 </div>
                 <span class="pi pi-info-circle text-red-900">

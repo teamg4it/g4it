@@ -26,12 +26,11 @@ import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-t
     selector: "app-digital-services-terminals",
     templateUrl: "./digital-services-terminals.component.html",
     providers: [MessageService],
-    standalone: true,
     imports: [
         DigitalServiceTableComponent,
         SidebarModule,
         DigitalServicesTerminalsSidePanelComponent,
-    ],
+    ]
 })
 export class DigitalServicesTerminalsComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);

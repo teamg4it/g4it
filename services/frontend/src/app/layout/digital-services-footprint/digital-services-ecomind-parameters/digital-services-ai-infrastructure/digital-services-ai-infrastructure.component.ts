@@ -29,7 +29,6 @@ import { InputNumberModule } from "primeng/inputnumber";
 @Component({
     selector: "app-digital-services-ai-infrastructure",
     templateUrl: "./digital-services-ai-infrastructure.component.html",
-    standalone: true,
     imports: [
         CardModule,
         NgIf,
@@ -39,7 +38,7 @@ import { InputNumberModule } from "primeng/inputnumber";
         InputNumberModule,
         NgStyle,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestroy {
     infrastructureForm!: FormGroup;

@@ -9,13 +9,12 @@ import { DigitalServicesCloudServicesComponent } from "../digital-services-cloud
 @Component({
     selector: "app-digital-services-resources",
     templateUrl: "./digital-services-resources.component.html",
-    standalone: true,
     imports: [
         DigitalServicesTerminalsComponent,
         DigitalServicesNetworksComponent,
         DigitalServicesServersComponent,
         DigitalServicesCloudServicesComponent,
-    ],
+    ]
 })
 export class DigitalServicesResourcesComponent implements OnInit, OnDestroy {
     private readonly route = inject(ActivatedRoute);

@@ -16,8 +16,7 @@ import { Button } from "primeng/button";
 @Component({
     selector: "app-super-admin",
     templateUrl: "./super-admin.component.html",
-    standalone: true,
-    imports: [Button, TranslatePipe],
+    imports: [Button, TranslatePipe]
 })
 export class SuperAdminComponent implements OnInit {
     public translate = inject(TranslateService);

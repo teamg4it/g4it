@@ -52,7 +52,6 @@ import { Button } from "primeng/button";
 @Component({
     selector: "app-application-criteria-footprint",
     templateUrl: "./application-criteria-footprint.component.html",
-    standalone: true,
     imports: [
         NgClass,
         NgTemplateOutlet,
@@ -61,7 +60,7 @@ import { Button } from "primeng/button";
         ApplicationCriteriaPieChartComponent,
         Button,
         TranslatePipe,
-    ],
+    ]
 })
 export class ApplicationCriteriaFootprintComponent
     extends AbstractDashboard

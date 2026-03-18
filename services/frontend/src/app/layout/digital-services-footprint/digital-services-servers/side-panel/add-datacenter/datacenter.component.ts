@@ -29,7 +29,6 @@ import { AutofocusDirective } from "../../../../../core/directives/auto-focus.di
     selector: "app-panel-datacenter",
     templateUrl: "./datacenter.component.html",
     providers: [MessageService],
-    standalone: true,
     imports: [
         AutofocusDirective,
         FormsModule,
@@ -41,7 +40,7 @@ import { AutofocusDirective } from "../../../../../core/directives/auto-focus.di
         Button,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class PanelDatacenterComponent {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

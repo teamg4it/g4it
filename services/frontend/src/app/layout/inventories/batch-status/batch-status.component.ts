@@ -22,7 +22,6 @@ import { Button } from "primeng/button";
 @Component({
     selector: "app-batch-status",
     templateUrl: "./batch-status.component.html",
-    standalone: true,
     imports: [
         ToastModule,
         TooltipModule,
@@ -31,7 +30,7 @@ import { Button } from "primeng/button";
         AsyncPipe,
         DatePipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class BatchStatusComponent implements OnInit {
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);

@@ -7,8 +7,7 @@ import { NgxEchartsDirective } from "ngx-echarts";
 @Component({
     selector: "app-stack-bar-chart",
     templateUrl: "./stack-bar-chart.component.html",
-    standalone: true,
-    imports: [NgxEchartsDirective],
+    imports: [NgxEchartsDirective]
 })
 export class StackBarChartComponent extends AbstractDashboard {
     @Output() selectedStackBarClick: EventEmitter<string> = new EventEmitter();

@@ -12,8 +12,7 @@ import { TranslatePipe } from "@ngx-translate/core";
 @Component({
     selector: "app-equipments-card",
     templateUrl: "./equipments-card.component.html",
-    standalone: true,
-    imports: [DecimalsPipe, TranslatePipe],
+    imports: [DecimalsPipe, TranslatePipe]
 })
 export class EquipmentsCardComponent implements OnInit {
     @Input() type: string = "";

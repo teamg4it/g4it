@@ -7,8 +7,7 @@ import { TranslatePipe } from "@ngx-translate/core";
     selector: "app-form-nav",
     templateUrl: "./form-nav.component.html",
     styleUrl: "./form-nav.component.scss",
-    standalone: true,
-    imports: [NgClass, TranslatePipe],
+    imports: [NgClass, TranslatePipe]
 })
 export class FormNavComponent {
     @Input() spaceDetails: any;

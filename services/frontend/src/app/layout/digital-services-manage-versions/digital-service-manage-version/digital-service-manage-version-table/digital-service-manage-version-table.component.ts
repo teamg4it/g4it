@@ -23,7 +23,6 @@ import { AsyncPipe } from "@angular/common";
     selector: "app-digital-service-manage-version-table",
     templateUrl: "./digital-service-manage-version-table.component.html",
     providers: [ConfirmationService],
-    standalone: true,
     imports: [
         TableModule,
         PrimeTemplate,
@@ -36,7 +35,7 @@ import { AsyncPipe } from "@angular/common";
         PromoteVersionDialogComponent,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServiceManageVersionTableComponent implements OnInit {
     private readonly digitalServiceVersionDataService = inject(

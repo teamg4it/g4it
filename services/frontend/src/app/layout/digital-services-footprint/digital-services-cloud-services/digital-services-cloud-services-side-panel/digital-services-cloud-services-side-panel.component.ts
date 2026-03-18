@@ -31,7 +31,6 @@ import { TranslatePipe } from "@ngx-translate/core";
     selector: "app-digital-services-cloud-services-side-panel",
     templateUrl: "./digital-services-cloud-services-side-panel.component.html",
     providers: [MessageService],
-    standalone: true,
     imports: [
         AutofocusDirective,
         FormsModule,
@@ -43,7 +42,7 @@ import { TranslatePipe } from "@ngx-translate/core";
         Button,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

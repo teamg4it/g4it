@@ -32,7 +32,6 @@ import { CreateDigitalServicesSidebarComponent } from "./create-digital-services
     selector: "app-digital-services",
     templateUrl: "./digital-services.component.html",
     providers: [MessageService, ConfirmationService],
-    standalone: true,
     imports: [
         ToastModule,
         NgIf,
@@ -45,7 +44,7 @@ import { CreateDigitalServicesSidebarComponent } from "./create-digital-services
         CreateDigitalServicesSidebarComponent,
         AsyncPipe,
         TranslatePipe,
-    ],
+    ]
 })
 export class DigitalServicesComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);
