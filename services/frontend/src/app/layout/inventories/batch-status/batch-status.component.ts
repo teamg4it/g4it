@@ -5,9 +5,13 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { CommonModule } from "@angular/common";
 import { Component, inject, Input, OnInit } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
+import { ButtonModule } from "primeng/button";
+import { ToastModule } from "primeng/toast";
+import { TooltipModule } from "primeng/tooltip";
 import { Subject, takeUntil } from "rxjs";
 import { Workspace } from "src/app/core/interfaces/user.interfaces";
 import { FileSystemBusinessService } from "src/app/core/service/business/file-system.service";
@@ -17,7 +21,9 @@ import { Constants } from "src/constants";
 
 @Component({
     selector: "app-batch-status",
-    templateUrl: "./batch-status.component.html"
+    templateUrl: "./batch-status.component.html",
+    standalone: true,
+    imports: [CommonModule, TranslateModule, ToastModule, ButtonModule, TooltipModule]
 })
 export class BatchStatusComponent implements OnInit {
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);

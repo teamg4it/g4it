@@ -10,8 +10,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
 import { FileUploadModule } from "primeng/fileupload";
+import { SelectModule } from "primeng/select";
 
 import { CommonModule } from "@angular/common";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
@@ -29,7 +29,7 @@ describe("SelectFileComponent", () => {
         ReactiveFormsModule,
         HttpClientTestingModule,
         FileUploadModule,
-        DropdownModule,
+        SelectModule,
         ButtonModule,
         FormsModule,
         TranslateModule.forRoot(),

@@ -5,9 +5,9 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
+import { SelectModule } from "primeng/select";
 import { UserService } from "src/app/core/service/business/user.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
@@ -29,7 +29,7 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
         SharedModule,
         ReactiveFormsModule,
         ButtonModule,
-        DropdownModule,
+        SelectModule,
         InputNumberModule,
         InputTextModule,
         HttpClientTestingModule,

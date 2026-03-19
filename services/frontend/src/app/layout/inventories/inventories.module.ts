@@ -8,15 +8,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { AccordionModule } from "primeng/accordion";
 import { ButtonModule } from "primeng/button";
-import { CalendarModule } from "primeng/calendar";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { DatePickerModule } from "primeng/datepicker";
 import { DividerModule } from "primeng/divider";
-import { DropdownModule } from "primeng/dropdown";
+import { DrawerModule } from "primeng/drawer";
 import { FileUploadModule } from "primeng/fileupload";
 import { InputTextModule } from "primeng/inputtext";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { SidebarModule } from "primeng/sidebar";
+import { SelectModule } from "primeng/select";
 import { ToastModule } from "primeng/toast";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { BatchStatusComponent } from "./batch-status/batch-status.component";
@@ -30,27 +30,27 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
 @NgModule({
     declarations: [
         InventoriesComponent,
-        InventoryItemComponent,
         FilePanelComponent,
         SelectFileComponent,
-        BatchStatusComponent,
-        EquipmentsCardComponent,
     ],
     imports: [
         FileUploadModule,
-        CalendarModule,
+        DatePickerModule,
         DividerModule,
         ToastModule,
         SharedModule,
         ButtonModule,
-        SidebarModule,
+        DrawerModule,
         ScrollPanelModule,
         ConfirmPopupModule,
-        DropdownModule,
+        SelectModule,
         AccordionModule,
         ProgressSpinnerModule,
         InputTextModule,
         inventoriesRouter,
+        InventoryItemComponent,
+        BatchStatusComponent,
+        EquipmentsCardComponent,
     ],
     exports: [InventoriesComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

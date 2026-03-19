@@ -13,7 +13,7 @@
     ></app-digital-service-table>
 </div>
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-lg"
@@ -30,5 +30,5 @@
             (deleteTerminals)="deleteItem($event)"
         >
         </app-digital-services-terminals-side-panel>
-    </p-sidebar>
+    </p-drawer>
 }

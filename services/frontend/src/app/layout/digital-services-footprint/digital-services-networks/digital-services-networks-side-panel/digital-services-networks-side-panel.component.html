@@ -55,7 +55,7 @@
     </div>
     <div class="label-input-div">
       <label for="type">{{ "digital-services-networks.type" | translate }}</label>
-      <p-dropdown
+      <p-select
         appendTo="body"
         [options]="digitalServiceStore.networkTypes()"
         optionLabel="value"
@@ -67,7 +67,7 @@
         inputId="type"
         ngDefaultControl
         lang="en"
-      ></p-dropdown>
+      ></p-select>
       @if (networksForm.get('type')?.hasError('required')) {
         <p class="error-text">
           {{ "digital-services-networks.type" | translate }}

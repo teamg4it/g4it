@@ -14,7 +14,7 @@
 </div>
 
 @if (sidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-md"
@@ -31,5 +31,5 @@
             (deleteCloudServices)="deleteCloudServices($event)"
         >
         </app-digital-services-cloud-services-side-panel>
-    </p-sidebar>
+    </p-drawer>
 }

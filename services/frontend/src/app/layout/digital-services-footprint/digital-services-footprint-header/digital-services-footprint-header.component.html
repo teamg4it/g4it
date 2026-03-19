@@ -1,6 +1,6 @@
 <p-toast #toast position="bottom-center"></p-toast>
 @if (sidebarVisible) {
-  <p-sidebar
+  <p-drawer
     [(visible)]="sidebarVisible"
     position="right"
     styleClass="p-sidebar-md w-7"
@@ -17,11 +17,11 @@
       styleClass="mx-7"
       >
     </app-common-editor>
-  </p-sidebar>
+  </p-drawer>
 }
 <!-- Import Sidebar -->
 @if (importSidebarVisible) {
-  <p-sidebar
+  <p-drawer
     [(visible)]="importSidebarVisible"
     position="right"
     styleClass="p-sidebar-lg"
@@ -35,7 +35,7 @@
         (sidebarVisibleChange)="importSidebarVisible = $event"
         />
     </ng-template>
-  </p-sidebar>
+  </p-drawer>
 }
 
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>

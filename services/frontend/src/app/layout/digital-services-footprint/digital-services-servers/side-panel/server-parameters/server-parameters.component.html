@@ -11,7 +11,7 @@
         <label for="host">{{
           "digital-services-servers.host" | translate
         }}</label>
-        <p-dropdown
+        <p-select
           appendTo="body"
           [options]="serverTypes()"
           optionLabel="value"
@@ -29,7 +29,7 @@
           ngDefaultControl
           lang="en"
           [ariaLabel]="'digital-services-servers.host' | translate"
-        ></p-dropdown>
+        ></p-select>
         @if (serverForm.get('type')?.hasError('required')) {
           <p
             class="error-text"
@@ -48,7 +48,7 @@
           "digital-services-servers.datacenter" | translate
         }}</label>
         <div class="flex flex-row">
-          <p-dropdown
+          <p-select
             appendTo="body"
             [options]="datacenterOptions()"
             optionLabel="displayLabel"
@@ -60,7 +60,7 @@
             ngDefaultControl
             inputId="datacenter"
             [ariaLabel]="'digital-services-servers.datacenter' | translate"
-          ></p-dropdown>
+          ></p-select>
           @if (serverForm.get('type')?.hasError('required')) {
             <p
               class="error-text"
@@ -79,7 +79,7 @@
             </p-button>
           }
           @if (addSidebarVisible) {
-            <p-sidebar
+            <p-drawer
               [visible]="true"
               position="right"
               styleClass="p-sidebar-lg"
@@ -93,7 +93,7 @@
                 (serverChange)="addDatacenter($event)"
                 >
               </app-panel-datacenter>
-            </p-sidebar>
+            </p-drawer>
           }
         </div>
       </div>

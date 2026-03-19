@@ -7,7 +7,7 @@
     class="h-2rem border-top-2 border-primary p-0 mt-1"
     style="color: lightgray"
   ></div>
-  <p-dropdown
+  <p-select
     appendTo="body"
     [options]="workspacelist"
     optionLabel="displayLabel"
@@ -249,7 +249,7 @@
       </p-scrollPanel>
     }
     @if (sidebarVisible) {
-      <p-sidebar
+      <p-drawer
         [(visible)]="sidebarVisible"
         [style]="{ width: '35%' }"
         position="right"
@@ -266,7 +266,7 @@
           [clearForm]="clearForm"
           [updateOrganizationEnable]="!sidebarCreateMode"
         ></app-add-workspace>
-      </p-sidebar>
+      </p-drawer>
     }
     <div class="card flex justify-content-center gap-2">
       <p-toast></p-toast>

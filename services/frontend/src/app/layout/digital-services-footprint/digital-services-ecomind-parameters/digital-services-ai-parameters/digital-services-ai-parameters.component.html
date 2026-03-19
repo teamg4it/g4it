@@ -14,11 +14,11 @@
           <label for="modelInput">{{
             "digital-services-ai-parameter.model" | translate
           }}</label>
-          <p-dropdown
+          <p-select
             [options]="modelOptions"
             formControlName="modelName"
             placeholder="Select model"
-          ></p-dropdown>
+          ></p-select>
           @if (
             terminalsForm.get('modelName')?.invalid &&
             terminalsForm.get('modelName')?.touched
@@ -37,11 +37,11 @@
           <label for="parameterInput">{{
             "digital-services-ai-parameter.parameter" | translate
           }}</label>
-          <p-dropdown
+          <p-select
             [options]="parameterOptions"
             formControlName="nbParameters"
             placeholder="Select parameter"
-          ></p-dropdown>
+          ></p-select>
           @if (
             terminalsForm.get('nbParameters')?.invalid &&
             terminalsForm.get('nbParameters')?.touched
@@ -60,11 +60,11 @@
           <label for="frameworkInput">{{
             "digital-services-ai-parameter.framework" | translate
           }}</label>
-          <p-dropdown
+          <p-select
             [options]="frameworkOptions"
             formControlName="framework"
             placeholder="Select framework"
-          ></p-dropdown>
+          ></p-select>
           @if (
             terminalsForm.get('framework')?.invalid &&
             terminalsForm.get('framework')?.touched
@@ -83,11 +83,11 @@
           <label for="quantizationInput">{{
             "digital-services-ai-parameter.quantization" | translate
           }}</label>
-          <p-dropdown
+          <p-select
             [options]="quantizationOptions"
             formControlName="quantization"
             placeholder="Select quantization"
-          ></p-dropdown>
+          ></p-select>
           @if (
             terminalsForm.get('quantization')?.invalid &&
             terminalsForm.get('quantization')?.touched

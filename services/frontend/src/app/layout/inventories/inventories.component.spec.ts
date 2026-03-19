@@ -14,24 +14,24 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { AccordionModule } from "primeng/accordion";
+import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
-import { DropdownModule } from "primeng/dropdown";
+import { DrawerModule } from "primeng/drawer";
 import { FileUploadModule } from "primeng/fileupload";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { SidebarModule } from "primeng/sidebar";
+import { SelectModule } from "primeng/select";
 import { ToastModule } from "primeng/toast";
 import { Observable, from, of } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { MonthYearPipe } from "src/app/core/pipes/monthyear.pipe";
+import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { FilePanelComponent } from "./file-panel/file-panel.component";
 import { InventoriesComponent } from "./inventories.component";
-import { UserService } from "src/app/core/service/business/user.service";
-import { MessageService } from "primeng/api";
 
 @Injectable()
 class InventoryServiceMock extends InventoryDataService {
@@ -53,11 +53,11 @@ describe("InventoryComponent", () => {
         ToastModule,
         ButtonModule,
         AccordionModule,
-        SidebarModule,
+        DrawerModule,
         ScrollPanelModule,
         ProgressSpinnerModule,
         ConfirmPopupModule,
-        DropdownModule,
+        SelectModule,
         BrowserAnimationsModule,
         FileUploadModule,
         TranslateModule.forRoot(),

@@ -6,10 +6,14 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, Input, OnInit } from "@angular/core";
+import { TranslateModule } from "@ngx-translate/core";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 @Component({
     selector: "app-equipments-card",
-    templateUrl: "./equipments-card.component.html"
+    templateUrl: "./equipments-card.component.html",
+    standalone: true,
+    imports: [TranslateModule, DecimalsPipe]
 })
 export class EquipmentsCardComponent implements OnInit {
     @Input() type: string = "";

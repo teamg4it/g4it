@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import {
     Component,
     EventEmitter,
@@ -6,7 +7,11 @@ import {
     Output,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { FormsModule } from "@angular/forms";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { ButtonModule } from "primeng/button";
+import { CheckboxModule } from "primeng/checkbox";
+import { DialogModule } from "primeng/dialog";
 import {
     OrganizationCriteriaRest,
     WorkspaceCriteriaRest,
@@ -21,6 +26,15 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 @Component({
     selector: "app-criteria-popup",
     templateUrl: "./criteria-popup.component.html",
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        TranslateModule,
+        DialogModule,
+        CheckboxModule,
+        ButtonModule,
+    ],
     providers: [MonthYearPipe]
 })
 export class CriteriaPopupComponent implements OnChanges {
