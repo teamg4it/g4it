@@ -106,7 +106,9 @@ public class DataDeletionService {
         String combinedSubject = emailSubjectEn + " / " + emailSubjectFr;
         // Combine both English and French content with custom formatting
         String combinedBody = emailContentEn + "\n\n" + emailContentFr;
-        azureEmailService.sendEmail(recipientEmail, combinedSubject, combinedBody);
+        azureEmailService.sendEmail("fabien.lamire@soprasteria.com", combinedSubject, combinedBody);
+        azureEmailService.sendEmail("gauri.airi@soprasteria.com", combinedSubject, combinedBody);
+       // azureEmailService.sendEmail(recipientEmail, combinedSubject, combinedBody);
     }
 
     private int handleInventoryDeletion(Workspace workspaceEntity, String organization, Long workspaceId, Integer retentionDay, LocalDateTime now) {
