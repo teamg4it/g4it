@@ -13,6 +13,7 @@ import {
     ApplicationImpact,
     Criterias,
     Impact,
+    RepartitionImpact,
 } from "src/app/core/interfaces/footprint.interface";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
@@ -155,12 +156,21 @@ export class FootprintService {
         filters: Filter,
         selectedView: string,
         filterFields: string[],
-    ): { footprintCalculated: FootprintCalculated[]; criteriaCountMap: StatusCountMap } {
+    ): {
+        footprintCalculated: FootprintCalculated[];
+        criteriaCountMap: StatusCountMap;
+        impactsWithMaxDimensions: RepartitionImpact[];
+    } {
         if (footprint === undefined)
-            return { footprintCalculated: [], criteriaCountMap: {} };
+            return {
+                footprintCalculated: [],
+                criteriaCountMap: {},
+                impactsWithMaxDimensions: [],
+            };
 
         const footprintCalculated: FootprintCalculated[] = [];
         const criteriaCountMap: StatusCountMap = {};
+        let impactsWithMaxDimensions = [];
 
         const order = LifeCycleUtils.getLifeCycleList();
         const lifeCycleMap = LifeCycleUtils.getLifeCycleMap();
@@ -192,6 +202,22 @@ export class FootprintService {
                       }
                       return isPresent;
                   });
+
+            const { impact, sip } = filteredImpacts.reduce(
+                (sum, current) => this.addImpact(sum, current),
+                {
+                    impact: 0,
+                    sip: 0,
+                },
+            );
+            impactsWithMaxDimensions.push({
+                name: transformCriterion(footprint[criteria].label),
+                title: this.translate.instant(`criteria.${criteria}`).title,
+                unite: this.translate.instant(`criteria.${criteria}`).unite,
+                raw: impact,
+                peopleeq: sip,
+                maxCriteria: this.findMaxRepartition(filteredImpacts, selectedView),
+            });
 
             criteriaCountMap[criteria] = {
                 status: {
@@ -262,8 +288,50 @@ export class FootprintService {
             // Sort by alphabetical order
             footprintCalculated.sort((a: any, b: any) => a.data.localeCompare(b.data));
         }
+        const filterAllImpactsWithMax = [...impactsWithMaxDimensions]
+            .sort((a, b) => b.peopleeq - a.peopleeq)
+            .slice(0, 3);
+        return {
+            footprintCalculated,
+            criteriaCountMap,
+            impactsWithMaxDimensions: filterAllImpactsWithMax,
+        };
+    }
+    findMaxRepartition(filteredImpacts: Impact[], selectedView: string) {
+        if (!filteredImpacts || filteredImpacts.length === 0) {
+            return {
+                name: Constants.EMPTY,
+                peopleeq: 0,
+                raw: 0,
+            };
+        }
 
-        return { footprintCalculated, criteriaCountMap };
+        const groupedByDimension = new Map<string, SumImpact>();
+
+        // Reuse setGroupedSumImpacts to group impacts by selectedView dimension
+        this.setGroupedSumImpacts(filteredImpacts, selectedView, groupedByDimension);
+        // Find the dimension with maximum peopleeq (sip)
+        let maxDimension = Constants.EMPTY;
+        let maxSumImpact: SumImpact = { impact: 0, sip: 0 };
+
+        for (const [dimension, sumImpact] of groupedByDimension) {
+            if (sumImpact.sip > maxSumImpact.sip) {
+                maxSumImpact = sumImpact;
+                maxDimension =
+                    selectedView === Constants.ACV_STEP
+                        ? this.translate.instant(
+                              "acvStep." +
+                                  LifeCycleUtils.getLifeCycleMap().get(dimension),
+                          )
+                        : dimension;
+            }
+        }
+
+        return {
+            name: Constants.EMPTY === maxDimension ? "Empty" : maxDimension,
+            peopleeq: maxSumImpact.sip,
+            raw: maxSumImpact.impact,
+        };
     }
 
     checkIfEmpty(input: string): string {

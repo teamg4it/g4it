@@ -71,4 +71,9 @@
             </p>
         </div>
     }
+    <app-graph-description
+        [contentText]="getContentText()"
+        [textDescriptionImpacts]="textDescriptionImpacts"
+        (impactSelectedEvent)="handleImpactClick($event)"
+    ></app-graph-description>
 }

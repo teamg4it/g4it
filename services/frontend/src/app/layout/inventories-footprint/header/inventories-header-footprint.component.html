@@ -1,24 +1,23 @@
 <p-toast #toast position="bottom-center"></p-toast>
 <div class="flex justify-content-between align-items-center flex-wrap">
-    <div>
+    <div class="flex align-items-center">
         <p-button
-            styleClass="color-tertiary text-2xl font-semibold p-2"
             [routerLink]="changePageToInventories()"
-            [text]="true"
+            styleClass="cancel-creation-button uppercase mr-2 mb-2 lg:mb-0"
             [ariaLabel]="'inventories.return' | translate"
             icon="pi pi-arrow-left"
-            [label]="
-                'inventories.title' | translate: { WorkspaceName: selectedWorkspace }
-            "
+            [label]="'digital-services.back' | translate"
             id="my-is-return-button"
         />
-        <h1 *ngIf="inventory.type === types.INFORMATION_SYSTEM" class="px-2">
-            {{ (inventory.name | monthYear) + " - " + indicatorType }}
-        </h1>
-        <h1 *ngIf="inventory.type === types.SIMULATION" class="px-2">
-            {{ inventory.name + " - " + indicatorType }}
+        <h1 class="px-2 inline text-xl px-2 color-black-seventy lg:text-4xl">
+            @if (inventory.type === types.INFORMATION_SYSTEM) {
+                {{ inventory.name | monthYear }}
+            } @else {
+                {{ inventory.name }}
+            }
         </h1>
     </div>
+
     <div>
         <p-button
             *ngIf="!inventory.note && (userService.isAllowedInventoryWrite$ | async)"
@@ -53,6 +52,7 @@
             [label]="'inventories-footprint.header.export' | translate"
         />
     </div>
+
     @if (sidebarVisible) {
         <p-sidebar
             [(visible)]="sidebarVisible"
@@ -75,4 +75,7 @@
         </p-sidebar>
     }
 </div>
+<h2 class="text-2xl">
+    {{ "inventories.visualisation" | translate: { indicatorType: indicatorType } }}
+</h2>
 <p-confirmPopup ariaCloseLabel="close" [style]="{ width: '450px' }"></p-confirmPopup>

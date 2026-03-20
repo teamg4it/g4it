@@ -9,7 +9,10 @@ import { Component, computed, inject, input, Input, signal, Signal } from "@angu
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
+import {
+    GraphDescriptionContent,
+    StatusCountMap,
+} from "src/app/core/interfaces/digital-service.interfaces";
 import {
     ConstantApplicationFilter,
     Filter,
@@ -60,6 +63,11 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     appCount: number = 0;
     dimensions = Constants.APPLICATION_DIMENSIONS;
     selectedDimension = signal(this.dimensions[0]);
+    textDescriptionImpacts: {
+        text: string;
+        impactName: string;
+        impactNameVisible: string;
+    }[] = [];
 
     applicationStats = computed<Stat[]>(() => {
         const localFootprint = this.appComponent.formatLifecycleImpact(this.footprint);
@@ -90,12 +98,13 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         };
         delete filtersWithSubdomain["domain"];
 
-        const { footprintCalculated, criteriaCountMap } = this.footprintService.calculate(
-            criteriaFootprint,
-            filtersWithSubdomain,
-            this.selectedDimension(),
-            filFields,
-        );
+        const { footprintCalculated, criteriaCountMap, impactsWithMaxDimensions } =
+            this.footprintService.calculate(
+                criteriaFootprint,
+                filtersWithSubdomain,
+                this.selectedDimension(),
+                filFields,
+            );
 
         // sort footprint by criteria
         for (const data of footprintCalculated) {
@@ -127,6 +136,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 ),
             },
             criteriasCount: sortedCriteriaCountMap,
+            impactsWithMaxDimensions,
         };
     });
 
@@ -348,5 +358,90 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         }
 
         return result;
+    }
+
+    getContentText = computed((): GraphDescriptionContent => {
+        let translationKey: string;
+        let textDescription: string = "";
+        let textResourceDescription: string = "";
+
+        translationKey = "ds-graph-description.global-vision.";
+
+        textDescription = this.getTextDescription(
+            translationKey,
+            this.criteriaCalculated(),
+        );
+        return {
+            description: this.translate.instant(`${translationKey}description`, {
+                criteria: this.footprint
+                    .map(
+                        (impact) =>
+                            this.translate.instant(`criteria.${impact.criteria}`).title,
+                    )
+                    .join(", "),
+                module: this.translate.instant("ds-graph-module.inventory"),
+            }),
+            scale: this.translate.instant(`${translationKey}scale`),
+            textDescription: textDescription,
+            textResourceDescription: textResourceDescription,
+            analysis: this.translate.instant(`${translationKey}analysis`, {
+                module: this.translate.instant("ds-graph-module.inventory"),
+            }),
+            toGoFurther: this.translate.instant(
+                `${translationKey}inventory-to-go-further`,
+            ),
+        };
+    });
+
+    getTextDescription(
+        translationKey: string,
+        criteriaCalculated: CriteriaCalculated,
+    ): string {
+        let textDescription = "";
+        let textImpacts = [];
+        const firstPrefix = this.translate.instant(
+            `${translationKey}text-description-first-prefix`,
+        );
+        const iteratePrefix = this.translate.instant(
+            `${translationKey}text-description-iterate-prefix`,
+        );
+        for (const [
+            index,
+            impact,
+        ] of criteriaCalculated?.impactsWithMaxDimensions?.entries() ?? []) {
+            const prefix = index === 0 ? firstPrefix : iteratePrefix;
+
+            if (index === 0) {
+                textDescription += this.translate.instant(
+                    `${translationKey}text-description`,
+                );
+            }
+            textImpacts.push({
+                text:
+                    prefix +
+                    this.translate.instant(`${translationKey}text-description-iterate`, {
+                        impactName: impact.title,
+                        impactValue: this.integerPipe.transform(impact.peopleeq),
+                        resource: impact.maxCriteria.name,
+                        resourceValue: this.integerPipe.transform(
+                            impact.maxCriteria.peopleeq,
+                        ),
+                        rawValue: this.decimalsPipe.transform(impact.raw),
+                        unit: impact.unite,
+                        resourceRawValue: this.decimalsPipe.transform(
+                            impact.maxCriteria.raw,
+                        ),
+                        resourceUnit: impact.unite,
+                    }),
+                impactName: impact.name,
+                impactNameVisible: impact.title,
+            });
+        }
+        this.textDescriptionImpacts = textImpacts;
+        return textDescription;
+    }
+
+    handleImpactClick(impactName: any) {
+        this.onChartClick({ name: impactName });
     }
 }

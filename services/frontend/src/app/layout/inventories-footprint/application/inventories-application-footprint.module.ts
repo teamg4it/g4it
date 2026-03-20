@@ -11,6 +11,7 @@ import { ImageModule } from "primeng/image";
 import { OverlayModule } from "primeng/overlay";
 import { TabMenuModule } from "primeng/tabmenu";
 import { TreeSelectModule } from "primeng/treeselect";
+import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
 import { IndicatorSectionComponent } from "../../common/indicator-section/indicator-section.component";
@@ -46,6 +47,7 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
         ImpactButtonComponent,
         ConfigureViewFiltersComponent,
         IndicatorSectionComponent,
+        SharedChartsModule,
     ],
     exports: [InventoriesApplicationFootprintComponent],
 })

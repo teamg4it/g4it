@@ -12,6 +12,22 @@ export interface CriteriaCalculated {
     hasError: boolean;
     total: SumImpact;
     criteriasCount?: StatusCountMap;
+    impactsWithMaxDimensions?: RepartitionImpact[];
+}
+
+export interface RepartitionMaxCriteria {
+    name: string;
+    peopleeq: number;
+    raw: number;
+}
+
+export interface RepartitionImpact {
+    name: string;
+    title: string;
+    unite: string;
+    raw: number;
+    peopleeq: number;
+    maxCriteria: RepartitionMaxCriteria;
 }
 
 export interface FootprintCalculated {
@@ -208,6 +224,19 @@ export interface ImpactGraph {
     apps: string[];
     lifecycle: string;
     status: StatusCount;
+    repartYaxis?: {
+        [key: string]: RepartitionYAxisKeys;
+    };
+}
+
+export interface RepartitionYAxisKeys {
+    sip: number;
+    raw: number;
+    apps: string[];
+    subDomain: string[];
+    cluster?: string;
+    environment?: string;
+    equipment?: string;
 }
 
 export interface ApplicationCriteriaFootprint {
