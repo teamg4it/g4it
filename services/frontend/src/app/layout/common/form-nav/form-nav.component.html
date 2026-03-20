@@ -1,6 +1,6 @@
 @if (spaceDetails && spaceDetails["menu"] && (getValidMenu().length > 1 || onlyOneNav)) {
-    <ul class="space-menu w-18rem h-full">
-        @for (spaceMenu of spaceDetails["menu"]; track $index; let panelIndex = $index) {
+<ul class="space-menu h-full">
+            @for (spaceMenu of spaceDetails["menu"]; track $index; let panelIndex = $index) {
             @if (!spaceMenu["hidden"]) {
                 <li
                     [id]="'space-menu-item-' + panelIndex"

@@ -39,6 +39,11 @@ export default class PanelDatacenterComponent {
   return this.userService.isAllowedDigitalServiceWrite$;
 }
 
+@Input() showInternalButtons = true;
+get hideInternalButtons() {
+  return !this.showInternalButtons;
+}
+
     countries = computed(() => {
         const countryList = [];
         const countryMap = this.digitalServiceStore.countryMap();
@@ -80,16 +85,18 @@ export default class PanelDatacenterComponent {
     }
 
     submitFormData() {
-        if (!this.isToLow) {
-            let datacenter: ServerDC = {
-                name: this.datacenterForm.value.name?.trim() || "",
-                location: this.datacenterForm.value.country || "",
-                pue: this.datacenterForm.value.pue || 1,
-            };
-            this.serverChange.emit(datacenter);
-            this.close();
-        }
-    }
+  if (!this.isToLow) {
+    const datacenter: ServerDC = {
+      name: this.datacenterForm.value.name?.trim() || "",
+      location: this.datacenterForm.value.country || "",
+      pue: this.datacenterForm.value.pue || 1,
+      displayLabel: `${this.datacenterForm.value.name} (${this.datacenterForm.value.country} - PUE = ${this.datacenterForm.value.pue ?? 1})`,
+      uid: "" as any,
+    };
+    this.serverChange.emit(datacenter);
+    this.close();
+  }
+}
 
     close() {
         this.datacenterForm = this.initForm();
