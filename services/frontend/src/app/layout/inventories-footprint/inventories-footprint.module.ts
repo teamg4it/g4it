@@ -17,6 +17,7 @@ import { TabMenuModule } from "primeng/tabmenu";
 import { TabViewModule } from "primeng/tabview";
 import { ToastModule } from "primeng/toast";
 import { InventoryUtilService } from "src/app/core/service/business/inventory-util.service";
+import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { ImpactAggregateInfosComponent } from "src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component";
 import { ConfigureViewFiltersComponent } from "../common/configure-view-filters/configure-view-filters.component";
@@ -38,6 +39,7 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
     ],
     imports: [
         SharedModule,
+        SharedChartsModule,
         ButtonModule,
         TabMenuModule,
         TabViewModule,
