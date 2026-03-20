@@ -28,6 +28,32 @@ export class DigitalServiceTableComponent {
     @Input() compareMode = false;
     @Input() paginator = true;
     @Input() hideActions = false;
+    selectAll = false;
+
+@Output() selectAllChange = new EventEmitter<boolean>();
+
+toggleSelectAll() {
+  this.selectAll = !this.selectAll;
+
+  if (this.data) {
+    this.data.forEach(item => {
+      item.selected = this.selectAll;
+    });
+  }
+
+  this.selectAllChange.emit(this.selectAll);
+}
+
+updateSelectAllState() {
+  if (!this.data?.length) {
+    this.selectAll = false;
+    return;
+  }
+
+  const allSelected = this.data.every(item => item.selected);
+  const hasSome = this.data.some(item => item.selected);
+  this.selectAll = allSelected && hasSome;
+}
 
 
 

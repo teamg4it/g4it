@@ -34,6 +34,9 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
     @Output() sidebarVisible: EventEmitter<boolean> = new EventEmitter();
 
     networksForm!: FormGroup;
+    @Input() onlyQuantityEditable = false;
+    @Input() editableFields: string[] = [];
+
 
     constructor(
         private readonly _formBuilder: FormBuilder,
@@ -72,6 +75,24 @@ ngOnInit() {
       yearlyQuantityOfGbExchanged: this.network.yearlyQuantityOfGbExchanged,
     });
   }
+  if (this.onlyQuantityEditable) {
+  this.networksForm.get('name')?.disable();
+  this.networksForm.get('type')?.disable();
+    this.networksForm.get('name')?.updateValueAndValidity();
+    this.networksForm.get('type')?.updateValueAndValidity();
+}
+  this.applyEditableFields();
+}
+private applyEditableFields() {
+  const controls = this.networksForm.controls;
+
+  Object.keys(controls).forEach((key) => {
+    if (this.editableFields.length && !this.editableFields.includes(key)) {
+      controls[key].disable({ emitEvent: false });
+    } else {
+      controls[key].enable({ emitEvent: false });
+    }
+  });
 }
     
 

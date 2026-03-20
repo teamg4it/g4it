@@ -83,7 +83,7 @@
                     name="country"
                     inputId="country"
                     ngDefaultControl
-                    lang="en"
+                    lang="en" 
                 />
                 <p
                     class="error-text"
@@ -94,7 +94,7 @@
                 </p>
             </div>
         </div>
-        <div class="button-bottom-right">
+        <div class="button-bottom-right" *ngIf="!hideInternalButtons">
             <div
                 class="error-text block"
                 *ngIf="datacenterForm.hasError('xssDetected') && datacenterForm.dirty"

@@ -25,7 +25,7 @@
         class="terminal-grid-form"
         (ngSubmit)="submitFormData()"
     >
-        <div class="label-input-div">
+        <div class="label-input-div" *ngIf="!onlyQuantityEditable">
             <label for="terminalName">{{
                 "digital-services-servers.name" | translate
             }}</label>
@@ -50,7 +50,7 @@
                 {{ "digital-services-networks.error.network-already-exists" | translate }}
             </p>
         </div>
-        <div class="label-input-div">
+        <div class="label-input-div" *ngIf="!onlyQuantityEditable">
             <label for="type">{{ "digital-services-networks.type" | translate }}</label>
             <p-dropdown
                 appendTo="body"
@@ -70,7 +70,7 @@
                 {{ "common.mandatory" | translate }}
             </p>
         </div>
-        <div class="label-input-div">
+        <div class="label-input-div" >
             <label for="yearlyQuantityOfGbExchanged">{{
                 "digital-services-networks.yearly-go" | translate
             }}</label>

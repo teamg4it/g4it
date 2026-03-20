@@ -31,8 +31,16 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
   @Input() dsVersionUid!: string;
   addSidebarVisible: boolean = false;
   selectedMenuIndex: number | null = 0;
+  selectedCategoryIndex: number = 0;
   digitalServiceStore = inject(DigitalServiceStoreService);
-      datacenterOptions!: Signal<ServerDC[]>;
+  datacenterOptions!: Signal<ServerDC[]>;
+  @Output() close = new EventEmitter<void>();
+  @Input() editableFields: string[] = [];
+
+  closeSidebar() {
+    this.close.emit();
+  }
+
 
 
           current = {
@@ -47,24 +55,34 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
     this.digitalServiceStore.inDatacenters(); 
   }
 
+ 
   addDatacenter(newDc: ServerDC) {
-   
-    const digitalServiceUid = this.digitalServiceStore.digitalService().uid;
-    const datacenterName = `${newDc.name}|${crypto.randomUUID()}`;
   const currentList = this.digitalServiceStore.inDatacenters();
 
+  const datacenterName = `${newDc.name}|${crypto.randomUUID()}`;
   const newDatacenter: InDatacenterRest = {
     ...newDc,
     digitalServiceUid: this.digitalServiceStore.digitalService().uid,
-    displayLabel: `${newDc.name.split("|")[0]} (${newDc.location} - PUE = ${newDc.pue})`,
+    name: datacenterName,
+    displayLabel: `${newDc.name} (${newDc.location} - PUE = ${newDc.pue})`,
   };
 
   this.digitalServiceStore.setInDatacenters([...currentList, newDatacenter]);
 
-  this.addDatacenterVisible = false;
+  this.current.datacenter = {
+    ...newDc,
+    name: datacenterName,
+    displayLabel: `${newDc.name} (${newDc.location} - PUE = ${newDc.pue})`,
+    uid: "" as any
+  };
 
-
+  if (this.editingServer) {
+    this.editingServer.datacenter = this.current.datacenter;
   }
+
+  this.addDatacenterVisible = false;
+}
+
 
 
   importForm!: FormGroup;
@@ -95,7 +113,8 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
     this.importDetails = {
       menu: this.selectedRecommendations.map((r) => ({
         title: r.title,
-        subTitle: r.category,
+        // subTitle: r.category,
+         subTitle: Array.isArray(r.category) ? r.category.join(' | ') : r.category,
         descriptionText: r.description,
         active: false,
         optional: true,
@@ -117,6 +136,7 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
 
   selectTab(index: number) {
     this.selectedMenuIndex = index;
+     this.selectedCategoryIndex = 0; //on remet l'index de la catégorie à 0
     this.importDetails.menu.forEach((m: any, i: number) => {
       m.active = i === index;
     });
@@ -134,12 +154,9 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
       );
       map.set(provider, types);
     }
-    map.forEach((v, k) =>
-    console.log(`Providerelrjhvbezkrhvbjfbkhbe;j: ${v} → ${v.length} types`)
-  );
+    
   this.instanceTypesByProvider.set(map);
   this.instanceTypesLoaded.set(true);
-    console.log('[FINAL] Signal mis à jour — providers chargés :', map.size);
 
   
 }
@@ -156,15 +173,29 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
     }
   }
 
-  get currentRecommendation() {
+  get currentRecommendation(): any{ 
   return this.selectedRecommendations[this.selectedMenuIndex ?? 0];
+}
+
+  get currentCategories(): string[] {
+    const cat = (this.currentRecommendation as any)?.category;
+    return Array.isArray(cat) ? cat : [cat];
+  }
+
+  get currentModifiedCategory(): string{
+    return this.currentCategories[this.selectedCategoryIndex];
+  }
+
+  get recommendationBlocks(): { category: string; index: number }[] {
+  return this.currentCategories.map((cat, i) => ({
+    category: cat,
+    index: i,
+  }));
 }
 
 editingServer: DigitalServiceServerConfig | null = null;
 openServerEditor(server: DigitalServiceServerConfig) {
-  console.log('[PARENT] editEmbedded reçu', server);
   this.editingServer = structuredClone(server);
-  console.log('[PARENT] editingServer set', this.editingServer);
   this.digitalServiceStore.setServer(this.editingServer); 
 }
 
