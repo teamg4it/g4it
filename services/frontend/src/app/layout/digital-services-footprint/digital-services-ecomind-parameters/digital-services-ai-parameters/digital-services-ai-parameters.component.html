@@ -14,11 +14,11 @@
                     <label for="modelInput">{{
                         "digital-services-ai-parameter.model" | translate
                     }}</label>
-                    <p-dropdown
+                    <p-select
                         [options]="modelOptions"
                         formControlName="modelName"
                         placeholder="Select model"
-                    ></p-dropdown>
+                    ></p-select>
                     <p
                         class="error-text"
                         *ngIf="
@@ -36,11 +36,11 @@
                     <label for="parameterInput">{{
                         "digital-services-ai-parameter.parameter" | translate
                     }}</label>
-                    <p-dropdown
+                    <p-select
                         [options]="parameterOptions"
                         formControlName="nbParameters"
                         placeholder="Select parameter"
-                    ></p-dropdown>
+                    ></p-select>
                     <p
                         class="error-text"
                         *ngIf="
@@ -58,11 +58,11 @@
                     <label for="frameworkInput">{{
                         "digital-services-ai-parameter.framework" | translate
                     }}</label>
-                    <p-dropdown
+                    <p-select
                         [options]="frameworkOptions"
                         formControlName="framework"
                         placeholder="Select framework"
-                    ></p-dropdown>
+                    ></p-select>
                     <p
                         class="error-text"
                         *ngIf="
@@ -80,11 +80,11 @@
                     <label for="quantizationInput">{{
                         "digital-services-ai-parameter.quantization" | translate
                     }}</label>
-                    <p-dropdown
+                    <p-select
                         [options]="quantizationOptions"
                         formControlName="quantization"
                         placeholder="Select quantization"
-                    ></p-dropdown>
+                    ></p-select>
                     <p
                         class="error-text"
                         *ngIf="

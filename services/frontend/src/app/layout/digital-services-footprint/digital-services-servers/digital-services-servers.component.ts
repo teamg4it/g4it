@@ -18,6 +18,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
 import { differenceInDays } from "date-fns";
 import { MessageService } from "primeng/api";
+import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import {
     DigitalService,
@@ -35,14 +36,13 @@ import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { DigitalServiceTableComponent } from "../../common/digital-service-table/digital-service-table.component";
-import { SidebarModule } from "primeng/sidebar";
 @Component({
     selector: "app-digital-services-servers",
     templateUrl: "./digital-services-servers.component.html",
     providers: [MessageService],
     imports: [
         DigitalServiceTableComponent,
-        SidebarModule,
+        DrawerModule,
         RouterOutlet,
     ]
 })

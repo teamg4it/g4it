@@ -8,6 +8,7 @@
 import { Component, computed, inject, input, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
+import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalServiceCloudServiceConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
@@ -16,7 +17,6 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { DigitalServiceTableComponent } from "../../common/digital-service-table/digital-service-table.component";
-import { SidebarModule } from "primeng/sidebar";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 
 @Component({
@@ -25,7 +25,7 @@ import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-servic
     providers: [MessageService],
     imports: [
         DigitalServiceTableComponent,
-        SidebarModule,
+        DrawerModule,
         DigitalServicesCloudServicesSidePanelComponent,
     ]
 })

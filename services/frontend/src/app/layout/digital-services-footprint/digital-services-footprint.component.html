@@ -8,21 +8,18 @@
 >
 </app-digital-services-footprint-header>
 @if (!isMobile()) {
-    <p-tabMenu
+    <p-menubar
         [model]="tabItems"
-        [activeItem]="selectedTab"
-        (activeItemChange)="onMenuTabChange($event)"
-        [attr.aria-label]="'common.ds-menu' | translate"
-    ></p-tabMenu>
+    ></p-menubar>
 } @else {
-    <p-dropdown
+    <p-select
         styleClass="w-full my-2"
         [options]="tabItems"
         optionLabel="label"
         [(ngModel)]="selectedTab"
         (onChange)="onTabChange($event.value)"
         [placeholder]="'common.ds-menu' | translate"
-    ></p-dropdown>
+    ></p-select>
 }
 
 <p-scrollPanel

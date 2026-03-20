@@ -6,17 +6,17 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, OnInit } from "@angular/core";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
-import { MenuItem } from "primeng/api";
-import { UserService } from "src/app/core/service/business/user.service";
-import { TabMenuModule } from "primeng/tabmenu";
 import { RouterOutlet } from "@angular/router";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { MenuItem } from "primeng/api";
+import { MenubarModule } from "primeng/menubar";
+import { UserService } from "src/app/core/service/business/user.service";
 
 @Component({
     selector: "app-administration-panel",
     templateUrl: "./administration-panel.component.html",
     imports: [
-        TabMenuModule,
+        MenubarModule,
         RouterOutlet,
         TranslatePipe,
     ]

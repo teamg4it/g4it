@@ -17,9 +17,9 @@ import {
 import { TranslatePipe } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Button } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
+import { SelectModule } from "primeng/select";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
@@ -38,7 +38,7 @@ import { AutofocusDirective } from "../../../../core/directives/auto-focus.direc
         FormsModule,
         ReactiveFormsModule,
         InputTextModule,
-        DropdownModule,
+        SelectModule,
         InputNumberModule,
         Button,
         AsyncPipe,

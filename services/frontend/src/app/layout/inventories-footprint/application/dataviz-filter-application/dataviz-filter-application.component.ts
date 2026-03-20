@@ -13,26 +13,27 @@ import {
     OnChanges,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { PrimeTemplate } from "primeng/api";
 import { CheckboxChangeEvent, CheckboxModule } from "primeng/checkbox";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 
-import { FootprintStoreService } from "src/app/core/store/footprint.store";
-import { Constants } from "src/constants";
-import { OverlayModule } from "primeng/overlay";
-import { TabViewModule } from "primeng/tabview";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { NgFor, NgClass } from "@angular/common";
+import { NgClass, NgFor } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Button } from "primeng/button";
+import { OverlayModule } from "primeng/overlay";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { TabsModule } from "primeng/tabs";
+import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import { Constants } from "src/constants";
 
 @Component({
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
     imports: [
         OverlayModule,
-        TabViewModule,
+        TabsModule,
         ScrollPanelModule,
         NgFor,
         CheckboxModule,
@@ -40,6 +41,7 @@ import { Button } from "primeng/button";
         NgClass,
         Button,
         TranslatePipe,
+        PrimeTemplate,
     ]
 })
 export class DatavizFilterApplicationComponent implements OnChanges {

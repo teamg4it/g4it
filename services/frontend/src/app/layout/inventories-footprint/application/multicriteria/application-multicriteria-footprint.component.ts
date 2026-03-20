@@ -5,10 +5,16 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgIf } from "@angular/common";
 import { Component, computed, inject, input, Input, signal, Signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     ConstantApplicationFilter,
@@ -35,22 +41,16 @@ import {
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
-import { Button } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
-import { PrimeTemplate } from "primeng/api";
-import { NgIf } from "@angular/common";
-import { StackBarChartComponent } from "../../../common/stack-bar-chart/stack-bar-chart.component";
-import { NgxEchartsDirective } from "ngx-echarts";
 
 @Component({
     selector: "app-application-multicriteria-footprint",
     templateUrl: "./application-multicriteria-footprint.component.html",
     imports: [
         Button,
-        DropdownModule,
+        SelectModule,
         FormsModule,
         PrimeTemplate,
         NgIf,

@@ -14,13 +14,13 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 
 import { addDays, differenceInDays } from "date-fns";
 import { MessageService } from "primeng/api";
+import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { InPhysicalEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { UserService } from "src/app/core/service/business/user.service";
 import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in-physical-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { DigitalServiceTableComponent } from "../../common/digital-service-table/digital-service-table.component";
-import { SidebarModule } from "primeng/sidebar";
 import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals-side-panel/digital-services-terminals-side-panel.component";
 @Component({
     selector: "app-digital-services-terminals",
@@ -28,7 +28,7 @@ import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-t
     providers: [MessageService],
     imports: [
         DigitalServiceTableComponent,
-        SidebarModule,
+        DrawerModule,
         DigitalServicesTerminalsSidePanelComponent,
     ]
 })

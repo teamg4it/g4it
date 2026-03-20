@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe } from "@angular/common";
 import {
     Component,
     DestroyRef,
@@ -14,9 +15,16 @@ import {
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormsModule } from "@angular/forms";
 import { Event, NavigationEnd, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
-import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { AccordionModule } from "primeng/accordion";
+import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
+import { InputTextModule } from "primeng/inputtext";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { ToastModule } from "primeng/toast";
 import { Subject, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
@@ -30,17 +38,9 @@ import { InventoryService } from "src/app/core/service/business/inventory.servic
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
-import { FilePanelComponent } from "./file-panel/file-panel.component";
-import { ToastModule } from "primeng/toast";
-import { SidebarModule } from "primeng/sidebar";
 import { CommonEditorComponent } from "../common/common-editor/common-editor.component";
-import { NgIf, NgFor, AsyncPipe } from "@angular/common";
-import { Button } from "primeng/button";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { AccordionModule } from "primeng/accordion";
+import { FilePanelComponent } from "./file-panel/file-panel.component";
 import { InventoryItemComponent } from "./inventory-item/inventory-item.component";
-import { FormsModule } from "@angular/forms";
-import { InputTextModule } from "primeng/inputtext";
 
 @Component({
     selector: "app-inventories",
@@ -48,21 +48,18 @@ import { InputTextModule } from "primeng/inputtext";
     providers: [ConfirmationService, MessageService],
     imports: [
         ToastModule,
-        SidebarModule,
+        DrawerModule,
         FilePanelComponent,
         CommonEditorComponent,
-        NgIf,
         Button,
         ScrollPanelModule,
         AccordionModule,
-        NgFor,
         InventoryItemComponent,
-        PrimeTemplate,
         FormsModule,
         InputTextModule,
         AsyncPipe,
         TranslatePipe,
-    ]
+    ],
 })
 export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);

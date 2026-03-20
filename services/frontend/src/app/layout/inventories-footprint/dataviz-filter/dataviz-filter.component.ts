@@ -13,28 +13,30 @@ import {
     OnChanges,
     SimpleChanges,
 } from "@angular/core";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { FormsModule } from "@angular/forms";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { PrimeTemplate } from "primeng/api";
+import { CheckboxModule } from "primeng/checkbox";
+import { OverlayModule } from "primeng/overlay";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { TabsModule } from "primeng/tabs";
 import { debounceTime, Subject } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { Constants } from "src/constants";
-import { OverlayModule } from "primeng/overlay";
-import { TabViewModule } from "primeng/tabview";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { CheckboxModule } from "primeng/checkbox";
-import { FormsModule } from "@angular/forms";
 
 @Component({
     selector: "dataviz-filter",
     templateUrl: "./dataviz-filter.component.html",
     imports: [
         OverlayModule,
-        TabViewModule,
+        TabsModule,
         ScrollPanelModule,
         CheckboxModule,
         FormsModule,
         TranslatePipe,
+        PrimeTemplate,
     ]
 })
 export class DatavizFilterComponent implements OnChanges {

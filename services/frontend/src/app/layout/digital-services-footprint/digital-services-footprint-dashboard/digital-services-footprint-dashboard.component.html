@@ -197,7 +197,7 @@
 </div>
 
 @if (filterSidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="filterSidebarVisible"
         position="right"
         styleClass="p-sidebar-md w-5"
@@ -211,5 +211,5 @@
                 [selectedUnit]="selectedUnit"
             ></app-configure-view-filters>
         </ng-template>
-    </p-sidebar>
+    </p-drawer>
 }

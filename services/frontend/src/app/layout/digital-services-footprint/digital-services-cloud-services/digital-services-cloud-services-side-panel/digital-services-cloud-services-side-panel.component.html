@@ -60,7 +60,7 @@
                 <label for="cloudProvider" class="text-xs">{{
                     "digital-services-cloud-services.cloud-provider" | translate
                 }}</label>
-                <p-dropdown
+                <p-select
                     appendTo="body"
                     [options]="cloudProviders"
                     styleClass="w-full"
@@ -76,7 +76,7 @@
                         'digital-services-cloud-services.cloud-provider' | translate
                     "
                 >
-                </p-dropdown>
+                </p-select>
                 <p
                     class="error-text"
                     *ngIf="cloudForm.get('cloudProvider')?.hasError('required')"
@@ -89,7 +89,7 @@
                 <label class="text-xs" for="cloudInstance">{{
                     "digital-services-cloud-services.instance-type" | translate
                 }}</label>
-                <p-dropdown
+                <p-select
                     appendTo="body"
                     [options]="instanceTypesByProvider.get(cloud.cloudProvider)"
                     styleClass="w-full"
@@ -107,7 +107,7 @@
                         'digital-services-cloud-services.instance-type' | translate
                     "
                 >
-                </p-dropdown>
+                </p-select>
                 <p
                     class="error-text"
                     *ngIf="cloudForm.get('instanceType')?.hasError('required')"
@@ -150,7 +150,7 @@
                 <label class="text-xs" for="location">{{
                     "digital-services-cloud-services.location" | translate
                 }}</label>
-                <p-dropdown
+                <p-select
                     appendTo="body"
                     [options]="countries"
                     optionLabel="name"
@@ -165,7 +165,7 @@
                     id="location"
                     [ariaLabel]="'digital-services-cloud-services.location' | translate"
                 >
-                </p-dropdown>
+                </p-select>
                 <p
                     class="error-text"
                     *ngIf="cloudForm.get('location')?.hasError('required')"

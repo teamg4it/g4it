@@ -43,7 +43,7 @@
     </div>
 </div>
 @if (addVMPanelVisible) {
-    <p-sidebar
+    <p-drawer
         [visible]="true"
         position="right"
         styleClass="p-sidebar-lg"
@@ -57,5 +57,5 @@
             (addVMPanelVisibleChange)="addVMPanelVisible = $event"
         >
         </app-panel-add-vm>
-    </p-sidebar>
+    </p-drawer>
 }

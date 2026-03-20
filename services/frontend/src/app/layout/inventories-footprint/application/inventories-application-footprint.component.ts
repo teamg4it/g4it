@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass, TitleCasePipe } from "@angular/common";
 import {
     Component,
     computed,
@@ -18,8 +19,11 @@ import {
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MenuItem, PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
+import { ScrollPanelModule } from "primeng/scrollpanel";
 import { finalize, firstValueFrom } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -55,18 +59,14 @@ import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
-import { InventoriesHeaderFootprintComponent } from "../header/inventories-header-footprint.component";
-import { DatavizFilterApplicationComponent } from "./dataviz-filter-application/dataviz-filter-application.component";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { Button } from "primeng/button";
-import { IndicatorSectionComponent } from "../../common/indicator-section/indicator-section.component";
-import { NgClass, TitleCasePipe } from "@angular/common";
-import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
-import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/application-multicriteria-footprint.component";
-import { ApplicationCriteriaFootprintComponent } from "./criteria/application-criteria-footprint.component";
-import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
-import { SidebarModule } from "primeng/sidebar";
 import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
+import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
+import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
+import { IndicatorSectionComponent } from "../../common/indicator-section/indicator-section.component";
+import { InventoriesHeaderFootprintComponent } from "../header/inventories-header-footprint.component";
+import { ApplicationCriteriaFootprintComponent } from "./criteria/application-criteria-footprint.component";
+import { DatavizFilterApplicationComponent } from "./dataviz-filter-application/dataviz-filter-application.component";
+import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/application-multicriteria-footprint.component";
 
 @Component({
     selector: "app-inventories-application-footprint",
@@ -82,7 +82,7 @@ import { ConfigureViewFiltersComponent } from "../../common/configure-view-filte
         ApplicationMulticriteriaFootprintComponent,
         ApplicationCriteriaFootprintComponent,
         CriteriaPopupComponent,
-        SidebarModule,
+        DrawerModule,
         PrimeTemplate,
         ConfigureViewFiltersComponent,
         TitleCasePipe,

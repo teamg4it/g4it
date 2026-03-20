@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgClass, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault, NgTemplateOutlet } from "@angular/common";
 import {
     Component,
     computed,
@@ -20,8 +21,11 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom, lastValueFrom, Subscription } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import {
@@ -58,18 +62,14 @@ import {
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
+import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
+import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
-import { NgSwitch, NgSwitchCase, NgSwitchDefault, NgClass, NgTemplateOutlet, NgIf } from "@angular/common";
-import { Button } from "primeng/button";
-import { ImpactSidebarComponent } from "../../common/impact-sidebar/impact-sidebar.component";
-import { RadialChartComponent } from "./radial-chart/radial-chart.component";
-import { PieChartComponent } from "./pie-chart/pie-chart.component";
 import { GraphDescriptionComponent } from "./graph-description/graph-description.component";
-import { CriteriaPopupComponent } from "../../common/criteria-popup/criteria-popup.component";
-import { SidebarModule } from "primeng/sidebar";
-import { PrimeTemplate } from "primeng/api";
-import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
+import { PieChartComponent } from "./pie-chart/pie-chart.component";
+import { RadialChartComponent } from "./radial-chart/radial-chart.component";
 
 @Component({
     selector: "app-digital-services-footprint-dashboard",
@@ -89,7 +89,7 @@ import { ConfigureViewFiltersComponent } from "../../common/configure-view-filte
         BarChartComponent,
         GraphDescriptionComponent,
         CriteriaPopupComponent,
-        SidebarModule,
+        DrawerModule,
         PrimeTemplate,
         ConfigureViewFiltersComponent,
         TranslatePipe,

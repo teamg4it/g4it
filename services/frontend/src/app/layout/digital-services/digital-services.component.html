@@ -49,7 +49,7 @@
 }
 
 @if (newDsSidebarVisible) {
-    <p-sidebar
+    <p-drawer
         [(visible)]="newDsSidebarVisible"
         position="right"
         styleClass="p-sidebar-md w-10"
@@ -65,5 +65,5 @@
                 [isEcoMindAi]="isEcoMindAi"
             />
         </ng-template>
-    </p-sidebar>
+    </p-drawer>
 }

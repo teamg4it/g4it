@@ -5,11 +5,11 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { AsyncPipe, CommonModule, NgFor, NgIf, UpperCasePipe } from "@angular/common";
+import { AsyncPipe, CommonModule, UpperCasePipe } from "@angular/common";
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { AccordionModule } from "primeng/accordion";
+import { AccordionModule, AccordionPanel } from "primeng/accordion";
 import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
@@ -43,16 +43,15 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
     imports: [
         AccordionModule,
         PrimeTemplate,
-        NgIf,
         Button,
         EquipmentsCardComponent,
-        NgFor,
         BatchStatusComponent,
         ProgressBarModule,
         ConfirmPopupModule,
         CriteriaPopupComponent,
         MonthYearPipe,
         AsyncPipe,
+        AccordionPanel,
         UpperCasePipe,
         TranslatePipe,
         CommonModule,

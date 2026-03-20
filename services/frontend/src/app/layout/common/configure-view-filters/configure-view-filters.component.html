@@ -14,10 +14,10 @@
 
         <!-- Content -->
         <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 150px)' }">
-            <p-accordion [multiple]="true" [activeIndex]="[0, 1]">
+            <p-accordion [multiple]="true" [value]="[0, 1]">
                 <!-- Enable Data Consistency -->
                 <form [formGroup]="formGroup">
-                    <p-accordionTab
+                    <p-accordionpanel
                         headerStyleClass="mt-3 ml-2 h-3rem bg-transparent font-bold"
                         contentStyleClass="bg-transparent pl-2"
                     >
@@ -53,10 +53,10 @@
                                     | translate
                             }}</label>
                         </div>
-                    </p-accordionTab>
+                    </p-accordionpanel>
                     <hr class="mx-3" />
                     <!-- Units Management -->
-                    <p-accordionTab
+                    <p-accordionpanel
                         tabStyleClass="mt-4 bg-transparent"
                         headerStyleClass=" ml-2 h-3rem bg-transparent font-bold"
                         contentStyleClass="bg-transparent pl-2"
@@ -100,7 +100,7 @@
                                 }}</label></p-radioButton
                             >
                         </div>
-                    </p-accordionTab>
+                    </p-accordionpanel>
                 </form>
             </p-accordion>
         </p-scrollPanel>

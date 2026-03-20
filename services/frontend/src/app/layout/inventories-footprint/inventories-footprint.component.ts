@@ -23,8 +23,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MenuItem, PrimeTemplate } from "primeng/api";
 import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
 import { ScrollPanelModule } from "primeng/scrollpanel";
-import { SidebarModule } from "primeng/sidebar";
 import { finalize, firstValueFrom, forkJoin, map } from "rxjs";
 import {
     OrganizationCriteriaRest,
@@ -90,7 +90,7 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
         InventoriesMultiCriteriaFootprintComponent,
         InventoriesCritereFootprintComponent,
         CriteriaPopupComponent,
-        SidebarModule,
+        DrawerModule,
         PrimeTemplate,
         ConfigureViewFiltersComponent,
         TitleCasePipe,

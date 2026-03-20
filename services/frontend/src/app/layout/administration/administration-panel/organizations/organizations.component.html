@@ -1,6 +1,6 @@
 <div>
     <div class="pt-4">
-        <p-dropdown
+        <p-select
             appendTo="body"
             optionLabel="name"
             [style]="{ width: '35%' }"
@@ -11,7 +11,7 @@
             [(ngModel)]="organization"
             id="organizationName"
         >
-        </p-dropdown>
+        </p-select>
 
         @if (organization) {
             <div class="inline-block vertical-align-middle mx-2">

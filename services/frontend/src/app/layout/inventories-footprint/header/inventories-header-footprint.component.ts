@@ -5,11 +5,16 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe, NgIf } from "@angular/common";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { ConfirmPopupModule } from "primeng/confirmpopup";
+import { DrawerModule } from "primeng/drawer";
+import { ToastModule } from "primeng/toast";
 import { Subject, firstValueFrom, takeUntil } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
@@ -19,13 +24,8 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
-import { ToastModule } from "primeng/toast";
-import { Button } from "primeng/button";
-import { NgIf, AsyncPipe } from "@angular/common";
-import { SidebarModule } from "primeng/sidebar";
-import { CommonEditorComponent } from "../../common/common-editor/common-editor.component";
-import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
+import { CommonEditorComponent } from "../../common/common-editor/common-editor.component";
 
 @Component({
     selector: "app-inventories-header-footprint",
@@ -36,7 +36,7 @@ import { MonthYearPipe } from "../../../core/pipes/monthyear.pipe";
         Button,
         RouterLink,
         NgIf,
-        SidebarModule,
+        DrawerModule,
         CommonEditorComponent,
         ConfirmPopupModule,
         AsyncPipe,

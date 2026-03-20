@@ -31,7 +31,7 @@ import {
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Button } from "primeng/button";
-import { CalendarModule } from "primeng/calendar";
+import { DatePickerModule } from "primeng/datepicker";
 import { InputTextModule } from "primeng/inputtext";
 import { RadioButton, RadioButtonModule } from "primeng/radiobutton";
 import { delay, Subject, takeUntil } from "rxjs";
@@ -55,7 +55,7 @@ import { SelectFileComponent } from "./select-file/select-file.component";
         AutofocusDirective,
         FormsModule,
         RadioButtonModule,
-        CalendarModule,
+        DatePickerModule,
         ReactiveFormsModule,
         InputTextModule,
         Button,

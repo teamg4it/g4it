@@ -11,7 +11,7 @@
         />
     }
     @if (!showInconsitencyGraph) {
-        <p-dropdown
+        <p-select
             [options]="dimensions"
             [(ngModel)]="selectedDimension"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
@@ -30,7 +30,7 @@
                     {{ "inventories-footprint.round-button." + dimension | translate }}
                 </div>
             </ng-template>
-        </p-dropdown>
+        </p-select>
     }
 </div>
 @if (showInconsitencyGraph) {

@@ -58,7 +58,7 @@
             <label for="typeInput">{{
                 "digital-services-terminals.type" | translate
             }}</label>
-            <p-dropdown
+            <p-select
                 appendTo="body"
                 [options]="terminalDeviceTypes"
                 optionLabel="value"
@@ -73,7 +73,7 @@
                 lang="en"
                 [ariaLabel]="'digital-services-terminals.type' | translate"
             >
-            </p-dropdown>
+            </p-select>
             <p class="error-text" *ngIf="terminalsForm.get('type')?.hasError('required')">
                 {{ "digital-services-terminals.type" | translate }}
                 {{ "common.mandatory" | translate }}
@@ -83,7 +83,7 @@
             <label for="countryInput">{{
                 "digital-services-terminals.country" | translate
             }}</label>
-            <p-dropdown
+            <p-select
                 appendTo="body"
                 [options]="countries"
                 styleClass="dropdown-terminal"
@@ -99,7 +99,7 @@
                 lang="en"
                 [ariaLabel]="'digital-services-terminals.country' | translate"
             >
-            </p-dropdown>
+            </p-select>
             <p
                 class="error-text"
                 *ngIf="terminalsForm.get('country')?.hasError('required')"

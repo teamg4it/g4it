@@ -9,7 +9,7 @@ import { NgModule } from "@angular/core";
 import { NgxEchartsModule } from "ngx-echarts";
 import { ImageModule } from "primeng/image";
 import { OverlayModule } from "primeng/overlay";
-import { TabMenuModule } from "primeng/tabmenu";
+import { TabsModule } from "primeng/tabs";
 import { TreeSelectModule } from "primeng/treeselect";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { ConfigureViewFiltersComponent } from "../../common/configure-view-filters/configure-view-filters.component";
@@ -26,7 +26,7 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
 @NgModule({
     imports: [
         SharedModule,
-        TabMenuModule,
+        TabsModule,
         OverlayModule,
         TreeSelectModule,
         ImageModule,
@@ -34,7 +34,7 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
             echarts: () => import("echarts"),
         }),
         inventoriesApplicationRouteur,
-        TabMenuModule,
+        TabsModule,
         ImpactButtonComponent,
         ConfigureViewFiltersComponent,
         IndicatorSectionComponent,

@@ -16,7 +16,7 @@ import {
 } from "@angular/core";
 import { addYears } from "date-fns";
 import { MessageService } from "primeng/api";
-import { SidebarModule } from "primeng/sidebar";
+import { DrawerModule } from "primeng/drawer";
 import { firstValueFrom } from "rxjs";
 import {
     DigitalService,
@@ -37,7 +37,7 @@ import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-ne
     providers: [MessageService],
     imports: [
         DigitalServiceTableComponent,
-        SidebarModule,
+        DrawerModule,
         DigitalServicesNetworksSidePanelComponent,
     ]
 })

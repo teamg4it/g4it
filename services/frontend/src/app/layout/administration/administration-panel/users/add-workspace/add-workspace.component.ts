@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { NgIf } from "@angular/common";
 import {
     Component,
     DestroyRef,
@@ -16,9 +17,13 @@ import {
     Output,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { Button } from "primeng/button";
+import { InputTextModule } from "primeng/inputtext";
+import { SelectModule } from "primeng/select";
 import { map, switchMap, take } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import { Role, RoleValue } from "src/app/core/interfaces/roles.interfaces";
@@ -29,11 +34,6 @@ import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
-import { NgIf } from "@angular/common";
-import { InputTextModule } from "primeng/inputtext";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
-import { Button } from "primeng/button";
 
 @Component({
     selector: "app-add-workspace",
@@ -43,7 +43,7 @@ import { Button } from "primeng/button";
         AutofocusDirective,
         NgIf,
         InputTextModule,
-        DropdownModule,
+        SelectModule,
         FormsModule,
         Button,
         TranslatePipe,

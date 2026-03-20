@@ -37,14 +37,16 @@
     }"
     contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
 >
-    <p-tabView>
+    <p-tabpanels>
         @for (tab of tabs; track $index) {
-            <p-tabPanel
-                header="{{
-                    'inventories-footprint.filter-tabs-application.' + tab.field
-                        | translate
-                }}"
+            <p-tabpanel
             >
+                <ng-template pTemplate="header">
+                    {{
+                        'inventories-footprint.filter-tabs-application.' + tab.field
+                            | translate
+                    }}
+                </ng-template>
                 <p-scrollPanel
                     mode="vertical"
                     [style]="{ width: '96%', height: '240px' }"
@@ -161,7 +163,7 @@
                         }
                     </ul>
                 </p-scrollPanel>
-            </p-tabPanel>
+            </p-tabpanel>
         }
-    </p-tabView>
+    </p-tabpanels>
 </p-overlay>

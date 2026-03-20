@@ -54,7 +54,7 @@
         />
     </div>
     @if (sidebarVisible) {
-        <p-sidebar
+        <p-drawer
             [(visible)]="sidebarVisible"
             position="right"
             tabIndex="0"
@@ -72,7 +72,7 @@
                 styleClass="mx-7"
             >
             </app-common-editor>
-        </p-sidebar>
+        </p-drawer>
     }
 </div>
-<p-confirmPopup ariaCloseLabel="close" [style]="{ width: '450px' }"></p-confirmPopup>
+<p-confirmpopup ariaCloseLabel="close" [style]="{ width: '450px' }"></p-confirmpopup>

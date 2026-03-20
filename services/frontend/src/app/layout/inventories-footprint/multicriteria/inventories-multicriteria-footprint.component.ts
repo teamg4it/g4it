@@ -9,7 +9,14 @@ import { Component, Input, Signal, computed, inject, input, signal } from "@angu
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
+import { NgIf } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { TranslatePipe } from "@ngx-translate/core";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     CriteriaCalculated,
@@ -29,22 +36,15 @@ import {
     getLabelFormatter,
 } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
-import { AbstractDashboard } from "../abstract-dashboard";
-import { Button } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
-import { PrimeTemplate } from "primeng/api";
-import { NgIf } from "@angular/common";
 import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
-import { NgxEchartsDirective } from "ngx-echarts";
-import { TranslatePipe } from "@ngx-translate/core";
+import { AbstractDashboard } from "../abstract-dashboard";
 
 @Component({
     selector: "app-inventories-multicriteria-footprint",
     templateUrl: "./inventories-multicriteria-footprint.component.html",
     imports: [
         Button,
-        DropdownModule,
+        SelectModule,
         FormsModule,
         PrimeTemplate,
         NgIf,

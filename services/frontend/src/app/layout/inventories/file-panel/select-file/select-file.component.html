@@ -1,12 +1,12 @@
 <div>
-    <p-dropdown
+    <p-select
         appendTo="body"
         [(ngModel)]="type"
         [options]="fileTypes"
         optionLabel="text"
         styleClass="w-16rem h-3rem"
-    ></p-dropdown>
-    <p-fileUpload
+    ></p-select>
+    <p-fileupload
         #fileUpload
         styleClass="bg-black text-2xs letter-spacing-2 w-15rem mx-2 h-3rem uppercase"
         id="file{{ index }}"
@@ -17,7 +17,7 @@
         [customUpload]="true"
         (onSelect)="onFileChange($event)"
     >
-    </p-fileUpload>
+    </p-fileupload>
     <p-button
         class="mt-1"
         icon="pi pi-times"

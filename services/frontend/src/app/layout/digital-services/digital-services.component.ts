@@ -5,13 +5,18 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { AsyncPipe, NgIf } from "@angular/common";
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
-import { PaginatorState, PaginatorModule } from "primeng/paginator";
+import { Button } from "primeng/button";
+import { DrawerModule } from "primeng/drawer";
+import { PaginatorModule, PaginatorState } from "primeng/paginator";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { ToastModule } from "primeng/toast";
 import { finalize, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
@@ -20,13 +25,8 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { environment } from "src/environments/environment";
-import { ToastModule } from "primeng/toast";
-import { NgIf, AsyncPipe } from "@angular/common";
-import { Button } from "primeng/button";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
-import { SidebarModule } from "primeng/sidebar";
 import { CreateDigitalServicesSidebarComponent } from "./create-digital-services-sidebar/create-digital-services-sidebar.component";
+import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
 
 @Component({
     selector: "app-digital-services",
@@ -39,7 +39,7 @@ import { CreateDigitalServicesSidebarComponent } from "./create-digital-services
         ScrollPanelModule,
         DigitalServicesItemComponent,
         PaginatorModule,
-        SidebarModule,
+        DrawerModule,
         PrimeTemplate,
         CreateDigitalServicesSidebarComponent,
         AsyncPipe,

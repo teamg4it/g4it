@@ -17,9 +17,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Button } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
+import { DrawerModule } from "primeng/drawer";
 import { InputNumberModule } from "primeng/inputnumber";
-import { SidebarModule } from "primeng/sidebar";
+import { SelectModule } from "primeng/select";
 import { firstValueFrom } from "rxjs";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
 import {
@@ -43,10 +43,10 @@ import { PanelDatacenterComponent } from "../add-datacenter/datacenter.component
         AutofocusDirective,
         FormsModule,
         ReactiveFormsModule,
-        DropdownModule,
+        SelectModule,
         NgIf,
         Button,
-        SidebarModule,
+        DrawerModule,
         PanelDatacenterComponent,
         NgClass,
         InputNumberModule,

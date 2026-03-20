@@ -17,8 +17,15 @@ import {
     SimpleChanges,
 } from "@angular/core";
 
+import { NgClass, NgIf } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { TranslatePipe } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { PrimeTemplate } from "primeng/api";
+import { Button } from "primeng/button";
+import { SelectModule } from "primeng/select";
 import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     Criteria,
@@ -36,16 +43,9 @@ import { FootprintService } from "src/app/core/service/business/footprint.servic
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
+import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
 import { AbstractDashboard } from "../abstract-dashboard";
 import { InventoriesFootprintComponent } from "../inventories-footprint.component";
-import { NgClass, NgIf } from "@angular/common";
-import { Button } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
-import { PrimeTemplate } from "primeng/api";
-import { StackBarChartComponent } from "../../common/stack-bar-chart/stack-bar-chart.component";
-import { NgxEchartsDirective } from "ngx-echarts";
-import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "app-inventories-critere-footprint",
@@ -53,7 +53,7 @@ import { TranslatePipe } from "@ngx-translate/core";
     imports: [
         NgClass,
         Button,
-        DropdownModule,
+        SelectModule,
         FormsModule,
         PrimeTemplate,
         NgIf,

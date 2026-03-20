@@ -1,7 +1,11 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
-import { TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
+import { MenubarModule } from "primeng/menubar";
+import { ScrollPanelModule } from "primeng/scrollpanel";
+import { SelectModule } from "primeng/select";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { MapString } from "src/app/core/interfaces/generic.interfaces";
@@ -9,18 +13,14 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { ShareDigitalServiceDataService } from "src/app/core/service/data/share-digital-service-data.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { DigitalServicesFootprintHeaderComponent } from "../digital-services-footprint/digital-services-footprint-header/digital-services-footprint-header.component";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { TabMenuModule } from "primeng/tabmenu";
-import { DropdownModule } from "primeng/dropdown";
-import { FormsModule } from "@angular/forms";
 @Component({
     selector: "app-share-digital-service",
     templateUrl: "./share-digital-service.component.html",
     imports: [
         DigitalServicesFootprintHeaderComponent,
         ScrollPanelModule,
-        TabMenuModule,
-        DropdownModule,
+        MenubarModule,
+        SelectModule,
         FormsModule,
         RouterOutlet,
         TranslatePipe,
