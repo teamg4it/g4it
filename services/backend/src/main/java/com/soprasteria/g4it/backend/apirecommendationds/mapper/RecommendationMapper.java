@@ -9,7 +9,7 @@ package com.soprasteria.g4it.backend.apirecommendation.mapper;
 
 import com.soprasteria.g4it.backend.apirecommendation.modeldb.InstantiatedRecommendation;
 import com.soprasteria.g4it.backend.apirecommendation.modeldb.Recommendation;
-import com.soprasteria.g4it.backend.server.gen.api.dto.EcoRecommendationRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InstantiatedRecommendationRest;
 import org.mapstruct.*;
 
@@ -23,21 +23,21 @@ public interface RecommendationMapper {
 
 
     /**
-     * Map Recommendation entity to EcoRecommendationRest DTO.
+     * Map Recommendation entity to RecommendationDSRest DTO.
      */
-    EcoRecommendationRest toRest(Recommendation recommendation);
+    RecommendationDSRest toRest(Recommendation recommendation);
 
     /**
-     * Map list of Recommendation entities to list of EcoRecommendationRest DTOs.
+     * Map list of Recommendation entities to list of RecommendationDSRest DTOs.
      */
-    List<EcoRecommendationRest> toRestList(List<Recommendation> recommendations);
+    List<RecommendationDSRest> toRestList(List<Recommendation> recommendations);
 
     /**
-     * Map EcoRecommendationRest DTO to Recommendation entity.
+     * Map RecommendationDSRest DTO to Recommendation entity.
      * idRecommendation is ignored on creation (auto-generated).
      */
     @Mapping(target = "idRecommendation", ignore = true)
-    Recommendation toEntity(EcoRecommendationRest ecoRecommendationRest);
+    Recommendation toEntity(RecommendationDSRest recommendationDSRest);
 
     /**
      * Merge updated fields into existing Recommendation entity.

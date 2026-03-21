@@ -12,6 +12,8 @@ import java.util.List;
 public interface RecommendationRepository extends JpaRepository<Recommendation, Long>{
 
     List<Recommendation> findByOrganisationId(Long organisationId);
+    List<Recommendation> findByOrganisationIdIsNull();
+
 
     @Transactional
     @Modifying

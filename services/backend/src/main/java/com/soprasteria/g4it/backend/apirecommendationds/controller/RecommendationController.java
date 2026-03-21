@@ -10,7 +10,7 @@ package com.soprasteria.g4it.backend.apirecommendation.controller;
 //import com.soprasteria.g4it.backend.apirecommendation.business.InstantiatedRecommendationService;
 import com.soprasteria.g4it.backend.apirecommendation.business.RecommendationService;
 import com.soprasteria.g4it.backend.server.gen.api.RecommendationApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.EcoRecommendationRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InstantiatedRecommendationRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +50,7 @@ public class RecommendationController implements RecommendationApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<EcoRecommendationRest>> getRecommendationsByOrganisation(
+    public ResponseEntity<List<RecommendationDSRest>> getRecommendationsByOrganisation(
             final Long organisationId) {
         return ResponseEntity.ok(
                 recommendationService.getRecommendationsByOrganisation(organisationId)
@@ -61,11 +61,11 @@ public class RecommendationController implements RecommendationApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<EcoRecommendationRest> createRecommendation(
+    public ResponseEntity<RecommendationDSRest> createRecommendation(
             final Long organisationId,
-            final EcoRecommendationRest ecoRecommendationRest) {
+            final RecommendationDSRest recommendationDSRest) {
         return new ResponseEntity<>(
-                recommendationService.createRecommendation(organisationId, ecoRecommendationRest),
+                recommendationService.createRecommendation(organisationId, recommendationDSRest),
                 HttpStatus.CREATED
         );
     }
@@ -74,12 +74,12 @@ public class RecommendationController implements RecommendationApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<EcoRecommendationRest> updateRecommendation(
+    public ResponseEntity<RecommendationDSRest> updateRecommendation(
             final Long organisationId,
             final Long recommendationId,
-            final EcoRecommendationRest ecoRecommendationRest) {
+            final RecommendationDSRest recommendationDSRest) {
         return ResponseEntity.ok(
-                recommendationService.updateRecommendation(organisationId, recommendationId, ecoRecommendationRest)
+                recommendationService.updateRecommendation(organisationId, recommendationId, recommendationDSRest)
         );
     }
 

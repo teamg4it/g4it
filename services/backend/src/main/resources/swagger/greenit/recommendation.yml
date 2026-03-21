@@ -59,7 +59,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/EcoRecommendationRest"
+                  $ref: "#/components/schemas/RecommendationDSRest"
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
@@ -77,14 +77,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EcoRecommendationRest"
+              $ref: "#/components/schemas/RecommendationDSRest"
       responses:
         '201':
           description: Recommendation created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EcoRecommendationRest"
+                $ref: "#/components/schemas/RecommendationDSRest"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -107,14 +107,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EcoRecommendationRest"
+              $ref: "#/components/schemas/RecommendationDSRest"
       responses:
         '200':
           description: Recommendation updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EcoRecommendationRest"
+                $ref: "#/components/schemas/RecommendationDSRest"
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -187,7 +187,7 @@ components:
 
   schemas:
 
-    EcoRecommendationRest:
+    RecommendationDSRest:
       description: An eco-design recommendation (RGESN best practice)
       type: object
       required: [ title, category ]
@@ -202,14 +202,18 @@ components:
         description:
           type: string
         category:
-          type: string
-          enum: [ NETWORK, PRIVATE_INFRASTRUCTURE, PUBLIC_CLOUD, TERMINAL ]
+          type: array
+          items:
+            type: string
+            enum: [ NETWORK, PRIVATE_INFRASTRUCTURE, PUBLIC_CLOUD, TERMINAL ]
         affectedAttributes:
           type: string
           description: JSON describing which resource attributes are affected
+          example: "{}"
         heuristicRange:
           type: string
           description: JSON describing the heuristic priority ranges
+          example: "{}"
         baseImpact:
           type: integer
           description: Estimated base impact score of the recommendation
@@ -238,7 +242,7 @@ components:
           type: string
           description: JSON describing the specific resource instances affected in this version
         recommendation:
-          $ref: "#/components/schemas/EcoRecommendationRest"
+          $ref: "#/components/schemas/RecommendationDSRest"
 
     RestError:
       description: Error object
