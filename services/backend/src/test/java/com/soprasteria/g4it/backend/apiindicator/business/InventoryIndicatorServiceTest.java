@@ -140,7 +140,6 @@ class InventoryIndicatorServiceTest {
 
         Long inventoryId = 10L;
         Long taskId = 100L;
-        Long criteriaNumber = 5L;
 
         Task task = new Task();
         task.setId(taskId);

@@ -309,3 +309,25 @@ databaseChangeLog:
                         end if;
                       end;
                       ';
+
+  - changeSet:
+        id: rename-migration-rollback-tables
+        author: G4IT Dev Team
+        preConditions:
+            - onFail: MARK_RAN
+            - tableExists:
+                  tableName: ds_migration_rollback
+            - tableExists:
+                  tableName: dss_migration_rollback
+            - tableExists:
+                  tableName: ds_migration_new_organization_created_rollback
+        changes:
+            - renameTable:
+                  oldTableName: ds_migration_rollback
+                  newTableName: ds_migration_rollback_backup
+            - renameTable:
+                  oldTableName: dss_migration_rollback
+                  newTableName: dss_migration_rollback_backup
+            - renameTable:
+                  oldTableName: ds_migration_new_organization_created_rollback
+                  newTableName: ds_migration_new_organization_created_rollback_backup
