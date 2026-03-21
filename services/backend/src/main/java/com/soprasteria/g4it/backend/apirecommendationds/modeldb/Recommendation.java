@@ -9,6 +9,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import java.util.List;
 
 /**
  * Entity representing the recommendation table.
@@ -34,16 +35,14 @@ public class Recommendation{
     @Column(name = "description")
     private String description;
 
-    // comment gérer le hardCoding des 4 types de catégories différentes ?
-    @Column(name = "category")
-    private String category;
+    @Column(name = "category", columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<String> category;
 
-    // y'a-t-il un vrai type pour "attributes" ?
     @Column(name = "affected_attributes", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private String affectedAttributes;
 
-    // string : c'est un json, peut-etre qu'il faut mettre autre chose ?
     @Column(name = "heuristic_range", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private String heuristicRange;

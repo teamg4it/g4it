@@ -11,12 +11,13 @@ import com.soprasteria.g4it.backend.apirecommendation.mapper.RecommendationMappe
 import com.soprasteria.g4it.backend.apirecommendation.modeldb.Recommendation;
 import com.soprasteria.g4it.backend.apirecommendation.repository.RecommendationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.server.gen.api.dto.EcoRecommendationRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Service handling CRUD operations on eco-design recommendations.
@@ -35,8 +36,13 @@ public class RecommendationService {
      * @param organisationId the organisation id
      * @return list of recommendations
      */
-    public List<EcoRecommendationRest> getRecommendationsByOrganisation(final Long organisationId) {
-        return recommendationMapper.toRestList(recommendationRepository.findByOrganisationId(organisationId));
+    public List<RecommendationDSRest> getRecommendationsByOrganisation(Long organisationId) {
+        List<Recommendation> general_recommendation = recommendationRepository.findByOrganisationIdIsNull();
+        List<Recommendation> organisation_recommendation = recommendationRepository.findByOrganisationId(organisationId);
+        List<Recommendation> all = new ArrayList<>();
+        all.addAll(general_recommendation);
+        all.addAll(organisation_recommendation);
+        return recommendationMapper.toRestList(all);
     }
 
     /**
@@ -53,11 +59,11 @@ public class RecommendationService {
      * Create a new recommendation.
      *
      * @param organisationId        the organisation id
-     * @param ecoRecommendationRest the recommendation to create
+     * @param recommendationDSRest the recommendation to create
      * @return the created recommendation
      */
-    public EcoRecommendationRest createRecommendation(final Long organisationId, final EcoRecommendationRest ecoRecommendationRest) {
-        Recommendation toCreate = recommendationMapper.toEntity(ecoRecommendationRest);
+    public RecommendationDSRest createRecommendation(final Long organisationId, final RecommendationDSRest recommendationDSRest) {
+        Recommendation toCreate = recommendationMapper.toEntity(recommendationDSRest);
         toCreate.setOrganisationId(organisationId);
         return recommendationMapper.toRest(recommendationRepository.save(toCreate));
     }
@@ -67,10 +73,10 @@ public class RecommendationService {
      *
      * @param organisationId        the organisation id
      * @param recommendationId      the recommendation id
-     * @param ecoRecommendationRest the updated data
+     * @param recommendationDSRest the updated data
      * @return the updated recommendation
      */
-    public EcoRecommendationRest updateRecommendation(final Long organisationId, final Long recommendationId, final EcoRecommendationRest ecoRecommendationRest) {
+    public RecommendationDSRest updateRecommendation(final Long organisationId, final Long recommendationId, final RecommendationDSRest recommendationDSRest) {
         Recommendation existing = recommendationRepository.findById(recommendationId)
                 .orElseThrow(() -> new G4itRestException("404",
                         String.format("Recommendation %d not found", recommendationId)));
@@ -80,7 +86,7 @@ public class RecommendationService {
                     String.format("Recommendation %d does not belong to organisation %d", recommendationId, organisationId));
         }
 
-        Recommendation updates = recommendationMapper.toEntity(ecoRecommendationRest);
+        Recommendation updates = recommendationMapper.toEntity(recommendationDSRest);
         recommendationMapper.merge(existing, updates);
         return recommendationMapper.toRest(recommendationRepository.save(existing));
     }
