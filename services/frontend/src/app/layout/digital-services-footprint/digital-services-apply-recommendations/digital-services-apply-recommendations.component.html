@@ -57,11 +57,14 @@
   <!-- Réseaux -->
   <ng-container *ngSwitchCase="'Réseaux'">
     <ng-container *ngIf="!editingNetwork; else editNetworkMode">
-      <app-digital-services-networks
-        [dsVersionUid]="dsVersionUid"
-        [embedded]="true"
-        (editEmbedded)="openNetworkEditor($event)"
-      />
+<app-digital-services-networks
+  [dsVersionUid]="dsVersionUid"
+  [embedded]="true"
+  [networkDataInput]="simulatedNetworks()"
+  (editEmbedded)="openNetworkEditor($event)"
+  (updateEmbedded)="onNetworkSavedFromChild($event)"
+  (deleteEmbedded)="onNetworkDeletedFromChild($event)"
+/>
     </ng-container>
 
     <ng-template #editNetworkMode>
@@ -81,7 +84,7 @@
               },
               yearlyQuantityOfGbExchanged: 0
             }"
-            [networkData]="allNetworks"
+            [networkDataInput]="simulatedNetworks()"
             (update)="onNetworkSaved()"
             (cancel)="closeNetworkEditor()"
             [editableFields]="['yearlyQuantityOfGbExchanged']"
@@ -106,9 +109,12 @@
  <ng-container *ngSwitchCase="'Clouds Publics - IaaS'">
 <ng-container *ngIf="!editingCloud; else editCloudMode">
 <app-digital-services-cloud-services
-[dsVersionUid]="dsVersionUid"
-[embedded]="true"
-(editEmbedded)="openCloudEditor($event)"
+  [dsVersionUid]="dsVersionUid"
+  [embedded]="true"
+  [cloudDataInput]="simulatedCloudServices"
+  (editEmbedded)="openCloudEditor($event)"
+  (updateEmbedded)="onCloudSavedFromChild($event)"
+  (deleteEmbedded)="onCloudDeletedFromChild($event)"
 />
 </ng-container>
 
@@ -179,6 +185,7 @@ styleClass="yellow-button"
       <app-digital-services-servers
         [dsVersionUid]="dsVersionUid"
         [embedded]="true"
+        [serverDataInput]="simulatedServers"
         (editEmbedded)="openServerEditor($event)"
       />
     </ng-container>
@@ -295,6 +302,7 @@ styleClass="yellow-button"
           icon="pi pi-plus-circle"
           label="Créer une nouvelle version"
           styleClass="black-button-sidebar uppercase"
+          (onClick)="createNewVersion()"
         ></p-button>
         }
       </div>

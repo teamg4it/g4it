@@ -11,8 +11,10 @@ import {
     EventEmitter,
     inject,
     input,
+    isSignal,
     OnInit,
     Output,
+    Signal,
     signal,
     ViewChild,
 } from "@angular/core";
@@ -42,6 +44,8 @@ export class DigitalServicesNetworksComponent implements OnInit {
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);
 
     dsVersionUid = input("");
+    @Output() deleteEmbedded = new EventEmitter<DigitalServiceNetworkConfig>();
+@Output() updateEmbedded = new EventEmitter<DigitalServiceNetworkConfig>();
 
     @ViewChild("networkSidePanel", { static: false })
     networkSidePanel!: DigitalServicesNetworksSidePanelComponent;
@@ -53,33 +57,53 @@ export class DigitalServicesNetworksComponent implements OnInit {
 
     headerFields = ["name", "typeCode", "yearlyQuantityOfGbExchanged"];
 
-    networkData = computed(() => {
-        const networkTypes = this.digitalServiceStore.networkTypes();
-        return this.digitalServiceStore
-            .inPhysicalEquipments()
-            .filter((item) => item.type === "Network")
-            .map((item) => {
-                const type = networkTypes.find(
-                    (networkType) => networkType.code === item.model,
-                );
 
-                let yearlyQuantityOfGbExchanged = item.quantity;
-                if (type?.type === "Fixed") {
-                    yearlyQuantityOfGbExchanged = type.annualQuantityOfGo * item.quantity;
-                }
-                return {
-                    creationDate: item.creationDate,
-                    id: item.id,
-                    typeCode: type?.value,
-                    type,
-                    yearlyQuantityOfGbExchanged,
-                    name: item.name,
-                    digitalServiceUid: item.digitalServiceUid,
-                } as DigitalServiceNetworkConfig;
-            });
-    });
 
     embedded = input(false);
+networkDataInput = input<Signal<DigitalServiceNetworkConfig[]> | DigitalServiceNetworkConfig[]>();
+
+networkData = computed(() => {
+  const input = this.networkDataInput();
+
+
+  if (input) {
+    const value = isSignal(input) ? input() : input;
+    return value;
+  }
+
+
+  const networkTypes = this.digitalServiceStore.networkTypes();
+  const result = this.digitalServiceStore
+    .inPhysicalEquipments()
+    .filter((item) => item.type === "Network")
+    .map((item) => {
+      const type = networkTypes.find(
+        (networkType) => networkType.code === item.model
+      );
+
+      let yearlyQuantityOfGbExchanged = item.quantity;
+      if (type?.type === "Fixed") {
+        yearlyQuantityOfGbExchanged = type.annualQuantityOfGo * item.quantity;
+      }
+      return {
+        creationDate: item.creationDate,
+        id: item.id,
+        typeCode: type?.value,
+        type,
+        yearlyQuantityOfGbExchanged,
+        name: item.name,
+        digitalServiceUid: item.digitalServiceUid,
+      } as DigitalServiceNetworkConfig;
+    });
+
+  return result;
+});
+
+get debugNetworkData() {
+  const data = this.networkData();
+  return data;
+}
+
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
@@ -114,16 +138,21 @@ export class DigitalServicesNetworksComponent implements OnInit {
         this.network = { ...event, idFront: index };
             }
 
-    async deleteItem(event: DigitalServiceNetworkConfig) {
-        await firstValueFrom(
-            this.inPhysicalEquipmentsService.delete({
-                id: event.id,
-                digitalServiceVersionUid: this.dsVersionUid(),
-            } as InPhysicalEquipmentRest),
-        );
-        await this.digitalServiceStore.initInPhysicalEquipments(this.dsVersionUid());
-        this.digitalServiceStore.setEnableCalcul(true);
+async deleteItem(event: DigitalServiceNetworkConfig) {
+    if (this.embedded()) {
+        this.deleteEmbedded.emit(event);
+        return;
     }
+
+    await firstValueFrom(
+        this.inPhysicalEquipmentsService.delete({
+            id: event.id,
+            digitalServiceVersionUid: this.dsVersionUid(),
+        } as InPhysicalEquipmentRest),
+    );
+    await this.digitalServiceStore.initInPhysicalEquipments(this.dsVersionUid());
+    this.digitalServiceStore.setEnableCalcul(true);
+}
 
     resetNetwork() {
         this.existingNames.set(
@@ -151,37 +180,42 @@ export class DigitalServicesNetworksComponent implements OnInit {
         this.network = { ...network, idFront: index };
     }
 
-    async actionNetwork(action: string, network: DigitalServiceNetworkConfig) {
-        this.sidebarVisible = false;
-        if ("cancel" === action) return;
+async actionNetwork(action: string, network: DigitalServiceNetworkConfig) {
+    this.sidebarVisible = false;
+    if (action === "cancel") return;
 
-        const datePurchase = new Date("2020-01-01");
-        const dateWithdrawal = addYears(datePurchase, 1);
-
-        const elementToSave = {
-            digitalServiceUid: network.digitalServiceUid,
-            digitalServiceVersionUid: this.dsVersionUid(),
-            name: network.name,
-            type: "Network",
-            model: network.type.code,
-            quantity: this.calculateQuantity(
-                network.yearlyQuantityOfGbExchanged,
-                network.type,
-            ),
-            location: network.type.country,
-            datePurchase: datePurchase.toISOString(),
-            dateWithdrawal: dateWithdrawal.toISOString(),
-        } as InPhysicalEquipmentRest;
-
-        if (network.id) {
-            elementToSave.id = network.id;
-            await firstValueFrom(this.inPhysicalEquipmentsService.update(elementToSave));
-        } else {
-            await firstValueFrom(this.inPhysicalEquipmentsService.create(elementToSave));
-        }
-        await this.digitalServiceStore.initInPhysicalEquipments(this.dsVersionUid());
-        this.digitalServiceStore.setEnableCalcul(true);
+    if (this.embedded()) {
+        this.updateEmbedded.emit(network);
+        return;
     }
+
+    const datePurchase = new Date("2020-01-01");
+    const dateWithdrawal = addYears(datePurchase, 1);
+
+    const elementToSave = {
+        digitalServiceUid: network.digitalServiceUid,
+        digitalServiceVersionUid: this.dsVersionUid(),
+        name: network.name,
+        type: "Network",
+        model: network.type.code,
+        quantity: this.calculateQuantity(
+            network.yearlyQuantityOfGbExchanged,
+            network.type,
+        ),
+        location: network.type.country,
+        datePurchase: datePurchase.toISOString(),
+        dateWithdrawal: dateWithdrawal.toISOString(),
+    } as InPhysicalEquipmentRest;
+
+    if (network.id) {
+        elementToSave.id = network.id;
+        await firstValueFrom(this.inPhysicalEquipmentsService.update(elementToSave));
+    } else {
+        await firstValueFrom(this.inPhysicalEquipmentsService.create(elementToSave));
+    }
+    await this.digitalServiceStore.initInPhysicalEquipments(this.dsVersionUid());
+    this.digitalServiceStore.setEnableCalcul(true);
+}
 
     private calculateQuantity(
         yearlyQuantityOfGbExchanged: number,

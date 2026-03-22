@@ -6,9 +6,12 @@ import { DigitalServiceCloudServiceConfig, DigitalServiceNetworkConfig, DigitalS
 import { DigitalServiceStoreService } from 'src/app/core/store/digital-service.store';
 import { DigitalServicesDataService } from 'src/app/core/service/data/digital-services-data.service';
 import PanelDatacenterComponent from '../digital-services-servers/side-panel/add-datacenter/datacenter.component';
-import { InDatacenterRest, InPhysicalEquipmentRest } from 'src/app/core/interfaces/input.interface';
+import { InDatacenterRest, InPhysicalEquipmentRest, InVirtualEquipmentRest } from 'src/app/core/interfaces/input.interface';
 import { InVirtualEquipmentsService } from 'src/app/core/service/data/in-out/in-virtual-equipments.service';
 import { InPhysicalEquipmentsService } from 'src/app/core/service/data/in-out/in-physical-equipments.service';
+import { DigitalServiceVersionDataService } from 'src/app/core/service/data/digital-service-version-data-service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { differenceInDays } from 'date-fns';
 
 
 @Component({
@@ -37,6 +40,14 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Input() editableFields: string[] = [];
 
+  simulationEquipments = signal<InPhysicalEquipmentRest[]>([]);
+ simulationVirtualEquipments = signal<any[]>([]);
+
+simulationModified = signal<Map<string, boolean>>(new Map());
+
+modifiedRecommendationEquipments = signal<InPhysicalEquipmentRest[]>([]); 
+
+
   closeSidebar() {
     this.close.emit();
   }
@@ -55,9 +66,12 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
     this.digitalServiceStore.inDatacenters(); 
   }
 
- 
-  addDatacenter(newDc: ServerDC) {
-  const currentList = this.digitalServiceStore.inDatacenters();
+
+
+simulationDatacenters = signal<InDatacenterRest[]>([]);
+
+addDatacenter(newDc: ServerDC) {
+  const currentSimulation = this.simulationDatacenters();
 
   const datacenterName = `${newDc.name}|${crypto.randomUUID()}`;
   const newDatacenter: InDatacenterRest = {
@@ -67,14 +81,9 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
     displayLabel: `${newDc.name} (${newDc.location} - PUE = ${newDc.pue})`,
   };
 
-  this.digitalServiceStore.setInDatacenters([...currentList, newDatacenter]);
+  this.simulationDatacenters.set([...currentSimulation, newDatacenter]);
 
-  this.current.datacenter = {
-    ...newDc,
-    name: datacenterName,
-    displayLabel: `${newDc.name} (${newDc.location} - PUE = ${newDc.pue})`,
-    uid: "" as any
-  };
+  this.current.datacenter = newDatacenter;
 
   if (this.editingServer) {
     this.editingServer.datacenter = this.current.datacenter;
@@ -83,16 +92,22 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
   this.addDatacenterVisible = false;
 }
 
-
-
   importForm!: FormGroup;
 
   importDetails: any;
 
   ngOnInit(): void {
-    this.buildImportDetails();
-    this.loadCloudInstanceTypes();
-    this.datacenterOptions = computed(() => {
+  this.simulationEquipments.set(
+    structuredClone(this.digitalServiceStore.inPhysicalEquipments())
+  );
+
+  this.simulationVirtualEquipments.set(
+    structuredClone(this.digitalServiceStore.inVirtualEquipments())
+  );
+
+  this.buildImportDetails();
+  this.loadCloudInstanceTypes();
+  this.datacenterOptions = computed(() => {
     return this.digitalServiceStore.inDatacenters().map((datacenter) => ({
       location: datacenter.location,
       name: datacenter.name,
@@ -105,7 +120,7 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
   if (!this.dsVersionUid) {
     this.dsVersionUid = this.digitalServiceStore.digitalService()?.uid;
   }
-  }
+}
   instanceTypesLoaded = signal(false);
   
 
@@ -113,7 +128,6 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
     this.importDetails = {
       menu: this.selectedRecommendations.map((r) => ({
         title: r.title,
-        // subTitle: r.category,
          subTitle: Array.isArray(r.category) ? r.category.join(' | ') : r.category,
         descriptionText: r.description,
         active: false,
@@ -134,9 +148,26 @@ export class DigitalServicesApplyRecommendationsComponent implements OnInit {
     this.selectTab(0);
   }
 
+
+onNetworkSavedFromChild(network: DigitalServiceNetworkConfig) {
+  this.editingNetwork = network;
+  this.onNetworkSaved(); 
+}
+
+onNetworkDeletedFromChild(network: DigitalServiceNetworkConfig) {
+  const newSimulation = this.simulationEquipments()
+    .filter(e => e.type !== "Network" || e.id !== network.id);
+
+  this.simulationEquipments.set(newSimulation);
+
+  const modified = this.simulationModified();
+  modified.set(network.name, true);
+  this.simulationModified.set(new Map(modified));
+}
+
   selectTab(index: number) {
     this.selectedMenuIndex = index;
-     this.selectedCategoryIndex = 0; //on remet l'index de la catégorie à 0
+     this.selectedCategoryIndex = 0; 
     this.importDetails.menu.forEach((m: any, i: number) => {
       m.active = i === index;
     });
@@ -205,17 +236,104 @@ closeEditor() {
 
 
 
+simulatedServers = computed(() => {
+  const serverTypes = this.digitalServiceStore.serverTypes();
+  const datacenters =
+    this.simulationDatacenters().length
+      ? this.simulationDatacenters()
+      : this.digitalServiceStore.inDatacenters();
+
+  const virtuals = this.simulationVirtualEquipments();
+
+  const groupedVMs = virtuals.reduce(
+    (acc: { [key: string]: any[] }, vm: any) => {
+      const key = vm.physicalEquipmentName;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(vm);
+      return acc;
+    },
+    {}
+  );
+
+  return this.simulationEquipments()
+    .filter((e) => e.type && e.type.endsWith(" Server"))
+    .map((e) => {
+      const serverType =
+        serverTypes.find((s) => s.reference === e.model) ||
+        serverTypes.find((s) => s.value === e.description);
+
+      const datacenter = datacenters.find(
+        (dc) => dc.name === e.datacenterName
+      );
+
+      const vms = groupedVMs[e.name] ?? [];
+
+      const typeAsString = e.type.replace(" Server", "");
+      const validMutualization = ["Dedicated", "Virtualized", "Shared"].includes(typeAsString)
+        ? typeAsString
+        : "Dedicated";
+
+      const lifespan = e.datePurchase && e.dateWithdrawal
+        ? differenceInDays(e.dateWithdrawal, e.datePurchase) / 365
+        : undefined;
+
+      return {
+        id: e.id,
+        uid: e.id?.toString(), // ou génère‑le si besoin
+        name: e.name,
+        mutualizationType: validMutualization,
+        type: serverType?.type || "Compute",
+        quantity: e.quantity,
+        host: serverType ?? undefined,
+        hostValue: serverType?.value ?? undefined,
+        datacenter,
+        datacenterName: e.datacenterName?.split("|")[0] ?? "",
+        totalVCpu: e.cpuCoreNumber ?? 0,
+        totalDisk: e.sizeDiskGb ?? 0,
+        annualOperatingTime: e.durationHour ?? 0,
+        annualElectricConsumption: e.electricityConsumption ?? 0,
+        lifespan,
+        vm: vms.map((vm) => ({
+          name: vm.name,
+          annualOperatingTime: vm.durationHour,
+          disk: vm.sizeDiskGb,
+          quantity: vm.quantity,
+          uid: vm.id?.toString(),
+          vCpu: vm.vcpuCoreNumber,
+          electricityConsumption: vm.electricityConsumption,
+          digitalServiceUid: e.digitalServiceUid,
+        })),
+        digitalServiceUid: e.digitalServiceUid,
+        digitalServiceVersionUid: e.digitalServiceVersionUid,
+        creationDate: e.creationDate ? Date.parse(e.creationDate) : undefined,
+      } as DigitalServiceServerConfig;
+    });
+});
+
+
+
+onServerSavedFromChild(server: DigitalServiceServerConfig) {
+  this.editingServer = server;
+  this.onServerSaved();
+}
+
+onServerDeletedFromChild(server: DigitalServiceServerConfig) {
+  const newSimulation = this.simulationEquipments()
+    .filter(e => e.id !== server.id);
+
+  this.simulationEquipments.set(newSimulation);
+}
 
 private readonly inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
+
 async onServerSaved() {
   if (!this.editingServer) {
     return;
   }
 
-  const payload: InPhysicalEquipmentRest = {
+  const updatedServer: InPhysicalEquipmentRest = {
     id: this.editingServer.id,
     digitalServiceUid: this.editingServer.digitalServiceUid!,
-    digitalServiceVersionUid: this.digitalServiceStore.digitalService().uid,
     name: this.editingServer.name,
     datacenterName: this.editingServer.datacenter?.name || "Default DC",
     location: this.editingServer.datacenter?.location ?? "UNKNOWN",
@@ -227,32 +345,25 @@ async onServerSaved() {
     cpuCoreNumber: this.editingServer.totalVCpu,
     sizeDiskGb: this.editingServer.totalDisk,
     electricityConsumption: this.editingServer.annualElectricConsumption,
-    creationDate: this.editingServer.creationDate?.toString(),
-    
+    creationDate: this.editingServer.creationDate?.toString() ?? new Date().toISOString(),
   };
 
-
-  let updatedServer: InPhysicalEquipmentRest;
-  if (this.editingServer.id) {
-    updatedServer = await firstValueFrom(
-      this.inPhysicalEquipmentsService.update(payload)
-    );
-  } else {
-    return;
-  }
-
-  const currentServers = this.digitalServiceStore.inPhysicalEquipments();
-  const newServers = currentServers.map((s) =>
+  const currentSimulation = this.simulationEquipments();
+  const newSimulation = currentSimulation.map((s) =>
     s.id === updatedServer.id
       ? {
           ...updatedServer,
           datacenterName:
             updatedServer.datacenterName || this.editingServer?.datacenter?.name,
-          creationDate: updatedServer.creationDate?.toString(),
+          creationDate: updatedServer.creationDate,
         }
       : s
   );
-  this.digitalServiceStore.setInPhysicalEquipments(newServers);
+  this.simulationEquipments.set(newSimulation);
+
+  const modified = this.simulationModified();
+  modified.set(updatedServer.name, true);
+  this.simulationModified.set(new Map(modified));
 
   this.closeEditor();
 }
@@ -289,49 +400,33 @@ async onNetworkSaved() {
   }
   const calculateQuantity = (yearlyQuantity: number, type: NetworkType) => {
     if (!yearlyQuantity) return 0;
-    if (type.type === 'Mobile') return yearlyQuantity;
+    if (type.type === "Mobile") return yearlyQuantity;
     if (type.annualQuantityOfGo && type.annualQuantityOfGo > 0) {
       return yearlyQuantity / type.annualQuantityOfGo;
     }
     return 0;
   };
 
-  if (!this.dsVersionUid) {
-  return;
-}
-
-  // Préparer le payload API
-  const payload: InPhysicalEquipmentRest = {
+  const updatedNetwork: InPhysicalEquipmentRest = {
     id: this.editingNetwork.id,
     digitalServiceUid: this.editingNetwork.digitalServiceUid!,
-    digitalServiceVersionUid: this.dsVersionUid,
     name: this.editingNetwork.name,
-    type: 'Network',
+    type: "Network",
     model: this.editingNetwork.type?.code,
     quantity: calculateQuantity(
       this.editingNetwork.yearlyQuantityOfGbExchanged,
-      this.editingNetwork.type!,
+      this.editingNetwork.type!
     ),
-    location: this.editingNetwork.type?.country ?? 'UNKNOWN',
-    creationDate: new Date(this.editingNetwork.creationDate ?? Date.now()).toISOString()
+    location: this.editingNetwork.type?.country ?? "UNKNOWN",
+    creationDate: new Date(
+      this.editingNetwork.creationDate ?? Date.now()
+    ).toISOString(),
   };
 
-  // Appel API
-  let updatedNetwork: InPhysicalEquipmentRest;
-  if (this.editingNetwork.id) {
-    updatedNetwork = await firstValueFrom(
-      this.inPhysicalEquipmentsService.update(payload)
-    );
-  } else {
-    updatedNetwork = await firstValueFrom(
-      this.inPhysicalEquipmentsService.create(payload)
-    );
-  }
+  const currentSimulation = this.simulationEquipments();
 
-  // Mise à jour locale dans le store
-  const currentEquipments = this.digitalServiceStore.inPhysicalEquipments();
-  const otherEquipments = currentEquipments.filter((e) => e.type !== 'Network');
-  const networkEquipments = currentEquipments.filter((e) => e.type === 'Network');
+  const otherEquipments = currentSimulation.filter((e) => e.type !== "Network");
+  const networkEquipments = currentSimulation.filter((e) => e.type === "Network");
 
   const newNetworks = updatedNetwork.id
     ? networkEquipments.map((n) =>
@@ -341,12 +436,142 @@ async onNetworkSaved() {
       )
     : [...networkEquipments, { ...updatedNetwork, creationDate: updatedNetwork.creationDate }];
 
-  this.digitalServiceStore.setInPhysicalEquipments([...otherEquipments, ...newNetworks]);
+  this.simulationEquipments.set([...otherEquipments, ...newNetworks]);
 
-  // Fermer l'éditeur
+  const modified = this.simulationModified();
+  modified.set(updatedNetwork.name, true);
+  this.simulationModified.set(new Map(modified));
+
   this.closeNetworkEditor();
 }
-get allNetworks(): DigitalServiceNetworkConfig[] {
+
+
+
+editingCloud: DigitalServiceCloudServiceConfig | null = null;
+instanceTypesByProvider = signal<Map<string, string[]>>(new Map());
+  get editingCloudInstanceTypes() {
+    return this.editingCloud 
+      ? this.instanceTypesByProvider().get(this.editingCloud.cloudProvider) ?? []
+      : [];
+  }
+
+openCloudEditor(cloud: DigitalServiceCloudServiceConfig) {
+  this.editingCloud = structuredClone(cloud);
+    const current = this.instanceTypesByProvider();
+}
+
+closeCloudEditor() {
+  this.editingCloud = null;
+}
+private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
+
+async onCloudSaved() {
+  if (!this.editingCloud) {
+    return;
+  }
+
+  const updated: InVirtualEquipmentRest = {
+    id: this.editingCloud.id,
+    digitalServiceUid: this.editingCloud.digitalServiceUid,
+    name: this.editingCloud.name,
+    infrastructureType: "CLOUD_SERVICES",
+    quantity: this.editingCloud.quantity,
+    provider: this.editingCloud.cloudProvider,
+    instanceType: this.editingCloud.instanceType,
+    location: this.editingCloud.location.code,
+    durationHour: this.editingCloud.annualUsage,
+    workload: this.editingCloud.averageWorkload / 100,
+    creationDate: this.editingCloud.creationDate?.toString() ?? new Date().toISOString(),
+  };
+
+  const currentSimulation = this.simulationVirtualEquipments();
+  const newSimulation = currentSimulation.map((s) =>
+    s.id === updated.id
+      ? {
+          ...updated,
+          creationDate: updated.creationDate,
+        }
+      : s
+  );
+  this.simulationVirtualEquipments.set(newSimulation);
+
+  const modified = this.simulationModified();
+  modified.set(updated.name, true);
+  this.simulationModified.set(new Map(modified));
+
+  this.closeCloudEditor();
+}
+
+simulatedNetworks = computed(() => {
+  const networkTypes = this.digitalServiceStore.networkTypes();
+
+  return this.simulationEquipments()
+    .filter(e => e.type === "Network")
+    .map(e => {
+      
+      const type = networkTypes.find(t => t.code === e.model) 
+                   ?? networkTypes[0]; 
+
+      let yearlyQuantityOfGbExchanged = e.quantity;
+      if (type?.type === "Fixed") {
+        yearlyQuantityOfGbExchanged = type.annualQuantityOfGo * e.quantity;
+      }
+
+      const creationDate: Date | undefined = e.creationDate
+        ? new Date(e.creationDate)
+        : undefined;
+
+      return {
+        creationDate,
+        id: e.id,
+        typeCode: type?.value ?? undefined,
+        type,          
+        yearlyQuantityOfGbExchanged,
+        name: e.name,
+        digitalServiceUid: e.digitalServiceUid,
+      } as DigitalServiceNetworkConfig;
+    });
+});
+
+simulatedCloudServices = computed(() => {
+  const countryMap = this.digitalServiceStore.countryMap(); 
+  return this.simulationVirtualEquipments()
+    .filter(e => e.infrastructureType === "CLOUD_SERVICES")
+    .map(e => ({
+      id: e.id,
+      digitalServiceUid: e.digitalServiceUid,
+      name: e.name,
+      cloudProvider: e.provider,
+      instanceType: e.instanceType,
+      quantity: e.quantity,
+        location: {
+        code: e.location,
+        name: countryMap[e.location] || e.location,
+      },
+      locationValue: countryMap[e.location] || e.location,
+      annualUsage: e.durationHour,
+      averageWorkload: e.workload! * 100,
+    } as DigitalServiceCloudServiceConfig));
+});
+onCloudSavedFromChild(cloud: DigitalServiceCloudServiceConfig) {
+  this.editingCloud = cloud;
+  this.onCloudSaved();
+}
+
+onCloudDeletedFromChild(cloud: DigitalServiceCloudServiceConfig) {
+  const newSimulation = this.simulationVirtualEquipments()
+    .filter(e => e.id !== cloud.id);
+
+  this.simulationVirtualEquipments.set(newSimulation);
+
+  const modified = this.simulationModified();
+  modified.set(cloud.name, true);
+  this.simulationModified.set(new Map(modified));
+}
+
+
+
+get liveNetworks(): DigitalServiceNetworkConfig[] {
   const networkTypes = this.digitalServiceStore.networkTypes();
   return this.digitalServiceStore.inPhysicalEquipments()
     .filter(e => e.type === "Network")
@@ -368,51 +593,27 @@ get allNetworks(): DigitalServiceNetworkConfig[] {
     });
 }
 
-editingCloud: DigitalServiceCloudServiceConfig | null = null;
-instanceTypesByProvider = signal<Map<string, string[]>>(new Map());
-  get editingCloudInstanceTypes() {
-    return this.editingCloud 
-      ? this.instanceTypesByProvider().get(this.editingCloud.cloudProvider) ?? []
-      : [];
-  }
 
-openCloudEditor(cloud: DigitalServiceCloudServiceConfig) {
-  this.editingCloud = structuredClone(cloud);
-    const current = this.instanceTypesByProvider();
+get liveCloudServices(): DigitalServiceCloudServiceConfig[] {
+  const data = this.digitalServiceStore.inVirtualEquipments()
+    .filter(e => e.infrastructureType === "CLOUD_SERVICES")
+    .map(e => ({
+      id: e.id,
+      digitalServiceUid: e.digitalServiceUid,
+      name: e.name,
+      cloudProvider: e.provider,
+      instanceType: e.instanceType,
+      quantity: e.quantity,
+      location: { code: e.location, name: e.location },
+      locationValue: e.location,
+      annualUsage: e.durationHour,
+      averageWorkload: e.workload! * 100,
+    } as DigitalServiceCloudServiceConfig));
+  return data;
 }
 
-closeCloudEditor() {
-  this.editingCloud = null;
-}
-private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
 
-async onCloudSaved() {
-    if (!this.editingCloud){ 
-      return;}
 
-  const payload = {
-    id: this.editingCloud.id,
-    digitalServiceUid: this.editingCloud.digitalServiceUid,
-    digitalServiceVersionUid: this.digitalServiceStore.digitalService().uid,
-    name: this.editingCloud.name,
-    infrastructureType: "CLOUD_SERVICES",
-    quantity: this.editingCloud.quantity,
-    provider: this.editingCloud.cloudProvider,
-    instanceType: this.editingCloud.instanceType,
-    location: this.editingCloud.location.code,
-    durationHour: this.editingCloud.annualUsage,
-    workload: this.editingCloud.averageWorkload / 100,
-  };
-
-  if (this.editingCloud.id) {
-    const res = await firstValueFrom(
-      this.inVirtualEquipmentsService.update(payload)
-    );
-  }
-
-  await this.digitalServiceStore.initInVirtualEquipments(this.dsVersionUid);
-   this.closeCloudEditor();
-}
 
 get cloudServices(): DigitalServiceCloudServiceConfig[] {
   const data =  this.digitalServiceStore.inVirtualEquipments()
@@ -450,5 +651,101 @@ onDatacenterChange(dc: ServerDC) {
 
 @ViewChild(PanelDatacenterComponent)
 datacenterPanel!: PanelDatacenterComponent;
+
+
+private readonly versionService = inject(DigitalServiceVersionDataService);
+private readonly router = inject(Router);
+private readonly route = inject(ActivatedRoute);
+
+private readonly digitalServicesData = inject(DigitalServicesDataService);
+
+async createNewVersion() {
+  if (!this.dsVersionUid) return;
+
+  try {
+    const newVersion = await firstValueFrom(
+      this.versionService.duplicateVersion(this.dsVersionUid)
+    );
+
+    const newUid = newVersion.uid;
+
+    await this.clearVersionData(newUid);
+
+    await this.applySimulationToVersion(newUid);
+
+    await firstValueFrom(
+      this.digitalServicesData.launchEvaluating(newUid)
+    );
+
+    const urlSegments = this.router.url.split("/").slice(1);
+    const organization = urlSegments[1];
+    const workspace = urlSegments[3];
+
+    await this.router.navigate([
+      "/organizations",
+      organization,
+      "workspaces",
+      workspace,
+      "digital-service-version",
+      newUid,
+      "footprint",
+      "dashboard",
+    ]);
+
+  } catch (e) {
+    console.error(" createNewVersion failed:", e);
+  }
+}
+private async clearVersionData(versionUid: string) {
+  const physicals = await firstValueFrom(
+    this.inPhysicalEquipmentsService.get(versionUid)
+  );
+
+  await Promise.all(
+    physicals.map(equip =>
+      firstValueFrom(this.inPhysicalEquipmentsService.delete(equip))
+    )
+  );
+
+  const virtuals = await firstValueFrom(
+    this.inVirtualEquipmentsService.getByDigitalService(versionUid)
+  );
+
+  await Promise.all(
+    virtuals.map(vequip =>
+      firstValueFrom(
+        this.inVirtualEquipmentsService.delete(vequip.id!, versionUid)
+      )
+    )
+  );
+}
+private async applySimulationToVersion(versionUid: string) {
+  const physicalSimulation = this.simulationEquipments();
+  const virtualSimulation = this.simulationVirtualEquipments();
+
+  for (const equip of physicalSimulation) {
+    const payload: InPhysicalEquipmentRest = {
+      ...equip,
+      id: undefined,
+      digitalServiceVersionUid: versionUid,
+    };
+
+    await firstValueFrom(
+      this.inPhysicalEquipmentsService.create(payload)
+    );
+  }
+
+  for (const vequip of virtualSimulation) {
+    const payload: InVirtualEquipmentRest = {
+      ...vequip,
+      id: undefined,
+      digitalServiceVersionUid: versionUid,
+    };
+
+    await firstValueFrom(
+      this.inVirtualEquipmentsService.create(payload)
+    );
+  }
+}
 
 }
