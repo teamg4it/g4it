@@ -5,7 +5,11 @@
         translationPrefix="digital-services-cloud-services"
         [headerFields]="headerFields"
         [data]="cloudServices()"
+        [forceWrite]="embedded()"
+        [hideAddButton]="embedded()"
+        [hideActions]="false"
         (sidebar)="changeSidebar($event)"
+        (setItem)="embedded() ? editEmbedded.emit($event) : setItem($event)"
         (resetItem)="resetCloudServices()"
         (setItem)="setItem($event)"
         (deleteItem)="deleteItem($event)"
@@ -15,6 +19,7 @@
 
 @if (sidebarVisible) {
     <p-sidebar
+        *ngIf="!embedded() && sidebarVisible"
         [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-md"
