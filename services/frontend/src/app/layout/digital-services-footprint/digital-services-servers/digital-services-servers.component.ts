@@ -16,6 +16,7 @@ import {
     OnDestroy,
     OnInit,
     Output,
+    Signal,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -55,6 +56,7 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
     digitalService: DigitalService = {} as DigitalService;
     sidebarVisible: boolean = false;
     existingNames: string[] = [];
+    serverDataInput = input<Signal<DigitalServiceServerConfig[]> | DigitalServiceServerConfig[] | undefined>(undefined);
 
     headerFields = [
         "name",
@@ -65,47 +67,50 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
         "datacenterName",
     ];
     
-    serverData = computed(() => {
-        const serverTypes = this.digitalServiceStore.serverTypes();
-        const datacenters = this.digitalServiceStore.inDatacenters();
+serverData = computed(() => {
+    const input = this.serverDataInput();
 
-        if (datacenters.length === 0 || serverTypes.length === 0) return [];
+    if (input) {
+        return typeof input === "function" ? input() : input;
+    }
 
-        const inVirtualEquipments = this.digitalServiceStore
-            .inVirtualEquipments()
-            .filter((ve) => ve.infrastructureType !== "CLOUD_SERVICES")
-            .reduce((acc: any, obj: any) => {
-                const key = obj.physicalEquipmentName;
-                if (!acc[key]) acc[key] = [];
-                acc[key].push(obj);
-                return acc;
-            }, {});
 
-        const inPhysicalEquipments = this.digitalServiceStore
-            .inPhysicalEquipments()
-            .filter((item) => item.type.endsWith(" Server"));
+    const serverTypes = this.digitalServiceStore.serverTypes();
+    const datacenters = this.digitalServiceStore.inDatacenters();
 
-        this.existingNames = inPhysicalEquipments.map((pe) => pe.name);
-   
-        return inPhysicalEquipments.map((item) => {
-            let serverType = serverTypes.find(
-                (server) => server.value === item.description,
-            );
+    if (datacenters.length === 0 || serverTypes.length === 0) return [];
 
-            if (serverType === undefined) {
-                serverType = serverTypes.find(
-                    (server) => server.reference === item.model,
-                );
-            }
+    const inVirtualEquipments = this.digitalServiceStore
+        .inVirtualEquipments()
+        .filter((ve) => ve.infrastructureType !== "CLOUD_SERVICES")
+        .reduce((acc: any, obj: any) => {
+            const key = obj.physicalEquipmentName;
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(obj);
+            return acc;
+        }, {});
 
-            const quantity =
-                item.type === "Dedicated Server"
-                    ? item.quantity / (item.durationHour! / 8760)
-                    : 1;
+    const inPhysicalEquipments = this.digitalServiceStore
+        .inPhysicalEquipments()
+        .filter((item) => item.type.endsWith(" Server"));
 
-            const datacenter = datacenters.find((dc) => dc.name === item.datacenterName);
-            const vms = inVirtualEquipments[item.name] || [];
-            const totalQuantityVms = vms.reduce(
+    this.existingNames = inPhysicalEquipments.map((pe) => pe.name);
+
+    return inPhysicalEquipments.map((item) => {
+        let serverType = serverTypes.find(
+            (server) => server.value === item.description,
+        ) ?? serverTypes.find(
+            (server) => server.reference === item.model,
+        );
+
+        const quantity =
+            item.type === "Dedicated Server"
+                ? item.quantity / (item.durationHour! / 8760)
+                : 1;
+
+        const datacenter = datacenters.find((dc) => dc.name === item.datacenterName);
+        const vms = inVirtualEquipments[item.name] || [];
+                    const totalQuantityVms = vms.reduce(
                 (acc: number, vm: InVirtualEquipmentRest) => acc + vm.quantity,
                 0,
             );
@@ -141,8 +146,8 @@ export class DigitalServicesServersComponent implements OnInit, OnDestroy {
                     } as ServerVM;
                 }),
             } as DigitalServiceServerConfig;
-        });     
     });
+});
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,

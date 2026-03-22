@@ -53,9 +53,18 @@
                     {{ "common.button" | translate }}
                 </th>
             }
-              @if (selectable) {
-            <th scope="col"></th>
-        }
+             @if (selectable) {
+                <th scope="col" class="text-center" style="width: 3rem">
+                    @if (showSelectAll) {
+                    <p-checkbox
+                        binary="true"
+                        [(ngModel)]="selectAll"
+                        (onChange)="onSelectAllChange()"
+                        inputId="selectAllHeader"
+                    ></p-checkbox>
+                    }
+                </th>
+                }
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
@@ -81,14 +90,15 @@
                     [ngTemplateOutletContext]="{ data: data, rowIndex: rowIndex }"
                 ></ng-template>
             }
-             @if (selectable) {
-            <td>
+            @if (selectable) {
+            <td class="text-center">
                 <p-checkbox
-                    [(ngModel)]="data.selected"
-                    binary="true"
+                [(ngModel)]="data.selected"
+                binary="true"
+                (onChange)="updateSelectAllState()"
                 ></p-checkbox>
             </td>
-        }
+            }
         </tr>
     </ng-template>
     <ng-template #dataConsistencyRef let-data="data" let-rowIndex="rowIndex">
