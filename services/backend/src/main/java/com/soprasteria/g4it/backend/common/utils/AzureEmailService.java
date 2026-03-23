@@ -14,14 +14,10 @@ import com.azure.communication.email.models.EmailMessage;
 import com.azure.communication.email.models.EmailSendResult;
 import com.azure.core.util.polling.AsyncPollResponse;
 import com.azure.core.util.polling.LongRunningOperationStatus;
-import com.azure.core.util.polling.PollerFlux;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 @Service
@@ -30,13 +26,15 @@ public class AzureEmailService {
 
     private final EmailAsyncClient emailClient;
     private final String senderEmail;
+    private final TaskExecutor taskExecutor;
 
     public AzureEmailService(@Value("${azure.communication.connection-string}") String connectionString,
-                             @Value("${azure.communication.sender-email}") String senderEmail) {
+                             @Value("${azure.communication.sender-email}") String senderEmail, TaskExecutor taskExecutor) {
         this.emailClient = new EmailClientBuilder()
                 .connectionString(connectionString)
                 .buildAsyncClient();
         this.senderEmail= senderEmail;
+        this.taskExecutor = taskExecutor;
     }
 
     public void sendEmail(String recipient, String subject, String body) {
@@ -46,20 +44,13 @@ public class AzureEmailService {
                 .setSubject(subject)
                 .setBodyPlainText(body)
                 .setBodyHtml(body);
-
-        PollerFlux<EmailSendResult, EmailSendResult> poller = emailClient.beginSend(emailMessage);
-        try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
-            executorService.submit(() -> poller.subscribe(
-                    this::handleAsyncPollerResponse,
-                    error -> log.error("Error occurred while sending email: {}", error.getMessage())
-            ));
-            try {
-                Thread.sleep(Duration.ofSeconds(30));
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                log.error("Thread was interrupted while waiting for email send operation.", e);
-            }
-        }
+        taskExecutor.execute(() -> {
+            emailClient.beginSend(emailMessage)
+                    .last()
+                    .doOnSuccess(this::handleAsyncPollerResponse)
+                    .doOnError(error -> log.error("Error occurred while sending email to recipient [{}]: {}", recipient, error.getMessage(), error))
+                    .block();
+        });
     }
 
     private void handleAsyncPollerResponse(AsyncPollResponse<EmailSendResult, EmailSendResult> response) {
