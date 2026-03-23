@@ -224,6 +224,7 @@
   gap: 1rem;
 }
 
+
 .cloud-form-row {
   display: grid;
   grid-template-columns: 320px 1fr;
@@ -245,6 +246,26 @@
   width: 100%;
 }
 
+.terminal-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-row label {
+  width: 220px;
+  min-width: 220px;
+}
+
+.field-full {
+  flex: 1;
+}
 
 
 /* Pour que le bouton "Ajouter" reste aligné proprement */

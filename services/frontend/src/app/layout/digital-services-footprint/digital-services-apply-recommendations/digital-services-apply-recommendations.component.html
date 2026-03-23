@@ -23,21 +23,21 @@
                 ></p-button>
 
 
-          <h2>
-            Modifiez les paramètres de vos ressources selon la recommandation sélectionnée
-          </h2>
+<h2 class="text-xl md:text-2xl">
+  Modifiez les paramètres de vos ressources selon la recommandation sélectionnée
+</h2>
 
-          <h3 class="font-semibold text-2xl ml-0">
-            {{ importDetails.menu[selectedMenuIndex ?? 0].title }}
-          </h3>
+<h3 class="font-semibold text-2xl md:text-3xl ml-0">
+  {{ importDetails.menu[selectedMenuIndex ?? 0].title }}
+</h3>
 
-          <p class="mb-3">
-            {{ importDetails.menu[selectedMenuIndex ?? 0].descriptionText }}
-          </p>
+<p class="mb-3 text-base md:text-lg">
+  {{ importDetails.menu[selectedMenuIndex ?? 0].descriptionText }}
+</p>
 
-          <p class="mt-4 mb-2 font-medium">
-            Veuillez adapter les paramètres des ressources afin d’appliquer cette recommandation.
-          </p>
+<p class="mt-4 mb-2 font-medium text-base md:text-lg">
+  Veuillez adapter les paramètres des ressources afin d’appliquer cette recommandation.
+</p>
 
           <!-- Onglets si plusieurs catégories -->
 <p-tabView
@@ -64,6 +64,7 @@
   (editEmbedded)="openNetworkEditor($event)"
   (updateEmbedded)="onNetworkSavedFromChild($event)"
   (deleteEmbedded)="onNetworkDeletedFromChild($event)"
+  [paginator]="false"
 />
     </ng-container>
 
@@ -115,6 +116,7 @@
   (editEmbedded)="openCloudEditor($event)"
   (updateEmbedded)="onCloudSavedFromChild($event)"
   (deleteEmbedded)="onCloudDeletedFromChild($event)"
+  [paginator]="false"
 />
 </ng-container>
 
@@ -187,6 +189,7 @@ styleClass="yellow-button"
         [embedded]="true"
         [serverDataInput]="simulatedServers"
         (editEmbedded)="openServerEditor($event)"
+        [paginator]="false"
       />
     </ng-container>
 
@@ -260,11 +263,116 @@ styleClass="yellow-button"
     </ng-template>
   </ng-container>
 
+  <!-- Terminaux -->
+<ng-container *ngSwitchCase="'Terminaux'">
+
+  <!-- LISTE -->
+  <ng-container *ngIf="!editingTerminal; else editTerminalMode">
+    <app-digital-services-terminals
+      [dsVersionUid]="dsVersionUid"
+      [embedded]="true"
+      [terminalData]="simulatedTerminals()"
+      (editEmbedded)="openTerminalEditor($event)"
+      (updateEmbedded)="onTerminalSavedFromChild($event)"
+      (deleteEmbedded)="onTerminalDeletedFromChild($event)"
+      [paginator]="false"
+    />
+  </ng-container>
+
+  <!-- EDITION -->
+  <ng-template #editTerminalMode>
+    <div class="embedded-server-panel">
+
+      <div class="panel-header">
+        <h3>{{ "digital-services-terminals.edit" | translate }}</h3>
+      </div>
+
+      <div class="panel-content">
+
+        <div class="terminal-form-grid" *ngIf="editingTerminal">
+
+          <!-- TYPE -->
+          <div class="form-row">
+            <label>{{ "digital-services-terminals.type" | translate }}</label>
+            <p-dropdown
+              [options]="terminalDeviceTypes"
+              optionLabel="value"
+              [(ngModel)]="editingTerminal.type"
+              (onChange)="editingTerminal.lifespan = $event.value.lifespan"
+              appendTo="body"
+              class="field-full"
+            ></p-dropdown>
+          </div>
+
+          <!-- COUNTRY -->
+          <div class="form-row">
+            <label>{{ "digital-services-terminals.country" | translate }}</label>
+            <p-dropdown
+              [options]="countries()"
+              [(ngModel)]="editingTerminal.country"
+              [filter]="true"
+              filterBy="label"
+              appendTo="body"
+              class="field-full"
+            ></p-dropdown>
+          </div>
+
+          <!-- USERS -->
+          <div class="form-row">
+            <label>{{ "digital-services-terminals.nb-user" | translate }}</label>
+            <p-inputNumber
+              [(ngModel)]="editingTerminal.numberOfUsers"
+              class="field-full"
+            ></p-inputNumber>
+          </div>
+
+          <!-- USAGE -->
+          <div class="form-row">
+            <label>
+              {{ "digital-services-terminals.yearly-usage" | translate }}
+            </label>
+            <p-inputNumber
+              [(ngModel)]="editingTerminal.yearlyUsageTimePerUser"
+              class="field-full"
+            ></p-inputNumber>
+          </div>
+
+          <!-- LIFESPAN -->
+          <div class="form-row">
+            <label>{{ "digital-services-terminals.lifespan" | translate }}</label>
+            <p-inputNumber
+              [(ngModel)]="editingTerminal.lifespan"
+              class="field-full"
+            ></p-inputNumber>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="panel-footer">
+        <p-button styleClass="white-button" (onClick)="closeTerminalEditor()">
+          {{ "common.cancel" | translate }}
+        </p-button>
+
+        <p-button
+          styleClass="yellow-button"
+          (onClick)="onTerminalSaved()"
+          [label]="'common.save' | translate"
+        ></p-button>
+      </div>
+
+    </div>
+  </ng-template>
+
+</ng-container>
+
 </ng-container>
 
 
 
-        <div class="mt-3" *ngIf="!editingServer && !editingNetwork && !editingCloud">
+        <div class="mt-3" *ngIf="!editingServer && !editingNetwork && !editingCloud && !editingTerminal">
 
   @for (
     spaceDetail of importDetails["form"];
@@ -297,7 +405,7 @@ styleClass="yellow-button"
             label="Suivant"
           ></p-button>
         }
-        @if (!editingServer) {
+        @if (!editingServer && hasAnyModified()) {
         <p-button
           icon="pi pi-plus-circle"
           label="Créer une nouvelle version"

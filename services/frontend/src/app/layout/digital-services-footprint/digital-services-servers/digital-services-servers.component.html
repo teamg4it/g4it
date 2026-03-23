@@ -12,6 +12,7 @@
         (resetItem)="addNewServer()"
         (setItem)="setItem($event)"
         (deleteItem)="deleteItem($event)"
+        [paginator]="!embedded()"
     ></app-digital-service-table>
 </div>
 @if (!embedded() && sidebarVisible) {

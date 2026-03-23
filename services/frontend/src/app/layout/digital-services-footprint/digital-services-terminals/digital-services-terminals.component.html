@@ -5,15 +5,20 @@
         addButtonId="add-terminals"
         translationPrefix="digital-services-terminals"
         [headerFields]="headerFields"
-        [data]="terminalData()"
+        [data]="terminals()"
+        [forceWrite]="embedded()"
+        [hideAddButton]="embedded()"
+        [hideActions]="false"
         (sidebar)="changeSidebar($event)"
         (resetItem)="resetTerminal()"
         (setItem)="setItem($event)"
         (deleteItem)="deleteItem($event)"
+        [paginator]="!embedded()"
     ></app-digital-service-table>
 </div>
 @if (sidebarVisible) {
     <p-sidebar
+        *ngIf="!embedded() && sidebarVisible"
         [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-lg"
@@ -23,7 +28,7 @@
         <app-digital-services-terminals-side-panel
             #childSidePanel
             [terminal]="terminal"
-            [terminalData]="terminalData()"
+            [terminalData]="terminals()"
             [sidebarVisible]="sidebarVisible"
             (sidebarVisibleChange)="sidebarVisible = $event"
             (updateTerminals)="updateTerminals($event)"

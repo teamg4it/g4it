@@ -74,6 +74,14 @@ public onSelectAllChange(selectAll: boolean) {
       description: 'L’objectif est d’abord de privilégier un hébergement dans le pays où l’intensité carbone est peu élevée, et secondairement, dans une région où se situent la majorité des clients, afin de réduire la distance parcourue par les données et donc réduire l’infrastructure réseau mobilisée et son empreinte environnementale.', 
       selected: false 
     },
+      { 
+    title: 'Optimiser le parcours d’utilisation pour chaque fonctionnalité principale', 
+    priority:5,
+    category: ['Terminaux'], 
+    implementationDifficulty: "Facile", 
+    description: 'Le service numérique doit s’assurer que chaque fonctionnalité principale est accessible et utilisable de manière fluide, afin de réduire les frictions pour l’utilisateur, améliorer l’expérience globale et limiter les surcharges inutiles sur le terminal.', 
+    selected: false 
+  },
   ];
 compareSelected() {
   const selected = this.recommendations.filter(r => r.selected);

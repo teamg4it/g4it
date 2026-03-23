@@ -1,8 +1,8 @@
-import { Component, computed, EventEmitter, Host, inject, Input, OnInit, Output, Signal, signal, ViewChild } from '@angular/core';
+import { Component, computed, EventEmitter, Host, inject, input, Input, OnInit, Output, Signal, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UserService } from 'src/app/core/service/business/user.service';
 import { firstValueFrom, lastValueFrom, of } from 'rxjs';
-import { DigitalServiceCloudServiceConfig, DigitalServiceNetworkConfig, DigitalServiceServerConfig, NetworkType, ServerDC } from 'src/app/core/interfaces/digital-service.interfaces';
+import { DigitalServiceCloudServiceConfig, DigitalServiceNetworkConfig, DigitalServiceServerConfig, DigitalServiceTerminalConfig, NetworkType, ServerDC } from 'src/app/core/interfaces/digital-service.interfaces';
 import { DigitalServiceStoreService } from 'src/app/core/store/digital-service.store';
 import { DigitalServicesDataService } from 'src/app/core/service/data/digital-services-data.service';
 import PanelDatacenterComponent from '../digital-services-servers/side-panel/add-datacenter/datacenter.component';
@@ -11,7 +11,7 @@ import { InVirtualEquipmentsService } from 'src/app/core/service/data/in-out/in-
 import { InPhysicalEquipmentsService } from 'src/app/core/service/data/in-out/in-physical-equipments.service';
 import { DigitalServiceVersionDataService } from 'src/app/core/service/data/digital-service-version-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { differenceInDays } from 'date-fns';
+import { addDays, differenceInDays } from 'date-fns';
 
 
 @Component({
@@ -108,7 +108,16 @@ addDatacenter(newDc: ServerDC) {
   this.buildImportDetails();
   this.loadCloudInstanceTypes();
   this.datacenterOptions = computed(() => {
-    return this.digitalServiceStore.inDatacenters().map((datacenter) => ({
+    const simulation = this.simulationDatacenters();
+    const live = this.digitalServiceStore.inDatacenters();
+
+    // Fusion des deux listes et dédoublonnage par `name`
+    const combined = [...simulation, ...live];
+    const unique = Array.from(
+      new Map(combined.map(dc => [dc.name, dc])).values()
+    );
+
+    return unique.map((datacenter) => ({
       location: datacenter.location,
       name: datacenter.name,
       pue: datacenter.pue,
@@ -116,6 +125,7 @@ addDatacenter(newDc: ServerDC) {
       uid: "",
     }));
   });
+
 
   if (!this.dsVersionUid) {
     this.dsVersionUid = this.digitalServiceStore.digitalService()?.uid;
@@ -148,11 +158,135 @@ addDatacenter(newDc: ServerDC) {
     this.selectTab(0);
   }
 
+  openTerminalEditor(terminal: DigitalServiceTerminalConfig) {
+  this.editingTerminal = structuredClone(terminal);
+}
+
+closeTerminalEditor() {
+  this.editingTerminal = null;
+}
+onTerminalSavedFromChild(terminal: DigitalServiceTerminalConfig) {
+  this.editingTerminal = terminal;
+  this.onTerminalSaved();
+}
+onTerminalDeletedFromChild(terminal: DigitalServiceTerminalConfig) {
+  const newSimulation = this.simulationEquipments()
+    .filter(e => e.type !== "Terminal" || e.id !== terminal.id);
+
+  this.simulationEquipments.set(newSimulation);
+
+  const modified = this.simulationModified();
+  modified.set(terminal.name, true);
+  this.simulationModified.set(new Map(modified));
+}
+
+async onTerminalSaved() {
+  console.log("SAVE TERMINAL START", this.editingTerminal);
+
+  if (!this.editingTerminal) {
+    return;
+  }
+
+  const datePurchase = new Date("2020-01-01");
+  const dateWithdrawal = addDays(
+    datePurchase,
+    this.editingTerminal.lifespan * 365
+  );
+
+  const updated: InPhysicalEquipmentRest = {
+    id: this.editingTerminal.id,
+    digitalServiceUid: this.editingTerminal.digitalServiceUid!,
+    name: this.editingTerminal.name,
+    type: "Terminal",
+    model: this.editingTerminal.type?.code,
+    location: this.editingTerminal.country,
+    numberOfUsers: this.editingTerminal.numberOfUsers,
+    quantity:
+      (this.editingTerminal.numberOfUsers *
+        this.editingTerminal.yearlyUsageTimePerUser) /
+      (365 * 24),
+    durationHour: this.editingTerminal.yearlyUsageTimePerUser,
+    datePurchase: datePurchase.toISOString(),
+    dateWithdrawal: dateWithdrawal.toISOString(),
+    creationDate:
+      this.editingTerminal.creationDate?.toString() ??
+      new Date().toISOString(),
+  };
+
+  const currentSimulation = this.simulationEquipments();
+
+  const otherEquipments = currentSimulation.filter(
+    e => e.type !== "Terminal"
+  );
+  const terminalEquipments = currentSimulation.filter(
+    e => e.type === "Terminal"
+  );
+
+  const newTerminals = updated.id
+    ? terminalEquipments.map(t =>
+        t.id === updated.id
+          ? { ...updated, creationDate: updated.creationDate }
+          : t
+      )
+    : [
+        ...terminalEquipments,
+        { ...updated, creationDate: updated.creationDate },
+      ];
+
+this.simulationEquipments.set(
+  [...otherEquipments, ...newTerminals].map(e => ({ ...e }))
+);
+
+  const modified = this.simulationModified();
+  modified.set(updated.name, true);
+  this.simulationModified.set(new Map(modified));
+
+  this.closeTerminalEditor();
+}
+simulatedTerminals = computed(() => {
+    const data = this.simulationEquipments();
+  const deviceTypes = this.digitalServiceStore.terminalDeviceTypes();
+
+  return this.simulationEquipments()
+    .filter(e => e.type === "Terminal")
+    .map(e => {
+      const deviceType = deviceTypes.find(t => t.code === e.model);
+
+      return {
+        id: e.id,
+        name: e.name,
+        creationDate: e.creationDate,
+        typeCode: deviceType?.value,
+        type: deviceType,
+        lifespan:
+          e.datePurchase && e.dateWithdrawal
+            ? differenceInDays(
+                new Date(e.dateWithdrawal),
+                new Date(e.datePurchase)
+              ) / 365
+            : 0,
+        country: e.location,
+        numberOfUsers: e.numberOfUsers,
+        yearlyUsageTimePerUser: e.durationHour,
+        digitalServiceUid: e.digitalServiceUid,
+      } as DigitalServiceTerminalConfig;
+    });
+});
+terminalDeviceTypes = this.digitalServiceStore.terminalDeviceTypes();
+countries = computed(() => {
+  const map = this.digitalServiceStore.countryMap();
+
+  return Object.entries(map).map(([code, label]) => ({
+    code,
+    label
+  }));
+});
 
 onNetworkSavedFromChild(network: DigitalServiceNetworkConfig) {
   this.editingNetwork = network;
   this.onNetworkSaved(); 
 }
+
 
 onNetworkDeletedFromChild(network: DigitalServiceNetworkConfig) {
   const newSimulation = this.simulationEquipments()
@@ -369,6 +503,7 @@ async onServerSaved() {
 }
 
 editingNetwork: DigitalServiceNetworkConfig | null = null;
+editingTerminal: DigitalServiceTerminalConfig | null = null;
 
 openNetworkEditor(network: DigitalServiceNetworkConfig) {
     this.editingNetwork = structuredClone(network);
@@ -658,7 +793,10 @@ private readonly router = inject(Router);
 private readonly route = inject(ActivatedRoute);
 
 private readonly digitalServicesData = inject(DigitalServicesDataService);
-
+hasAnyModified = computed(() => {
+  const modified = this.simulationModified();
+  return modified.size > 0 && Array.from(modified.values()).some(Boolean);
+});
 async createNewVersion() {
   if (!this.dsVersionUid) return;
 
