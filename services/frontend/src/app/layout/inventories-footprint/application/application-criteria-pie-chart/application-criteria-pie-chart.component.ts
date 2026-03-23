@@ -86,12 +86,9 @@ export class ApplicationCriteriaPieChartComponent {
     initLifecycleGraph(selectedFilters: Filter, footprint: ApplicationFootprint[]) {
         const data: any[] = [];
         const lifecyles: string[] = [];
-        const criteriaFootprint = footprint.find(
-            (item) => item.criteria === this.footprintStore.applicationCriteria(),
-        );
 
-        if (criteriaFootprint) {
-            for (const impact of criteriaFootprint.impacts) {
+        for (const footprintItem of footprint) {
+            for (const impact of footprintItem.impacts) {
                 if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                     switch (this.footprintStore.appGraphType()) {
                         case "global":
@@ -133,17 +130,13 @@ export class ApplicationCriteriaPieChartComponent {
         const data: any[] = [];
         const environments: string[] = [];
 
-        const criteriaFootprint = footprint.find(
-            (item) => item.criteria === this.footprintStore.applicationCriteria(),
-        );
-
-        if (criteriaFootprint) {
-            for (const impact of criteriaFootprint.impacts) {
+        for (const footprintItem of footprint) {
+            for (const impact of footprintItem.impacts) {
                 if (
-                    selectedFilters["environment"]?.includes(impact.environment) &&
-                    selectedFilters["equipmentType"]?.includes(impact.equipmentType) &&
-                    selectedFilters["lifeCycle"]?.includes(impact.lifeCycle) &&
-                    this.footprintStore.appApplication() === impact.applicationName
+                    this.filterService.getFilterincludes(selectedFilters, impact) &&
+                    (this.footprintStore.appApplication()
+                        ? this.footprintStore.appApplication() === impact.applicationName
+                        : true)
                 ) {
                     if (environments.includes(impact.environment)) {
                         const index = environments.indexOf(impact.environment);
