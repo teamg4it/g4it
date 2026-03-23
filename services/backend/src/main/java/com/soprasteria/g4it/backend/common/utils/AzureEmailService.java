@@ -49,7 +49,7 @@ public class AzureEmailService {
                     .last()
                     .doOnSuccess(this::handleAsyncPollerResponse)
                     .doOnError(error -> log.error("Error occurred while sending email to recipient [{}]: {}", recipient, error.getMessage(), error))
-                    .block();
+                    .subscribe();
         });
     }
 
