@@ -15,4 +15,11 @@ public class ErrorConstants {
     public static final String NOT_FOUND = "404";
     public static final String NOT_AUTHORIZED = "403";
     public static final String NOT_AUTHORIZED_MESSAGE = "Not authorized";
+    public static final String DIGITAL_SERVICE_NOT_FOUND =
+            "Digital service %s not found";
+    public static final String INVENTORY_NOT_FOUND =
+            "Inventory %d not found";
+    public static final String WORKSPACE_NOT_FOUND =
+            "Workspace %d not found";
+    public static final String INVALID_RENEW_ACTION = "Invalid renew action.";
 }
