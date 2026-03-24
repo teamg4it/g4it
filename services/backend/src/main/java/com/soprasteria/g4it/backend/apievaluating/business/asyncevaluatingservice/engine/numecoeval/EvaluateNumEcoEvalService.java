@@ -118,7 +118,7 @@ public class EvaluateNumEcoEvalService {
                 boolean isHidden = firstImpact == null || Boolean.TRUE.equals(firstImpact.getIsHidden());
 
                 boolean isImpactBase = firstImpact != null &&
-                        "Base IMPACTS ®Version 2.01".equals(firstImpact.getSource());
+                        Constants.BASE_IMPACTS_VERSION_2_01.equals(firstImpact.getSource());
 
                 boolean hideValue = !showReferenceValue && isHidden && !isImpactBase;
 
