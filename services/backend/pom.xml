@@ -58,6 +58,7 @@
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <shedlock.version>6.9.2</shedlock.version>
+        <azure-communication-email.version>1.0.11</azure-communication-email.version>
 
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
@@ -298,6 +299,12 @@
             <artifactId>jsoup</artifactId>
             <version>1.17.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-communication-email</artifactId>
+            <version>${azure-communication-email.version}</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
