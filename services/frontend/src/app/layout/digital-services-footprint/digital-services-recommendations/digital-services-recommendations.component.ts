@@ -43,7 +43,7 @@ public onSelectAllChange(selectAll: boolean) {
 
   recommendations = [
     { 
-      title: 'Utiliser une architecture adaptée à la quantité de ressources utilisées à la consommation du service', 
+      title: 'Utiliser une architecture adaptée', 
       priority:1,
       category: ['Clouds Publics - IaaS'], 
       implementationDifficulty: "Facile", 
@@ -51,7 +51,7 @@ public onSelectAllChange(selectAll: boolean) {
       selected: false 
     },
     { 
-      title: 'S\'astreindre à un poids maximum et une limite de requêtes par écran', 
+      title: 'Limiter le poids et le nombre de requêtes par écran', 
       priority:2,
       category:  ['Réseaux'], 
       implementationDifficulty: "Facile", 
@@ -59,7 +59,7 @@ public onSelectAllChange(selectAll: boolean) {
       selected: false 
     },
     { 
-      title: 'Utiliser un hébergement dont le PUE (Power Usage Effectiveness) est minimisé', 
+      title: 'Minimiser le PUE de l\'hébergement', 
       priority:3,
       category: ['Infrastructure Privée'], 
       implementationDifficulty: "Moyen", 
@@ -67,7 +67,7 @@ public onSelectAllChange(selectAll: boolean) {
       selected: false 
     },
     { 
-      title: 'Utiliser un hébergement dont la localisation géographique est cohérente avec ses activités et qui minimise son empreinte environnementale ', 
+      title: 'Choisir un hébergement cloud géographiquement cohérent ', 
       priority:4,
       category: ['Clouds Publics - IaaS', 'Infrastructure Privée'], 
       implementationDifficulty: "Difficile", 
@@ -75,7 +75,7 @@ public onSelectAllChange(selectAll: boolean) {
       selected: false 
     },
       { 
-    title: 'Optimiser le parcours d’utilisation pour chaque fonctionnalité principale', 
+    title: 'Optimiser le parcours utilisateur', 
     priority:5,
     category: ['Terminaux'], 
     implementationDifficulty: "Facile", 

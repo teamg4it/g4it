@@ -29,7 +29,12 @@ import { addDays, differenceInDays } from 'date-fns';
   
 })
 export class DigitalServicesApplyRecommendationsComponent implements OnInit {
+private toTimestamp(value: string | number | Date | undefined): number {
+  if (!value) return Date.now();
 
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? Date.now() : d.getTime();
+}
   @Input() selectedRecommendations: any[] = [];
   @Input() dsVersionUid!: string;
   addSidebarVisible: boolean = false;
@@ -181,8 +186,6 @@ onTerminalDeletedFromChild(terminal: DigitalServiceTerminalConfig) {
 }
 
 async onTerminalSaved() {
-  console.log("SAVE TERMINAL START", this.editingTerminal);
-
   if (!this.editingTerminal) {
     return;
   }
@@ -208,12 +211,12 @@ async onTerminalSaved() {
     durationHour: this.editingTerminal.yearlyUsageTimePerUser,
     datePurchase: datePurchase.toISOString(),
     dateWithdrawal: dateWithdrawal.toISOString(),
-    creationDate:
-      this.editingTerminal.creationDate?.toString() ??
-      new Date().toISOString(),
+    creationDate: this.editingTerminal.creationDate
+      ? (new Date(this.editingTerminal.creationDate)).toISOString()
+      : new Date().toISOString(),
   };
 
-  const currentSimulation = this.simulationEquipments();
+    const currentSimulation = this.simulationEquipments();
 
   const otherEquipments = currentSimulation.filter(
     e => e.type !== "Terminal"
@@ -266,8 +269,8 @@ simulatedTerminals = computed(() => {
               ) / 365
             : 0,
         country: e.location,
-        numberOfUsers: e.numberOfUsers,
-        yearlyUsageTimePerUser: e.durationHour,
+        numberOfUsers: e.numberOfUsers ?? 0,
+        yearlyUsageTimePerUser: e.durationHour ?? 0 ,
         digitalServiceUid: e.digitalServiceUid,
       } as DigitalServiceTerminalConfig;
     });
@@ -396,9 +399,17 @@ simulatedServers = computed(() => {
         serverTypes.find((s) => s.reference === e.model) ||
         serverTypes.find((s) => s.value === e.description);
 
-      const datacenter = datacenters.find(
-        (dc) => dc.name === e.datacenterName
-      );
+     const normalize = (name?: string) => name?.split("|")[0];
+
+const datacenter =
+  datacenters.find(
+    (dc) => normalize(dc.name) === normalize(e.datacenterName)
+  ) ?? {
+    name: e.datacenterName ?? "Default DC",
+    location: e.location ?? "UNKNOWN",
+    pue: 1,
+  };
+  console.log("datacenetr ::",datacenter)
 
       const vms = groupedVMs[e.name] ?? [];
 
@@ -411,13 +422,21 @@ simulatedServers = computed(() => {
         ? differenceInDays(e.dateWithdrawal, e.datePurchase) / 365
         : undefined;
 
-      return {
+        const sumOfVmQuantity = vms.reduce(
+          (sum, vm) => sum + (vm.quantity ?? 0),
+          0
+        );
+
+        const quantity = Math.max(1, e.quantity) ; 
+
+      const res =  {
         id: e.id,
-        uid: e.id?.toString(), // ou génère‑le si besoin
+        uid: e.id?.toString(),
         name: e.name,
         mutualizationType: validMutualization,
         type: serverType?.type || "Compute",
-        quantity: e.quantity,
+        quantity: quantity,
+        quantityVms: `${quantity} (${sumOfVmQuantity})`, 
         host: serverType ?? undefined,
         hostValue: serverType?.value ?? undefined,
         datacenter,
@@ -439,10 +458,13 @@ simulatedServers = computed(() => {
         })),
         digitalServiceUid: e.digitalServiceUid,
         digitalServiceVersionUid: e.digitalServiceVersionUid,
-        creationDate: e.creationDate ? Date.parse(e.creationDate) : undefined,
+        creationDate: this.toTimestamp(e.creationDate), // ✅ number (timestamp)
       } as DigitalServiceServerConfig;
+       return res ; 
     });
 });
+
+
 
 
 
@@ -469,7 +491,7 @@ async onServerSaved() {
     id: this.editingServer.id,
     digitalServiceUid: this.editingServer.digitalServiceUid!,
     name: this.editingServer.name,
-    datacenterName: this.editingServer.datacenter?.name || "Default DC",
+    datacenterName: this.editingServer.datacenter?.name?.split("|")[0] || "Default DC",
     location: this.editingServer.datacenter?.location ?? "UNKNOWN",
     quantity: this.editingServer.quantity,
     type: this.editingServer.mutualizationType + " Server",
@@ -479,7 +501,9 @@ async onServerSaved() {
     cpuCoreNumber: this.editingServer.totalVCpu,
     sizeDiskGb: this.editingServer.totalDisk,
     electricityConsumption: this.editingServer.annualElectricConsumption,
-    creationDate: this.editingServer.creationDate?.toString() ?? new Date().toISOString(),
+    creationDate: this.editingServer.creationDate
+      ? (new Date(this.editingServer.creationDate)).toISOString()
+      : new Date().toISOString(),
   };
 
   const currentSimulation = this.simulationEquipments();
@@ -487,12 +511,12 @@ async onServerSaved() {
     s.id === updatedServer.id
       ? {
           ...updatedServer,
-          datacenterName:
-            updatedServer.datacenterName || this.editingServer?.datacenter?.name,
+          datacenterName: updatedServer.datacenterName,
           creationDate: updatedServer.creationDate,
         }
       : s
   );
+
   this.simulationEquipments.set(newSimulation);
 
   const modified = this.simulationModified();
@@ -501,6 +525,7 @@ async onServerSaved() {
 
   this.closeEditor();
 }
+
 
 editingNetwork: DigitalServiceNetworkConfig | null = null;
 editingTerminal: DigitalServiceTerminalConfig | null = null;
@@ -861,28 +886,49 @@ private async applySimulationToVersion(versionUid: string) {
   const physicalSimulation = this.simulationEquipments();
   const virtualSimulation = this.simulationVirtualEquipments();
 
+  // --- PHYSICAL EQUIPMENTS ---
   for (const equip of physicalSimulation) {
     const payload: InPhysicalEquipmentRest = {
       ...equip,
       id: undefined,
       digitalServiceVersionUid: versionUid,
+      datacenterName: (equip.datacenterName ?? "").split("|")[0] || "Default DC",
+      location: equip.location ?? "UNKNOWN",
+      quantity: equip.quantity,//Math.max(1, Math.round(Number(equip.quantity))),
+
+      // Convertis timestamp → ISO string juste pour le payload
+      creationDate: equip.creationDate
+        ? (new Date(equip.creationDate)).toISOString()
+        : new Date().toISOString(),
     };
 
-    await firstValueFrom(
-      this.inPhysicalEquipmentsService.create(payload)
-    );
+    try {
+      await firstValueFrom(
+        this.inPhysicalEquipmentsService.create(payload)
+      );
+    } catch (e) {
+      console.error("Error creating physical equipment:", payload, e);
+    }
   }
 
+  // --- VIRTUAL EQUIPMENTS ---
   for (const vequip of virtualSimulation) {
     const payload: InVirtualEquipmentRest = {
       ...vequip,
       id: undefined,
       digitalServiceVersionUid: versionUid,
+      quantity: Number(vequip.quantity) || 1,
+      durationHour: Number(vequip.durationHour) || 0,
+      workload: Number(vequip.workload) || 0,
     };
 
-    await firstValueFrom(
-      this.inVirtualEquipmentsService.create(payload)
-    );
+    try {
+      await firstValueFrom(
+        this.inVirtualEquipmentsService.create(payload)
+      );
+    } catch (e) {
+      console.error("Error creating virtual equipment:", payload, e);
+    }
   }
 }
 
