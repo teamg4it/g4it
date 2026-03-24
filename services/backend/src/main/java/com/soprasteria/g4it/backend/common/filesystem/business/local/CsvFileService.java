@@ -18,8 +18,8 @@ import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 @Service
@@ -38,9 +38,19 @@ public class CsvFileService {
      */
     public CSVPrinter getPrinter(FileType fileType, Path directory) throws IOException {
 
-        return new CSVPrinter(new FileWriter(
-                directory.resolve(fileType.getFileName() + Constants.CSV).toFile()
-        ), CSVFormat.Builder.create()
+        Path filePath = directory.resolve(fileType.getFileName() + Constants.CSV);
+        FileOutputStream outputStream = new FileOutputStream(filePath.toFile());
+        outputStream.write(0xEF);
+        outputStream.write(0xBB);
+        outputStream.write(0xBF);
+
+        BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)
+        );
+
+        return new CSVPrinter(
+                writer,
+                CSVFormat.Builder.create()
                 .setHeader(csvFileMapperInfo.getMapping(fileType).stream()
                         .map(Header::getName).toArray(String[]::new))
                 .setDelimiter(CsvUtils.DELIMITER)
