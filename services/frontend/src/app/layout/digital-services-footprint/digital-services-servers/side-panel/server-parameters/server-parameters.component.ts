@@ -104,8 +104,12 @@ export class PanelServerParametersComponent {
                     ];
             }
         }
-        this.current.host = srv.host!;
-        this.current.datacenter = srv.datacenter!;
+        this.current.host = srv.host ?? ({} as Host);
+        this.current.datacenter = srv.datacenter ?? {
+                name: "Default DC",
+                location: "UNKNOWN",
+                pue: 1,
+            };
 
         if (!srv.totalVCpu && srv.type === "Compute") {
             srv.totalVCpu = srv.host?.characteristic.find(
@@ -132,10 +136,16 @@ export class PanelServerParametersComponent {
             ? srv.datacenter?.name
             : "Default DC";
 
-        const datacenter = datacenters.find((x) => x.name === datacenterName);
-        srv.datacenter = datacenter;
+        const datacenter =
+    datacenters.find((x) => x.name === datacenterName) ??
+    datacenters[0] ?? {
+        name: "Default DC",
+        location: "UNKNOWN",
+        pue: 1,
+    };
 
-        this.current.datacenter = datacenter!;
+srv.datacenter = datacenter;
+this.current.datacenter = datacenter;
 
         if (srv.quantity === -1) {
             srv.quantity = 1;

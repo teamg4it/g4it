@@ -187,7 +187,7 @@ styleClass="yellow-button"
       <app-digital-services-servers
         [dsVersionUid]="dsVersionUid"
         [embedded]="true"
-        [serverDataInput]="simulatedServers"
+        [serverDataInput]="simulatedServers()"
         (editEmbedded)="openServerEditor($event)"
         [paginator]="false"
       />
@@ -305,7 +305,7 @@ styleClass="yellow-button"
           </div>
 
           <!-- COUNTRY -->
-          <div class="form-row">
+          <!-- <div class="form-row">
             <label>{{ "digital-services-terminals.country" | translate }}</label>
             <p-dropdown
               [options]="countries()"
@@ -315,7 +315,7 @@ styleClass="yellow-button"
               appendTo="body"
               class="field-full"
             ></p-dropdown>
-          </div>
+          </div> -->
 
           <!-- USERS -->
           <div class="form-row">
@@ -338,13 +338,13 @@ styleClass="yellow-button"
           </div>
 
           <!-- LIFESPAN -->
-          <div class="form-row">
+          <!-- <div class="form-row">
             <label>{{ "digital-services-terminals.lifespan" | translate }}</label>
             <p-inputNumber
               [(ngModel)]="editingTerminal.lifespan"
               class="field-full"
             ></p-inputNumber>
-          </div>
+          </div> -->
 
         </div>
 
