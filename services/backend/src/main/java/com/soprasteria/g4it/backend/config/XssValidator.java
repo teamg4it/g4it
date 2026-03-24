@@ -2,6 +2,7 @@ package com.soprasteria.g4it.backend.config;
 
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
 
 public final class XssValidator {
@@ -86,14 +87,19 @@ public final class XssValidator {
 
         String sanitized = Jsoup.clean(value, SAFE_HTML_SAFELIST);
 
-        // Validation only: reject if any unsafe content is removed
-        if (!value.equals(sanitized)) {
+        Document inputDoc = Jsoup.parseBodyFragment(value);
+        Document cleanedDoc = Jsoup.parseBodyFragment(sanitized);
+
+        // If Jsoup removed nodes, unsafe content was present
+        if (cleanedDoc.body().childNodeSize()
+                < inputDoc.body().childNodeSize()) {
+
             throw new G4itRestException(
                     "400",
                     "Invalid input detected. Unsafe HTML or script content is not allowed"
             );
         }
 
-        return value; // returning original input intentionally (no mutation)
+        return value;
     }
 }
