@@ -24,11 +24,16 @@ export class DigitalServiceTableComponent {
     @Input() showId = true;
     @Input() addButtonId = "add-button";
     @Input() isVM = false;
+    @Input() selectable = false;
+    @Input() compareMode = false;
+    @Input() paginator = true;
+    @Input() hideActions = false;
 
     @Output() sidebar: EventEmitter<boolean> = new EventEmitter();
     @Output() resetItem: EventEmitter<boolean> = new EventEmitter();
     @Output() setItem: EventEmitter<any> = new EventEmitter();
     @Output() deleteItem: EventEmitter<any> = new EventEmitter();
+    @Output() compareClicked: EventEmitter<void> = new EventEmitter();
 
     isMobileView = computed(() => this.globalStoreService.mobileView());
 
@@ -72,4 +77,40 @@ export class DigitalServiceTableComponent {
             });
         }
     }
+
+    onMainButtonClick() {
+        if (this.compareMode) {
+            this.compareClicked.emit();
+            return;
+        }
+
+        this.doResetItem();
+        this.sidebarVisible(true);
+    }
+
+    @Input() showSelectAll = false;
+    selectAll = false;
+    @Output() selectAllChange = new EventEmitter<boolean>();
+
+
+    updateSelectAllState() {
+    if (!this.data?.length) {
+        this.selectAll = false;
+        return;
+    }
+
+    this.selectAll = this.data.every(item => item.selected);
+    }
+
+    onSelectAllChange() {
+
+  this.selectAll = this.selectAll;
+
+  if (this.data) {
+    this.data.forEach(item => item.selected = this.selectAll);
+  }
+
+  this.selectAllChange.emit(this.selectAll);
+  this.updateSelectAllState();
+}
 }

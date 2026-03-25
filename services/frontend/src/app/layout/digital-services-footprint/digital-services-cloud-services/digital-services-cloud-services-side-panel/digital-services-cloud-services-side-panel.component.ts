@@ -33,10 +33,8 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
         {} as DigitalServiceCloudServiceConfig;
     @Input() cloudServices: DigitalServiceCloudServiceConfig[] = [];
     @Output() sidebarVisibleChange: EventEmitter<boolean> = new EventEmitter();
-    @Output() updateCloudServices: EventEmitter<DigitalServiceCloudServiceConfig> =
-        new EventEmitter();
-    @Output() deleteCloudServices: EventEmitter<DigitalServiceCloudServiceConfig> =
-        new EventEmitter();
+    @Output() updateCloudServices: EventEmitter<DigitalServiceCloudServiceConfig> = new EventEmitter();
+    @Output() deleteCloudServices: EventEmitter<DigitalServiceCloudServiceConfig> = new EventEmitter();
 
     cloudForm!: FormGroup;
     countries: DropdownValue[] = [];
@@ -61,6 +59,7 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
         if (!this.cloud.idFront) {
             this.resetCloudServices();
         }
+        this.loadInstanceTypes();
     }
 
     async getBoaviztaReferentials() {
@@ -90,6 +89,23 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
             this.instanceTypesByProvider.set(cloudProvider, instances);
         }
     }
+
+    private async loadInstanceTypes() {
+  const providers = await lastValueFrom(
+    this.digitalDataService.getBoaviztapiCloudProviders()
+  );
+
+
+  for (const provider of providers) {
+    const types = await lastValueFrom(
+      this.digitalDataService.getBoaviztapiInstanceTypes(provider)
+    );
+      this.instanceTypesByProvider.set(provider, types);
+
+  }
+
+}
+ 
 
     async resetCloudServices() {
         this.cloud = {
@@ -146,13 +162,19 @@ export class DigitalServicesCloudServicesSidePanelComponent implements OnInit {
         this.sidebarVisibleChange.emit(false);
     }
 
+    @Input() embedded = false;
+
     async submitFormData() {
         this.updateCloudServices.emit(this.cloud);
+        if (!this.embedded) {
         this.close();
+        }
     }
 
     async deleteServerCloud() {
         this.deleteCloudServices.emit(this.cloud);
+        if (!this.embedded) {
         this.close();
+        }
     }
 }

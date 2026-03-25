@@ -1,0 +1,376 @@
+.import-digital {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    // position: relative!important;
+
+      // Quand il y a un menu
+  // .space-menu {
+  //   flex: 0 0 20%;
+  // }
+
+  // .space-form {
+  //   flex: 0 0 80%;
+  // }
+
+  // Quand il n’y a pas de menu
+   &.no-menu {
+    flex-direction: column;
+
+    .space-menu {
+      display: none;
+    }
+
+    .space-form {
+      flex: 1 1 auto;
+      width: 100%;
+      padding: 1.5rem;
+      overflow: auto;
+    }
+  }
+
+    .space-sidebar-close {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 0.5rem;
+    }
+
+   .sidebar {
+  width: 80vw;  
+  position: relative!important;
+  
+}
+
+
+::ng-deep .p-sidebar {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+  position: relative!important;
+}
+
+::ng-deep .p-sidebar-content {
+  height: 100%;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .p-sidebar {
+  width: 80vw !important;
+}
+// .space-menu {
+//   width: 80vw;
+//   max-width: none;
+// }
+.space-menu {
+  flex: 0 0 20%;   // menu = 20%
+}
+
+.space-form {
+  flex: 0 0 80%;   // contenu = 80%
+}
+
+
+
+    .space-sidebar-close-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        color: rgba(0, 0, 0, 0.6);
+        border: 0 none;
+        background: transparent;
+        border-radius: 50%;
+        transition:
+            background-color 0.2s,
+            color 0.2s,
+            box-shadow 0.2s;
+        align-items: center;
+    }
+
+    .space-sidebar-close-button:enabled:hover {
+        border-color: transparent;
+        background: rgba(0, 0, 0, 0.04);
+    }
+
+    .space-form {
+        padding: 1.5rem;
+        position: relative;
+        min-width: 0;
+        flex: 1 1 auto;
+        min-width: 0;
+         min-height: 0; 
+          overflow: auto;
+        // display: flex;
+        // flex-direction: column;
+          // max-width: 706px;
+          // width: 706px;
+    }
+    ::ng-deep app-digital-services-networks,
+::ng-deep app-digital-services-cloud-services,
+::ng-deep app-digital-services-servers {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+::ng-deep .p-datatable td,
+::ng-deep .p-datatable th {
+  white-space: normal !important;
+}
+    p-scrollPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative!important;
+}
+    .import-digital-content {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    }
+    .embedded-server-panel {
+        //max-height: 100vh;
+        overflow: auto;
+        // border: 5px solid #ddd;
+          height: 100%;    
+  flex: 1;       
+  min-height: 0;      
+  height: 10;
+    }
+
+    .embedded-server-panel > form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.embedded-server-panel .panel-footer {
+  flex-shrink: 0;       /* ne se réduit pas */
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+
+.embedded-server-panel form > .lg-file-panel-margin {
+  flex: 1;            /* prend tout l’espace disponible */
+  overflow-y: auto;   /* scroll si trop grand */
+  padding-right: 8px; /* pour éviter que le scroll cache le contenu */
+}
+
+.embedded-server-panel .button-bottom-right {
+  flex-shrink: 0;     /* reste visible même si le contenu scroll */
+  margin-top: 8px;
+}
+
+
+.add-datacenter-inline {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+
+  .side-panel-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+}
+
+// ::ng-deep .p-datatable-wrapper {
+//   overflow-x: hidden !important;
+// }
+
+// ::ng-deep .p-datatable table {
+//   width: 100% !important;
+//   table-layout: fixed !important;
+// }
+
+// ::ng-deep .p-datatable {
+//   width: 100% !important;
+// }
+
+::ng-deep .recommendation-content .p-datatable {
+  width: 100% !important;
+}
+
+// .recommendation-content {
+//   width: 706px; 
+//   max-width: 100%;
+// }
+::ng-deep app-form-nav {
+  flex: 0 0 500px;   //  largeur fixe du menu
+  max-width: 500px;
+  width: 500px !important;
+}
+
+.recommendation-content > * {
+  width: 100%;
+}
+
+.cloud-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+
+.cloud-form-row {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cloud-form-row label {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.field-full {
+  width: 100%;
+}
+
+:host ::ng-deep .cloud-form-row .p-inputnumber,
+:host ::ng-deep .cloud-form-row .p-dropdown {
+  width: 100%;
+}
+
+.terminal-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-row label {
+  width: 220px;
+  min-width: 220px;
+}
+
+.field-full {
+  flex: 1;
+}
+
+
+/* Pour que le bouton "Ajouter" reste aligné proprement */
+:host ::ng-deep .p-button.black-button {
+  white-space: nowrap;
+}
+
+    .space-form--input:not(.active) {
+        display: none;
+    }
+
+    .space-form--input.active,
+    .help-text {
+        display: block;
+    }
+
+    .space-form--button-group {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        min-width: 100%;
+        gap: 8px;
+        padding: 1rem 1.5rem 1rem;
+    }
+
+    h2,
+    h3,
+    h4,
+    p {
+        color: var(--tints-black-100);
+    }
+}
+/*  new */
+.status-tag {
+    border-radius: 4px;
+    display: inline;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.green-tag {
+    color: var(--light-green-color);
+    border: 1px solid var(--light-green-color);
+    background: rgba(0, 135, 0, 0.03);
+}
+
+.red-tag {
+    color: #cb2525;
+    border: 1px solid #cb2525;
+    background: rgba(224, 47, 47, 0.06);
+}
+
+.yellow-tag {
+    color: #eebb16;
+    border: 1px solid #eebb16;
+    background: rgba(0, 135, 0, 0.03);
+}
+
+.orange-tag {
+    color: var(--warning-color);
+    border: 1px solid var(--warning-color);
+    background: rgba(232, 143, 22, 0.06);
+}
+
+.bg-light-grey-color {
+    background: var(--light-grey-color);
+}
+
+.background-none {
+    background: none;
+}
+
+.light-black-color {
+    color: var(--tints-black-80);
+}
+
+@media screen and (max-width: 630px) {
+    .import-digital {
+        width: 100vw;
+        overflow: auto;
+    }
+
+
+    .embedded-network-panel {
+  max-height: 50vh;
+  overflow: auto;
+  border: 5px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.embedded-network-panel .panel-content {
+  flex: 1;          /* prend tout l’espace restant */
+  overflow-y: auto; /* scroll si le contenu est trop long */
+  padding: 1rem;
+}
+
+.embedded-network-panel .panel-footer {
+  flex-shrink: 0;       /* ne se réduit pas */
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+}

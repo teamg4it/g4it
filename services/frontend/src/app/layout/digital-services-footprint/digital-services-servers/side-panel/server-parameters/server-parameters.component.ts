@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, ViewChild } from "@angular/core";
+import { Component, computed, effect, EventEmitter, inject, Injector, Input, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -33,6 +33,10 @@ export class PanelServerParametersComponent {
     public translate = inject(TranslateService);
     public digitalServiceStore = inject(DigitalServiceStoreService);
     private readonly inDatacentersService = inject(InDatacentersService);
+    @Output() save = new EventEmitter<DigitalServiceServerConfig>();
+    @Output() cancel = new EventEmitter<void>();
+    @Input() editingServer!: DigitalServiceServerConfig | null;
+    @Input() embedded = false;
 
     @ViewChild("childSidePanel", { static: false })
     childSidePanel!: PanelDatacenterComponent;
@@ -81,7 +85,7 @@ export class PanelServerParametersComponent {
             .filter((st) => st.type === this.digitalServiceStore.server().type);
     });
 
-    server = computed(() => {
+    server = computed(() => {  
         const srv = this.digitalServiceStore.server();
         const datacenters = this.datacenterOptions();
         const serverTypes = this.digitalServiceStore.serverTypes();
@@ -100,8 +104,12 @@ export class PanelServerParametersComponent {
                     ];
             }
         }
-        this.current.host = srv.host!;
-        this.current.datacenter = srv.datacenter!;
+        this.current.host = srv.host ?? ({} as Host);
+        this.current.datacenter = srv.datacenter ?? {
+                name: "Default DC",
+                location: "UNKNOWN",
+                pue: 1,
+            };
 
         if (!srv.totalVCpu && srv.type === "Compute") {
             srv.totalVCpu = srv.host?.characteristic.find(
@@ -128,10 +136,16 @@ export class PanelServerParametersComponent {
             ? srv.datacenter?.name
             : "Default DC";
 
-        const datacenter = datacenters.find((x) => x.name === datacenterName);
-        srv.datacenter = datacenter;
+        const datacenter =
+    datacenters.find((x) => x.name === datacenterName) ??
+    datacenters[0] ?? {
+        name: "Default DC",
+        location: "UNKNOWN",
+        pue: 1,
+    };
 
-        this.current.datacenter = datacenter!;
+srv.datacenter = datacenter;
+this.current.datacenter = datacenter;
 
         if (srv.quantity === -1) {
             srv.quantity = 1;
@@ -257,7 +271,8 @@ export class PanelServerParametersComponent {
 
         this.digitalServiceStore.setServer(server);
         if (this.server().mutualizationType === "Dedicated") {
-            this.digitalServiceBusiness.submitServerForm(
+            this.save.emit(server);
+                        this.digitalServiceBusiness.submitServerForm(
                 this.server(),
                 this.digitalServiceStore.digitalService(),
             );
@@ -269,6 +284,6 @@ export class PanelServerParametersComponent {
 
     close() {
         this.digitalServiceStore.setServer({} as DigitalServiceServerConfig);
-        this.digitalServiceBusiness.closePanel();
+        this.digitalServiceBusiness.closePanel(); 
     }
 }
