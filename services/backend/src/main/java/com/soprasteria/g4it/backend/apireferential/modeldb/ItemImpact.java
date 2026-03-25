@@ -107,6 +107,8 @@ public class ItemImpact implements Serializable {
      */
     private String version;
 
+    private Boolean isHidden;
+
     public static String[] getCsvHeaders() {
         return new String[]{"criterion", "lifecycleStep", "name", "category", "avgElectricityConsumption", "description",
                 "location", "level", "source", "tier", "unit", "value", "subscriber", "version"};

@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalCalculs;
+import com.soprasteria.g4it.backend.apievaluating.utils.Constants;
 import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
@@ -60,6 +61,8 @@ public class EvaluateNumEcoEvalService {
     @Autowired
     CalculImpactApplicationService calculImpactApplicationService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * Calculate physical equipment impacts with NumEcoEval library
      *
@@ -77,7 +80,8 @@ public class EvaluateNumEcoEvalService {
                                                                      final String organization,
                                                                      List<CriterionRest> criteria,
                                                                      List<String> lifecycleSteps,
-                                                                     List<HypothesisRest> hypotheses) {
+                                                                     List<HypothesisRest> hypotheses,
+                                                                     boolean showReferenceValue) {
 
         MatchingItemRest matchingItem = null;
         boolean isModelMatched = true;
@@ -90,8 +94,6 @@ public class EvaluateNumEcoEvalService {
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
-
-        ObjectMapper objectMapper = new ObjectMapper();
 
         for (final String lifecycleStep : lifecycleSteps) {
             for (final CriterionRest criterion : criteria) {
@@ -110,6 +112,15 @@ public class EvaluateNumEcoEvalService {
                 List<ItemImpactRest> itemImpacts = referentialService.getItemImpacts(
                         criterion.getCode(), lifecycleStep, itemImpactName,
                         physicalEquipment.getLocation(), organization);
+
+                ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
+
+                boolean isHidden = firstImpact == null || Boolean.TRUE.equals(firstImpact.getIsHidden());
+
+                boolean isImpactBase = firstImpact != null &&
+                        Constants.BASE_IMPACTS_VERSION_2_01.equals(firstImpact.getSource());
+
+                boolean hideValue = !showReferenceValue && isHidden && !isImpactBase;
 
                 EquipementPhysique equipementPhysique = internalToNumEcoEvalCalculs.map(physicalEquipment);
                 if (datacenter != null) {
@@ -138,8 +149,8 @@ public class EvaluateNumEcoEvalService {
 
                 ImpactEquipementPhysique impactEquipementPhysique =
                         calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(demandeCalculImpactEquipementPhysique);
-
-                updateTraceForImpact(impactEquipementPhysique, lifecycleStep, isModelMatched, objectMapper);
+                String refName = firstImpact != null ? firstImpact.getName() : null;
+                updateTraceForImpact(impactEquipementPhysique, lifecycleStep, isModelMatched,refName,hideValue, objectMapper);
                 result.add(impactEquipementPhysique);
             }
         }
@@ -157,55 +168,129 @@ public class EvaluateNumEcoEvalService {
     private void updateTraceForImpact(ImpactEquipementPhysique impactEquipementPhysique,
                                       String lifecycleStep,
                                       boolean isModelMatched,
+                                      String refName,
+                                      boolean hideValue,
                                       ObjectMapper objectMapper) {
+
         String trace = impactEquipementPhysique.getTrace();
         if (StringUtils.isEmpty(trace) || trace.contains("erreur")) {
             return;
         }
         try {
-            Map<String, Object> traceMap = objectMapper.readValue(trace, new TypeReference<>() {
-            });
+            Map<String, Object> traceMap = objectMapper.readValue(trace, new TypeReference<>() {});
 
-            boolean modified = false;
-
-            if ("USING".equalsIgnoreCase(lifecycleStep) && traceMap.containsKey("consoElecAnMoyenne")) {
-                Object consObj = traceMap.get("consoElecAnMoyenne");
-                if (consObj != null) {
-                    Map<String, Object> consoMap = objectMapper.convertValue(consObj, new TypeReference<>() {
-                    });
-                    consoMap.put("impact source", "REELLE");
-                    traceMap.put("consoElecAnMoyenne", consoMap);
-                    modified = true;
-
-                }
-            } else if (traceMap.containsKey("valeurReferentielFacteurCaracterisation") &&
-                    traceMap.containsKey("sourceReferentielFacteurCaracterisation")) {
-
-                Double value = Double.valueOf(traceMap.get("valeurReferentielFacteurCaracterisation").toString());
-                String sourceFacteur = traceMap.get("sourceReferentielFacteurCaracterisation").toString();
-
-                Map<String, Object> ReferentielFacteurCaracterisation = new HashMap<>();
-                ReferentielFacteurCaracterisation.put("impact source", isModelMatched ? "MODELE" : "TYPE");
-                ReferentielFacteurCaracterisation.put("valeur", value);
-                ReferentielFacteurCaracterisation.put("source", sourceFacteur);
-
-                // Remove old  fields
-                traceMap.remove("valeurReferentielFacteurCaracterisation");
-                traceMap.remove("sourceReferentielFacteurCaracterisation");
-
-                // Insert new field
-                traceMap.put("ReferentielFacteurCaracterisation", ReferentielFacteurCaracterisation);
-
-                modified = true;
-            }
+            boolean modified = handleUsingStage(traceMap, lifecycleStep, refName, hideValue, objectMapper)
+                    || handleReferenceFactor(traceMap, isModelMatched, refName, hideValue);
 
             if (modified) {
-                String updatedTrace = objectMapper.writeValueAsString(traceMap);
-                impactEquipementPhysique.setTrace(updatedTrace);
+                impactEquipementPhysique.setTrace(objectMapper.writeValueAsString(traceMap));
             }
         } catch (Exception e) {
             log.warn("Failed to update trace for impact equipment: {}", impactEquipementPhysique, e);
         }
+    }
+
+    private boolean handleUsingStage(Map<String, Object> traceMap,
+                                     String lifecycleStep,
+                                     String refName,
+                                     boolean hideValue,
+                                     ObjectMapper objectMapper) {
+
+        if (!Constants.USING.equalsIgnoreCase(lifecycleStep)) {
+            return false;
+        }
+
+        boolean modified = false;
+
+        if (traceMap.containsKey(Constants.CONSO_ELEC)) {
+
+            Map<String, Object> consoMap = objectMapper.convertValue(traceMap.get(Constants.CONSO_ELEC), new TypeReference<>() {});
+            consoMap.put(Constants.IMPACT_SOURCE, "REELLE");
+
+            if (hideValue) {
+
+                consoMap.put(Constants.VALEUR, Constants.HIDDEN_DATA);
+                consoMap.put(Constants.VALEUR_REF_CONSO, Constants.HIDDEN_DATA);
+
+                updateFormula(traceMap,
+                        "ConsoElecAnMoyenne\\([^)]*\\)",
+                        "ConsoElecAnMoyenne(\"hidden data\")");
+            }
+
+            traceMap.put(Constants.CONSO_ELEC, consoMap);
+            modified = true;
+        }
+
+        if (traceMap.containsKey(Constants.MIX_ELECTRIQUE)) {
+
+            Map<String, Object> mixMap = objectMapper.convertValue(traceMap.get(Constants.MIX_ELECTRIQUE),
+                    new TypeReference<>() {});
+
+            mixMap.put(Constants.NAME, refName);
+
+            if (hideValue && mixMap.containsKey(Constants.VALEUR_REF_MIX)) {
+                mixMap.put(Constants.VALEUR_REF_MIX, Constants.HIDDEN_DATA);
+            }
+
+            traceMap.put(Constants.MIX_ELECTRIQUE, mixMap);
+            modified = true;
+        }
+
+        return modified;
+    }
+
+    private boolean handleReferenceFactor(Map<String, Object> traceMap,
+                                          boolean isModelMatched,
+                                          String refName,
+                                          boolean hideValue) {
+
+        if (!traceMap.containsKey(Constants.VALEUR_REF_FACTEUR)
+                || !traceMap.containsKey(Constants.SOURCE_REF_FACTEUR)) {
+            return false;
+        }
+
+        String source = traceMap.get(Constants.SOURCE_REF_FACTEUR).toString();
+        Double value = Double.valueOf(traceMap.get(Constants.VALEUR_REF_FACTEUR).toString());
+
+        Map<String, Object> ReferentielFacteurCaracterisation = new HashMap<>();
+
+        ReferentielFacteurCaracterisation.put(Constants.IMPACT_SOURCE,
+                isModelMatched ? "MODELE" : "TYPE");
+
+        ReferentielFacteurCaracterisation.put(Constants.NAME, refName);
+        ReferentielFacteurCaracterisation.put(Constants.SOURCE, source);
+
+        if (hideValue) {
+
+            ReferentielFacteurCaracterisation.put(Constants.VALEUR, Constants.HIDDEN_DATA);
+            updateFormula(traceMap,
+                    "referentielFacteurCaracterisation\\((.*?)\\)",
+                    "referentielFacteurCaracterisation(\"hidden data\")");
+
+        } else {
+            ReferentielFacteurCaracterisation.put(Constants.VALEUR, value);
+        }
+
+        traceMap.remove(Constants.VALEUR_REF_FACTEUR);
+        traceMap.remove(Constants.SOURCE_REF_FACTEUR);
+
+        traceMap.put(Constants.REFERENTIEL_FACTEUR, ReferentielFacteurCaracterisation);
+
+        return true;
+    }
+
+    private void updateFormula(Map<String, Object> traceMap,
+                               String regex,
+                               String replacement) {
+
+        if (!traceMap.containsKey(Constants.FORMULE)) {
+            return;
+        }
+
+        String formule = traceMap.get(Constants.FORMULE).toString();
+        formule = formule.replaceAll(regex, replacement);
+
+        traceMap.put(Constants.FORMULE, formule);
     }
 
     /**
