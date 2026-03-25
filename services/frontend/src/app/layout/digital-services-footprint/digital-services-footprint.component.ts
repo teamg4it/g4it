@@ -208,6 +208,7 @@ export class DigitalServicesFootprintComponent
                     "digital-services.view-recommendations",
                 ),
                 routerLink: "recommendations",
+                visible: this.digitalService.lastCalculationDate !== undefined,
                 id: "recommendations",
             },
             ];
@@ -229,6 +230,7 @@ export class DigitalServicesFootprintComponent
                     "digital-services.view-recommendations",
                 ),
                 routerLink: "recommendations",
+                visible: this.digitalService.lastCalculationDate !== undefined,
                 id: "recommendations",
             },
             ];
