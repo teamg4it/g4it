@@ -88,7 +88,7 @@ export class ApplicationCriteriaPieChartComponent {
         const lifecyles: string[] = [];
 
         for (const footprintItem of footprint) {
-            for (const impact of footprintItem.impacts) {
+            for (const impact of footprintItem?.impacts ?? []) {
                 if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                     switch (this.footprintStore.appGraphType()) {
                         case "global":
@@ -131,7 +131,7 @@ export class ApplicationCriteriaPieChartComponent {
         const environments: string[] = [];
 
         for (const footprintItem of footprint) {
-            for (const impact of footprintItem.impacts) {
+            for (const impact of footprintItem?.impacts ?? []) {
                 if (
                     this.filterService.getFilterincludes(selectedFilters, impact) &&
                     (this.footprintStore.appApplication()
