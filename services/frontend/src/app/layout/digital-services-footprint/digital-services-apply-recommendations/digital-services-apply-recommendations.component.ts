@@ -395,6 +395,7 @@ simulatedServers = computed(() => {
   return this.simulationEquipments()
     .filter((e) => e.type && e.type.endsWith(" Server"))
     .map((e) => {
+      console.log("SERVER RAW QUANTITY", e.name, e.quantity);
       const serverType =
         serverTypes.find((s) => s.reference === e.model) ||
         serverTypes.find((s) => s.value === e.description);
@@ -427,7 +428,7 @@ const datacenter =
           0
         );
 
-        const quantity = Math.max(1, e.quantity) ; 
+        const quantity = Math.max(1, Math.round(e.quantity)); 
 
       const res =  {
         id: e.id,
@@ -887,29 +888,37 @@ private async applySimulationToVersion(versionUid: string) {
   const virtualSimulation = this.simulationVirtualEquipments();
 
   // --- PHYSICAL EQUIPMENTS ---
-  for (const equip of physicalSimulation) {
-    const payload: InPhysicalEquipmentRest = {
-      ...equip,
-      id: undefined,
-      digitalServiceVersionUid: versionUid,
-      datacenterName: (equip.datacenterName ?? "").split("|")[0] || "Default DC",
-      location: equip.location ?? "UNKNOWN",
+for (const equip of physicalSimulation) {
+  const payload: InPhysicalEquipmentRest = {
+    ...equip,
+    id: undefined,
+    inventoryId: equip.inventoryId,
+    digitalServiceUid: equip.digitalServiceUid,
+    digitalServiceVersionUid: versionUid,
+
+    name: equip.name,
+    type: equip.type,
+
+    datacenterName: (equip.datacenterName ?? "").split("|")[0] || "Default DC",
+    location: equip.location ?? "UNKNOWN",
       quantity: equip.quantity,//Math.max(1, Math.round(Number(equip.quantity))),
 
       // Convertis timestamp → ISO string juste pour le payload
-      creationDate: equip.creationDate
+    creationDate: equip.creationDate
         ? (new Date(equip.creationDate)).toISOString()
-        : new Date().toISOString(),
-    };
+      : new Date().toISOString(),
+  };
 
-    try {
-      await firstValueFrom(
-        this.inPhysicalEquipmentsService.create(payload)
-      );
-    } catch (e) {
-      console.error("Error creating physical equipment:", payload, e);
-    }
+  console.log("CLEAN PAYLOAD", payload);
+
+  try {
+    await firstValueFrom(
+      this.inPhysicalEquipmentsService.create(payload)
+    );
+  } catch (e) {
+    console.error(" Error creating physical equipment:", payload, e);
   }
+}
 
   // --- VIRTUAL EQUIPMENTS ---
   for (const vequip of virtualSimulation) {
