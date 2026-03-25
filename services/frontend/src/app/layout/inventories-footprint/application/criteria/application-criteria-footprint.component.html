@@ -22,18 +22,27 @@
                 <i class="pi pi-arrow-left mr-2"></i>
                 {{ "inventories-footprint.global.global-vision" | translate }}
                 {{
-                    footprintStore.appGraphType() === "subdomain"
+                    footprintStore.appGraphType() === "domain"
                         ? showDomainLabel()
                             ? " / " + footprintStore.appDomain()
                             : ""
-                        : footprintStore.appGraphType() === "application"
+                        : footprintStore.appGraphType() === "subdomain"
                           ? (showDomainLabel()
                                 ? " / " + footprintStore.appDomain()
                                 : "") +
-                            (!showDomainByApplication() && showSubDomainLabel()
+                            (showSubDomainLabel()
                                 ? " / " + footprintStore.appSubDomain()
                                 : "")
-                          : ""
+                          : footprintStore.appGraphType() === "application"
+                            ? (showDomainLabel()
+                                  ? " / " + footprintStore.appDomain()
+                                  : "") +
+                              (showSubDomainLabel()
+                                  ? " / " + footprintStore.appSubDomain()
+                                  : "") +
+                              " / " +
+                              footprintStore.appApplication()
+                            : ""
                 }}
             </a>
         } @else {

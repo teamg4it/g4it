@@ -8,6 +8,10 @@
 
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
     <div class="bg-white">
+        <app-indicator-section
+            [statGroups]="statGroups()"
+            [isApplication]="false"
+        ></app-indicator-section>
         <div class="flex justify-content-between align-items-center">
             <h2
                 class="pt-3 pl-4 pb-2 text-2xl line-height-1 my-3"
@@ -32,10 +36,6 @@
                 [ariaLabel]="'digital-services.configure-view' | translate"
             ></p-button>
         </div>
-        <app-indicator-section
-            [statGroups]="statGroups()"
-            [isApplication]="false"
-        ></app-indicator-section>
         <div class="mb-3 footprint-dashboard-container-app-criteria grid w-full">
             <div
                 class="bg-white"

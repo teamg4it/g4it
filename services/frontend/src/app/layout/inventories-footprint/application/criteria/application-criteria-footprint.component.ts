@@ -124,9 +124,17 @@ export class ApplicationCriteriaFootprintComponent
     showSubDomainLabel = computed(() => {
         if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
             if (
-                (this.allUnmodifiedFilters()["domain"][1] as TransformedDomain)?.children
-                    ?.length <= 1
+                (this.allUnmodifiedFilters()?.["domain"]?.[1] as TransformedDomain)
+                    ?.children?.length <= 1
             ) {
+                return false;
+            }
+        } else {
+            const domainSelected: any = this.allUnmodifiedFilters()?.["domain"]?.find(
+                (d) =>
+                    (d as TransformedDomain)?.label === this.footprintStore?.appDomain(),
+            );
+            if (domainSelected?.children?.length <= 1) {
                 return false;
             }
         }

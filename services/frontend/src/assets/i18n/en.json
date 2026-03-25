@@ -184,7 +184,8 @@
         "unit-manage": "Units Management",
         "data-consistency-text": "View data that could not be calculated",
         "unit-manage-text": "Your choice will apply to all units",
-        "compare": "Apply recommendations"
+        "compare": "Apply recommendations",
+        "criteria": "Criteria"
     },
     "useful-information": {
         "computing-engines": "Computing engines",
