@@ -54,7 +54,7 @@ public interface ImpactToCsvRecord {
                 CriteriaUtils.transformCriteriaKeyToCriteriaName(StringUtils.snakeToKebabCase(impact.getCritere())),
                 "", // source
                 impact.getStatutIndicateur(),
-                verbose ? impact.getTrace() : "",
+                verbose ? sanitizeTrace(impact.getTrace()) : "",
                 "1.0", // calculationVersion
                 print(impact.getConsoElecMoyenne() == null ? null : impact.getConsoElecMoyenne() * impact.getQuantite()),
                 print(impact.getImpactUnitaire()),
@@ -98,7 +98,7 @@ public interface ImpactToCsvRecord {
                 printFirst(virtualEquipment.getCommonFilters()), // entityName
                 "", // source
                 impact.getStatutIndicateur(),
-                evaluateReportBO.isVerbose() ? print(impact.getTrace()) : "",
+                evaluateReportBO.isVerbose() ? print(sanitizeTrace(impact.getTrace())) : "",
                 print(virtualEquipment.getType()),
                 "1.1", // calculationVersion
                 print(impact.getImpactUnitaire()),
@@ -139,7 +139,7 @@ public interface ImpactToCsvRecord {
                 printFirst(application.getCommonFilters()), // entityName
                 "", // source
                 impact.getStatutIndicateur(),
-                evaluateReportBO.isVerbose() ? impact.getTrace() : "",
+                evaluateReportBO.isVerbose() ? sanitizeTrace(impact.getTrace()) : "",
                 "1.1", // calculationVersion
                 printFirst(application.getFilters()), // domain
                 printSecond(application.getFilters()), // sub domain
@@ -216,7 +216,7 @@ public interface ImpactToCsvRecord {
                 printFirst(virtualEquipment.getCommonFilters()), // entityName
                 "", // source
                 impact.getStatutIndicateur(),
-                evaluateReportBO.isVerbose() ? print(impact.getTrace()) : "",
+                evaluateReportBO.isVerbose() ? print(sanitizeTrace(impact.getTrace())) : "",
                 print(virtualEquipment.getType()),
                 "1.1", // calculationVersion
                 print(impact.getImpactUnitaire()),
@@ -229,5 +229,11 @@ public interface ImpactToCsvRecord {
                 "", // dataSourceName
                 print(peopleEqImpact) // peopleEqImpact
         );
+    }
+    default String sanitizeTrace(String trace) {
+        if (trace == null) return null;
+
+        return trace
+                .replace("\\\"", "\"");
     }
 }

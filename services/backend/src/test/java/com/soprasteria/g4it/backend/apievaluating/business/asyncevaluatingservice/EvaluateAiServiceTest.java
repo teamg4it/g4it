@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.apiparameterai.modeldb.InAiParameter;
 import com.soprasteria.g4it.backend.apiparameterai.repository.InAiParameterRepository;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.Recommendation;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
@@ -42,10 +43,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -86,6 +84,8 @@ class EvaluateAiServiceTest {
     private InputToCsvRecord inputToCsvRecord;
     @Mock
     private ImpactToCsvRecord impactToCsvRecord;
+    @Mock
+    private OrganizationRepository organizationRepository;
 
     @Mock
     private AggregationToOutput aggregationToOutput;
@@ -101,6 +101,8 @@ class EvaluateAiServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        lenient().when(organizationRepository.findByName(anyString()))
+                .thenReturn(Optional.empty());
     }
 
     private InAiParameter mockAiParameter() {
@@ -182,7 +184,7 @@ class EvaluateAiServiceTest {
         when(impact.getConsoElecMoyenne()).thenReturn(10.0);
         when(impact.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(), anyBoolean()))
                 .thenReturn(List.of(impact));
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
                 .thenReturn(List.of("PHYSICAL_KEY"));
@@ -382,7 +384,7 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
         when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(), anyBoolean()))
                 .thenReturn(List.of(mock(ImpactEquipementPhysique.class)));
 
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
@@ -502,7 +504,7 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
         when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(), anyBoolean()))
                 .thenReturn(List.of(mock(ImpactEquipementPhysique.class)));
 
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
