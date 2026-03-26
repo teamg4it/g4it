@@ -1,0 +1,62 @@
+<p-table
+    [value]="tableView()"
+    [scrollable]="true"
+    [sortOrder]="1"
+    [rows]="10"
+    [paginator]="true"
+    [scrollable]="true"
+    scrollHeight="calc(100vh - 320px)"
+    styleClass="my-3 manage-version-table"
+    [rowsPerPageOptions]="[5, 10, 20, 50, 100]"
+>
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+            <div class="table-head">
+                {{ "digital-services.version.versions" | translate }}
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <caption class="visually-hidden">
+            {{
+                "digital-services.version.versions" | translate
+            }}
+        </caption>
+        <tr>
+            <th scope="col" id="versionType" pSortableColumn="versionType">
+                {{ "digital-services.version.status" | translate }}
+                <p-sortIcon field="versionType"></p-sortIcon>
+            </th>
+
+            <th scope="col" id="versionName" pSortableColumn="versionName">
+                {{ "digital-services.version.version-name" | translate }}
+                <p-sortIcon field="versionName"></p-sortIcon>
+            </th>
+
+            <th scope="col" id="lastName">
+                {{ "digital-services.version.actions" | translate }}
+            </th>
+
+            <th scope="col" id="select">
+                {{ "digital-services.version.select" | translate }}
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-version let-rowIndex="rowIndex">
+        <tr>
+            <td>{{ version.applicationName }}</td>
+            <td>{{ version.criteria }}</td>
+            <td>
+                {{
+                    this.integerPipe.transform(version.sip) +
+                        " " +
+                        this.translate.instant("common.peopleeq-min")
+                }}
+            </td>
+            <td>
+                {{ this.decimalsPipe.transform(version.impact) + " "
+                }}<span [innerHTML]="version.unit"></span>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
