@@ -783,7 +783,16 @@
         "critere": {
             "repartition": "Répartition"
         },
-        "export-message": "L'export peut durer plusieurs minutes. Êtes-vous sûr de vouloir exporter les données ?"
+        "export-message": "L'export peut durer plusieurs minutes. Êtes-vous sûr de vouloir exporter les données ?",
+        "table-view": {
+            "header": {
+                "name": "Nom",
+                "criteria": "Critère",
+                "impact": "Impact multicritères (Habitant eq.)",
+                "raw-impact": "Impact Brut"
+            },
+            "caption": "Vue tabulaire des impacts des applications"
+        }
     },
     "error-page": {
         "title": {
