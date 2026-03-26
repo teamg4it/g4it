@@ -71,12 +71,12 @@
             </p>
         </div>
     }
+    <app-application-criteria-pie-chart
+        [footprint]="footprint"
+    ></app-application-criteria-pie-chart>
     <app-graph-description
         [contentText]="getContentText()"
         [textDescriptionImpacts]="textDescriptionImpacts"
         (impactSelectedEvent)="handleImpactClick($event)"
     ></app-graph-description>
-    <app-application-criteria-pie-chart
-        [footprint]="footprint"
-    ></app-application-criteria-pie-chart>
 }
