@@ -657,7 +657,7 @@
         "apply-selection": "Appliquer la sélection",
         "unit-para1": "La valeur de l’impact peut être affichée soit dans l’<strong>unité propre aux critères d’impact sélectionnés</strong>, soit en <strong>habitants équivalents</strong>.",
         "unit-para2": "Cette unité repose sur le principe des limites planétaires : elle correspond à un quota théorique d’impacts attribué de manière égale à chaque habitant de la planète afin de préserver l’équilibre du système Terre. Ce quota est calculé en divisant la quantité maximale d’externalités négatives que la Terre peut absorber telle que définie dans le rapport sur la consommation et l’empreinte du consommateur par le nombre total d’habitants.",
-        "visualisation": "Visualisation de l'impact des {{indicatorType}}"
+        "visualisation": "Vue des {{indicatorType}}"
     },
     "inventories-footprint": {
         "active-filters": "Filtres activés",
