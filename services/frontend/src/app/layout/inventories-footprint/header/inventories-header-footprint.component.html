@@ -16,6 +16,10 @@
                 {{ inventory.name }}
             }
         </h1>
+        <span class="pr-2"> - </span>
+        <h2 class="text-lg color-black-seventy lg:text-3xl">
+            {{ "inventories.visualisation." + indicatorType | translate }}
+        </h2>
     </div>
 
     <div>
@@ -75,7 +79,4 @@
         </p-sidebar>
     }
 </div>
-<h2 class="text-2xl">
-    {{ "inventories.visualisation" | translate: { indicatorType: indicatorType } }}
-</h2>
 <p-confirmPopup ariaCloseLabel="close" [style]="{ width: '450px' }"></p-confirmPopup>

@@ -1,12 +1,12 @@
 <app-inventories-header-footprint
     [inventory]="inventory()"
     [inventoryId]="inventoryId"
-    [indicatorType]="'inventories.details.equipment' | translate | titlecase"
+    [indicatorType]="'equipment'"
 ></app-inventories-header-footprint>
 
 <dataviz-filter [allFilters]="allUnmodifiedFilters"></dataviz-filter>
 
-<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
+<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 240px)' }">
     <div class="bg-white">
         <app-indicator-section
             [statGroups]="statGroups()"
