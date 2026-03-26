@@ -117,7 +117,7 @@ export class InventoriesApplicationFootprintComponent implements OnInit, OnDestr
     lowImpactData = signal<VirtualEquipmentLowImpact[]>([]);
     elecConsumptionData = signal<VirtualEquipmentElectricityConsumption[]>([]);
     isCollapsed = false;
-
+    view: "graph" | "table" = "table";
     impacts: Signal<any> = computed(() => {
         const filterImpacts = this.formatLifecycleCriteriaImpact(this.footprint()).map(
             (f) => ({
