@@ -144,7 +144,7 @@
         "shared-useful-info-desc": "G4IT Overview, modules versions, business hours and contact",
         "inventories": "Inventories",
         "digital-services": "Digital services",
-        "eco-mind-ai": "EcoMind AI (experimental)",
+        "eco-mind-ai": "EcoMind AI (Beta)",
         "skip-to-main-content": "Skip to Main Content",
         "overgreen-logo": "Overgreen Logo",
         "soprasteria-logo": "Sopra Steria logo",
@@ -567,8 +567,10 @@
         "eco-mind-ai": {
             "title": "EcoMind AI",
             "description": "Calculate the impact of a service integrating an AI algorithm, guide early choices to reduce it through best practices, and ensure its monitoring throughout the project.",
-            "button": "Go to Service",
-            "button-disabled": "Ask for support"
+            "go-to-service-button": "Go to Service",
+            "request-access-button": "Request access",
+            "button-disabled": "Ask for support",
+            "beta": "Beta"
         }
     },
     "Jan": "Jan",
