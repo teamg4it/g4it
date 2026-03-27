@@ -129,6 +129,6 @@ export class WelcomePageComponent implements OnInit {
 
     requestAccessOfEcoMindAi() {
         const mailto = this.userService.composeEcoMindAccessEmail(this.userEmail);
-        window.location.href = mailto;
+        globalThis.location.href = mailto;
     }
 }
