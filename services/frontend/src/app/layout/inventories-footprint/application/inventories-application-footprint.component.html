@@ -214,7 +214,11 @@
                         }
                     } @else {
                         <app-application-table-view
-                            [footprint]="footprint()"
+                            [footprint]="
+                                footprintStore.applicationCriteria() === multiCriteria
+                                    ? footprint()
+                                    : [criteriaFootprint]
+                            "
                         ></app-application-table-view>
                     }
                 </div>
