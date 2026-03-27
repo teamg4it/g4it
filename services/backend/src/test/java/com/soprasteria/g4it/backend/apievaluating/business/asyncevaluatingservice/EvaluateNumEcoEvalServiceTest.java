@@ -3,6 +3,7 @@ package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservi
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.engine.numecoeval.EvaluateNumEcoEvalService;
 import com.soprasteria.g4it.backend.apievaluating.mapper.InternalToNumEcoEvalCalculs;
+import com.soprasteria.g4it.backend.apievaluating.utils.Constants;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InDatacenter;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
@@ -26,7 +27,9 @@ import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactApplicat
 import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipementPhysiqueService;
 import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipementVirtuelService;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -245,7 +248,8 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),
+                        true
                 );
 
         assertEquals(1, result.size());
@@ -291,7 +295,8 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of()
+                List.of(),
+                true
         );
 
         // THEN
@@ -323,7 +328,8 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion, criterion),
                         List.of("FABRICATION", "USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),
+                        true
                 );
 
         assertEquals(4, result.size());
@@ -370,7 +376,8 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),
+                        true
                 );
 
         // THEN
@@ -429,7 +436,8 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of()
+                List.of(),
+                true
         );
 
         // THEN
@@ -463,9 +471,203 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("FABRICATION"),
-                        Collections.emptyList()
+                        Collections.emptyList(),
+                        true
                 )
         );
+    }
+
+    @Test
+    void updateFormula_shouldReplacePattern_whenFormulaExists() throws Exception {
+        Map<String, Object> traceMap = new HashMap<>();
+        traceMap.put(Constants.FORMULE,
+                "Impact = ConsoElecAnMoyenne(10.0) * X");
+
+        Method method = EvaluateNumEcoEvalService.class
+                .getDeclaredMethod("updateFormula", Map.class, String.class, String.class);
+        method.setAccessible(true);
+
+        method.invoke(service,
+                traceMap,
+                "ConsoElecAnMoyenne\\((.*?)\\)",
+                "ConsoElecAnMoyenne(\"hidden data\")");
+
+        String updated = traceMap.get(Constants.FORMULE).toString();
+
+        assertTrue(updated.contains("hidden data"));
+    }
+
+    @Test
+    void updateFormula_shouldDoNothing_whenFormulaMissing() throws Exception {
+        Map<String, Object> traceMap = new HashMap<>();
+
+        Method method = EvaluateNumEcoEvalService.class
+                .getDeclaredMethod("updateFormula", Map.class, String.class, String.class);
+        method.setAccessible(true);
+
+        method.invoke(service,
+                traceMap,
+                "regex",
+                "replacement");
+
+        assertTrue(traceMap.isEmpty());
+    }
+
+    @Test
+    void shouldUpdateMixElectrique_andHideValue_whenHideValueTrue() {
+
+        InPhysicalEquipment physical = new InPhysicalEquipment();
+        physical.setType("SERVER");
+        physical.setLocation("FR");
+
+        InDatacenter dc = new InDatacenter();
+        dc.setLocation("FR");
+
+        CriterionRest criterion = new CriterionRest();
+        criterion.setCode("CLIMATE_CHANGE");
+
+        ItemImpactRest impactRest = new ItemImpactRest();
+        impactRest.setName("REF_NAME");
+        impactRest.setIsHidden(true); // triggers hide
+        impactRest.setSource("OTHER_SOURCE"); // not base
+
+        when(referentialService.getItemType(any(), any()))
+                .thenReturn(new ItemTypeRest());
+
+        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
+                .thenReturn(List.of(impactRest));
+
+        String traceJson = """
+        {
+          "mixElectrique": {
+            "valeur": 1.5,
+            "valeurReferentielMixElectrique": 2.0
+          }
+        }
+        """;
+
+        ImpactEquipementPhysique impact = mock(ImpactEquipementPhysique.class);
+        when(impact.getTrace()).thenReturn(traceJson);
+
+        when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
+                .thenReturn(impact);
+
+        service.calculatePhysicalEquipment(
+                physical,
+                dc,
+                "ORG",
+                List.of(criterion),
+                List.of("USING"),
+                List.of(),
+                false // showReferenceValue = false → hideValue = true
+        );
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(impact).setTrace(captor.capture());
+
+        String updated = captor.getValue();
+
+        assertTrue(updated.contains("\"name\":\"REF_NAME\""));
+        assertTrue(updated.contains("hidden data"));
+    }
+
+    @Test
+    void shouldHideConsoElec_andUpdateFormula_whenHideValueTrue() throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        InPhysicalEquipment physical = new InPhysicalEquipment();
+        physical.setType("SERVER");
+        physical.setLocation("FR");
+
+        CriterionRest criterion = new CriterionRest();
+        criterion.setCode("CLIMATE_CHANGE");
+
+        ItemImpactRest impactRest = new ItemImpactRest();
+        impactRest.setIsHidden(true);
+        impactRest.setSource("OTHER");
+
+        when(referentialService.getItemType(any(), any()))
+                .thenReturn(new ItemTypeRest());
+
+        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
+                .thenReturn(List.of(impactRest));
+
+        // ✅ SAFE JSON
+        Map<String, Object> conso = new HashMap<>();
+        conso.put(Constants.VALEUR, 10);
+        conso.put(Constants.VALEUR_REF_CONSO, 20);
+
+        Map<String, Object> traceMap = new HashMap<>();
+        traceMap.put(Constants.FORMULE, "Impact = ConsoElecAnMoyenne(10.0)");
+        traceMap.put(Constants.CONSO_ELEC, conso);
+
+        String traceJson = mapper.writeValueAsString(traceMap);
+
+        ImpactEquipementPhysique impact = mock(ImpactEquipementPhysique.class);
+        when(impact.getTrace()).thenReturn(traceJson);
+
+        doNothing().when(impact).setTrace(anyString()); // 🔑 IMPORTANT
+
+        when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
+                .thenReturn(impact);
+
+        service.calculatePhysicalEquipment(
+                physical,
+                null,
+                "ORG",
+                List.of(criterion),
+                List.of(Constants.USING),
+                List.of(),
+                false
+        );
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(impact).setTrace(captor.capture());
+
+        String updated = captor.getValue();
+
+        assertTrue(updated.contains("hidden data"));
+        assertTrue(updated.contains("ConsoElecAnMoyenne"));
+    }
+
+    @Test
+    void hideValue_shouldBeFalse_whenSourceIsBaseImpacts() {
+
+        InPhysicalEquipment physical = new InPhysicalEquipment();
+        physical.setType("SERVER");
+
+        CriterionRest criterion = new CriterionRest();
+        criterion.setCode("CLIMATE_CHANGE");
+
+        ItemImpactRest impactRest = new ItemImpactRest();
+        impactRest.setIsHidden(true);
+        impactRest.setSource("Base IMPACTS ®Version 2.01");
+
+        when(referentialService.getItemType(any(), any()))
+                .thenReturn(new ItemTypeRest());
+
+        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
+                .thenReturn(List.of(impactRest));
+
+        ImpactEquipementPhysique impact = mock(ImpactEquipementPhysique.class);
+        when(impact.getTrace()).thenReturn("{\"consoElecAnMoyenne\":{}}");
+
+        when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
+                .thenReturn(impact);
+
+        service.calculatePhysicalEquipment(
+                physical,
+                null,
+                "ORG",
+                List.of(criterion),
+                List.of("USING"),
+                List.of(),
+                false // would hide, BUT base prevents it
+        );
+
+        // verify no hiding
+        verify(impact, never()).setTrace(contains("hidden data"));
     }
 
 }

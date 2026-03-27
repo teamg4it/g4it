@@ -32,6 +32,7 @@ import com.soprasteria.g4it.backend.apirecomandation.mapper.RecommendationJsonMa
 import com.soprasteria.g4it.backend.apirecomandation.modeldb.OutAiReco;
 import com.soprasteria.g4it.backend.apirecomandation.repository.OutAiRecoRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.InputEstimationLLMInference;
 import com.soprasteria.g4it.backend.client.gen.connector.apiecomindv2.dto.OutputEstimation;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
@@ -79,7 +80,8 @@ public class EvaluateAiService {
     ReferentialService referentialService;
     @Autowired
     SaveService saveService;
-
+    @Autowired
+    OrganizationRepository organizationRepository;
     @Autowired
     TaskRepository taskRepository;
 
@@ -121,6 +123,7 @@ public class EvaluateAiService {
     public void doEvaluateAi(final Context context, final Task task, Path exportDirectory) throws IOException {
 
         final String organization = context.getOrganization();
+        boolean showReferenceValue = getShowReferenceValue(organization);
         final long start = System.currentTimeMillis();
         final Long taskId = task.getId();
         final String digitalServiceName = context.getDigitalServiceName();
@@ -273,7 +276,7 @@ public class EvaluateAiService {
 
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, showReferenceValue);
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(inPhysicalEq, datacenter));
@@ -281,7 +284,7 @@ public class EvaluateAiService {
 
                     // Aggregate physical equipment indicators in memory
                     for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
-
+                        log.info("impact trace of physical AI {} ", impact.getTrace());
                         AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                                 impact.getQuantite(), impact.getConsoElecMoyenne(),
                                 impact.getImpactUnitaire(),
@@ -444,6 +447,12 @@ public class EvaluateAiService {
                 .workload(workload == null ? 0d : workload)
                 .errors(error == null ? new HashSet<>() : new HashSet<>(List.of(error)))
                 .build();
+    }
+
+    private boolean getShowReferenceValue(String organization) {
+        return organizationRepository.findByName(organization)
+                .map(org -> org.isShowReferenceValue())
+                .orElse(true);
     }
 
     private BiMap<String, String> getShortcutMap(List<String> strings) {

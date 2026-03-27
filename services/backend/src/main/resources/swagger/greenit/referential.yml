@@ -491,6 +491,10 @@ components:
         source:
           type: string
           description: Source of the ecological impact for this item impact
+        isHidden:
+          type: boolean
+          description: Indicates if the reference value should be hidden in export traces
+          default: true
         organization:
           type: string
           description: organization
