@@ -211,9 +211,11 @@ public class EvaluateService {
         if (inventory != null && null == inventory.getDoExportVerbose()) {
             inventory.setDoExportVerbose(true);
         }
+
         EvaluateReportBO evaluateReportBO = EvaluateReportBO.builder()
                 .export(true)
-                .verbose(inventory == null || inventory.getDoExportVerbose())
+//                .verbose(inventory == null || inventory.getDoExportVerbose())
+                .verbose(inventory == null || Boolean.TRUE.equals(inventory.getDoExportVerbose()))
                 .isDigitalService(inventory == null)
                 .nbPhysicalEquipmentLines(0)
                 .nbVirtualEquipmentLines(0)
