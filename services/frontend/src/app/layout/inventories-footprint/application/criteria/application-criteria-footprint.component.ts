@@ -314,7 +314,7 @@ export class ApplicationCriteriaFootprintComponent
                 sipImpact: this.impactOrder[index].sipImpact + impact.sip,
                 unitImpact: this.impactOrder[index].unitImpact + impact.impact,
                 repartYaxis: {
-                    ...(this.impactOrder[index].repartYaxis ?? {}),
+                    ...this.impactOrder[index]?.repartYaxis,
                     [dimensionValue]: {
                         sip:
                             (this.impactOrder[index].repartYaxis?.[dimensionValue]?.sip ??
