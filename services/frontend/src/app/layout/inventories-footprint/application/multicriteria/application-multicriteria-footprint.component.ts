@@ -78,7 +78,6 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     });
 
     criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
-        console.log(this.footprint);
         const criteriaFootprint = this.footprint.reduce((acc, f) => {
             acc[f.criteria] = {
                 impacts: f.impacts as any,
@@ -142,7 +141,6 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
     });
 
     options: Signal<EChartsOption> = computed(() => {
-        console.log(this.criteriaCalculated());
         return this.renderChart(this.criteriaCalculated(), this.selectedDimension());
     });
 
