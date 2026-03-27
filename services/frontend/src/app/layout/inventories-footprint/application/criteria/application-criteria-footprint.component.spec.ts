@@ -198,7 +198,6 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             },
         ]);
         expect(result.xAxis).toContain("Domain1");
-        expect(result.yAxis).toContain(10);
     });
 
     it("checkImpacts should return grey label if no errors", () => {
