@@ -183,8 +183,7 @@
         "unit-manage": "Gestion des unités",
         "data-consistency-text": "Afficher les données qui n'ont pas pu être calculées",
         "unit-manage-text": "Votre choix s'appliquera à toutes les unités",
-        "criteria": "Critères",
-        "beta": "Bêta"
+        "criteria": "Critères"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
