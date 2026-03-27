@@ -1,4 +1,4 @@
-<div class="grid my-3">
+<div class="grid m-3">
     <div class="col-12 lg:col-6">
         <div class="side-data-title">
             <img
@@ -20,28 +20,26 @@
             ></div>
         </p-card>
     </div>
-    @if (footprintStore.appGraphType() === "application") {
-        <div class="col-12 lg:col-6">
-            <div class="side-data-title">
-                <img
-                    src="assets/images/icons/icon-lifecycle-env.svg"
-                    alt=""
-                    class="w-3rem mr-3"
-                />
-                <span>{{
-                    "inventories-footprint.filter-tabs-application.environment"
-                        | translate
-                }}</span>
-            </div>
-            <p-card styleClass="shadow-none">
-                <div
-                    tabindex="0"
-                    echarts
-                    class="pie"
-                    [options]="envOptions()"
-                    style="height: 170px; margin: 0; width: 90%"
-                ></div>
-            </p-card>
+
+    <div class="col-12 lg:col-6">
+        <div class="side-data-title">
+            <img
+                src="assets/images/icons/icon-lifecycle-env.svg"
+                alt=""
+                class="w-3rem mr-3"
+            />
+            <span>{{
+                "inventories-footprint.filter-tabs-application.environment" | translate
+            }}</span>
         </div>
-    }
+        <p-card styleClass="shadow-none">
+            <div
+                tabindex="0"
+                echarts
+                class="pie"
+                [options]="envOptions()"
+                style="height: 170px; margin: 0; width: 90%"
+            ></div>
+        </p-card>
+    </div>
 </div>

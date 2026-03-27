@@ -468,13 +468,16 @@ export class DigitalServicesFootprintDashboardComponent
         return {
             description: this.translate.instant(`${translationKey}description`, {
                 criteria: this.impacts.flatMap((impact) => impact.title).join(", "),
+                module: this.translate.instant("ds-graph-module.digital-service"),
             }),
             scale: isIncludeCriteria
                 ? this.translate.instant(`${key}scale`)
                 : this.translate.instant(`${translationKey}scale`),
             textDescription: textDescription,
             textResourceDescription: textResourceDescription,
-            analysis: this.translate.instant(`${translationKey}analysis`),
+            analysis: this.translate.instant(`${translationKey}analysis`, {
+                module: this.translate.instant("ds-graph-module.service"),
+            }),
             toGoFurther: this.translate.instant(`${translationKey}to-go-further`),
         };
     }
