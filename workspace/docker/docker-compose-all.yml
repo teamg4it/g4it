@@ -3,11 +3,6 @@ networks:
   numecoeval: {}
 
 services:
-  kafka:
-    extends:
-      file: shared-docker-compose.yml
-      service: kafka
-
   postgresdb:
     extends:
       file: shared-docker-compose.yml
@@ -106,8 +101,6 @@ services:
         service: boaviztapi
 
 volumes:
-  numecoeval_kafka_data:
-    driver: local
   numecoeval_postgres_data:
     driver: local
   g4it_storage_data:
