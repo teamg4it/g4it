@@ -143,7 +143,7 @@
         "shared-useful-info-desc": "Présentation de G4IT, versions des modules, horaires d'ouverture et contact",
         "inventories": "Inventaires",
         "digital-services": "Services numériques",
-        "eco-mind-ai": "EcoMind AI (experimental)",
+        "eco-mind-ai": "EcoMind AI (Bêta)",
         "skip-to-main-content": "Accéder au contenu principal",
         "overgreen-logo": "Overgreen Logo",
         "soprasteria-logo": "Sopra Steria Logo",
@@ -184,7 +184,8 @@
         "data-consistency-text": "Afficher les données qui n'ont pas pu être calculées",
         "unit-manage-text": "Votre choix s'appliquera à toutes les unités",
         "compare": "Appliquez les recommendations",
-        "criteria": "Critères"
+        "criteria": "Critères",
+        "beta": "Bêta"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -576,8 +577,10 @@
         "eco-mind-ai": {
             "title": "EcoMind AI",
             "description": "Calculez l’impact d’un service intégrant un algorithme d’IA, orientez dès le démarrage les choix pour le réduire grâce aux bonnes pratiques et assurez son suivi tout au long du projet.",
-            "button": "Aller au service",
-            "button-disabled": "Demander de l'aide"
+            "go-to-service-button": "Aller au service",
+            "button-disabled": "Demander de l'aide",
+            "request-access-button": "Demander l'accès",
+            "beta": "Bêta"
         }
     },
     "Jan": "janv",

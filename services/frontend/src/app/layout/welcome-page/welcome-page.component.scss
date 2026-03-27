@@ -15,6 +15,10 @@
             padding: 1rem;
         }
 
+        .beta-icon {
+            font-size: 10px;
+        }
+
         .selection-card-content {
             line-height: 1.75rem;
         }
@@ -25,13 +29,13 @@
             background-color: var(--blue-color);
         }
 
+        .custom-ecomind-icon {
+            background-color: #a110c9;
+        }
+
         &.disabled {
             .p-card-title {
                 color: var(--tints-black-80);
-            }
-
-            .custom-icon {
-                background-color: #888a88;
             }
         }
 
@@ -77,5 +81,30 @@
         &:hover:before {
             background: rgba(0, 0, 0, 0.04);
         }
+    }
+
+    .beta-badge {
+        // position: absolute;
+        // left: 18.668px;
+        // top: 24px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+        padding: 5px;
+
+        border-radius: 4px;
+        border: 1px solid #6110c9;
+        background: rgba(97, 16, 201, 0.08);
+
+        color: #6110c9;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .badge-div {
+        left: 10px;
+        top: 10px;
     }
 }

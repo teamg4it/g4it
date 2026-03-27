@@ -34,6 +34,7 @@ import { environment } from "src/environments/environment";
 })
 export class WelcomePageComponent implements OnInit {
     userName: string = "";
+    userEmail: string = "";
     selectedPath: string = "";
     currentOrganization: Organization = {} as Organization;
     isAllowedInventory: boolean = false;
@@ -82,6 +83,7 @@ export class WelcomePageComponent implements OnInit {
             });
         this.userService.user$.pipe(take(1)).subscribe((userDetails) => {
             this.userName = userDetails?.firstName + " " + userDetails?.lastName;
+            this.userEmail = userDetails?.email;
         });
 
         this.userService.currentOrganization$.subscribe((organization) => {
@@ -120,12 +122,13 @@ export class WelcomePageComponent implements OnInit {
     }
 
     ecoMindAi() {
-        if (this.isAllowedEcoMindAi) {
-            this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
-                state: { isIa: true },
-            });
-        } else {
-            this.router.navigateByUrl("/useful-information");
-        }
+        this.router.navigateByUrl(`${this.selectedPath}/eco-mind-ai`, {
+            state: { isIa: true },
+        });
+    }
+
+    requestAccessOfEcoMindAi() {
+        const mailto = this.userService.composeEcoMindAccessEmail(this.userEmail);
+        window.location.href = mailto;
     }
 }
