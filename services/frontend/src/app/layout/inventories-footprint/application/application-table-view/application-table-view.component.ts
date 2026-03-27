@@ -19,7 +19,6 @@ import { Constants } from "src/constants";
     standalone: true,
     imports: [SharedModule, SharedChartsModule],
     templateUrl: "./application-table-view.component.html",
-    styleUrls: ["./application-table-view.component.scss"],
 })
 export class ApplicationTableViewComponent {
     footprint = input<ApplicationFootprint[]>([]);
