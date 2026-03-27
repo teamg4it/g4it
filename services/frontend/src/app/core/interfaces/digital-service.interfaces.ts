@@ -406,7 +406,7 @@ export interface ShareLinkResp {
 export interface GraphDescriptionContent {
     description: string;
     scale: string;
-    textDescription: string;
+    textDescription?: string;
     analysis?: string;
     toGoFurther?: string;
     textResourceDescription?: string;
