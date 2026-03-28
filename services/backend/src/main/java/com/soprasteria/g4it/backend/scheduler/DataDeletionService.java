@@ -87,6 +87,7 @@ public class DataDeletionService {
             final Integer retentionDay = Optional.ofNullable(workspaceEntity.getDataRetentionDay())
                     .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getDataRetentionDay())
                             .orElse(dataRetentiondDay));
+            log.info(" first reminder day {}, second reminder day {}, retention day {} for workspace {}", firstReminderDay, secondReminderDay, retentionDay, workspaceEntity.getName());
             nbInventoriesDeleted += handleInventoryDeletion(workspaceEntity, organization, workspaceId, retentionDay, now);
             nbDigitalServicesDeleted += handleDigitalServiceDeletion(workspaceEntity, retentionDay, now);
         }
