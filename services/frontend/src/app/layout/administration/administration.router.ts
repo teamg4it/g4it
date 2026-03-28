@@ -11,6 +11,7 @@ import { AdministrationPanelComponent } from "./administration-panel/administrat
 import { OrganizationsComponent } from "./administration-panel/organizations/organizations.component";
 import { SuperAdminComponent } from "./administration-panel/super-admin/super-admin.component";
 import { UsersComponent } from "./administration-panel/users/users.component";
+import { UpdateReferenceComponent } from "./administration-panel/update-reference/update-reference.component";
 
 const titleResolveObject = {
     resolve: {
@@ -39,6 +40,11 @@ const routes: Routes = [
             {
                 path: "actions",
                 component: SuperAdminComponent,
+                ...titleResolveObject,
+            },
+            {
+                path: "update-referential",
+                component: UpdateReferenceComponent,
                 ...titleResolveObject,
             },
         ],
