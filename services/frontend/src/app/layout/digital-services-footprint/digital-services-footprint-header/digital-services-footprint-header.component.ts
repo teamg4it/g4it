@@ -77,6 +77,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     savedDigitalServiceAndVersion: any = undefined;
     firstDsVersionCall = true;
     private readonly destroyRef = inject(DestroyRef);
+    displayRenewServicePopup = false;
 
     constructor(
         private readonly digitalServicesData: DigitalServicesDataService,
@@ -125,6 +126,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.aiFormsStore.setInfrastructureChange(false);
             this.aiFormsStore.clearForms();
         }
+        console.log("digitalService in header component", this.digitalService);
     }
 
     onNameUpdate(digitalServiceName: string, isName: boolean) {
@@ -344,5 +346,9 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         } else {
             this.validateDataVersion(value);
         }
+    }
+
+    renewService(): void {
+        this.displayRenewServicePopup = !this.displayRenewServicePopup;
     }
 }
