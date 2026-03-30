@@ -303,6 +303,16 @@
             <groupId>com.azure</groupId>
             <artifactId>azure-communication-email</artifactId>
             <version>${azure-communication-email.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.azure</groupId>
+                    <artifactId>azure-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.azure</groupId>
+                    <artifactId>azure-core-http-netty</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

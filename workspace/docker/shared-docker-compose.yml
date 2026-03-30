@@ -6,36 +6,6 @@ networks:
   numecoeval: {}
 
 services:
-  # Kafka basé sur la documentation officielle de Bitnami
-  ## https://github.com/bitnami/containers/blob/main/bitnami/kafka/docker-compose.yml
-  ## https://hub.docker.com/r/bitnami/kafka/
-  kafka:
-    image: docker.io/bitnami/kafka:3.6
-    container_name: kafka
-    ports:
-      - "9092:9092"
-    volumes:
-      - "numecoeval_kafka_data:/bitnami"
-    environment:
-      KAFKA_ENABLE_KRAFT: yes
-      KAFKA_CFG_PROCESS_ROLES: broker,controller
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9091,CONTROLLER://:9093,EXTERNAL://:9092
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9091,EXTERNAL://localhost:9092
-      KAFKA_CFG_BROKER_ID: 1
-      KAFKA_CFG_NODE_ID: 1
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-      ALLOW_PLAINTEXT_LISTENER: yes
-      KAFKA_KRAFT_CLUSTER_ID: r4zt_wrqTRuT7W2NJsB_GB
-      KAFKA_HEAP_OPTS: -Xmx200m -Xms200m
-    networks:
-      - numecoeval
-    deploy:
-      resources:
-        limits:
-          memory: 300M
-
   # Postgres basé sur la documentation officielle de Postgres sur Dockerhub
   ## https://hub.docker.com/_/postgres
   postgresdb:
@@ -128,7 +98,6 @@ services:
     environment:
       SERVER_PORT: "8080"
       MANAGEMENT_SERVER_PORT: "8080"
-      NUMECOEVAL_KAFKA_TOPIC_MAX_MESSAGES_SIZE: "52428800"
       NUMECOEVAL_REFERENTIEL_SERVER_URL: "http://api-referentiel:8080"
       SPRING_SERVLET_MULTIPART_MAXREQUESTSIZE: "45MB"
       SPRING_SERVLET_MULTIPART_MAXFILESIZE: "10MB"
@@ -155,14 +124,12 @@ services:
   api-event-donneesentrees:
     image: ${REGISTRY_URL}/api-event-donneesentrees:${TAG}
     depends_on:
-      - kafka
       - postgresdb
     ports:
       - "18083:8080"
     environment:
       SERVER_PORT: "8080"
       MANAGEMENT_SERVER_PORT: "8080"
-      SPRING_KAFKA_BOOTSTRAPSERVERS: "kafka:9091"
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresdb:5432/postgres?reWriteBatchedInserts=true"
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
@@ -179,7 +146,6 @@ services:
   api-event-calculs:
     image: ${REGISTRY_URL}/api-event-calculs:${TAG}
     depends_on:
-      - kafka
       - postgresdb
     ports:
       - "18085:8080"
@@ -188,7 +154,6 @@ services:
       MANAGEMENT_SERVER_PORT: "8080"
       NUMECOEVAL_URLS_ALLOWED: "http://localhost,http://api-event-calculs"
       NUMECOEVAL_REFERENTIELS_URL: "http://api-referentiel:8080"
-      SPRING_KAFKA_BOOTSTRAPSERVERS: "kafka:9091"
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresdb:5432/postgres?reWriteBatchedInserts=true"
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
@@ -221,7 +186,5 @@ services:
 
 
 volumes:
-  numecoeval_kafka_data:
-    driver: local
   numecoeval_postgres_data:
     driver: local

@@ -81,14 +81,14 @@ public final class XssValidator {
 
     public static String validate(String value) {
 
-        if (value == null || value.trim().isEmpty()) {
+        if (value == null || value.isBlank()) {
             return value;
         }
 
-        String cleaned = Jsoup.clean(value, SAFE_HTML_SAFELIST);
+        String sanitized = Jsoup.clean(value, SAFE_HTML_SAFELIST);
 
         Document inputDoc = Jsoup.parseBodyFragment(value);
-        Document cleanedDoc = Jsoup.parseBodyFragment(cleaned);
+        Document cleanedDoc = Jsoup.parseBodyFragment(sanitized);
 
         // If Jsoup removed nodes, unsafe content was present
         if (cleanedDoc.body().childNodeSize()
