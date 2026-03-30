@@ -40,9 +40,9 @@ import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import {
-    createStackBarGradientColor,
     getColorFormatter,
     getLabelFormatter,
+    getUniqueColorFromText,
 } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -439,7 +439,6 @@ export class ApplicationCriteriaFootprintComponent
                         const { raw, sip, apps, subDomain } =
                             value as RepartitionYAxisKeys;
                         const data = [impact.domain, raw, sip, apps, subDomain];
-
                         yAxis.push({
                             name: key,
                             data: [data],
@@ -449,10 +448,7 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                color: createStackBarGradientColor(
-                                    index,
-                                    repartitionCount,
-                                ),
+                                color: getUniqueColorFromText(key),
                             },
                         });
                     }
@@ -479,10 +475,9 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                color: createStackBarGradientColor(
-                                    index,
-                                    repartitionCount,
-                                ),
+                                itemStyle: {
+                                    color: getUniqueColorFromText(key),
+                                },
                             },
                         });
                     }
@@ -513,10 +508,7 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                color: createStackBarGradientColor(
-                                    index,
-                                    repartitionCount,
-                                ),
+                                color: getUniqueColorFromText(key),
                             },
                         });
                     }
@@ -558,10 +550,7 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                color: createStackBarGradientColor(
-                                    index,
-                                    repartitionCount,
-                                ),
+                                color: getUniqueColorFromText(key),
                             },
                         });
                     }
