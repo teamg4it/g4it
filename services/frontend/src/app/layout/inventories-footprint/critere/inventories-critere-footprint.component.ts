@@ -19,7 +19,10 @@ import {
 
 import { ActivatedRoute, Router } from "@angular/router";
 import { EChartsOption } from "echarts";
-import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
+import {
+    GraphDescriptionContent,
+    StatusCountMap,
+} from "src/app/core/interfaces/digital-service.interfaces";
 import {
     Criteria,
     CriteriaCalculated,
@@ -72,6 +75,11 @@ export class InventoriesCritereFootprintComponent
     totalValue = 0;
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
+    textDescriptionImpacts: {
+        text: string;
+        impactName: string;
+        impactNameVisible: string;
+    }[] = [];
 
     allFootprintsCriteriaKeys = computed(() => {
         return Object.keys(this.inventoryComponent.allUnmodifiedFootprint());
@@ -383,5 +391,101 @@ export class InventoriesCritereFootprintComponent
         this.router.navigate(["../", "multi-criteria"], {
             relativeTo: this.route,
         });
+    }
+
+    getContentText = computed((): GraphDescriptionContent => {
+        let translationKey: string;
+        let textResourceDescription: string = "";
+
+        translationKey = `ds-graph-description.criteria.`;
+
+        const key =
+            "criteria." +
+            this.footprintStore.criteria().toLowerCase().replaceAll(" ", "-") +
+            ".";
+
+        return {
+            description: this.translate.instant(`${translationKey}description`, {
+                criteria: Object.keys(this.footprint)
+                    .map((impact) => this.translate.instant(`criteria.${impact}`).title)
+                    .join(", "),
+                module: this.translate.instant("ds-graph-module.inventory"),
+            }),
+            scale: this.translate.instant(`${key}scale`),
+            textDescription: this.getTextDescription(
+                translationKey,
+                this.criteriaCalculated(),
+                this.footprintStore.unit(),
+            ),
+            textResourceDescription: textResourceDescription,
+            analysis: this.translate.instant(
+                `ds-graph-description.global-vision.analysis`,
+                {
+                    module: this.translate.instant("ds-graph-module.inventory"),
+                },
+            ),
+            toGoFurther: this.translate.instant(
+                `ds-graph-description.global-vision.inventory-to-go-further`,
+            ),
+        };
+    });
+
+    getTextDescription(
+        translationKey: string,
+        criteriaCalculated: CriteriaCalculated,
+        unit: string,
+    ): string {
+        let allImpacts: any[] = [];
+        const total = this.getTotal(unit, criteriaCalculated);
+        for (const item of criteriaCalculated.footprints) {
+            const sumValue =
+                unit === Constants.PEOPLEEQ ? item.total.sip : item.total.impact;
+            const translatedName = getLifeCycleList().includes(item.data)
+                ? this.translate.instant(`acvStep.${item.data}`)
+                : item.data;
+            const v: any = {
+                name: translatedName === Constants.EMPTY ? "Empty" : translatedName,
+                status: item.status,
+                percentage: (sumValue / total) * 100,
+                unit: this.criteriaFootprint.unit,
+                unitValue: item.total.impact,
+                value: item.total.sip,
+            };
+
+            allImpacts.push(v);
+        }
+        const filterImpacts = [...allImpacts]
+            .sort((a, b) => b.percentage - a.percentage)
+            .slice(0, 3);
+        let textDescription = "";
+        let textImpacts = [];
+        const criteriaKey = this.footprintStore.criteria();
+        for (const [index, impact] of filterImpacts.entries()) {
+            if (index === 0) {
+                textDescription += this.translate.instant(
+                    `${translationKey}text-description`,
+                    {
+                        resource: this.translate.instant(`criteria.${criteriaKey}.title`),
+                    },
+                );
+            }
+            textImpacts.push({
+                text: this.translate.instant(
+                    `${translationKey}text-description-iterate`,
+                    {
+                        impactName: impact.name,
+                        impactValue: this.integerPipe.transform(impact.value),
+                        resource: this.translate.instant(`criteria.${criteriaKey}.title`),
+                        resourceValue: this.integerPipe.transform(impact.percentage),
+                        rawValue: this.decimalsPipe.transform(impact.unitValue),
+                        unit: impact.unit,
+                    },
+                ),
+                impactName: impact.tier,
+                impactNameVisible: impact.name,
+            });
+        }
+        this.textDescriptionImpacts = textImpacts;
+        return textDescription;
     }
 }

@@ -41,7 +41,8 @@
                         @if (
                             !barChartChild() &&
                             selectedParam() !== "Network" &&
-                            chartType() !== "bar"
+                            chartType() !== "bar" &&
+                            impactText.impactName
                         ) {
                             <button
                                 class="blue-link"
