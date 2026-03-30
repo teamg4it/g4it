@@ -35,13 +35,13 @@ public class RenewServiceController implements RenewApiDelegate {
     }
 
     @Override
-    public ResponseEntity<RenewRest> getRenewDetailsDigitalService(final String organization,final Long workspace,final String digitalServiceUid) {
-        return ResponseEntity.ok().body(renewService.getRenewDetailsDigitalService(workspace, digitalServiceUid));
+    public ResponseEntity<RenewRest> getRenewDetailsDigitalService(final String organization,final Long workspace,final String digitalServiceVersionUid) {
+        return ResponseEntity.ok().body(renewService.getRenewDetailsDigitalService(workspace, digitalServiceVersionUid));
     }
 
     @Override
-    public ResponseEntity<RenewResponseRest> renewDigitalService(final String organization, final Long workspace, final String digitalServiceUid, final RenewUpdateRest renewUpdateRest) {
-        return ResponseEntity.ok().body(renewService.renewDigitalService(workspace, digitalServiceUid,renewUpdateRest));
+    public ResponseEntity<RenewResponseRest> renewDigitalService(final String organization, final Long workspace, final String digitalServiceVersionUid, final RenewUpdateRest renewUpdateRest) {
+        return ResponseEntity.ok().body(renewService.renewDigitalService(workspace,renewUpdateRest));
     }
 
     @Override

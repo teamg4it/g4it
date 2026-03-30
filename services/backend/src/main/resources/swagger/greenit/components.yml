@@ -1409,6 +1409,9 @@ components:
         action:
           type: string
           description: Action to perform for the renewal, it can be "renew" or "cancel"
+        serviceId:
+          type: string
+          description: Uid of the service to renew, it can be digital service uid or inventory id
 
     RenewResponseRest:
       type: object
@@ -1416,7 +1419,7 @@ components:
       properties:
         serviceId:
           type: string
-          description: Uid of the service to renew, it can be digital service uid or inventory uid
+          description: Uid of the service to renew, it can be digital service uid or inventory id
         isRenewed:
           type: boolean
         responseMessage:

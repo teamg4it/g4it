@@ -8,7 +8,9 @@
 package com.soprasteria.g4it.backend.scheduler;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
@@ -39,6 +41,12 @@ public class DataDeletionService {
     @Value("${g4it.data.retention.second-reminder-day:2}")
     private Integer secondReminderDay;
 
+    @Value("${g4it.data.retention.email.link.digitalService:https://int.saas-g4it.com/organizations/{organization}/workspaces/{workspaceId}/digital-service-version/{digitalServiceVersionUid}/footprint/resources?renew=true}")
+    private String digitalServiceLink;
+
+    @Value("${g4it.data.retention.email.link.inventory:https://int.saas-g4it.com/organizations/{organization}/workspaces/{workspaceId}/inventories?inventoryId={inventoryId}&renew=true}")
+    private String inventoryLink;
+
     private final WorkspaceRepository workspaceRepository;
     private final InventoryRepository inventoryRepository;
     private final InventoryDeleteService inventoryDeleteService;
@@ -46,6 +54,7 @@ public class DataDeletionService {
     private final DigitalServiceRepository digitalServiceRepository;
     private final AzureEmailService azureEmailService;
     private final MessageSource messageSource;
+    private final DigitalServiceVersionRepository digitalServiceVersionRepository;
 
     @Autowired
     public DataDeletionService(
@@ -55,7 +64,7 @@ public class DataDeletionService {
             DigitalServiceService digitalServiceService,
             DigitalServiceRepository digitalServiceRepository,
             AzureEmailService azureEmailService,
-            MessageSource messageSource
+            MessageSource messageSource, DigitalServiceVersionRepository digitalServiceVersionRepository
     ) {
         this.workspaceRepository = workspaceRepository;
         this.inventoryRepository = inventoryRepository;
@@ -64,6 +73,7 @@ public class DataDeletionService {
         this.digitalServiceRepository = digitalServiceRepository;
         this.azureEmailService = azureEmailService;
         this.messageSource = messageSource;
+        this.digitalServiceVersionRepository = digitalServiceVersionRepository;
     }
 
     /**
@@ -87,18 +97,17 @@ public class DataDeletionService {
             final Integer retentionDay = Optional.ofNullable(workspaceEntity.getDataRetentionDay())
                     .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getDataRetentionDay())
                             .orElse(dataRetentiondDay));
-            log.info(" first reminder day {}, second reminder day {}, retention day {} for workspace {}", firstReminderDay, secondReminderDay, retentionDay, workspaceEntity.getName());
             nbInventoriesDeleted += handleInventoryDeletion(workspaceEntity, organization, workspaceId, retentionDay, now);
-            nbDigitalServicesDeleted += handleDigitalServiceDeletion(workspaceEntity, retentionDay, now);
+            nbDigitalServicesDeleted += handleDigitalServiceDeletion(workspaceEntity, organization, workspaceId, retentionDay, now);
         }
 
         log.info("Deletion of {} inventories and {} digital-services in database, execution time={} ms", nbInventoriesDeleted, nbDigitalServicesDeleted, System.currentTimeMillis() - start);
     }
 
-    private void sendRetentionReminderEmail(String recipientEmail, String itemName, String expirationDate, Integer retentionDay) {
+    private void sendRetentionReminderEmail(String recipientEmail, String itemName, String expirationDate, Integer retentionDay, String emailLink) {
         // Send email notification
         log.info("Sending retention reminder email to {} for item {} expiring on {}", recipientEmail, itemName, expirationDate);
-        String[] args = new String[]{itemName, expirationDate, String.valueOf(retentionDay)};
+        String[] args = new String[]{itemName, expirationDate, String.valueOf(retentionDay),emailLink};
         String emailContentEn = messageSource.getMessage("email.body", args, Locale.ENGLISH);
         String emailContentFr = messageSource.getMessage("email.body", args, Locale.FRANCE);
         String emailSubjectEn = messageSource.getMessage("email.subject", new String[]{}, Locale.ENGLISH);
@@ -120,11 +129,14 @@ public class DataDeletionService {
                     ).toDays();
                     if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
                         String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+                        String emailLink = inventoryLink.replace("{organization}", organization)
+                                .replace("{workspaceId}", String.valueOf(workspaceId))
+                                .replace("{inventoryId}", String.valueOf(inventory.getId()));
                         sendRetentionReminderEmail(
                                 inventory.getCreatedBy().getEmail(),
                                 inventory.getName(),
                                 expirationDate,
-                                retentionDay
+                                retentionDay,emailLink
                         );
                         return 0;
                     } else if (now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate())) {
@@ -136,7 +148,7 @@ public class DataDeletionService {
                 .sum();
     }
 
-    private int handleDigitalServiceDeletion(Workspace workspaceEntity, Integer retentionDay, LocalDateTime now) {
+    private int handleDigitalServiceDeletion(Workspace workspaceEntity, String organization, Long workspaceId, Integer retentionDay, LocalDateTime now) {
         return digitalServiceRepository.findByWorkspace(workspaceEntity).stream()
                 .mapToInt(digitalServiceBO -> {
                     long daysSinceLastUpdate = java.time.Duration.between(
@@ -144,11 +156,15 @@ public class DataDeletionService {
                     ).toDays();
                     if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
                         String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+                        List<DigitalServiceVersion> digitalServiceVersionList= digitalServiceVersionRepository.findByDigitalServiceUid(digitalServiceBO.getUid());
+                        String emailLink = digitalServiceLink.replace("{organization}", organization)
+                                .replace("{workspaceId}", String.valueOf(workspaceId))
+                                .replace("{digitalServiceVersionUid}", digitalServiceVersionList.getFirst().getUid());
                         sendRetentionReminderEmail(
                                 digitalServiceBO.getUser().getEmail(),
                                 digitalServiceBO.getName(),
                                 expirationDate,
-                                retentionDay
+                                retentionDay,emailLink
                         );
                         return 0;
                     } else if (now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate())) {
