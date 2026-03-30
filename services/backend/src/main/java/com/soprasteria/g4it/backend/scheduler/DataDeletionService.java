@@ -41,7 +41,7 @@ public class DataDeletionService {
     @Value("${g4it.data.retention.second-reminder-day:2}")
     private Integer secondReminderDay;
 
-    @Value("${g4it.data.retention.email.link.digitalService:https://int.saas-g4it.com/organizations/{organization}/workspaces/{workspaceId}/digital-service-version/{digitalServiceVersionUid}/footprint/resources?renew=true}")
+    @Value("${g4it.data.retention.email.link.digital-service:https://int.saas-g4it.com/organizations/{organization}/workspaces/{workspaceId}/digital-service-version/{digitalServiceVersionUid}/footprint/resources?renew=true}")
     private String digitalServiceLink;
 
     @Value("${g4it.data.retention.email.link.inventory:https://int.saas-g4it.com/organizations/{organization}/workspaces/{workspaceId}/inventories?inventoryId={inventoryId}&renew=true}")
