@@ -139,3 +139,8 @@ ecomindaimodule:
 numecoevalmodule:
   enabled: true
   version: 2.2.1
+
+azure:
+  communication:
+    connection-string: endpoint=https://test.azure.com/;accesskey=xyz
+    sender-email: test@test.com

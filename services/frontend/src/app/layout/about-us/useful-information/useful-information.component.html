@@ -141,8 +141,7 @@
                         <span>{{ "common.week." + data.day | translate }}</span
                         ><span *ngIf="data.start_time"
                             >{{ data.start_time | businessHoursRenderer }} -
-                            {{ data.end_time | businessHoursRenderer
-                            }}<span *ngIf="selectedLanguage === 'en'"> UTC</span>
+                            {{ data.end_time | businessHoursRenderer }}<span> UTC</span>
                         </span>
                     </li>
                 </ul>
