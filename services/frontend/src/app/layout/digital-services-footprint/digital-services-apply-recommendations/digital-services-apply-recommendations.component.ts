@@ -87,6 +87,7 @@ addDatacenter(newDc: ServerDC) {
   };
 
   this.simulationDatacenters.set([...currentSimulation, newDatacenter]);
+    this.digitalServiceStore.addDatacenter(newDatacenter);
 
   this.current.datacenter = newDatacenter;
 
@@ -428,7 +429,10 @@ const datacenter =
           0
         );
 
-        const quantity = Math.max(1, Math.round(e.quantity)); 
+        const quantity =
+    e.type === "Dedicated Server"
+        ? e.quantity * (e.durationHour! / 8760)
+        : e.quantity;
 
       const res =  {
         id: e.id,
@@ -436,7 +440,7 @@ const datacenter =
         name: e.name,
         mutualizationType: validMutualization,
         type: serverType?.type || "Compute",
-        quantity: quantity,
+        quantity: Math.max(0.01, Number(quantity.toFixed(2))),
         quantityVms: `${quantity} (${sumOfVmQuantity})`, 
         host: serverType ?? undefined,
         hostValue: serverType?.value ?? undefined,
@@ -459,7 +463,7 @@ const datacenter =
         })),
         digitalServiceUid: e.digitalServiceUid,
         digitalServiceVersionUid: e.digitalServiceVersionUid,
-        creationDate: this.toTimestamp(e.creationDate), // ✅ number (timestamp)
+        creationDate: this.toTimestamp(e.creationDate), 
       } as DigitalServiceServerConfig;
        return res ; 
     });
@@ -523,8 +527,7 @@ async onServerSaved() {
   const modified = this.simulationModified();
   modified.set(updatedServer.name, true);
   this.simulationModified.set(new Map(modified));
-
-  this.closeEditor();
+    this.closeEditor();
 }
 
 
