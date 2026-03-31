@@ -1,0 +1,101 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Renew
+  description: Endpoints for renewing digital service and inventory.
+  version: '1.0.0'
+
+tags:
+  - name: renew
+    description: Endpoints for renew operations for Digital service and Inventory
+
+paths:
+  /organizations/{organization}/workspaces/{workspace}/digital-service-version/{digitalServiceVersionUid}/renew:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+    get:
+      tags:
+        - renew
+      summary: Get renew details
+      operationId: getRenewDetailsDigitalService
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      responses:
+        '200':
+          description: Return the renew details object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RenewRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - renew
+      summary: Update renew service
+      operationId: RenewDigitalService
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "components.yml#/components/schemas/RenewUpdateRest"
+      responses:
+        '200':
+          description: Renew service updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RenewResponseRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/renew:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      tags:
+        - renew
+      summary: Get renew details
+      operationId: getRenewDetailsInventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      responses:
+        '200':
+          description: Return the renew details object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RenewRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - renew
+      summary: Update renew service
+      operationId: RenewInventoryService
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RenewUpdateRest"
+      responses:
+        '200':
+          description: Renew service updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RenewResponseRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"

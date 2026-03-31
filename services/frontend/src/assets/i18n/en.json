@@ -184,7 +184,12 @@
         "unit-manage": "Units Management",
         "data-consistency-text": "View data that could not be calculated",
         "unit-manage-text": "Your choice will apply to all units",
-        "criteria": "Criteria"
+        "criteria": "Criteria",
+        "renew-service-title": "Extend the time before data deletion",
+        "renew-service-body": "The data associated with the {{serviceName}} will expire on {{expiryDate}}. If the data retention period is not renewed, the data will be deleted. This mechanism was implemented to avoid storing unnecessary data and thus reduce the impact of G4IT. To retain the data for {{retentionDays}} additional days, click the following button.",
+        "renew-button": "Extend",
+        "renew-service-success-message": "Extended Successfully",
+        "renew-service-not-renewed-message": "Could not extend the retention period"
     },
     "useful-information": {
         "computing-engines": "Computing engines",

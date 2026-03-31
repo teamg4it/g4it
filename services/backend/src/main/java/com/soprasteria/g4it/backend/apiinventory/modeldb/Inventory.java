@@ -98,7 +98,7 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
      * User who created the inventory
      */
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH,fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     private User createdBy;
 

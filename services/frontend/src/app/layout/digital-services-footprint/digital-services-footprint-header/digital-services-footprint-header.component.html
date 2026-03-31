@@ -308,6 +308,14 @@
         </div>
     }
 </div>
+<p-button
+    [ariaLabel]="'Renew Service' | translate"
+    styleClass="p-button-secondary-blue uppercase mx-2 mb-3 lg:mb-0"
+    (onClick)="renewService()"
+    icon="pi pi-share-alt"
+    [pTooltip]="'Renew Service' | translate"
+    tooltipPosition="center"
+/>
 
 @if (displayLinkCreatePopup && !global.loading()) {
     <app-link-create-popup
@@ -327,4 +335,12 @@
         (outClose)="isPromoteVersionDialogVisible = false"
         (promotedEvent)="getDigitalServiceversion()"
     ></app-promote-version-dialog>
+}
+@if (displayRenewServicePopup && !global.loading()) {
+    <app-renew-service-popup
+        [displayPopup]="displayRenewServicePopup"
+        [digitalServiceVersionUid]="digitalService.uid"
+        (outClose)="displayRenewServicePopup = false"
+    >
+    </app-renew-service-popup>
 }
