@@ -680,6 +680,7 @@
     "inventories-footprint": {
         "active-filters": "Filtres activés",
         "filter": "Filtrer ma visualisation",
+
         "filter-tabs": {
             "country": "Pays",
             "entity": "Entités",
@@ -759,6 +760,8 @@
             "graph-critere": "Graphique des impacts du critère en équivalent habitant",
             "graph-lifecycle": "Graphique des impacts regroupés selon leur étape de cycle de vie",
             "graph-env": "Graphique des impacts regroupés selon leur environnement",
+            "graph-view-btn": "Vue Graphique",
+            "table-view-btn": "Vue Tableau",
             "tooltip": {
                 "nb-app": "Nombre d'applications",
                 "nb-sd": "Nombre de sous-domaines",

@@ -682,6 +682,7 @@
     "inventories-footprint": {
         "active-filters": "Active filters",
         "filter": "Filter your visualisation",
+
         "filter-tabs": {
             "country": "Country",
             "entity": "Entity",
@@ -761,6 +762,8 @@
             "graph-critere": "Criteria Graph of impacts in people eq.",
             "graph-lifecycle": "Lifecycle graph of impacts",
             "graph-env": "Environment graph of impacts",
+            "graph-view-btn": "Graph view",
+            "table-view-btn": "Table view",
             "tooltip": {
                 "nb-app": "Number of applications",
                 "nb-sd": "Number of subdomains",

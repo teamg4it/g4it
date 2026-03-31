@@ -151,7 +151,9 @@
                         (click)="view = 'graph'"
                     >
                         <i class="pi pi-chart-bar text-xs"></i>
-                        Vue Graphique
+                        {{
+                            "inventories-footprint.application.graph-view-btn" | translate
+                        }}
                     </button>
 
                     <button
@@ -160,7 +162,9 @@
                         (click)="view = 'table'"
                     >
                         <i class="pi pi-table text-xs"></i>
-                        Vue Tableau
+                        {{
+                            "inventories-footprint.application.table-view-btn" | translate
+                        }}
                     </button>
                 </div>
                 <p-button

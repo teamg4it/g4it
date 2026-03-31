@@ -431,14 +431,14 @@ export class ApplicationCriteriaFootprintComponent
             let appList: string[] = [];
 
             const repartitionEntries = Object.entries(impact.repartYaxis ?? {});
-            const repartitionCount = repartitionEntries.length;
             switch (this.footprintStore.appGraphType()) {
                 case "global": {
                     xAxis.push(impact.domain);
-                    for (const [index, [key, value]] of repartitionEntries.entries()) {
+                    for (const [key, value] of repartitionEntries) {
                         const { raw, sip, apps, subDomain } =
                             value as RepartitionYAxisKeys;
                         const data = [impact.domain, raw, sip, apps, subDomain];
+
                         yAxis.push({
                             name: key,
                             data: [data],
@@ -461,11 +461,10 @@ export class ApplicationCriteriaFootprintComponent
                 case "domain":
                     xAxis.push(impact.subdomain);
                     //////
-                    for (const [index, [key, value]] of repartitionEntries.entries()) {
+                    for (const [key, value] of repartitionEntries) {
                         const { raw, sip, apps, subDomain } =
                             value as RepartitionYAxisKeys;
                         const data = [impact.subdomain, raw, sip, apps, subDomain];
-
                         yAxis.push({
                             name: key,
                             data: [data],
@@ -475,9 +474,7 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                itemStyle: {
-                                    color: getUniqueColorFromText(key),
-                                },
+                                color: getUniqueColorFromText(key),
                             },
                         });
                     }
@@ -494,7 +491,7 @@ export class ApplicationCriteriaFootprintComponent
                 case "subdomain":
                     xAxis.push(impact.app);
                     /////
-                    for (const [index, [key, value]] of repartitionEntries.entries()) {
+                    for (const [key, value] of repartitionEntries) {
                         const { raw, sip, apps, subDomain } =
                             value as RepartitionYAxisKeys;
                         const data = [impact.app, raw, sip, apps, subDomain];
@@ -520,7 +517,7 @@ export class ApplicationCriteriaFootprintComponent
                 case "application":
                     xAxis.push(impact.virtualEquipmentName);
                     //////
-                    for (const [index, [key, value]] of repartitionEntries.entries()) {
+                    for (const [key, value] of repartitionEntries) {
                         const {
                             raw,
                             sip,
