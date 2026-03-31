@@ -339,7 +339,7 @@
 @if (displayRenewServicePopup && !global.loading()) {
     <app-renew-service-popup
         [displayPopup]="displayRenewServicePopup"
-        [digitalServiceVersionUid]="digitalService.uid"
+        [serviceId]="digitalService.uid"
         (outClose)="displayRenewServicePopup = false"
     >
     </app-renew-service-popup>

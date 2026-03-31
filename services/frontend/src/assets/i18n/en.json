@@ -188,6 +188,7 @@
         "renew-service-title": "Extend the time before data deletion",
         "renew-service-body": "The data associated with the {{serviceName}} will expire on {{expiryDate}}. If the data retention period is not renewed, the data will be deleted. This mechanism was implemented to avoid storing unnecessary data and thus reduce the impact of G4IT. To retain the data for {{retentionDays}} additional days, click the following button.",
         "renew-button": "Extend",
+        "renew-button-extended": "Extended",
         "renew-service-success-message": "Extended Successfully",
         "renew-service-not-renewed-message": "Could not extend the retention period"
     },

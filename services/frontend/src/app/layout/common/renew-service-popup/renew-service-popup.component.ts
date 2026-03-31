@@ -12,7 +12,7 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
-import { ClipboardModule, ClipboardService } from "ngx-clipboard";
+import { ClipboardModule } from "ngx-clipboard";
 import { ButtonModule } from "primeng/button";
 import { DialogModule } from "primeng/dialog";
 import { InputTextModule } from "primeng/inputtext";
@@ -21,6 +21,8 @@ import {
     RenewServiceUpdateResp,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
+import { SharedModule } from "src/app/core/shared/shared.module";
 
 @Component({
     selector: "app-renew-service-popup",
@@ -35,29 +37,33 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
         ButtonModule,
         DialogModule,
         InputTextModule,
+        SharedModule,
     ],
 })
 export class RenewServicePopupComponent implements OnInit {
-    private readonly clipboardService = inject(ClipboardService);
     private readonly digitalServicesData = inject(DigitalServicesDataService);
+    private readonly inventoryDataService = inject(InventoryDataService);
     private readonly destroyRef = inject(DestroyRef);
 
     @Input() displayPopup = false;
-    @Input() digitalServiceVersionUid = "";
+    serviceId = input<string | number>("");
     sharedLink = input<string>("");
     expiryDate = input<Date | null>(null);
+    isInventory = input<boolean>(false);
     @Output() outClose = new EventEmitter<void>();
+    isExtended = false;
 
     renewServiceParams: RenewServiceResp | null = null;
-    renewServiceSuccessMessage = "";
     isRenewButtonDisabled = false;
 
     ngOnInit(): void {
-        this.renewServiceSuccessMessage = "";
         this.isRenewButtonDisabled = false;
-        if (this.digitalServiceVersionUid) {
-            this.digitalServicesData
-                .getServiceRenewalDetails(this.digitalServiceVersionUid)
+        if (this.serviceId()) {
+            const serviceRenewalDetails$ = this.isInventory()
+                ? this.inventoryDataService.getServiceRenewalDetails(this.serviceId())
+                : this.digitalServicesData.getServiceRenewalDetails(this.serviceId());
+
+            serviceRenewalDetails$
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe((res) => {
                     this.renewServiceParams = res;
@@ -69,31 +75,27 @@ export class RenewServicePopupComponent implements OnInit {
         if (this.isRenewButtonDisabled) {
             return;
         }
-        if (this.digitalServiceVersionUid && this.renewServiceParams) {
+        if (this.serviceId() && this.renewServiceParams) {
             this.isRenewButtonDisabled = true;
             const payload = {
                 retentionDays: this.renewServiceParams.retentionDays,
                 action: "renew",
                 serviceId: this.renewServiceParams.serviceId,
             };
-            this.digitalServicesData
-                .renewService(payload, this.digitalServiceVersionUid)
+
+            const renewService$ = this.isInventory()
+                ? this.inventoryDataService.renewService(payload, this.serviceId())
+                : this.digitalServicesData.renewService(payload, this.serviceId());
+
+            renewService$
                 .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe(
-                    (res: RenewServiceUpdateResp) => {
-                        this.renewServiceSuccessMessage = res.isRenewed
-                            ? "common.renew-service-success-message"
-                            : "common.renew-service-not-renewed-message";
-                    },
-                    () => {
-                        this.isRenewButtonDisabled = false;
-                    },
-                );
+                .subscribe((res: RenewServiceUpdateResp) => {
+                    this.isExtended = res.isRenewed;
+                });
         }
     }
 
     closePopup(): void {
-        this.renewServiceSuccessMessage = "";
         this.isRenewButtonDisabled = false;
         this.outClose.emit();
     }

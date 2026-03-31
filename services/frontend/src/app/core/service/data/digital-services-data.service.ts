@@ -188,7 +188,7 @@ export class DigitalServicesDataService {
     }
 
     getServiceRenewalDetails(
-        digitalServiceVersionUid: string,
+        digitalServiceVersionUid: string | number,
     ): Observable<RenewServiceResp> {
         return this.http.get<RenewServiceResp>(
             `${endpointDsVersions}/${digitalServiceVersionUid}/renew`,
@@ -201,7 +201,7 @@ export class DigitalServicesDataService {
             action: string;
             serviceId: string;
         },
-        digitalServiceVersionUid: string,
+        digitalServiceVersionUid: string | number,
     ): Observable<RenewServiceUpdateResp> {
         return this.http.post<RenewServiceUpdateResp>(
             `${endpointDsVersions}/${digitalServiceVersionUid}/renew`,

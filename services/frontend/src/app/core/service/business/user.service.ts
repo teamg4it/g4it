@@ -95,7 +95,7 @@ export class UserService {
                             currentUser,
                             organizationName,
                             workspaceId,
-                            page,
+                            page?.split("?")[0], // in case there are query params, we take only the page name
                         );
                     });
                 });
