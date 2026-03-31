@@ -3,6 +3,7 @@
 ## 3.11.0
 
 ## Major changes
+- 2000 | Inventory Application view - Table View added
 - 1837 | Application View improvement
 
 ### Minor Changes

@@ -1718,3 +1718,37 @@ app-configure-view-filters {
         outline: none;
     }
 }
+
+app-inventories-application-footprint {
+    .segmented {
+        background: #f3f4f6;
+        border-radius: 999px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .segment {
+        border: none;
+        background: transparent;
+        border-radius: 999px;
+        color: #4b5563;
+        transition: all 0.25s ease;
+    }
+
+    /* Active Button */
+    .segment.active {
+        background: var(--tertiary-color); /* nicer green */
+        color: #ffffff;
+        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.35);
+    }
+
+    .segment:focus,
+    .segment:active {
+        outline: 2px solid #28a745;
+    }
+
+    /* Click feel */
+    .segment:active {
+        border-color: var(--tertiary-color);
+        transform: scale(0.97);
+    }
+}

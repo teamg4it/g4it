@@ -779,7 +779,16 @@
         "critere": {
             "repartition": "Repartition"
         },
-        "export-message": "Exporting data will take few minutes. Are you sure to export data ?"
+        "export-message": "Exporting data will take few minutes. Are you sure to export data ?",
+        "table-view": {
+            "header": {
+                "name": "Name",
+                "criteria": "Criteria",
+                "impact": "Multi-criteria Impact (people eq.)",
+                "raw-impact": "Raw impact"
+            },
+            "caption": "Table view of the impacts of the Applications"
+        }
     },
     "error-page": {
         "title": {
