@@ -95,7 +95,7 @@ serverData = computed(() => {
         .filter((item) => item.type.endsWith(" Server"));
 
     this.existingNames = inPhysicalEquipments.map((pe) => pe.name);
-
+    
     return inPhysicalEquipments.map((item) => {
         let serverType = serverTypes.find(
             (server) => server.value === item.description,
