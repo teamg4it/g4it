@@ -5,13 +5,13 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
 import { xssFormGroupValidator } from "src/app/core/custom-validators/xss-validator";
-import { DigitalServiceNetworkConfig } from "src/app/core/interfaces/digital-service.interfaces";
+import { DigitalServiceCloudServiceConfig, DigitalServiceNetworkConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 
@@ -25,6 +25,7 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
 
     @Input() network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;
     @Input() networkData: DigitalServiceNetworkConfig[] = [];
+    @Input() embedded = false;
     existingNames: string[] = [];
 
     @Output() update: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
@@ -33,39 +34,67 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
     @Output() sidebarVisible: EventEmitter<boolean> = new EventEmitter();
 
     networksForm!: FormGroup;
+    @Input() onlyQuantityEditable = false;
+    @Input() editableFields: string[] = [];
+
 
     constructor(
         private readonly _formBuilder: FormBuilder,
         public userService: UserService,
     ) {}
 
-    ngOnInit() {
-        const isNew = this.network.idFront === undefined;
-        this.existingNames = this.networkData
-            .filter((c) => (isNew ? true : this.network.name !== c.name))
-            .map((cloud) => cloud.name);
-        this.networksForm = this._formBuilder.group(
-            {
-                name: [
-                    "",
-                    [
-                        Validators.required,
-                        uniqueNameValidator(this.existingNames),
-                        noWhitespaceValidator(),
-                    ],
-                ],
-                type: [
-                    { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
+ngOnInit() {
+  const isNew = this.network.idFront === undefined;
+  this.existingNames = this.networkData
+    .filter((c) => (isNew ? true : this.network.name !== c.name))
+    .map((cloud) => cloud.name);
+
+  this.networksForm = this._formBuilder.group({
+            name: [
+                "",
+                [
                     Validators.required,
+                    uniqueNameValidator(this.existingNames),
+                    noWhitespaceValidator(),
                 ],
-                yearlyQuantityOfGbExchanged: [0, [Validators.required]],
-            },
-            {
+            ],
+            type: [
+                { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
+                Validators.required,
+            ],
+    yearlyQuantityOfGbExchanged: [0, [Validators.required]],
+  },            {
                 validators: [xssFormGroupValidator()],
                 updateOn: "blur",
-            },
-        );
+            },);
+
+  if (this.network.idFront) {
+    this.networksForm.patchValue({
+      name: this.network.name,
+      type: this.network.type,
+      yearlyQuantityOfGbExchanged: this.network.yearlyQuantityOfGbExchanged,
+    });
+  }
+  if (this.onlyQuantityEditable) {
+  this.networksForm.get('name')?.disable();
+  this.networksForm.get('type')?.disable();
+    this.networksForm.get('name')?.updateValueAndValidity();
+    this.networksForm.get('type')?.updateValueAndValidity();
+}
+  this.applyEditableFields();
+}
+private applyEditableFields() {
+  const controls = this.networksForm.controls;
+
+  Object.keys(controls).forEach((key) => {
+    if (this.editableFields.length && !this.editableFields.includes(key)) {
+      controls[key].disable({ emitEvent: false });
+    } else {
+      controls[key].enable({ emitEvent: false });
     }
+  });
+}
+    
 
     deleteNetwork() {
         this.delete.emit(this.network);
@@ -83,4 +112,22 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
         this.outCancel.emit(this.network);
         this.sidebarVisible.emit(false);
     }
+
+     ngOnChanges(changes: SimpleChanges) {
+    if (changes['network'] && this.network) {
+      if (!this.networksForm) this.initForm();
+      this.networksForm.patchValue({
+        name: this.network.name ?? '',
+        type: this.network.type ?? { code: '', value: '', country: '', type: '', annualQuantityOfGo: 0 },
+        yearlyQuantityOfGbExchanged: this.network.yearlyQuantityOfGbExchanged ?? 0,
+      });
+    }
+  }
+   initForm() {
+    this.networksForm = this._formBuilder.group({
+      name: ["", [Validators.required, uniqueNameValidator(this.networkData.map(n => n.name)), noWhitespaceValidator()]],
+      type: [{ code: '', value: '', country: '', type: '', annualQuantityOfGo: 0 }, Validators.required],
+      yearlyQuantityOfGbExchanged: [0, [Validators.required]],
+    });
+  }
 }

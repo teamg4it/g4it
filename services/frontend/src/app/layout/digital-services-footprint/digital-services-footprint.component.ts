@@ -203,6 +203,14 @@ export class DigitalServicesFootprintComponent
                     visible: this.digitalService.lastCalculationDate !== undefined,
                     id: "visualize",
                 },
+                 {
+                label: this.translate.instant(
+                    "digital-services.view-recommendations",
+                ),
+                routerLink: "recommendations",
+                visible: this.digitalService.lastCalculationDate !== undefined,
+                id: "recommendations",
+            },
             ];
         } else {
             this.tabItems = [
@@ -217,6 +225,14 @@ export class DigitalServicesFootprintComponent
                     visible: this.digitalService.lastCalculationDate !== undefined,
                     id: "visualize",
                 },
+                {
+                label: this.translate.instant(
+                    "digital-services.view-recommendations",
+                ),
+                routerLink: "recommendations",
+                visible: this.digitalService.lastCalculationDate !== undefined,
+                id: "recommendations",
+            },
             ];
         }
     }
