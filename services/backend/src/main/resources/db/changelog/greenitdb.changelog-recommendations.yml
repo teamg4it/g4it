@@ -1,0 +1,178 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-recommendation-table
+      author: INSA DEV Team
+      changes:
+        - createTable:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: id_recommendation
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                  remarks:
+                    "Unique id of the recommendation"
+
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                  remarks:
+                    "Title of the recommendation"
+
+              - column:
+                  name: description
+                  type: text
+                  remarks:
+                    "Description of the recommendation"
+
+              - column:
+                  name: category
+                  type: varchar(255)
+                  remarks:
+                    "Category: Terminaux, Infrastructures privées, Réseaux, Clouds publics - IaaS"
+
+              - column:
+                  name: affected_attributes
+                  type: jsonb
+                  remarks:
+                    "List of affected evaluation attributes (eg: [PUE])"
+
+              - column:
+                  name: heuristic_range
+                  type: jsonb
+                  remarks:
+                    "List of ranges of affected attributes (eg: [(1,2),(2,4),(4,Inf)]"
+
+              - column:
+                  name: base_impact
+                  type: int
+                  remarks:
+                    "General estimated impact of the recommendation (0, 1, 2 <=> Low, Medium, High)"
+
+              - column:
+                  name: organisation_id #regarder le type de l'id d'une orgnisation
+                  type: bigint
+                  remarks:
+                    "Foreign key to the Organisation table"
+
+
+  - changeSet:
+      id: create-instanciated-recommendation
+      author: INSA DEV Team
+      changes:
+        - createTable:
+            tableName: instantiated_recommendation
+            columns:
+              - column:
+                  name: id_instanciated_recommendation
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                  remarks:
+                    "Unique id of the instanciated recommendation"
+
+              - column:
+                  name: id_recommendation
+                  type: bigint
+                  remarks:
+                    "Foreign key to recommendation"
+
+              - column:
+                  name: id_evaluation
+                  type: bigint
+                  remarks:
+                    "Foreign key of the relevant evaluation "
+
+              - column:
+                  name: priority
+                  type: decimal
+                  remarks:
+                    "Computed priority of this recommendation for this evaluation between 0 and 1"
+
+              - column:
+                  name: specific_affected_attributes
+                  type: jsonb
+                  remarks:
+                    "list of the affect attributes for this evaluation"
+
+
+  
+  - changeSet:
+      id: alter-recommendation-category-to-jsonb
+      author: INSA DEV Team
+      changes:
+      - modifyDataType:
+          tableName: recommendation
+          columnName: category
+          newDataType: jsonb
+
+
+  - changeSet:
+      id: insert-general-recommendations
+      author: INSA DEV Team
+      changes:
+      - insert:
+          tableName: recommendation
+          columns:
+            - column:
+                name: title
+                value: "Utiliser une architecture adaptée"
+            - column:
+                name: category
+                value: '["PRIVATE_INFRASTRUCTURE", "PUBLIC_CLOUD"]'
+            - column:
+                name: description
+                value: "La quantité de ressources utilisées par l'architecture doit être adaptée à la consommation du service"
+      - insert:
+          tableName: recommendation
+          columns:
+            - column:
+                name: title
+                value: "Limiter le poids et le nombre de requêtes par écran"
+            - column:
+                name: category
+                value: '["NETWORK"]'
+            - column:
+                name: description
+                value: "Le service numérique s'astreint à un poids maximum et une limite de requêtes par écran"
+      - insert:
+          tableName: recommendation
+          columns:
+            - column:
+                name: title
+                value: "Minimiser le PUE de l'hébergement"
+            - column:
+                name: category
+                value: '["PRIVATE_INFRASTRUCTURE"]'
+            - column:
+                name: description
+                value: "Utiliser un hébergement dont le PUE (Power Usage Effectiveness) est minimisé"
+      - insert:
+          tableName: recommendation
+          columns:
+            - column:
+                name: title
+                value: "Choisir un hébergement cloud géographiquement cohérent"
+            - column:
+                name: category
+                value: '["PUBLIC_CLOUD"]'
+            - column:
+                name: description
+                value: "Utiliser un hébergement dont la localisation géographique est cohérente avec ses activités et qui minimise son empreinte environnementale"
+      - insert:
+          tableName: recommendation
+          columns:
+            - column:
+                name: title
+                value: "Optimiser le parcours utilisateur"
+            - column:
+                name: category
+                value: '["TERMINAL"]'
+            - column:
+                name: description
+                value: "Le service numérique optimise le parcours d'utilisation pour chaque fonctionnalité principale afin de minimiser le temps et le nombre d'écrans"
