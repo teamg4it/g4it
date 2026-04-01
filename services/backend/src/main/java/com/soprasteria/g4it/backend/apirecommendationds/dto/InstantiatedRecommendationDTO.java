@@ -1,4 +1,4 @@
-package com.soprasteria.g4it.backend.apirecommendation.dto;
+package com.soprasteria.g4it.backend.apirecommendationds.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

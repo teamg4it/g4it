@@ -5,11 +5,11 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-package com.soprasteria.g4it.backend.apirecommendation.business;
+package com.soprasteria.g4it.backend.apirecommendationds.business;
 
-import com.soprasteria.g4it.backend.apirecommendation.mapper.RecommendationMapper;
-import com.soprasteria.g4it.backend.apirecommendation.modeldb.Recommendation;
-import com.soprasteria.g4it.backend.apirecommendation.repository.RecommendationRepository;
+import com.soprasteria.g4it.backend.apirecommendationds.mapper.RecommendationMapper;
+import com.soprasteria.g4it.backend.apirecommendationds.modeldb.Recommendation;
+import com.soprasteria.g4it.backend.apirecommendationds.repository.RecommendationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import lombok.AllArgsConstructor;
@@ -37,12 +37,19 @@ public class RecommendationService {
      * @return list of recommendations
      */
     public List<RecommendationDSRest> getRecommendationsByOrganisation(Long organisationId) {
+        
         List<Recommendation> general_recommendation = recommendationRepository.findByOrganisationIdIsNull();
         List<Recommendation> organisation_recommendation = recommendationRepository.findByOrganisationId(organisationId);
         List<Recommendation> all = new ArrayList<>();
         all.addAll(general_recommendation);
         all.addAll(organisation_recommendation);
-        return recommendationMapper.toRestList(all);
+        List<RecommendationDSRest> result = recommendationMapper.toRestList(all);
+        if (result.isEmpty()) {
+        log.warn("LOG: No recommendations found for organisationId={}", organisationId);
+        } else {
+            log.info("LOG: {} recommendations found", result.size());
+        }
+        return result;
     }
 
     /**
