@@ -22,6 +22,7 @@ import { Constants } from "src/constants";
 })
 export class ApplicationTableViewComponent {
     footprint = input<ApplicationFootprint[]>([]);
+    isMulticriteria = input<boolean>(false);
 
     private readonly footprintStore = inject(FootprintStoreService);
     private readonly filterService = inject(FilterService);
