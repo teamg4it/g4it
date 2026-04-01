@@ -126,7 +126,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.aiFormsStore.setInfrastructureChange(false);
             this.aiFormsStore.clearForms();
         }
-        console.log("digitalService in header component", this.digitalService);
+
+        this.displayRenewServicePopup = !!this.route.snapshot.queryParamMap.get("renew");
     }
 
     onNameUpdate(digitalServiceName: string, isName: boolean) {

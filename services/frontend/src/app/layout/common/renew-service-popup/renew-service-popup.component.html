@@ -1,52 +1,60 @@
-<div class="renew-service-popup">
-    <p-dialog
-        [modal]="true"
-        [(visible)]="displayPopup"
-        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-        [style]="{ width: '30vw' }"
-        [draggable]="false"
-        [dismissableMask]="true"
-        (onHide)="closePopup()"
-        id="renew-service"
-        [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
-    >
-        <ng-template pTemplate="header">
-            <h3 class="font-semibold ml-0 text-2xl" id="renew-service-popup-title">
-                {{ "common.renew-service-title" | translate }}
-            </h3>
-        </ng-template>
+@if (renewServiceParams) {
+    <div class="renew-service-popup">
+        <p-dialog
+            [modal]="true"
+            [(visible)]="displayPopup"
+            [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+            [style]="{ width: '30vw' }"
+            [draggable]="false"
+            [dismissableMask]="true"
+            (onHide)="closePopup()"
+            id="renew-service"
+            [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
+        >
+            <ng-template pTemplate="header">
+                <h3 class="font-semibold ml-0 text-2xl" id="renew-service-popup-title">
+                    {{ "common.renew-service-title" | translate }}
+                </h3>
+            </ng-template>
 
-        <div class="copy-container grid mt-4">
-            <div class="share-expiry-paragraph flex" *ngIf="!renewServiceSuccessMessage">
-                <p class="text-base">
-                    {{ "common.renew-service-body" | translate: renewServiceParams }}
-                </p>
+            <div class="copy-container grid">
+                <div class="share-expiry-paragraph flex">
+                    <p class="text-base">
+                        {{ "common.renew-service-body" | translate: renewServiceParams }}
+                    </p>
+                </div>
             </div>
-            <div class="share-expiry-paragraph flex" *ngIf="renewServiceSuccessMessage">
-                <p class="text-lg font-semibold text-green-500">
-                    {{ renewServiceSuccessMessage | translate }}
-                </p>
+            <div class="flex justify-content-end">
+                <p-button
+                    [attr.aria-label]="'common.accessibility.renew-service' | translate"
+                    styleClass="uppercase p-button-secondary-blue"
+                    (onClick)="renewService()"
+                    [disabled]="isRenewButtonDisabled"
+                    [label]="
+                        (isExtended
+                            ? 'common.renew-button-extended'
+                            : 'common.renew-button'
+                        ) | translate
+                    "
+                >
+                </p-button>
             </div>
-        </div>
 
-        <ng-template pTemplate="footer">
-            <div
-                *ngIf="!renewServiceSuccessMessage"
-                class="block text-left sm:text-right sm:flex align-items-center justify-content-between"
-            >
-                <div class="flex justify-content-center w-full gap-2">
+            <ng-template pTemplate="footer">
+                <div class="flex text-right justify-content-end">
                     <p-button
                         [attr.aria-label]="
-                            'common.accessibility.renew-service' | translate
+                            'common.accessibility.close-criteria-dialog' | translate
                         "
-                        styleClass="uppercase"
-                        (onClick)="renewService()"
-                        [disabled]="isRenewButtonDisabled || !renewServiceParams"
-                        [label]="'common.renew-button' | translate"
+                        styleClass="uppercase mr-0"
+                        (onClick)="closePopup()"
+                        [label]="'digital-services.close' | translate"
                     >
                     </p-button>
                 </div>
-            </div>
-        </ng-template>
-    </p-dialog>
-</div>
+            </ng-template>
+        </p-dialog>
+    </div>
+} @else {
+    <app-spinner></app-spinner>
+}

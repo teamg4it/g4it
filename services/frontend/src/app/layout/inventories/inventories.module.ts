@@ -19,6 +19,7 @@ import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SidebarModule } from "primeng/sidebar";
 import { ToastModule } from "primeng/toast";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { RenewServicePopupComponent } from "../common/renew-service-popup/renew-service-popup.component";
 import { BatchStatusComponent } from "./batch-status/batch-status.component";
 import { EquipmentsCardComponent } from "./equipments-card/equipments-card.component";
 import { FilePanelComponent } from "./file-panel/file-panel.component";
@@ -50,6 +51,7 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
         AccordionModule,
         ProgressSpinnerModule,
         InputTextModule,
+        RenewServicePopupComponent,
         inventoriesRouter,
     ],
     exports: [InventoriesComponent],

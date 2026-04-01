@@ -50,3 +50,20 @@ export const createStackBarGradientColor = (
     const b = Math.round((1 - t) * startB + t * endB);
     return `rgb(${r},${g},${b})`;
 };
+
+const colorMap = new Map<string, string>();
+let currentIndex = 0;
+
+export const getUniqueColorFromText = (
+    text: string,
+    palette: string[] = Constants.COLOR,
+): string => {
+    if (!text) return palette[0];
+
+    if (!colorMap.has(text)) {
+        colorMap.set(text, palette[currentIndex % palette.length]);
+        currentIndex++;
+    }
+
+    return colorMap.get(text)!;
+};

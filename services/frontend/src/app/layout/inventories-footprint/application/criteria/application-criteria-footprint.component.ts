@@ -40,9 +40,9 @@ import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FilterService } from "src/app/core/service/business/filter.service";
 import {
-    createStackBarGradientColor,
     getColorFormatter,
     getLabelFormatter,
+    getUniqueColorFromText,
 } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -431,11 +431,10 @@ export class ApplicationCriteriaFootprintComponent
             let appList: string[] = [];
 
             const repartitionEntries = Object.entries(impact.repartYaxis ?? {});
-            const repartitionCount = repartitionEntries.length;
             switch (this.footprintStore.appGraphType()) {
                 case "global": {
                     xAxis.push(impact.domain);
-                    for (const [index, [key, value]] of repartitionEntries.entries()) {
+                    for (const [key, value] of repartitionEntries) {
                         const { raw, sip, apps, subDomain } =
                             value as RepartitionYAxisKeys;
                         const data = [impact.domain, raw, sip, apps, subDomain];
@@ -449,10 +448,7 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                color: createStackBarGradientColor(
-                                    index,
-                                    repartitionCount,
-                                ),
+                                color: getUniqueColorFromText(key),
                             },
                         });
                     }
@@ -465,11 +461,10 @@ export class ApplicationCriteriaFootprintComponent
                 case "domain":
                     xAxis.push(impact.subdomain);
                     //////
-                    for (const [index, [key, value]] of repartitionEntries.entries()) {
+                    for (const [key, value] of repartitionEntries) {
                         const { raw, sip, apps, subDomain } =
                             value as RepartitionYAxisKeys;
                         const data = [impact.subdomain, raw, sip, apps, subDomain];
-
                         yAxis.push({
                             name: key,
                             data: [data],
@@ -479,10 +474,7 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                color: createStackBarGradientColor(
-                                    index,
-                                    repartitionCount,
-                                ),
+                                color: getUniqueColorFromText(key),
                             },
                         });
                     }
@@ -499,7 +491,7 @@ export class ApplicationCriteriaFootprintComponent
                 case "subdomain":
                     xAxis.push(impact.app);
                     /////
-                    for (const [index, [key, value]] of repartitionEntries.entries()) {
+                    for (const [key, value] of repartitionEntries) {
                         const { raw, sip, apps, subDomain } =
                             value as RepartitionYAxisKeys;
                         const data = [impact.app, raw, sip, apps, subDomain];
@@ -513,10 +505,7 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                color: createStackBarGradientColor(
-                                    index,
-                                    repartitionCount,
-                                ),
+                                color: getUniqueColorFromText(key),
                             },
                         });
                     }
@@ -528,7 +517,7 @@ export class ApplicationCriteriaFootprintComponent
                 case "application":
                     xAxis.push(impact.virtualEquipmentName);
                     //////
-                    for (const [index, [key, value]] of repartitionEntries.entries()) {
+                    for (const [key, value] of repartitionEntries) {
                         const {
                             raw,
                             sip,
@@ -558,10 +547,7 @@ export class ApplicationCriteriaFootprintComponent
                                 focus: "series",
                             },
                             itemStyle: {
-                                color: createStackBarGradientColor(
-                                    index,
-                                    repartitionCount,
-                                ),
+                                color: getUniqueColorFromText(key),
                             },
                         });
                     }
