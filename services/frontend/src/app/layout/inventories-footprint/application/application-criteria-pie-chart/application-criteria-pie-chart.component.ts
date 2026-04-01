@@ -11,8 +11,8 @@ import { EChartsOption } from "echarts";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import { ApplicationFootprint } from "src/app/core/interfaces/footprint.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
+import { getUniqueColorFromText } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
-import { Constants } from "src/constants";
 
 @Component({
     selector: "app-application-criteria-pie-chart",
@@ -112,9 +112,13 @@ export class ApplicationCriteriaPieChartComponent {
             series: [
                 {
                     type: "pie",
-                    data: data,
+                    data: data.map((item: any) => ({
+                        ...item,
+                        itemStyle: {
+                            color: getUniqueColorFromText(item.name),
+                        },
+                    })),
                     radius: "70%",
-                    color: Constants.GREEN_COLOR_SET,
                     label: {
                         show: true,
                         formatter: (params: any) => {
@@ -156,9 +160,13 @@ export class ApplicationCriteriaPieChartComponent {
             series: [
                 {
                     type: "pie",
-                    data: data,
+                    data: data.map((item: any) => ({
+                        ...item,
+                        itemStyle: {
+                            color: getUniqueColorFromText(item.name),
+                        },
+                    })),
                     radius: "70%",
-                    color: Constants.PURPLE_COLOR_SET,
                     label: {
                         show: true,
                         formatter: (params: any) => {
