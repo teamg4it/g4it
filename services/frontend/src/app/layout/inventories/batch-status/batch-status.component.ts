@@ -16,21 +16,13 @@ import { TaskDataService } from "src/app/core/service/data/task-data.service";
 import { Constants } from "src/constants";
 import { ToastModule } from "primeng/toast";
 import { TooltipModule } from "primeng/tooltip";
-import { NgIf, AsyncPipe, DatePipe } from "@angular/common";
+import { AsyncPipe, DatePipe } from "@angular/common";
 import { Button } from "primeng/button";
 
 @Component({
     selector: "app-batch-status",
     templateUrl: "./batch-status.component.html",
-    imports: [
-        ToastModule,
-        TooltipModule,
-        NgIf,
-        Button,
-        AsyncPipe,
-        DatePipe,
-        TranslatePipe,
-    ]
+    imports: [ToastModule, TooltipModule, Button, AsyncPipe, DatePipe, TranslatePipe],
 })
 export class BatchStatusComponent implements OnInit {
     private readonly fileSystemBusinessService = inject(FileSystemBusinessService);

@@ -29,17 +29,21 @@
                     </div>
                 </div>
                 <div class="flex gap-2 flex-wrap mx-3">
-                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                        <p-checkbox
-                            [(ngModel)]="selectedCriteriaIS"
-                            [value]="criteria"
-                            (onChange)="onCriteriaChange()"
-                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                            ><label>{{
-                                "criteria." + criteria + ".title" | translate
-                            }}</label></p-checkbox
-                        >
-                    </div>
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [(ngModel)]="selectedCriteriaIS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                                ><label>{{
+                                    "criteria." + criteria + ".title" | translate
+                                }}</label></p-checkbox
+                            >
+                        </div>
+                    }
                 </div>
             } @else {
                 <div>
@@ -62,17 +66,21 @@
                 </div>
 
                 <div class="flex gap-2 flex-wrap m-5">
-                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                        <p-checkbox
-                            [(ngModel)]="selectedCriteriaIS"
-                            [value]="criteria"
-                            (onChange)="onCriteriaChange()"
-                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                            ><label>{{
-                                "criteria." + criteria + ".title" | translate
-                            }}</label></p-checkbox
-                        >
-                    </div>
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [(ngModel)]="selectedCriteriaIS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                                ><label>{{
+                                    "criteria." + criteria + ".title" | translate
+                                }}</label></p-checkbox
+                            >
+                        </div>
+                    }
                 </div>
                 <div>
                     <h3>{{ "administration.user.ds-header" | translate }}</h3>
@@ -94,17 +102,21 @@
                 </div>
 
                 <div class="flex gap-2 flex-wrap m-5">
-                    <div *ngFor="let criteria of criteriaList" class="field-checkbox">
-                        <p-checkbox
-                            [(ngModel)]="selectedCriteriaDS"
-                            [value]="criteria"
-                            (onChange)="onCriteriaChange()"
-                            [ariaLabel]="'criteria.' + criteria + '.title' | translate"
-                            ><label>{{
-                                "criteria." + criteria + ".title" | translate
-                            }}</label></p-checkbox
-                        >
-                    </div>
+                    @for (criteria of criteriaList; track criteria) {
+                        <div class="field-checkbox">
+                            <p-checkbox
+                                [(ngModel)]="selectedCriteriaDS"
+                                [value]="criteria"
+                                (onChange)="onCriteriaChange()"
+                                [ariaLabel]="
+                                    'criteria.' + criteria + '.title' | translate
+                                "
+                                ><label>{{
+                                    "criteria." + criteria + ".title" | translate
+                                }}</label></p-checkbox
+                            >
+                        </div>
+                    }
                 </div>
             }
 

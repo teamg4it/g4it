@@ -13,17 +13,16 @@
                 (keyup)="onInputCheck()"
                 id="name"
             />
-            <p
-                class="error-text"
-                *ngIf="
-                    datacenterForm.get('name')?.hasError('required') &&
-                    datacenterForm.get('name')?.touched
-                "
-            >
-                {{ "digital-services-servers.datacenter" | translate }}
-                {{ "digital-services-servers.name" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
+            @if (
+                datacenterForm.get("name")?.hasError("required") &&
+                datacenterForm.get("name")?.touched
+            ) {
+                <p class="error-text">
+                    {{ "digital-services-servers.datacenter" | translate }}
+                    {{ "digital-services-servers.name" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            }
         </div>
         <div class="flex flex-row">
             <div class="label-input-div-medium">
@@ -43,20 +42,18 @@
                     locale="fr-FR"
                     id="pue"
                 />
-                <p
-                    class="error-text"
-                    *ngIf="datacenterForm.get('pue')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.pue" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-                <p
-                    class="error-text"
-                    *ngIf="isToLow && !datacenterForm.get('pue')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.pue" | translate }}
-                    {{ "digital-services-servers.pue.rule" | translate }}
-                </p>
+                @if (datacenterForm.get("pue")?.hasError("required")) {
+                    <p class="error-text">
+                        {{ "digital-services-servers.pue" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                }
+                @if (isToLow && !datacenterForm.get("pue")?.hasError("required")) {
+                    <p class="error-text">
+                        {{ "digital-services-servers.pue" | translate }}
+                        {{ "digital-services-servers.pue.rule" | translate }}
+                    </p>
+                }
                 <label for="minmaxfraction">
                     {{ "digital-services-servers.pue.label" | translate }}
                     <a
@@ -85,32 +82,31 @@
                     ngDefaultControl
                     lang="en"
                 />
-                <p
-                    class="error-text"
-                    *ngIf="datacenterForm.get('country')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.country" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
+                @if (datacenterForm.get("country")?.hasError("required")) {
+                    <p class="error-text">
+                        {{ "digital-services-servers.country" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                }
             </div>
         </div>
         <div class="button-bottom-right">
-            <div
-                class="error-text block"
-                *ngIf="datacenterForm.hasError('xssDetected') && datacenterForm.dirty"
-            >
-                {{ "digital-services.error.xss-detected" | translate }}
-            </div>
+            @if (datacenterForm.hasError("xssDetected") && datacenterForm.dirty) {
+                <div class="error-text block">
+                    {{ "digital-services.error.xss-detected" | translate }}
+                </div>
+            }
             <p-button styleClass="white-button" (onClick)="close()">{{
                 "common.cancel" | translate
             }}</p-button>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="yellow-button"
-                [disabled]="datacenterForm.invalid || isToLow || disableButton"
-                type="submit"
-                >{{ "common.add" | translate }}
-            </p-button>
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <p-button
+                    styleClass="yellow-button"
+                    [disabled]="datacenterForm.invalid || isToLow || disableButton"
+                    type="submit"
+                    >{{ "common.add" | translate }}
+                </p-button>
+            }
         </div>
     </form>
 </div>

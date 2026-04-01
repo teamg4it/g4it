@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { AsyncPipe, NgIf } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Title } from "@angular/platform-browser";
@@ -34,7 +34,6 @@ import { DigitalServicesItemComponent } from "./digital-services-item/digital-se
     providers: [MessageService, ConfirmationService],
     imports: [
         ToastModule,
-        NgIf,
         Button,
         ScrollPanelModule,
         DigitalServicesItemComponent,
@@ -44,7 +43,7 @@ import { DigitalServicesItemComponent } from "./digital-services-item/digital-se
         CreateDigitalServicesSidebarComponent,
         AsyncPipe,
         TranslatePipe,
-    ]
+    ],
 })
 export class DigitalServicesComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

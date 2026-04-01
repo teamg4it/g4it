@@ -68,21 +68,20 @@
             </div>
 
             <div class="w-25rem">
-                <div
-                    class="flex justify-content-between gap-1 flex-wrap text-base"
-                    *ngFor="let software of versions"
-                >
-                    <span class="flex w-7rem">{{ software.name | uppercase }}</span>
-                    <span class="flex">{{ software.version }}</span>
-                    <span class="flex"
-                        ><a
-                            [href]="repoUrls[software.name]"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            >{{ "useful-information.link-to-github" | translate }}</a
-                        ></span
-                    >
-                </div>
+                @for (software of versions; track software) {
+                    <div class="flex justify-content-between gap-1 flex-wrap text-base">
+                        <span class="flex w-7rem">{{ software.name | uppercase }}</span>
+                        <span class="flex">{{ software.version }}</span>
+                        <span class="flex"
+                            ><a
+                                [href]="repoUrls[software.name]"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >{{ "useful-information.link-to-github" | translate }}</a
+                            ></span
+                        >
+                    </div>
+                }
             </div>
             <p>
                 {{ "useful-information.g4it-line" | translate }}
@@ -102,27 +101,31 @@
 
             <div class="w-25rem">
                 <ul aria-labelledby="openVersion">
-                    <div *ngFor="let software of externalVersions">
-                        <li
-                            class="flex justify-content-between gap-1 flex-wrap text-base"
-                            *ngIf="software.name != 'ecomindai' || isEcoMindModuleEnabled"
-                        >
-                            <span class="flex w-7rem">{{
-                                software.name | uppercase
-                            }}</span>
-                            <span class="flex">{{ software.version }}</span>
-                            <span class="flex"
-                                ><a
-                                    [href]="repoUrls[software.name]"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    >{{
-                                        "useful-information.link-to-github" | translate
-                                    }}</a
-                                ></span
-                            >
-                        </li>
-                    </div>
+                    @for (software of externalVersions; track software) {
+                        <div>
+                            @if (software.name != "ecomindai" || isEcoMindModuleEnabled) {
+                                <li
+                                    class="flex justify-content-between gap-1 flex-wrap text-base"
+                                >
+                                    <span class="flex w-7rem">{{
+                                        software.name | uppercase
+                                    }}</span>
+                                    <span class="flex">{{ software.version }}</span>
+                                    <span class="flex"
+                                        ><a
+                                            [href]="repoUrls[software.name]"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            >{{
+                                                "useful-information.link-to-github"
+                                                    | translate
+                                            }}</a
+                                        ></span
+                                    >
+                                </li>
+                            }
+                        </div>
+                    }
                 </ul>
             </div>
         </div>
@@ -134,17 +137,20 @@
 
             <div class="w-20rem">
                 <ul aria-labelledby="openTitle">
-                    <li
-                        class="flex justify-content-between flex-wrap text-base"
-                        *ngFor="let data of businessHoursData"
-                    >
-                        <span>{{ "common.week." + data.day | translate }}</span
-                        ><span *ngIf="data.start_time"
-                            >{{ data.start_time | businessHoursRenderer }} -
-                            {{ data.end_time | businessHoursRenderer
-                            }}<span *ngIf="selectedLanguage === 'en'"> UTC</span>
-                        </span>
-                    </li>
+                    @for (data of businessHoursData; track data) {
+                        <li class="flex justify-content-between flex-wrap text-base">
+                            <span>{{ "common.week." + data.day | translate }}</span>
+                            @if (data.start_time) {
+                                <span
+                                    >{{ data.start_time | businessHoursRenderer }} -
+                                    {{ data.end_time | businessHoursRenderer }}
+                                    @if (selectedLanguage === "en") {
+                                        <span> UTC</span>
+                                    }
+                                </span>
+                            }
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

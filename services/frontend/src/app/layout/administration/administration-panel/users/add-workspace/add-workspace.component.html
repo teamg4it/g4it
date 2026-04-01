@@ -11,16 +11,17 @@
     <br />
 
     <div>
-        <input
-            *ngIf="userDetail"
-            class="w-full"
-            type="text"
-            [value]="userDetail.email"
-            name="email"
-            pInputText
-            readonly
-            aria-label="Email"
-        />
+        @if (userDetail) {
+            <input
+                class="w-full"
+                type="text"
+                [value]="userDetail.email"
+                name="email"
+                pInputText
+                readonly
+                aria-label="Email"
+            />
+        }
     </div>
     <br />
     <div>
@@ -99,13 +100,17 @@
             class="p-inputtext-sm type-dropdown"
             id="user-role-dropdown"
         ></p-select>
-        <p class="error-text" *ngIf="!adminModule">
-            {{ "administration.user.role" | translate }}
-            {{ "common.mandatory" | translate }}
-        </p>
-        <p *ngIf="isAdminRoleDisabled">
-            {{ "administration.user.unauthorized-domain" | translate }}
-        </p>
+        @if (!adminModule) {
+            <p class="error-text">
+                {{ "administration.user.role" | translate }}
+                {{ "common.mandatory" | translate }}
+            </p>
+        }
+        @if (isAdminRoleDisabled) {
+            <p>
+                {{ "administration.user.unauthorized-domain" | translate }}
+            </p>
+        }
     </div>
     <div class="button-bottom-right">
         <p-button
@@ -114,26 +119,28 @@
             (onClick)="cancel()"
             >{{ "common.cancel" | translate }}</p-button
         >
-        <p-button
-            styleClass="black-button-sidebar"
-            [disabled]="!adminModule"
-            type="submit"
-            (onClick)="addUpdateWorkspace()"
-            *ngIf="!updateOrganizationEnable"
-            id="add-button"
-        >
-            <span>{{ "common.add" | translate }}</span>
-        </p-button>
-        <p-button
-            styleClass="black-button-sidebar"
-            *ngIf="updateOrganizationEnable"
-            [disabled]="!adminModule"
-            type="submit"
-            (onClick)="addUpdateWorkspace()"
-            id="update-button"
-        >
-            <span>{{ "common.save" | translate }}</span>
-        </p-button>
+        @if (!updateOrganizationEnable) {
+            <p-button
+                styleClass="black-button-sidebar"
+                [disabled]="!adminModule"
+                type="submit"
+                (onClick)="addUpdateWorkspace()"
+                id="add-button"
+            >
+                <span>{{ "common.add" | translate }}</span>
+            </p-button>
+        }
+        @if (updateOrganizationEnable) {
+            <p-button
+                styleClass="black-button-sidebar"
+                [disabled]="!adminModule"
+                type="submit"
+                (onClick)="addUpdateWorkspace()"
+                id="update-button"
+            >
+                <span>{{ "common.save" | translate }}</span>
+            </p-button>
+        }
         <br />
         <br />
     </div>

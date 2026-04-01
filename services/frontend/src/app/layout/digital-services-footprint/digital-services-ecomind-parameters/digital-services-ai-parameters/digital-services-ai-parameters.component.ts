@@ -1,7 +1,12 @@
-import { NgIf } from "@angular/common";
 import { Component, DestroyRef, inject, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
@@ -24,11 +29,10 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
         FormsModule,
         ReactiveFormsModule,
         SelectModule,
-        NgIf,
         CheckboxModule,
         InputNumberModule,
         TranslatePipe,
-    ]
+    ],
 })
 export class DigitalServicesAiParametersComponent implements OnInit, OnDestroy {
     terminalsForm!: FormGroup;

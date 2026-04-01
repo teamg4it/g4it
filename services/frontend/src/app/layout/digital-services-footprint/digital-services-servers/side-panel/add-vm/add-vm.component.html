@@ -16,70 +16,76 @@
                     [(ngModel)]="vm.name"
                     id="name"
                 />
-                <p class="error-text" *ngIf="addVmForm.get('name')?.hasError('required')">
-                    {{ "digital-services-servers.name" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-            </div>
-            <div *ngIf="server().type === 'Compute'" class="label-input-div-medium">
-                <label for="vcpu">{{
-                    "digital-services-servers.total.vcpu" | translate
-                }}</label>
-                <p-inputNumber
-                    formControlName="vcpu"
-                    mode="decimal"
-                    [minFractionDigits]="1"
-                    [required]="true"
-                    [min]="0"
-                    styleClass="inputnumber-medium"
-                    (onInput)="verifyValue()"
-                    [(ngModel)]="vm.vCpu"
-                    name="vcpu"
-                    id="vcpu"
-                    ngDefaultControl
-                    locale="fr-FR"
-                />
-                <p class="error-text">
-                    @if (vcpuControl.hasError("required")) {
-                        {{ "digital-services-servers.total.vcpu" | translate }}
+                @if (addVmForm.get("name")?.hasError("required")) {
+                    <p class="error-text">
+                        {{ "digital-services-servers.name" | translate }}
                         {{ "common.mandatory" | translate }}
-                    }
-                    @if (vcpuControl.hasError("isValueTooHigh")) {
-                        {{ "digital-services-servers.error.vcpu" | translate }}
-                        ({{ server().totalVCpu }}
-                        {{ "digital-services-servers.vcpu" | translate }})
-                    }
-                </p>
+                    </p>
+                }
             </div>
-            <div *ngIf="server().type === 'Storage'" class="label-input-div-medium">
-                <label for="disk">{{
-                    "digital-services-servers.total.disk" | translate
-                }}</label>
-                <p-inputNumber
-                    formControlName="disk"
-                    mode="decimal"
-                    [minFractionDigits]="1"
-                    [required]="true"
-                    [min]="0"
-                    styleClass="inputnumber-medium"
-                    (onInput)="verifyValue()"
-                    [(ngModel)]="vm.disk"
-                    name="disk"
-                    id="disk"
-                    ngDefaultControl
-                    locale="fr-FR"
-                />
-                <p class="error-text">
-                    @if (diskControl.hasError("required")) {
-                        {{ "digital-services-servers.total.disk" | translate }}
-                        {{ "common.mandatory" | translate }}
-                    }
-                    @if (diskControl.hasError("isValueTooHigh")) {
-                        {{ "digital-services-servers.error.disk" | translate }}
-                        ({{ server().totalDisk }})
-                    }
-                </p>
-            </div>
+            @if (server().type === "Compute") {
+                <div class="label-input-div-medium">
+                    <label for="vcpu">{{
+                        "digital-services-servers.total.vcpu" | translate
+                    }}</label>
+                    <p-inputNumber
+                        formControlName="vcpu"
+                        mode="decimal"
+                        [minFractionDigits]="1"
+                        [required]="true"
+                        [min]="0"
+                        styleClass="inputnumber-medium"
+                        (onInput)="verifyValue()"
+                        [(ngModel)]="vm.vCpu"
+                        name="vcpu"
+                        id="vcpu"
+                        ngDefaultControl
+                        locale="fr-FR"
+                    />
+                    <p class="error-text">
+                        @if (vcpuControl.hasError("required")) {
+                            {{ "digital-services-servers.total.vcpu" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        }
+                        @if (vcpuControl.hasError("isValueTooHigh")) {
+                            {{ "digital-services-servers.error.vcpu" | translate }}
+                            ({{ server().totalVCpu }}
+                            {{ "digital-services-servers.vcpu" | translate }})
+                        }
+                    </p>
+                </div>
+            }
+            @if (server().type === "Storage") {
+                <div class="label-input-div-medium">
+                    <label for="disk">{{
+                        "digital-services-servers.total.disk" | translate
+                    }}</label>
+                    <p-inputNumber
+                        formControlName="disk"
+                        mode="decimal"
+                        [minFractionDigits]="1"
+                        [required]="true"
+                        [min]="0"
+                        styleClass="inputnumber-medium"
+                        (onInput)="verifyValue()"
+                        [(ngModel)]="vm.disk"
+                        name="disk"
+                        id="disk"
+                        ngDefaultControl
+                        locale="fr-FR"
+                    />
+                    <p class="error-text">
+                        @if (diskControl.hasError("required")) {
+                            {{ "digital-services-servers.total.disk" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        }
+                        @if (diskControl.hasError("isValueTooHigh")) {
+                            {{ "digital-services-servers.error.disk" | translate }}
+                            ({{ server().totalDisk }})
+                        }
+                    </p>
+                </div>
+            }
         </div>
         <div class="underlined-div-small">
             <p>{{ "digital-services-servers.additional" | translate }}</p>
@@ -128,13 +134,12 @@
                     locale="fr-FR"
                     id="opratingTime"
                 />
-                <p
-                    class="error-text"
-                    *ngIf="addVmForm.get('opratingTime')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.usage.time" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
+                @if (addVmForm.get("opratingTime")?.hasError("required")) {
+                    <p class="error-text">
+                        {{ "digital-services-servers.usage.time" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                }
             </div>
             <div class="label-input-div-medium">
                 <label for="electricityConsumption">{{
@@ -173,23 +178,23 @@
             </div>
         </div>
         <div class="button-bottom-right">
-            <div
-                class="error-text block"
-                *ngIf="addVmForm.hasError('xssDetected') && addVmForm.dirty"
-            >
-                {{ "digital-services.error.xss-detected" | translate }}
-            </div>
+            @if (addVmForm.hasError("xssDetected") && addVmForm.dirty) {
+                <div class="error-text block">
+                    {{ "digital-services.error.xss-detected" | translate }}
+                </div>
+            }
             <p-button styleClass="white-button" (onClick)="close()">{{
                 "common.cancel" | translate
             }}</p-button>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="yellow-button"
-                [disabled]="addVmForm.invalid"
-                type="submit"
-            >
-                {{ "common.add" | translate }}
-            </p-button>
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <p-button
+                    styleClass="yellow-button"
+                    [disabled]="addVmForm.invalid"
+                    type="submit"
+                >
+                    {{ "common.add" | translate }}
+                </p-button>
+            }
         </div>
     </form>
 </div>

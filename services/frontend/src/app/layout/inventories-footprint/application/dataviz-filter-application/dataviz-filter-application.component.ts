@@ -19,7 +19,7 @@ import { CheckboxChangeEvent, CheckboxModule } from "primeng/checkbox";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
 
-import { NgClass, NgFor } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Button } from "primeng/button";
 import { OverlayModule } from "primeng/overlay";
@@ -35,14 +35,13 @@ import { Constants } from "src/constants";
         OverlayModule,
         TabsModule,
         ScrollPanelModule,
-        NgFor,
         CheckboxModule,
         FormsModule,
         NgClass,
         Button,
         TranslatePipe,
         PrimeTemplate,
-    ]
+    ],
 })
 export class DatavizFilterApplicationComponent implements OnChanges {
     @Input() allFilters: Filter<string | TransformedDomain> = {};

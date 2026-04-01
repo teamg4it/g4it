@@ -43,22 +43,20 @@
                             class="mt-2 w-7"
                             autofocus="true"
                         />
-                        <span
-                            class="error-text block"
-                            *ngIf="createForm.get('dsName')?.hasError('required')"
-                        >
-                            {{ "digital-services.version.ds-name" | translate }}
-                            {{ "common.mandatory" | translate }}
-                        </span>
-                        <span
-                            class="error-text block"
-                            *ngIf="createForm.get('dsName')?.hasError('uniqueName')"
-                        >
-                            {{
-                                "digital-services.error.digital-service-already-exists"
-                                    | translate
-                            }}
-                        </span>
+                        @if (createForm.get("dsName")?.hasError("required")) {
+                            <span class="error-text block">
+                                {{ "digital-services.version.ds-name" | translate }}
+                                {{ "common.mandatory" | translate }}
+                            </span>
+                        }
+                        @if (createForm.get("dsName")?.hasError("uniqueName")) {
+                            <span class="error-text block">
+                                {{
+                                    "digital-services.error.digital-service-already-exists"
+                                        | translate
+                                }}
+                            </span>
+                        }
                     </div>
 
                     <h3 class="blue-color ml-0 font-semibold">
@@ -91,13 +89,12 @@
                             class="mt-2 w-7"
                             autofocus="true"
                         />
-                        <span
-                            class="error-text block"
-                            *ngIf="createForm.get('dsVersionName')?.hasError('required')"
-                        >
-                            {{ "digital-services.version.version-name" | translate }}
-                            {{ "common.mandatory" | translate }}
-                        </span>
+                        @if (createForm.get("dsVersionName")?.hasError("required")) {
+                            <span class="error-text block">
+                                {{ "digital-services.version.version-name" | translate }}
+                                {{ "common.mandatory" | translate }}
+                            </span>
+                        }
                     </div>
                 </form>
             </p-scrollPanel>

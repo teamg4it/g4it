@@ -12,53 +12,60 @@
             "
             id="my-is-return-button"
         />
-        <h1 *ngIf="inventory.type === types.INFORMATION_SYSTEM" class="px-2">
-            {{ (inventory.name | monthYear) + " - " + indicatorType }}
-        </h1>
-        <h1 *ngIf="inventory.type === types.SIMULATION" class="px-2">
-            {{ inventory.name + " - " + indicatorType }}
-        </h1>
+        @if (inventory.type === types.INFORMATION_SYSTEM) {
+            <h1 class="px-2">
+                {{ (inventory.name | monthYear) + " - " + indicatorType }}
+            </h1>
+        }
+        @if (inventory.type === types.SIMULATION) {
+            <h1 class="px-2">
+                {{ inventory.name + " - " + indicatorType }}
+            </h1>
+        }
     </div>
     <div>
-        <p-button
-            *ngIf="!inventory.note && (userService.isAllowedInventoryWrite$ | async)"
-            (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button"
-            [text]="true"
-            [plain]="true"
-            [ariaLabel]="'common.accessibility.addNote' | translate"
-            [label]="'common.note.add' | translate"
-            icon="pi pi-plus-circle"
-        />
+        @if (!inventory.note && (userService.isAllowedInventoryWrite$ | async)) {
+            <p-button
+                (onClick)="sidebarVisible = true"
+                styleClass="text-gray-900 header-button"
+                [text]="true"
+                [plain]="true"
+                [ariaLabel]="'common.accessibility.addNote' | translate"
+                [label]="'common.note.add' | translate"
+                icon="pi pi-plus-circle"
+            />
+        }
 
-        <p-button
-            *ngIf="inventory.note"
-            (onClick)="sidebarVisible = true"
-            styleClass="text-gray-900 header-button"
-            [text]="true"
-            [plain]="true"
-            [ariaLabel]="'common.accessibility.attachedNote' | translate"
-            [label]="'common.note.attached' | translate"
-            icon="pi pi-clipboard"
-        />
+        @if (inventory.note) {
+            <p-button
+                (onClick)="sidebarVisible = true"
+                styleClass="text-gray-900 header-button"
+                [text]="true"
+                [plain]="true"
+                [ariaLabel]="'common.accessibility.attachedNote' | translate"
+                [label]="'common.note.attached' | translate"
+                icon="pi pi-clipboard"
+            />
+        }
 
-        <p-button
-            [ariaLabel]="'common.accessibility.download' | translate"
-            styleClass="bg-black text-white header-button"
-            (onClick)="download($event)"
-            [disabled]="downloadInProgress"
-            *ngIf="userService.isAllowedInventoryRead$ | async"
-            id="export-inventory-button"
-            icon="pi pi-download"
-            [label]="'inventories-footprint.header.export' | translate"
-        />
+        @if (userService.isAllowedInventoryRead$ | async) {
+            <p-button
+                [ariaLabel]="'common.accessibility.download' | translate"
+                styleClass="bg-black text-white header-button"
+                (onClick)="download($event)"
+                [disabled]="downloadInProgress"
+                id="export-inventory-button"
+                icon="pi pi-download"
+                [label]="'inventories-footprint.header.export' | translate"
+            />
+        }
     </div>
     @if (sidebarVisible) {
         <p-drawer
             [(visible)]="sidebarVisible"
             position="right"
             tabIndex="0"
-            styleClass="p-sidebar-md w-7"
+            styleClass="w-7"
             (onHide)="sidebarVisible = false"
             ariaCloseLabel="Close"
         >

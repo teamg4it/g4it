@@ -39,11 +39,10 @@
 >
     <p-tabpanels>
         @for (tab of tabs; track $index) {
-            <p-tabpanel
-            >
+            <p-tabpanel>
                 <ng-template pTemplate="header">
                     {{
-                        'inventories-footprint.filter-tabs-application.' + tab.field
+                        "inventories-footprint.filter-tabs-application." + tab.field
                             | translate
                     }}
                 </ng-template>
@@ -52,35 +51,37 @@
                     [style]="{ width: '96%', height: '240px' }"
                 >
                     <ul>
-                        <li *ngFor="let item of allUnusedFilters[tab.field]">
-                            @if (!tab?.children?.length) {
-                                <p-checkbox
-                                    [ariaLabel]="item?.toString()"
-                                    name="groupname"
-                                    [value]="item"
-                                    [(ngModel)]="
-                                        footprintStore.applicationSelectedFilters()[
-                                            tab.field
-                                        ]
-                                    "
-                                    (ngModelChange)="
-                                        onFilterSelected(
-                                            $event,
-                                            tab.field,
-                                            item.toString()
-                                        )
-                                    "
-                                    [id]="item"
-                                    ><label>{{
-                                        item?.toString() === all
-                                            ? ("common.all" | translate)
-                                            : item?.toString() === empty
-                                              ? ("common.empty" | translate)
-                                              : item
-                                    }}</label></p-checkbox
-                                >
-                            }
-                        </li>
+                        @for (item of allUnusedFilters[tab.field]; track item) {
+                            <li>
+                                @if (!tab?.children?.length) {
+                                    <p-checkbox
+                                        [ariaLabel]="item?.toString()"
+                                        name="groupname"
+                                        [value]="item"
+                                        [(ngModel)]="
+                                            footprintStore.applicationSelectedFilters()[
+                                                tab.field
+                                            ]
+                                        "
+                                        (ngModelChange)="
+                                            onFilterSelected(
+                                                $event,
+                                                tab.field,
+                                                item.toString()
+                                            )
+                                        "
+                                        [id]="item"
+                                        ><label>{{
+                                            item?.toString() === all
+                                                ? ("common.all" | translate)
+                                                : item?.toString() === empty
+                                                  ? ("common.empty" | translate)
+                                                  : item
+                                        }}</label></p-checkbox
+                                    >
+                                }
+                            </li>
+                        }
                         @if (tab?.children?.length) {
                             <li>
                                 @for (

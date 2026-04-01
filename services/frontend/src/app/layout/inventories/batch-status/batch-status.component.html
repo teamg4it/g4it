@@ -10,16 +10,17 @@
         >
             {{ this.betweenDiv }}
         </div>
-        <p *ngIf="type == 'estimation'; else loading">
-            {{ "inventories.estimate-date" | translate }}
-            {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
-        </p>
-        <ng-template #loading>
+        @if (type == "estimation") {
+            <p>
+                {{ "inventories.estimate-date" | translate }}
+                {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
+            </p>
+        } @else {
             <p>
                 {{ "inventories.loading-date" | translate }}
                 {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
             </p>
-        </ng-template>
+        }
         @if (
             (userService.isAllowedInventoryWrite$ | async) &&
             (batchStatusCode === "COMPLETED_WITH_ERRORS" ||

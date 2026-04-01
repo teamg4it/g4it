@@ -6,21 +6,14 @@ import { DigitalService } from "src/app/core/interfaces/digital-service.interfac
 import { UserService } from "src/app/core/service/business/user.service";
 import { CardModule } from "primeng/card";
 import { Button } from "primeng/button";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 
 @Component({
     selector: "app-digital-services-item",
     templateUrl: "./digital-services-item.component.html",
     providers: [MessageService, ConfirmationService],
-    imports: [
-        CardModule,
-        Button,
-        NgIf,
-        ConfirmPopupModule,
-        AsyncPipe,
-        TranslatePipe,
-    ]
+    imports: [CardModule, Button, ConfirmPopupModule, AsyncPipe, TranslatePipe],
 })
 export class DigitalServicesItemComponent implements OnInit {
     @Input() digitalService: DigitalService = {} as DigitalService;

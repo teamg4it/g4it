@@ -5,10 +5,16 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { NgIf } from "@angular/common";
+
 import { Component, DestroyRef, effect, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
@@ -45,7 +51,6 @@ import { AddWorkspaceComponent } from "./add-workspace/add-workspace.component";
         FormsModule,
         Button,
         CriteriaPopupComponent,
-        NgIf,
         ReactiveFormsModule,
         InputTextModule,
         ScrollPanelModule,
@@ -56,7 +61,7 @@ import { AddWorkspaceComponent } from "./add-workspace/add-workspace.component";
         ToastModule,
         ConfirmDialogModule,
         TranslatePipe,
-    ]
+    ],
 })
 export class UsersComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);

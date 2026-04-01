@@ -9,8 +9,8 @@ import { AsyncPipe, CommonModule, UpperCasePipe } from "@angular/common";
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { AccordionModule, AccordionPanel } from "primeng/accordion";
-import { ConfirmationService, MessageService, PrimeTemplate } from "primeng/api";
+import { AccordionContent, AccordionHeader } from "primeng/accordion";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { Button } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { ProgressBarModule } from "primeng/progressbar";
@@ -41,8 +41,8 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
     templateUrl: "./inventory-item.component.html",
     providers: [ConfirmationService, MessageService],
     imports: [
-        AccordionModule,
-        PrimeTemplate,
+        AccordionHeader,
+        AccordionContent,
         Button,
         EquipmentsCardComponent,
         BatchStatusComponent,
@@ -51,12 +51,11 @@ import { EquipmentsCardComponent } from "../equipments-card/equipments-card.comp
         CriteriaPopupComponent,
         MonthYearPipe,
         AsyncPipe,
-        AccordionPanel,
         UpperCasePipe,
         TranslatePipe,
         CommonModule,
         RouterModule,
-    ]
+    ],
 })
 export class InventoryItemComponent implements OnInit {
     private readonly global = inject(GlobalStoreService);

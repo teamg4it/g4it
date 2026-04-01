@@ -9,7 +9,7 @@ import { Component, computed, inject, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "src/app/core/service/business/user.service";
 
-import { AsyncPipe, NgIf } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { TranslatePipe } from "@ngx-translate/core";
 import { Button } from "primeng/button";
 import { DrawerModule } from "primeng/drawer";
@@ -26,12 +26,11 @@ import { PanelAddVmComponent } from "../add-vm/add-vm.component";
         AutofocusDirective,
         DigitalServiceTableComponent,
         Button,
-        NgIf,
         DrawerModule,
         PanelAddVmComponent,
         AsyncPipe,
         TranslatePipe,
-    ]
+    ],
 })
 export class PanelListVmComponent {
     @ViewChild("vmSidePanel", { static: false })

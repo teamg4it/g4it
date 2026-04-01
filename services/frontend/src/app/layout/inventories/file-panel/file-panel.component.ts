@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { CommonModule } from "@angular/common";
+
 import {
     AfterViewInit,
     Component,
@@ -59,7 +59,6 @@ import { SelectFileComponent } from "./select-file/select-file.component";
         ReactiveFormsModule,
         InputTextModule,
         Button,
-        CommonModule,
         TranslatePipe,
     ],
 })

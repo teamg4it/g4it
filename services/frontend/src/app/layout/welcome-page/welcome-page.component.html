@@ -248,22 +248,24 @@
                             {{ "common.help-center" | translate }}</span
                         >
 
-                        <div *ngFor="let linkObj of externalLinks" class="p-1 relative">
-                            <div class="border border-left-1 border-light-grey-color">
-                                <a
-                                    [href]="linkObj.href"
-                                    target="_blank"
-                                    role="link"
-                                    class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
-                                    tabindex="0"
-                                >
-                                    <span class="mr-3"
-                                        ><u>{{ linkObj.label | translate }}</u></span
+                        @for (linkObj of externalLinks; track linkObj) {
+                            <div class="p-1 relative">
+                                <div class="border border-left-1 border-light-grey-color">
+                                    <a
+                                        [href]="linkObj.href"
+                                        target="_blank"
+                                        role="link"
+                                        class="ml-2 py-1 pl-0 flex align-items-center p-menuitem-link text-base white-space-nowrap"
+                                        tabindex="0"
                                     >
-                                    <span [class]="linkObj.iconClass"></span>
-                                </a>
+                                        <span class="mr-3"
+                                            ><u>{{ linkObj.label | translate }}</u></span
+                                        >
+                                        <span [class]="linkObj.iconClass"></span>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>

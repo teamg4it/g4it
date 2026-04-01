@@ -12,20 +12,21 @@
             />
         </span>
 
-        <p-button
-            styleClass="mx-1"
-            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            [rounded]="true"
-            (onClick)="confirmDelete($event, digitalService)"
-            [text]="true"
-            [plain]="true"
-            icon="pi pi-trash"
-            id="delete-digital-service"
-            [ariaLabel]="
-                'digital-services.delete-criteria'
-                    | translate: { digitalServiceName: digitalService.name }
-            "
-        />
+        @if (userService.isAllowedDigitalServiceWrite$ | async) {
+            <p-button
+                styleClass="mx-1"
+                [rounded]="true"
+                (onClick)="confirmDelete($event, digitalService)"
+                [text]="true"
+                [plain]="true"
+                icon="pi pi-trash"
+                id="delete-digital-service"
+                [ariaLabel]="
+                    'digital-services.delete-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
+            />
+        }
 
         <p-confirmpopup [style]="{ width: '450px' }"> </p-confirmpopup>
     </div>

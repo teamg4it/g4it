@@ -17,7 +17,7 @@ import {
     SimpleChanges,
 } from "@angular/core";
 
-import { NgClass, NgIf } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe } from "@ngx-translate/core";
@@ -56,11 +56,10 @@ import { InventoriesFootprintComponent } from "../inventories-footprint.componen
         SelectModule,
         FormsModule,
         PrimeTemplate,
-        NgIf,
         StackBarChartComponent,
         NgxEchartsDirective,
         TranslatePipe,
-    ]
+    ],
 })
 export class InventoriesCritereFootprintComponent
     extends AbstractDashboard

@@ -18,13 +18,18 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { Event, NavigationEnd, Router } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { AccordionModule } from "primeng/accordion";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionHeader,
+    AccordionPanel,
+} from "primeng/accordion";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Button } from "primeng/button";
-import { DrawerModule } from "primeng/drawer";
-import { InputTextModule } from "primeng/inputtext";
-import { ScrollPanelModule } from "primeng/scrollpanel";
-import { ToastModule } from "primeng/toast";
+import { Drawer } from "primeng/drawer";
+import { InputText } from "primeng/inputtext";
+import { ScrollPanel } from "primeng/scrollpanel";
+import { Toast } from "primeng/toast";
 import { Subject, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
@@ -47,16 +52,19 @@ import { InventoryItemComponent } from "./inventory-item/inventory-item.componen
     templateUrl: "./inventories.component.html",
     providers: [ConfirmationService, MessageService],
     imports: [
-        ToastModule,
-        DrawerModule,
+        Toast,
+        Drawer,
         FilePanelComponent,
         CommonEditorComponent,
         Button,
-        ScrollPanelModule,
-        AccordionModule,
+        ScrollPanel,
+        Accordion,
+        AccordionPanel,
+        AccordionHeader,
+        AccordionContent,
         InventoryItemComponent,
         FormsModule,
-        InputTextModule,
+        InputText,
         AsyncPipe,
         TranslatePipe,
     ],

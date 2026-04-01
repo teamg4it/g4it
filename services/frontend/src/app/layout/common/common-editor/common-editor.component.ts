@@ -1,4 +1,3 @@
-import { NgIf } from "@angular/common";
 import {
     Component,
     EventEmitter,
@@ -28,7 +27,6 @@ import { AutofocusDirective } from "../../../core/directives/auto-focus.directiv
         FormsModule,
         ToastModule,
         ConfirmPopupModule,
-        NgIf,
         Button,
         TranslatePipe,
     ],

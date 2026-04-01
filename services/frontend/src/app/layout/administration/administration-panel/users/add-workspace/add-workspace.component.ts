@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { NgIf } from "@angular/common";
+
 import {
     Component,
     DestroyRef,
@@ -41,13 +41,12 @@ import { AutofocusDirective } from "../../../../../core/directives/auto-focus.di
     providers: [ConfirmationService, MessageService],
     imports: [
         AutofocusDirective,
-        NgIf,
         InputTextModule,
         SelectModule,
         FormsModule,
         Button,
         TranslatePipe,
-    ]
+    ],
 })
 export class AddWorkspaceComponent implements OnInit, OnChanges {
     @Input() userDetail!: UserDetails;

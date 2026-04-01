@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { AsyncPipe, NgIf } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { Component, computed, EventEmitter, inject, Input, Output } from "@angular/core";
 import {
     FormBuilder,
@@ -34,13 +34,12 @@ import { AutofocusDirective } from "../../../../../core/directives/auto-focus.di
         FormsModule,
         ReactiveFormsModule,
         InputTextModule,
-        NgIf,
         InputNumberModule,
         SelectModule,
         Button,
         AsyncPipe,
         TranslatePipe,
-    ]
+    ],
 })
 export class PanelDatacenterComponent {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

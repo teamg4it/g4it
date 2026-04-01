@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { RouterModule, RouterOutlet } from "@angular/router";
 import { SharedModule } from "src/app/core/shared/shared.module";
@@ -9,14 +8,13 @@ import { TopHeaderComponent } from "../../header/header-siderbar/top-header/top-
     selector: "app-share-landing-page",
     imports: [
         RouterOutlet,
-        CommonModule,
         RouterModule,
         SharedModule,
         TopHeaderComponent,
         LeftSidebarComponent,
         SharedModule,
     ],
-    templateUrl: "./share-landing-page.component.html"
+    templateUrl: "./share-landing-page.component.html",
 })
 export class ShareLandingPageComponent {
     @ViewChild("mainContent") mainContent!: ElementRef;

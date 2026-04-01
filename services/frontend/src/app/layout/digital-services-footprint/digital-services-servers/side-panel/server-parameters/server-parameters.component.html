@@ -30,13 +30,12 @@
                     lang="en"
                     [ariaLabel]="'digital-services-servers.host' | translate"
                 ></p-select>
-                <p
-                    class="error-text"
-                    *ngIf="serverForm.get('type')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.host" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
+                @if (serverForm.get("type")?.hasError("required")) {
+                    <p class="error-text">
+                        {{ "digital-services-servers.host" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                }
             </div>
             <div class="underlined-div">
                 <p>{{ "digital-services-servers.additional" | translate }}</p>
@@ -60,26 +59,25 @@
                         inputId="datacenter"
                         [ariaLabel]="'digital-services-servers.datacenter' | translate"
                     ></p-select>
-                    <p
-                        class="error-text"
-                        *ngIf="serverForm.get('type')?.hasError('required')"
-                    >
-                        {{ "digital-services-servers.datacenter" | translate }}
-                        {{ "common.mandatory" | translate }}
-                    </p>
-                    <p-button
-                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        (onClick)="addSidebarVisible = true"
-                        styleClass="black-button white-space-nowrap"
-                    >
-                        {{ "common.add" | translate }}
-                        {{ "digital-services-servers.datacenter" | translate }}
-                    </p-button>
+                    @if (serverForm.get("type")?.hasError("required")) {
+                        <p class="error-text">
+                            {{ "digital-services-servers.datacenter" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    }
+                    @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                        <p-button
+                            (onClick)="addSidebarVisible = true"
+                            styleClass="black-button white-space-nowrap"
+                        >
+                            {{ "common.add" | translate }}
+                            {{ "digital-services-servers.datacenter" | translate }}
+                        </p-button>
+                    }
                     @if (addSidebarVisible) {
                         <p-drawer
                             [visible]="true"
                             position="right"
-                            styleClass="p-sidebar-lg"
                             (onHide)="childSidePanel.close()"
                         >
                             <app-panel-datacenter
@@ -95,113 +93,115 @@
                 </div>
             </div>
             <div class="flex flex-row">
-                <div
-                    *ngIf="server().mutualizationType === 'Dedicated'"
-                    [ngClass]="
-                        server().mutualizationType == 'Dedicated'
-                            ? 'label-input-div label-input-div-server'
-                            : 'label-input-div-medium'
-                    "
-                >
-                    <label for="quantity">{{
-                        "digital-services-servers.quantity" | translate
-                    }}</label>
-                    <p-inputNumber
-                        formControlName="quantity"
-                        [required]="true"
-                        [min]="0"
-                        styleClass="inputnumber-small"
-                        [(ngModel)]="server().quantity"
-                        name="quantity"
-                        ngDefaultControl
-                        locale="fr-FR"
-                        id="quantity"
-                        [ariaLabel]="'igital-services-servers.quantity' | translate"
-                    />
-                    <p
-                        class="error-text"
-                        *ngIf="serverForm.get('quantity')?.hasError('required')"
+                @if (server().mutualizationType === "Dedicated") {
+                    <div
+                        [ngClass]="
+                            server().mutualizationType == 'Dedicated'
+                                ? 'label-input-div label-input-div-server'
+                                : 'label-input-div-medium'
+                        "
                     >
-                        {{ "digital-services-servers.quantity" | translate }}
-                        {{ "common.mandatory" | translate }}
-                    </p>
-                </div>
-                <div
-                    *ngIf="server().type === 'Compute'"
-                    [ngClass]="
-                        server().mutualizationType == 'Dedicated'
-                            ? 'label-input-div label-input-div-server'
-                            : 'label-input-div-medium'
-                    "
-                >
-                    <label for="vcpu">{{
-                        "digital-services-servers.total.vcpu" | translate
-                    }}</label>
-                    <p-inputNumber
-                        formControlName="vcpu"
-                        [required]="true"
-                        [min]="0"
-                        styleClass="inputnumber-small"
-                        [(ngModel)]="server().totalVCpu"
-                        (onInput)="verifyValue(server())"
-                        name="vcpu"
-                        ngDefaultControl
-                        locale="fr-FR"
-                        id="vcpu"
-                        [ariaLabel]="'digital-services-servers.total.vcpu' | translate"
-                    />
-                    <p
-                        class="error-text"
-                        *ngIf="serverForm.get('vcpu')?.hasError('required')"
+                        <label for="quantity">{{
+                            "digital-services-servers.quantity" | translate
+                        }}</label>
+                        <p-inputNumber
+                            formControlName="quantity"
+                            [required]="true"
+                            [min]="0"
+                            styleClass="inputnumber-small"
+                            [(ngModel)]="server().quantity"
+                            name="quantity"
+                            ngDefaultControl
+                            locale="fr-FR"
+                            id="quantity"
+                            [ariaLabel]="'igital-services-servers.quantity' | translate"
+                        />
+                        @if (serverForm.get("quantity")?.hasError("required")) {
+                            <p class="error-text">
+                                {{ "digital-services-servers.quantity" | translate }}
+                                {{ "common.mandatory" | translate }}
+                            </p>
+                        }
+                    </div>
+                }
+                @if (server().type === "Compute") {
+                    <div
+                        [ngClass]="
+                            server().mutualizationType == 'Dedicated'
+                                ? 'label-input-div label-input-div-server'
+                                : 'label-input-div-medium'
+                        "
                     >
-                        {{ "digital-services-servers.total.vcpu" | translate }}
-                        {{ "common.mandatory" | translate }}
-                    </p>
-                    @if (serverForm.get("vcpu")?.hasError("isValueTooHigh")) {
-                        <p class="error-text">
-                            {{
-                                "digital-services-servers.error.totalvcpu"
-                                    | translate
-                                        : {
-                                              totalVmvCpu: totalVmvCpu,
-                                              totalVmvCpuUnit:
-                                                  "digital-services-servers.vcpu"
-                                                  | translate,
-                                          }
-                            }}
-                        </p>
-                    }
-                </div>
-                <div
-                    *ngIf="server().type === 'Storage'"
-                    [ngClass]="
-                        server().mutualizationType == 'Dedicated'
-                            ? 'label-input-div label-input-div-server'
-                            : 'label-input-div-medium'
-                    "
-                >
-                    <label for="disk">
-                        {{ "digital-services-servers.total.disk" | translate }}
-                    </label>
-                    <p-inputNumber
-                        formControlName="disk"
-                        [required]="true"
-                        [min]="0"
-                        styleClass="inputnumber-small"
-                        [(ngModel)]="server().totalDisk"
-                        name="disk"
-                        ngDefaultControl
-                        locale="fr-FR"
-                        id="disk"
-                    />
-                    <p
-                        class="error-text"
-                        *ngIf="serverForm.get('disk')?.hasError('required')"
+                        <label for="vcpu">{{
+                            "digital-services-servers.total.vcpu" | translate
+                        }}</label>
+                        <p-inputNumber
+                            formControlName="vcpu"
+                            [required]="true"
+                            [min]="0"
+                            styleClass="inputnumber-small"
+                            [(ngModel)]="server().totalVCpu"
+                            (onInput)="verifyValue(server())"
+                            name="vcpu"
+                            ngDefaultControl
+                            locale="fr-FR"
+                            id="vcpu"
+                            [ariaLabel]="
+                                'digital-services-servers.total.vcpu' | translate
+                            "
+                        />
+                        @if (serverForm.get("vcpu")?.hasError("required")) {
+                            <p class="error-text">
+                                {{ "digital-services-servers.total.vcpu" | translate }}
+                                {{ "common.mandatory" | translate }}
+                            </p>
+                        }
+                        @if (serverForm.get("vcpu")?.hasError("isValueTooHigh")) {
+                            <p class="error-text">
+                                {{
+                                    "digital-services-servers.error.totalvcpu"
+                                        | translate
+                                            : {
+                                                  totalVmvCpu: totalVmvCpu,
+                                                  totalVmvCpuUnit:
+                                                      "digital-services-servers.vcpu"
+                                                      | translate,
+                                              }
+                                }}
+                            </p>
+                        }
+                    </div>
+                }
+                @if (server().type === "Storage") {
+                    <div
+                        [ngClass]="
+                            server().mutualizationType == 'Dedicated'
+                                ? 'label-input-div label-input-div-server'
+                                : 'label-input-div-medium'
+                        "
                     >
-                        {{ "digital-services-servers.total.disk" | translate }}
-                        {{ "common.mandatory" | translate }}
-                    </p>
-                </div>
+                        <label for="disk">
+                            {{ "digital-services-servers.total.disk" | translate }}
+                        </label>
+                        <p-inputNumber
+                            formControlName="disk"
+                            [required]="true"
+                            [min]="0"
+                            styleClass="inputnumber-small"
+                            [(ngModel)]="server().totalDisk"
+                            name="disk"
+                            ngDefaultControl
+                            locale="fr-FR"
+                            id="disk"
+                        />
+                        @if (serverForm.get("disk")?.hasError("required")) {
+                            <p class="error-text">
+                                {{ "digital-services-servers.total.disk" | translate }}
+                                {{ "common.mandatory" | translate }}
+                            </p>
+                        }
+                    </div>
+                }
                 <div
                     [ngClass]="
                         server().mutualizationType == 'Dedicated'
@@ -225,13 +225,12 @@
                         ngDefaultControl
                         locale="fr-FR"
                     />
-                    <p
-                        class="error-text"
-                        *ngIf="serverForm.get('lifespan')?.hasError('required')"
-                    >
-                        {{ "digital-services-servers.lifespan" | translate }}
-                        {{ "common.mandatory" | translate }}
-                    </p>
+                    @if (serverForm.get("lifespan")?.hasError("required")) {
+                        <p class="error-text">
+                            {{ "digital-services-servers.lifespan" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    }
                 </div>
             </div>
             <div class="flex flex-row">
@@ -251,53 +250,49 @@
                         id="electricityConsumption"
                         [ariaLabel]="'digital-services-servers.electricity' | translate"
                     />
-                    <p
-                        class="error-text"
-                        *ngIf="
-                            serverForm.get('electricityConsumption')?.hasError('required')
-                        "
-                    >
-                        {{ "digital-services-servers.electricity" | translate }}
-                        {{ "common.mandatory" | translate }}
-                    </p>
+                    @if (serverForm.get("electricityConsumption")?.hasError("required")) {
+                        <p class="error-text">
+                            {{ "digital-services-servers.electricity" | translate }}
+                            {{ "common.mandatory" | translate }}
+                        </p>
+                    }
                 </div>
-                <div
-                    class="label-input-div-medium"
-                    *ngIf="server().mutualizationType === 'Dedicated'"
-                >
-                    <label for="operatingTime">{{
-                        "digital-services-servers.usage.time" | translate
-                    }}</label>
-                    <p-inputNumber
-                        formControlName="operatingTime"
-                        [required]="true"
-                        [min]="0"
-                        [max]="8760"
-                        [(ngModel)]="server().annualOperatingTime"
-                        name="operatingTime"
-                        styleClass="inputnumber-medium"
-                        ngDefaultControl
-                        locale="fr-FR"
-                        id="operatingTime"
-                        [ariaLabel]="'digital-services-servers.usage.time' | translate"
-                    />
-                    <p
-                        class="error-text"
-                        *ngIf="serverForm.get('operatingTime')?.hasError('required')"
-                    >
-                        {{ "digital-services-servers.usage.time" | translate }}
-                        {{ "common.mandatory" | translate }}
-                    </p>
-                </div>
+                @if (server().mutualizationType === "Dedicated") {
+                    <div class="label-input-div-medium">
+                        <label for="operatingTime">{{
+                            "digital-services-servers.usage.time" | translate
+                        }}</label>
+                        <p-inputNumber
+                            formControlName="operatingTime"
+                            [required]="true"
+                            [min]="0"
+                            [max]="8760"
+                            [(ngModel)]="server().annualOperatingTime"
+                            name="operatingTime"
+                            styleClass="inputnumber-medium"
+                            ngDefaultControl
+                            locale="fr-FR"
+                            id="operatingTime"
+                            [ariaLabel]="
+                                'digital-services-servers.usage.time' | translate
+                            "
+                        />
+                        @if (serverForm.get("operatingTime")?.hasError("required")) {
+                            <p class="error-text">
+                                {{ "digital-services-servers.usage.time" | translate }}
+                                {{ "common.mandatory" | translate }}
+                            </p>
+                        }
+                    </div>
+                }
             </div>
         </div>
         <div class="button-bottom-right">
-            <div
-                class="error-text block"
-                *ngIf="serverForm.hasError('xssDetected') && serverForm.dirty"
-            >
-                {{ "digital-services.error.xss-detected" | translate }}
-            </div>
+            @if (serverForm.hasError("xssDetected") && serverForm.dirty) {
+                <div class="error-text block">
+                    {{ "digital-services.error.xss-detected" | translate }}
+                </div>
+            }
             <p-button styleClass="white-button" (onClick)="close()">
                 {{ "common.cancel" | translate }}
             </p-button>
@@ -309,16 +304,17 @@
                 [label]="'common.previous' | translate"
             />
 
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="yellow-button"
-                type="submit"
-                [disabled]="serverForm.invalid"
-                icon="pi pi-arrow-right"
-                [label]="createLabelKey() | translate"
-                id="submit-servers"
-            >
-            </p-button>
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <p-button
+                    styleClass="yellow-button"
+                    type="submit"
+                    [disabled]="serverForm.invalid"
+                    icon="pi pi-arrow-right"
+                    [label]="createLabelKey() | translate"
+                    id="submit-servers"
+                >
+                </p-button>
+            }
         </div>
     </form>
 </div>

@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { AsyncPipe, NgClass, NgIf } from "@angular/common";
+import { AsyncPipe, NgClass } from "@angular/common";
 import {
     Component,
     computed,
@@ -60,7 +60,6 @@ import { VersionTypeTagComponent } from "./version-type-tag/version-type-tag.com
         ConfirmPopupModule,
         Button,
         NgClass,
-        NgIf,
         InplaceModule,
         FormsModule,
         InputTextModule,
@@ -70,7 +69,7 @@ import { VersionTypeTagComponent } from "./version-type-tag/version-type-tag.com
         PromoteVersionDialogComponent,
         AsyncPipe,
         TranslatePipe,
-    ]
+    ],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     protected readonly global = inject(GlobalStoreService);

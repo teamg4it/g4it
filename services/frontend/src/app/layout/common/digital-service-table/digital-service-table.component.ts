@@ -4,7 +4,7 @@ import { ConfirmationService, PrimeTemplate } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { TableModule } from "primeng/table";
-import { NgIf, NgTemplateOutlet, NgStyle, AsyncPipe } from "@angular/common";
+import { NgTemplateOutlet, NgStyle, AsyncPipe } from "@angular/common";
 import { Button } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DecimalsPipe } from "../../../core/pipes/decimal.pipe";
@@ -14,17 +14,16 @@ import { DecimalsPipe } from "../../../core/pipes/decimal.pipe";
     templateUrl: "./digital-service-table.component.html",
     providers: [ConfirmationService],
     imports: [
-        TableModule,
-        PrimeTemplate,
-        NgIf,
-        Button,
-        NgTemplateOutlet,
-        NgStyle,
-        ConfirmPopupModule,
-        AsyncPipe,
-        DecimalsPipe,
-        TranslatePipe,
-    ]
+    TableModule,
+    PrimeTemplate,
+    Button,
+    NgTemplateOutlet,
+    NgStyle,
+    ConfirmPopupModule,
+    AsyncPipe,
+    DecimalsPipe,
+    TranslatePipe
+]
 })
 export class DigitalServiceTableComponent {
     protected userService = inject(UserService);

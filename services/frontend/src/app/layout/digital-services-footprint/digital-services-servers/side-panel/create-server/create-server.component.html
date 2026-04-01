@@ -1,24 +1,26 @@
 <div class="lg-file-panel-margin">
-    <div
-        class="side-panel-title"
-        *ngIf="server.uid === ''"
-        role="heading"
-        aria-level="2"
-        appAutofocus
-        tabindex="-1"
-    >
-        {{ "digital-services-servers.new" | translate }}
-    </div>
-    <div
-        class="side-panel-title"
-        *ngIf="server.uid !== ''"
-        role="heading"
-        aria-level="2"
-        appAutofocus
-        tabindex="-1"
-    >
-        {{ "digital-services-servers.edit" | translate }}
-    </div>
+    @if (server.uid === "") {
+        <div
+            class="side-panel-title"
+            role="heading"
+            aria-level="2"
+            appAutofocus
+            tabindex="-1"
+        >
+            {{ "digital-services-servers.new" | translate }}
+        </div>
+    }
+    @if (server.uid !== "") {
+        <div
+            class="side-panel-title"
+            role="heading"
+            aria-level="2"
+            appAutofocus
+            tabindex="-1"
+        >
+            {{ "digital-services-servers.edit" | translate }}
+        </div>
+    }
     <form [formGroup]="serverForm" (ngSubmit)="nextStep()">
         <div class="label-input-div-full">
             <label for="name">{{ "digital-services-servers.name" | translate }}</label>
@@ -30,13 +32,19 @@
                 [required]="true"
                 id="name"
             />
-            <p class="error-text" *ngIf="serverForm.get('name')?.hasError('required')">
-                {{ "digital-services-servers.name" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
-            <p class="error-text" *ngIf="serverForm.get('name')?.hasError('uniqueName')">
-                {{ "digital-services-servers.error.server-already-exists" | translate }}
-            </p>
+            @if (serverForm.get("name")?.hasError("required")) {
+                <p class="error-text">
+                    {{ "digital-services-servers.name" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            }
+            @if (serverForm.get("name")?.hasError("uniqueName")) {
+                <p class="error-text">
+                    {{
+                        "digital-services-servers.error.server-already-exists" | translate
+                    }}
+                </p>
+            }
         </div>
         <div style="display: flex; margin-top: 25px">
             <div>
@@ -69,13 +77,12 @@
                         [(ngModel)]="server.mutualizationType"
                     ></p-radioButton>
                 </div>
-                <p
-                    class="error-text"
-                    *ngIf="serverForm.get('mutualizationType')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.allocation" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
+                @if (serverForm.get("mutualizationType")?.hasError("required")) {
+                    <p class="error-text">
+                        {{ "digital-services-servers.allocation" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                }
             </div>
             <p-divider layout="vertical"></p-divider>
             <div>
@@ -108,36 +115,35 @@
                         inputId="Storage"
                     ></p-radioButton>
                 </div>
-                <p
-                    class="error-text"
-                    *ngIf="serverForm.get('type')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.type" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
+                @if (serverForm.get("type")?.hasError("required")) {
+                    <p class="error-text">
+                        {{ "digital-services-servers.type" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    </p>
+                }
             </div>
         </div>
 
         <div class="button-bottom-right">
-            <div
-                class="error-text block"
-                *ngIf="serverForm.hasError('xssDetected') && serverForm.dirty"
-            >
-                {{ "digital-services.error.xss-detected" | translate }}
-            </div>
+            @if (serverForm.hasError("xssDetected") && serverForm.dirty) {
+                <div class="error-text block">
+                    {{ "digital-services.error.xss-detected" | translate }}
+                </div>
+            }
             <p-button styleClass="white-button" (onClick)="close()">
                 {{ "common.cancel" | translate }}
             </p-button>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="black-button"
-                [disabled]="serverForm.invalid"
-                type="submit"
-                icon="pi pi-arrow-right"
-                [label]="'common.next' | translate"
-                iconPos="right"
-                id="next-servers"
-            />
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <p-button
+                    styleClass="black-button"
+                    [disabled]="serverForm.invalid"
+                    type="submit"
+                    icon="pi pi-arrow-right"
+                    [label]="'common.next' | translate"
+                    iconPos="right"
+                    id="next-servers"
+                />
+            }
         </div>
     </form>
 </div>

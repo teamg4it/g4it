@@ -46,63 +46,64 @@
             </a>
         </div>
         <div class="flex align-items-center justify-content-center my-1">
-            <a
-                *ngIf="userService.isAllowedInventoryRead$ | async"
-                [routerLink]="selectedPath + '/inventories'"
-                id="information-system"
-                [ngClass]="{
-                    'inventory-padding-zoomin': isZoomedIn(),
-                    'inventory-padding': !isZoomedIn(),
-                    'bg-light-green': selectedPage() === 'inventories',
-                }"
-            >
-                <div class="flex justify-content-center color-transparent">
-                    <img
-                        src="assets/images/icons/icon-dashboard.svg"
-                        alt="{{
-                            'inventories.title'
-                                | translate: { WorkspaceName: selectedWorkspace.name }
-                        }}"
-                        [attr.title]="inventoriesTitle()"
-                    />
-                </div>
-                <span class="text-white span-font nav-span-text">{{
-                    "common.inventories" | translate
-                }}</span>
-            </a>
+            @if (userService.isAllowedInventoryRead$ | async) {
+                <a
+                    [routerLink]="selectedPath + '/inventories'"
+                    id="information-system"
+                    [ngClass]="{
+                        'inventory-padding-zoomin': isZoomedIn(),
+                        'inventory-padding': !isZoomedIn(),
+                        'bg-light-green': selectedPage() === 'inventories',
+                    }"
+                >
+                    <div class="flex justify-content-center color-transparent">
+                        <img
+                            src="assets/images/icons/icon-dashboard.svg"
+                            alt="{{
+                                'inventories.title'
+                                    | translate: { WorkspaceName: selectedWorkspace.name }
+                            }}"
+                            [attr.title]="inventoriesTitle()"
+                        />
+                    </div>
+                    <span class="text-white span-font nav-span-text">{{
+                        "common.inventories" | translate
+                    }}</span>
+                </a>
+            }
         </div>
         <div
             class="flex align-items-center justify-content-center my-1"
             [attr.aria-label]="'header.menu' | translate"
         >
-            <a
-                *ngIf="userService.isAllowedDigitalServiceRead$ | async"
-                [routerLink]="selectedPath + '/digital-services'"
-                id="digital-services"
-                [ngClass]="{
-                    'digital-padding-zoomin': isZoomedIn(),
-                    'digital-padding': !isZoomedIn(),
-                    'bg-light-green':
-                        selectedPage() === 'digital-services' ||
-                        selectedPage() === 'digital-service-version',
-                }"
-            >
-                <div class="flex justify-content-center color-transparent">
-                    <img
-                        src="assets/images/icons/icon-digital-service.svg"
-                        alt="{{
-                            'digital-services.title'
-                                | translate: { WorkspaceName: selectedWorkspace.name }
-                        }}"
-                        [attr.title]="digitalServicesTitle()"
-                        [attr.aria-current]="digitalServicesAriaCurrent()"
-                    />
-                </div>
-
-                <span class="text-white span-font nav-span-text ds-text">{{
-                    "common.digital-services" | translate
-                }}</span>
-            </a>
+            @if (userService.isAllowedDigitalServiceRead$ | async) {
+                <a
+                    [routerLink]="selectedPath + '/digital-services'"
+                    id="digital-services"
+                    [ngClass]="{
+                        'digital-padding-zoomin': isZoomedIn(),
+                        'digital-padding': !isZoomedIn(),
+                        'bg-light-green':
+                            selectedPage() === 'digital-services' ||
+                            selectedPage() === 'digital-service-version',
+                    }"
+                >
+                    <div class="flex justify-content-center color-transparent">
+                        <img
+                            src="assets/images/icons/icon-digital-service.svg"
+                            alt="{{
+                                'digital-services.title'
+                                    | translate: { WorkspaceName: selectedWorkspace.name }
+                            }}"
+                            [attr.title]="digitalServicesTitle()"
+                            [attr.aria-current]="digitalServicesAriaCurrent()"
+                        />
+                    </div>
+                    <span class="text-white span-font nav-span-text ds-text">{{
+                        "common.digital-services" | translate
+                    }}</span>
+                </a>
+            }
         </div>
 
         @if (
@@ -150,29 +151,30 @@
         <div
             class="flex align-items-center justify-content-center my-1 lg:mt-2 xl:mb-5 mr-2 lg:mr-auto"
         >
-            <a
-                routerLink="/administration/users"
-                *ngIf="isAdminOnWorkspaceOrOrganization"
-                id="administration"
-                [ngClass]="{
-                    'admin-padding-zoomin': isZoomedIn(),
-                    'admin-padding': !isZoomedIn(),
-                    'bg-light-green': selectedPage() === 'administration',
-                }"
-            >
-                <div class="flex justify-content-center color-transparent">
-                    <img
-                        src="assets/images/icons/icon-key.svg"
-                        alt="{{ 'administration.title' | translate }}"
-                        [attr.title]="administrationTitle()"
-                        [attr.aria-current]="administrationAriaCurrent()"
-                        width="25"
-                    />
-                </div>
-                <span class="text-white span-font nav-span-text">{{
-                    "common.administration" | translate
-                }}</span>
-            </a>
+            @if (isAdminOnWorkspaceOrOrganization) {
+                <a
+                    routerLink="/administration/users"
+                    id="administration"
+                    [ngClass]="{
+                        'admin-padding-zoomin': isZoomedIn(),
+                        'admin-padding': !isZoomedIn(),
+                        'bg-light-green': selectedPage() === 'administration',
+                    }"
+                >
+                    <div class="flex justify-content-center color-transparent">
+                        <img
+                            src="assets/images/icons/icon-key.svg"
+                            alt="{{ 'administration.title' | translate }}"
+                            [attr.title]="administrationTitle()"
+                            [attr.aria-current]="administrationAriaCurrent()"
+                            width="25"
+                        />
+                    </div>
+                    <span class="text-white span-font nav-span-text">{{
+                        "common.administration" | translate
+                    }}</span>
+                </a>
+            }
         </div>
     }
     @if (!isZoomedIn125() && !isMobile()) {

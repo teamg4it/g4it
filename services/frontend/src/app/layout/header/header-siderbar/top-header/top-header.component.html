@@ -182,34 +182,36 @@
                 tabindex="0"
                 #radioGroupContainer
             >
-                <div
-                    *ngFor="let workspace of filteredWorkspaces; let i = index"
-                    class="field-radiobutton"
-                    [attr.data-index]="i"
-                    #radioItem
-                    [attr.data-id]="workspace.id"
-                >
-                    <p-radioButton
-                        [inputId]="'work-' + workspace.id"
-                        name="group1"
-                        [value]="workspace.id.toString()"
-                        [(ngModel)]="modelWorkspace"
-                        (onClick)="selectCompany(workspace)"
-                        [attr.aria-labelledby]="'work-' + workspace.id"
-                    ></p-radioButton>
-
-                    <label
-                        [for]="'work-' + workspace.id"
-                        [id]="'work-' + workspace.id"
-                        class="ml-2"
-                        [attr.aria-label]="
-                            ('common.workspace-name' | translate) + ' ' + workspace.name
-                        "
+                @for (workspace of filteredWorkspaces; track workspace; let i = $index) {
+                    <div
+                        class="field-radiobutton"
+                        [attr.data-index]="i"
+                        #radioItem
+                        [attr.data-id]="workspace.id"
                     >
-                        {{ "common.workspace-name" | translate }}
-                        {{ workspace.name }} ({{ workspace.organization!.name }})
-                    </label>
-                </div>
+                        <p-radioButton
+                            [inputId]="'work-' + workspace.id"
+                            name="group1"
+                            [value]="workspace.id.toString()"
+                            [(ngModel)]="modelWorkspace"
+                            (onClick)="selectCompany(workspace)"
+                            [attr.aria-labelledby]="'work-' + workspace.id"
+                        ></p-radioButton>
+                        <label
+                            [for]="'work-' + workspace.id"
+                            [id]="'work-' + workspace.id"
+                            class="ml-2"
+                            [attr.aria-label]="
+                                ('common.workspace-name' | translate) +
+                                ' ' +
+                                workspace.name
+                            "
+                        >
+                            {{ "common.workspace-name" | translate }}
+                            {{ workspace.name }} ({{ workspace.organization!.name }})
+                        </label>
+                    </div>
+                }
             </div>
             <p-button
                 (onClick)="openWorkspaceSidebar(); isOrgMenuVisible = false"

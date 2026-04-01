@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { DatePipe, NgFor, NgIf } from "@angular/common";
+import { DatePipe } from "@angular/common";
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
@@ -44,14 +44,12 @@ import { CriteriaPopupComponent } from "../../../common/criteria-popup/criteria-
         Button,
         CriteriaPopupComponent,
         ScrollPanelModule,
-        NgIf,
         InputTextModule,
-        NgFor,
         ToastModule,
         ConfirmDialogModule,
         DatePipe,
         TranslatePipe,
-    ]
+    ],
 })
 export class OrganizationsComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);

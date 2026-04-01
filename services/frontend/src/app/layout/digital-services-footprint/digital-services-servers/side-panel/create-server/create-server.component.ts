@@ -6,7 +6,13 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    Validators,
+    FormsModule,
+    ReactiveFormsModule,
+} from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
@@ -16,7 +22,7 @@ import { DigitalServiceServerConfig } from "src/app/core/interfaces/digital-serv
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import { NgIf, AsyncPipe } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { AutofocusDirective } from "../../../../../core/directives/auto-focus.directive";
 import { InputTextModule } from "primeng/inputtext";
 import { RadioButtonModule } from "primeng/radiobutton";
@@ -29,7 +35,6 @@ import { TranslatePipe } from "@ngx-translate/core";
     templateUrl: "./create-server.component.html",
     providers: [MessageService],
     imports: [
-        NgIf,
         AutofocusDirective,
         FormsModule,
         ReactiveFormsModule,
@@ -39,7 +44,7 @@ import { TranslatePipe } from "@ngx-translate/core";
         Button,
         AsyncPipe,
         TranslatePipe,
-    ]
+    ],
 })
 export class PanelCreateServerComponent implements OnInit {
     private readonly digitalServiceStore = inject(DigitalServiceStoreService);

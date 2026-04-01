@@ -11,23 +11,24 @@
             <div class="table-head">
                 {{ translationPrefix + "." + titleText | translate }}
             </div>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                (onClick)="doResetItem(); sidebarVisible(true)"
-                styleClass="p-button-secondary-blue uppercase"
-                [id]="addButtonId"
-                icon="pi pi-plus-circle"
-                [label]="'common.add-button' | translate"
-                [ariaLabel]="
-                    'common.accessibility.add'
-                        | translate
-                            : {
-                                  type:
-                                      translationPrefix + '.' + accessibilityText
-                                      | translate,
-                              }
-                "
-            ></p-button>
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <p-button
+                    (onClick)="doResetItem(); sidebarVisible(true)"
+                    styleClass="p-button-secondary-blue uppercase"
+                    [id]="addButtonId"
+                    icon="pi pi-plus-circle"
+                    [label]="'common.add-button' | translate"
+                    [ariaLabel]="
+                        'common.accessibility.add'
+                            | translate
+                                : {
+                                      type:
+                                          translationPrefix + '.' + accessibilityText
+                                          | translate,
+                                  }
+                    "
+                ></p-button>
+            }
         </div>
     </ng-template>
     <ng-template pTemplate="header">

@@ -390,6 +390,7 @@ main {
     outline: 2px solid #28a745;
 }
 
+.p-drawer,
 .p-sidebar {
     z-index: 1300;
 }
@@ -442,7 +443,7 @@ main {
 
 .input-loading-files div {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-bottom: 8px;
 }
 
@@ -491,16 +492,20 @@ main {
     background: #e2e8f0;
 }
 
+.p-drawer .p-drawer-header-content .p-drawer-close-button:focus,
 .p-sidebar .p-sidebar-header .p-sidebar-close:focus,
 .p-sidebar .p-sidebar-header .p-sidebar-icon:focus {
     outline: 2px solid black !important;
 }
 
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button,
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button:enabled:hover,
 #settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close,
 #settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close:enabled:hover {
     color: white;
 }
 
+#settings-sidebar .p-drawer .p-drawer-header-content .p-drawer-close-button:focus,
 #settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-close:focus,
 #settings-sidebar .p-sidebar .p-sidebar-header .p-sidebar-icon:focus {
     outline: 2px solid white !important;
@@ -930,7 +935,7 @@ app-inventory-item {
         order: 0;
     }
 }
-.p-accordion p-accordiontab:first-child .p-accordion-header .p-accordion-header-link {
+.p-accordion p-accordion-panel:first-child .p-accordion-header .p-accordion-header-link {
     height: 50px;
 }
 
@@ -950,7 +955,7 @@ app-inventory-item {
     background-color: transparent !important;
 }
 
-.transparentBackgound .p-accordion p-accordiontab:first-child .p-accordion-content {
+.transparentBackgound .p-accordion p-accordion-panel:first-child .p-accordion-content {
     background-color: transparent;
 }
 
@@ -1237,6 +1242,28 @@ app-useful-information {
 
 .multi-file-import .p-fileupload .p-button-icon {
     display: none;
+}
+
+/* Fileupload button styling - black by default, green on hover */
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled),
+.p-fileupload-choose:not(.p-disabled) {
+    background: var(--black-color) !important;
+    color: white !important;
+    border-color: transparent !important;
+}
+
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled):hover,
+.p-fileupload-choose:not(.p-disabled):hover {
+    background: rgba(0, 186, 0, 0.92) !important;
+    color: white !important;
+    border-color: transparent !important;
+}
+
+.p-fileupload .p-button.p-fileupload-choose:not(.p-disabled):active,
+.p-fileupload-choose:not(.p-disabled):active {
+    background: rgba(0, 186, 0, 0.68) !important;
+    color: white !important;
+    border-color: transparent !important;
 }
 
 .import-digital {

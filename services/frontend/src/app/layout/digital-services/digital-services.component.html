@@ -8,21 +8,22 @@
                   | translate: { WorkspaceName: selectedWorkspace })
         }}
     </h1>
-    <p-button
-        styleClass="black-button matomo-add-digital-service"
-        (onClick)="newDsSidebarVisible = true"
-        *ngIf="
-            ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
-            ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
-        "
-        id="add-digital"
-    >
-        {{
-            isEcoMindAi
-                ? ("eco-mind-ai.add" | translate)
-                : ("digital-services.add" | translate)
-        }}
-    </p-button>
+    @if (
+        ((userService.isAllowedDigitalServiceWrite$ | async) && !isEcoMindAi) ||
+        ((userService.isAllowedEcoMindAiWrite$ | async) && isEcoMindAi)
+    ) {
+        <p-button
+            styleClass="black-button matomo-add-digital-service"
+            (onClick)="newDsSidebarVisible = true"
+            id="add-digital"
+        >
+            {{
+                isEcoMindAi
+                    ? ("eco-mind-ai.add" | translate)
+                    : ("digital-services.add" | translate)
+            }}
+        </p-button>
+    }
 </div>
 <p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 260px)' }">
     <ul>
@@ -52,7 +53,7 @@
     <p-drawer
         [(visible)]="newDsSidebarVisible"
         position="right"
-        styleClass="p-sidebar-md w-10"
+        styleClass="w-5"
         [showCloseIcon]="true"
         (onHide)="newDsSidebarVisible = false"
         ariaCloseLabel="Close"

@@ -40,18 +40,20 @@
                 locale="fr-FR"
                 id="terminalName"
             />
-            <p class="error-text" *ngIf="terminalsForm.get('name')?.hasError('required')">
-                {{ "digital-services-terminals.terminal-name" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
-            <p
-                class="error-text"
-                *ngIf="terminalsForm.get('name')?.hasError('uniqueName')"
-            >
-                {{
-                    "digital-services-terminals.error.terminal-already-exists" | translate
-                }}
-            </p>
+            @if (terminalsForm.get("name")?.hasError("required")) {
+                <p class="error-text">
+                    {{ "digital-services-terminals.terminal-name" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            }
+            @if (terminalsForm.get("name")?.hasError("uniqueName")) {
+                <p class="error-text">
+                    {{
+                        "digital-services-terminals.error.terminal-already-exists"
+                            | translate
+                    }}
+                </p>
+            }
         </div>
 
         <div class="label-input-div">
@@ -74,10 +76,12 @@
                 [ariaLabel]="'digital-services-terminals.type' | translate"
             >
             </p-select>
-            <p class="error-text" *ngIf="terminalsForm.get('type')?.hasError('required')">
-                {{ "digital-services-terminals.type" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
+            @if (terminalsForm.get("type")?.hasError("required")) {
+                <p class="error-text">
+                    {{ "digital-services-terminals.type" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            }
         </div>
         <div class="label-input-div">
             <label for="countryInput">{{
@@ -100,13 +104,12 @@
                 [ariaLabel]="'digital-services-terminals.country' | translate"
             >
             </p-select>
-            <p
-                class="error-text"
-                *ngIf="terminalsForm.get('country')?.hasError('required')"
-            >
-                {{ "digital-services-terminals.type" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
+            @if (terminalsForm.get("country")?.hasError("required")) {
+                <p class="error-text">
+                    {{ "digital-services-terminals.type" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            }
         </div>
         <div class="label-input-div">
             <label for="numberOfUsers">{{
@@ -122,13 +125,12 @@
                 ngDefaultControl
                 locale="fr-FR"
             />
-            <p
-                class="error-text"
-                *ngIf="terminalsForm.get('numberOfUsers')?.hasError('required')"
-            >
-                {{ "digital-services-terminals.nb-user" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
+            @if (terminalsForm.get("numberOfUsers")?.hasError("required")) {
+                <p class="error-text">
+                    {{ "digital-services-terminals.nb-user" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            }
         </div>
         <div class="label-input-div">
             <label for="yearlyUsageTimePerUser"
@@ -149,13 +151,12 @@
                 ngDefaultControl
                 locale="fr-FR"
             />
-            <p
-                class="error-text"
-                *ngIf="terminalsForm.get('yearlyUsageTimePerUser')?.hasError('required')"
-            >
-                {{ "digital-services-terminals.yearly-usage" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
+            @if (terminalsForm.get("yearlyUsageTimePerUser")?.hasError("required")) {
+                <p class="error-text">
+                    {{ "digital-services-terminals.yearly-usage" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            }
         </div>
         <div div class="label-input-div">
             <label for="lifespanInput"
@@ -175,44 +176,42 @@
                 ngDefaultControl
                 locale="fr-FR"
             />
-            <p
-                class="error-text"
-                *ngIf="terminalsForm.get('lifespan')?.hasError('required')"
-            >
-                {{ "digital-services-terminals.lifespan" | translate }}
-                {{ "common.mandatory" | translate }}
-            </p>
+            @if (terminalsForm.get("lifespan")?.hasError("required")) {
+                <p class="error-text">
+                    {{ "digital-services-terminals.lifespan" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            }
         </div>
 
         <div class="button-bottom-right">
-            <div
-                class="error-text block"
-                *ngIf="terminalsForm.hasError('xssDetected') && terminalsForm.dirty"
-            >
-                {{ "digital-services.error.xss-detected" | translate }}
-            </div>
-            <p-button
-                styleClass="grey-button"
-                *ngIf="!isNew && (userService.isAllowedDigitalServiceWrite$ | async)"
-                (onClick)="deleteTerminal()"
-                >{{ "common.delete" | translate }}</p-button
-            >
+            @if (terminalsForm.hasError("xssDetected") && terminalsForm.dirty) {
+                <div class="error-text block">
+                    {{ "digital-services.error.xss-detected" | translate }}
+                </div>
+            }
+            @if (!isNew && (userService.isAllowedDigitalServiceWrite$ | async)) {
+                <p-button styleClass="grey-button" (onClick)="deleteTerminal()">{{
+                    "common.delete" | translate
+                }}</p-button>
+            }
             <p-button styleClass="white-button" (onClick)="close()"
                 >{{ "common.cancel" | translate }}
             </p-button>
-            <p-button
-                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                styleClass="yellow-button"
-                [disabled]="terminalsForm.invalid"
-                type="submit"
-                id="submit-terminals"
-            >
-                @if (isNew) {
-                    <span>{{ "common.add" | translate }}</span>
-                } @else {
-                    <span>{{ "common.save" | translate }}</span>
-                }
-            </p-button>
+            @if (userService.isAllowedDigitalServiceWrite$ | async) {
+                <p-button
+                    styleClass="yellow-button"
+                    [disabled]="terminalsForm.invalid"
+                    type="submit"
+                    id="submit-terminals"
+                >
+                    @if (isNew) {
+                        <span>{{ "common.add" | translate }}</span>
+                    } @else {
+                        <span>{{ "common.save" | translate }}</span>
+                    }
+                </p-button>
+            }
         </div>
     </form>
 </div>

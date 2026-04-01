@@ -8,9 +8,7 @@
 >
 </app-digital-services-footprint-header>
 @if (!isMobile()) {
-    <p-menubar
-        [model]="tabItems"
-    ></p-menubar>
+    <p-menubar [model]="tabItems"></p-menubar>
 } @else {
     <p-select
         styleClass="w-full my-2"

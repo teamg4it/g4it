@@ -1,5 +1,11 @@
 import { Component, EventEmitter, inject, input, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import {
+    FormControl,
+    FormGroup,
+    Validators,
+    FormsModule,
+    ReactiveFormsModule,
+} from "@angular/forms";
 import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { noWhitespaceValidator } from "src/app/core/custom-validators/no-white-space.validator";
 import { uniqueNameValidator } from "src/app/core/custom-validators/unique-name.validator";
@@ -10,7 +16,6 @@ import { FormNavComponent } from "../../common/form-nav/form-nav.component";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { Button } from "primeng/button";
 import { InputTextModule } from "primeng/inputtext";
-import { NgIf } from "@angular/common";
 
 @Component({
     selector: "app-create-digital-services-sidebar",
@@ -23,9 +28,8 @@ import { NgIf } from "@angular/common";
         ReactiveFormsModule,
         Button,
         InputTextModule,
-        NgIf,
         TranslatePipe,
-    ]
+    ],
 })
 export class CreateDigitalServicesSidebarComponent implements OnInit {
     allDigitalServices = input<DigitalService[]>([]);

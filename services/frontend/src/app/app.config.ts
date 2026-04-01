@@ -69,7 +69,19 @@ export function initializeLanguage(translate: TranslateService) {
 export const appConfig: ApplicationConfig = {
     providers: [
         providePrimeNG({
-            theme: { preset: Aura, options: { darkModeSelector: false || "none" } },
+            theme: {
+                preset: Aura,
+                options: {
+                    darkModeSelector: false || "none",
+                    cssLayer: {
+                        name: 'primeng',
+                        order: 'tailwind-base, primeng, tailwind-utilities'
+                    }
+                }
+            },
+            csp: {
+                nonce: undefined
+            }
         }),
         provideHttpClient(withInterceptorsFromDi()),
         importProvidersFrom(

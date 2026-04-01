@@ -9,7 +9,6 @@ import { Component, Input, Signal, computed, inject, input, signal } from "@angu
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
-import { NgIf } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslatePipe } from "@ngx-translate/core";
@@ -47,11 +46,10 @@ import { AbstractDashboard } from "../abstract-dashboard";
         SelectModule,
         FormsModule,
         PrimeTemplate,
-        NgIf,
         StackBarChartComponent,
         NgxEchartsDirective,
         TranslatePipe,
-    ]
+    ],
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
     private readonly store = inject(FootprintStoreService);

@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { NgClass, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault, NgTemplateOutlet } from "@angular/common";
+import { NgClass, NgTemplateOutlet } from "@angular/common";
 import {
     Component,
     computed,
@@ -76,24 +76,20 @@ import { RadialChartComponent } from "./radial-chart/radial-chart.component";
     templateUrl: "./digital-services-footprint-dashboard.component.html",
     styleUrls: ["./digital-services-footprint-dashboard.component.scss"],
     imports: [
-        NgSwitch,
-        NgSwitchCase,
-        NgSwitchDefault,
-        Button,
-        NgClass,
-        ImpactSidebarComponent,
-        NgTemplateOutlet,
-        NgIf,
-        RadialChartComponent,
-        PieChartComponent,
-        BarChartComponent,
-        GraphDescriptionComponent,
-        CriteriaPopupComponent,
-        DrawerModule,
-        PrimeTemplate,
-        ConfigureViewFiltersComponent,
-        TranslatePipe,
-    ]
+    Button,
+    NgClass,
+    ImpactSidebarComponent,
+    NgTemplateOutlet,
+    RadialChartComponent,
+    PieChartComponent,
+    BarChartComponent,
+    GraphDescriptionComponent,
+    CriteriaPopupComponent,
+    DrawerModule,
+    PrimeTemplate,
+    ConfigureViewFiltersComponent,
+    TranslatePipe
+]
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard

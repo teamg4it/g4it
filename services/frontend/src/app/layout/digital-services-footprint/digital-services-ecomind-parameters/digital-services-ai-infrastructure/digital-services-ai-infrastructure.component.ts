@@ -1,4 +1,4 @@
-import { NgIf, NgStyle } from "@angular/common";
+import { NgStyle } from "@angular/common";
 import {
     Component,
     computed,
@@ -8,7 +8,13 @@ import {
     OnInit,
     Signal,
 } from "@angular/core";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
@@ -31,14 +37,13 @@ import { DigitalServiceStoreService } from "src/app/core/store/digital-service.s
     templateUrl: "./digital-services-ai-infrastructure.component.html",
     imports: [
         CardModule,
-        NgIf,
         FormsModule,
         ReactiveFormsModule,
         SelectModule,
         InputNumberModule,
         NgStyle,
         TranslatePipe,
-    ]
+    ],
 })
 export class DigitalServicesAiInfrastructureComponent implements OnInit, OnDestroy {
     infrastructureForm!: FormGroup;

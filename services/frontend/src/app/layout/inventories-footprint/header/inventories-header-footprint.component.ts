@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { AsyncPipe, NgIf } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
@@ -35,14 +35,13 @@ import { CommonEditorComponent } from "../../common/common-editor/common-editor.
         ToastModule,
         Button,
         RouterLink,
-        NgIf,
         DrawerModule,
         CommonEditorComponent,
         ConfirmPopupModule,
         AsyncPipe,
         TranslatePipe,
         MonthYearPipe,
-    ]
+    ],
 })
 export class InventoriesHeaderFootprintComponent implements OnInit, OnDestroy {
     @Input() inventory: Inventory = {} as Inventory;

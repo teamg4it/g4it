@@ -18,12 +18,14 @@
             styleClass="ml-auto"
         >
             <ng-template pTemplate="selectedItem">
-                <div *ngIf="selectedDimension()">
-                    {{
-                        "inventories-footprint.round-button." + selectedDimension()
-                            | translate
-                    }}
-                </div>
+                @if (selectedDimension()) {
+                    <div>
+                        {{
+                            "inventories-footprint.round-button." + selectedDimension()
+                                | translate
+                        }}
+                    </div>
+                }
             </ng-template>
             <ng-template let-dimension pTemplate="item">
                 <div>
