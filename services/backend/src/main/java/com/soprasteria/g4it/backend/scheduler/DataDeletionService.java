@@ -122,7 +122,7 @@ public class DataDeletionService {
                     .replace("{3}", emailLink);
         }
         String combinedBody = emailContentEn + "\n\n" + emailContentFr;
-        //azureEmailService.sendEmail("fabien.lamire@soprasteria.com", combinedSubject, combinedBody);
+        azureEmailService.sendEmail("fabien.lamire@soprasteria.com", combinedSubject, combinedBody);
         azureEmailService.sendEmail("gauri.airi@soprasteria.com", combinedSubject, combinedBody);
        // azureEmailService.sendEmail(recipientEmail, combinedSubject, combinedBody);
     }
