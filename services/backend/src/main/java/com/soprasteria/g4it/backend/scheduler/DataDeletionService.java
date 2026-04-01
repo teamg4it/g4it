@@ -115,8 +115,14 @@ public class DataDeletionService {
         // Combine both English and French subjects with a separator
         String combinedSubject = emailSubjectEn + " / " + emailSubjectFr;
         // Combine both English and French content with custom formatting
+        if (emailContentFr.contains("{0}") && emailContentFr.contains("{1}") && emailContentFr.contains("{2}") && emailContentFr.contains("{3}")) {
+            emailContentFr = emailContentFr.replace("{0}", itemName)
+                    .replace("{1}", expirationDate)
+                    .replace("{2}", String.valueOf(retentionDay))
+                    .replace("{3}", emailLink);
+        }
         String combinedBody = emailContentEn + "\n\n" + emailContentFr;
-        azureEmailService.sendEmail("fabien.lamire@soprasteria.com", combinedSubject, combinedBody);
+        //azureEmailService.sendEmail("fabien.lamire@soprasteria.com", combinedSubject, combinedBody);
         azureEmailService.sendEmail("gauri.airi@soprasteria.com", combinedSubject, combinedBody);
        // azureEmailService.sendEmail(recipientEmail, combinedSubject, combinedBody);
     }
