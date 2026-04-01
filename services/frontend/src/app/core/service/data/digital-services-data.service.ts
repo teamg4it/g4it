@@ -18,6 +18,8 @@ import {
     DuplicateNames,
     Host,
     NetworkType,
+    RenewServiceResp,
+    RenewServiceUpdateResp,
     ShareLinkResp,
     TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
@@ -182,6 +184,32 @@ export class DigitalServicesDataService {
     getDuplicateDigitalServiceAndVersionName(dsvId: string): Observable<DuplicateNames> {
         return this.http.get<DuplicateNames>(
             `${endpointDsVersions}/${dsvId}/validate-duplicate-names`,
+        );
+    }
+
+    getServiceRenewalDetails(
+        digitalServiceVersionUid: string | number,
+    ): Observable<RenewServiceResp> {
+        return this.http.get<RenewServiceResp>(
+            `${endpointDsVersions}/${digitalServiceVersionUid}/renew`,
+        );
+    }
+
+    renewService(
+        payload: {
+            retentionDays: number;
+            action: string;
+            serviceId: string;
+        },
+        digitalServiceVersionUid: string | number,
+    ): Observable<RenewServiceUpdateResp> {
+        return this.http.post<RenewServiceUpdateResp>(
+            `${endpointDsVersions}/${digitalServiceVersionUid}/renew`,
+            {
+                retentionDays: payload.retentionDays,
+                action: payload.action,
+                serviceId: payload.serviceId,
+            },
         );
     }
 }

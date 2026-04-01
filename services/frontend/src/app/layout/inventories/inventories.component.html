@@ -166,3 +166,13 @@
         </p-accordionTab>
     </p-accordion>
 </p-scrollPanel>
+
+@if (inventoryRenewServicePopup && renewInventoryId) {
+    <app-renew-service-popup
+        [displayPopup]="inventoryRenewServicePopup"
+        [serviceId]="renewInventoryId"
+        (outClose)="inventoryRenewServicePopup = false"
+        [isInventory]="true"
+    >
+    </app-renew-service-popup>
+}

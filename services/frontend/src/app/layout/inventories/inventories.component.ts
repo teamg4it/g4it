@@ -14,7 +14,7 @@ import {
     ViewChild,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Event, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Event, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Subject, takeUntil } from "rxjs";
@@ -40,6 +40,7 @@ import { FilePanelComponent } from "./file-panel/file-panel.component";
 export class InventoriesComponent implements OnInit, OnDestroy {
     private readonly destroyRef = inject(DestroyRef);
     private readonly global = inject(GlobalStoreService);
+    private readonly route = inject(ActivatedRoute);
 
     @ViewChild(FilePanelComponent) filePanelComponent: FilePanelComponent | undefined;
     sidebarVisible: boolean = false;
@@ -62,6 +63,8 @@ export class InventoriesComponent implements OnInit, OnDestroy {
     selectedInventory: Inventory = {} as Inventory;
     selectedWorkspace!: string;
     isAllowedInventory: boolean = false;
+    inventoryRenewServicePopup = true;
+    renewInventoryId: number | undefined = undefined;
 
     constructor(
         private readonly inventoryService: InventoryService,
@@ -79,11 +82,13 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                     this.selectedWorkspace = workspace.name;
                 });
 
-            this.userService.roles$.subscribe((roles: Role[]) => {
-                this.isAllowedInventory =
-                    roles.includes(Role.InventoryRead) ||
-                    roles.includes(Role.InventoryWrite);
-            });
+            this.userService.roles$
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((roles: Role[]) => {
+                    this.isAllowedInventory =
+                        roles.includes(Role.InventoryRead) ||
+                        roles.includes(Role.InventoryWrite);
+                });
             this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
                 ? new Set(
                       localStorage
@@ -129,6 +134,11 @@ export class InventoriesComponent implements OnInit, OnDestroy {
                         }
                     }
                 });
+
+            const renewPopup: boolean = !!this.route.snapshot.queryParamMap.get("renew");
+            this.inventoryRenewServicePopup = renewPopup ?? false;
+            const inventoryId = this.route.snapshot.queryParamMap.get("inventoryId");
+            this.renewInventoryId = inventoryId ? Number(inventoryId) : undefined;
         })();
     }
 
