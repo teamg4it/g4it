@@ -403,10 +403,23 @@ export interface ShareLinkResp {
     expiryDate: Date;
 }
 
+export interface RenewServiceResp {
+    serviceName: string;
+    expiryDate: string;
+    retentionDays: number;
+    serviceId: string;
+}
+
+export interface RenewServiceUpdateResp {
+    serviceId: string;
+    isRenewed: boolean;
+    responseMessage: string;
+}
+
 export interface GraphDescriptionContent {
     description: string;
     scale: string;
-    textDescription: string;
+    textDescription?: string;
     analysis?: string;
     toGoFurther?: string;
     textResourceDescription?: string;

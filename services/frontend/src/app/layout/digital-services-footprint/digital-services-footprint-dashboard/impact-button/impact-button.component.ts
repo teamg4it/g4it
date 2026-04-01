@@ -42,7 +42,11 @@ export class ImpactButtonComponent implements OnInit {
         this.impactImage = `assets/images/icons/icon-${this.translate.translations[this.selectedLang]["criteria"][this.impact].icon}.svg`;
     }
 
-    changeCritere(critere: string) {
+    changeCritere(critere: string, impactId: string) {
+        const wrapper = document?.getElementById(impactId);
+        const button = wrapper?.querySelector("button") as HTMLButtonElement;
+
+        button?.blur();
         this.selectedCriteriaChange.emit(critere);
     }
 }

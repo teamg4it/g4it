@@ -34,6 +34,7 @@ import { FootprintService } from "src/app/core/service/business/footprint.servic
 import {
     getColorFormatter,
     getLabelFormatter,
+    getUniqueColorFromText,
 } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -241,6 +242,9 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             },
             series: footprintCalculated.map((item: FootprintCalculated) => ({
                 name: item.data,
+                itemStyle: {
+                    color: getUniqueColorFromText(item.data),
+                },
                 type: "bar",
                 coordinateSystem: "polar",
                 data: item.impacts.map((impact: Impact) => ({
@@ -269,7 +273,6 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                     return this.existingTranslation(param, selectedView);
                 },
             },
-            color: Constants.COLOR,
         };
     }
 

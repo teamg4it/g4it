@@ -17,6 +17,7 @@ import { ConfigureViewFiltersComponent } from "../../common/configure-view-filte
 import { IndicatorSectionComponent } from "../../common/indicator-section/indicator-section.component";
 import { ImpactButtonComponent } from "../../digital-services-footprint/digital-services-footprint-dashboard/impact-button/impact-button.component";
 import { ApplicationCriteriaPieChartComponent } from "./application-criteria-pie-chart/application-criteria-pie-chart.component";
+import { ApplicationTableViewComponent } from "./application-table-view/application-table-view.component";
 import { CriteriaStatsComponent } from "./criteria-stats/criteria-stats.component";
 import { ApplicationCriteriaFootprintComponent } from "./criteria/application-criteria-footprint.component";
 import { DatavizFilterApplicationComponent } from "./dataviz-filter-application/dataviz-filter-application.component";
@@ -48,6 +49,7 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
         ConfigureViewFiltersComponent,
         IndicatorSectionComponent,
         SharedChartsModule,
+        ApplicationTableViewComponent,
     ],
     exports: [InventoriesApplicationFootprintComponent],
 })
