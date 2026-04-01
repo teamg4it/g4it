@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Location } from "@angular/common";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { AccordionModule } from "primeng/accordion";
+import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DropdownModule } from "primeng/dropdown";
@@ -25,13 +26,12 @@ import { ToastModule } from "primeng/toast";
 import { Observable, from, of } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { MonthYearPipe } from "src/app/core/pipes/monthyear.pipe";
+import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { FilePanelComponent } from "./file-panel/file-panel.component";
 import { InventoriesComponent } from "./inventories.component";
-import { UserService } from "src/app/core/service/business/user.service";
-import { MessageService } from "primeng/api";
 
 @Injectable()
 class InventoryServiceMock extends InventoryDataService {
@@ -79,6 +79,17 @@ describe("InventoryComponent", () => {
                     provide: ActivatedRoute,
                     useValue: {
                         params: from([{ inventoryDate: inventoryDate }]),
+                        snapshot: {
+                            queryParamMap: {
+                                get: (key: string) => {
+                                    const params: { [key: string]: any } = {
+                                        renew: "true",
+                                        inventoryId: "1",
+                                    };
+                                    return params[key] || null;
+                                },
+                            },
+                        },
                     },
                 },
             ],

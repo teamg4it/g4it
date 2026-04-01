@@ -35,7 +35,9 @@
 
                 <th scope="col" id="impact" pSortableColumn="impact">
                     {{ "inventories-footprint.table-view.header.raw-impact" | translate }}
-                    <p-sortIcon field="impact"></p-sortIcon>
+                    @if (!isMulticriteria()) {
+                        <p-sortIcon field="impact"></p-sortIcon>
+                    }
                 </th>
             </tr>
         </ng-template>

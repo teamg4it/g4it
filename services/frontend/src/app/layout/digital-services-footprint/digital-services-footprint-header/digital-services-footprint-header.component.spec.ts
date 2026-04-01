@@ -78,6 +78,15 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
                             paramMap: convertToParamMap({
                                 digitalServiceVersionId: "12345",
                             }),
+                            queryParamMap: {
+                                get: (key: string) => {
+                                    const params: { [key: string]: any } = {
+                                        renew: "true",
+                                        inventoryId: "1",
+                                    };
+                                    return params[key] || null;
+                                },
+                            },
                         },
                         paramMap: of(
                             convertToParamMap({

@@ -223,6 +223,9 @@
                                     ? footprint()
                                     : [criteriaFootprint]
                             "
+                            [isMulticriteria]="
+                                footprintStore.applicationCriteria() === multiCriteria
+                            "
                         ></app-application-table-view>
                     }
                 </div>
