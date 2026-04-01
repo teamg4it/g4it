@@ -8,7 +8,9 @@
         [id]="impactText"
         [ngClass]="{ 'pointer-events-none': value === null || value === 0 || disabled }"
         (onClick)="
-            value === null || value === 0 || disabled ? null : changeCritere(impact)
+            value === null || value === 0 || disabled
+                ? null
+                : changeCritere(impact, impactText)
         "
     >
         <div
