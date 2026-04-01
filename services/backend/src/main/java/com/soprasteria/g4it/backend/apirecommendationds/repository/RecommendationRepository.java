@@ -1,6 +1,6 @@
-package com.soprasteria.g4it.backend.apirecommendation.repository;
+package com.soprasteria.g4it.backend.apirecommendationds.repository;
 
-import com.soprasteria.g4it.backend.apirecommendation.modeldb.Recommendation;
+import com.soprasteria.g4it.backend.apirecommendationds.modeldb.Recommendation;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

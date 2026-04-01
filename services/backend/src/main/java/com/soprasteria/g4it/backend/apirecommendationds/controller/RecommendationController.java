@@ -5,10 +5,10 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-package com.soprasteria.g4it.backend.apirecommendation.controller;
+package com.soprasteria.g4it.backend.apirecommendationds.controller;
 
 //import com.soprasteria.g4it.backend.apirecommendation.business.InstantiatedRecommendationService;
-import com.soprasteria.g4it.backend.apirecommendation.business.RecommendationService;
+import com.soprasteria.g4it.backend.apirecommendationds.business.RecommendationService;
 import com.soprasteria.g4it.backend.server.gen.api.RecommendationApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InstantiatedRecommendationRest;
@@ -52,9 +52,16 @@ public class RecommendationController implements RecommendationApiDelegate {
     @Override
     public ResponseEntity<List<RecommendationDSRest>> getRecommendationsByOrganisation(
             final Long organisationId) {
-        return ResponseEntity.ok(
-                recommendationService.getRecommendationsByOrganisation(organisationId)
-        );
+
+             log.info("LOG: GET /recommendations called with organisationId={}", organisationId);
+
+            List<RecommendationDSRest> result =
+                    recommendationService.getRecommendationsByOrganisation(organisationId);
+
+            log.info("LOG: Returning {} recommendations", result.size());
+            log.debug("LOG: Data: {}", result);
+
+            return ResponseEntity.ok(result);
     }
 
     /**

@@ -5,11 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-package com.soprasteria.g4it.backend.apirecommendation.business;
+package com.soprasteria.g4it.backend.apirecommendationds;
 
-import com.soprasteria.g4it.backend.apirecommendation.mapper.RecommendationMapper;
-import com.soprasteria.g4it.backend.apirecommendation.modeldb.Recommendation;
-import com.soprasteria.g4it.backend.apirecommendation.repository.RecommendationRepository;
+import com.soprasteria.g4it.backend.apirecommendationds.business.RecommendationService;
+import com.soprasteria.g4it.backend.apirecommendationds.mapper.RecommendationMapper;
+import com.soprasteria.g4it.backend.apirecommendationds.modeldb.Recommendation;
+import com.soprasteria.g4it.backend.apirecommendationds.repository.RecommendationRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
 import org.junit.jupiter.api.Test;

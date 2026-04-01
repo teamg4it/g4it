@@ -124,7 +124,7 @@ databaseChangeLog:
                 value: "Utiliser une architecture adaptée"
             - column:
                 name: category
-                value: '["PRIVATE_INFRASTRUCTURE", "PUBLIC_CLOUD"]'
+                value: '["PUBLIC_CLOUD"]'
             - column:
                 name: description
                 value: "La quantité de ressources utilisées par l'architecture doit être adaptée à la consommation du service"
@@ -160,7 +160,7 @@ databaseChangeLog:
                 value: "Choisir un hébergement cloud géographiquement cohérent"
             - column:
                 name: category
-                value: '["PUBLIC_CLOUD"]'
+                value: '["PUBLIC_CLOUD","PRIVATE_INFRASTRUCTURE"]'
             - column:
                 name: description
                 value: "Utiliser un hébergement dont la localisation géographique est cohérente avec ses activités et qui minimise son empreinte environnementale"

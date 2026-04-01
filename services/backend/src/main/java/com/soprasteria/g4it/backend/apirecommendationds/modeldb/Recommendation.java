@@ -1,4 +1,4 @@
-package com.soprasteria.g4it.backend.apirecommendation.modeldb;
+package com.soprasteria.g4it.backend.apirecommendationds.modeldb;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
