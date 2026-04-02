@@ -560,7 +560,8 @@ export class ApplicationCriteriaFootprintComponent
                     break;
             }
         }
-        xAxis.sort((a, b) => a.localeCompare(b));
+        // sort repartition in yAxis by name ascending
+        yAxis.sort((a, b) => a.name.localeCompare(b.name));
         return {
             xAxis,
             yAxis,
