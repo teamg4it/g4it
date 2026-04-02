@@ -183,7 +183,13 @@
         "unit-manage": "Gestion des unités",
         "data-consistency-text": "Afficher les données qui n'ont pas pu être calculées",
         "unit-manage-text": "Votre choix s'appliquera à toutes les unités",
-        "criteria": "Critères"
+        "criteria": "Critères",
+        "renew-service-title": "Prolonger le délai avant la suppression des données",
+        "renew-service-body": "Les données associées à {{serviceName}} expireront le {{expiryDate}}. Si la durée de conservation des données n'est pas renouvelée, elles seront supprimées Ce mécanisme a été mis en place pour éviter le stockage de données inutiles et ainsi réduire l'impact de G4IT. Pour conserver les données {{retentionDays}} jours de plus, cliquez sur le bouton suivant.",
+        "renew-button": "Prolonger",
+        "renew-button-extended": "Prolongée",
+        "renew-service-success-message": "prolongée avec succès",
+        "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation"
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -667,6 +673,7 @@
     "inventories-footprint": {
         "active-filters": "Filtres activés",
         "filter": "Filtrer ma visualisation",
+
         "filter-tabs": {
             "country": "Pays",
             "entity": "Entités",
@@ -746,6 +753,8 @@
             "graph-critere": "Graphique des impacts du critère en équivalent habitant",
             "graph-lifecycle": "Graphique des impacts regroupés selon leur étape de cycle de vie",
             "graph-env": "Graphique des impacts regroupés selon leur environnement",
+            "graph-view-btn": "Vue Graphique",
+            "table-view-btn": "Vue Tableau",
             "tooltip": {
                 "nb-app": "Nombre d'applications",
                 "nb-sd": "Nombre de sous-domaines",

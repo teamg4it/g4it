@@ -328,3 +328,11 @@
         (promotedEvent)="getDigitalServiceversion()"
     ></app-promote-version-dialog>
 }
+@if (displayRenewServicePopup && !global.loading()) {
+    <app-renew-service-popup
+        [displayPopup]="displayRenewServicePopup"
+        [serviceId]="digitalService.uid"
+        (outClose)="displayRenewServicePopup = false"
+    >
+    </app-renew-service-popup>
+}

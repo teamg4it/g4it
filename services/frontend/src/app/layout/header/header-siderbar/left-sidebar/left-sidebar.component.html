@@ -53,7 +53,7 @@
                 [ngClass]="{
                     'inventory-padding-zoomin': isZoomedIn(),
                     'inventory-padding': !isZoomedIn(),
-                    'bg-light-green': selectedPage() === 'inventories',
+                    'bg-light-green': selectedPage().includes('inventories'),
                 }"
             >
                 <div class="flex justify-content-center color-transparent">

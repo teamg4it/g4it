@@ -14,6 +14,7 @@ import { LinkCreatePopupComponent } from "src/app/layout/digital-services-footpr
 import { VersionTypeTagComponent } from "src/app/layout/digital-services-footprint/digital-services-footprint-header/version-type-tag/version-type-tag.component";
 import { DigitalServicesImportComponent } from "src/app/layout/digital-services-footprint/digital-services-import/digital-services-import.component";
 import { MultiFileImportComponent } from "src/app/layout/digital-services-footprint/digital-services-import/multi-file-import/multi-file-import.component";
+import { RenewServicePopupComponent } from "src/app/layout/common/renew-service-popup/renew-service-popup.component";
 import { SharedModule } from "./shared.module";
 
 @NgModule({
@@ -24,13 +25,14 @@ import { SharedModule } from "./shared.module";
         MultiFileImportComponent,
         VersionTypeTagComponent,
     ],
-    imports: [SharedModule, FileUploadModule, ProgressSpinnerModule, InplaceModule],
+    imports: [SharedModule, FileUploadModule, ProgressSpinnerModule, InplaceModule, RenewServicePopupComponent],
     exports: [
         DigitalServicesFootprintHeaderComponent,
         LinkCreatePopupComponent,
         DigitalServicesImportComponent,
         MultiFileImportComponent,
         VersionTypeTagComponent,
+        RenewServicePopupComponent,
     ],
 })
 export class CommonDigitalServicesSharedModule {}
