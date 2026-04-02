@@ -12,6 +12,7 @@ weight: 530
   * [Email Functionality](#email-functionality)
   * [Digital Service](#digital-service)
   * [Inventory](#inventory)
+  * [Service Extended](#service-extended)
 <!-- TOC -->
 
 ## Description
@@ -42,5 +43,13 @@ After redirection to the digital service page, a popup titled “Extend the Time
 ![uc5_inventory_extend.png](../images/uc5_inventory_extend.png)
 
 After redirection to the inventory page, a popup titled “Extend the Time Before Data Deletion” is displayed. It includes two buttons: one to extend the retention period (which updates the expiry date) and another to close the popup.
+
+---
+
+## Service Extended
+
+![uc5_extended_ds.png](../images/uc5_extended_ds.png)
+
+After clicking the Extend button, if the service is successfully extended, the button will be disabled and its label will change to ‘Extended’.
 
 ---
