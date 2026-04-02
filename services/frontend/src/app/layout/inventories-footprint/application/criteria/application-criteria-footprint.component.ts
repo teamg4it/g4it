@@ -560,8 +560,8 @@ export class ApplicationCriteriaFootprintComponent
                     break;
             }
         }
-        // sort repartition in yAxis by name ascending
-        yAxis.sort((a, b) => a.name.localeCompare(b.name));
+        // sort repartition in yAxis by name descending
+        yAxis.sort((a, b) => b.name.localeCompare(a.name));
         return {
             xAxis,
             yAxis,
