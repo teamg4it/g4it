@@ -676,7 +676,7 @@
     "inventories-footprint": {
         "active-filters": "Active filters",
         "filter": "Filter your visualisation",
-
+        "back-to": "Back to : ",
         "filter-tabs": {
             "country": "Country",
             "entity": "Entity",

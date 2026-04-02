@@ -12,7 +12,6 @@ import { FilterService } from "src/app/core/service/business/filter.service";
 import { SharedChartsModule } from "src/app/core/shared/common-chart-module";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
-import { Constants } from "src/constants";
 
 @Component({
     selector: "app-application-table-view",
@@ -72,32 +71,17 @@ export class ApplicationTableViewComponent {
         let textResourceDescription: string = "";
         let descriptionData = "";
         let key = "";
-        if (this.footprintStore.applicationCriteria() === Constants.MUTLI_CRITERIA) {
-            translationKey = `ds-graph-description.global-vision.`;
-            descriptionData = this.translate.instant(`${translationKey}description`, {
-                criteria: this.footprint()
-                    .map(
-                        (impact) =>
-                            this.translate.instant(`criteria.${impact.criteria}`).title,
-                    )
-                    .join(", "),
-                module: this.translate.instant("ds-graph-module.inventory"),
-            });
-            key = translationKey;
-        } else {
-            translationKey = `ds-graph-description.criteria.`;
-            descriptionData = this.translate.instant(`${translationKey}description`, {
-                module: this.translate.instant("ds-graph-module.inventory"),
-            });
-
-            key =
-                "criteria." +
-                this.footprintStore
-                    .applicationCriteria()
-                    .toLowerCase()
-                    .replaceAll(" ", "-") +
-                ".";
-        }
+        translationKey = `ds-graph-description.global-vision.`;
+        descriptionData = this.translate.instant(`${translationKey}description`, {
+            criteria: this.footprint()
+                .map(
+                    (impact) =>
+                        this.translate.instant(`criteria.${impact.criteria}`).title,
+                )
+                .join(", "),
+            module: this.translate.instant("ds-graph-module.inventory"),
+        });
+        key = translationKey;
 
         return {
             description: descriptionData,

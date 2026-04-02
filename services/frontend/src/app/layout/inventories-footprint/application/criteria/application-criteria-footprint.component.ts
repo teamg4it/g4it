@@ -560,6 +560,7 @@ export class ApplicationCriteriaFootprintComponent
                     break;
             }
         }
+        xAxis.sort((a, b) => a.localeCompare(b));
         return {
             xAxis,
             yAxis,
