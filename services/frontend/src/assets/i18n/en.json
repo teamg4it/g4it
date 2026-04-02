@@ -676,7 +676,7 @@
     "inventories-footprint": {
         "active-filters": "Active filters",
         "filter": "Filter your visualisation",
-
+        "back-to": "Back to : ",
         "filter-tabs": {
             "country": "Country",
             "entity": "Entity",
@@ -900,7 +900,7 @@
             "text-description": "In descending order, the impact is found on: <br />",
             "text-description-first-prefix": "- the ",
             "text-description-iterate-prefix": "- then the ",
-            "text-description-iterate": " {{impactName}} axis with {{impactValue}} people equivalent ({{rawValue}} {{unit}}) with {{resource}} representing {{resourceValue}} people equivalent ({{resourceRawValue}} {{resourceUnit}})",
+            "text-description-iterate": " {{impactName}} axis with {{impactValue}} people equivalent ({{rawValue}} {{unit}}) with {{resource}} category representing {{resourceValue}} people equivalent ({{resourceRawValue}} {{resourceUnit}})",
             "analysis": "This graph helps you determine where to begin your analysis to effectively reduce the impacts of your {{module}}. However, be cautious—by trying to reduce the impact of one criterion, you may inadvertently shift impacts to another criterion or another phase of the life cycle (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>eco-design principles</a>). One way to avoid this pitfall is to practice sobriety at all levels of your {{module}}.",
             "to-go-further": "Better understand the issues: <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>check this report on the environmental impact of ICT</a>.<br />Conduct an audit of your application: the General Repository for the Eco-design of Digital Services (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) is a very good starting point.",
             "inventory-to-go-further": "Better understand the issues: <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>check this report on the environmental impact of ICT</a>."
@@ -911,7 +911,7 @@
             "text-description-iterate": "- {{impactName}} with {{impactValue}} people equivalent ({{rawValue}} {{unit}}) representing {{resourceValue}}%",
             "analysis": "Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is that linked to user terminals, followed by servers and finally networks.",
             "to-go-further": "Click on the graph to analyze more precisely where your service's impacts come from. You will find some levers for action in these inserts, and to go further, here are some relevant references: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
-            "inventory-application-text-description-iterate": "- {{impactName}} with {{impactValue}} people equivalent ({{rawValue}} {{unit}}) with {{resource}} representing {{resourceValue}} people equivalent ({{resourceRawValue}} {{resourceUnit}})"
+            "inventory-application-text-description-iterate": "- {{impactName}} with {{impactValue}} people equivalent ({{rawValue}} {{unit}}) with {{resource}} category representing {{resourceValue}} people equivalent ({{resourceRawValue}} {{resourceUnit}})"
         },
         "terminal-type": {
             "description": "This graph shows the distribution of the impact of devices using your digital service according to their type.",
