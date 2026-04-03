@@ -1379,3 +1379,49 @@ components:
           description: List of digital service version names
           items:
             type: string
+
+    # This schema represents the response for getting renewal details for digital service or inventory
+    RenewRest:
+      type: object
+      description: get renewal details for digital service or inventory
+      properties:
+        serviceName:
+          type: string
+          description: Name of the service to renew
+        serviceId:
+          type: string
+          description: Uid of the service to renew, it can be digital service uid or inventory uid
+        expiryDate:
+            type: string
+            description: Expiry date of the service to renew
+        retentionDays:
+            type: Integer
+            description: Retention days of the service renewal
+
+    # This schema represents the request body for updating renewal details for digital service or inventory
+    RenewUpdateRest:
+      type: object
+      description: update renewal details for digital service or inventory
+      properties:
+        retentionDays:
+          type: Integer
+          description: Retention days to update for the service renewal
+        action:
+          type: string
+          description: Action to perform for the renewal, it can be "renew" or "cancel"
+        serviceId:
+          type: string
+          description: Uid of the service to renew, it can be digital service uid or inventory id
+
+    RenewResponseRest:
+      type: object
+      description: response for updating renewal details for digital service or inventory
+      properties:
+        serviceId:
+          type: string
+          description: Uid of the service to renew, it can be digital service uid or inventory id
+        isRenewed:
+          type: boolean
+        responseMessage:
+          type: string
+          description: Response message for the renewal update action

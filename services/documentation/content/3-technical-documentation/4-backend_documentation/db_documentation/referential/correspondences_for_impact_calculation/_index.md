@@ -33,6 +33,7 @@ erDiagram
     float8 value
     varchar subscriber UK
     varchar version
+    boolean hidden
   }
   ref_matching_item {
     int8 id PK
@@ -95,6 +96,7 @@ erDiagram
 |value|float8||
 |subscriber|varchar||
 |version|varchar||
+|hidden|boolean||
 
 #### Primary Key 
 

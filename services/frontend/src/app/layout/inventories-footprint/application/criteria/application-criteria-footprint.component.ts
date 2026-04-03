@@ -20,7 +20,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { sortByProperty } from "sort-by-property";
-import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
+import {
+    GraphDescriptionContent,
+    StatusCountMap,
+} from "src/app/core/interfaces/digital-service.interfaces";
 import {
     ConstantApplicationFilter,
     Filter,
@@ -30,6 +33,7 @@ import {
     ApplicationFootprint,
     ApplicationImpact,
     ImpactGraph,
+    RepartitionYAxisKeys,
 } from "src/app/core/interfaces/footprint.interface";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
@@ -38,6 +42,7 @@ import { FilterService } from "src/app/core/service/business/filter.service";
 import {
     getColorFormatter,
     getLabelFormatter,
+    getUniqueColorFromText,
 } from "src/app/core/service/mapper/graphs-mapper";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -66,6 +71,11 @@ export class ApplicationCriteriaFootprintComponent
     private readonly filterService = inject(FilterService);
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
+    textDescriptionImpacts: {
+        text: string;
+        impactName: string;
+        impactNameVisible: string;
+    }[] = [];
 
     selectedCriteria = computed(() => {
         return this.translate.instant(
@@ -83,6 +93,8 @@ export class ApplicationCriteriaFootprintComponent
 
     impactOrder: ImpactGraph[] = [];
     yAxislist: string[] = [];
+    dimensions = Constants.APPLICATION_DIMENSIONS;
+    selectedDimension = signal(this.dimensions[0]);
     showBackButton = computed(() => {
         if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
             if (
@@ -112,9 +124,17 @@ export class ApplicationCriteriaFootprintComponent
     showSubDomainLabel = computed(() => {
         if (this.allUnmodifiedFilters()["domain"]?.length <= 2) {
             if (
-                (this.allUnmodifiedFilters()["domain"][1] as TransformedDomain)?.children
-                    ?.length <= 1
+                (this.allUnmodifiedFilters()?.["domain"]?.[1] as TransformedDomain)
+                    ?.children?.length <= 1
             ) {
+                return false;
+            }
+        } else {
+            const domainSelected: any = this.allUnmodifiedFilters()?.["domain"]?.find(
+                (d) =>
+                    (d as TransformedDomain)?.label === this.footprintStore?.appDomain(),
+            );
+            if (domainSelected?.children?.length <= 1) {
                 return false;
             }
         }
@@ -128,6 +148,7 @@ export class ApplicationCriteriaFootprintComponent
             localFootprint,
             this.footprintStore.applicationCriteria(),
             this.inventory()!,
+            this.selectedDimension(),
         );
     });
 
@@ -147,6 +168,10 @@ export class ApplicationCriteriaFootprintComponent
         if (changes && !changes["showDomainByApplication"]) {
             this.showInconsitencyGraph = false;
         }
+    }
+
+    handleImpactClick(impactName: string) {
+        this.onChartClick({ name: impactName });
     }
 
     onChartClick(event: any) {
@@ -211,6 +236,7 @@ export class ApplicationCriteriaFootprintComponent
         barChartData: ApplicationFootprint[],
         selectedFilters: Filter,
         selectedCriteria: string,
+        selectedDimension: string,
     ) {
         let result: any = {};
         for (const data of barChartData) {
@@ -223,11 +249,19 @@ export class ApplicationCriteriaFootprintComponent
                     if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                         switch (this.footprintStore.appGraphType()) {
                             case "global":
-                                this.computeImpactOrder(impact, impact.domain);
+                                this.computeImpactOrder(
+                                    impact,
+                                    impact.domain,
+                                    selectedDimension,
+                                );
                                 break;
                             case "domain":
                                 if (impact.domain === this.footprintStore.appDomain()) {
-                                    this.computeImpactOrder(impact, impact.subDomain);
+                                    this.computeImpactOrder(
+                                        impact,
+                                        impact.subDomain,
+                                        selectedDimension,
+                                    );
                                 }
                                 break;
                             case "subdomain":
@@ -239,6 +273,7 @@ export class ApplicationCriteriaFootprintComponent
                                     this.computeImpactOrder(
                                         impact,
                                         impact.applicationName,
+                                        selectedDimension,
                                     );
                                 }
                                 break;
@@ -253,6 +288,7 @@ export class ApplicationCriteriaFootprintComponent
                                     this.computeImpactOrder(
                                         impact,
                                         impact.virtualEquipmentName,
+                                        selectedDimension,
                                     );
                                 }
                                 break;
@@ -265,13 +301,46 @@ export class ApplicationCriteriaFootprintComponent
         return result;
     }
 
-    computeImpactOrder(impact: ApplicationImpact, yAxisValue: string) {
+    computeImpactOrder(
+        impact: ApplicationImpact,
+        yAxisValue: string,
+        selectedDimension: string,
+    ) {
+        const dimensionValue = this.getImpactDimensionValue(impact, selectedDimension);
         if (this.yAxislist.includes(yAxisValue)) {
             const index = this.yAxislist.indexOf(yAxisValue);
             this.impactOrder[index] = {
                 domain: impact.domain,
                 sipImpact: this.impactOrder[index].sipImpact + impact.sip,
                 unitImpact: this.impactOrder[index].unitImpact + impact.impact,
+                repartYaxis: {
+                    ...this.impactOrder[index]?.repartYaxis,
+                    [dimensionValue]: {
+                        sip:
+                            (this.impactOrder[index].repartYaxis?.[dimensionValue]?.sip ??
+                                0) + impact.sip,
+                        raw:
+                            (this.impactOrder[index].repartYaxis?.[dimensionValue]?.raw ??
+                                0) + impact.impact,
+                        apps: Array.from(
+                            new Set([
+                                ...(this.impactOrder[index].repartYaxis?.[dimensionValue]
+                                    ?.apps ?? []),
+                                impact.applicationName,
+                            ]),
+                        ),
+                        subDomain: Array.from(
+                            new Set([
+                                ...(this.impactOrder[index].repartYaxis?.[dimensionValue]
+                                    ?.subDomain ?? []),
+                                impact.subDomain,
+                            ]),
+                        ),
+                        cluster: impact.cluster,
+                        environment: impact.environment,
+                        equipment: impact.equipmentType,
+                    },
+                },
                 subdomain: impact.subDomain,
                 app: impact.applicationName,
                 equipment: impact.equipmentType,
@@ -302,6 +371,17 @@ export class ApplicationCriteriaFootprintComponent
                 sipImpact: impact.sip,
                 unitImpact: impact.impact,
                 subdomain: impact.subDomain,
+                repartYaxis: {
+                    [dimensionValue]: {
+                        sip: impact.sip,
+                        raw: impact.impact,
+                        apps: [impact.applicationName],
+                        subDomain: [impact.subDomain],
+                        cluster: impact.cluster,
+                        environment: impact.environment,
+                        equipment: impact.equipmentType,
+                    },
+                },
                 app: impact.applicationName,
                 equipment: impact.equipmentType,
                 environment: impact.environment,
@@ -325,10 +405,20 @@ export class ApplicationCriteriaFootprintComponent
         }
     }
 
+    private getImpactDimensionValue(
+        impact: ApplicationImpact,
+        selectedDimension: string,
+    ): string {
+        const value = (impact as unknown as Record<string, unknown>)[selectedDimension];
+        return value === undefined || value === null || value === ""
+            ? Constants.EMPTY
+            : String(value);
+    }
+
     initGraphData(impactOrder: any[]): any {
         impactOrder.sort(sortByProperty("sipImpact", "desc"));
         const xAxis: string[] = [];
-        const yAxis: string[] = [];
+        const yAxis: any[] = [];
         const unitImpact: number[] = [];
         const subdomainCount: number[] = [];
         const appCount: number[] = [];
@@ -339,28 +429,56 @@ export class ApplicationCriteriaFootprintComponent
         for (const impact of impactOrder) {
             let subdomainList: string[] = [];
             let appList: string[] = [];
+
+            const repartitionEntries = Object.entries(impact.repartYaxis ?? {});
             switch (this.footprintStore.appGraphType()) {
-                case "global":
+                case "global": {
                     xAxis.push(impact.domain);
-                    yAxis.push(impact.sipImpact);
+                    for (const [key, value] of repartitionEntries) {
+                        const { raw, sip, apps, subDomain } =
+                            value as RepartitionYAxisKeys;
+                        const data = [impact.domain, raw, sip, apps, subDomain];
+
+                        yAxis.push({
+                            name: key,
+                            data: [data],
+                            type: "bar",
+                            stack: "Ad",
+                            emphasis: {
+                                focus: "series",
+                            },
+                            itemStyle: {
+                                color: getUniqueColorFromText(key),
+                            },
+                        });
+                    }
                     unitImpact.push(impact.unitImpact);
                     status[impact.domain] = { status: impact.status };
-                    for (const subdomain of impact.subdomains) {
-                        if (!subdomainList.includes(subdomain)) {
-                            subdomainList.push(subdomain);
-                        }
-                    }
-                    for (const app of impact.apps) {
-                        if (!appList.includes(app)) {
-                            appList.push(app);
-                        }
-                    }
-                    subdomainCount.push(subdomainList.length);
-                    appCount.push(appList.length);
+                    subdomainCount.push(new Set(impact.subdomains).size);
+                    appCount.push(new Set(impact.apps).size);
                     break;
+                }
                 case "domain":
                     xAxis.push(impact.subdomain);
-                    yAxis.push(impact.sipImpact);
+                    //////
+                    for (const [key, value] of repartitionEntries) {
+                        const { raw, sip, apps, subDomain } =
+                            value as RepartitionYAxisKeys;
+                        const data = [impact.subdomain, raw, sip, apps, subDomain];
+                        yAxis.push({
+                            name: key,
+                            data: [data],
+                            type: "bar",
+                            stack: "Ad",
+                            emphasis: {
+                                focus: "series",
+                            },
+                            itemStyle: {
+                                color: getUniqueColorFromText(key),
+                            },
+                        });
+                    }
+                    //////
                     unitImpact.push(impact.unitImpact);
                     status[impact.subdomain] = { status: impact.status };
                     for (const app of impact.apps) {
@@ -372,13 +490,68 @@ export class ApplicationCriteriaFootprintComponent
                     break;
                 case "subdomain":
                     xAxis.push(impact.app);
-                    yAxis.push(impact.sipImpact);
+                    /////
+                    for (const [key, value] of repartitionEntries) {
+                        const { raw, sip, apps, subDomain } =
+                            value as RepartitionYAxisKeys;
+                        const data = [impact.app, raw, sip, apps, subDomain];
+
+                        yAxis.push({
+                            name: key,
+                            data: [data],
+                            type: "bar",
+                            stack: "Ad",
+                            emphasis: {
+                                focus: "series",
+                            },
+                            itemStyle: {
+                                color: getUniqueColorFromText(key),
+                            },
+                        });
+                    }
+                    /////
+
                     unitImpact.push(impact.unitImpact);
                     status[impact.app] = { status: impact.status };
                     break;
                 case "application":
                     xAxis.push(impact.virtualEquipmentName);
-                    yAxis.push(impact.sipImpact);
+                    //////
+                    for (const [key, value] of repartitionEntries) {
+                        const {
+                            raw,
+                            sip,
+                            apps,
+                            subDomain,
+                            cluster,
+                            environment,
+                            equipment,
+                        } = value as RepartitionYAxisKeys;
+                        const data = [
+                            impact.virtualEquipmentName,
+                            raw,
+                            sip,
+                            apps,
+                            subDomain,
+                            cluster,
+                            environment,
+                            equipment,
+                        ];
+
+                        yAxis.push({
+                            name: key,
+                            data: [data],
+                            type: "bar",
+                            stack: "Ad",
+                            emphasis: {
+                                focus: "series",
+                            },
+                            itemStyle: {
+                                color: getUniqueColorFromText(key),
+                            },
+                        });
+                    }
+                    ///////
                     unitImpact.push(impact.unitImpact);
                     equipmentList.push(impact.equipment);
                     environmentList.push(impact.environment);
@@ -387,6 +560,8 @@ export class ApplicationCriteriaFootprintComponent
                     break;
             }
         }
+        // sort repartition in yAxis by name descending
+        yAxis.sort((a, b) => b.name.localeCompare(a.name));
         return {
             xAxis,
             yAxis,
@@ -405,6 +580,7 @@ export class ApplicationCriteriaFootprintComponent
         footprint: ApplicationFootprint[],
         selectedCriteria: string,
         inventory: Inventory,
+        selectedDimension: string,
     ): EChartsOption {
         const unit = this.selectedCriteria().unite;
         let result: any = {};
@@ -412,8 +588,12 @@ export class ApplicationCriteriaFootprintComponent
         this.yAxislist = [];
         let showZoom: boolean = true;
 
-        result = this.computeData(footprint, selectedFilters, selectedCriteria);
-
+        result = this.computeData(
+            footprint,
+            selectedFilters,
+            selectedCriteria,
+            selectedDimension,
+        );
         this.allCriteriaMap = result.status;
         // sort descending of status error
         const sortedCriteriaMap = Object.fromEntries(
@@ -429,8 +609,7 @@ export class ApplicationCriteriaFootprintComponent
                 (f) => f.status?.error,
             );
         });
-
-        if (result.yAxis.length < 10) {
+        if (result.xAxis.length < 10) {
             showZoom = false;
         }
         return {
@@ -438,18 +617,16 @@ export class ApplicationCriteriaFootprintComponent
                 show: true,
                 formatter: (params: any) => {
                     let impact = "";
-                    if (result?.unitImpact[params.dataIndex]) {
+                    if (params.data[1]) {
                         impact = `
                         <span>
-                            Impact : ${this.integerPipe.transform(params.value)}
+                            Impact : ${this.integerPipe.transform(params.data[2])}
                                     ${this.translate.instant("common.peopleeq-min")}
                                 <br>
                             Impact : ${
-                                result?.unitImpact[params.dataIndex] < 1
+                                params.data[1] < 1
                                     ? "< 1"
-                                    : this.decimalsPipe.transform(
-                                          result?.unitImpact[params.dataIndex],
-                                      )
+                                    : this.decimalsPipe.transform(params.data[1])
                             }
                                 ${unit}
                                 ${
@@ -459,13 +636,13 @@ export class ApplicationCriteriaFootprintComponent
                                               "inventories-footprint.application.tooltip.nb-sd",
                                           ) +
                                           " : " +
-                                          result.subdomainCount[params.dataIndex] +
+                                          params.data[4]?.length +
                                           "<br>" +
                                           this.translate.instant(
                                               "inventories-footprint.application.tooltip.nb-app",
                                           ) +
                                           " : " +
-                                          result.appCount[params.dataIndex]
+                                          params.data[3]?.length
                                         : ""
                                 }
                                 ${
@@ -475,7 +652,7 @@ export class ApplicationCriteriaFootprintComponent
                                               "inventories-footprint.application.tooltip.nb-app",
                                           ) +
                                           " : " +
-                                          result.appCount[params.dataIndex]
+                                          params.data[3]?.length
                                         : ""
                                 }
                                 ${
@@ -485,19 +662,19 @@ export class ApplicationCriteriaFootprintComponent
                                               "inventories-footprint.application.tooltip.cluster",
                                           ) +
                                           " : " +
-                                          result.clusterList[params.dataIndex] +
+                                          params.data[5] +
                                           "<br>" +
                                           this.translate.instant(
                                               "inventories-footprint.application.tooltip.equipment",
                                           ) +
                                           " : " +
-                                          result.equipmentList[params.dataIndex] +
+                                          params.data[7] +
                                           "<br>" +
                                           this.translate.instant(
                                               "inventories-footprint.application.tooltip.environnement",
                                           ) +
                                           " : " +
-                                          result.environmentList[params.dataIndex]
+                                          params.data[6]
                                         : ""
                                 }
                                 <span>
@@ -507,7 +684,7 @@ export class ApplicationCriteriaFootprintComponent
                     return `
                         <div>
                             <span style="font-weight: bold; margin-right: 15px;">${
-                                params.name
+                                params.seriesName
                             } : </span>
                             ${impact}
                         </div>
@@ -558,15 +735,7 @@ export class ApplicationCriteriaFootprintComponent
                     type: "value",
                 },
             ],
-            series: [
-                {
-                    name: `${this.translate.instant(
-                        "inventories-footprint.application.graph-cv",
-                    )}`,
-                    type: "bar",
-                    data: result.yAxis,
-                },
-            ],
+            series: result.yAxis,
             color: Constants.BLUE_COLOR,
         };
     }
@@ -584,5 +753,103 @@ export class ApplicationCriteriaFootprintComponent
         this.router.navigate(["../", "multi-criteria"], {
             relativeTo: this.route,
         });
+    }
+
+    getContentText = computed((): GraphDescriptionContent => {
+        let translationKey: string;
+        let textResourceDescription: string = "";
+
+        translationKey = `ds-graph-description.criteria.`;
+
+        const key =
+            "criteria." +
+            this.footprintStore.applicationCriteria().toLowerCase().replaceAll(" ", "-") +
+            ".";
+
+        return {
+            description: this.translate.instant(`${translationKey}description`, {
+                criteria: Object.keys(this.footprint)
+                    .map((impact) => this.translate.instant(`criteria.${impact}`).title)
+                    .join(", "),
+                module: this.translate.instant("ds-graph-module.inventory"),
+            }),
+            scale: this.translate.instant(`${key}scale`),
+            textDescription: this.getTextDescription(translationKey, this.options()),
+            textResourceDescription: textResourceDescription,
+            analysis: this.translate.instant(
+                `ds-graph-description.global-vision.analysis`,
+                {
+                    module: this.translate.instant("ds-graph-module.inventory"),
+                },
+            ),
+            toGoFurther: this.translate.instant(
+                `ds-graph-description.global-vision.inventory-to-go-further`,
+            ),
+        };
+    });
+
+    getTextDescription(translationKey: string, options: EChartsOption): string {
+        let textDescription = "";
+        let textImpacts = [];
+        const criteriaKey = this.footprintStore.applicationCriteria();
+        const filterImpacts = [...this.impactOrder]
+            .sort((a, b) => b.sipImpact - a.sipImpact)
+            .slice(0, 3);
+        for (const [index, impact] of filterImpacts.entries()) {
+            if (index === 0) {
+                textDescription += this.translate.instant(
+                    `${translationKey}text-description`,
+                    {
+                        resource: this.translate.instant(`criteria.${criteriaKey}.title`),
+                    },
+                );
+            }
+            const repartitionEntries = Object.entries(impact.repartYaxis ?? {}) as [
+                string,
+                any,
+            ][];
+
+            if (repartitionEntries.length === 0) continue;
+
+            const top = repartitionEntries.reduce((max, current) => {
+                return (current[1]?.raw ?? 0) > (max[1]?.raw ?? 0) ? current : max;
+            }, repartitionEntries[0]);
+
+            const maxCriteria = {
+                name: top[0],
+                peopleeq: top[1]?.sip ?? 0,
+                raw: top[1]?.raw ?? 0,
+            };
+
+            textImpacts.push({
+                text: this.translate.instant(
+                    `${translationKey}inventory-application-text-description-iterate`,
+                    {
+                        impactName: (options.xAxis as any)?.[0]?.data[index],
+                        impactValue: this.integerPipe.transform(impact.sipImpact),
+                        resource: maxCriteria.name,
+                        resourceValue: this.integerPipe.transform(maxCriteria.peopleeq),
+                        rawValue: this.decimalsPipe.transform(impact.unitImpact),
+                        unit: this.translate.instant(
+                            `criteria.${this.footprintStore.applicationCriteria()}.unite`,
+                        ),
+                        resourceRawValue: this.decimalsPipe.transform(maxCriteria.raw),
+                        resourceUnit: this.translate.instant(
+                            `criteria.${this.footprintStore.applicationCriteria()}.unite`,
+                        ),
+                    },
+                ),
+                impactName:
+                    this.footprintStore.appGraphType() === "application"
+                        ? undefined
+                        : (options.xAxis as any)?.[0]?.data[index],
+                impactNameVisible:
+                    this.footprintStore.appGraphType() === "application"
+                        ? undefined
+                        : (options.xAxis as any)?.[0]?.data[index],
+            });
+        }
+        this.textDescriptionImpacts = textImpacts;
+        return textDescription;
     }
 }

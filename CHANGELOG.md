@@ -1,5 +1,14 @@
 # G4IT
 
+## 3.11.0
+
+## Major changes
+- 1912 | alert users when thier inventory or digital service data will be deleted and renew popup added
+- 2000 | Inventory Application view - Table View added
+- 1837 | Application View improvement
+
+### Minor Changes
+
 ## 3.10.0
 
 ## Major changes

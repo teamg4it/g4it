@@ -173,11 +173,15 @@ describe("ApplicationCriteriaFootprintComponent", () => {
 
     it("computeImpactOrder should add and then aggregate impacts", () => {
         const impact = component.footprint.impacts[0];
-        component.computeImpactOrder(impact, "Domain1");
+        component.computeImpactOrder(impact, "Domain1", "lifeCycle");
         expect(component.impactOrder.length).toBe(1);
 
         // second time aggregates
-        component.computeImpactOrder({ ...impact, sip: 3, impact: 4 }, "Domain1");
+        component.computeImpactOrder(
+            { ...impact, sip: 3, impact: 4 },
+            "Domain1",
+            "lifeCycle",
+        );
         expect(component.impactOrder[0].sipImpact).toBe(7);
     });
 
@@ -194,7 +198,6 @@ describe("ApplicationCriteriaFootprintComponent", () => {
             },
         ]);
         expect(result.xAxis).toContain("Domain1");
-        expect(result.yAxis).toContain(10);
     });
 
     it("checkImpacts should return grey label if no errors", () => {

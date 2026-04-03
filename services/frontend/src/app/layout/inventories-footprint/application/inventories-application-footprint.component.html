@@ -1,12 +1,16 @@
 <app-inventories-header-footprint
     [inventory]="inventory()"
     [inventoryId]="inventoryId"
-    [indicatorType]="'inventories.details.application' | translate | titlecase"
+    [indicatorType]="'application'"
 ></app-inventories-header-footprint>
 <dataviz-filter-application [allFilters]="filteredFilters()"></dataviz-filter-application>
 
-<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 300px)' }">
+<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 240px)' }">
     <div class="bg-white">
+        <app-indicator-section
+            [statGroups]="statGroups()"
+            [isApplication]="true"
+        ></app-indicator-section>
         <div class="flex justify-content-between align-items-center">
             @if (footprintStore.applicationCriteria() === multiCriteria) {
                 <h2
@@ -139,19 +143,40 @@
                     </div>
                 }
             }
-            <p-button
-                (onClick)="filterSidebarVisible = true"
-                styleClass="p-button-secondary-blue uppercase mr-3"
-                id="filter"
-                icon="pi pi-filter"
-                [label]="'digital-services.configure-view' | translate"
-                [ariaLabel]="'digital-services.configure-view' | translate"
-            ></p-button>
+            <div>
+                <div class="segmented p-1 inline-flex gap-1">
+                    <button
+                        class="segment flex align-items-center gap-1 text-xs px-3 py-2 cursor-pointer"
+                        [class.active]="view === 'graph'"
+                        (click)="view = 'graph'"
+                    >
+                        <i class="pi pi-chart-bar text-xs"></i>
+                        {{
+                            "inventories-footprint.application.graph-view-btn" | translate
+                        }}
+                    </button>
+
+                    <button
+                        class="segment flex align-items-center gap-1 text-xs px-3 py-2 cursor-pointer"
+                        [class.active]="view === 'table'"
+                        (click)="view = 'table'"
+                    >
+                        <i class="pi pi-table text-xs"></i>
+                        {{
+                            "inventories-footprint.application.table-view-btn" | translate
+                        }}
+                    </button>
+                </div>
+                <p-button
+                    (onClick)="filterSidebarVisible = true"
+                    styleClass="p-button-secondary-blue uppercase mx-3"
+                    id="filter"
+                    icon="pi pi-filter"
+                    [label]="'digital-services.configure-view' | translate"
+                    [ariaLabel]="'digital-services.configure-view' | translate"
+                ></p-button>
+            </div>
         </div>
-        <app-indicator-section
-            [statGroups]="statGroups()"
-            [isApplication]="true"
-        ></app-indicator-section>
         <div class="mb-3 footprint-dashboard-container-app-criteria grid w-full">
             <div
                 class="bg-white"
@@ -174,21 +199,34 @@
                 [ngClass]="!isCollapsed ? 'col-12 xl:col-9' : 'col'"
             >
                 <div class="bg-white m-3 pb-3">
-                    @if (footprintStore.applicationCriteria() === multiCriteria) {
-                        <app-application-multicriteria-footprint
-                            [filterFields]="filterFields"
-                            [footprint]="footprint()"
-                            [inventory]="inventory()"
-                        ></app-application-multicriteria-footprint>
+                    @if (view === "graph") {
+                        @if (footprintStore.applicationCriteria() === multiCriteria) {
+                            <app-application-multicriteria-footprint
+                                [filterFields]="filterFields"
+                                [footprint]="footprint()"
+                                [inventory]="inventory()"
+                            ></app-application-multicriteria-footprint>
+                        } @else {
+                            <app-application-criteria-footprint
+                                [filterFields]="filterFields"
+                                [footprint]="criteriaFootprint"
+                                [selectedInventoryId]="inventoryId"
+                                [allUnmodifiedFilters]="allUnmodifiedFilters()"
+                                [inventory]="inventory()"
+                                [showDomainByApplication]="showDomainByApplication()"
+                            ></app-application-criteria-footprint>
+                        }
                     } @else {
-                        <app-application-criteria-footprint
-                            [filterFields]="filterFields"
-                            [footprint]="criteriaFootprint"
-                            [selectedInventoryId]="inventoryId"
-                            [allUnmodifiedFilters]="allUnmodifiedFilters()"
-                            [inventory]="inventory()"
-                            [showDomainByApplication]="showDomainByApplication()"
-                        ></app-application-criteria-footprint>
+                        <app-application-table-view
+                            [footprint]="
+                                footprintStore.applicationCriteria() === multiCriteria
+                                    ? footprint()
+                                    : [criteriaFootprint]
+                            "
+                            [isMulticriteria]="
+                                footprintStore.applicationCriteria() === multiCriteria
+                            "
+                        ></app-application-table-view>
                     }
                 </div>
             </div>

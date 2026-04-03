@@ -29,6 +29,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.CsvFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.model.Context;
@@ -103,6 +104,8 @@ public class EvaluateService {
     @Autowired
     TaskRepository taskRepository;
     @Autowired
+    OrganizationRepository organizationRepository;
+    @Autowired
     InputToCsvRecord inputToCsvRecord;
     @Autowired
     EvaluateBoaviztapiService evaluateBoaviztapiService;
@@ -162,6 +165,7 @@ public class EvaluateService {
         }
         final long start = System.currentTimeMillis();
         final String organization = context.getOrganization();
+        boolean showReferenceValue = getShowReferenceValue(organization);
         final Long taskId = task.getId();
 
         // Get datacenters by name (name, InDatacenter)
@@ -296,7 +300,8 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, showReferenceValue);
+
 
                     // Identify NON-CLOUD VMs for this physical equipment
                     List<InVirtualEquipment> allVMs = vmsByPhysical.getOrDefault(physicalEquipment.getName(), List.of());
@@ -313,7 +318,6 @@ public class EvaluateService {
 
                     // Aggregate physical equipment indicators in memory
                     for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
-
                         Double sipValue = refSip.get(impact.getCritere());
                         AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                                 impact.getQuantite(), impact.getConsoElecMoyenne(),
@@ -700,6 +704,12 @@ public class EvaluateService {
             result.put(strings.get(i), String.valueOf(i));
         }
         return result;
+    }
+
+    private boolean getShowReferenceValue(String organization) {
+        return organizationRepository.findByName(organization)
+                .map(org -> org.isShowReferenceValue())
+                .orElse(true);
     }
 
     record SaveResult(int savedVirtualCount, int savedApplicationCount) {

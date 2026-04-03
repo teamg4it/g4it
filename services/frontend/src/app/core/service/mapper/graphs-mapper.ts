@@ -28,3 +28,42 @@ export const getColorFormatter = (
     }
     return Constants.GRAPH_GREY;
 };
+
+export const createStackBarGradientColor = (
+    index: number,
+    totalCount: number,
+): string => {
+    if (totalCount == 1) {
+        return Constants.BLUE_COLOR;
+    }
+    const startColor = Constants.BLUE_COLOR;
+    const endColor = Constants.YELLOW_COLOR;
+    const t = index / (totalCount - 1);
+    const startR = Number.parseInt(startColor.slice(1, 3), 16);
+    const startG = Number.parseInt(startColor.slice(3, 5), 16);
+    const startB = Number.parseInt(startColor.slice(5, 7), 16);
+    const endR = Number.parseInt(endColor.slice(1, 3), 16);
+    const endG = Number.parseInt(endColor.slice(3, 5), 16);
+    const endB = Number.parseInt(endColor.slice(5, 7), 16);
+    const r = Math.round((1 - t) * startR + t * endR);
+    const g = Math.round((1 - t) * startG + t * endG);
+    const b = Math.round((1 - t) * startB + t * endB);
+    return `rgb(${r},${g},${b})`;
+};
+
+const colorMap = new Map<string, string>();
+let currentIndex = 0;
+
+export const getUniqueColorFromText = (
+    text: string,
+    palette: string[] = Constants.COLOR,
+): string => {
+    if (!text) return palette[0];
+
+    if (!colorMap.has(text)) {
+        colorMap.set(text, palette[currentIndex % palette.length]);
+        currentIndex++;
+    }
+
+    return colorMap.get(text)!;
+};

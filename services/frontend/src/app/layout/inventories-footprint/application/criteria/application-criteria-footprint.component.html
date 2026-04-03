@@ -1,9 +1,9 @@
 <div
-    class="ml-auto block align-items-center lg:flex flex-row p-3 pb-0"
+    class="ml-auto block align-items-end lg:flex flex-row p-3"
     [ngClass]="
         showDataConsistencyBtn && inventory()?.enableDataInconsistency
             ? 'justify-content-end'
-            : 'justify-content-start'
+            : 'justify-content-between'
     "
 >
     <div class="inline">
@@ -20,20 +20,30 @@
                 }}"
             >
                 <i class="pi pi-arrow-left mr-2"></i>
+                {{ "inventories-footprint.back-to" | translate }}
                 {{ "inventories-footprint.global.global-vision" | translate }}
                 {{
-                    footprintStore.appGraphType() === "subdomain"
+                    footprintStore.appGraphType() === "domain"
                         ? showDomainLabel()
                             ? " / " + footprintStore.appDomain()
                             : ""
-                        : footprintStore.appGraphType() === "application"
+                        : footprintStore.appGraphType() === "subdomain"
                           ? (showDomainLabel()
                                 ? " / " + footprintStore.appDomain()
                                 : "") +
-                            (!showDomainByApplication() && showSubDomainLabel()
+                            (showSubDomainLabel()
                                 ? " / " + footprintStore.appSubDomain()
                                 : "")
-                          : ""
+                          : footprintStore.appGraphType() === "application"
+                            ? (showDomainLabel()
+                                  ? " / " + footprintStore.appDomain()
+                                  : "") +
+                              (showSubDomainLabel()
+                                  ? " / " + footprintStore.appSubDomain()
+                                  : "") +
+                              " / " +
+                              footprintStore.appApplication()
+                            : ""
                 }}
             </a>
         } @else {
@@ -48,6 +58,7 @@
                     }}"
                 >
                     <i class="pi pi-arrow-left mr-2"></i>
+                    {{ "inventories-footprint.back-to" | translate }}
                     {{ "inventories-footprint.global.multi-criteria-view" | translate }}
                 </a>
             }
@@ -55,6 +66,31 @@
     </div>
 
     <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
+    @if (!showInconsitencyGraph) {
+        <p-dropdown
+            [options]="dimensions"
+            [(ngModel)]="selectedDimension"
+            [placeholder]="'inventories-footprint.select-dimension' | translate"
+            styleClass="ml-auto"
+        >
+            <ng-template pTemplate="selectedItem">
+                <div *ngIf="selectedDimension()">
+                    {{
+                        "inventories-footprint.application-round-button." +
+                            selectedDimension() | translate
+                    }}
+                </div>
+            </ng-template>
+            <ng-template let-dimension pTemplate="item">
+                <div>
+                    {{
+                        "inventories-footprint.application-round-button." + dimension
+                            | translate
+                    }}
+                </div>
+            </ng-template>
+        </p-dropdown>
+    }
 </div>
 @if (showInconsitencyGraph) {
     @if (options().series && !noData()) {
@@ -90,6 +126,11 @@
 <app-application-criteria-pie-chart
     [footprint]="[footprint]"
 ></app-application-criteria-pie-chart>
+<app-graph-description
+    [contentText]="getContentText()"
+    [textDescriptionImpacts]="textDescriptionImpacts"
+    (impactSelectedEvent)="handleImpactClick($event)"
+></app-graph-description>
 
 <ng-template #dataConsistencyRef>
     @if (showDataConsistencyBtn && inventory()?.enableDataInconsistency) {
@@ -99,7 +140,7 @@
             [label]="'inventories-footprint.data-consistency' | translate"
             [outlined]="!showInconsitencyGraph"
             severity="danger"
-            class="ml-auto mt-3 mb-2"
+            class="ml-auto mt-3 mb-2 mr-2"
             [ariaLabel]="'inventories-footprint.data-consistency' | translate"
         />
     }

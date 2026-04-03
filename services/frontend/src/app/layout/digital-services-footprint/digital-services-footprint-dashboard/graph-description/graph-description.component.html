@@ -29,11 +29,15 @@
                 {{ "ds-description-heading.scale" | translate }}
             </h4>
             <p [innerHTML]="contentText()?.scale"></p>
-            <div class="section-hr"></div>
-            <h4 class="mb-0 font-semibold">
-                {{ "ds-description-heading.text-description" | translate }}
-            </h4>
+            @if (contentText()?.textDescription) {
+                <div class="section-hr"></div>
+
+                <h4 class="mb-0 font-semibold">
+                    {{ "ds-description-heading.text-description" | translate }}
+                </h4>
+            }
             <p [innerHTML]="contentText()?.textDescription"></p>
+
             <ul>
                 @for (impactText of textDescriptionImpacts(); track $index) {
                     <li>
@@ -41,7 +45,8 @@
                         @if (
                             !barChartChild() &&
                             selectedParam() !== "Network" &&
-                            chartType() !== "bar"
+                            chartType() !== "bar" &&
+                            impactText.impactName
                         ) {
                             <button
                                 class="blue-link"

@@ -95,7 +95,7 @@ export class UserService {
                             currentUser,
                             organizationName,
                             workspaceId,
-                            page,
+                            page?.split("?")[0], // in case there are query params, we take only the page name
                         );
                     });
                 });
@@ -392,5 +392,16 @@ export class UserService {
     ): string {
         let subject = `[${currentOrganization.name}/${selectedWorkspace?.id}] ${Constants.SUBJECT_MAIL}`;
         return `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
+    }
+
+    composeEcoMindAccessEmail(userEmail: string): string {
+        const subject = encodeURIComponent("EcoMindAI access");
+
+        const body = encodeURIComponent(
+            `FR: Cet utilisateur [${userEmail}] demande l'accès à EcoMindAI
+             EN: this user [${userEmail}] request the access to EcoMindAI`,
+        );
+
+        return `mailto:support.g4it@soprasteria.com?subject=${subject}&body=${body}`;
     }
 }

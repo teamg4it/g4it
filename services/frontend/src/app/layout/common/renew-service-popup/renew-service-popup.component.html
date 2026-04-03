@@ -1,0 +1,60 @@
+@if (renewServiceParams) {
+    <div class="renew-service-popup">
+        <p-dialog
+            [modal]="true"
+            [(visible)]="displayPopup"
+            [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+            [style]="{ width: '30vw' }"
+            [draggable]="false"
+            [dismissableMask]="true"
+            (onHide)="closePopup()"
+            id="renew-service"
+            [closeAriaLabel]="'common.accessibility.close-criteria-dialog' | translate"
+        >
+            <ng-template pTemplate="header">
+                <h3 class="font-semibold ml-0 text-2xl" id="renew-service-popup-title">
+                    {{ "common.renew-service-title" | translate }}
+                </h3>
+            </ng-template>
+
+            <div class="copy-container grid">
+                <div class="share-expiry-paragraph flex">
+                    <p class="text-base">
+                        {{ "common.renew-service-body" | translate: renewServiceParams }}
+                    </p>
+                </div>
+            </div>
+            <div class="flex justify-content-end">
+                <p-button
+                    [attr.aria-label]="'common.accessibility.renew-service' | translate"
+                    styleClass="uppercase p-button-secondary-blue"
+                    (onClick)="renewService()"
+                    [disabled]="isRenewButtonDisabled"
+                    [label]="
+                        (isExtended
+                            ? 'common.renew-button-extended'
+                            : 'common.renew-button'
+                        ) | translate
+                    "
+                >
+                </p-button>
+            </div>
+
+            <ng-template pTemplate="footer">
+                <div class="flex text-right justify-content-end">
+                    <p-button
+                        [attr.aria-label]="
+                            'common.accessibility.close-criteria-dialog' | translate
+                        "
+                        styleClass="uppercase mr-0"
+                        (onClick)="closePopup()"
+                        [label]="'digital-services.close' | translate"
+                    >
+                    </p-button>
+                </div>
+            </ng-template>
+        </p-dialog>
+    </div>
+} @else {
+    <app-spinner></app-spinner>
+}

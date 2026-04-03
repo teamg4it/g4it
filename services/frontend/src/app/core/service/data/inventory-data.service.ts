@@ -15,6 +15,10 @@ import {
     InventoryUpdateRest,
 } from "src/app/core/interfaces/inventory.interfaces";
 import { Constants } from "src/constants";
+import {
+    RenewServiceResp,
+    RenewServiceUpdateResp,
+} from "../../interfaces/digital-service.interfaces";
 
 const endpoint = Constants.ENDPOINTS.inventories;
 
@@ -52,5 +56,27 @@ export class InventoryDataService {
         inventoryCriteria: InventoryCriteriaRest,
     ): Observable<Inventory> {
         return this.http.put<Inventory>(`${endpoint}`, inventoryCriteria);
+    }
+
+    getServiceRenewalDetails(inventoryId: string | number): Observable<RenewServiceResp> {
+        return this.http.get<RenewServiceResp>(`${endpoint}/${inventoryId}/renew`);
+    }
+
+    renewService(
+        payload: {
+            retentionDays: number;
+            action: string;
+            serviceId: string;
+        },
+        inventoryId: string | number,
+    ): Observable<RenewServiceUpdateResp> {
+        return this.http.post<RenewServiceUpdateResp>(
+            `${endpoint}/${inventoryId}/renew`,
+            {
+                retentionDays: payload.retentionDays,
+                action: payload.action,
+                serviceId: payload.serviceId,
+            },
+        );
     }
 }
