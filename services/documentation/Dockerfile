@@ -28,13 +28,16 @@ RUN hugo -d public/
 
 
 # Build docker image
-FROM nginxinc/nginx-unprivileged:1.27-alpine3.20
+FROM nginxinc/nginx-unprivileged:stable-alpine3.23
+
+USER root
+RUN apk add --no-cache wget
+
+USER 1001
 
 COPY --from=build /app/public/ /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
 
-USER 1001
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD curl -f -s localhost:8080 || exit 1
-
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD wget -qO- http://localhost:8080 || exit 1
