@@ -8,6 +8,7 @@
 - 1837 | Application View improvement
 
 ### Minor Changes
+- 2070 | fix for set default host value settings in server
 
 ## 3.10.0
 
