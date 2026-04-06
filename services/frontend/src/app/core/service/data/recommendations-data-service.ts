@@ -12,6 +12,7 @@ export interface Recommendation {
   heuristicRange?: string;
   baseImpact?: number;
   organisationId?: number;
+  difficulty?: string;
 }
 
 const endpoint = Constants.ENDPOINTS.evaluation; 

@@ -220,6 +220,10 @@ components:
         organisationId:
           type: integer
           format: int64
+        difficulty:
+          type: string
+          enum: [ EASY, MEDIUM, HARD ]
+          description: Difficulty level of implementing the recommendation
 
     InstantiatedRecommendationRest:
       description: A recommendation instantiated for a specific digital service version, with calculated priority

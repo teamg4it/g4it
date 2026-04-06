@@ -53,6 +53,10 @@ public class Recommendation{
     @Column(name = "organisation_id")
     private Long organisationId;
 
+    @Column(name = "difficulty", length = 10)
+    private String difficulty;
+
+
 }
 
 

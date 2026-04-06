@@ -176,3 +176,62 @@ databaseChangeLog:
             - column:
                 name: description
                 value: "Le service numérique optimise le parcours d'utilisation pour chaque fonctionnalité principale afin de minimiser le temps et le nombre d'écrans"
+
+
+  - changeSet:
+      id: add-difficulty-to-recommendation
+      author: INSA DEV Team
+      changes:
+        - addColumn:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: difficulty
+                  type: varchar(10)
+                  remarks: "Difficulty level: EASY, MEDIUM, HARD"
+
+  - changeSet:
+      id: set-difficulty-general-recommendations
+      author: INSA DEV Team
+      changes:
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: difficulty
+                  value: "HARD"
+            where: "title = 'Utiliser une architecture adaptée'"
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: difficulty
+                  value: "MEDIUM"
+            where: "title = 'Choisir un hébergement cloud géographiquement cohérent'"
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: difficulty
+                  value: "MEDIUM"
+            where: "title = 'Limiter le poids et le nombre de requêtes par écran'"
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: difficulty
+                  value: "MEDIUM"
+            where: "title = 'Optimiser le parcours utilisateur'"
+
+
+  - changeSet:
+      id: fix-difficulty-minimiser-pue-to-medium
+      author: INSA DEV Team
+      changes:
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: difficulty
+                  value: "MEDIUM"
+            where: title = 'Minimiser le PUE de l''hébergement'           

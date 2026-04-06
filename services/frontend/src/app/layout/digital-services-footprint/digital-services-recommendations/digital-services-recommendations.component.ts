@@ -74,7 +74,7 @@ ngOnInit() {
           category: this.mapCategory(r.category),
           selected: false,
           priority: 0,
-          implementationDifficulty: "N/A"
+          implementationDifficulty: r.difficulty ? this.mapDifficulty(r.difficulty) : "N/A"
         }));
 
         console.log("LOG: Recommendations transformées:", this.recommendations);
@@ -95,6 +95,17 @@ private mapCategory(category: string[]): string[] {
 
   return category?.map(c => mapping[c] || c);
 }
+
+
+private mapDifficulty(difficulty: string): string {
+  const mapping: any = {
+    HARD: "Difficile",
+    MEDIUM: "Moyenne",
+    EASY: "Facile",
+  };
+  return mapping[difficulty] ?? difficulty;
+}
+
   // recommendations = [
   //   { 
   //     title: 'Utiliser une architecture adaptée', 
