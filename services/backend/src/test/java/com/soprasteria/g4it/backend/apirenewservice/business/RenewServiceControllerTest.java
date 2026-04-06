@@ -45,7 +45,7 @@ class RenewServiceControllerTest {
 
         ResponseEntity<RenewRest> response = controller.getRenewDetailsInventory(organization, workspace, inventoryId);
         assertEquals(mockRest, response.getBody());
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         verify(renewService).getRenewDetailsInventory(workspace, inventoryId);
     }
 
@@ -59,7 +59,7 @@ class RenewServiceControllerTest {
 
         ResponseEntity<RenewRest> response = controller.getRenewDetailsDigitalService(organization, workspace, digitalServiceVersionUid);
         assertEquals(mockRest, response.getBody());
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         verify(renewService).getRenewDetailsDigitalService(workspace, digitalServiceVersionUid);
     }
 
@@ -74,7 +74,7 @@ class RenewServiceControllerTest {
 
         ResponseEntity<RenewResponseRest> response = controller.renewDigitalService(organization, workspace, digitalServiceVersionUid, renewUpdateRest);
         assertEquals(mockResponse, response.getBody());
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         verify(renewService).renewDigitalService(workspace, renewUpdateRest);
     }
 
@@ -89,7 +89,7 @@ class RenewServiceControllerTest {
 
         ResponseEntity<RenewResponseRest> response = controller.renewInventoryService(organization, workspace, inventoryId, renewUpdateRest);
         assertEquals(mockResponse, response.getBody());
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         verify(renewService).renewInventoryService(workspace, inventoryId, renewUpdateRest);
     }
 }
