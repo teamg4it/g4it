@@ -186,7 +186,8 @@ export class PanelServerParametersComponent {
         }
     }
 
-    changeServer() {
+    changeServer(event: { value: Host }) {
+        this.current.host = event.value;
         const server = this.server();
         this.setDefaultForm(server.type);
 
