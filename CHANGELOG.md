@@ -8,6 +8,7 @@
 - 1837 | Application View improvement
 
 ### Minor Changes
+-2069 | Fix for unable to add a datacenter
 
 ## 3.10.0
 
