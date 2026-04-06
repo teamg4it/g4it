@@ -53,7 +53,6 @@ export default class PanelDatacenterComponent {
             },
             {
                 validators: [xssFormGroupValidator()],
-                updateOn: "blur",
             },
         );
     }
