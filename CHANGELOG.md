@@ -3,19 +3,25 @@
 ## 3.11.0
 
 ## Major changes
+
 - 1912 | alert users when thier inventory or digital service data will be deleted and renew popup added
 - 2000 | Inventory Application view - Table View added
 - 1837 | Application View improvement
+- 1991 | EcoMindAI - Beta
 
 ### Minor Changes
 - 2069 | Fix for unable to add a datacenter
 
+- 1940 | change the trace to drop the value of reference
+
 ## 3.10.0
 
 ## Major changes
+
 - 1762 | New display for Inventory results
 
 ### Minor Changes
+
 - 1885 | DS : Fix for Delete Network or Terminal via the Delete button on the Edit detail page doesn't work
 - 1833 | Country in error for Cloud Service and DC
 - 1876 | fix the header for digital service detail page / for inventory - Equipment and Application view / for ecomindIA / for administration
