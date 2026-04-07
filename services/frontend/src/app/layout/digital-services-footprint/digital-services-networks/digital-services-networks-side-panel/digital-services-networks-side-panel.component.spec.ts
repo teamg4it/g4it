@@ -25,26 +25,26 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
             ]),
         };
         await TestBed.configureTestingModule({
-    imports: [
-        SharedModule,
-        ReactiveFormsModule,
-        ButtonModule,
-        SelectModule,
-        InputNumberModule,
-        InputTextModule,
-        HttpClientTestingModule,
-        TranslateModule.forRoot(),
-        DigitalServicesNetworksSidePanelComponent,
-    ],
-    providers: [
-        {
-            provide: DigitalServiceStoreService,
-            useValue: mockDigitalServiceStore,
-        },
-        { provide: UserService, useValue: {} },
-        MessageService,
-    ],
-}).compileComponents();
+            imports: [
+                SharedModule,
+                ReactiveFormsModule,
+                ButtonModule,
+                SelectModule,
+                InputNumberModule,
+                InputTextModule,
+                HttpClientTestingModule,
+                TranslateModule.forRoot(),
+                DigitalServicesNetworksSidePanelComponent,
+            ],
+            providers: [
+                {
+                    provide: DigitalServiceStoreService,
+                    useValue: mockDigitalServiceStore,
+                },
+                { provide: UserService, useValue: {} },
+                MessageService,
+            ],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(DigitalServicesNetworksSidePanelComponent);
         component = fixture.componentInstance;
@@ -92,6 +92,7 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
         component.submitFormData();
         expect(component.update.emit).toHaveBeenCalledWith({
             ...component.network,
+            name: "Updated Network",
             type: {
                 code: "1",
                 value: "Type1",
@@ -99,6 +100,7 @@ describe("DigitalServicesNetworksSidePanelComponent", () => {
                 type: "Type",
                 annualQuantityOfGo: 100,
             },
+            yearlyQuantityOfGbExchanged: 500,
         });
     });
 

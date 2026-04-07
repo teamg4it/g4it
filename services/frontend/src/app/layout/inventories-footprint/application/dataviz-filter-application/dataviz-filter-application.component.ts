@@ -14,7 +14,6 @@ import {
     SimpleChanges,
 } from "@angular/core";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { PrimeTemplate } from "primeng/api";
 import { CheckboxChangeEvent, CheckboxModule } from "primeng/checkbox";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
@@ -40,7 +39,6 @@ import { Constants } from "src/constants";
         NgClass,
         Button,
         TranslatePipe,
-        PrimeTemplate,
     ],
 })
 export class DatavizFilterApplicationComponent implements OnChanges {

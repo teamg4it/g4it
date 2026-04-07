@@ -16,8 +16,9 @@
     <p-drawer
         [(visible)]="sidebarVisible"
         position="right"
-        styleClass="w-8"
-        (onHide)="childSidePanel.close()"
+        styleClass="w-7"
+        [modal]="false"
+        (onHide)="sidebarVisible = false"
         ariaCloseLabel="Close"
     >
         <app-digital-services-terminals-side-panel

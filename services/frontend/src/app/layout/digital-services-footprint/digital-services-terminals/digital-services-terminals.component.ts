@@ -30,7 +30,7 @@ import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-t
         DigitalServiceTableComponent,
         DrawerModule,
         DigitalServicesTerminalsSidePanelComponent,
-    ]
+    ],
 })
 export class DigitalServicesTerminalsComponent implements OnInit {
     digitalServiceStore = inject(DigitalServiceStoreService);

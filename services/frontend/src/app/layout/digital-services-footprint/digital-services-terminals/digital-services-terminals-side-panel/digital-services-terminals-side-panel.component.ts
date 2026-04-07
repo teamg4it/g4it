@@ -7,7 +7,13 @@
  */
 import { AsyncPipe } from "@angular/common";
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from "@angular/forms";
 import { TranslatePipe } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Button } from "primeng/button";
@@ -32,16 +38,16 @@ import { AutofocusDirective } from "../../../../core/directives/auto-focus.direc
     templateUrl: "./digital-services-terminals-side-panel.component.html",
     providers: [MessageService],
     imports: [
-    AutofocusDirective,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    SelectModule,
-    InputNumberModule,
-    Button,
-    AsyncPipe,
-    TranslatePipe
-]
+        AutofocusDirective,
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        SelectModule,
+        InputNumberModule,
+        Button,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
     private readonly digitalServicesBusiness = inject(DigitalServiceBusinessService);
@@ -78,6 +84,7 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
         await this.getTerminalsReferentials();
         if (!this.terminal.idFront) {
             this.resetTerminal();
+            this.updateFormFromTerminal();
             return;
         }
 
@@ -85,6 +92,28 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
             this.terminal.type = this.terminalDeviceTypes.find(
                 (item) => item.value === this.terminal.typeCode,
             )!;
+        }
+        this.updateFormFromTerminal();
+    }
+
+    updateFormFromTerminal() {
+        if (this.terminal) {
+            this.terminalsForm.patchValue({
+                name: this.terminal.name || "",
+                type: this.terminal.type || { code: "", value: "", lifespan: null },
+                country: this.terminal.country || "",
+                numberOfUsers: this.terminal.numberOfUsers || 0,
+                yearlyUsageTimePerUser: this.terminal.yearlyUsageTimePerUser || 0,
+                lifespan: this.terminal.lifespan || null,
+            });
+        }
+    }
+
+    onTypeChange(selectedType: TerminalsType) {
+        if (selectedType && selectedType.lifespan) {
+            this.terminalsForm.patchValue({
+                lifespan: selectedType.lifespan,
+            });
         }
     }
 
@@ -167,8 +196,20 @@ export class DigitalServicesTerminalsSidePanelComponent implements OnInit {
     }
 
     async submitFormData() {
-        this.updateTerminals.emit(this.terminal);
-        this.close();
+        if (this.terminalsForm.valid) {
+            const formValues = this.terminalsForm.value;
+            this.terminal = {
+                ...this.terminal,
+                name: formValues.name,
+                type: formValues.type,
+                country: formValues.country,
+                numberOfUsers: formValues.numberOfUsers,
+                yearlyUsageTimePerUser: formValues.yearlyUsageTimePerUser,
+                lifespan: formValues.lifespan,
+            };
+            this.updateTerminals.emit(this.terminal);
+            this.close();
+        }
     }
 
     async deleteTerminal() {

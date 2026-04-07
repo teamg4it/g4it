@@ -13,7 +13,7 @@
             </div>
             @if (userService.isAllowedDigitalServiceWrite$ | async) {
                 <p-button
-                    (onClick)="doResetItem(); sidebarVisible(true)"
+                    (onClick)="sidebarVisible(true); doResetItem()"
                     styleClass="p-button-secondary-blue uppercase"
                     [id]="addButtonId"
                     icon="pi pi-plus-circle"

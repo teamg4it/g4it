@@ -33,10 +33,6 @@
                 pInputText
                 formControlName="name"
                 [required]="true"
-                [(ngModel)]="network.name"
-                name="name"
-                ngDefaultControl
-                locale="fr-FR"
                 id="terminalName"
             />
             @if (networksForm.get("name")?.hasError("required")) {
@@ -63,11 +59,7 @@
                 styleClass="dropdown-terminal"
                 formControlName="type"
                 [required]="true"
-                [(ngModel)]="network.type"
-                name="type"
                 inputId="type"
-                ngDefaultControl
-                lang="en"
             ></p-select>
             @if (networksForm.get("type")?.hasError("required")) {
                 <p class="error-text">
@@ -82,17 +74,13 @@
             }}</label>
             <p-inputNumber
                 formControlName="yearlyQuantityOfGbExchanged"
-                inputId="minmaxfraction"
+                inputId="yearlyQuantityOfGbExchanged"
                 mode="decimal"
                 [minFractionDigits]="1"
                 [maxFractionDigits]="6"
                 [required]="true"
                 [min]="0"
-                [(ngModel)]="network.yearlyQuantityOfGbExchanged"
-                name="yearlyQuantityOfGbExchanged"
-                ngDefaultControl
                 locale="fr-FR"
-                id="yearlyQuantityOfGbExchanged"
                 [ariaLabel]="'digital-services-networks.yearly-go' | translate"
             />
             @if (networksForm.get("yearlyQuantityOfGbExchanged")?.hasError("required")) {

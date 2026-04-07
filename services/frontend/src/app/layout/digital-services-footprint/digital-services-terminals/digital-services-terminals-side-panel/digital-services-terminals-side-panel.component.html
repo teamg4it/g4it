@@ -30,16 +30,7 @@
             <label for="terminalName">{{
                 "digital-services-servers.name" | translate
             }}</label>
-            <input
-                pInputText
-                formControlName="name"
-                [required]="true"
-                [(ngModel)]="terminal.name"
-                name="name"
-                ngDefaultControl
-                locale="fr-FR"
-                id="terminalName"
-            />
+            <input pInputText formControlName="name" id="terminalName" />
             @if (terminalsForm.get("name")?.hasError("required")) {
                 <p class="error-text">
                     {{ "digital-services-terminals.terminal-name" | translate }}
@@ -66,13 +57,8 @@
                 optionLabel="value"
                 styleClass="dropdown-terminal"
                 formControlName="type"
-                [required]="true"
-                [(ngModel)]="terminal.type"
-                name="type"
                 inputId="typeInput"
-                (onChange)="terminal.lifespan = $event.value.lifespan"
-                ngDefaultControl
-                lang="en"
+                (onChange)="onTypeChange($event.value)"
                 [ariaLabel]="'digital-services-terminals.type' | translate"
             >
             </p-select>
@@ -92,15 +78,10 @@
                 [options]="countries"
                 styleClass="dropdown-terminal"
                 formControlName="country"
-                [required]="true"
-                [(ngModel)]="terminal.country"
                 [filter]="true"
                 filterBy="label"
                 filterPlaceholder="Search"
-                name="country"
                 inputId="countryInput"
-                ngDefaultControl
-                lang="en"
                 [ariaLabel]="'digital-services-terminals.country' | translate"
             >
             </p-select>
@@ -117,12 +98,8 @@
             }}</label>
             <p-inputNumber
                 formControlName="numberOfUsers"
-                [required]="true"
                 [min]="0"
-                [(ngModel)]="terminal.numberOfUsers"
-                name="numberOfUsers"
                 inputId="numberOfUsers"
-                ngDefaultControl
                 locale="fr-FR"
             />
             @if (terminalsForm.get("numberOfUsers")?.hasError("required")) {
@@ -140,15 +117,11 @@
             >
             <p-inputNumber
                 formControlName="yearlyUsageTimePerUser"
-                [required]="true"
                 [min]="0"
                 mode="decimal"
                 [minFractionDigits]="1"
                 [max]="8760"
-                [(ngModel)]="terminal.yearlyUsageTimePerUser"
-                name="yearlyUsageTimePerUser"
                 inputId="yearlyUsageTimePerUser"
-                ngDefaultControl
                 locale="fr-FR"
             />
             @if (terminalsForm.get("yearlyUsageTimePerUser")?.hasError("required")) {
@@ -165,15 +138,9 @@
             <p-inputNumber
                 formControlName="lifespan"
                 mode="decimal"
-                inputId="minmaxfraction"
                 [minFractionDigits]="1"
-                styleClass="inputnumber-small"
-                [required]="true"
                 [min]="0"
-                [(ngModel)]="terminal.lifespan"
-                name="lifespan"
                 inputId="lifespanInput"
-                ngDefaultControl
                 locale="fr-FR"
             />
             @if (terminalsForm.get("lifespan")?.hasError("required")) {

@@ -37,134 +37,144 @@
     }"
     contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
 >
-    <p-tabpanels>
-        @for (tab of tabs; track $index) {
-            <p-tabpanel>
-                <ng-template pTemplate="header">
+    <p-tabs [value]="tabs[0].field">
+        <p-tablist>
+            @for (tab of tabs; track tab.field) {
+                <p-tab [value]="tab.field">
                     {{
                         "inventories-footprint.filter-tabs-application." + tab.field
                             | translate
                     }}
-                </ng-template>
-                <p-scrollPanel
-                    mode="vertical"
-                    [style]="{ width: '96%', height: '240px' }"
-                >
-                    <ul>
-                        @for (item of allUnusedFilters[tab.field]; track item) {
-                            <li>
-                                @if (!tab?.children?.length) {
-                                    <p-checkbox
-                                        [ariaLabel]="item?.toString()"
-                                        name="groupname"
-                                        [value]="item"
-                                        [(ngModel)]="
-                                            footprintStore.applicationSelectedFilters()[
-                                                tab.field
-                                            ]
-                                        "
-                                        (ngModelChange)="
-                                            onFilterSelected(
-                                                $event,
-                                                tab.field,
-                                                item.toString()
-                                            )
-                                        "
-                                        [id]="item"
-                                        ><label>{{
-                                            item?.toString() === all
-                                                ? ("common.all" | translate)
-                                                : item?.toString() === empty
-                                                  ? ("common.empty" | translate)
-                                                  : item
-                                        }}</label></p-checkbox
-                                    >
-                                }
-                            </li>
-                        }
-                        @if (tab?.children?.length) {
-                            <li>
-                                @for (
-                                    filter of allUnusedFilters[tab.field];
-                                    track $index
-                                ) {
-                                    <li
-                                        [ngClass]="
-                                            !filter?.children?.length ? 'ml-6 pl-2' : ''
-                                        "
-                                    >
-                                        @if (filter.visible) {
-                                            @if (filter?.children?.length) {
-                                                <p-button
-                                                    styleClass="mx-1"
-                                                    [rounded]="true"
-                                                    [text]="true"
-                                                    (onClick)="
-                                                        filter.collapsed =
-                                                            !filter.collapsed
-                                                    "
-                                                    [icon]="
-                                                        filter.collapsed
-                                                            ? 'pi pi-chevron-right'
-                                                            : 'pi pi-chevron-down'
-                                                    "
-                                                    [ariaLabel]="
-                                                        (filter.collapsed
-                                                            ? 'common.accessibility.accordion-open'
-                                                            : 'common.accessibility.accordion-close'
-                                                        ) | translate
-                                                    "
-                                                />
-                                            }
-                                            <p-checkbox
-                                                [binary]="true"
-                                                [(ngModel)]="filter.checked"
-                                                (onChange)="onTreeChange($event, filter)"
-                                                class="mb-3"
-                                                ><label>{{
-                                                    filter.label
-                                                }}</label></p-checkbox
-                                            >
-                                            <div
-                                                [ngClass]="
-                                                    filter.collapsed ? 'hidden' : ''
-                                                "
-                                            >
-                                                @if (filter.children) {
-                                                    @for (
-                                                        child of filter.children;
-                                                        track $index
-                                                    ) {
-                                                        <li class="ml-8">
-                                                            @if (child.visible) {
-                                                                <p-checkbox
-                                                                    [binary]="true"
-                                                                    [(ngModel)]="
-                                                                        child.checked
-                                                                    "
-                                                                    (onChange)="
-                                                                        onTreeChildChanged(
-                                                                            $event,
-                                                                            filter
-                                                                        )
-                                                                    "
-                                                                    ><label>{{
-                                                                        child.label
-                                                                    }}</label></p-checkbox
-                                                                >
-                                                            }
-                                                        </li>
-                                                    }
+                </p-tab>
+            }
+        </p-tablist>
+        <p-tabpanels>
+            @for (tab of tabs; track tab.field) {
+                <p-tabpanel [value]="tab.field">
+                    <p-scrollPanel
+                        mode="vertical"
+                        [style]="{ width: '96%', height: '240px' }"
+                    >
+                        <ul>
+                            @for (item of allUnusedFilters[tab.field]; track item) {
+                                <li>
+                                    @if (!tab?.children?.length) {
+                                        <p-checkbox
+                                            [ariaLabel]="item?.toString()"
+                                            name="groupname"
+                                            [value]="item"
+                                            [(ngModel)]="
+                                                footprintStore.applicationSelectedFilters()[
+                                                    tab.field
+                                                ]
+                                            "
+                                            (ngModelChange)="
+                                                onFilterSelected(
+                                                    $event,
+                                                    tab.field,
+                                                    item.toString()
+                                                )
+                                            "
+                                            [id]="item"
+                                            ><label>{{
+                                                item?.toString() === all
+                                                    ? ("common.all" | translate)
+                                                    : item?.toString() === empty
+                                                      ? ("common.empty" | translate)
+                                                      : item
+                                            }}</label></p-checkbox
+                                        >
+                                    }
+                                </li>
+                            }
+                            @if (tab?.children?.length) {
+                                <li>
+                                    @for (
+                                        filter of allUnusedFilters[tab.field];
+                                        track $index
+                                    ) {
+                                        <li
+                                            [ngClass]="
+                                                !filter?.children?.length
+                                                    ? 'ml-6 pl-2'
+                                                    : ''
+                                            "
+                                        >
+                                            @if (filter.visible) {
+                                                @if (filter?.children?.length) {
+                                                    <p-button
+                                                        styleClass="mx-1"
+                                                        [rounded]="true"
+                                                        [text]="true"
+                                                        (onClick)="
+                                                            filter.collapsed =
+                                                                !filter.collapsed
+                                                        "
+                                                        [icon]="
+                                                            filter.collapsed
+                                                                ? 'pi pi-chevron-right'
+                                                                : 'pi pi-chevron-down'
+                                                        "
+                                                        [ariaLabel]="
+                                                            (filter.collapsed
+                                                                ? 'common.accessibility.accordion-open'
+                                                                : 'common.accessibility.accordion-close'
+                                                            ) | translate
+                                                        "
+                                                    />
                                                 }
-                                            </div>
-                                        }
-                                    </li>
-                                }
-                            </li>
-                        }
-                    </ul>
-                </p-scrollPanel>
-            </p-tabpanel>
-        }
-    </p-tabpanels>
+                                                <p-checkbox
+                                                    [binary]="true"
+                                                    [(ngModel)]="filter.checked"
+                                                    (onChange)="
+                                                        onTreeChange($event, filter)
+                                                    "
+                                                    class="mb-3"
+                                                    ><label>{{
+                                                        filter.label
+                                                    }}</label></p-checkbox
+                                                >
+                                                <div
+                                                    [ngClass]="
+                                                        filter.collapsed ? 'hidden' : ''
+                                                    "
+                                                >
+                                                    @if (filter.children) {
+                                                        @for (
+                                                            child of filter.children;
+                                                            track $index
+                                                        ) {
+                                                            <li class="ml-8">
+                                                                @if (child.visible) {
+                                                                    <p-checkbox
+                                                                        [binary]="true"
+                                                                        [(ngModel)]="
+                                                                            child.checked
+                                                                        "
+                                                                        (onChange)="
+                                                                            onTreeChildChanged(
+                                                                                $event,
+                                                                                filter
+                                                                            )
+                                                                        "
+                                                                        ><label>{{
+                                                                            child.label
+                                                                        }}</label></p-checkbox
+                                                                    >
+                                                                }
+                                                            </li>
+                                                        }
+                                                    }
+                                                </div>
+                                            }
+                                        </li>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </p-scrollPanel>
+                </p-tabpanel>
+            }
+        </p-tabpanels>
+    </p-tabs>
 </p-overlay>

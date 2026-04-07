@@ -7,13 +7,7 @@
  */
 import { AsyncPipe } from "@angular/common";
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
-import {
-    FormBuilder,
-    FormGroup,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { TranslatePipe } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
 import { Button } from "primeng/button";
@@ -33,16 +27,15 @@ import { AutofocusDirective } from "../../../../core/directives/auto-focus.direc
     templateUrl: "./digital-services-networks-side-panel.component.html",
     providers: [MessageService],
     imports: [
-    AutofocusDirective,
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    SelectModule,
-    InputNumberModule,
-    Button,
-    AsyncPipe,
-    TranslatePipe
-]
+        AutofocusDirective,
+        ReactiveFormsModule,
+        InputTextModule,
+        SelectModule,
+        InputNumberModule,
+        Button,
+        AsyncPipe,
+        TranslatePipe,
+    ],
 })
 export class DigitalServicesNetworksSidePanelComponent implements OnInit {
     protected digitalServiceStore = inject(DigitalServiceStoreService);
@@ -69,21 +62,25 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
         this.existingNames = this.networkData
             .filter((c) => (isNew ? true : this.network.name !== c.name))
             .map((cloud) => cloud.name);
+
+        const defaultType =
+            this.network.type ?? this.digitalServiceStore.networkTypes()?.[0] ?? null;
+
         this.networksForm = this._formBuilder.group(
             {
                 name: [
-                    "",
+                    this.network.name ?? "",
                     [
                         Validators.required,
                         uniqueNameValidator(this.existingNames),
                         noWhitespaceValidator(),
                     ],
                 ],
-                type: [
-                    { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
-                    Validators.required,
+                type: [defaultType, Validators.required],
+                yearlyQuantityOfGbExchanged: [
+                    this.network.yearlyQuantityOfGbExchanged ?? 0,
+                    [Validators.required],
                 ],
-                yearlyQuantityOfGbExchanged: [0, [Validators.required]],
             },
             {
                 validators: [xssFormGroupValidator()],
@@ -97,8 +94,13 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
     }
 
     submitFormData() {
-        this.network.type = { ...this.networksForm.get("type")!.value! };
-        this.update.emit(this.network);
+        const formValue = this.networksForm.getRawValue();
+        this.update.emit({
+            ...this.network,
+            name: formValue.name,
+            type: { ...formValue.type },
+            yearlyQuantityOfGbExchanged: formValue.yearlyQuantityOfGbExchanged,
+        });
     }
 
     cancelNetwork() {

@@ -37,44 +37,48 @@
     }"
     contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
 >
-    <p-tabpanels>
-        @for (tab of tabs; track $index) {
-            <p-tabpanel
-                [id]="tab"
-            >
-                <ng-template pTemplate="header">
-                    {{ 'inventories-footprint.filter-tabs.' + tab | translate }}
-                </ng-template>
-                <p-scrollPanel
-                    mode="vertical"
-                    [style]="{ width: '96%', height: '240px' }"
-                >
-                    <ul>
-                        @for (item of allFilters[tab]; track $index) {
-                            <li>
-                                <p-checkbox
-                                    tabindex="0"
-                                    [ariaLabel]="item?.toString()"
-                                    name="groupname"
-                                    [value]="item"
-                                    [ngModel]="footprintStore.filters()[tab]"
-                                    (ngModelChange)="
-                                        onCheckboxChange($event, tab, item.toString())
-                                    "
-                                    [id]="item"
-                                    ><label>{{
-                                        item === all
-                                            ? ("common.all" | translate)
-                                            : item === empty
-                                              ? ("common.empty" | translate)
-                                              : item
-                                    }}</label></p-checkbox
-                                >
-                            </li>
-                        }
-                    </ul>
-                </p-scrollPanel>
-            </p-tabpanel>
-        }
-    </p-tabpanels>
+    <p-tabs [value]="tabs[0]">
+        <p-tablist>
+            @for (tab of tabs; track tab) {
+                <p-tab [value]="tab">
+                    {{ "inventories-footprint.filter-tabs." + tab | translate }}
+                </p-tab>
+            }
+        </p-tablist>
+        <p-tabpanels>
+            @for (tab of tabs; track tab) {
+                <p-tabpanel [value]="tab">
+                    <p-scrollPanel
+                        mode="vertical"
+                        [style]="{ width: '96%', height: '240px' }"
+                    >
+                        <ul>
+                            @for (item of allFilters[tab]; track $index) {
+                                <li>
+                                    <p-checkbox
+                                        tabindex="0"
+                                        [ariaLabel]="item?.toString()"
+                                        name="groupname"
+                                        [value]="item"
+                                        [ngModel]="footprintStore.filters()[tab]"
+                                        (ngModelChange)="
+                                            onCheckboxChange($event, tab, item.toString())
+                                        "
+                                        [id]="item"
+                                        ><label>{{
+                                            item === all
+                                                ? ("common.all" | translate)
+                                                : item === empty
+                                                  ? ("common.empty" | translate)
+                                                  : item
+                                        }}</label></p-checkbox
+                                    >
+                                </li>
+                            }
+                        </ul>
+                    </p-scrollPanel>
+                </p-tabpanel>
+            }
+        </p-tabpanels>
+    </p-tabs>
 </p-overlay>

@@ -15,7 +15,6 @@ import {
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { PrimeTemplate } from "primeng/api";
 import { CheckboxModule } from "primeng/checkbox";
 import { OverlayModule } from "primeng/overlay";
 import { ScrollPanelModule } from "primeng/scrollpanel";
@@ -36,8 +35,7 @@ import { Constants } from "src/constants";
         CheckboxModule,
         FormsModule,
         TranslatePipe,
-        PrimeTemplate,
-    ]
+    ],
 })
 export class DatavizFilterComponent implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);
