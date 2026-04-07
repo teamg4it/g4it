@@ -10,8 +10,8 @@
 - 1991 | EcoMindAI - Beta
 
 ### Minor Changes
+- 2070 | fix for set default host value settings in server
 - 2069 | Fix for unable to add a datacenter
-
 - 1940 | change the trace to drop the value of reference
 
 ## 3.10.0
