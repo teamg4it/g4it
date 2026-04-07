@@ -241,4 +241,60 @@ class FileLoadingUtilsTest {
         assertThrows(AsyncTaskException.class, () -> utils.cleanConvertedFiles(context));
     }
 
+    /* -------------------------------------------------
+     * handelRejectedFiles()
+     * ------------------------------------------------- */
+    @Test
+    void handelRejectedFiles_shouldReturnTrue_whenRejectedFilesExist_inventory() throws Exception {
+        FileLoadingUtils utils = new FileLoadingUtils();
+        setField(utils, "localWorkingFolder", tempDir.toString());
+        var fileSystem = mock(com.soprasteria.g4it.backend.common.filesystem.business.FileSystem.class);
+        var fileStorage = mock(com.soprasteria.g4it.backend.common.filesystem.business.FileStorage.class);
+        var localFileService = mock(com.soprasteria.g4it.backend.common.filesystem.business.local.LocalFileService.class);
+        setField(utils, "fileSystem", fileSystem);
+        setField(utils, "localFileService", localFileService);
+        when(fileSystem.mount(any(), any())).thenReturn(fileStorage);
+        // Simulate rejected folder exists and is not empty
+        Path rejectedPath = tempDir.resolve("rejected").resolve("123");
+        Files.createDirectories(rejectedPath);
+        // Do not create file1.txt in rejected folder to avoid double deletion
+        when(localFileService.isEmpty(any())).thenReturn(false);
+        // Simulate zip creation
+        java.io.File zipFile = Files.createTempFile(tempDir, "rejected", ".zip").toFile();
+        when(localFileService.createZipFile(any(), anyString())).thenReturn(zipFile);
+        // Simulate upload
+        doNothing().when(fileStorage).upload(anyString(), any(), anyString());
+        doNothing().when(fileStorage).delete(any(), anyString());
+        // Simulate file deletion
+        Path fileToDelete = tempDir.resolve("input").resolve("inventory").resolve("file1.txt");
+        Files.createDirectories(fileToDelete.getParent());
+        Files.createFile(fileToDelete);
+        // Test
+        boolean result = utils.handelRejectedFiles("org", 1L, 123L, null, 99L, List.of("file1.txt"));
+        assertTrue(result);
+    }
+
+    @Test
+    void handelRejectedFiles_shouldReturnFalse_whenNoRejectedFiles_digitalService() throws Exception {
+        FileLoadingUtils utils = new FileLoadingUtils();
+        setField(utils, "localWorkingFolder", tempDir.toString());
+        var fileSystem = mock(com.soprasteria.g4it.backend.common.filesystem.business.FileSystem.class);
+        var fileStorage = mock(com.soprasteria.g4it.backend.common.filesystem.business.FileStorage.class);
+        var localFileService = mock(com.soprasteria.g4it.backend.common.filesystem.business.local.LocalFileService.class);
+        setField(utils, "fileSystem", fileSystem);
+        setField(utils, "localFileService", localFileService);
+        when(fileSystem.mount(any(), any())).thenReturn(fileStorage);
+        // Simulate rejected folder does not exist
+        doNothing().when(fileStorage).delete(any(), anyString());
+        // Simulate file deletion for digital service
+        Path fileToDelete = tempDir.resolve("input").resolve("digital-service").resolve("file2.txt");
+        Files.createDirectories(fileToDelete.getParent());
+        try (var out = Files.newOutputStream(fileToDelete)) {
+            out.write(0);
+        }
+        assertTrue(Files.exists(fileToDelete) && Files.isWritable(fileToDelete));
+        boolean result = utils.handelRejectedFiles("org", 1L, null, "ds-uid", 99L, List.of("file2.txt"));
+        assertFalse(result);
+    }
+
 }
