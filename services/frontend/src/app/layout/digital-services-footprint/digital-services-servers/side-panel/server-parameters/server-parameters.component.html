@@ -20,7 +20,7 @@
                     formControlName="host"
                     [required]="true"
                     [(ngModel)]="current.host"
-                    (onChange)="changeServer()"
+                    (onChange)="changeServer($event)"
                     [filter]="true"
                     filterBy="value"
                     filterPlaceholder="Search"
