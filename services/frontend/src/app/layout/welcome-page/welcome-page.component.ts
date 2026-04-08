@@ -14,7 +14,7 @@ import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { take } from "rxjs";
-import { Organization } from "src/app/core/interfaces/user.interfaces";
+import { Organization, Workspace } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { WorkspaceService } from "src/app/core/service/business/workspace.service";
 import { environment } from "src/environments/environment";
@@ -37,6 +37,7 @@ export class WelcomePageComponent implements OnInit {
     userEmail: string = "";
     selectedPath: string = "";
     currentOrganization: Organization = {} as Organization;
+    currentWorkspace: Workspace = {} as Workspace;
     isAllowedInventory: boolean = false;
     isAllowedDigitalService: boolean = false;
     isAllowedEcoMindAi: boolean = false;
@@ -95,6 +96,7 @@ export class WelcomePageComponent implements OnInit {
         this.userService.currentWorkspace$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((workspace: any) => {
+                this.currentWorkspace = workspace;
                 this.selectedPath = `/organizations/${this.currentOrganization.name}/workspaces/${workspace?.id}`;
             });
     }
@@ -128,7 +130,10 @@ export class WelcomePageComponent implements OnInit {
     }
 
     requestAccessOfEcoMindAi() {
-        const mailto = this.userService.composeEcoMindAccessEmail(this.userEmail);
+        const mailto = this.userService.composeEcoMindAccessEmail(
+            this.currentOrganization.name,
+            this.currentWorkspace.name,
+        );
         globalThis.location.href = mailto;
     }
 }

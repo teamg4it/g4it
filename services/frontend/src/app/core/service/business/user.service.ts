@@ -394,12 +394,19 @@ export class UserService {
         return `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
     }
 
-    composeEcoMindAccessEmail(userEmail: string): string {
+    composeEcoMindAccessEmail(orgName: string, workspaceName: string): string {
         const subject = encodeURIComponent("EcoMindAI access");
-
+        const orgWorkspaceName = `[${workspaceName} (${orgName})]`;
         const body = encodeURIComponent(
-            `FR: Cet utilisateur [${userEmail}] demande l'accès à EcoMindAI
-             EN: this user [${userEmail}] request the access to EcoMindAI`,
+            `Hello,
+            I request the access to the module EcoMindAI Module of G4IT on the workspace named ${orgWorkspaceName}
+            What I expect of the tool is :
+            The context of my project is :
+            ---------------------------------------------------------------------
+            Bonjour,
+            J'aimerais accéder au module EcoMindAI de G4IT sur l'espace de travail nommé ${orgWorkspaceName}
+            Voici ce que j'aimerais faire avec l'outil :
+            Voici le contexte de mon projet : `,
         );
 
         return `mailto:support.g4it@soprasteria.com?subject=${subject}&body=${body}`;
