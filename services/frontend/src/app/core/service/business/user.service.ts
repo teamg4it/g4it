@@ -405,7 +405,7 @@ export class UserService {
             ---------------------------------------------------------------------
             Bonjour,
             J'aimerais accéder au module EcoMindAI de G4IT sur l'espace de travail nommé ${orgWorkspaceName}
-            Voici ce que je j'aimerais faire avec l'outil :
+            Voici ce que j'aimerais faire avec l'outil :
             Voici le contexte de mon projet : `,
         );
 
