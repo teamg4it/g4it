@@ -94,6 +94,12 @@ The EcoMindAI module is now introduced as a **Beta feature**.
 
 ---
 
+### Update Reference data
+
+Introduced an enhanced platform-level feature that enables Super Admin users to efficiently manage G4IT reference data. This includes the ability to update key reference tables such as Item Impact, Criterion, Lifecycle Step, Hypothesis, Item Type, and Matching Item. This improvement provides greater flexibility, better control over configuration data, and ensures consistency across the platform.
+
+---
+
 ## 3.11.0
 
 ### Major Changes
@@ -105,6 +111,7 @@ The EcoMindAI module is now introduced as a **Beta feature**.
 
 ### Minor Changes
 
+- 1989 | Update Reference data in Super Admin mode
 - 2070 | Fix default host value configuration in server
 - 2069 | Fix issue preventing datacenter creation
 - 1940 | Improve trace logging by removing reference values
