@@ -248,8 +248,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList(),
-                        true
+                        Collections.emptyList()
                 );
 
         assertEquals(1, result.size());
@@ -295,8 +294,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of(),
-                true
+                List.of()
         );
 
         // THEN
@@ -328,8 +326,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion, criterion),
                         List.of("FABRICATION", "USING"),
-                        Collections.emptyList(),
-                        true
+                        Collections.emptyList()
                 );
 
         assertEquals(4, result.size());
@@ -376,8 +373,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList(),
-                        true
+                        Collections.emptyList()
                 );
 
         // THEN
@@ -436,8 +432,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of(),
-                true
+                List.of()
         );
 
         // THEN
@@ -471,8 +466,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("FABRICATION"),
-                        Collections.emptyList(),
-                        true
+                        Collections.emptyList()
                 )
         );
     }
@@ -558,8 +552,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("USING"),
-                List.of(),
-                false // showReferenceValue = false → hideValue = true
+                List.of()
         );
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -618,8 +611,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of(Constants.USING),
-                List.of(),
-                false
+                List.of()
         );
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -629,45 +621,6 @@ class EvaluateNumEcoEvalServiceTest {
 
         assertTrue(updated.contains("hidden data"));
         assertTrue(updated.contains("ConsoElecAnMoyenne"));
-    }
-
-    @Test
-    void hideValue_shouldBeFalse_whenSourceIsBaseImpacts() {
-
-        InPhysicalEquipment physical = new InPhysicalEquipment();
-        physical.setType("SERVER");
-
-        CriterionRest criterion = new CriterionRest();
-        criterion.setCode("CLIMATE_CHANGE");
-
-        ItemImpactRest impactRest = new ItemImpactRest();
-        impactRest.setIsHidden(true);
-        impactRest.setSource("Base IMPACTS ®Version 2.01");
-
-        when(referentialService.getItemType(any(), any()))
-                .thenReturn(new ItemTypeRest());
-
-        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
-                .thenReturn(List.of(impactRest));
-
-        ImpactEquipementPhysique impact = mock(ImpactEquipementPhysique.class);
-        when(impact.getTrace()).thenReturn("{\"consoElecAnMoyenne\":{}}");
-
-        when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
-                .thenReturn(impact);
-
-        service.calculatePhysicalEquipment(
-                physical,
-                null,
-                "ORG",
-                List.of(criterion),
-                List.of("USING"),
-                List.of(),
-                false // would hide, BUT base prevents it
-        );
-
-        // verify no hiding
-        verify(impact, never()).setTrace(contains("hidden data"));
     }
 
 }

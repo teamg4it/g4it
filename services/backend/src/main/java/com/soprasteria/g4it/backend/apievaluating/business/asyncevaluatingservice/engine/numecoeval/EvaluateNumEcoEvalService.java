@@ -80,8 +80,7 @@ public class EvaluateNumEcoEvalService {
                                                                      final String organization,
                                                                      List<CriterionRest> criteria,
                                                                      List<String> lifecycleSteps,
-                                                                     List<HypothesisRest> hypotheses,
-                                                                     boolean showReferenceValue) {
+                                                                     List<HypothesisRest> hypotheses) {
 
         MatchingItemRest matchingItem = null;
         boolean isModelMatched = true;
@@ -114,15 +113,11 @@ public class EvaluateNumEcoEvalService {
                         physicalEquipment.getLocation(), organization);
 
                 ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
-
-                boolean isHidden = firstImpact == null || Boolean.TRUE.equals(firstImpact.getIsHidden());
-
-                boolean isImpactBase = firstImpact != null &&
-                        firstImpact.getSource() != null &&
-                        firstImpact.getSource().toLowerCase()
-                                .contains(Constants.BASE_IMPACTS_KEYWORD.toLowerCase());
-
-                boolean hideValue = !showReferenceValue && isHidden && !isImpactBase;
+                boolean hideValue = true;
+                if(firstImpact != null){
+                    boolean isNotHidden  = Boolean.FALSE.equals(firstImpact.getIsHidden());
+                    hideValue = !isNotHidden;
+                }
 
                 EquipementPhysique equipementPhysique = internalToNumEcoEvalCalculs.map(physicalEquipment);
                 if (datacenter != null) {

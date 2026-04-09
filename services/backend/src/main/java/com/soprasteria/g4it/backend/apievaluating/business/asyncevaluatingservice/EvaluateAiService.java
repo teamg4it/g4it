@@ -123,7 +123,6 @@ public class EvaluateAiService {
     public void doEvaluateAi(final Context context, final Task task, Path exportDirectory) throws IOException {
 
         final String organization = context.getOrganization();
-        boolean showReferenceValue = getShowReferenceValue(organization);
         final long start = System.currentTimeMillis();
         final Long taskId = task.getId();
         final String digitalServiceName = context.getDigitalServiceName();
@@ -276,7 +275,7 @@ public class EvaluateAiService {
 
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, showReferenceValue);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(inPhysicalEq, datacenter));
@@ -447,12 +446,6 @@ public class EvaluateAiService {
                 .workload(workload == null ? 0d : workload)
                 .errors(error == null ? new HashSet<>() : new HashSet<>(List.of(error)))
                 .build();
-    }
-
-    private boolean getShowReferenceValue(String organization) {
-        return organizationRepository.findByName(organization)
-                .map(org -> org.isShowReferenceValue())
-                .orElse(true);
     }
 
     private BiMap<String, String> getShortcutMap(List<String> strings) {
