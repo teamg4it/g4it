@@ -1,5 +1,6 @@
 package com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice;
 
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
@@ -80,6 +81,8 @@ class EvaluatingServiceTest {
     private ExportService exportService;
     @Mock
     private AsyncEvaluatingService asyncEvaluatingService;
+    @Mock
+    private DigitalServiceVersionService digitalServiceVersionService;
 
 
     @Test
