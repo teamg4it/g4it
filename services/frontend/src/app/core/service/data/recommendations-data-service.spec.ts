@@ -13,7 +13,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 
 import { RecommendationDataService } from './digital-service-recommendation.service';
-import { Recommendation } from './digital-service-recommendation.service';
+import { Recommendation } from './recommendations-data-service';
 
 describe('RecommendationDataService', () => {
   let service: RecommendationDataService;
