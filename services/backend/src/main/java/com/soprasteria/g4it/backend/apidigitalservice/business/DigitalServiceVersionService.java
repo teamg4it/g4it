@@ -166,6 +166,7 @@ public class DigitalServiceVersionService {
 
     public void updateLastUpdateDate(final String digitalServiceVersionUid) {
         digitalServiceVersionRepository.updateLastUpdateDate(LocalDateTime.now(), digitalServiceVersionUid);
+        digitalServiceVersionRepository.findById(digitalServiceVersionUid).ifPresent(digitalService -> digitalServiceRepository.updateLastUpdateDate(LocalDateTime.now(), digitalService.getDigitalService().getUid()));
     }
 
     /**
