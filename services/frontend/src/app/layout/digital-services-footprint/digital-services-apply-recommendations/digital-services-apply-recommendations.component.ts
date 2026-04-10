@@ -17,7 +17,7 @@ import { addDays, differenceInDays } from 'date-fns';
 @Component({
   selector: 'app-digital-services-apply-recommendations',
   templateUrl: './digital-services-apply-recommendations.component.html',
-  styleUrl: "./digital-services-apply-recommendations.component.scss",
+  styleUrls: ["./digital-services-apply-recommendations.component.scss"],
   providers: [
     {
       provide: UserService,
