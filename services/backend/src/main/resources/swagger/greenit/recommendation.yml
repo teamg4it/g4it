@@ -10,8 +10,9 @@ tags:
 
 paths:
 
-  # ─────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # Instantiated recommendations for a digital service version
+<<<<<<< HEAD
   # ─────────────────────────────────────────────────────────────
   /api/v1/organizations/{organization}/workspaces/{workspace}/evaluation/{digitalServiceVersionUid}/recommendations:
     parameters:
@@ -27,12 +28,18 @@ paths:
             type: integer
             format: int64
 
+=======
+  # ─────────────────────────────────────────────────────────────────────────────
+  /api/v1/evaluation/organisations/{organisationId}/versions/{digitalServiceVersionUid}/recommendations:
+    parameters:
+      - $ref: '#/components/parameters/organisationIdPathParam'
+>>>>>>> c2168b96 (Starting TOPSIS implementation with a static approach : only difficulty and baseImpact are currently used to compute priority)
       - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
     get:
       tags:
         - recommendation
       summary: Get prioritized recommendations for a digital service version
-      description: Calculates and returns the list of instantiated recommendations, sorted by priority, based on the current inputs of the digital service version.
+      description: Calculates and returns the list of instantiated recommendations, sorted by priority (TOPSIS), based on the recommendations visible to the organisation.
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
       operationId: getInstantiatedRecommendations
       responses:
@@ -248,7 +255,7 @@ components:
           description: Difficulty level of implementing the recommendation
 
     InstantiatedRecommendationRest:
-      description: A recommendation instantiated for a specific digital service version, with calculated priority
+      description: A recommendation instantiated for a specific digital service version, with calculated TOPSIS priority
       type: object
       properties:
         idInstantiatedRecommendation:

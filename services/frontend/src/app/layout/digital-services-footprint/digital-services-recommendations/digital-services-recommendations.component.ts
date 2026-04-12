@@ -38,8 +38,10 @@ public onSelectAllChange(selectAll: boolean) {
   this.compareSelected();
 }
 recommendations: any[] = [];
+
 ngOnInit() {
   console.log("LOG: Component init");
+
 
   this.userService.currentOrganization$
     .pipe(
@@ -54,19 +56,25 @@ ngOnInit() {
       }),
       tap(org => console.log("LOG: Organisation valide, id =", org.id)),
       switchMap(org => {
+<<<<<<< HEAD
         const workspace = org.workspaces?.[0]?.id; // ou celui sélectionné
         return this.recommendationService.getByOrganisation(org.name, workspace);
+=======
+        const dsVersionUid = this.digitalServiceStore.digitalService().uid;
+        console.log("LOG: Appel API instantiated recommendations avec orgId =", org.id, "dsVersionUid =", dsVersionUid);
+        return this.recommendationService.getInstantiatedRecommendations(org.id, dsVersionUid);
+>>>>>>> c2168b96 (Starting TOPSIS implementation with a static approach : only difficulty and baseImpact are currently used to compute priority)
       }),
       tap(data => console.log("LOG: Données reçues du backend:", data))
     )
     .subscribe({
       next: (data) => {
         this.recommendations = data.map(r => ({
-          ...r,
-          category: this.mapCategory(r.category),
+          ...r.recommendation,
+          priority: +(r.priority * 100).toFixed(1),
+          category: this.mapCategory(r.recommendation?.category ?? []),
           selected: false,
-          priority: 0,
-          implementationDifficulty: r.difficulty ? this.mapDifficulty(r.difficulty) : "N/A"
+          implementationDifficulty: r.recommendation?.difficulty ? this.mapDifficulty(r.recommendation.difficulty) : "N/A"
         }));
 
         console.log("LOG: Recommendations transformées:", this.recommendations);
