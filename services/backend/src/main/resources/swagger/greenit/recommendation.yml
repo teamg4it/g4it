@@ -10,7 +10,7 @@ tags:
 
 paths:
 
-  # ─────────────────────────────────────────────────────────────
+  # ─────────────────────────────────────────────────────────────────────────────
   # Instantiated recommendations for a digital service version
   # ─────────────────────────────────────────────────────────────
   /api/v1/organizations/{organization}/workspaces/{workspace}/evaluation/{digitalServiceVersionUid}/recommendations:
@@ -32,7 +32,7 @@ paths:
       tags:
         - recommendation
       summary: Get prioritized recommendations for a digital service version
-      description: Calculates and returns the list of instantiated recommendations, sorted by priority, based on the current inputs of the digital service version.
+      description: Calculates and returns the list of instantiated recommendations, sorted by priority (TOPSIS), based on the recommendations visible to the organisation.
       x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
       operationId: getInstantiatedRecommendations
       responses:
@@ -248,7 +248,7 @@ components:
           description: Difficulty level of implementing the recommendation
 
     InstantiatedRecommendationRest:
-      description: A recommendation instantiated for a specific digital service version, with calculated priority
+      description: A recommendation instantiated for a specific digital service version, with calculated TOPSIS priority
       type: object
       properties:
         idInstantiatedRecommendation:

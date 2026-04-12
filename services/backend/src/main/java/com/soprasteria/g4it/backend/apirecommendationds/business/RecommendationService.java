@@ -76,6 +76,15 @@ private Long getOrganisationIdFromName(String name) {
     }
 
     /**
+     * Get all general Recommendation entities (organisationId is null).
+     *
+     * @return list of general Recommendation entities
+     */
+    public List<Recommendation> findByOrganisationIdIsNull() {
+        return recommendationRepository.findByOrganisationIdIsNull();
+    }
+
+    /**
      * Create a new recommendation.
      *
      * @param organisationId        the organisation id

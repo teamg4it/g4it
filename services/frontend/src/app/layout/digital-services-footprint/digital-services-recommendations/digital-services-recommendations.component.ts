@@ -1,15 +1,14 @@
 import { Component, computed, DestroyRef, inject } from '@angular/core';
 import { UserService } from 'src/app/core/service/business/user.service';
-import { filter, of, switchMap, tap } from 'rxjs';
+import { combineLatest, filter, of, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { GlobalStoreService } from 'src/app/core/store/global.store';
 import { DigitalServiceStoreService } from 'src/app/core/store/digital-service.store';
-import { RecommendationService } from 'src/app/core/service/data/recommendations-data-service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RecommendationService, InstantiatedRecommendation } from 'src/app/core/service/data/recommendations-data-service';
 
 @Component({
   selector: 'app-digital-services-recommendations',
   templateUrl: './digital-services-recommendations.component.html',
-
 })
 
 export class DigitalServicesRecommendationsComponent {
@@ -18,6 +17,11 @@ export class DigitalServicesRecommendationsComponent {
   private userService = inject(UserService);
   private readonly destroyRef = inject(DestroyRef);
   private recommendationService = inject(RecommendationService);
+  digitalServiceStore = inject(DigitalServiceStoreService);
+
+  // toObservable must be called in injection context (field initializer is fine)
+  private readonly digitalService$ = toObservable(this.digitalServiceStore.digitalService);
+
   showApplyComponent = false;
   selectedRecommendationsForApply: any[] = [];
   isZoom125 = computed(() => this.global.zoomLevel() >= 125);
@@ -28,6 +32,7 @@ export class DigitalServicesRecommendationsComponent {
     'description',
     'category',
     'implementationDifficulty',
+    // 'select-all',
     
   ];
 
@@ -37,52 +42,81 @@ public onSelectAllChange(selectAll: boolean) {
   this.selectAll = selectAll;
   this.compareSelected();
 }
+
 recommendations: any[] = [];
+
 ngOnInit() {
   console.log("LOG: Component init");
 
-  this.userService.currentOrganization$
+  combineLatest([
+    this.userService.currentOrganization$,
+    this.digitalService$,
+  ])
     .pipe(
       takeUntilDestroyed(this.destroyRef),
-      tap(org => console.log("LOG: Organisation reçue:", org)),
-      filter(org => {
-        const valid = !!org?.id;
+      tap(([org, ds]) => console.log("LOG: Organisation reçue:", org, "| digitalService:", ds)),
+      filter(([org, ds]) => {
+        const valid = !!org?.id && !!ds?.uid;
         if (!valid) {
-          console.warn("LOG: Organisation invalide ou sans id:", org);
+          console.warn("LOG: Organisation ou digitalService pas encore chargé:", org, ds);
         }
         return valid;
       }),
-      tap(org => console.log("LOG: Organisation valide, id =", org.id)),
-      switchMap(org => {
-        const workspace = org.workspaces?.[0]?.id; // ou celui sélectionné
-        return this.recommendationService.getByOrganisation(org.name, workspace);
+      tap(([org, ds]) => console.log("LOG: Organisation valide, id =", org.id, "| dsVersionUid =", ds.uid)),
+      switchMap(([org, ds]) => {
+        console.log("LOG: Appel API instantiated recommendations avec orgId =", org.id, "dsVersionUid =", ds.uid);
+        const workspace = org.workspaces?.[0]?.id;
+        return this.recommendationService.getInstantiatedRecommendations(org.name, workspace, ds.uid);
       }),
-      tap(data => console.log("LOG: Données reçues du backend:", data))
     )
     .subscribe({
-      next: (data) => {
-        this.recommendations = data.map(r => ({
-          ...r,
-          category: this.mapCategory(r.category),
-          selected: false,
-          priority: 0,
-          implementationDifficulty: r.difficulty ? this.mapDifficulty(r.difficulty) : "N/A"
-        }));
+      next: (data: InstantiatedRecommendation[]) => {
+        this.recommendations = data.map((r: InstantiatedRecommendation, index: number) => {
+          const rec = r.recommendation;
+          const translationKey = this.getRecommendationKey(rec!.title);
 
-        console.log("LOG: Recommendations transformées:", this.recommendations);
-      },
-      error: (err) => {
-        console.error("LOG: Erreur lors de la récupération des recommandations:", err);
+          const hasTranslation = translationKey !== 'UNKNOWN';
+          tap((data) => console.log("dattaaaaaa",data))
+          return {
+            ...rec,
+              title: hasTranslation
+    ? `recommendations.${translationKey}.title`
+    : rec!.title,
+            description: hasTranslation
+    ? `recommendations.${translationKey}.description`
+    : rec!.description,
+            priority: index + 1,
+          category: this.mapCategory(r.recommendation?.category ?? []),
+            selected: false,
+              implementationDifficulty: rec?.difficulty
+              ? `difficulty.${rec.difficulty}`
+              : null,    
+            translationKey: translationKey
+          };
+        });
       }
     });
 }
 
+// ==================== MAPPING FR -> CLÉ ====================
+private getRecommendationKey(frenchTitle: string): string {
+  const map: { [key: string]: string } = {
+    "Utiliser une architecture adaptée": "ADAPT_ARCHITECTURE",
+    "Limiter le poids et le nombre de requêtes par écran": "LIMIT_REQUESTS",
+    "Minimiser le PUE de l'hébergement": "MINIMIZE_PUE",
+    "Choisir un hébergement cloud géographiquement cohérent": "GEO_CLOUD",
+    "Optimiser le parcours utilisateur": "OPTIMIZE_UX"
+  };
+
+  return map[frenchTitle] || 'UNKNOWN';
+}
+
 private mapCategory(category: string[]): string[] {
   const mapping: any = {
-    PUBLIC_CLOUD: "Clouds Publics - IaaS",
-    PRIVATE_INFRASTRUCTURE: "Infrastructure Privée",
-    NETWORK: "Réseaux",
-    TERMINAL: "Terminaux"
+    PUBLIC_CLOUD: `categories.PUBLIC_CLOUD`,
+    PRIVATE_INFRASTRUCTURE: "categories.PRIVATE_INFRASTRUCTURE",
+    NETWORK: "categories.NETWORK",
+    TERMINAL: "categories.TERMINAL"
   };
 
   return category?.map(c => mapping[c] || c);
@@ -98,54 +132,11 @@ private mapDifficulty(difficulty: string): string {
   return mapping[difficulty] ?? difficulty;
 }
 
-  // recommendations = [
-  //   { 
-  //     title: 'Utiliser une architecture adaptée', 
-  //     priority:1,
-  //     category: ['Clouds Publics - IaaS'], 
-  //     implementationDifficulty: "Facile", 
-  //     description: 'L’objectif est d’éviter une architecture surdimensionnée et de privilégier une architecture capable d\'ajuster dynamiquement la quantité de ressources utilisées en fonction de la demande du service, et passer à l’échelle. Cela contribue à optimiser l\'efficacité énergétique et à éviter le gaspillage de ressources inutiles.', 
-  //     selected: false 
-  //   },
-  //   { 
-  //     title: 'Limiter le poids et le nombre de requêtes par écran', 
-  //     priority:2,
-  //     category:  ['Réseaux'], 
-  //     implementationDifficulty: "Facile", 
-  //     description: 'Réduire ou limiter les données téléchargées.', 
-  //     selected: false 
-  //   },
-  //   { 
-  //     title: 'Minimiser le PUE de l\'hébergement', 
-  //     priority:3,
-  //     category: ['Infrastructure Privée'], 
-  //     implementationDifficulty: "Moyen", 
-  //     description: 'Il s’agit de connaître le PUE de son hébergement et favoriser la réduction de la consommation d’énergie nécessaire au bon fonctionnement et au refroidissement des serveurs nécessaires à l’hébergement.', 
-  //     selected: false 
-  //   },
-  //   { 
-  //     title: 'Choisir un hébergement cloud géographiquement cohérent ', 
-  //     priority:4,
-  //     category: ['Clouds Publics - IaaS', 'Infrastructure Privée'], 
-  //     implementationDifficulty: "Difficile", 
-  //     description: 'L’objectif est d’abord de privilégier un hébergement dans le pays où l’intensité carbone est peu élevée, et secondairement, dans une région où se situent la majorité des clients, afin de réduire la distance parcourue par les données et donc réduire l’infrastructure réseau mobilisée et son empreinte environnementale.', 
-  //     selected: false 
-  //   },
-  //     { 
-  //   title: 'Optimiser le parcours utilisateur', 
-  //   priority:5,
-  //   category: ['Terminaux'], 
-  //   implementationDifficulty: "Facile", 
-  //   description: 'Le service numérique doit s’assurer que chaque fonctionnalité principale est accessible et utilisable de manière fluide, afin de réduire les frictions pour l’utilisateur, améliorer l’expérience globale et limiter les surcharges inutiles sur le terminal.', 
-  //   selected: false 
-  // },
-  // ];
 compareSelected() {
   const selected = this.recommendations.filter(r => r.selected);
   this.selectedRecommendationsForApply = selected;
   this.showApplyComponent = selected.length > 0;
 }
-   digitalServiceStore = inject(DigitalServiceStoreService);
 
 
 }
