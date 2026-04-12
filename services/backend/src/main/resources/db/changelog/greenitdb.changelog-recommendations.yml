@@ -235,3 +235,44 @@ databaseChangeLog:
                   name: difficulty
                   value: "MEDIUM"
             where: title = 'Minimiser le PUE de l''hébergement'           
+
+  - changeSet:
+      id: set-base-impact-general-recommendations
+      author: INSA DEV Team
+      changes:
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: base_impact
+                  value: 2
+            where: "title = 'Utiliser une architecture adaptée'"
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: base_impact
+                  value: 1
+            where: "title = 'Limiter le poids et le nombre de requêtes par écran'"
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: base_impact
+                  value: 2
+            where: "title = 'Minimiser le PUE de l''hébergement'"
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: base_impact
+                  value: 1
+            where: "title = 'Choisir un hébergement cloud géographiquement cohérent'"
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: base_impact
+                  value: 0
+            where: "title = 'Optimiser le parcours utilisateur'"
+ 

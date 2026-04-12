@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apirecommendationds.controller;
 
-//import com.soprasteria.g4it.backend.apirecommendation.business.InstantiatedRecommendationService;
+import com.soprasteria.g4it.backend.apirecommendationds.business.InstantiatedRecommendationService;
 import com.soprasteria.g4it.backend.apirecommendationds.business.RecommendationService;
 import com.soprasteria.g4it.backend.server.gen.api.RecommendationApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
@@ -30,22 +30,23 @@ import java.util.List;
 @Validated
 public class RecommendationController implements RecommendationApiDelegate {
 
-    //private InstantiatedRecommendationService instantiatedRecommendationService;
+    private InstantiatedRecommendationService instantiatedRecommendationService;
     private RecommendationService recommendationService;
 
     /**
-     * 
      * {@inheritDoc}
-     * pour l'instant InstantiatedRecommendationRest.java n'existe pas donc cette fonction ne marche pas
      */
-   /** @Override
+    @Override
     public ResponseEntity<List<InstantiatedRecommendationRest>> getInstantiatedRecommendations(
+            final Long organisationId,
             final String digitalServiceVersionUid) {
+        log.info("LOG: GET instantiated recommendations for organisationId={}, dsVersionUid={}",
+                organisationId, digitalServiceVersionUid);
         return ResponseEntity.ok(
-                instantiatedRecommendationService.getInstantiatedRecommendations(digitalServiceVersionUid)
+                instantiatedRecommendationService.getInstantiatedRecommendations(
+                        digitalServiceVersionUid, organisationId)
         );
     }
-*/
     /**
      * {@inheritDoc}
      */
