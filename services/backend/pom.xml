@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.12</version>  <!-- 3.3.6 is not working on tests, 3.4.0 is not working on using sql sequences -->
+        <version>4.0.0</version> <!-- Upgraded to Spring Boot 4 -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -38,14 +38,14 @@
         <lombok.dependency.version>1.18.36</lombok.dependency.version>
         <liquibase-core.version>4.31.1</liquibase-core.version>
 
-        <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version>
-        <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version>
+        <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version> <!-- Review for Spring Boot 4 compatibility -->
+        <keycloak-spring-boot-starter.version>25.0.3</keycloak-spring-boot-starter.version> <!-- Review for Spring Boot 4 compatibility -->
 
-        <spring-cloud-azure-starter-storage-blob.version>5.22.0</spring-cloud-azure-starter-storage-blob.version>
-        <spring-cloud-azure-starter-keyvault.version>5.22.0</spring-cloud-azure-starter-keyvault.version>
+        <spring-cloud-azure-starter-storage-blob.version>5.22.0</spring-cloud-azure-starter-storage-blob.version> <!-- Review for Spring Boot 4 compatibility -->
+        <spring-cloud-azure-starter-keyvault.version>5.22.0</spring-cloud-azure-starter-keyvault.version> <!-- Review for Spring Boot 4 compatibility -->
 
         <!-- springdoc 2.7.0 is not working -->
-        <springdoc-openapi-starter-webmvc-ui.version>2.8.8</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>3.0.3</springdoc-openapi-starter-webmvc-ui.version> <!-- Review for Spring Boot 4 compatibility -->
 
         <guava.version>33.4.8-jre</guava.version>
         <commons-csv.version>1.14.1</commons-csv.version>
@@ -54,12 +54,12 @@
         <zt-zip.version>1.17</zt-zip.version>
         <vavr.version>0.10.7</vavr.version>
 
-        <maven-openapi-generator-plugin.version>7.13.0</maven-openapi-generator-plugin.version>
+        <maven-openapi-generator-plugin.version>7.21.0</maven-openapi-generator-plugin.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <shedlock.version>6.9.2</shedlock.version>
         <azure-communication-email.version>1.0.11</azure-communication-email.version>
-        <spring-boot-starter-actuator.version>3.5.12</spring-boot-starter-actuator.version>
+        <spring-boot-starter-actuator.version>4.0.0</spring-boot-starter-actuator.version>
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
             **/controller/**/*.java,
@@ -125,6 +125,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <!-- No version needed, managed by parent -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -135,22 +136,27 @@
                     <artifactId>tomcat-embed-core</artifactId>
                 </exclusion>
             </exclusions>
+            <!-- No version needed, managed by parent -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+            <!-- No version needed, managed by parent -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+            <!-- No version needed, managed by parent -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <!-- No version needed, managed by parent -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
+            <!-- No version needed, managed by parent -->
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -180,7 +186,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>${spring-boot-starter-actuator.version} </version>
+            <!-- No version needed, managed by parent -->
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
@@ -288,6 +294,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <!-- No version needed, managed by parent -->
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -432,7 +439,7 @@
                             </templateDirectory>
                             <additionalProperties>useRole=true</additionalProperties>
                             <configOptions>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <useSpringBoot4>true</useSpringBoot4>
                                 <delegatePattern>true</delegatePattern>
                                 <useTags>true</useTags>
                                 <java8>true</java8>
@@ -481,7 +488,7 @@
                                 <useTags>true</useTags>
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <dateLibrary>java8</dateLibrary>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <useSpringBoot4>true</useSpringBoot4>
                                 <sourceFolder>src/gen/java</sourceFolder>
                                 <serializableModel>true</serializableModel>
                                 <interfaceOnly>true</interfaceOnly>
@@ -525,7 +532,7 @@
                                 <useTags>true</useTags>
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <dateLibrary>java11</dateLibrary>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <useSpringBoot4>true</useSpringBoot4>
                                 <sourceFolder>src/gen/java</sourceFolder>
                                 <serializableModel>true</serializableModel>
                                 <interfaceOnly>true</interfaceOnly>
@@ -570,7 +577,7 @@
                                 <useTags>true</useTags>
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <dateLibrary>java8</dateLibrary>
-                                <useSpringBoot3>true</useSpringBoot3>
+                                <useSpringBoot4>true</useSpringBoot4>
                                 <sourceFolder>src/gen/java</sourceFolder>
                                 <serializableModel>true</serializableModel>
                                 <interfaceOnly>true</interfaceOnly>

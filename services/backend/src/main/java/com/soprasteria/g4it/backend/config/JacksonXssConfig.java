@@ -8,7 +8,8 @@
 
 package com.soprasteria.g4it.backend.config;
 
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,10 +17,9 @@ import org.springframework.context.annotation.Configuration;
 public class JacksonXssConfig {
 
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer xssCustomizer() {
-        return builder -> builder.deserializerByType(
-                String.class,
-                new XssStringDeserializer()
-        );
+    public Module xssModule() {
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(String.class, new XssStringDeserializer());
+        return module;
     }
 }
