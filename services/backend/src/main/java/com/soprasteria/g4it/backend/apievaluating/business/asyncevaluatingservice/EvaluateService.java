@@ -317,7 +317,6 @@ public class EvaluateService {
 
                     // Aggregate physical equipment indicators in memory
                     for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
-                        log.info("Impacts {} for lifecycle{}", impact.getTrace(), impact.getEtapeACV());
                         Double sipValue = refSip.get(impact.getCritere());
                         AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                                 impact.getQuantite(), impact.getConsoElecMoyenne(),
