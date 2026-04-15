@@ -63,7 +63,7 @@ ngOnInit() {
       tap(org => console.log("LOG: Organisation valide, id =", org.id)),
       switchMap(org => {
         console.log("LOG: Appel API recommendations avec orgId =", org.id);
-        return this.recommendationService.getByOrganisation(org.id);
+        return this.recommendationService.getAllRecommendations(org.id);
       }),
       tap(data => console.log("LOG: Données reçues du backend:", data))
     )

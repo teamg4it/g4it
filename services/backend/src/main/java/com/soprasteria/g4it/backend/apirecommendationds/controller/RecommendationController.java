@@ -9,8 +9,11 @@ package com.soprasteria.g4it.backend.apirecommendationds.controller;
 
 //import com.soprasteria.g4it.backend.apirecommendation.business.InstantiatedRecommendationService;
 import com.soprasteria.g4it.backend.apirecommendationds.business.RecommendationService;
+import com.soprasteria.g4it.backend.server.gen.api.dto.OrganisationRequest;
 import com.soprasteria.g4it.backend.server.gen.api.RecommendationApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RecommendationDSRest;
+
+import org.springframework.web.bind.annotation.RequestBody;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InstantiatedRecommendationRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -49,20 +53,19 @@ public class RecommendationController implements RecommendationApiDelegate {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ResponseEntity<List<RecommendationDSRest>> getRecommendationsByOrganisation(
-            final Long organisationId) {
+@Override
+public ResponseEntity<List<RecommendationDSRest>> getRecommendationsByOrganisation(
+        @RequestBody OrganisationRequest organisationRequest) {
 
-             log.info("LOG: GET /recommendations called with organisationId={}", organisationId);
+    Long organisationId = organisationRequest.getOrganisationId();
 
-            List<RecommendationDSRest> result =
-                    recommendationService.getRecommendationsByOrganisation(organisationId);
+    log.info("LOG: POST /recommendations with organisationId={}", organisationId);
 
-            log.info("LOG: Returning {} recommendations", result.size());
-            log.debug("LOG: Data: {}", result);
+    List<RecommendationDSRest> result =
+            recommendationService.getRecommendationsByOrganisation(organisationId);
 
-            return ResponseEntity.ok(result);
-    }
+    return ResponseEntity.ok(result);
+}
 
     /**
      * {@inheritDoc}

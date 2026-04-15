@@ -23,10 +23,13 @@ const endpoint = Constants.ENDPOINTS.evaluation;
 export class RecommendationService {
   constructor(private readonly http: HttpClient) {}
 
-  getByOrganisation(organisationId: number): Observable<Recommendation[]> {
-    console.log("LOG: HTTP GET /recommendations orgId =", organisationId);
-    return this.http.get<Recommendation[]>(
-      `${endpoint}/organisations/${organisationId}/recommendations`
-    );
-  }
+
+  getAllRecommendations(organisationId?: number): Observable<Recommendation[]> {
+  console.log("LOG: HTTP POST /recommendations");
+  return this.http.post<Recommendation[]>(
+  `${endpoint}/organisations/recommendations`,
+  { organisationId }
+);
+}
+
 }
