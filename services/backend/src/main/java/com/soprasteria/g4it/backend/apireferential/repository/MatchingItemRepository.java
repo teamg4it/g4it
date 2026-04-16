@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +28,10 @@ public interface MatchingItemRepository extends JpaRepository<MatchingItem, Long
     @Transactional
     @Modifying
     void deleteByOrganization(final String organization);
+
+    List<MatchingItem> findByWorkspaceId(Long workspaceId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    void deleteByWorkspaceId(Long workspaceId);
 }

@@ -50,6 +50,9 @@ public class MatchingItem implements Serializable {
     @Column(name = "subscriber")
     private String organization;
 
+    @Column(name = "workspace_id")
+    private Long workspaceId;
+
     public static String[] getCsvHeaders() {
         return new String[]{"itemSource", "refItemTarget", "subscriber"};
     }

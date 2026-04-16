@@ -27,4 +27,14 @@ public interface ItemTypeRepository extends JpaRepository<ItemType, Long> {
     @Transactional
     @Modifying
     void deleteByOrganization(final String organization);
+
+    List<ItemType> findByWorkspaceId(Long workspaceId);
+
+    Optional<ItemType> findByTypeAndWorkspaceId(String type, Long workspaceId);
+
+    @Transactional
+    @Modifying
+    void deleteByWorkspaceId(Long workspaceId);
+
+    List<ItemType> findByWorkspaceIdOrWorkspaceIdIsNull(Long workspaceId);
 }
