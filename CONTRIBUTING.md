@@ -75,7 +75,7 @@ flowchart TD
 ### Rules:
 
 * Follow **Java & Spring Boot best practices**
-* Use DTOs
+* Generate DTOs using Source Code Generator (Open-API)
 * Proper exception handling
 * Avoid hardcoding
 * Use logging (not `System.out.println`)
@@ -83,7 +83,30 @@ flowchart TD
 
 ---
 
-## 🅰️ Frontend Guidelines (Angular 18)
+## Unit Testing (JUnit & Mockito)
+
+```mermaid
+flowchart TD
+    A[Write Code] --> B[Write Unit Tests]
+    B --> C[Run JUnit Tests]
+    C --> D{Coverage >= 80%}
+    D -->|Yes| E[Proceed]
+    D -->|No| F[Improve Tests]
+    F --> C
+```
+
+### Guidelines
+
+* Use JUnit 5 for writing test cases.
+* Use Mockito for mocking dependencies.
+* Follow the Arrange–Act–Assert (AAA) pattern.
+* Keep tests independent and isolated.
+* Mock external services, databases, and APIs.
+* Aim for at least 80% code coverage.
+
+---
+
+## 🅰️ Frontend Guidelines (Angular)
 
 ```mermaid
 flowchart TD
