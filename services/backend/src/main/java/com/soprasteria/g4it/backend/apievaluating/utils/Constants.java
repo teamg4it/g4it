@@ -33,5 +33,4 @@ public class Constants {
     public static final String IMPACT_SOURCE = "impact source";
 
     public static final String HIDDEN_DATA = "hidden data";
-    public static final String BASE_IMPACTS_KEYWORD = "Base IMPACTS";
 }

@@ -165,7 +165,6 @@ public class EvaluateService {
         }
         final long start = System.currentTimeMillis();
         final String organization = context.getOrganization();
-        boolean showReferenceValue = getShowReferenceValue(organization);
         final Long taskId = task.getId();
 
         // Get datacenters by name (name, InDatacenter)
@@ -300,7 +299,7 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, showReferenceValue);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
 
 
                     // Identify NON-CLOUD VMs for this physical equipment
@@ -704,12 +703,6 @@ public class EvaluateService {
             result.put(strings.get(i), String.valueOf(i));
         }
         return result;
-    }
-
-    private boolean getShowReferenceValue(String organization) {
-        return organizationRepository.findByName(organization)
-                .map(org -> org.isShowReferenceValue())
-                .orElse(true);
     }
 
     record SaveResult(int savedVirtualCount, int savedApplicationCount) {

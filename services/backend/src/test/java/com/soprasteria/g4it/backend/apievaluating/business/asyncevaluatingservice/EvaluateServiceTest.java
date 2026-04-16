@@ -325,7 +325,7 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), anyBoolean()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
                 .thenReturn(List.of());
 
         evaluateService.doEvaluate(context, task, tempDir);
@@ -378,7 +378,7 @@ class EvaluateServiceTest {
         CSVPrinter printer = mock(CSVPrinter.class);
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), anyBoolean()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
                 .thenReturn(List.of());
 
         doThrow(new RuntimeException("db down"))
@@ -485,7 +485,7 @@ class EvaluateServiceTest {
         when(impactPE.getCritere()).thenReturn("criterion_1");
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), anyBoolean()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -555,7 +555,7 @@ class EvaluateServiceTest {
         when(impactPE.getCritere()).thenReturn("criterion_1");
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), anyBoolean()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -596,7 +596,7 @@ class EvaluateServiceTest {
         when(impactPE.getDureeDeVie()).thenReturn(5.0);
 
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
-                any(), any(), anyString(), anyList(), anyList(), anyList(), anyBoolean()
+                any(), any(), anyString(), anyList(), anyList(), anyList()
         )).thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(
@@ -688,7 +688,7 @@ class EvaluateServiceTest {
         when(impactPE.getStatutIndicateur()).thenReturn("OK");
         when(impactPE.getCritere()).thenReturn("criterion_1");
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList(), anyBoolean()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), anyString(), anyList(), anyList(), anyList()))
                 .thenReturn(List.of(impactPE));
 
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
@@ -703,7 +703,7 @@ class EvaluateServiceTest {
 
         evaluateService.doEvaluate(context, task, tempDir);
 
-        verify(evaluateNumEcoEvalService).calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(), anyBoolean());
+        verify(evaluateNumEcoEvalService).calculatePhysicalEquipment(any(), any(), any(), any(), any(), any());
 
         verify(evaluateNumEcoEvalService, never())
                 .calculateVirtualEquipment(any(), any(), anyInt(), anyDouble(), anyDouble(), anyDouble(), anyString());
@@ -774,7 +774,7 @@ class EvaluateServiceTest {
         when(impact.getDureeDeVie()).thenReturn(5.0);
 
         when(evaluateNumEcoEvalService.calculatePhysicalEquipment(
-                any(), any(), anyString(), anyList(), anyList(), anyList(), anyBoolean()
+                any(), any(), anyString(), anyList(), anyList(), anyList()
         )).thenReturn(List.of(impact));
 
         when(aggregationToOutput.keyPhysicalEquipment(
