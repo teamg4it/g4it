@@ -1148,7 +1148,9 @@
         "manage-users": "Gérer les utilisateurs",
         "manage-workspaces": "Gérer les espaces de travail",
         "super-admin-title": "Super Admin",
-        "update-referential": "Mettre à jour le référentiel",
+        "update-platform-referential": "Mettre à jour le référentiel de la plateforme",
+        "update-workspace-referential": "Mettre à jour le référentiel de l'espace de travail",
+        "download-workspace-referential": "Télécharger le référentiel de l'espace de travail",
         "organization-placeholder": "Choisissez l'organisation",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",

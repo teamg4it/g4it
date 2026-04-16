@@ -1151,7 +1151,9 @@
         "manage-users": "Manage users",
         "manage-workspaces": "Manage workspaces",
         "super-admin-title": "Super Admin",
-        "update-referential": "Update reference data",
+        "update-platform-referential": "Update platform reference data",
+        "update-workspace-referential": "Update workspace reference data",
+        "download-workspace-referential": "Download workspace reference data",
         "organization-placeholder": "Choose organization",
         "accessibility": {
             "placeholder": "Subscriber selection, {{name}} currently selected",

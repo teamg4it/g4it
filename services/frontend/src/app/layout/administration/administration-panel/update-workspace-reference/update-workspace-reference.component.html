@@ -1,0 +1,34 @@
+<div class="pt-4">
+    <div class="mb-3">
+        <p-dropdown
+            appendTo="body"
+            [options]="workspacelist"
+            optionLabel="displayLabel"
+            name="workspaceName"
+            [filter]="true"
+            [(ngModel)]="workspace"
+            [style]="{ width: '35%' }"
+            [placeholder]="'administration.user-placeholder' | translate"
+            inputId="workspaceName"
+            [ariaLabel]="'administration.user.select-org' | translate"
+            id="workspaceName"
+        />
+    </div>
+    <div class="mb-3">
+        <p-button
+            icon="pi pi-download"
+            [label]="'administration.download-workspace-referential' | translate"
+            [ariaLabel]="'administration.download-workspace-referential' | translate"
+            [disabled]="!workspace.organizationName"
+        >
+        </p-button>
+    </div>
+
+    <h2 for="upload-reference" class="inline m-0">
+        {{ "administration.uploadcsv.description" | translate }}
+    </h2>
+    <div
+        class="h-2rem border-top-2 border-primary p-0 mt-1"
+        style="color: lightgray"
+    ></div>
+</div>
