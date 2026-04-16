@@ -11,6 +11,8 @@ tags:
     description: All endpoints for referential import and export
   - name: referential analysis
     description: Endpoint for referential analysis
+  - name: workspace referential import export
+    description: All endpoints for workspace referential import and export
 
 paths:
   /referential/{type}/csv:
@@ -316,6 +318,97 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /workspaces/{workspaceId}/referential/{type}/csv:
+    parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        description: Workspace identifier
+        schema:
+          type: integer
+          format: int64
+
+      - name: type
+        in: path
+        required: true
+        description: Referential type (itemImpact, itemType, matchingItem, hypothesis)
+        schema:
+          type: string
+          enum: [itemImpact, itemType, matchingItem, hypothesis]
+
+    get:
+      tags:
+        - workspace referential import export
+      summary: Export workspace referential as CSV
+      description: |
+        Export workspace-specific referential data.
+        If no data exists, a CSV template (headers only) is returned.
+      operationId: exportWorkspaceReferentialCSV
+      x-custom-role: "hasRole('ROLE_SUPER_ADMINISTRATOR') or hasRole('ROLE_WORKSPACE_ADMINISTRATOR')"
+      responses:
+        "200":
+          description: CSV file
+          content:
+            application/csv:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          description: Forbidden - user is not workspace admin
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - workspace referential import export
+      summary: Import workspace referential from CSV
+      description: |
+        Import workspace-specific referential data from a CSV file.
+
+        Rules:
+        - If item exists → UPDATE
+        - If item does not exist → CREATE
+        - If item missing in file → DELETE
+        - If file is empty → DELETE ALL workspace data
+        - If validation errors exist → NO DATA is updated
+      operationId: importWorkspaceReferentialCSV
+      x-custom-role: "hasRole('ROLE_SUPER_ADMINISTRATOR') or hasRole('ROLE_WORKSPACE_ADMINISTRATOR')"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: CSV import report
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/ImportReportRest"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          description: Forbidden - user is not workspace admin
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   schemas:
     ImportReportRest:
@@ -516,3 +609,43 @@ components:
           type: array
           items:
             type: string
+
+    ItemTypeParseResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemTypeRest"
+        report:
+          $ref: "#/components/schemas/ImportReportRest"
+
+    MatchingItemParseResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchingItemRest"
+        report:
+          $ref: "#/components/schemas/ImportReportRest"
+
+    ItemImpactParseResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemImpactRest"
+        report:
+          $ref: "#/components/schemas/ImportReportRest"
+
+    HypothesisParseResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/HypothesisRest"
+        report:
+          $ref: "#/components/schemas/ImportReportRest"
