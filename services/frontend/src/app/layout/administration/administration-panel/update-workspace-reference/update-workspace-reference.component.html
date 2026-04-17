@@ -1,34 +1,107 @@
-<div class="pt-4">
-    <div class="mb-3">
-        <p-dropdown
-            appendTo="body"
-            [options]="workspacelist"
-            optionLabel="displayLabel"
-            name="workspaceName"
-            [filter]="true"
-            [(ngModel)]="workspace"
-            [style]="{ width: '35%' }"
-            [placeholder]="'administration.user-placeholder' | translate"
-            inputId="workspaceName"
-            [ariaLabel]="'administration.user.select-org' | translate"
-            id="workspaceName"
-        />
-    </div>
-    <div class="mb-3">
-        <p-button
-            icon="pi pi-download"
-            [label]="'administration.download-workspace-referential' | translate"
-            [ariaLabel]="'administration.download-workspace-referential' | translate"
-            [disabled]="!workspace.organizationName"
-        >
-        </p-button>
-    </div>
+<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 230px)' }">
+    <div class="pt-4">
+        <div class="mb-3">
+            <p-dropdown
+                appendTo="body"
+                [options]="workspacelist"
+                optionLabel="displayLabel"
+                name="workspaceName"
+                [filter]="true"
+                [(ngModel)]="workspace"
+                [style]="{ width: '35%' }"
+                [placeholder]="'administration.user-placeholder' | translate"
+                inputId="workspaceName"
+                [ariaLabel]="'administration.user.select-org' | translate"
+                id="workspaceName"
+            />
+        </div>
+        <div class="mb-3">
+            <p-button
+                styleClass="uppercase"
+                icon="pi pi-download"
+                [label]="'administration.download-workspace-referential' | translate"
+                [ariaLabel]="'administration.download-workspace-referential' | translate"
+                [disabled]="!workspace.organizationName"
+            >
+            </p-button>
+        </div>
 
-    <h2 for="upload-reference" class="inline m-0">
-        {{ "administration.uploadcsv.description" | translate }}
-    </h2>
-    <div
-        class="h-2rem border-top-2 border-primary p-0 mt-1"
-        style="color: lightgray"
-    ></div>
-</div>
+        <h2 for="upload-reference" class="inline m-0">
+            {{ "administration.uploadcsv.description" | translate }}
+        </h2>
+        <div
+            class="h-2rem border-top-2 border-primary p-0 mt-1"
+            style="color: lightgray"
+        ></div>
+
+        <h3 class="ml-0 mt-2">
+            {{ "administration.update-reference-paragraph" | translate }}
+        </h3>
+
+        <div class="flex mb-3">
+            <p-dropdown
+                appendTo="body"
+                [options]="csvEndpoints"
+                optionLabel="apiEndpointName"
+                name="endpointDropdown"
+                [(ngModel)]="selectedEndpoint"
+                styleClass="w-25rem h-3rem"
+                placeholder="{{
+                    'administration.uploadcsv.workspace-endpoint-placeholder' | translate
+                }}"
+                filterPlaceholder="{{ 'common.search' | translate }}"
+            >
+                <ng-template pTemplate="selectedItem" let-selectedOption>
+                    @if (selectedOption) {
+                        <div
+                            class="flex align-items-center justify-content-between gap-1"
+                        >
+                            <span class="font-medium text-color">{{
+                                selectedOption.label
+                            }}</span>
+                            <small class="text-base text-500 font-mono">{{
+                                selectedOption.url
+                            }}</small>
+                        </div>
+                    }
+                </ng-template>
+                <ng-template pTemplate="item" let-endpoint>
+                    <div class="flex align-items-center justify-content-between gap-1">
+                        <span class="font-medium text-color">{{ endpoint.label }}</span>
+                        <small class="text-base text-500 font-mono">{{
+                            endpoint.url
+                        }}</small>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+
+            <p-fileUpload
+                #fileUpload
+                styleClass="bg-black text-2xs letter-spacing-2 w-18rem mx-2 h-3rem uppercase"
+                id="upload-file"
+                mode="basic"
+                chooseLabel="{{ fileUploadText }}"
+                [ariaLabel]="fileUploadText"
+                accept=".csv"
+                [customUpload]="true"
+                (onSelect)="onSelect($event)"
+            >
+            </p-fileUpload>
+            <p-button
+                class="mx-3 mt-1"
+                icon="pi pi-times"
+                (onClick)="onDeleteButton()"
+                [text]="true"
+                [ariaLabel]="'administration.delete' | translate"
+            ></p-button>
+            <p-button
+                styleClass="p-button-secondary-blue h-3rem uppercase"
+                icon="pi pi-upload "
+                [label]="'digital-services-import.start-upload' | translate"
+                [ariaLabel]="'digital-services-import.start-upload' | translate"
+                [disabled]="!selectedEndpoint || !file"
+            >
+            </p-button>
+        </div>
+    </div>
+</p-scrollPanel>
