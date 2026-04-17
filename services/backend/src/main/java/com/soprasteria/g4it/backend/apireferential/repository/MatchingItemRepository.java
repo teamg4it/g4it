@@ -34,4 +34,6 @@ public interface MatchingItemRepository extends JpaRepository<MatchingItem, Long
     @Transactional
     @Modifying(clearAutomatically = true)
     void deleteByWorkspaceId(Long workspaceId);
+
+    Optional<MatchingItem> findByItemSourceAndWorkspaceId(final String itemSource, final Long workspaceId);
 }

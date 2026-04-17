@@ -299,7 +299,7 @@ public class EvaluateService {
                     // Call external tools - lib calculs
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             physicalEquipment, datacenter,
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList,context.getWorkspaceId());
 
 
                     // Identify NON-CLOUD VMs for this physical equipment

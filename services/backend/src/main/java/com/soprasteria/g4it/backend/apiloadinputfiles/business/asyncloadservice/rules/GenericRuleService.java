@@ -59,7 +59,7 @@ public class GenericRuleService {
      * @param type       the location
      * @return error
      */
-   public Optional<LineError> checkType(Locale locale, String organization, String filename, int line, String type, boolean isDigitalService) {
+   public Optional<LineError> checkType(Locale locale, String organization, String filename, int line, String type, boolean isDigitalService, Long workspaceId) {
 
         if (StringUtils.isEmpty(type)) {
             return Optional.of(new LineError(filename, line,
@@ -68,7 +68,7 @@ public class GenericRuleService {
                             locale)));
         }
         if (!isDigitalService) {
-            if (referentialGetService.getItemTypes(type, organization).isEmpty() &&
+            if (referentialGetService.getItemTypesForWorkspace(type, workspaceId,organization).isEmpty() &&
                     referentialGetService.getItemTypes(type, null).isEmpty()) {
 
                 return Optional.of(new LineError(

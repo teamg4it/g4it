@@ -275,7 +275,7 @@ public class EvaluateAiService {
 
                     List<ImpactEquipementPhysique> impactEquipementPhysiqueList = evaluateNumEcoEvalService.calculatePhysicalEquipment(
                             inPhysicalEq, datacenters.getFirst(),
-                            organization, activeCriteria, lifecycleSteps, hypothesisRestList);
+                            organization, activeCriteria, lifecycleSteps, hypothesisRestList, context.getWorkspaceId());
 
                     if (evaluateReportBO.isExport()) {
                         csvInPhysicalEquipment.printRecord(inputToCsvRecord.toCsv(inPhysicalEq, datacenter));
