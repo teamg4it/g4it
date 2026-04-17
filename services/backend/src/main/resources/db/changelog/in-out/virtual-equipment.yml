@@ -272,3 +272,14 @@ databaseChangeLog:
             referencedTableName: digital_service
             referencedColumnNames: uid
             onDelete: CASCADE
+
+  - changeSet:
+      id: add-sources-out-virtual-equipment
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: out_virtual_equipment
+            columns:
+              - column:
+                  name: sources
+                  type: varchar(255)

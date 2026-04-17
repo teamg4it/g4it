@@ -91,4 +91,5 @@ public class OutVirtualEquipment {
 
     private Set<String> errors;
 
+    private String source;
 }

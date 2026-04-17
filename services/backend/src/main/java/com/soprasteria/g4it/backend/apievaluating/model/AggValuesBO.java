@@ -26,6 +26,7 @@ public class AggValuesBO {
     private Double usageDuration;
     private Double workload;
     private Set<String> errors;
+    private String source;
 
     public AggValuesBO() {
         this.countValue = 0L;
@@ -37,6 +38,7 @@ public class AggValuesBO {
         this.usageDuration = 0d;
         this.workload = 0d;
         this.errors = new HashSet<>();
+        this.source = null;
     }
 
     public void add(AggValuesBO v) {
@@ -51,6 +53,10 @@ public class AggValuesBO {
         if (!v.getErrors().isEmpty()) {
             this.errors.addAll(v.getErrors());
         }
+        if (this.source == null) {
+            this.source = v.getSource();
+        }
+
     }
 
 }

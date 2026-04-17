@@ -81,4 +81,6 @@ public class OutApplication {
 
     private Set<String> errors;
 
+    private String source;
+
 }

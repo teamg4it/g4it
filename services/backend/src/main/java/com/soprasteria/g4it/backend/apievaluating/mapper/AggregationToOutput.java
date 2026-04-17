@@ -58,7 +58,8 @@ public interface AggregationToOutput {
                 numberOfUsers,
                 hostingEfficiency,
                 String.join(";", physicalEquipment.getCommonFilters() == null ? List.of("") : physicalEquipment.getCommonFilters()),
-                String.join(";", physicalEquipment.getFilters() == null ? List.of("") : physicalEquipment.getFilters())
+                String.join(";", physicalEquipment.getFilters() == null ? List.of("") : physicalEquipment.getFilters()),
+                impact.getSource()
         );
     }
 
@@ -83,6 +84,7 @@ public interface AggregationToOutput {
                 .hostingEfficiency("null".equals(values[8]) ? null : values[8])
                 .commonFilters(Arrays.asList(values[9].split(";")))
                 .filters(Arrays.asList(values[10].split(";")))
+                .source(values[11])
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .lifespan(agg.getLifespan())
@@ -124,7 +126,8 @@ public interface AggregationToOutput {
                 print(virtualEquipment.getProvider()),
                 String.join(";", physicalEquipmentFilters),
                 String.join(";", commonFilters),
-                String.join(";", filters)
+                String.join(";", filters),
+                impact.getSource()
         );
     }
 
@@ -148,6 +151,7 @@ public interface AggregationToOutput {
                 .filtersPhysicalEquipment(Arrays.asList(values[11].split(";")))
                 .commonFilters(Arrays.asList(values[12].split(";")))
                 .filters(Arrays.asList(values[13].split(";")))
+                .source(values[14])
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .electricityConsumption(agg.getElectricityConsumption())
@@ -189,7 +193,8 @@ public interface AggregationToOutput {
                 String.join(";", physicalEquipmentFilters),
                 String.join(";", virtualEquipmentFilters),
                 String.join(";", commonFilters),
-                String.join(";", filters)
+                String.join(";", filters),
+                impact.getSource()
         );
     }
 
@@ -213,6 +218,7 @@ public interface AggregationToOutput {
                 .filtersVirtualEquipment(Arrays.asList(values[11].split(";")))
                 .commonFilters(Arrays.asList(values[12].split(";")))
                 .filters(Arrays.stream(values[13].split(";")).map(String::trim).toList())
+                .source(values[14])
                 .countValue(agg.getCountValue())
                 .quantity(agg.getQuantity())
                 .electricityConsumption(agg.getElectricityConsumption())
