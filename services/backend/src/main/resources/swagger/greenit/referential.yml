@@ -331,10 +331,10 @@ paths:
       - name: type
         in: path
         required: true
-        description: Referential type (itemImpact, itemType, matchingItem, hypothesis)
+        description: Referential type (itemImpact, itemType, matchingItem)
         schema:
           type: string
-          enum: [itemImpact, itemType, matchingItem, hypothesis]
+          enum: [itemImpact, itemType, matchingItem]
 
     get:
       tags:

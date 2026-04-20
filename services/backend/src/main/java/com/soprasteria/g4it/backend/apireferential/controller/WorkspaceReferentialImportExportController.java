@@ -27,8 +27,8 @@ import java.io.InputStream;
 @Service
 public class WorkspaceReferentialImportExportController implements WorkspaceReferentialImportExportApiDelegate {
 
-/*    @Autowired
-    private WorkspaceReferentialExportService workspaceReferentialExportService;*/
+    @Autowired
+    private WorkspaceReferentialExportService workspaceReferentialExportService;
 
     @Autowired
     private WorkspaceReferentialImportService workspaceReferentialImportService;
@@ -36,21 +36,27 @@ public class WorkspaceReferentialImportExportController implements WorkspaceRefe
     /**
      * {@inheritDoc}
      */
-   /* @Override
+   @Override
     public ResponseEntity<Resource> exportWorkspaceReferentialCSV(Long workspaceId, String type) {
-        try {
+       if (workspaceId == null) {
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "workspaceId is required");
+       }
+       try {
             InputStream inputStream =
                     workspaceReferentialExportService.exportReferentialToCSV(workspaceId, type);
 
-            return ResponseEntity.ok(new InputStreamResource(inputStream));
+           return ResponseEntity.ok()
+                   .header("Content-Disposition", "attachment; filename=" + type + ".csv")
+                   .header("Content-Type", "text/csv")
+                   .body(new InputStreamResource(inputStream));
 
         } catch (IOException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error occurred while downloading file: " + e.getMessage()
-            );
-        }
-    }*/
+           throw new ResponseStatusException(
+                   HttpStatus.INTERNAL_SERVER_ERROR,
+                   "Error occurred while downloading file: " + e.getMessage()
+           );
+       }
+    }
 
     /**
      * {@inheritDoc}

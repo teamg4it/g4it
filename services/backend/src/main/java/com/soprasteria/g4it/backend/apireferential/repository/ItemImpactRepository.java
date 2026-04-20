@@ -70,4 +70,6 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
     void deleteByWorkspaceId(Long workspaceId);
 
     List<ItemImpact> findByWorkspaceIdOrWorkspaceIdIsNull(Long workspaceId);
+
+    Page<ItemImpact> findByWorkspaceId(Long workspaceId, Pageable pageable);
 }
