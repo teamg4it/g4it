@@ -1,5 +1,12 @@
 # G4IT
 
+## 3.12.0
+
+## Major changes
+
+### Minor Changes
+- 2129 | Fix for Unit change - Unauthorized error remove in Digital Service
+
 ## 3.11.0
 
 ## Major changes
