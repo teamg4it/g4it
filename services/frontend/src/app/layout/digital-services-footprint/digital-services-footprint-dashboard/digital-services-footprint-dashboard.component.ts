@@ -689,7 +689,9 @@ export class DigitalServicesFootprintDashboardComponent
 
     handleFilters(event: { enableConsistency: boolean; unitType: string }) {
         this.selectedUnit = event.unitType;
-        this.updateDataConsistencyInDS(event.enableConsistency);
+        if (event.enableConsistency !== this.digitalService.enableDataInconsistency) {
+            this.updateDataConsistencyInDS(event.enableConsistency);
+        }
     }
 
     ngOnDestroy() {
