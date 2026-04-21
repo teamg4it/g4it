@@ -74,10 +74,10 @@ public interface ReferentialMapper {
                 .type(read(csvRecord, "type"))
                 .category(read(csvRecord, "category"))
                 .comment(read(csvRecord, "comment"))
-                .defaultLifespan(readDouble(csvRecord, "defaultLifespan"))
-                .isServer(readBoolean(csvRecord, "isServer"))
+                .defaultLifespan(readDouble(csvRecord, "default_lifespan"))
+                .isServer(readBoolean(csvRecord, "is_server"))
                 .source(read(csvRecord, "source"))
-                .refDefaultItem(read(csvRecord, "refDefaultItem"))
+                .refDefaultItem(read(csvRecord, "ref_default_item"))
                 .organization(read(csvRecord, "subscriber"))
                 .version(read(csvRecord, "version"))
                 .build();

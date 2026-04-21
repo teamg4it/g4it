@@ -392,6 +392,170 @@ public class ReferentialImportService {
         return importReportRest;
     }
 
+    public ItemTypeParseResult parseItemTypeCsv(MultipartFile file) {
+
+        ImportReportRest report = ImportReportRest.builder()
+                .errors(new ArrayList<>())
+                .file(file.getOriginalFilename())
+                .build();
+
+        List<ItemTypeRest> objects = new ArrayList<>();
+
+        int line = 2;
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            var parser = createCsvParser().parse(reader);
+
+            validateHeaders(
+                    parser.getHeaderNames(),
+                    List.of("type", "category", "comment", "default_lifespan", "is_server", "source", "ref_default_item", "version"),
+                    "ItemType"
+            );
+
+            for (CSVRecord csvRecord :parser) {
+
+                ItemTypeRest item = referentialMapper.csvItemTypeToRest(csvRecord);
+
+                Optional<String> violations =
+                        ValidationUtils.getViolations(validator.validate(item));
+
+                if (violations.isEmpty()) {
+                    item.setOrganization(null); // ignore subscriber
+                    objects.add(item);
+                } else {
+                    report.getErrors().add(printLine(line, violations.get()));
+                }
+
+                line++;
+            }
+
+        } catch (IOException e) {
+            report.getErrors().add("Cannot read file: " + e.getMessage());
+            return ItemTypeParseResult.builder()
+                    .report(report)
+                    .build();
+        }
+
+        report.setImportedLineNumber((long) objects.size());
+
+        return ItemTypeParseResult.builder()
+                .data(objects)
+                .report(report).build();
+    }
+
+    public MatchingItemParseResult parseMatchingItemCsv(MultipartFile file) {
+
+        ImportReportRest report = ImportReportRest.builder()
+                .errors(new ArrayList<>())
+                .file(file.getOriginalFilename())
+                .build();
+
+        List<MatchingItemRest> objects = new ArrayList<>();
+
+        int line = 2;
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            var parser = createCsvParser().parse(reader);
+            validateHeaders(
+                    parser.getHeaderNames(),
+                    List.of("itemSource", "refItemTarget"),
+                    "MatchingItem"
+            );
+            for (CSVRecord csvRecord : parser) {
+
+                MatchingItemRest item = referentialMapper.csvMatchingItemToRest(csvRecord);
+
+                Optional<String> violations =
+                        ValidationUtils.getViolations(validator.validate(item));
+
+                if (violations.isEmpty()) {
+                    item.setOrganization(null);
+                    objects.add(item);
+                } else {
+                    report.getErrors().add(printLine(line, violations.get()));
+                }
+
+                line++;
+            }
+
+        } catch (IOException e) {
+            report.getErrors().add("Cannot read file: " + e.getMessage());
+            return MatchingItemParseResult.builder().report(report).build();
+        }
+
+        report.setImportedLineNumber((long) objects.size());
+
+        return MatchingItemParseResult.builder()
+                .data(objects)
+                .report(report).build();
+    }
+
+    public ItemImpactParseResult parseItemImpactCsv(MultipartFile file) {
+
+        ImportReportRest report = ImportReportRest.builder()
+                .errors(new ArrayList<>())
+                .file(file.getOriginalFilename())
+                .build();
+
+        List<ItemImpactRest> objects = new ArrayList<>();
+
+        int line = 2;
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            var parser = createCsvParser().parse(reader);
+            validateHeaders(
+                    parser.getHeaderNames(),
+                    List.of("criterion", "lifecycleStep", "name", "category", "avgElectricityConsumption",
+                            "description", "location", "level", "source", "tier", "unit", "value", "version"),
+                    "ItemImpact"
+            );
+            for (CSVRecord csvRecord : parser) {
+
+                ItemImpactRest item = referentialMapper.csvItemImpactToRest(csvRecord);
+
+                Optional<String> violations =
+                        ValidationUtils.getViolations(validator.validate(item));
+
+                if (violations.isEmpty()) {
+                    item.setOrganization(null);
+                    objects.add(item);
+                } else {
+                    report.getErrors().add(printLine(line, violations.get()));
+                }
+
+                line++;
+            }
+
+        } catch (IOException e) {
+            report.getErrors().add("Cannot read file: " + e.getMessage());
+            return ItemImpactParseResult.builder().report(report).build();
+        }
+
+        report.setImportedLineNumber((long) objects.size());
+
+        return ItemImpactParseResult.builder()
+                .data(objects)
+                .report(report).build();
+    }
+
+    private void validateHeaders(List<String> actual, List<String> expected, String type) {
+
+        if (actual.size() != expected.size()) {
+            throw new BadRequestException("csv",
+                    "Invalid headers for " + type + ". Expected: " + expected + ", but got: " + actual);
+        }
+
+        for (int i = 0; i < expected.size(); i++) {
+            if (!expected.get(i).equals(actual.get(i))) {
+                throw new BadRequestException("csv",
+                        "Invalid header at position " + (i + 1) +
+                                " for " + type +
+                                ". Expected: " + expected.get(i) +
+                                ", but got: " + actual.get(i));
+            }
+        }
+    }
+
     /**
      * Print the line as string
      *

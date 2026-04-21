@@ -62,4 +62,14 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
     @Modifying
     @Query("DELETE FROM #{#entityName} ii WHERE (?1 IS NULL) OR (?1 IS NOT NULL AND ii.organization = ?1)")
     void deleteByOrganization(final String organization);
+
+    List<ItemImpact> findByWorkspaceId(Long workspaceId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    void deleteByWorkspaceId(Long workspaceId);
+
+    List<ItemImpact> findByWorkspaceIdOrWorkspaceIdIsNull(Long workspaceId);
+
+    Page<ItemImpact> findByWorkspaceId(Long workspaceId, Pageable pageable);
 }
