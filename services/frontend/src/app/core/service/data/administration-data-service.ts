@@ -19,7 +19,7 @@ import {
 
 const endpoint = Constants.ENDPOINTS.organizations;
 const endpointById = Constants.ENDPOINTS.organizationById;
-const endpointForWorkspace = Constants.ENDPOINTS.workspaces;
+const endpointForWorkspace = Constants.ENDPOINTS.adminWorkspaces;
 const endpointForUser = Constants.ENDPOINTS.users;
 
 @Injectable({

@@ -1240,6 +1240,10 @@
             "imported-lines": "Imported lines",
             "validation-errors": "Validation errors",
             "validation-errors-title": "Error details"
+        },
+        "workspace-reference": {
+            "data-model-text": "If necessary, this file can assist you in filling in your reference data.",
+            "loading-result": "Loading result"
         }
     },
     "error-graph": {

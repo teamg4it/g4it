@@ -11,6 +11,7 @@ import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 
 const endpoint = Constants.ENDPOINTS.referential;
+const endpointWs = Constants.ENDPOINTS.workspaces;
 
 export interface CsvImportEndpoint {
     name: string;
@@ -46,24 +47,28 @@ export class WorkspaceReferenceDataService {
         return this.csvEndpoints;
     }
 
-    workspaceUploadCsvFile(endpointName: string, file: File): Observable<any> {
-        const endpoint = this.csvEndpoints.find((ep) => ep.name === endpointName);
-        if (!endpoint) {
+    workspaceUploadCsvFile(
+        endpointName: string,
+        file: File,
+        workspaceId: number,
+    ): Observable<any> {
+        const endpointType = this.csvEndpoints.find((ep) => ep.name === endpointName);
+        if (!endpointType) {
             throw new Error(`Endpoint ${endpointName} not found`);
         }
 
         const formData = new FormData();
         formData.append("file", file);
 
-        return this.http.post(endpoint.url, formData);
+        return this.http.post(
+            `${endpointWs}/${workspaceId}/${endpointType.url}`,
+            formData,
+        );
     }
 
-    workspaceDownloadZipFile(endpointName: string): Observable<Blob> {
-        const endpoint = this.csvEndpoints.find((ep) => ep.name === endpointName);
-        if (!endpoint) {
-            throw new Error(`Endpoint ${endpointName} not found`);
-        }
-
-        return this.http.get(endpoint.url, { responseType: "blob" });
+    workspaceDownloadZipFile(workspaceId: number): Observable<Blob> {
+        return this.http.get(`${endpointWs}/${workspaceId}/${endpoint}/csv`, {
+            responseType: "blob",
+        });
     }
 }

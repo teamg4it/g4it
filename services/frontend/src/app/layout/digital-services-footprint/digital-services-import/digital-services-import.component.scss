@@ -59,38 +59,6 @@
         color: var(--tints-black-100);
     }
 }
-/*  new */
-.status-tag {
-    border-radius: 4px;
-    display: inline;
-    padding: 8px;
-    justify-content: center;
-    align-items: center;
-}
-
-.green-tag {
-    color: var(--light-green-color);
-    border: 1px solid var(--light-green-color);
-    background: rgba(0, 135, 0, 0.03);
-}
-
-.red-tag {
-    color: #cb2525;
-    border: 1px solid #cb2525;
-    background: rgba(224, 47, 47, 0.06);
-}
-
-.yellow-tag {
-    color: #eebb16;
-    border: 1px solid #eebb16;
-    background: rgba(0, 135, 0, 0.03);
-}
-
-.orange-tag {
-    color: var(--warning-color);
-    border: 1px solid var(--warning-color);
-    background: rgba(232, 143, 22, 0.06);
-}
 
 .bg-light-grey-color {
     background: var(--light-grey-color);

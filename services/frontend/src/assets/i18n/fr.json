@@ -1236,6 +1236,10 @@
             "imported-lines": "Lignes importées",
             "validation-errors": "Erreurs de validation",
             "validation-errors-title": "Détails des erreurs"
+        },
+        "workspace-reference": {
+            "data-model-text": "Si nécessaire, ce fichier peut vous aider à renseigner vos données de référence.",
+            "loading-result": "Chargement résultat"
         }
     },
     "error-graph": {

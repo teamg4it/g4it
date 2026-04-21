@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
@@ -9,11 +10,17 @@ import { FileUploadModule } from "primeng/fileupload";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
+import {
+    FileDescription,
+    TemplateFileDescription,
+} from "src/app/core/interfaces/file-system.interfaces";
 import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { CsvImportEndpoint } from "src/app/core/service/data/api-route-referential.service";
+import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
+import { SharedModule } from "src/app/core/shared/shared.module";
 import { Constants } from "src/constants";
 
 @Component({
@@ -28,6 +35,7 @@ import { Constants } from "src/constants";
         DropdownModule,
         FormsModule,
         ScrollPanelModule,
+        SharedModule,
     ],
     templateUrl: "./update-workspace-reference.component.html",
 })
@@ -39,6 +47,8 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     );
     private readonly translate = inject(TranslateService);
     private readonly messageService = inject(MessageService);
+    protected readonly templateFileService = inject(TemplateFileService);
+    private readonly destroyRef = inject(DestroyRef);
     workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
     workspacelist: WorkspaceWithOrganization[] = [];
     selectedEndpoint: CsvImportEndpoint | null = null;
@@ -46,39 +56,45 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     fileUploadText: string = this.translate.instant("common.choose-file");
     maxFileSize = 100 * 1024 * 1024; // 100MB
     file: any = null;
+    dataModel: TemplateFileDescription | undefined;
+    loadingResults: any[] = [];
 
     ngOnInit() {
         this.csvEndpoints = this.workspaceReferenceDataService.getWorkspaceCsvEndpoints();
-        this.administrationService.getUsers().subscribe((res) => {
-            const organizationsDetails: any = res;
+        this.getTemplates();
+        this.administrationService
+            .getUsers()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((res) => {
+                const organizationsDetails: any = res;
 
-            const list: WorkspaceWithOrganization[] = [];
-            for (const organization of organizationsDetails) {
-                for (const workspace of organization.workspaces) {
-                    const roles = this.userService.getRoles(organization, workspace);
-                    if (
-                        workspace.status === Constants.WORKSPACE_STATUSES.ACTIVE &&
-                        (roles.includes(Role.OrganizationAdmin) ||
-                            roles.includes(Role.WorkspaceAdmin))
-                    ) {
-                        list.push({
-                            organizationName: organization.name,
-                            organizationId: organization.id,
-                            workspaceName: workspace.name,
-                            workspaceId: workspace.id,
-                            status: workspace.status,
-                            dataRetentionDays: workspace.dataRetentionDays!,
-                            displayLabel: `${workspace.name} - (${organization.name})`,
-                            criteriaDs: workspace.criteriaDs!,
-                            criteriaIs: workspace.criteriaIs!,
-                            authorizedDomains: organization.authorizedDomains,
-                        });
+                const list: WorkspaceWithOrganization[] = [];
+                for (const organization of organizationsDetails) {
+                    for (const workspace of organization.workspaces) {
+                        const roles = this.userService.getRoles(organization, workspace);
+                        if (
+                            workspace.status === Constants.WORKSPACE_STATUSES.ACTIVE &&
+                            (roles.includes(Role.OrganizationAdmin) ||
+                                roles.includes(Role.WorkspaceAdmin))
+                        ) {
+                            list.push({
+                                organizationName: organization.name,
+                                organizationId: organization.id,
+                                workspaceName: workspace.name,
+                                workspaceId: workspace.id,
+                                status: workspace.status,
+                                dataRetentionDays: workspace.dataRetentionDays!,
+                                displayLabel: `${workspace.name} - (${organization.name})`,
+                                criteriaDs: workspace.criteriaDs!,
+                                criteriaIs: workspace.criteriaIs!,
+                                authorizedDomains: organization.authorizedDomains,
+                            });
+                        }
                     }
                 }
-            }
 
-            this.workspacelist = list;
-        });
+                this.workspacelist = list;
+            });
     }
 
     onSelect(event: any) {
@@ -115,5 +131,80 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
 
     onDeleteButton() {
         this.file = null;
+    }
+
+    getTemplates() {
+        this.templateFileService
+            .getTemplateFiles()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((templateFiles: FileDescription[]) => {
+                const transformedTemplateFiles =
+                    this.templateFileService.transformTemplateFiles(templateFiles, true);
+                transformedTemplateFiles[0].displayFileName = this.translate.instant(
+                    "digital-services-import.templates.data-model",
+                );
+                this.dataModel = transformedTemplateFiles.find((file) =>
+                    file.name?.toLowerCase()?.includes("datamodel"),
+                );
+                if (this.dataModel?.displayFileName) {
+                    this.dataModel.displayFileName = this.translate.instant(
+                        "digital-services-import.templates.data-model",
+                    );
+                }
+            });
+    }
+
+    downloadTemplateFile(selectedFileName: string) {
+        this.templateFileService.getdownloadTemplateFile(selectedFileName);
+    }
+
+    startUpload() {
+        this.loadingResults.push({
+            status: "IN_PROGRESS",
+            creationDate: new Date(),
+        });
+        this.workspaceReferenceDataService
+            .workspaceUploadCsvFile(
+                this.selectedEndpoint?.name!,
+                this.file,
+                this.workspace.workspaceId,
+            )
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (response) => {
+                    this.loadingResults = [];
+                    if (response?.errors?.length > 0) {
+                        this.loadingResults.push({
+                            status: "FAILED",
+                            creationDate: new Date(),
+                            cssClass: " red-tag status-tag",
+                            tooltip: this.translate.instant("common.failed"),
+                        });
+                    } else {
+                        this.loadingResults.push({
+                            status: "COMPLETED",
+                            creationDate: new Date(),
+                            cssClass: "green-tag status-tag",
+                            tooltip: this.translate.instant("common.completed"),
+                        });
+                    }
+                },
+                error: (error) => {
+                    this.loadingResults = [];
+                    this.loadingResults.push({
+                        status: "FAILED",
+                        creationDate: new Date(),
+                        cssClass: "red-tag status-tag",
+                        tooltip: this.translate.instant("common.failed"),
+                    });
+                },
+            });
+    }
+
+    downloadWorkspaceReferential() {
+        this.workspaceReferenceDataService
+            .workspaceDownloadZipFile(this.workspace.workspaceId)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
     }
 }
