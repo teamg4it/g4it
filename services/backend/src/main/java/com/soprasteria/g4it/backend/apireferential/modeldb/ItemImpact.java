@@ -109,9 +109,12 @@ public class ItemImpact implements Serializable {
 
     private Boolean isHidden;
 
+    @Column(name = "workspace_id")
+    private Long workspaceId;
+
     public static String[] getCsvHeaders() {
         return new String[]{"criterion", "lifecycleStep", "name", "category", "avgElectricityConsumption", "description",
-                "location", "level", "source", "tier", "unit", "value", "subscriber", "version"};
+                "location", "level", "source", "tier", "unit", "value", "version"};
     }
 
     public Object[] toCsvRecord() {

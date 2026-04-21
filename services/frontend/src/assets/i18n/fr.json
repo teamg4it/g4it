@@ -1148,7 +1148,10 @@
         "manage-users": "Gérer les utilisateurs",
         "manage-workspaces": "Gérer les espaces de travail",
         "super-admin-title": "Super Admin",
-        "update-referential": "Mettre à jour le référentiel",
+        "update-platform-referential": "Mettre à jour le référentiel de la plateforme",
+        "update-workspace-referential": "Mettre à jour le référentiel de l'espace de travail",
+        "download-workspace-referential": "Télécharger le référentiel de l'espace de travail",
+        "update-reference-paragraph": "La mise à jour des données de référence permet de remplacer les valeurs par défaut des modèles physiques existants ou d'en charger de nouveaux.",
         "organization-placeholder": "Choisissez l'organisation",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
@@ -1221,6 +1224,7 @@
             "description": "Importez un fichier CSV pour alimenter les données de référentiel",
             "select-endpoint": "Sélectionner le référentiel cible",
             "select-endpoint-placeholder": "Choisissez le référentiel pour vos données CSV",
+            "workspace-endpoint-placeholder": "Choisissez le tableau de données de référentiel à mettre à jour",
             "supported-formats": "Formats supportés : .csv",
             "max-file-size": "Taille maximale : 100MB",
             "upload-button": "Télécharger le fichier",
@@ -1232,6 +1236,10 @@
             "imported-lines": "Lignes importées",
             "validation-errors": "Erreurs de validation",
             "validation-errors-title": "Détails des erreurs"
+        },
+        "workspace-reference": {
+            "data-model-text": "Si nécessaire, ce fichier peut vous aider à renseigner vos données de référence.",
+            "loading-result": "Chargement résultat"
         }
     },
     "error-graph": {

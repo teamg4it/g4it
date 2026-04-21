@@ -1151,7 +1151,10 @@
         "manage-users": "Manage users",
         "manage-workspaces": "Manage workspaces",
         "super-admin-title": "Super Admin",
-        "update-referential": "Update reference data",
+        "update-platform-referential": "Update platform reference data",
+        "update-workspace-referential": "Update workspace reference data",
+        "download-workspace-referential": "Download workspace reference data",
+        "update-reference-paragraph": "Updating the reference data allows you to replace default values ​​for existing physical models or load new ones.",
         "organization-placeholder": "Choose organization",
         "accessibility": {
             "placeholder": "Subscriber selection, {{name}} currently selected",
@@ -1225,6 +1228,7 @@
             "description": "Import a CSV file to feed reference data",
             "select-endpoint": "Select target reference data",
             "select-endpoint-placeholder": "Choose the reference data for your CSV data",
+            "workspace-endpoint-placeholder": "Choose the reference data table to update",
             "supported-formats": "Supported formats: .csv",
             "max-file-size": "Maximum size: 100MB",
             "upload-button": "Upload file",
@@ -1236,6 +1240,10 @@
             "imported-lines": "Imported lines",
             "validation-errors": "Validation errors",
             "validation-errors-title": "Error details"
+        },
+        "workspace-reference": {
+            "data-model-text": "If necessary, this file can assist you in filling in your reference data.",
+            "loading-result": "Loading result"
         }
     },
     "error-graph": {

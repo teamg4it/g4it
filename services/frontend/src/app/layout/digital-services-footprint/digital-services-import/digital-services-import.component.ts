@@ -176,6 +176,7 @@ export class DigitalServicesImportComponent implements OnInit, OnDestroy {
                         Constants.FILE_TYPES.indexOf(b.csvFileType ?? "")
                     );
                 });
+                console.log(this.templateFilesDescription);
                 this.dataModel = this.templateFilesDescription.find((file) =>
                     file.name?.toLowerCase()?.includes("datamodel"),
                 );
