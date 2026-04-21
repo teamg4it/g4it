@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 
 const endpoint = Constants.ENDPOINTS.referential;
-const endpointWs = Constants.ENDPOINTS.workspaces;
+const endpointWs = Constants.ENDPOINTS.adminWorkspaces;
 
 export interface CsvImportEndpoint {
     name: string;

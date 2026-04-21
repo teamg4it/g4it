@@ -79,7 +79,6 @@ export abstract class Constants {
         businessHours: "business-hours",
         templateFiles: "template-files",
         workspace: "workspace",
-        workspaces: "workspaces",
         downloadReject: "download-reject",
         task: "task",
         sharedDs: "shared",
