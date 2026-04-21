@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.function.Function;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 @Slf4j
@@ -45,51 +45,50 @@ public class WorkspaceReferentialExportService {
         Files.createDirectories(Path.of(localWorkingFolder, REFERENTIAL));
     }
 
+
+
     /**
-     * Export workspace referential to CSV
+     * Export workspace referential zip
      */
-    public InputStream exportReferentialToCSV(Long workspaceId, String type) throws IOException {
+    public InputStream exportReferentialZip(Long workspaceId) throws IOException {
 
         if (workspaceId == null) {
             throw new IllegalArgumentException("workspaceId cannot be null");
         }
-        if (!List.of("itemType", "itemImpact", "matchingItem").contains(type)) {
-            throw new BadRequestException("type", "Unsupported type");
-        }
-        return switch (type) {
 
-            case "itemType" -> exportPaginated(
-                    workspaceId,
-                    type,
+        log.info("Exporting ZIP for workspace {}", workspaceId);
+        long start = System.currentTimeMillis();
+
+        Path zipPath = Files.createTempFile("workspace_referential_", ".zip");
+        zipPath.toFile().deleteOnExit();
+        try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipPath))) {
+            zos.putNextEntry(new ZipEntry("workspace-referential/"));
+            zos.closeEntry();
+
+            addCsvToZip(zos, workspaceId, "itemType",
                     ItemType.getCsvHeaders(),
                     pageable -> itemTypeRepository.findByWorkspaceId(workspaceId, pageable),
-                    ItemType::toCsvRecord
-            );
+                    ItemType::toCsvRecord);
 
-            case "itemImpact" -> exportPaginated(
-                    workspaceId,
-                    type,
+            addCsvToZip(zos, workspaceId, "itemImpact",
                     ItemImpact.getCsvHeaders(),
                     pageable -> itemImpactRepository.findByWorkspaceId(workspaceId, pageable),
-                    ItemImpact::toCsvRecord
-            );
+                    ItemImpact::toCsvRecord);
 
-            case "matchingItem" -> exportPaginated(
-                    workspaceId,
-                    type,
+            addCsvToZip(zos, workspaceId, "matchingItem",
                     MatchingItem.getCsvHeaders(),
                     pageable -> matchingItemRepository.findByWorkspaceId(workspaceId, pageable),
-                    MatchingItem::toCsvRecord
-            );
+                    MatchingItem::toCsvRecord);
+        }
 
-            default -> throw new BadRequestException(
-                    "type",
-                    String.format("type '%s' not supported for workspace export", type)
-            );
-        };
+        log.info("ZIP export completed for workspace {} in {} ms",
+                workspaceId,
+                System.currentTimeMillis() - start);
+        return Files.newInputStream(zipPath);
     }
 
-    private <T> InputStream exportPaginated(
+    private <T> void addCsvToZip(
+            ZipOutputStream zos,
             Long workspaceId,
             String type,
             String[] headers,
@@ -97,76 +96,69 @@ public class WorkspaceReferentialExportService {
             Function<T, Object[]> mapper
     ) throws IOException {
 
-        log.info("Exporting workspace {} type {}", workspaceId, type);
-
-        long totalCount = 0;
-
         CSVFormat csvFormat = CSVFormat.Builder.create()
                 .setHeader(headers)
                 .setDelimiter(CsvUtils.DELIMITER)
                 .build();
 
-        Path tempFile = Files.createTempFile("export_", ".csv");
+        long count = 0;
+        int pageNumber = 0;
 
-        boolean hasData = false;
+        Pageable firstPage = PageRequest.of(0, pageSize, Sort.by("id"));
+        Page<T> page = pageFetcher.apply(firstPage);
 
-        try {
-            try (BufferedWriter writer = Files.newBufferedWriter(tempFile);
-                 CSVPrinter printer = new CSVPrinter(writer, csvFormat)) {
+        boolean hasData = !page.isEmpty();
 
-                int pageNumber = 0;
-                Page<T> page;
+        String fileName = hasData
+                ? type + ".csv"
+                : type + "_template.csv";
 
-                do {
-                    Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id"));
+        zos.putNextEntry(new ZipEntry("workspace-referential/" + fileName));
 
-                    page = pageFetcher.apply(pageable);
-
-                    if (!page.isEmpty()) {
-                        hasData = true;
-                    }
-
-                    for (T item : page.getContent()) {
-                        if (item != null) {
-                            Object[] record = mapper.apply(item);
-                            if (record != null) {
-                                printer.printRecord(record);
+        try (CSVPrinter printer = new CSVPrinter(
+                new OutputStreamWriter(
+                        new FilterOutputStream(zos) {
+                            @Override
+                            public void close() throws IOException {
+                                // prevent closing underlying ZIP stream
                             }
+                        },
+                        java.nio.charset.StandardCharsets.UTF_8
+                ),
+                csvFormat)) {
+
+            for (T item : page.getContent()) {
+                if (item != null) {
+                    Object[] record = mapper.apply(item);
+                    if (record != null) {
+                        printer.printRecord(record);
+                    }
+                }
+            }
+
+            count += page.getNumberOfElements();
+            pageNumber = 1;
+
+            while (page.hasNext()) {
+                Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id"));
+                page = pageFetcher.apply(pageable);
+
+                for (T item : page.getContent()) {
+                    if (item != null) {
+                        Object[] record = mapper.apply(item);
+                        if (record != null) {
+                            printer.printRecord(record);
                         }
                     }
+                }
 
-                    totalCount += page.getNumberOfElements();
-                    pageNumber++;
-
-                } while (page.hasNext());
-
-                printer.flush();
+                count += page.getNumberOfElements();
+                pageNumber++;
             }
 
-            String fileName = hasData
-                    ? type + ".csv"
-                    : type + "_template.csv";
-
-            Path finalPath = Path.of(localWorkingFolder)
-                    .resolve(REFERENTIAL)
-                    .resolve(fileName);
-
-            Files.createDirectories(finalPath.getParent());
-
-            Files.move(tempFile, finalPath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-
-            log.info("Exported {} rows for workspace {} type {}", totalCount, workspaceId, type);
-            return new FileInputStream(finalPath.toFile());
-
-        } catch (Exception e) {
-            log.error("Export failed for workspace {} type {}", workspaceId, type, e);
-            try {
-                Files.deleteIfExists(tempFile);
-            } catch (IOException ex) {
-                log.warn("Failed to delete temp file {}", tempFile, ex);
-            }
-
-            throw e;
+            printer.flush();
         }
+        zos.closeEntry();
+        log.info("Added {} ({} rows) to ZIP", fileName, count);
     }
 }

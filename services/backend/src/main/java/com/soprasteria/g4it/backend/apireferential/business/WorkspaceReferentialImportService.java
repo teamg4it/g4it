@@ -36,10 +36,6 @@ public class WorkspaceReferentialImportService {
         }
 
         switch (type) {
-
-            // ===============================
-            // ITEM TYPE
-            // ===============================
             case "itemType": {
 
                 ItemTypeParseResult result = referentialImportService.parseItemTypeCsv(file);
@@ -58,10 +54,6 @@ public class WorkspaceReferentialImportService {
 
                 return result.getReport();
             }
-
-            // ===============================
-            // MATCHING ITEM
-            // ===============================
             case "matchingItem": {
 
                 MatchingItemParseResult result = referentialImportService.parseMatchingItemCsv(file);
@@ -81,10 +73,6 @@ public class WorkspaceReferentialImportService {
 
                 return result.getReport();
             }
-
-            // ===============================
-            // ITEM IMPACT
-            // ===============================
             case "itemImpact": {
 
                 ItemImpactParseResult result = referentialImportService.parseItemImpactCsv(file);

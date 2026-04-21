@@ -36,27 +36,30 @@ public class WorkspaceReferentialImportExportController implements WorkspaceRefe
     /**
      * {@inheritDoc}
      */
+
    @Override
-    public ResponseEntity<Resource> exportWorkspaceReferentialCSV(Long workspaceId, String type) {
+   public ResponseEntity<Resource> exportWorkspaceReferentialZip(Long workspaceId) {
+
        if (workspaceId == null) {
            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "workspaceId is required");
        }
+
        try {
-            InputStream inputStream =
-                    workspaceReferentialExportService.exportReferentialToCSV(workspaceId, type);
+           InputStream zipStream =
+                   workspaceReferentialExportService.exportReferentialZip(workspaceId);
 
            return ResponseEntity.ok()
-                   .header("Content-Disposition", "attachment; filename=" + type + ".csv")
-                   .header("Content-Type", "text/csv")
-                   .body(new InputStreamResource(inputStream));
+                   .header("Content-Disposition", "attachment; filename=workspace-referential.zip")
+                   .header("Content-Type", "application/zip")
+                   .body(new InputStreamResource(zipStream));
 
-        } catch (IOException e) {
+       } catch (Exception e) {
            throw new ResponseStatusException(
                    HttpStatus.INTERNAL_SERVER_ERROR,
-                   "Error occurred while downloading file: " + e.getMessage()
+                   "Error occurred while downloading ZIP: " + e.getMessage()
            );
        }
-    }
+   }
 
     /**
      * {@inheritDoc}

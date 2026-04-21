@@ -336,34 +336,6 @@ paths:
           type: string
           enum: [itemImpact, itemType, matchingItem]
 
-    get:
-      tags:
-        - workspace referential import export
-      summary: Export workspace referential as CSV
-      description: |
-        Export workspace-specific referential data.
-        If no data exists, a CSV template (headers only) is returned.
-      operationId: exportWorkspaceReferentialCSV
-      x-custom-role: "hasRole('ROLE_SUPER_ADMINISTRATOR') or hasRole('ROLE_WORKSPACE_ADMINISTRATOR')"
-      responses:
-        "200":
-          description: CSV file
-          content:
-            application/csv:
-              schema:
-                type: string
-                format: binary
-        "400":
-          $ref: "#/components/responses/BadRequestError"
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "403":
-          description: Forbidden - user is not workspace admin
-        "404":
-          $ref: "#/components/responses/NotFoundError"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
     post:
       tags:
         - workspace referential import export
@@ -408,6 +380,45 @@ paths:
           $ref: "#/components/responses/NotFoundError"
         "500":
           $ref: "#/components/responses/InternalServerError"
+
+  /workspaces/{workspaceId}/referential/csv:
+    parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        description: Workspace identifier
+        schema:
+          type: integer
+          format: int64
+
+    get:
+      tags:
+        - workspace referential import export
+      summary: Export workspace referential as CSV
+      description: |
+        Export workspace-specific referential data.
+        If no data exists, a CSV template (headers only) is returned.
+      operationId: exportWorkspaceReferentialZip
+      x-custom-role: "hasRole('ROLE_SUPER_ADMINISTRATOR') or hasRole('ROLE_WORKSPACE_ADMINISTRATOR')"
+      responses:
+        "200":
+          description: CSV file
+          content:
+            application/csv:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          description: Forbidden - user is not workspace admin
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 
 components:
   schemas:
