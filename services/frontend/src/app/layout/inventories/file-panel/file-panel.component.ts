@@ -299,6 +299,8 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
         this.templateFileService.getdownloadTemplateFile(selectedFileName);
     }
 
+    downloadWorkspaceReferenceData() {}
+
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
