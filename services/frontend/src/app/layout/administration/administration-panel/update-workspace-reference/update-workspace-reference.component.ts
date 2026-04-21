@@ -1,12 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { saveAs } from "file-saver";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
-import { FileUploadModule } from "primeng/fileupload";
+import { FileUpload, FileUploadModule } from "primeng/fileupload";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
@@ -49,6 +50,7 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     private readonly messageService = inject(MessageService);
     protected readonly templateFileService = inject(TemplateFileService);
     private readonly destroyRef = inject(DestroyRef);
+    @ViewChild("fileUpload") fileUpload!: FileUpload;
     workspace: WorkspaceWithOrganization = {} as WorkspaceWithOrganization;
     workspacelist: WorkspaceWithOrganization[] = [];
     selectedEndpoint: CsvImportEndpoint | null = null;
@@ -131,6 +133,7 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
 
     onDeleteButton() {
         this.file = null;
+        this.fileUpload.clear();
     }
 
     getTemplates() {
@@ -205,6 +208,8 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
         this.workspaceReferenceDataService
             .workspaceDownloadZipFile(this.workspace.workspaceId)
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe();
+            .subscribe((blob) =>
+                saveAs(blob, `workspace-referential-${this.workspace.workspaceName}.zip`),
+            );
     }
 }
