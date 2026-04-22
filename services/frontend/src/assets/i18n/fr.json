@@ -189,7 +189,13 @@
         "renew-button": "Prolonger",
         "renew-button-extended": "Prolongée",
         "renew-service-success-message": "prolongée avec succès",
-        "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation"
+        "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation",
+        "source": {
+            "title": "Source",
+            "engine-title": "Moteurs de calcul utilisés",
+            "reference-title": "Références utilisées",
+            "engine": "Les calculs des équipements physiques sont effectués à l'aide de <strong>NumEcoEval</strong>. </br> Les calculs des équipements virtuels (non basés sur le cloud) sont également gérés par <strong>NumEcoEval</strong>. </br> Pour les équipements virtuels basés sur le cloud, les calculs sont effectués à l'aide de <strong>Boavizta</strong>."
+        }
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",

@@ -190,7 +190,13 @@
         "renew-button": "Extend",
         "renew-button-extended": "Extended",
         "renew-service-success-message": "Extended Successfully",
-        "renew-service-not-renewed-message": "Could not extend the retention period"
+        "renew-service-not-renewed-message": "Could not extend the retention period",
+        "source": {
+            "title": "Source",
+            "engine-title": "Calculation Engines Used",
+            "reference-title": "References used",
+            "engine": "Physical equipment calculations are performed using <strong>NumEcoEval</strong>. </br> Virtual equipment calculations (non-cloud-based) are also handled by <strong>NumEcoEval</strong>. </br> For cloud-based virtual equipment, calculations are performed using <strong>Boavizta</strong>."
+        }
     },
     "useful-information": {
         "computing-engines": "Computing engines",
