@@ -660,7 +660,7 @@
             "virtual-template-file": "Virtual equipment template file ({{type}}, {{size}} KB)",
             "application-template-file": "Application template file ({{type}}, {{size}} KB)",
             "all-template-files": "All template files ({{type}}, {{size}} KB)",
-            "data-model": "DataModel ({{type}}, {{size}} KB)",
+            "data-model": "Platform DataModel ({{type}}, {{size}} KB)",
             "starter-pack": "Starter pack",
             "workspace-settings": "Workspace specific settings (zip)"
         },

@@ -9,7 +9,9 @@ import {
     AfterViewInit,
     Component,
     ComponentRef,
+    DestroyRef,
     EventEmitter,
+    inject,
     Input,
     OnChanges,
     OnDestroy,
@@ -20,17 +22,20 @@ import {
     ViewChild,
     ViewContainerRef,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
+import saveAs from "file-saver";
 import { MessageService } from "primeng/api";
 import { RadioButton } from "primeng/radiobutton";
-import { delay, Subject, takeUntil } from "rxjs";
+import { delay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import {
     FileDescription,
     FileType,
     TemplateFileDescription,
 } from "src/app/core/interfaces/file-system.interfaces";
 import { CreateInventory, Inventory } from "src/app/core/interfaces/inventory.interfaces";
+import { UserService } from "src/app/core/service/business/user.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
@@ -42,6 +47,8 @@ import { SelectFileComponent } from "./select-file/select-file.component";
     templateUrl: "./file-panel.component.html",
 })
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+    private readonly userService = inject(UserService);
+    private readonly destroyRef = inject(DestroyRef);
     className: string = "default-calendar max-w-full";
 
     @ViewChild("uploaderContainer", { read: ViewContainerRef })
@@ -299,7 +306,20 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
         this.templateFileService.getdownloadTemplateFile(selectedFileName);
     }
 
-    downloadWorkspaceReferenceData() {}
+    async downloadWorkspaceReferenceData() {
+        this.userService.currentWorkspace$
+            .pipe(
+                switchMap((workSpace) =>
+                    this.inventoryService.downloadWorkspaceSettingsZip().pipe(
+                        tap((blob) => {
+                            saveAs(blob, `workspace-referential-${workSpace.id}.zip`);
+                        }),
+                    ),
+                ),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe();
+    }
 
     ngOnDestroy() {
         this.ngUnsubscribe.next();
