@@ -663,8 +663,9 @@
             "virtual-template-file": "Fichier de modèle d'équipement virtuel ({{type}}, {{size}} Ko )",
             "application-template-file": "Fichier de modèle d'application ({{type}}, {{size}} Ko )",
             "all-template-files": "Tous les fichiers modèles ({{type}}, {{size}} Ko )",
-            "data-model": "Modèle de données ({{type}}, {{size}} Ko )",
-            "starter-pack": "Kit de départ"
+            "data-model": "Modèle de données de la plateforme ({{type}}, {{size}} Ko )",
+            "starter-pack": "Kit de départ",
+            "workspace-settings": "Paramètres spécifiques à l'espace de travail (zip)"
         },
         "choose-criteria": "Choisir les critères pour l'inventaire {{inventoryName}}",
         "calendar": "Calendrier",
