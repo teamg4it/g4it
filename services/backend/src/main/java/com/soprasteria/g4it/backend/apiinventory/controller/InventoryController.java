@@ -112,4 +112,13 @@ public class InventoryController implements InventoryApiDelegate {
         return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.updateInventory(organization, workspace, inventoryUpdateRest, authService.getUser())), HttpStatus.OK);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<String>> getInventoriesSources(final String organization, final Long workspace, final Long inventoryId) {
+        return ResponseEntity.ok().body(this.inventoryService.getInventoriesSources(workspace, inventoryId));
+    }
+
+
 }
