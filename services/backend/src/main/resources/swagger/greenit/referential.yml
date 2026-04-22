@@ -318,7 +318,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /workspaces/{workspaceId}/referential/{type}/csv:
+  /administrator/workspaces/{workspaceId}/referential/{type}/csv:
     parameters:
       - name: workspaceId
         in: path
@@ -350,7 +350,7 @@ paths:
         - If file is empty → DELETE ALL workspace data
         - If validation errors exist → NO DATA is updated
       operationId: importWorkspaceReferentialCSV
-      x-custom-role: "hasRole('ROLE_SUPER_ADMINISTRATOR') or hasRole('ROLE_WORKSPACE_ADMINISTRATOR')"
+    #  x-custom-role: "hasRole('ROLE_SUPER_ADMINISTRATOR') or hasRole('ROLE_WORKSPACE_ADMINISTRATOR')"
       requestBody:
         required: true
         content:
@@ -381,7 +381,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /workspaces/{workspaceId}/referential/csv:
+  /administrator/workspaces/{workspaceId}/referential/csv:
     parameters:
       - name: workspaceId
         in: path
@@ -399,7 +399,7 @@ paths:
         Export workspace-specific referential data.
         If no data exists, a CSV template (headers only) is returned.
       operationId: exportWorkspaceReferentialZip
-      x-custom-role: "hasRole('ROLE_SUPER_ADMINISTRATOR') or hasRole('ROLE_WORKSPACE_ADMINISTRATOR')"
+      #x-custom-role: "hasRole('ROLE_SUPER_ADMINISTRATOR') or hasRole('ROLE_WORKSPACE_ADMINISTRATOR')"
       responses:
         "200":
           description: CSV file
