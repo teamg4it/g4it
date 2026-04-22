@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.utils.Constants;
+import com.soprasteria.g4it.backend.common.utils.ObjectUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RenewResponseRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.RenewRest;
@@ -53,16 +54,12 @@ public class RenewService {
     public RenewRest getRenewDetailsInventory(Long workspace, Long inventoryId) {
         Workspace workspaceEntity = workspaceRepository.findById(workspace).orElseThrow(() ->
                 new G4itRestException("400", String.format(ErrorConstants.WORKSPACE_NOT_FOUND, workspace)));
-        final LocalDateTime now = LocalDateTime.now();
         Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow(() ->
                 new G4itRestException("400", String.format(ErrorConstants.INVENTORY_NOT_FOUND, inventoryId)));
         final Integer retentionDay = Optional.ofNullable(workspaceEntity.getDataRetentionDay())
                 .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getDataRetentionDay())
                         .orElse(dataRetentiondDay));
-        long daysSinceLastUpdate = java.time.Duration.between(
-                inventory.getLastUpdateDate(), now
-        ).toDays();
-        String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+        String expirationDate = ObjectUtils.getExpiryDate(inventory.getLastUpdateDate(), retentionDay);
         return RenewRest.builder().serviceName(inventory.getName()).serviceId(String.valueOf(inventory.getId()))
                 .expiryDate(expirationDate).retentionDays(retentionDay).build();
     }
@@ -70,17 +67,13 @@ public class RenewService {
     public RenewRest getRenewDetailsDigitalService(Long workspace, String digitalServiceVersionUid) {
         Workspace workspaceEntity = workspaceRepository.findById(workspace).orElseThrow(() ->
                 new G4itRestException("400", String.format(ErrorConstants.WORKSPACE_NOT_FOUND, workspace)));
-        final LocalDateTime now = LocalDateTime.now();
         final Integer retentionDay = Optional.ofNullable(workspaceEntity.getDataRetentionDay())
                 .orElse(Optional.ofNullable(workspaceEntity.getOrganization().getDataRetentionDay())
                         .orElse(dataRetentiondDay));
         Optional<DigitalServiceVersion> digitalServiceVersion = digitalServiceVersionRepository.findById(digitalServiceVersionUid);
         if(digitalServiceVersion.isPresent()) {
             DigitalService digitalService = digitalServiceVersion.get().getDigitalService();
-            long daysSinceLastUpdate = java.time.Duration.between(
-                    digitalService.getLastUpdateDate(), now
-            ).toDays();
-            String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+            String expirationDate = ObjectUtils.getExpiryDate(digitalService.getLastUpdateDate(), retentionDay);
             return RenewRest.builder().serviceName(digitalService.getName()).serviceId(digitalService.getUid())
                     .expiryDate(expirationDate).retentionDays(retentionDay).build();
         }else{

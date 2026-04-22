@@ -26,6 +26,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
+import com.soprasteria.g4it.backend.common.utils.ObjectUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -80,6 +82,8 @@ public class DigitalServiceService {
     private String localWorkingPath;
     @Autowired
     private DigitalServiceVersionRepository digitalServiceVersionRepository;
+    @Value("${g4it.data.retention.day}")
+    private Integer dataRetentiondDay;
 
     /**
      * Get the digital service list linked to a user.
@@ -108,10 +112,13 @@ public class DigitalServiceService {
                         dsv -> dsv.getDigitalService().getUid(),
                         DigitalServiceVersion::getUid
                 ));
-
+        final Integer retentionDay = Optional.ofNullable(linkedWorkspace.getDataRetentionDay())
+                .orElse(Optional.ofNullable(linkedWorkspace.getOrganization().getDataRetentionDay())
+                        .orElse(dataRetentiondDay));
         return filterDigitalService.stream().map(ds -> {
             DigitalServiceBO bo = digitalServiceMapper.toBusinessObject(ds);
             bo.setActiveDsvUid(activeDsvMap.get(ds.getUid())); // add the dsv uid
+            bo.setExpiryDate(ObjectUtils.getExpiryDate(ds.getLastUpdateDate(), retentionDay));
             return bo;
         }).toList();
     }

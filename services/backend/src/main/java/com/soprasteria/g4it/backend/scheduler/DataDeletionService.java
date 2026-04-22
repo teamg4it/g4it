@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.utils.AzureEmailService;
+import com.soprasteria.g4it.backend.common.utils.ObjectUtils;
 import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,7 +133,7 @@ public class DataDeletionService {
                             inventory.getLastUpdateDate(), now
                     ).toDays();
                     if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
-                        String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+                        String expirationDate = ObjectUtils.getExpiryDate(inventory.getLastUpdateDate(), retentionDay);
                         String emailLink = inventoryLink.replace("{organization}", organization)
                                 .replace("{workspaceId}", String.valueOf(workspaceId))
                                 .replace("{inventoryId}", String.valueOf(inventory.getId()));
@@ -159,7 +160,7 @@ public class DataDeletionService {
                             digitalServiceBO.getLastUpdateDate(), now
                     ).toDays();
                     if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
-                        String expirationDate = now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().toString();
+                        String expirationDate = ObjectUtils.getExpiryDate(digitalServiceBO.getLastUpdateDate(), retentionDay);
                         List<DigitalServiceVersion> digitalServiceVersionList= digitalServiceVersionRepository.findByDigitalServiceUid(digitalServiceBO.getUid());
                         String emailLink = digitalServiceLink.replace("{organization}", organization)
                                 .replace("{workspaceId}", String.valueOf(workspaceId))
