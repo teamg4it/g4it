@@ -10,8 +10,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 
-const endpoint = Constants.ENDPOINTS.referential;
-const endpointWs = Constants.ENDPOINTS.adminWorkspaces;
+const endpoint = Constants.ENDPOINTS.referentialWorkspace;
 
 export interface CsvImportEndpoint {
     name: string;
@@ -60,14 +59,11 @@ export class WorkspaceReferenceDataService {
         const formData = new FormData();
         formData.append("file", file);
 
-        return this.http.post(
-            `${endpointWs}/${workspaceId}/${endpointType.url}`,
-            formData,
-        );
+        return this.http.post(`${endpointType.url}`, formData);
     }
 
     workspaceDownloadZipFile(workspaceId: number): Observable<Blob> {
-        return this.http.get(`${endpointWs}/${workspaceId}/${endpoint}/csv`, {
+        return this.http.get(`${endpoint}/csv`, {
             responseType: "blob",
         });
     }
