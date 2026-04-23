@@ -17,7 +17,6 @@ export const environment = {
         "template-files",
         "download-reject",
         "task",
-        "referential-workspace",
     ],
     keycloak: {
         issuer: "${KEYCLOAK_URL}",

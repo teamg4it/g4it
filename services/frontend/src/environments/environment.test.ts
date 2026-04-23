@@ -19,7 +19,6 @@ export const environment = {
         "template-files",
         "download-reject",
         "task",
-        "referential-workspace",
     ],
     apiBaseUrl: "",
     frontEndUrl: "http://localhost:4200",

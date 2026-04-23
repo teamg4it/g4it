@@ -20,7 +20,6 @@ export const environment = {
         "template-files",
         "download-reject",
         "task",
-        "referential-workspace",
     ],
     apiBaseUrl: "http://localhost:8080",
     keycloak: {

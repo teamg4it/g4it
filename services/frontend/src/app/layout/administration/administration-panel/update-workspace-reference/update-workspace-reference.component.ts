@@ -168,9 +168,10 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
         });
         this.workspaceReferenceDataService
             .workspaceUploadCsvFile(
-                this.selectedEndpoint?.name!,
+                this.selectedEndpoint?.name ?? "",
                 this.file,
                 this.workspace.workspaceId,
+                this.workspace.organizationName,
             )
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
@@ -206,7 +207,10 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
 
     downloadWorkspaceReferential() {
         this.workspaceReferenceDataService
-            .workspaceDownloadZipFile(this.workspace.workspaceId)
+            .workspaceDownloadZipFile(
+                this.workspace.workspaceId,
+                this.workspace.organizationName,
+            )
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((blob) =>
                 saveAs(blob, `workspace-referential-${this.workspace.workspaceName}.zip`),

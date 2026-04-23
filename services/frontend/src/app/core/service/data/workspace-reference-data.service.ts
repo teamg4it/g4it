@@ -50,6 +50,7 @@ export class WorkspaceReferenceDataService {
         endpointName: string,
         file: File,
         workspaceId: number,
+        organizationName: string,
     ): Observable<any> {
         const endpointType = this.csvEndpoints.find((ep) => ep.name === endpointName);
         if (!endpointType) {
@@ -59,12 +60,21 @@ export class WorkspaceReferenceDataService {
         const formData = new FormData();
         formData.append("file", file);
 
-        return this.http.post(`${endpointType.url}`, formData);
+        return this.http.post(
+            `organizations/${organizationName}/workspaces/${workspaceId}/${endpointType.url}`,
+            formData,
+        );
     }
 
-    workspaceDownloadZipFile(workspaceId: number): Observable<Blob> {
-        return this.http.get(`${endpoint}/csv`, {
-            responseType: "blob",
-        });
+    workspaceDownloadZipFile(
+        workspaceId: number,
+        organizationName: string,
+    ): Observable<Blob> {
+        return this.http.get(
+            `organizations/${organizationName}/workspaces/${workspaceId}/${endpoint}/csv`,
+            {
+                responseType: "blob",
+            },
+        );
     }
 }
