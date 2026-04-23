@@ -80,8 +80,4 @@ public class Organization extends AbstractBaseEntity implements Serializable {
      */
     private boolean ecomindai;
 
-    /**
-     * Is traceShow is enabled or not for this Organization
-     */
-    private boolean showReferenceValue;
 }

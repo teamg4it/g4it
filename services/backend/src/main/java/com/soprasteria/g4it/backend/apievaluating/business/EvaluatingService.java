@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.apievaluating.business;
 
+import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceVersionService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceVersion;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
@@ -83,6 +84,9 @@ public class EvaluatingService {
     @Autowired
     AsyncEvaluatingService asyncEvaluatingService;
 
+    @Autowired
+    DigitalServiceVersionService digitalServiceVersionService;
+
     /**
      * Evaluating an inventory
      *
@@ -142,6 +146,8 @@ public class EvaluatingService {
                 LocalDateTime.now(),
                 "0%"
         );
+        inventory.setLastUpdateDate(LocalDateTime.now());
+        inventoryRepository.save(inventory);
 
         // run evaluation async task
         taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
@@ -217,6 +223,8 @@ public class EvaluatingService {
 
         digitalServiceVersion.setLastCalculationDate(LocalDateTime.now());
         digitalServiceVersionRepository.save(digitalServiceVersion);
+
+        digitalServiceVersionService.updateLastUpdateDate(digitalServiceVersionUid);
         // run evaluation task
         Long taskId = task.getId();
         asyncEvaluatingService.execute(

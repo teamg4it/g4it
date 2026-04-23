@@ -27,7 +27,6 @@ import { SharedModule } from "src/app/core/shared/shared.module";
 @Component({
     selector: "app-renew-service-popup",
     templateUrl: "./renew-service-popup.component.html",
-    styleUrl: "./renew-service-popup.component.scss",
     standalone: true,
     imports: [
         CommonModule,

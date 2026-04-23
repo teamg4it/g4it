@@ -1017,17 +1017,6 @@ databaseChangeLog:
       author: G4IT Dev Team
       changes:
         - addColumn:
-            tableName: g4it_subscriber
-            columns:
-              - column:
-                  name: show_reference_value
-                  type: boolean
-                  defaultValueBoolean: false
-                  constraints:
-                    nullable: true
-
-        # Add hidden column to ref_item_impact
-        - addColumn:
             tableName: ref_item_impact
             columns:
               - column:
@@ -1037,14 +1026,13 @@ databaseChangeLog:
                   constraints:
                     nullable: true
 
-        # Update rows where source is Base IMPACTS Version 2.01
         - update:
             tableName: ref_item_impact
             columns:
               - column:
                   name: is_hidden
                   valueBoolean: false
-            where: source = 'Base IMPACTS ®Version 2.01'
+            where: LOWER(source) LIKE '%base impacts%'
 
         # Create index on source column
         - createIndex:

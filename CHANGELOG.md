@@ -10,6 +10,7 @@
 - 1991 | EcoMindAI - Beta
 
 ### Minor Changes
+- 1989 | Update Reference data in Super Admin mode
 - 2070 | fix for set default host value settings in server
 - 2069 | Fix for unable to add a datacenter
 - 1940 | change the trace to drop the value of reference

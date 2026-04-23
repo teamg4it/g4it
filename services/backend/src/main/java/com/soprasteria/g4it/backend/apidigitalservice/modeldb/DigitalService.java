@@ -108,4 +108,9 @@ public class DigitalService {
     @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Task> tasks = new ArrayList<>();
 
+    @Builder.Default
+    @ToString.Exclude
+    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DigitalServiceVersion> digitalServiceVersions = new ArrayList<>();
+
 }
