@@ -94,6 +94,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     }
 
     private handleErrorPageNavigation(error: any) {
+        console.log(error);
         if (this.handledErrorStatus.includes(error.status)) {
             if (error.status === HttpStatusCode.InternalServerError) {
                 let errorKey = error.error.message || "unknown";
@@ -116,7 +117,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     summary: this.translate.instant(
                         `toast-errors.${"bad-request"}.title`,
                     ),
-                    detail: this.translate.instant(`toast-errors.${"bad-request"}.text`),
+                    detail:
+                        error?.error?.field === "csv"
+                            ? error?.error?.message
+                            : this.translate.instant(
+                                  `toast-errors.${"bad-request"}.text`,
+                              ),
                     sticky: true,
                 });
             } else {
