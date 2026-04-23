@@ -83,6 +83,10 @@ export abstract class Constants {
         task: "task",
         sharedDs: "shared",
         dsv: "dsv",
+<<<<<<< HEAD
+=======
+        evaluation: "/api/v1"
+>>>>>>> 42857b44 (fix :  change the format of uri so a standard user would have access to the recommendations)
     };
 
     static readonly ERRORS: any = {

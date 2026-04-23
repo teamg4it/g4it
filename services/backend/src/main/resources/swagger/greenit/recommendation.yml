@@ -1,0 +1,289 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Recommendations
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: "1.0.0"
+
+tags:
+  - name: recommendation
+    description: Endpoints for eco-design recommendations
+
+paths:
+
+  # ─────────────────────────────────────────────────────────────
+  # Instantiated recommendations for a digital service version
+  # ─────────────────────────────────────────────────────────────
+  /api/v1/organizations/{organization}/workspaces/{workspace}/evaluation/{digitalServiceVersionUid}/recommendations:
+    parameters:
+      - name: organization
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workspace
+        in: path
+        required: true
+        schema:
+            type: integer
+            format: int64
+
+      - $ref: '#/components/parameters/digitalServiceVersionUidPathParam'
+    get:
+      tags:
+        - recommendation
+      summary: Get prioritized recommendations for a digital service version
+      description: Calculates and returns the list of instantiated recommendations, sorted by priority, based on the current inputs of the digital service version.
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      operationId: getInstantiatedRecommendations
+      responses:
+        '200':
+          description: List of instantiated recommendations sorted by priority
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InstantiatedRecommendationRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  # ─────────────────────────────────────────────────────────────
+  # CRUD on recommendations for an organisation
+  # ─────────────────────────────────────────────────────────────
+  /api/v1/organizations/{organization}/workspaces/{workspace}/recommendations:
+    parameters:
+      - name: organization
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workspace
+        in: path
+        required: true
+        schema:
+            type: integer
+            format: int64
+    get:
+      tags:
+        - recommendation
+      summary: Get all recommendations for an organisation
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
+      operationId: getRecommendationsByOrganisation
+      responses:
+        '200':
+          description: List of recommendations for the organisation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecommendationDSRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - recommendation
+      summary: Create a new recommendation for an organisation
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: createRecommendation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecommendationDSRest"
+      responses:
+        '201':
+          description: Recommendation created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationDSRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/v1/evaluation/organisations/{organisationId}/recommendations/{recommendationId}:
+    parameters:
+      - $ref: '#/components/parameters/organisationIdPathParam'
+      - $ref: '#/components/parameters/recommendationIdPathParam'
+    put:
+      tags:
+        - recommendation
+      summary: Update a recommendation
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: updateRecommendation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecommendationDSRest"
+      responses:
+        '200':
+          description: Recommendation updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationDSRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - recommendation
+      summary: Delete a recommendation
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: deleteRecommendation
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  parameters:
+    digitalServiceVersionUidPathParam:
+      in: path
+      name: digitalServiceVersionUid
+      schema:
+        type: string
+      required: true
+      description: The digital service version uid.
+    organisationIdPathParam:
+      in: path
+      name: organisationId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The organisation id.
+    recommendationIdPathParam:
+      in: path
+      name: recommendationId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The recommendation id.
+
+  responses:
+    InternalServerError:
+      description: Internal Service error
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/RestError"
+    BadRequestError:
+      description: Bad Request error
+      content:
+        "application/json":
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/RestValidationError"
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    NotFoundError:
+      description: Object is not found
+
+  schemas:
+
+    RecommendationDSRest:
+      description: An eco-design recommendation (RGESN best practice)
+      type: object
+      required: [ title, category ]
+      properties:
+        idRecommendation:
+          type: integer
+          format: int64
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        category:
+          type: array
+          items:
+            type: string
+            enum: [ NETWORK, PRIVATE_INFRASTRUCTURE, PUBLIC_CLOUD, TERMINAL ]
+        affectedAttributes:
+          type: string
+          description: JSON describing which resource attributes are affected
+          example: "{}"
+        heuristicRange:
+          type: string
+          description: JSON describing the heuristic priority ranges
+          example: "{}"
+        baseImpact:
+          type: integer
+          description: Estimated base impact score of the recommendation
+        organisationId:
+          type: integer
+          format: int64
+        difficulty:
+          type: string
+          enum: [ EASY, MEDIUM, HARD ]
+          description: Difficulty level of implementing the recommendation
+
+    InstantiatedRecommendationRest:
+      description: A recommendation instantiated for a specific digital service version, with calculated priority
+      type: object
+      properties:
+        idInstantiatedRecommendation:
+          type: integer
+          format: int64
+          readOnly: true
+        idRecommendation:
+          type: integer
+          format: int64
+        digitalServiceVersionUid:
+          type: string
+        priority:
+          type: number
+          format: double
+          description: Calculated priority index between 0 and 1
+        specificAffectedAttributes:
+          type: string
+          description: JSON describing the specific resource instances affected in this version
+        recommendation:
+          $ref: "#/components/schemas/RecommendationDSRest"
+
+    RestError:
+      description: Error object
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+    RestValidationError:
+      description: Validation error object
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
