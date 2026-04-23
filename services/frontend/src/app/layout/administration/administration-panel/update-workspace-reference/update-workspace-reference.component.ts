@@ -224,7 +224,12 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
                 finalize(() => (this.downloadInProgress = false)),
             )
             .subscribe((blob) =>
-                saveAs(blob, `workspace-referential-${this.workspace.workspaceName}.zip`),
+                saveAs(
+                    blob,
+                    this.workspaceReferenceDataService.getZipFileName(
+                        this.workspace.workspaceName,
+                    ),
+                ),
             );
     }
 }

@@ -28,7 +28,7 @@ import { TranslateService } from "@ngx-translate/core";
 import saveAs from "file-saver";
 import { MessageService } from "primeng/api";
 import { RadioButton } from "primeng/radiobutton";
-import { delay, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { delay, forkJoin, Subject, switchMap, take, takeUntil, tap } from "rxjs";
 import {
     FileDescription,
     FileType,
@@ -39,6 +39,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
+import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
 import { Constants } from "src/constants";
 import { SelectFileComponent } from "./select-file/select-file.component";
 
@@ -49,6 +50,9 @@ import { SelectFileComponent } from "./select-file/select-file.component";
 export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
     private readonly userService = inject(UserService);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly workspaceReferenceDataService = inject(
+        WorkspaceReferenceDataService,
+    );
     className: string = "default-calendar max-w-full";
 
     @ViewChild("uploaderContainer", { read: ViewContainerRef })
@@ -307,14 +311,24 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     async downloadWorkspaceReferenceData() {
-        this.userService.currentWorkspace$
+        forkJoin([
+            this.userService.currentWorkspace$.pipe(take(1)),
+            this.userService.currentOrganization$.pipe(take(1)),
+        ])
             .pipe(
-                switchMap((workSpace) =>
-                    this.inventoryService.downloadWorkspaceSettingsZip().pipe(
-                        tap((blob) => {
-                            saveAs(blob, `workspace-referential-${workSpace.id}.zip`);
-                        }),
-                    ),
+                switchMap(([workspace, org]) =>
+                    this.workspaceReferenceDataService
+                        .workspaceDownloadZipFile(workspace.id, org.name)
+                        .pipe(
+                            tap((blob) => {
+                                saveAs(
+                                    blob,
+                                    this.workspaceReferenceDataService.getZipFileName(
+                                        workspace.name,
+                                    ),
+                                );
+                            }),
+                        ),
                 ),
                 takeUntilDestroyed(this.destroyRef),
             )

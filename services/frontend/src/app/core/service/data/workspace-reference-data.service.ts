@@ -77,4 +77,8 @@ export class WorkspaceReferenceDataService {
             },
         );
     }
+
+    getZipFileName(workspaceName: string): string {
+        return `workspace_reference_data_${workspaceName}.zip`;
+    }
 }
