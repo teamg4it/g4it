@@ -10,6 +10,7 @@ import { DropdownModule } from "primeng/dropdown";
 import { FileUpload, FileUploadModule } from "primeng/fileupload";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ScrollPanelModule } from "primeng/scrollpanel";
+import { finalize } from "rxjs";
 import { WorkspaceWithOrganization } from "src/app/core/interfaces/administration.interfaces";
 import {
     FileDescription,
@@ -60,6 +61,8 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     file: any = null;
     dataModel: TemplateFileDescription | undefined;
     loadingResults: any[] = [];
+    downloadInProgress = false;
+    uploadInProgress = false;
 
     ngOnInit() {
         this.csvEndpoints = this.workspaceReferenceDataService.getWorkspaceCsvEndpoints();
@@ -162,6 +165,7 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     }
 
     startUpload() {
+        this.uploadInProgress = true;
         this.loadingResults.push({
             status: "IN_PROGRESS",
             creationDate: new Date(),
@@ -173,7 +177,10 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
                 this.workspace.workspaceId,
                 this.workspace.organizationName,
             )
-            .pipe(takeUntilDestroyed(this.destroyRef))
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => (this.uploadInProgress = false)),
+            )
             .subscribe({
                 next: (response) => {
                     this.loadingResults = [];
@@ -206,12 +213,16 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
     }
 
     downloadWorkspaceReferential() {
+        this.downloadInProgress = true;
         this.workspaceReferenceDataService
             .workspaceDownloadZipFile(
                 this.workspace.workspaceId,
                 this.workspace.organizationName,
             )
-            .pipe(takeUntilDestroyed(this.destroyRef))
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => (this.downloadInProgress = false)),
+            )
             .subscribe((blob) =>
                 saveAs(blob, `workspace-referential-${this.workspace.workspaceName}.zip`),
             );

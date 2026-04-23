@@ -21,7 +21,7 @@
                 icon="pi pi-download"
                 [label]="'administration.download-workspace-referential' | translate"
                 [ariaLabel]="'administration.download-workspace-referential' | translate"
-                [disabled]="!workspace.organizationName"
+                [disabled]="!workspace.organizationName || downloadInProgress"
                 (onClick)="downloadWorkspaceReferential()"
             >
             </p-button>
@@ -95,7 +95,12 @@
                 (onClick)="startUpload()"
                 [label]="'digital-services-import.start-upload' | translate"
                 [ariaLabel]="'digital-services-import.start-upload' | translate"
-                [disabled]="!selectedEndpoint || !file || !workspace.organizationName"
+                [disabled]="
+                    !selectedEndpoint ||
+                    !file ||
+                    !workspace.organizationName ||
+                    uploadInProgress
+                "
             />
 
             <p-button
