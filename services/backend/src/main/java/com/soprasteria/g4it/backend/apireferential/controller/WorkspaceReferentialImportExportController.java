@@ -38,15 +38,16 @@ public class WorkspaceReferentialImportExportController implements WorkspaceRefe
      */
 
    @Override
-   public ResponseEntity<Resource> exportWorkspaceReferentialZip(Long workspaceId) {
+   public ResponseEntity<Resource> exportWorkspaceReferentialZip(String organization,
+                                                                 Long workspace) {
 
-       if (workspaceId == null) {
+       if (workspace == null) {
            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "workspaceId is required");
        }
 
        try {
            InputStream zipStream =
-                   workspaceReferentialExportService.exportReferentialZip(workspaceId);
+                   workspaceReferentialExportService.exportReferentialZip(workspace);
 
            return ResponseEntity.ok()
                    .header("Content-Disposition", "attachment; filename=workspace-referential.zip")
@@ -66,13 +67,14 @@ public class WorkspaceReferentialImportExportController implements WorkspaceRefe
      */
     @Override
     public ResponseEntity<ImportReportRest> importWorkspaceReferentialCSV(
-            Long workspaceId,
+            String organization,
+            Long workspace,
             String type,
             MultipartFile file
     ) {
 
         ImportReportRest report =
-                workspaceReferentialImportService.importReferentialCSV(workspaceId, type, file);
+                workspaceReferentialImportService.importReferentialCSV(workspace, type, file);
 
         return new ResponseEntity<>(report, HttpStatus.OK);
     }
