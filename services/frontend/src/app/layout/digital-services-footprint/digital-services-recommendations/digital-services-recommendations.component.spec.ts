@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 import { DigitalServicesRecommendationsComponent } from "./digital-services-recommendations.component";
@@ -8,15 +8,14 @@ import { UserService } from "src/app/core/service/business/user.service";
 import { RecommendationService } from "src/app/core/service/data/recommendations-data-service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe("DigitalServicesRecommendationsComponent", () => {
   let component: DigitalServicesRecommendationsComponent;
   let fixture: ComponentFixture<DigitalServicesRecommendationsComponent>;
 
   //Mock du UserService : simule une organisation connectée
-  const userServiceMock = {
-    currentOrganization$: of({ id: 1, name: "Test Org" }),
-  };
+  
 
   // Mock du service API : simule une réponse backend
   const recommendationServiceMock = {
@@ -42,7 +41,17 @@ describe("DigitalServicesRecommendationsComponent", () => {
     digitalService: () => ({ uid: "test-uid" }),
   };
 
+  let userServiceMock: any;
+  
+
   beforeEach(async () => {
+      userServiceMock = {
+  currentOrganization$: of({
+    id: 1,
+    name: "Test Org",
+    workspaces: [{ id: 1 }]
+  }),
+};
     await TestBed.configureTestingModule({
       declarations: [DigitalServicesRecommendationsComponent],
       imports: [HttpClientTestingModule],
@@ -60,6 +69,7 @@ describe("DigitalServicesRecommendationsComponent", () => {
 
     //Déclenche ngOnInit + subscriptions
     fixture.detectChanges();
+    
   });
 
   it("should create", () => {
@@ -67,13 +77,7 @@ describe("DigitalServicesRecommendationsComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should load recommendations on init", () => {
-    //  Vérifie que le service API est appelé avec l'id de l'organisation
-    expect(recommendationServiceMock.getByOrganisation).toHaveBeenCalledWith(1);
-
-    //  Vérifie que les données reçues sont bien stockées dans le composant
-    expect(component.recommendations.length).toBe(1);
-  });
+  
 
   it("should map category correctly", () => {
     // Test d'une méthode pure (logique métier)
@@ -114,4 +118,110 @@ describe("DigitalServicesRecommendationsComponent", () => {
     //  Vérifie que la logique de sélection est relancée
     expect(component.compareSelected).toHaveBeenCalled();
   });
+
+  it("should load recommendations on init", fakeAsync(() => {
+
+  fixture.detectChanges();
+  tick(); 
+
+  expect(recommendationServiceMock.getByOrganisation)
+    .toHaveBeenCalledWith("Test Org", 1);
+
+  expect(component.recommendations.length).toBe(1);
+}));
+
+it("should not call API if organization is invalid", () => {
+  recommendationServiceMock.getByOrganisation.calls.reset();
+
+  userServiceMock.currentOrganization$ = of(null as any);
+
+  fixture = TestBed.createComponent(DigitalServicesRecommendationsComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  expect(recommendationServiceMock.getByOrganisation).not.toHaveBeenCalled();
+});
+
+it("should set difficulty to N/A if missing", async () => {
+  recommendationServiceMock.getByOrganisation.and.returnValue(
+    of([
+      {
+        category: ["NETWORK"],
+        difficulty: null,
+      },
+    ])
+  );
+
+  fixture = TestBed.createComponent(DigitalServicesRecommendationsComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  await fixture.whenStable(); 
+
+  expect(component.recommendations[0].implementationDifficulty).toBe("N/A");
+});
+it("should map difficulty correctly", () => {
+  const result = (component as any).mapDifficulty("HARD");
+  expect(result).toBe("Difficile");
+});
+
+it("should return original difficulty if unknown", () => {
+  const result = (component as any).mapDifficulty("UNKNOWN");
+  expect(result).toBe("UNKNOWN");
+});
+
+it("should return original category if unknown", () => {
+  const result = (component as any).mapCategory(["OTHER"]);
+  expect(result).toEqual(["OTHER"]);
+});
+
+it("should handle API error", () => {
+  spyOn(console, "error");
+
+  recommendationServiceMock.getByOrganisation.and.returnValue(
+    throwError(() => new Error("API error"))
+  );
+
+  fixture = TestBed.createComponent(DigitalServicesRecommendationsComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  expect(console.error).toHaveBeenCalled();
+});
+
+it("should map difficulty when value exists", async () => {
+  recommendationServiceMock.getByOrganisation.and.returnValue(
+    of([
+      {
+        category: ["NETWORK"],
+        difficulty: "HARD",
+      },
+    ])
+  );
+
+  fixture = TestBed.createComponent(DigitalServicesRecommendationsComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  await fixture.whenStable();
+
+  expect(component.recommendations[0].implementationDifficulty).toBe("Difficile");
+});
+
+it("should return true when zoom >= 125", () => {
+  globalStoreMock.zoomLevel = () => 130;
+
+  fixture = TestBed.createComponent(DigitalServicesRecommendationsComponent);
+  component = fixture.componentInstance;
+
+  expect(component.isZoom125()).toBeTrue();
+});
+it("should return false when zoom < 125", () => {
+  globalStoreMock.zoomLevel = () => 100;
+
+  fixture = TestBed.createComponent(DigitalServicesRecommendationsComponent);
+  component = fixture.componentInstance;
+
+  expect(component.isZoom125()).toBeFalse();
+});
 });

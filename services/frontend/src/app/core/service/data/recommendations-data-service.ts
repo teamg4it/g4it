@@ -23,10 +23,10 @@ const endpoint = Constants.ENDPOINTS.evaluation;
 export class RecommendationService {
   constructor(private readonly http: HttpClient) {}
 
-  getByOrganisation(organisationId: number): Observable<Recommendation[]> {
-    console.log("LOG: HTTP GET /recommendations orgId =", organisationId);
+  getByOrganisation(organization: string, workspace: number): Observable<Recommendation[]> {
+    console.log("LOG: HTTP GET /recommendations orgId =", organization);
     return this.http.get<Recommendation[]>(
-      `${endpoint}/organisations/${organisationId}/recommendations`
+      `${endpoint}/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
   }
 }

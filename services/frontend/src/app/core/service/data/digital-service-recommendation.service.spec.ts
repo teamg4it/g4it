@@ -10,8 +10,6 @@ describe('RecommendationDataService', () => {
   let service: RecommendationDataService;
   let httpMock: HttpTestingController;
 
-  const mockUrl = 'http://localhost:8080/api/v1/evaluation';
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -22,75 +20,73 @@ describe('RecommendationDataService', () => {
   });
 
   afterEach(() => {
-    httpMock.verify(); // vérifie qu’il n’y a pas de requêtes non traitées
+    httpMock.verify();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call GET /recommendations with organisationId', () => {
-  const organisationId = 123;
+  it('should call GET recommendations with organization and workspace', () => {
+    const organization = 'org-test';
+    const workspace = 2;
 
-  const mockResponse = [
-    {
-      idRecommendation: 1,
-      title: 'Reco 1',
-      description: 'Desc 1',
-      category: ['eco'],
-      affectedAttributes: '{}',
-      heuristicRange: '{}',
-      baseImpact: 10,
-      organisationId: 123,
-      difficulty: 'MEDIUM'
-    }
-  ];
+    const mockResponse = [
+      {
+        idRecommendation: 1,
+        title: 'Reco 1',
+        description: 'Desc 1',
+        category: ['eco'],
+        affectedAttributes: '{}',
+        heuristicRange: '{}',
+        baseImpact: 10,
+        organisationId: 123,
+        difficulty: 'MEDIUM'
+      }
+    ];
 
-  service.getRecommendations(organisationId).subscribe((res) => {
-    expect(res[0].idRecommendation).toBe(1);
-    expect(res[0].title).toBe('Reco 1');
+    service.getRecommendations(organization, workspace).subscribe((res) => {
+      expect(res[0].idRecommendation).toBe(1);
+      expect(res[0].title).toBe('Reco 1');
+    });
+
+    const req = httpMock.expectOne(
+      `http://localhost:8080/organizations/${organization}/workspaces/${workspace}/recommendations`
+    );
+
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
   });
 
-  const req = httpMock.expectOne(
-    `http://localhost:8080/api/v1/evaluation/organisations/${organisationId}/recommendations`
-  );
-
-  expect(req.request.method).toBe('GET');
-
-  req.flush(mockResponse);
-});
-
   it('should return empty array if backend returns empty', () => {
-    const organisationId = 456;
+    const organization = 'org-test';
+    const workspace = 2;
 
-    service.getRecommendations(organisationId).subscribe((res) => {
+    service.getRecommendations(organization, workspace).subscribe((res) => {
       expect(res).toEqual([]);
     });
 
     const req = httpMock.expectOne(
-      `${mockUrl}/organisations/${organisationId}/recommendations`
+      `http://localhost:8080/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
 
     expect(req.request.method).toBe('GET');
-
     req.flush([]);
   });
 
   it('should handle HTTP error', () => {
-    const organisationId = 789;
+    const organization = 'org-test';
+    const workspace = 3;
 
-    let errorResponse: any;
-
-    service.getRecommendations(organisationId).subscribe({
+    service.getRecommendations(organization, workspace).subscribe({
       next: () => fail('should have failed'),
       error: (err) => {
-        errorResponse = err;
         expect(err.status).toBe(500);
       },
     });
 
     const req = httpMock.expectOne(
-      `${mockUrl}/organisations/${organisationId}/recommendations`
+      `http://localhost:8080/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
 
     req.flush('Error', { status: 500, statusText: 'Server Error' });

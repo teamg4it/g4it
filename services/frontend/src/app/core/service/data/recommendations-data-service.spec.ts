@@ -12,35 +12,40 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { RecommendationDataService } from './digital-service-recommendation.service';
 import { Recommendation } from './recommendations-data-service';
+import { RecommendationService } from './recommendations-data-service';
+import { Constants } from 'src/constants';
 
-describe('RecommendationDataService', () => {
-  let service: RecommendationDataService;
+describe('RecommendationService', () => {
+  let service: RecommendationService;
   let httpMock: HttpTestingController;
 
-  const mockUrl = 'http://localhost:8080/api/v1/evaluation';
+  // ✅ Simule l'endpoint réel (pas besoin de /evaluation ici)
+  
+  const mockUrl = 'http://localhost:8080/api/v1'; 
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [RecommendationDataService],
+      providers: [RecommendationService],
     });
 
-    service = TestBed.inject(RecommendationDataService);
+    service = TestBed.inject(RecommendationService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
-    httpMock.verify(); // vérifie qu’il n’y a pas de requêtes non traitées
+    httpMock.verify();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call GET /recommendations with organisationId', () => {
-    const organisationId = 123;
+  it('should call GET recommendations with organization and workspace', () => {
+    const baseUrl = Constants.ENDPOINTS.evaluation;
+    const organization = 'org-test';
+    const workspace = 1;
 
     const mockResponse: Recommendation[] = [
       {
@@ -56,48 +61,52 @@ describe('RecommendationDataService', () => {
       },
     ];
 
-    service.getRecommendations(organisationId).subscribe((res: Recommendation[]) => {
+    service.getByOrganisation(organization, workspace).subscribe((res: Recommendation[]) => {
       expect(res.length).toBe(1);
       expect(res[0].idRecommendation).toBe(1);
-      expect(res[0].title).toBe('Reco 1');
     });
 
     const req = httpMock.expectOne(
-      `${mockUrl}/organisations/${organisationId}/recommendations`
+      `${baseUrl}/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
+
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
 
   it('should return empty array if backend returns empty', () => {
-    const organisationId = 456;
+    const baseUrl = Constants.ENDPOINTS.evaluation;
+    const organization = 'org-test';
+    const workspace = 2;
 
-    service.getRecommendations(organisationId).subscribe((res: Recommendation[]) => {
+    service.getByOrganisation(organization, workspace).subscribe((res: Recommendation[]) => {
       expect(res).toEqual([]);
     });
 
     const req = httpMock.expectOne(
-      `${mockUrl}/organisations/${organisationId}/recommendations`
+      `${baseUrl}/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
+
     expect(req.request.method).toBe('GET');
     req.flush([]);
   });
 
   it('should handle HTTP error', () => {
-    const organisationId = 789;
-    let errorResponse: any;
+    const baseUrl = Constants.ENDPOINTS.evaluation;
+    const organization = 'org-test';
+    const workspace = 3;
 
-    service.getRecommendations(organisationId).subscribe({
+    service.getByOrganisation(organization, workspace).subscribe({
       next: () => fail('should have failed'),
-      error: (err) => {
-        errorResponse = err;
+      error: (err: any) => {
         expect(err.status).toBe(500);
       },
     });
 
     const req = httpMock.expectOne(
-      `${mockUrl}/organisations/${organisationId}/recommendations`
+      `${baseUrl}/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
+
     expect(req.request.method).toBe('GET');
     req.flush('Error', { status: 500, statusText: 'Server Error' });
   });

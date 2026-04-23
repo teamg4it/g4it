@@ -8,6 +8,6 @@ import { RecommendationDS } from 'src/app/core/interfaces/recommendation.interfa
 export class RecommendationDataService {
   private readonly http = inject(HttpClient);
 
-  getRecommendations(organisationId: number): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/api/v1/evaluation/organisations/${organisationId}/recommendations`);  }
+  getRecommendations(organization: string, workspace: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8080/organizations/${organization}/workspaces/${workspace}/recommendations`);  }
 }

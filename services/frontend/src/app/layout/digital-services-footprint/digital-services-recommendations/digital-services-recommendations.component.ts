@@ -9,14 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-digital-services-recommendations',
   templateUrl: './digital-services-recommendations.component.html',
-  // providers: [
-  //   {
-  //     provide: UserService,
-  //     useValue: {
-  //       isAllowedDigitalServiceWrite$: of(false), 
-  //     },
-  //   },
-  // ],
+
 })
 
 export class DigitalServicesRecommendationsComponent {
@@ -35,7 +28,6 @@ export class DigitalServicesRecommendationsComponent {
     'description',
     'category',
     'implementationDifficulty',
-    // 'select-all',
     
   ];
 
@@ -62,8 +54,8 @@ ngOnInit() {
       }),
       tap(org => console.log("LOG: Organisation valide, id =", org.id)),
       switchMap(org => {
-        console.log("LOG: Appel API recommendations avec orgId =", org.id);
-        return this.recommendationService.getByOrganisation(org.id);
+        const workspace = org.workspaces?.[0]?.id; // ou celui sélectionné
+        return this.recommendationService.getByOrganisation(org.name, workspace);
       }),
       tap(data => console.log("LOG: Données reçues du backend:", data))
     )
