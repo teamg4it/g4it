@@ -78,13 +78,12 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
             ((?3 IS NULL) OR (?3 IS NOT NULL AND cf.name = ?3)) AND
             ((?4 IS NULL) OR (?4 IS NOT NULL AND cf.category = ?4)) AND
             ((?5 IS NULL) OR (?5 IS NOT NULL AND cf.location = ?5)) AND
-            ((?6 IS NULL) OR (?6 IS NOT NULL AND cf.organization = ?6)) AND
-            ((?7 IS NULL) OR (?7 IS NOT NULL AND cf.workspaceId = ?7))
+            ((?6 IS NULL) OR (?6 IS NOT NULL AND cf.workspaceId = ?6))
             """)
-    List<ItemImpact> findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(final String criterion,
+    List<ItemImpact> findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndWorkspaceId(final String criterion,
                                                                                                  final String lifecycleStep,
                                                                                                  final String name,
                                                                                                  final String category,
                                                                                                  final String location,
-                                                                                                 final String organization,final Long workspaceId);
+                                                                                                 final Long workspaceId);
 }

@@ -147,7 +147,6 @@ public class ReferentialGetService {
         return itemImpactRepository.findByCategory("electricity-mix");
     }
 
-    @Cacheable(key = "ref_getItemTypes + '_' + #workspaceId")
     public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, String organization) {
 
         // get all itemTypes
@@ -167,7 +166,6 @@ public class ReferentialGetService {
         }
     }
 
-    @Cacheable(key = "ref_getMatchingItem + '_' + #workspaceId")
     public MatchingItemRest getMatchingItemForWorkspace(String model, String organization, Long workspaceId) {
         return matchingItemRepository.findByItemSourceAndWorkspaceId(model, workspaceId)
                 .map(item -> refRestMapper.toMatchingItemRest(item))
@@ -175,12 +173,11 @@ public class ReferentialGetService {
                         .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null));
     }
 
-    @Cacheable(key = "ref_getItemImpacts + '_' + #workspaceId")
     public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
                                                String name, String location,
                                                String category, String organization,Long workspaceId) {
-        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(
-                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization,workspaceId);
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndWorkspaceId(
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location,workspaceId);
         if(itemImpacts == null || itemImpacts.isEmpty()) {
             itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
                     StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization);
