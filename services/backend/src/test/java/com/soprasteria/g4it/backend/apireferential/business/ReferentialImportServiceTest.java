@@ -340,9 +340,10 @@ class ReferentialImportServiceTest {
 
     @Test
     void testProcessItemImpactCsv_WithValidationErrors() throws Exception {
-        String csv =
-                "criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version\n" +
-                        "c;l;n;cat;1;desc;loc;lev;src;t;u;10;1\n";
+        String csv = """
+        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+        c;l;n;cat;1;desc;loc;lev;src;t;u;10;1
+        """;
 
         InputStream is = new ByteArrayInputStream(csv.getBytes());
 
@@ -366,9 +367,10 @@ class ReferentialImportServiceTest {
 
     @Test
     void testParseItemTypeCsv_Valid() throws IOException {
-        String csv =
-                "type;category;comment;default_lifespan;is_server;source;ref_default_item;version\n" +
-                        "t;c;com;1;true;s;ref;1\n";
+        String csv = """
+            type;category;comment;default_lifespan;is_server;source;ref_default_item;version
+t;c;com;1;true;s;ref;1
+""";
 
         InputStream is = new ByteArrayInputStream(csv.getBytes());
 
@@ -401,9 +403,10 @@ class ReferentialImportServiceTest {
 
     @Test
     void testParseMatchingItemCsv_Valid() throws IOException {
-        String csv =
-                "itemSource;refItemTarget\n" +
-                        "A;B\n";
+        String csv = """
+        itemSource;refItemTarget
+        A;B
+        """;
 
         InputStream is = new ByteArrayInputStream(csv.getBytes());
 
@@ -423,9 +426,10 @@ class ReferentialImportServiceTest {
 
     @Test
     void testParseItemImpactCsv_Valid() throws IOException {
-        String csv =
-                "criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version\n" +
-                        "c;l;n;cat;1;desc;loc;lev;src;t;u;10;1\n";
+        String csv = """
+        criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+        c;l;n;cat;1;desc;loc;lev;src;t;u;10;1
+        """;
 
         InputStream is = new ByteArrayInputStream(csv.getBytes());
 
