@@ -4,11 +4,13 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { of, throwError } from "rxjs";
+import { BehaviorSubject, of, throwError } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
+import { UserService } from "src/app/core/service/business/user.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
+import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { FilePanelComponent } from "./file-panel.component";
 import { SelectFileComponent } from "./select-file/select-file.component";
@@ -20,6 +22,8 @@ describe("FilePanelComponent", () => {
     let mockLoadingService: jasmine.SpyObj<LoadingDataService>;
     let mockMessageService: jasmine.SpyObj<MessageService>;
     let mockInventoryService: jasmine.SpyObj<InventoryDataService>;
+    let mockUserService: jasmine.SpyObj<UserService>;
+    let mockWorkspaceReferenceDataService: jasmine.SpyObj<WorkspaceReferenceDataService>;
 
     const createMockInventory = (id: number): Inventory => ({
         id,
@@ -49,6 +53,14 @@ describe("FilePanelComponent", () => {
         mockInventoryService = jasmine.createSpyObj("InventoryDataService", [
             "createInventory",
         ]);
+        mockUserService = jasmine.createSpyObj("UserService", [], {
+            currentWorkspace$: new BehaviorSubject({ id: 1, name: "Test Workspace" }),
+            currentOrganization$: new BehaviorSubject({ id: 1, name: "Test Org" }),
+        });
+        mockWorkspaceReferenceDataService = jasmine.createSpyObj(
+            "WorkspaceReferenceDataService",
+            ["workspaceDownloadZipFile", "getZipFileName"],
+        );
 
         await TestBed.configureTestingModule({
             declarations: [FilePanelComponent, SelectFileComponent],
@@ -67,6 +79,11 @@ describe("FilePanelComponent", () => {
                 { provide: LoadingDataService, useValue: mockLoadingService },
                 { provide: MessageService, useValue: mockMessageService },
                 { provide: InventoryDataService, useValue: mockInventoryService },
+                { provide: UserService, useValue: mockUserService },
+                {
+                    provide: WorkspaceReferenceDataService,
+                    useValue: mockWorkspaceReferenceDataService,
+                },
             ],
         }).compileComponents();
 
@@ -1164,6 +1181,70 @@ describe("FilePanelComponent", () => {
                 expect(component.sidebarVisibleChange.emit).not.toHaveBeenCalled();
                 done();
             }, 600);
+        });
+    });
+
+    describe("downloadWorkspaceReferenceData", () => {
+        beforeEach(() => {
+            mockTemplateFileService.getTemplateFiles.and.returnValue(of([]));
+            component.ngOnInit();
+            fixture.detectChanges();
+        });
+
+        it("should call workspaceDownloadZipFile with correct parameters", (done) => {
+            const mockBlob = new Blob(["test data"], { type: "application/zip" });
+            const expectedFileName = "Test_Workspace_reference_data.zip";
+
+            mockWorkspaceReferenceDataService.workspaceDownloadZipFile.and.returnValue(
+                of(mockBlob),
+            );
+            mockWorkspaceReferenceDataService.getZipFileName.and.returnValue(
+                expectedFileName,
+            );
+
+            component.downloadWorkspaceReferenceData();
+
+            setTimeout(() => {
+                expect(
+                    mockWorkspaceReferenceDataService.workspaceDownloadZipFile,
+                ).toHaveBeenCalledWith(1, "Test Org");
+                expect(
+                    mockWorkspaceReferenceDataService.getZipFileName,
+                ).toHaveBeenCalledWith("Test Workspace");
+                done();
+            }, 100);
+        });
+
+        it("should handle different workspace and organization data", (done) => {
+            const mockBlob = new Blob(["data"], { type: "application/zip" });
+            const customWorkspace = { id: 999, name: "Custom Workspace" };
+            const customOrg = { id: 888, name: "Custom Organization" };
+
+            (mockUserService.currentWorkspace$ as BehaviorSubject<any>).next(
+                customWorkspace,
+            );
+            (mockUserService.currentOrganization$ as BehaviorSubject<any>).next(
+                customOrg,
+            );
+
+            mockWorkspaceReferenceDataService.workspaceDownloadZipFile.and.returnValue(
+                of(mockBlob),
+            );
+            mockWorkspaceReferenceDataService.getZipFileName.and.returnValue(
+                "Custom_Workspace_reference_data.zip",
+            );
+
+            component.downloadWorkspaceReferenceData();
+
+            setTimeout(() => {
+                expect(
+                    mockWorkspaceReferenceDataService.workspaceDownloadZipFile,
+                ).toHaveBeenCalledWith(999, "Custom Organization");
+                expect(
+                    mockWorkspaceReferenceDataService.getZipFileName,
+                ).toHaveBeenCalledWith("Custom Workspace");
+                done();
+            }, 100);
         });
     });
 });
