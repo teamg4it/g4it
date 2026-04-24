@@ -28,7 +28,7 @@ import { TranslateService } from "@ngx-translate/core";
 import saveAs from "file-saver";
 import { MessageService } from "primeng/api";
 import { RadioButton } from "primeng/radiobutton";
-import { delay, forkJoin, Subject, switchMap, take, takeUntil, tap } from "rxjs";
+import { delay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import {
     FileDescription,
     FileType,
@@ -311,24 +311,14 @@ export class FilePanelComponent implements OnInit, OnDestroy, AfterViewInit, OnC
     }
 
     async downloadWorkspaceReferenceData() {
-        forkJoin([
-            this.userService.currentWorkspace$.pipe(take(1)),
-            this.userService.currentOrganization$.pipe(take(1)),
-        ])
+        this.userService.currentWorkspace$
             .pipe(
-                switchMap(([workspace, org]) =>
-                    this.workspaceReferenceDataService
-                        .workspaceDownloadZipFile(workspace.id, org.name)
-                        .pipe(
-                            tap((blob) => {
-                                saveAs(
-                                    blob,
-                                    this.workspaceReferenceDataService.getZipFileName(
-                                        workspace.name,
-                                    ),
-                                );
-                            }),
-                        ),
+                switchMap((workSpace) =>
+                    this.inventoryService.downloadWorkspaceSettingsZip().pipe(
+                        tap((blob) => {
+                            saveAs(blob, `workspace-referential-${workSpace.id}.zip`);
+                        }),
+                    ),
                 ),
                 takeUntilDestroyed(this.destroyRef),
             )
