@@ -40,7 +40,6 @@ export class UsersComponent implements OnInit {
     enableList = false;
     clearForm: any;
     membersAndSearchVisible = false;
-    organizationsDetails!: any;
     membersList: any;
     filteredMembers: any[] = [];
     openSearchResult: boolean = false;
@@ -96,34 +95,7 @@ export class UsersComponent implements OnInit {
     }
 
     getUsers(updateOrganization: boolean = false) {
-        this.administrationService.getUsers().subscribe((res) => {
-            this.organizationsDetails = res;
-
-            const list: WorkspaceWithOrganization[] = [];
-            for (const organization of this.organizationsDetails) {
-                for (const workspace of organization.workspaces) {
-                    const roles = this.userService.getRoles(organization, workspace);
-                    if (
-                        workspace.status === Constants.WORKSPACE_STATUSES.ACTIVE &&
-                        (roles.includes(Role.OrganizationAdmin) ||
-                            roles.includes(Role.WorkspaceAdmin))
-                    ) {
-                        list.push({
-                            organizationName: organization.name,
-                            organizationId: organization.id,
-                            workspaceName: workspace.name,
-                            workspaceId: workspace.id,
-                            status: workspace.status,
-                            dataRetentionDays: workspace.dataRetentionDays!,
-                            displayLabel: `${workspace.name} - (${organization.name})`,
-                            criteriaDs: workspace.criteriaDs!,
-                            criteriaIs: workspace.criteriaIs!,
-                            authorizedDomains: organization.authorizedDomains,
-                        });
-                    }
-                }
-            }
-
+        this.administrationService.getAdminWorkspaceList().subscribe((list) => {
             this.workspacelist = list;
             if (updateOrganization && this.workspace.workspaceId) {
                 const currentWorkspace = this.workspacelist.find(

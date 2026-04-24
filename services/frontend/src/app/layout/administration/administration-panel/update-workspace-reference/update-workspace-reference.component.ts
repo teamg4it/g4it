@@ -16,14 +16,12 @@ import {
     FileDescription,
     TemplateFileDescription,
 } from "src/app/core/interfaces/file-system.interfaces";
-import { Role } from "src/app/core/interfaces/roles.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { CsvImportEndpoint } from "src/app/core/service/data/api-route-referential.service";
 import { TemplateFileService } from "src/app/core/service/data/template-file.service";
 import { WorkspaceReferenceDataService } from "src/app/core/service/data/workspace-reference-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
-import { Constants } from "src/constants";
 
 @Component({
     selector: "app-update-workspace-reference",
@@ -68,36 +66,9 @@ export class UpdateWorkspaceReferenceComponent implements OnInit {
         this.csvEndpoints = this.workspaceReferenceDataService.getWorkspaceCsvEndpoints();
         this.getTemplates();
         this.administrationService
-            .getUsers()
+            .getAdminWorkspaceList()
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((res) => {
-                const organizationsDetails: any = res;
-
-                const list: WorkspaceWithOrganization[] = [];
-                for (const organization of organizationsDetails) {
-                    for (const workspace of organization.workspaces) {
-                        const roles = this.userService.getRoles(organization, workspace);
-                        if (
-                            workspace.status === Constants.WORKSPACE_STATUSES.ACTIVE &&
-                            (roles.includes(Role.OrganizationAdmin) ||
-                                roles.includes(Role.WorkspaceAdmin))
-                        ) {
-                            list.push({
-                                organizationName: organization.name,
-                                organizationId: organization.id,
-                                workspaceName: workspace.name,
-                                workspaceId: workspace.id,
-                                status: workspace.status,
-                                dataRetentionDays: workspace.dataRetentionDays!,
-                                displayLabel: `${workspace.name} - (${organization.name})`,
-                                criteriaDs: workspace.criteriaDs!,
-                                criteriaIs: workspace.criteriaIs!,
-                                authorizedDomains: organization.authorizedDomains,
-                            });
-                        }
-                    }
-                }
-
+            .subscribe((list) => {
                 this.workspacelist = list;
             });
     }
