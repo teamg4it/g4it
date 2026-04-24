@@ -5,6 +5,7 @@ import {
 import { TestBed } from "@angular/core/testing";
 import { Constants } from "src/constants";
 import { AdministrationService } from "./administration.service";
+import { UserService } from "./user.service";
 
 describe("AdministrationService", () => {
     let service: AdministrationService;
@@ -12,10 +13,18 @@ describe("AdministrationService", () => {
     let organizationId = 1;
     let searchName = "sop";
     let workspaceId = 1;
+
+    const mockUserService = jasmine.createSpyObj('UserService', ['getRoles']);
+
     beforeEach(() => {
+        mockUserService.getRoles.and.returnValue([]);
+
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [AdministrationService],
+            providers: [
+                AdministrationService,
+                { provide: UserService, useValue: mockUserService },
+            ],
         });
         service = TestBed.inject(AdministrationService);
         httpMock = TestBed.inject(HttpTestingController);
