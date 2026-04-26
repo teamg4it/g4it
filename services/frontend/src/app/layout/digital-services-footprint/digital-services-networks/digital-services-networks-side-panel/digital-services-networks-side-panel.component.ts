@@ -78,10 +78,9 @@ ngOnInit() {
   if (this.onlyQuantityEditable) {
   this.networksForm.get('name')?.disable();
   this.networksForm.get('type')?.disable();
-    this.networksForm.get('name')?.updateValueAndValidity();
-    this.networksForm.get('type')?.updateValueAndValidity();
-}
+} else {
   this.applyEditableFields();
+}
 }
 private applyEditableFields() {
   const controls = this.networksForm.controls;
