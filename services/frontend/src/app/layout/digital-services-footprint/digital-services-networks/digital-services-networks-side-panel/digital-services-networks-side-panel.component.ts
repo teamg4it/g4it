@@ -63,8 +63,35 @@ export class DigitalServicesNetworksSidePanelComponent implements OnInit {
             {
                 validators: [xssFormGroupValidator()],
                 updateOn: "blur",
+<<<<<<< HEAD
             },
         );
+=======
+            },);
+
+  if (this.network.idFront) {
+    this.networksForm.patchValue({
+      name: this.network.name,
+      type: this.network.type,
+      yearlyQuantityOfGbExchanged: this.network.yearlyQuantityOfGbExchanged,
+    });
+  }
+  if (this.onlyQuantityEditable) {
+  this.networksForm.get('name')?.disable();
+  this.networksForm.get('type')?.disable();
+} else {
+  this.applyEditableFields();
+}
+}
+private applyEditableFields() {
+  const controls = this.networksForm.controls;
+
+  Object.keys(controls).forEach((key) => {
+    if (this.editableFields.length && !this.editableFields.includes(key)) {
+      controls[key].disable({ emitEvent: false });
+    } else {
+      controls[key].enable({ emitEvent: false });
+>>>>>>> 09b80cdb (tests : add more tests on the frontend)
     }
 
     deleteNetwork() {

@@ -12,6 +12,7 @@ import { DigitalServicesDataService } from 'src/app/core/service/data/digital-se
 import { InPhysicalEquipmentsService } from 'src/app/core/service/data/in-out/in-physical-equipments.service';
 import { InVirtualEquipmentsService } from 'src/app/core/service/data/in-out/in-virtual-equipments.service';
 import { DigitalServiceVersionDataService } from 'src/app/core/service/data/digital-service-version-data-service';
+import { throwError } from 'rxjs';
 
 describe('DigitalServicesApplyRecommendationsComponent', () => {
   let component: DigitalServicesApplyRecommendationsComponent;
@@ -121,10 +122,16 @@ describe('DigitalServicesApplyRecommendationsComponent', () => {
     // spyOn(simulationVirtualEquipmentsSignal, 'set');
     // spyOn(simulationDatacentersSignal, 'set');
     // spyOn(simulationModifiedSignal, 'set');
-    function createSignalMock(initial: any) {
-  const fn = jasmine.createSpy('signal').and.returnValue(initial);
-  (fn as any).set = jasmine.createSpy('set');
-  return fn as any;
+function createSignalMock(initial: any) {
+  let value = initial;
+
+  const fn: any = jasmine.createSpy('signal').and.callFake(() => value);
+
+  fn.set = jasmine.createSpy('set').and.callFake((v: any) => {
+    value = v;
+  });
+
+  return fn;
 }
 
 simulationEquipmentsSignal = createSignalMock([]);
@@ -438,4 +445,147 @@ it('should divide by annualQuantityOfGo for fixed network', () => {
 
 //   expect(console.error).toHaveBeenCalled();
 // }));
+it('should emit close event', () => {
+  spyOn(component.close, 'emit');
+
+  component.closeSidebar();
+
+  expect(component.close.emit).toHaveBeenCalled();
+});
+it('should update editingServer datacenter when adding datacenter', () => {
+  component.editingServer = {} as any;
+
+  const dc = { name: 'DC1', location: 'FR', pue: 1 } as any;
+  component.addDatacenter(dc);
+
+  expect(component.editingServer?.datacenter).toBeDefined();
+});
+it('should compute unique datacenter options', () => {
+  component.simulationDatacenters.set([
+    { name: 'DC1', location: 'FR', pue: 1 } as any
+  ]);
+
+  const store = TestBed.inject(DigitalServiceStoreService) as any;
+  store.inDatacenters.and.returnValue([
+    { name: 'DC1', location: 'FR', pue: 1 },
+    { name: 'DC2', location: 'US', pue: 2 }
+  ]);
+
+  component.ngOnInit();
+
+  const result = component.datacenterOptions();
+
+  expect(result.length).toBe(2);
+});
+it('should open terminal editor', () => {
+  const terminal = { id: 1 } as any;
+
+  component.openTerminalEditor(terminal);
+
+  expect(component.editingTerminal).toEqual(terminal);
+});
+
+it('should call onTerminalSaved from child', () => {
+  spyOn(component, 'onTerminalSaved');
+
+  component.onTerminalSavedFromChild({ id: 1 } as any);
+
+  expect(component.onTerminalSaved).toHaveBeenCalled();
+});
+it('should not save terminal if editingTerminal is null', fakeAsync(() => {
+  simulationEquipmentsSignal.set.calls.reset(); 
+  component.editingTerminal = null;
+
+  component.onTerminalSaved();
+  tick();
+
+  expect(simulationEquipmentsSignal.set).not.toHaveBeenCalled();
+}));
+it('should call onNetworkSaved from child', () => {
+  spyOn(component, 'onNetworkSaved');
+
+  component.onNetworkSavedFromChild({ id: 1 } as any);
+
+  expect(component.onNetworkSaved).toHaveBeenCalled();
+});
+it('should go to previous tab', () => {
+  component.selectTab(1);
+  component.previousTab(1);
+
+  expect(component.selectedMenuIndex).toBe(0);
+});
+
+it('should go to next tab', () => {
+  component.importDetails = { menu: [{}, {}] } as any;
+
+  component.selectTab(0);
+  component.nextTab(0);
+
+  expect(component.selectedMenuIndex).toBe(1);
+});
+it('should return current recommendation', () => {
+  component.selectedMenuIndex = 0;
+
+  const result = component.currentRecommendation;
+
+  expect(result.title).toBe('Rec1');
+});
+it('should return array category', () => {
+  component.selectedMenuIndex = 1;
+
+  const result = component.currentCategories;
+
+  expect(Array.isArray(result)).toBeTrue();
+});
+it('should map recommendation blocks', () => {
+  component.selectedMenuIndex = 1;
+
+  const result = component.recommendationBlocks;
+
+  expect(result.length).toBeGreaterThan(0);
+});
+it('should not save server if editingServer is null', fakeAsync(() => {
+  simulationEquipmentsSignal.set.calls.reset();
+  simulationModifiedSignal.set.calls.reset();
+
+  component.editingServer = null;
+
+  component.onServerSaved();
+  tick();
+
+  expect(simulationEquipmentsSignal.set).not.toHaveBeenCalled();
+  expect(simulationModifiedSignal.set).not.toHaveBeenCalled();
+}));
+it('should compute simulated servers', () => {
+  component.simulationEquipments.set([
+    {
+      id: 1,
+      type: 'Dedicated Server',
+      name: 'srv',
+      quantity: 1,
+      durationHour: 8760,
+      datacenterName: 'DC1',
+      location: 'FR'
+    } as any
+  ]);
+
+  const result = component.simulatedServers();
+
+  expect(result.length).toBeGreaterThan(0);
+});
+it('should handle createNewVersion error', fakeAsync(() => {
+  const versionService = TestBed.inject(DigitalServiceVersionDataService) as any;
+
+  versionService.duplicateVersion.and.returnValue(
+    throwError(() => 'error') 
+  );
+
+  spyOn(console, 'error');
+
+  component.createNewVersion();
+  tick();
+
+  expect(console.error).toHaveBeenCalled();
+}));
+
 });
