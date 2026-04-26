@@ -275,4 +275,63 @@ databaseChangeLog:
                   name: base_impact
                   value: 0
             where: "title = 'Optimiser le parcours utilisateur'"
+  
+  
+  - changeSet:
+      id: set-heuristic-data-general-recommendations
+      author: INSA DEV Team
+      changes:
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: affected_attributes
+                  value: '"workload"'
+              - column:
+                  name: heuristic_range
+                  value: '{"1":[0.35,0.45],"2":[0.25,0.35],"3":[0.45,0.60],"4":[0.10,0.25],"5":[0.60,0.80],"6":[0.00,0.10],"7":[0.80,1.00]}'
+            where: "title = 'Utiliser une architecture adaptée'"
  
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: affected_attributes
+                  valueComputed: "NULL"
+              - column:
+                  name: heuristic_range
+                  valueComputed: "NULL"
+            where: "title = 'Limiter le poids et le nombre de requêtes par écran'"
+ 
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: affected_attributes
+                  value: '"pue"'
+              - column:
+                  name: heuristic_range
+                  value: '{"1":[1.0,1.2],"2":[1.2,1.4],"3":[1.4,1.6],"4":[1.6,1.8],"5":[1.8,2.0],"6":[2.0,999]}'
+            where: "title = 'Minimiser le PUE de l''hébergement'"
+ 
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: affected_attributes
+                  value: '"location"'
+              - column:
+                  name: heuristic_range
+                  valueComputed: "NULL"
+            where: "title = 'Choisir un hébergement cloud géographiquement cohérent'"
+ 
+        - update:
+            tableName: recommendation
+            columns:
+              - column:
+                  name: affected_attributes
+                  value: '"yearlyUsageTimePerUser"'
+              - column:
+                  name: heuristic_range
+                  value: '{"1":[0,500],"2":[500,1000],"3":[1000,1500],"4":[1500,2000],"5":[2000,2500],"6":[2500,3000],"7":[3000,3500],"8":[3500,4000],"9":[4000,4500],"10":[4500,5000],"11":[5000,5500],"12":[5500,6000],"13":[6000,6500],"14":[6500,7000],"15":[7000,7500],"16":[7500,8760]}'
+            where: "title = 'Optimiser le parcours utilisateur'"
