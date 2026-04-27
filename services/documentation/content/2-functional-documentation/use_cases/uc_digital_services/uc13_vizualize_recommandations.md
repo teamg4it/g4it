@@ -1,5 +1,5 @@
 ---
-title: "2.13. TBD"
+title: "2.13. Vizualize recommandations"
 description: "This use case describes how to vizualize recommandations"
 weight: 130
 mermaid: true
