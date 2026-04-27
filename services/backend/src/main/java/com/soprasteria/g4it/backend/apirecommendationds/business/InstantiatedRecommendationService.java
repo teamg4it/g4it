@@ -91,12 +91,12 @@ public class InstantiatedRecommendationService {
 
         // Compute heuristic context once (shared across recommendations)
         HeuristicContext heuristicContext = buildHeuristicContext(digitalServiceVersionUid);
-        log.info("TOPSIS: heuristic context for dsVersionUid={}: avgPue={}, avgWorkload={}, avgDurationHour={}, majorityLocation={}",
+        log.info("TOPSIS: heuristic context for dsVersionUid={}: avgPue={}, avgWorkload={}, avgDurationHour={}, locations={}",
                 digitalServiceVersionUid,
                 heuristicContext.avgPue,
                 heuristicContext.avgWorkload,
                 heuristicContext.avgDurationHour,
-                heuristicContext.majorityLocation);
+                heuristicContext.locations);
 
         // Build numeric matrix [n x 4]
         int n = recommendations.size();
@@ -147,7 +147,7 @@ public class InstantiatedRecommendationService {
             Double avgPue,
             Double avgWorkload,
             Double avgDurationHour,
-            String majorityLocation
+            List<String> locations
     ) {}
 
     /**
@@ -181,34 +181,31 @@ public class InstantiatedRecommendationService {
                 .average()
                 .orElse(Double.NaN);
 
-        // Majority location from virtual equipments + datacenters
-        String majorityLocation = computeMajorityLocation(digitalServiceVersionUid);
+        // Distinct locations from virtual equipments + datacenters
+        List<String> locations = computeDistinctLocations(digitalServiceVersionUid);
 
-        return new HeuristicContext(avgPue, avgWorkload, avgDurationHour, majorityLocation);
+        return new HeuristicContext(avgPue, avgWorkload, avgDurationHour, locations);
     }
 
     /**
-     * Finds the most frequent non-null location across virtual equipments and datacenters.
+     * Collects all distinct non-null locations across virtual equipments and datacenters.
      */
-    private String computeMajorityLocation(String digitalServiceVersionUid) {
-        Map<String, Long> locationCounts = new HashMap<>();
+    private List<String> computeDistinctLocations(String digitalServiceVersionUid) {
+        Set<String> locations = new HashSet<>();
 
         inVirtualEquipmentRepository
                 .findByDigitalServiceVersionUid(digitalServiceVersionUid)
                 .stream()
                 .filter(ve -> ve.getLocation() != null && !ve.getLocation().isBlank())
-                .forEach(ve -> locationCounts.merge(ve.getLocation(), 1L, Long::sum));
+                .forEach(ve -> locations.add(ve.getLocation()));
 
         inDatacenterRepository
                 .findByDigitalServiceVersionUid(digitalServiceVersionUid)
                 .stream()
                 .filter(dc -> dc.getLocation() != null && !dc.getLocation().isBlank())
-                .forEach(dc -> locationCounts.merge(dc.getLocation(), 1L, Long::sum));
+                .forEach(dc -> locations.add(dc.getLocation()));
 
-        return locationCounts.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(null);
+        return new ArrayList<>(locations);
     }
 
     // -------------------------------------------------------------------------
@@ -231,7 +228,7 @@ public class InstantiatedRecommendationService {
 
         // location is computed dynamically via electricity mix quartiles, no heuristicRange needed
         if ("location".equals(attribute)) {
-            return computeLocationHeuristic(ctx.majorityLocation);
+            return computeLocationHeuristic(ctx.locations);
         }
 
         if (recommendation.getHeuristicRange() == null) {
@@ -301,30 +298,42 @@ public class InstantiatedRecommendationService {
     }
 
     /**
-     * Computes heuristic score for location using electricity mix quartiles.
+     * Computes heuristic score for location as the average quartile score
+     * across all distinct locations in the digital service version.
      *
      * Quartile 1 (best mix) -> score 0.0 (not prioritized)
      * Quartile 4 (worst mix) -> score 1.0 (highly prioritized)
-     * Unknown location -> neutral 0.5
+     * Unknown locations are ignored; if none found -> neutral 0.5
      */
-    private double computeLocationHeuristic(String location) {
-        if (location == null || location.isBlank()) return 0.5;
+    private double computeLocationHeuristic(List<String> locations) {
+        if (locations == null || locations.isEmpty()) return 0.5;
 
         try {
             Map<Pair<String, String>, Integer> quartiles = referentialService.getElectricityMixQuartiles();
-            Integer quartile = quartiles.get(Pair.of(location, CLIMATE_CHANGE));
 
-            if (quartile == null) {
-                log.warn("TOPSIS: no electricity mix quartile found for location={}, using neutral score", location);
+            List<Double> scores = new ArrayList<>();
+            for (String location : locations) {
+                Integer quartile = quartiles.get(Pair.of(location, CLIMATE_CHANGE));
+                if (quartile == null) {
+                    log.warn("TOPSIS: no electricity mix quartile found for location={}, ignoring", location);
+                } else {
+                    double score = (quartile - 1.0) / 3.0;
+                    log.info("TOPSIS: location={} -> quartile={} -> score={}", location, quartile, score);
+                    scores.add(score);
+                }
+            }
+
+            if (scores.isEmpty()) {
+                log.warn("TOPSIS: no valid quartile found for any location, using neutral score");
                 return 0.5;
             }
 
-            double score = (quartile - 1.0) / 3.0;
-            log.info("TOPSIS: location={} -> quartile={} -> heuristic score={}", location, quartile, score);
-            return score;
+            double avgScore = scores.stream().mapToDouble(Double::doubleValue).average().orElse(0.5);
+            log.info("TOPSIS: average location heuristic score={} over {} locations", avgScore, scores.size());
+            return avgScore;
 
         } catch (Exception e) {
-            log.error("TOPSIS: failed to compute location heuristic for location={}", location, e);
+            log.error("TOPSIS: failed to compute location heuristic", e);
             return 0.5;
         }
     }
