@@ -11,6 +11,8 @@ package com.soprasteria.g4it.backend.apiinout.repository;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,4 +29,12 @@ public interface OutVirtualEquipmentRepository extends JpaRepository<OutVirtualE
     @Transactional
     @Modifying
     void deleteByTaskId(Long taskId);
+
+    @Query("""
+    SELECT DISTINCT o.source
+                                FROM OutVirtualEquipment o
+                                WHERE o.taskId = :taskId
+                                AND o.source IS NOT NULL
+""")
+    List<String> findDistinctSourcesByTaskId(@Param("taskId") Long taskId);
 }

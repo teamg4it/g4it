@@ -189,7 +189,13 @@
         "renew-button": "Prolonger",
         "renew-button-extended": "Prolongée",
         "renew-service-success-message": "prolongée avec succès",
-        "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation"
+        "renew-service-not-renewed-message": "Impossible de prolonger la période de conservation",
+        "source": {
+            "title": "Source",
+            "engine-title": "Moteurs de calcul utilisés",
+            "reference-title": "Références utilisées",
+            "engine": "Les calculs des équipements physiques sont effectués à l'aide de <strong>NumEcoEval</strong>. </br> Les calculs des équipements virtuels (non basés sur le cloud) sont également gérés par <strong>NumEcoEval</strong>. </br> Pour les équipements virtuels basés sur le cloud, les calculs sont effectués à l'aide de <strong>Boavizta</strong>."
+        }
     },
     "useful-information": {
         "computing-engines": "Moteurs de calcul",
@@ -657,8 +663,9 @@
             "virtual-template-file": "Fichier de modèle d'équipement virtuel ({{type}}, {{size}} Ko )",
             "application-template-file": "Fichier de modèle d'application ({{type}}, {{size}} Ko )",
             "all-template-files": "Tous les fichiers modèles ({{type}}, {{size}} Ko )",
-            "data-model": "Modèle de données ({{type}}, {{size}} Ko )",
-            "starter-pack": "Kit de départ"
+            "data-model": "Modèle de données de la plateforme ({{type}}, {{size}} Ko )",
+            "starter-pack": "Kit de départ",
+            "workspace-settings": "Paramètres spécifiques à l'espace de travail (zip)"
         },
         "choose-criteria": "Choisir les critères pour l'inventaire {{inventoryName}}",
         "calendar": "Calendrier",
@@ -1148,7 +1155,10 @@
         "manage-users": "Gérer les utilisateurs",
         "manage-workspaces": "Gérer les espaces de travail",
         "super-admin-title": "Super Admin",
-        "update-referential": "Mettre à jour le référentiel",
+        "update-platform-referential": "Mettre à jour le référentiel de la plateforme",
+        "update-workspace-referential": "Mettre à jour le référentiel de l'espace de travail",
+        "download-workspace-referential": "Télécharger le référentiel de l'espace de travail",
+        "update-reference-paragraph": "La mise à jour des données de référence permet de remplacer les valeurs par défaut des modèles physiques existants ou d'en charger de nouveaux.",
         "organization-placeholder": "Choisissez l'organisation",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
@@ -1221,6 +1231,7 @@
             "description": "Importez un fichier CSV pour alimenter les données de référentiel",
             "select-endpoint": "Sélectionner le référentiel cible",
             "select-endpoint-placeholder": "Choisissez le référentiel pour vos données CSV",
+            "workspace-endpoint-placeholder": "Choisissez le tableau de données de référentiel à mettre à jour",
             "supported-formats": "Formats supportés : .csv",
             "max-file-size": "Taille maximale : 100MB",
             "upload-button": "Télécharger le fichier",
@@ -1232,6 +1243,10 @@
             "imported-lines": "Lignes importées",
             "validation-errors": "Erreurs de validation",
             "validation-errors-title": "Détails des erreurs"
+        },
+        "workspace-reference": {
+            "data-model-text": "Si nécessaire, ce fichier peut vous aider à renseigner vos données de référence.",
+            "loading-result": "Chargement résultat"
         }
     },
     "error-graph": {

@@ -155,6 +155,45 @@ public class EvaluateNumEcoEvalService {
         return result;
     }
 
+    private void extractAndSetSource(ImpactEquipementPhysique impact,
+                                     Map<String, Object> traceMap,
+                                     ObjectMapper objectMapper) {
+
+        try {
+
+            if (traceMap.containsKey(Constants.MIX_ELECTRIQUE)) {
+                Map<String, Object> mixMap = objectMapper.convertValue(
+                        traceMap.get(Constants.MIX_ELECTRIQUE),
+                        new TypeReference<>() {}
+                );
+
+                Object source = mixMap.get("sourceReferentielMixElectrique");
+
+                if (source != null) {
+                    impact.setSource(source.toString());
+                    return;
+                }
+            }
+
+            // 2. FALLBACK → ReferentielFacteurCaracterisation
+            if (traceMap.containsKey(Constants.REFERENTIEL_FACTEUR)) {
+                Map<String, Object> refMap = objectMapper.convertValue(
+                        traceMap.get(Constants.REFERENTIEL_FACTEUR),
+                        new TypeReference<>() {}
+                );
+
+                Object source = refMap.get(Constants.SOURCE);
+
+                if (source != null) {
+                    impact.setSource(source.toString());
+                }
+            }
+
+        } catch (Exception e) {
+            log.warn("Failed to extract source from trace", e);
+        }
+    }
+
     /**
      * Update trace information
      *
@@ -182,6 +221,7 @@ public class EvaluateNumEcoEvalService {
             if (modified) {
                 impactEquipementPhysique.setTrace(objectMapper.writeValueAsString(traceMap));
             }
+            extractAndSetSource(impactEquipementPhysique, traceMap, objectMapper);
         } catch (Exception e) {
             log.warn("Failed to update trace for impact equipment: {}", impactEquipementPhysique, e);
         }
@@ -316,18 +356,24 @@ public class EvaluateNumEcoEvalService {
         LocalDateTime now = LocalDateTime.now();
 
         return impactEquipementPhysiqueList.stream()
-                .map(impact -> calculImpactEquipementVirtuelService.calculerImpactEquipementVirtuel(
-                        DemandeCalculImpactEquipementVirtuel.builder()
-                                .dateCalcul(now)
-                                .equipementVirtuel(internalToNumEcoEvalCalculs.map(virtualEquipment))
-                                .nbEquipementsVirtuels(virtualEquipmentNumber)
-                                .nbTotalVCPU(totalVcpuNumber)
-                                .stockageTotalVirtuel(totalStorage)
-                                .impactEquipement(impact)
-                                .pue(pue)
-                                .localisation(location)
-                                .facteurCaracterisations(impact.getFacteurCaracterisations())
-                                .build()))
+                .map(impact -> {
+                    ImpactEquipementVirtuel impactVirtuel =
+                            calculImpactEquipementVirtuelService.calculerImpactEquipementVirtuel(
+                                    DemandeCalculImpactEquipementVirtuel.builder()
+                                            .dateCalcul(now)
+                                            .equipementVirtuel(internalToNumEcoEvalCalculs.map(virtualEquipment))
+                                            .nbEquipementsVirtuels(virtualEquipmentNumber)
+                                            .nbTotalVCPU(totalVcpuNumber)
+                                            .stockageTotalVirtuel(totalStorage)
+                                            .impactEquipement(impact)
+                                            .pue(pue)
+                                            .localisation(location)
+                                            .facteurCaracterisations(impact.getFacteurCaracterisations())
+                                            .build()
+                            );
+                    impactVirtuel.setSource(impact.getSource());
+                    return impactVirtuel;
+                })
                 .toList();
 
     }

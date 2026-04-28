@@ -182,6 +182,17 @@
                 <p [innerHTML]="ecoMindRecomendation()"></p>
             }
 
+            @if (source() && !ecoMindRecomendation()) {
+                <div class="section-hr"></div>
+                <h4 class="mb-0 font-semibold">
+                    {{ "common.source.title" | translate }}
+                </h4>
+                <h5 class="my-2">{{ "common.source.engine-title" | translate }}</h5>
+                <p [innerHTML]="'common.source.engine' | translate"></p>
+                <h5 class="my-2">{{ "common.source.reference-title" | translate }}</h5>
+                <p>{{ sourceValueText() }}</p>
+            }
+
             @if (contentText()?.toGoFurther) {
                 <div class="section-hr"></div>
                 <h4 class="mb-0 font-semibold">

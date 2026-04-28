@@ -355,6 +355,8 @@ components:
           type: array
           items:
             type: string
+        source:
+          type: string
     OutVirtualEquipmentRest:
       description: Out virtual equipment rest
       type: object
@@ -430,6 +432,8 @@ components:
           type: array
           items:
             type: string
+        source:
+          type: string
     OutApplicationRest:
       description: Out virtual equipment rest
       type: object

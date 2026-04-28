@@ -913,12 +913,21 @@ class EvaluateServiceTest {
         AggValuesBO result = ReflectionTestUtils.invokeMethod(
                 evaluateService,
                 "createAggValuesBO",
-                "OK", null,
-                2d, 100d, 10d,
-                5d, 1d, 10d, 0.5d, true
+                "OK",
+                null,
+                2d,
+                100d,
+                10d,
+                5d,
+                1d,
+                10d,
+                0.5d,
+                true,
+                null
         );
 
-        assertEquals(20d, result.getUnitImpact()); // 10 * 2
+        // unitImpact * quantity = 10 * 2 = 20
+        assertEquals(20d, result.getUnitImpact());
     }
 
     @Test
@@ -927,11 +936,20 @@ class EvaluateServiceTest {
         AggValuesBO result = ReflectionTestUtils.invokeMethod(
                 evaluateService,
                 "createAggValuesBO",
-                "OK", null,
-                2d, 100d, 10d,
-                5d, 1d, 10d, 0.5d, false
+                "OK",
+                null,
+                2d,
+                100d,
+                10d,
+                5d,
+                1d,
+                10d,
+                0.5d,
+                false,
+                null
         );
 
+        // stays same
         assertEquals(10d, result.getUnitImpact());
     }
 

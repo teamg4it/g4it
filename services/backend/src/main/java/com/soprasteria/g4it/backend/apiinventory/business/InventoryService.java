@@ -7,6 +7,9 @@
  */
 package com.soprasteria.g4it.backend.apiinventory.business;
 
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapper;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -35,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -71,6 +75,12 @@ public class InventoryService {
     private UserWorkspaceRepository userWorkspaceRepository;
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
+    @Autowired
+    private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+
 
 
     /**
@@ -249,4 +259,31 @@ public class InventoryService {
         return inventoryMapper.toBusinessObject(inventoryToSave);
     }
 
+
+    public List<String> getInventoriesSources(Long workspaceId, Long inventoryId) {
+        Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
+
+        Inventory inventory = inventoryRepository
+                .findByWorkspaceAndId(workspace, inventoryId)
+                .orElseThrow(() -> new G4itRestException(
+                        ErrorConstants.NOT_FOUND,
+                        ErrorConstants.INVENTORY_NOT_FOUND
+                ));
+        Task task = taskRepository.findByInventoryAndLastCreationDate(inventory).orElse(null);
+        if (task == null) {
+            return Collections.emptyList();
+        }
+        List<String> physicalSources = outPhysicalEquipmentRepository
+                .findDistinctSourcesByTaskId(task.getId());
+
+        List<String> virtualSources = outVirtualEquipmentRepository
+                .findDistinctSourcesByTaskId(task.getId());
+
+        return java.util.stream.Stream
+                .concat(physicalSources.stream(), virtualSources.stream())
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+    }
 }

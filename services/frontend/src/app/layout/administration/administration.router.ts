@@ -10,8 +10,9 @@ import { TitleResolver } from "../common/title-resolver.service";
 import { AdministrationPanelComponent } from "./administration-panel/administration-panel.component";
 import { OrganizationsComponent } from "./administration-panel/organizations/organizations.component";
 import { SuperAdminComponent } from "./administration-panel/super-admin/super-admin.component";
-import { UsersComponent } from "./administration-panel/users/users.component";
 import { UpdateReferenceComponent } from "./administration-panel/update-reference/update-reference.component";
+import { UpdateWorkspaceReferenceComponent } from "./administration-panel/update-workspace-reference/update-workspace-reference.component";
+import { UsersComponent } from "./administration-panel/users/users.component";
 
 const titleResolveObject = {
     resolve: {
@@ -45,6 +46,11 @@ const routes: Routes = [
             {
                 path: "update-referential",
                 component: UpdateReferenceComponent,
+                ...titleResolveObject,
+            },
+            {
+                path: "update-workspace-referential",
+                component: UpdateWorkspaceReferenceComponent,
                 ...titleResolveObject,
             },
         ],
