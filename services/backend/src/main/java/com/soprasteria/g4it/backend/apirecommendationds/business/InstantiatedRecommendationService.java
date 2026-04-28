@@ -191,21 +191,27 @@ public class InstantiatedRecommendationService {
      * Collects all distinct non-null locations across virtual equipments and datacenters.
      */
     private List<String> computeDistinctLocations(String digitalServiceVersionUid) {
-        Set<String> locations = new HashSet<>();
-
+        List<String> locations = new ArrayList<>();
+        // Cloud locations
         inVirtualEquipmentRepository
                 .findByDigitalServiceVersionUid(digitalServiceVersionUid)
                 .stream()
-                .filter(ve -> ve.getLocation() != null && !ve.getLocation().isBlank())
+                .filter(ve -> ve.getLocation() != null && !ve.getLocation().isBlank()
+                    && ("CLOUD_SERVICES".equals(ve.getInfrastructureType())
+                                || "Cloud".equals(ve.getInfrastructureType())))
                 .forEach(ve -> locations.add(ve.getLocation()));
-
-        inDatacenterRepository
+        
+        
+        // Private infra: only datacenters actually referenced by a server physical equipment
+        inPhysicalEquipmentRepository
                 .findByDigitalServiceVersionUid(digitalServiceVersionUid)
                 .stream()
-                .filter(dc -> dc.getLocation() != null && !dc.getLocation().isBlank())
-                .forEach(dc -> locations.add(dc.getLocation()));
+                .filter(pe -> pe.getType() != null
+                        && (pe.getType().equals("Server") || pe.getType().equals("Dedicated Server"))
+                        && pe.getLocation() != null && !pe.getLocation().isBlank())
+                .forEach(pe -> locations.add(pe.getLocation()));
 
-        return new ArrayList<>(locations);
+        return locations;
     }
 
     // -------------------------------------------------------------------------
@@ -310,12 +316,13 @@ public class InstantiatedRecommendationService {
 
         try {
             Map<Pair<String, String>, Integer> quartiles = referentialService.getElectricityMixQuartiles();
-
+            
             List<Double> scores = new ArrayList<>();
             for (String location : locations) {
                 Integer quartile = quartiles.get(Pair.of(location, CLIMATE_CHANGE));
                 if (quartile == null) {
-                    log.warn("TOPSIS: no electricity mix quartile found for location={}, ignoring", location);
+                    log.warn("TOPSIS: no electricity mix quartile found for location={}, using 0.5", location);
+                    scores.add(0.5);
                 } else {
                     double score = (quartile - 1.0) / 3.0;
                     log.info("TOPSIS: location={} -> quartile={} -> score={}", location, quartile, score);
