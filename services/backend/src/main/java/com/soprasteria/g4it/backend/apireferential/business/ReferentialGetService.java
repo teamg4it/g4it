@@ -147,4 +147,42 @@ public class ReferentialGetService {
         return itemImpactRepository.findByCategory("electricity-mix");
     }
 
+    public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, String organization) {
+
+        // get all itemTypes
+        if (type == null) {
+            List<ItemType> items = itemTypeRepository.findByWorkspaceId(workspaceId);
+            if (items == null || items.isEmpty()) {
+                return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganization(organization));
+            } else {
+                return refRestMapper.toItemTypeRest(items);
+            }
+        }else{
+            Optional<ItemType> itemType = itemTypeRepository.findByTypeAndWorkspaceId(type, workspaceId);
+            if(itemType.isPresent()){
+                return refRestMapper.toItemTypeRest(List.of(itemType.get()));
+            }
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByTypeAndOrganization(type,organization).map(List::of).orElseGet(List::of));
+        }
+    }
+
+    public MatchingItemRest getMatchingItemForWorkspace(String model, String organization, Long workspaceId) {
+        return matchingItemRepository.findByItemSourceAndWorkspaceId(model, workspaceId)
+                .map(item -> refRestMapper.toMatchingItemRest(item))
+                .orElseGet(() -> matchingItemRepository.findByItemSourceAndOrganization(model, organization)
+                        .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null));
+    }
+
+    public List<ItemImpactRest> getItemImpactsForWorkspace(String criterion, String lifecycleStep,
+                                               String name, String location,
+                                               String category, String organization,Long workspaceId) {
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndWorkspaceId(
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location,workspaceId);
+        if(itemImpacts == null || itemImpacts.isEmpty()) {
+            itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
+                    StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization);
+        }
+            return refRestMapper.toItemImpactRest(itemImpacts);
+    }
+
 }

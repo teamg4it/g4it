@@ -80,16 +80,16 @@ public class EvaluateNumEcoEvalService {
                                                                      final String organization,
                                                                      List<CriterionRest> criteria,
                                                                      List<String> lifecycleSteps,
-                                                                     List<HypothesisRest> hypotheses) {
+                                                                     List<HypothesisRest> hypotheses,Long workspaceId) {
 
         MatchingItemRest matchingItem = null;
         boolean isModelMatched = true;
 
         if (physicalEquipment.getModel() != null) {
-            matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
+            matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(), organization,workspaceId);
         }
 
-        ItemTypeRest itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
+        ItemTypeRest itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(), organization,workspaceId);
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
@@ -108,9 +108,9 @@ public class EvaluateNumEcoEvalService {
                     itemImpactName = matchingItem.getRefItemTarget();
                 }
 
-                List<ItemImpactRest> itemImpacts = referentialService.getItemImpacts(
+                List<ItemImpactRest> itemImpacts = referentialService.getItemImpactsForWorkspace(
                         criterion.getCode(), lifecycleStep, itemImpactName,
-                        physicalEquipment.getLocation(), organization);
+                        physicalEquipment.getLocation(), organization,workspaceId);
 
                 ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
                 boolean hideValue = true;
