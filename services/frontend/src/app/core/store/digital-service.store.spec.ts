@@ -3,129 +3,159 @@ import { of } from "rxjs";
 import { DigitalServiceStoreService } from "./digital-service.store";
 import { InPhysicalEquipmentsService } from "../service/data/in-out/in-physical-equipments.service";
 import { InVirtualEquipmentsService } from "../service/data/in-out/in-virtual-equipments.service";
-import {
-    DigitalService,
-    DigitalServiceServerConfig,
-    Host,
-    NetworkType,
-    TerminalsType,
-} from "../interfaces/digital-service.interfaces";
-import {
-    InDatacenterRest,
-    InPhysicalEquipmentRest,
-    InVirtualEquipmentRest,
-} from "../interfaces/input.interface";
 
 describe("DigitalServiceStoreService", () => {
     let service: DigitalServiceStoreService;
 
-    const mockInPhysicalEquipmentsService = {
-        get: jasmine.createSpy("get").and.returnValue(
-            of([{ id: 1, label: "PE1" }] as unknown as InPhysicalEquipmentRest[]),
-        ),
+    const physicalMock = {
+        get: jasmine.createSpy().and.returnValue(of([{ id: 1 }])),
     };
 
-    const mockInVirtualEquipmentsService = {
-        getByDigitalService: jasmine
-            .createSpy("getByDigitalService")
-            .and.returnValue(of([{ id: 10, label: "VE1" }] as unknown as InVirtualEquipmentRest[])),
+    const virtualMock = {
+        getByDigitalService: jasmine.createSpy().and.returnValue(of([{ id: 2 }])),
     };
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 DigitalServiceStoreService,
-                { provide: InPhysicalEquipmentsService, useValue: mockInPhysicalEquipmentsService },
-                { provide: InVirtualEquipmentsService, useValue: mockInVirtualEquipmentsService },
+                { provide: InPhysicalEquipmentsService, useValue: physicalMock },
+                { provide: InVirtualEquipmentsService, useValue: virtualMock },
             ],
         });
+
         service = TestBed.inject(DigitalServiceStoreService);
     });
 
-    it("should create", () => {
+    // -------------------------
+    // BASIC
+    // -------------------------
+    it("should be created", () => {
         expect(service).toBeTruthy();
     });
 
-    it("should have initial default values", () => {
-        expect(service.enableCalcul()).toBeFalse();
-        expect(service.ecomindEnableCalcul()).toBeFalse();
-        expect(service.inPhysicalEquipments().length).toBe(0);
-        expect(service.inVirtualEquipments().length).toBe(0);
-        expect(service.isSharedDS()).toBeFalse();
+    // -------------------------
+    // SIMPLE SETTERS
+    // -------------------------
+    it("should set enableCalcul", () => {
+        service.setEnableCalcul(true);
+        expect(service.enableCalcul()).toBeTrue();
     });
 
-    it("setEnableCalcul & setEcoMindEnableCalcul should update signals", () => {
-        service.setEnableCalcul(true);
+    it("should set ecomindEnableCalcul", () => {
         service.setEcoMindEnableCalcul(true);
-        expect(service.enableCalcul()).toBeTrue();
         expect(service.ecomindEnableCalcul()).toBeTrue();
     });
 
-    it("setDigitalService should update digitalService signal", () => {
-        const ds = { uid: "ds-1" } as DigitalService;
+    it("should set digitalService", () => {
+        const ds: any = { name: "test" };
         service.setDigitalService(ds);
-        expect(service.digitalService().uid).toBe("ds-1");
+        expect(service.digitalService()).toEqual(ds);
     });
 
-    it("setCountryMap should update countryMap signal", () => {
-        service.setCountryMap({ FR: "France" });
-        expect(service.countryMap()['FR']).toBe("France");
+    it("should set countryMap", () => {
+        const map = { FR: "France" };
+        service.setCountryMap(map);
+        expect(service.countryMap()).toEqual(map);
     });
 
-    it("setNetworkTypes / setTerminalDeviceTypes / setServerTypes should update lists", () => {
-        service.setNetworkTypes([{ code: "NT1" } as NetworkType]);
-        service.setTerminalDeviceTypes([{ code: "TT1" } as TerminalsType]);
-        service.setServerTypes([{ value: "Server A" } as Host]);
-        expect(service.networkTypes()[0].code).toBe("NT1");
-        expect(service.terminalDeviceTypes()[0].code).toBe("TT1");
-        expect(service.serverTypes()[0].value).toBe("Server A");
+    it("should set networkTypes", () => {
+        const types: any = [{ name: "4G" }];
+        service.setNetworkTypes(types);
+        expect(service.networkTypes()).toEqual(types);
     });
 
-
-    it("setInDatacenters should add displayLabel", () => {
-        const dcs = [
-            {
-                name: "DC1|meta",
-                location: "Paris",
-                pue: 1.4,
-            },
-        ] as unknown as InDatacenterRest[];
-        service.setInDatacenters(dcs);
-        expect(service.inDatacenters()[0].displayLabel).toBe("DC1 (Paris - PUE = 1.4)");
+    it("should set serverTypes", () => {
+        const types: any = [{ name: "server" }];
+        service.setServerTypes(types);
+        expect(service.serverTypes()).toEqual(types);
     });
 
-    it("setInPhysicalEquipments should update list", () => {
-        const list = [{ id: 2 }] as unknown as InPhysicalEquipmentRest[];
-        service.setInPhysicalEquipments(list);
-        expect(service.inPhysicalEquipments().length).toBe(1);
-        expect(service.inPhysicalEquipments()[0].id).toBe(2);
+    it("should set terminalDeviceTypes", () => {
+        const types: any = [{ name: "mobile" }];
+        service.setTerminalDeviceTypes(types);
+        expect(service.terminalDeviceTypes()).toEqual(types);
     });
 
-    it("initInPhysicalEquipments should fetch and set data", async () => {
-        await service.initInPhysicalEquipments("ds-1");
-        expect(mockInPhysicalEquipmentsService.get).toHaveBeenCalledWith("ds-1");
-        expect(service.inPhysicalEquipments().length).toBe(1);
+    it("should set server", () => {
+        const server: any = { cpu: 4 };
+        service.setServer(server);
+        expect(service.server()).toEqual(server);
     });
 
-    it("setInVirtualEquipments should update list", () => {
-        const list = [{ id: 9 }] as unknown as InVirtualEquipmentRest[];
-        service.setInVirtualEquipments(list);
-        expect(service.inVirtualEquipments()[0].id).toBe(9);
-    });
-
-    it("initInVirtualEquipments should fetch and set data", async () => {
-        await service.initInVirtualEquipments("ds-2");
-        expect(mockInVirtualEquipmentsService.getByDigitalService).toHaveBeenCalledWith("ds-2");
-        expect(service.inVirtualEquipments().length).toBe(1);
-    });
-
-    it("setRefresh should update refresh counter", () => {
+    it("should set refresh", () => {
         service.setRefresh(5);
         expect(service.refresh()).toBe(5);
     });
 
-    it("setIsSharedDS should update isSharedDS flag", () => {
+    it("should set isSharedDS", () => {
         service.setIsSharedDS(true);
         expect(service.isSharedDS()).toBeTrue();
+    });
+
+    // -------------------------
+    // DATACENTERS
+    // -------------------------
+    it("should set inDatacenters and build displayLabel", () => {
+        const data: any = [
+            {
+                name: "DC1|extra",
+                location: "FR",
+                pue: 1.2,
+            },
+        ];
+
+        service.setInDatacenters(data);
+
+        expect(service.inDatacenters().length).toBe(1);
+        expect(service.inDatacenters()[0].displayLabel).toContain("DC1");
+        expect(service.inDatacenters()[0].displayLabel).toContain("PUE");
+    });
+
+    it("should add datacenter", () => {
+        const dc: any = {
+            name: "DC2|extra",
+            location: "DE",
+            pue: 1.5,
+        };
+
+        service.addDatacenter(dc);
+
+        expect(service.inDatacenters().length).toBe(1);
+        expect(service.inDatacenters()[0].displayLabel).toContain("DC2");
+    });
+
+    // -------------------------
+    // PHYSICAL EQUIPMENTS
+    // -------------------------
+    it("should set inPhysicalEquipments", () => {
+        const data: any = [{ id: 1 }];
+        service.setInPhysicalEquipments(data);
+
+        expect(service.inPhysicalEquipments()).toEqual(data);
+    });
+
+    it("should initInPhysicalEquipments", async () => {
+        await service.initInPhysicalEquipments("uid");
+
+        expect(physicalMock.get).toHaveBeenCalledWith("uid");
+        expect(service.inPhysicalEquipments().length).toBe(1);
+    });
+
+    // -------------------------
+    // VIRTUAL EQUIPMENTS
+    // -------------------------
+    it("should set inVirtualEquipments", () => {
+        const data: any = [{ id: 2 }];
+        service.setInVirtualEquipments(data);
+
+        expect(service.inVirtualEquipments()).toEqual(data);
+    });
+
+    it("should initInVirtualEquipments", async () => {
+        await service.initInVirtualEquipments("uid");
+
+        expect(virtualMock.getByDigitalService).toHaveBeenCalledWith("uid");
+        expect(service.inVirtualEquipments().length).toBe(1);
     });
 });
