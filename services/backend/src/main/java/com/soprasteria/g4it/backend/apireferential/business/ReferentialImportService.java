@@ -19,6 +19,7 @@ import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -116,7 +118,7 @@ public class ReferentialImportService {
 
         List<CriterionRest> objects = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             int line = 2;
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 CriterionRest criterionRest = referentialMapper.csvCriterionToRest(csvRecord);
@@ -155,7 +157,7 @@ public class ReferentialImportService {
 
         List<LifecycleStepRest> objects = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             int line = 2;
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 LifecycleStepRest lifecycleStepRest = referentialMapper.csvLifecycleStepToRest(csvRecord);
@@ -197,7 +199,7 @@ public class ReferentialImportService {
 
         int line = 2;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 HypothesisRest hypothesisRest = referentialMapper.csvHypothesisToRest(csvRecord);
                 Optional<String> violations = ValidationUtils.getViolations(validator.validate(hypothesisRest));
@@ -244,7 +246,7 @@ public class ReferentialImportService {
 
         int line = 2;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 ItemTypeRest itemTypeRest = referentialMapper.csvItemTypeToRest(csvRecord);
                 Optional<String> violations = ValidationUtils.getViolations(validator.validate(itemTypeRest));
@@ -290,7 +292,7 @@ public class ReferentialImportService {
         List<MatchingItemRest> objects = new ArrayList<>();
 
         int line = 2;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 MatchingItemRest matchingItemRest = referentialMapper.csvMatchingItemToRest(csvRecord);
                 Optional<String> violations = ValidationUtils.getViolations(validator.validate(matchingItemRest));
@@ -339,7 +341,7 @@ public class ReferentialImportService {
         int pageNumber = 0;
         int line = 0;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             Iterable<CSVRecord> records = createCsvParser().parse(reader);
             for (CSVRecord csvRecord : records) {
                 ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
@@ -358,7 +360,7 @@ public class ReferentialImportService {
 
         i = 0;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             Iterable<CSVRecord> records = createCsvParser().parse(reader);
             for (CSVRecord csvRecord : records) {
                 line = i + 2 + pageNumber * Constants.BATCH_SIZE;
@@ -403,7 +405,7 @@ public class ReferentialImportService {
 
         int line = 2;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             var parser = createCsvParser().parse(reader);
 
             validateHeaders(
@@ -454,7 +456,7 @@ public class ReferentialImportService {
 
         int line = 2;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             var parser = createCsvParser().parse(reader);
             validateHeaders(
                     parser.getHeaderNames(),
@@ -501,7 +503,7 @@ public class ReferentialImportService {
 
         int line = 2;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        try (BufferedReader reader = getUtf8Reader(file)) {
             var parser = createCsvParser().parse(reader);
             validateHeaders(
                     parser.getHeaderNames(),
@@ -554,6 +556,15 @@ public class ReferentialImportService {
                                 ", but got: " + actual.get(i));
             }
         }
+    }
+
+    private BufferedReader getUtf8Reader(MultipartFile file) throws IOException {
+        return new BufferedReader(
+                new InputStreamReader(
+                        new BOMInputStream(file.getInputStream()),
+                        StandardCharsets.UTF_8
+                )
+        );
     }
 
     /**
