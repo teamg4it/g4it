@@ -143,8 +143,11 @@ public class ReferentialGetService {
      *
      * @return list of item impacts
      */
-    public List<ItemImpact> getElectricityMix() {
-        return itemImpactRepository.findByCategory("electricity-mix");
+    public List<ItemImpact> getElectricityMix(Long workspaceId) {
+        List<ItemImpact> itemImpactList= itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",workspaceId);
+        if(itemImpactList!=null && !itemImpactList.isEmpty())
+            return itemImpactList;
+        return itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",null);
     }
 
     public List<ItemTypeRest> getItemTypesForWorkspace(String type, Long workspaceId, String organization) {

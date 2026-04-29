@@ -88,4 +88,6 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
                                                                                                  final Long workspaceId);
 
     Page<ItemImpact> findByWorkspaceId(Long workspaceId, Pageable pageable);
+
+    List<ItemImpact> findByCategoryAndWorkspaceId(final String category, final Long workspaceId);
 }

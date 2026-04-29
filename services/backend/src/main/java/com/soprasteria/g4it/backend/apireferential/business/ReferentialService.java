@@ -146,8 +146,8 @@ public class ReferentialService {
      * @return the map of quartiles
      */
     @Cacheable("getNewElectricityMixQuartiles")
-    public Map<Pair<String, String>, Integer> getElectricityMixQuartiles() {
-        var allMixElec = referentialGetService.getElectricityMix().stream()
+    public Map<Pair<String, String>, Integer> getElectricityMixQuartiles(Long workspaceId) {
+        var allMixElec = referentialGetService.getElectricityMix(workspaceId).stream()
                 .filter(mix -> {
                     var hasNullValue = mix.getCriterion() == null || mix.getValue() == null;
                     if (hasNullValue) {
