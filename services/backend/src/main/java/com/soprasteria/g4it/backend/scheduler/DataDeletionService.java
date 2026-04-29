@@ -13,9 +13,14 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceR
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceVersionRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRoleWorkspaceRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserWorkspaceRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.WorkspaceRepository;
 import com.soprasteria.g4it.backend.common.utils.AzureEmailService;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.ObjectUtils;
 import com.soprasteria.g4it.backend.common.utils.WorkspaceStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +53,9 @@ public class DataDeletionService {
     @Value("${g4it.data.retention.email.link.inventory:https://int.saas-g4it.com/organizations/{organization}/workspaces/{workspaceId}/inventories?inventoryId={inventoryId}&renew=true}")
     private String inventoryLink;
 
+    @Value("${g4it.data.retention.email.link.eco-mind-ai:https://int.saas-g4it.com/organizations/{organization}/workspaces/{workspaceId}/eco-mind-ai/{digitalServiceVersionUid}/footprint/dashboard?renew=true}")
+    private String ecoMindAiLink;
+
     private final WorkspaceRepository workspaceRepository;
     private final InventoryRepository inventoryRepository;
     private final InventoryDeleteService inventoryDeleteService;
@@ -56,6 +64,8 @@ public class DataDeletionService {
     private final AzureEmailService azureEmailService;
     private final MessageSource messageSource;
     private final DigitalServiceVersionRepository digitalServiceVersionRepository;
+    private final UserWorkspaceRepository userWorkspaceRepository;
+    private final UserRoleWorkspaceRepository userRoleWorkspaceRepository;
 
     @Autowired
     public DataDeletionService(
@@ -65,7 +75,7 @@ public class DataDeletionService {
             DigitalServiceService digitalServiceService,
             DigitalServiceRepository digitalServiceRepository,
             AzureEmailService azureEmailService,
-            MessageSource messageSource, DigitalServiceVersionRepository digitalServiceVersionRepository
+            MessageSource messageSource, DigitalServiceVersionRepository digitalServiceVersionRepository, UserWorkspaceRepository userWorkspaceRepository, UserRoleWorkspaceRepository userRoleWorkspaceRepository
     ) {
         this.workspaceRepository = workspaceRepository;
         this.inventoryRepository = inventoryRepository;
@@ -75,6 +85,8 @@ public class DataDeletionService {
         this.azureEmailService = azureEmailService;
         this.messageSource = messageSource;
         this.digitalServiceVersionRepository = digitalServiceVersionRepository;
+        this.userWorkspaceRepository = userWorkspaceRepository;
+        this.userRoleWorkspaceRepository = userRoleWorkspaceRepository;
     }
 
     /**
@@ -137,12 +149,14 @@ public class DataDeletionService {
                         String emailLink = inventoryLink.replace("{organization}", organization)
                                 .replace("{workspaceId}", String.valueOf(workspaceId))
                                 .replace("{inventoryId}", String.valueOf(inventory.getId()));
-                        sendRetentionReminderEmail(
-                                inventory.getCreatedBy().getEmail(),
-                                inventory.getName(),
-                                expirationDate,
-                                retentionDay,emailLink
-                        );
+                        for (User user : getWorkspaceUsers(workspaceEntity,Constants.ROLE_INVENTORY_WRITE)) {
+                            sendRetentionReminderEmail(
+                                    user.getEmail(),
+                                    inventory.getName(),
+                                    expirationDate,
+                                    retentionDay, emailLink
+                            );
+                        }
                         return 0;
                     } else if (now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate())) {
                         inventoryDeleteService.deleteInventory(organization, workspaceId, inventory.getId());
@@ -162,15 +176,26 @@ public class DataDeletionService {
                     if ((daysSinceLastUpdate == retentionDay - firstReminderDay) || (daysSinceLastUpdate == retentionDay - secondReminderDay)) {
                         String expirationDate = ObjectUtils.getExpiryDate(digitalServiceBO.getLastUpdateDate(), retentionDay);
                         List<DigitalServiceVersion> digitalServiceVersionList= digitalServiceVersionRepository.findByDigitalServiceUid(digitalServiceBO.getUid());
-                        String emailLink = digitalServiceLink.replace("{organization}", organization)
+                        String emailLink;
+                        String roleName ;
+                        if (digitalServiceBO.isAi()) {
+                            emailLink = ecoMindAiLink;
+                            roleName = Constants.ROLE_ECO_MIND_AI_WRITE;
+                        }else {
+                            emailLink = digitalServiceLink;
+                            roleName = Constants.ROLE_DIGITAL_SERVICE_WRITE;
+                        }
+                        emailLink= emailLink.replace("{organization}", organization)
                                 .replace("{workspaceId}", String.valueOf(workspaceId))
                                 .replace("{digitalServiceVersionUid}", digitalServiceVersionList.getFirst().getUid());
-                        sendRetentionReminderEmail(
-                                digitalServiceBO.getUser().getEmail(),
-                                digitalServiceBO.getName(),
-                                expirationDate,
-                                retentionDay,emailLink
-                        );
+                        for (User user : getWorkspaceUsers(workspaceEntity,roleName)) {
+                            sendRetentionReminderEmail(
+                                    user.getEmail(),
+                                    digitalServiceBO.getName(),
+                                    expirationDate,
+                                    retentionDay, emailLink
+                            );
+                        }
                         return 0;
                     } else if (now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate())) {
                         digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
@@ -179,6 +204,13 @@ public class DataDeletionService {
                     return 0;
                 })
                 .sum();
+    }
+
+    private List<User> getWorkspaceUsers(Workspace workspace, String roleName) {
+        return userWorkspaceRepository.findByWorkspace(workspace)
+                .stream().filter(userWorkspace -> userRoleWorkspaceRepository.findByUserWorkspaces(userWorkspace).parallelStream().anyMatch(userRoleWorkspace ->
+                        userRoleWorkspace.getRoles().getName().equals(roleName) || Constants.ROLE_WORKSPACE_ADMINISTRATOR.equals(userRoleWorkspace.getRoles().getName()))).map(UserWorkspace::getUser).toList();
+
     }
 
 }
