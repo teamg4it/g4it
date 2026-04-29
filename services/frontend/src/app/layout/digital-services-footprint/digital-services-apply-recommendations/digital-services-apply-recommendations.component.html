@@ -164,6 +164,21 @@ appendTo="body"
 <label>{{ 'digital-services-cloud-services.average-workload' | translate }}</label>
 <p-inputNumber [(ngModel)]="editingCloud.averageWorkload" class="field-full" />
 </div>
+<div class="cloud-form-row" *ngIf="editingCloud">
+  <label>Localisation</label>
+
+  <p-dropdown
+    [options]="countries()"
+    optionLabel="label"
+    [(ngModel)]="editingCloud.location.code"
+    optionValue="code"
+    [filter]="true"
+    filterBy="label"
+    placeholder="Choisir une localisation"
+    appendTo="body"
+    class="field-full"
+  ></p-dropdown>
+</div>
 </div>
 
 
