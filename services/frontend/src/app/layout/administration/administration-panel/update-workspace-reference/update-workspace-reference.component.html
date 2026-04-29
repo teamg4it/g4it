@@ -26,121 +26,131 @@
             >
             </p-button>
         </div>
+    </div>
+    @if (workspace.organizationName) {
+        <div>
+            <h2 for="upload-reference" class="inline m-0">
+                {{ "administration.uploadcsv.description" | translate }}
+            </h2>
+            <div
+                class="h-2rem border-top-2 border-primary p-0 mt-1"
+                style="color: lightgray"
+            ></div>
 
-        <h2 for="upload-reference" class="inline m-0">
-            {{ "administration.uploadcsv.description" | translate }}
-        </h2>
-        <div
-            class="h-2rem border-top-2 border-primary p-0 mt-1"
-            style="color: lightgray"
-        ></div>
+            <h3 class="ml-0 mt-2">
+                {{ "administration.update-reference-paragraph" | translate }}
+            </h3>
 
-        <h3 class="ml-0 mt-2">
-            {{ "administration.update-reference-paragraph" | translate }}
-        </h3>
-
-        <div class="flex mb-3">
-            <p-dropdown
-                appendTo="body"
-                [options]="csvEndpoints"
-                optionLabel="apiEndpointName"
-                name="endpointDropdown"
-                [(ngModel)]="selectedEndpoint"
-                styleClass="w-25rem h-3rem"
-                placeholder="{{
-                    'administration.uploadcsv.workspace-endpoint-placeholder' | translate
-                }}"
-                filterPlaceholder="{{ 'common.search' | translate }}"
-            >
-                <ng-template pTemplate="selectedItem" let-selectedOption>
-                    @if (selectedOption) {
+            <div class="flex mb-3">
+                <p-dropdown
+                    appendTo="body"
+                    [options]="csvEndpoints"
+                    optionLabel="apiEndpointName"
+                    name="endpointDropdown"
+                    [(ngModel)]="selectedEndpoint"
+                    styleClass="w-25rem h-3rem"
+                    placeholder="{{
+                        'administration.uploadcsv.workspace-endpoint-placeholder'
+                            | translate
+                    }}"
+                    filterPlaceholder="{{ 'common.search' | translate }}"
+                >
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        @if (selectedOption) {
+                            <div
+                                class="flex align-items-center justify-content-between gap-1"
+                            >
+                                <span class="font-medium text-color">{{
+                                    selectedOption.label
+                                }}</span>
+                                <small class="text-base text-500 font-mono">{{
+                                    selectedOption.url
+                                }}</small>
+                            </div>
+                        }
+                    </ng-template>
+                    <ng-template pTemplate="item" let-endpoint>
                         <div
                             class="flex align-items-center justify-content-between gap-1"
                         >
                             <span class="font-medium text-color">{{
-                                selectedOption.label
+                                endpoint.label
                             }}</span>
                             <small class="text-base text-500 font-mono">{{
-                                selectedOption.url
+                                endpoint.url
                             }}</small>
                         </div>
-                    }
-                </ng-template>
-                <ng-template pTemplate="item" let-endpoint>
-                    <div class="flex align-items-center justify-content-between gap-1">
-                        <span class="font-medium text-color">{{ endpoint.label }}</span>
-                        <small class="text-base text-500 font-mono">{{
-                            endpoint.url
-                        }}</small>
-                    </div>
-                </ng-template>
-            </p-dropdown>
+                    </ng-template>
+                </p-dropdown>
 
-            <p-fileUpload
-                #fileUpload
-                styleClass="bg-black text-2xs letter-spacing-2 w-18rem mx-2 h-3rem uppercase"
-                id="upload-file"
-                mode="basic"
-                chooseLabel="{{ fileUploadText }}"
-                [ariaLabel]="fileUploadText"
-                accept=".csv"
-                [customUpload]="true"
-                (onSelect)="onSelect($event)"
-            >
-            </p-fileUpload>
+                <p-fileUpload
+                    #fileUpload
+                    styleClass="bg-black text-2xs letter-spacing-2 w-18rem mx-2 h-3rem uppercase"
+                    id="upload-file"
+                    mode="basic"
+                    chooseLabel="{{ fileUploadText }}"
+                    [ariaLabel]="fileUploadText"
+                    accept=".csv"
+                    [customUpload]="true"
+                    (onSelect)="onSelect($event)"
+                >
+                </p-fileUpload>
 
-            <p-button
-                styleClass="p-button-secondary-blue h-3rem uppercase"
-                icon="pi pi-upload "
-                (onClick)="startUpload()"
-                [label]="'digital-services-import.start-upload' | translate"
-                [ariaLabel]="'digital-services-import.start-upload' | translate"
-                [disabled]="
-                    !selectedEndpoint ||
-                    !file ||
-                    !workspace.organizationName ||
-                    uploadInProgress
-                "
-            />
+                <p-button
+                    styleClass="p-button-secondary-blue h-3rem uppercase"
+                    icon="pi pi-upload "
+                    (onClick)="startUpload()"
+                    [label]="'digital-services-import.start-upload' | translate"
+                    [ariaLabel]="'digital-services-import.start-upload' | translate"
+                    [disabled]="
+                        !selectedEndpoint ||
+                        !file ||
+                        !workspace.organizationName ||
+                        uploadInProgress
+                    "
+                />
 
-            <p-button
-                class="mx-3 mt-1"
-                icon="pi pi-times"
-                (onClick)="onDeleteButton()"
-                [text]="true"
-                [ariaLabel]="'administration.delete' | translate"
-            />
-        </div>
-    </div>
-
-    <div class="my-3">
-        <div>
-            <span class="pi pi-file-excel mr-2 font-bold light-black-color"></span>
-            <a
-                class="font-bold cursor-pointer light-black-color"
-                tabindex="0"
-                role="link"
-                #addFocus
-                (click)="downloadTemplateFile(dataModel?.name!)"
-                (keydown.enter)="downloadTemplateFile(dataModel?.name!)"
-                [attr.id]="'addFocus'"
-            >
-                <u>{{ dataModel?.displayFileName }}</u>
-            </a>
-            {{
-                "digital-services-import.templates.type-size"
-                    | translate
-                        : {
-                              type: dataModel?.type,
-                              size: templateFileService.toKB(dataModel?.metadata?.size),
-                          }
-            }}
+                <p-button
+                    class="mx-3 mt-1"
+                    icon="pi pi-times"
+                    (onClick)="onDeleteButton()"
+                    [text]="true"
+                    [ariaLabel]="'administration.delete' | translate"
+                />
+            </div>
         </div>
 
-        <p>
-            {{ "administration.workspace-reference.data-model-text" | translate }}
-        </p>
-    </div>
+        <div class="my-3">
+            <div>
+                <span class="pi pi-file-excel mr-2 font-bold light-black-color"></span>
+                <a
+                    class="font-bold cursor-pointer light-black-color"
+                    tabindex="0"
+                    role="link"
+                    #addFocus
+                    (click)="downloadTemplateFile(dataModel?.name!)"
+                    (keydown.enter)="downloadTemplateFile(dataModel?.name!)"
+                    [attr.id]="'addFocus'"
+                >
+                    <u>{{ dataModel?.displayFileName }}</u>
+                </a>
+                {{
+                    "digital-services-import.templates.type-size"
+                        | translate
+                            : {
+                                  type: dataModel?.type,
+                                  size: templateFileService.toKB(
+                                      dataModel?.metadata?.size
+                                  ),
+                              }
+                }}
+            </div>
+
+            <p>
+                {{ "administration.workspace-reference.data-model-text" | translate }}
+            </p>
+        </div>
+    }
 
     @if (loadingResults.length) {
         <div>
