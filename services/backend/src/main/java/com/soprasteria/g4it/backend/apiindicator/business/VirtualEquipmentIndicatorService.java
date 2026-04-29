@@ -80,7 +80,7 @@ public class VirtualEquipmentIndicatorService {
                                     isoToCountry.getOrDefault(iso, iso);
 
                             boolean result =
-                                    lowImpactService.isLowImpact(resolvedCountry);
+                                    lowImpactService.isLowImpact(resolvedCountry,workspaceId);
 
                             return result;
                         }

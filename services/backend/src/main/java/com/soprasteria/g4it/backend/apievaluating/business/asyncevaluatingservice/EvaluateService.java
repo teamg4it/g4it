@@ -132,7 +132,7 @@ public class EvaluateService {
                                 Map.Entry::getKey
                         ));
         lifecycleStepsCache = referentialService.getLifecycleSteps();
-        electricityMixQuartilesCache = referentialService.getElectricityMixQuartiles();
+        electricityMixQuartilesCache = referentialService.getElectricityMixQuartiles(null);
     }
 
     /**

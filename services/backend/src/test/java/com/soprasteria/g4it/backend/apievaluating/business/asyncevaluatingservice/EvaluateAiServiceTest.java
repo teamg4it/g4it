@@ -168,7 +168,7 @@ class EvaluateAiServiceTest {
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("use"));
         when(referentialService.getActiveCriteria(task.getCriteria().stream()
                 .map(StringUtils::kebabToSnakeCase).toList())).thenReturn(List.of(criterionRest));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(any())).thenReturn(List.of());
         when(referentialService.getSipValueMap(any())).thenReturn(Map.of("CLIMATE_CHANGE", 2.0));
 
