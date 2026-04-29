@@ -47,7 +47,7 @@ public class WorkspaceReferentialImportExportController implements WorkspaceRefe
 
        try {
            InputStream zipStream =
-                   workspaceReferentialExportService.exportReferentialZip(workspace);
+                   workspaceReferentialExportService.exportReferentialZip(organization, workspace);
 
            return ResponseEntity.ok()
                    .header("Content-Disposition", "attachment; filename=workspace-referential.zip")
@@ -74,7 +74,7 @@ public class WorkspaceReferentialImportExportController implements WorkspaceRefe
     ) {
 
         ImportReportRest report =
-                workspaceReferentialImportService.importReferentialCSV(workspace, type, file);
+                workspaceReferentialImportService.importReferentialCSV(organization, workspace, type, file);
 
         return new ResponseEntity<>(report, HttpStatus.OK);
     }

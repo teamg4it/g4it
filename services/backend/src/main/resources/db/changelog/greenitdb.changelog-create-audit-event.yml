@@ -1,0 +1,69 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-audit-event-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: audit_event
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+
+              - column:
+                  name: user_email
+                  type: VARCHAR(255)
+
+              - column:
+                  name: organization
+                  type: VARCHAR(255)
+
+              - column:
+                  name: workspace_id
+                  type: BIGINT
+
+              - column:
+                  name: action
+                  type: VARCHAR(100)
+
+              - column:
+                  name: endpoint
+                  type: VARCHAR(500)
+
+              - column:
+                  name: start_time
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+              - column:
+                  name: end_time
+                  type: TIMESTAMP
+
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+
+  - changeSet:
+      id: audit-event-indexes
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            indexName: idx_audit_workspace
+            tableName: audit_event
+            columns:
+              - column:
+                  name: workspace_id
+
+        - createIndex:
+            indexName: idx_audit_time
+            tableName: audit_event
+            columns:
+              - column:
+                  name: start_time
