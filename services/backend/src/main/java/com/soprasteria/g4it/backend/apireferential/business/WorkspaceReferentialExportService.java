@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.springframework.data.domain.Page;
@@ -96,11 +97,6 @@ public class WorkspaceReferentialExportService {
             Function<T, Object[]> mapper
     ) throws IOException {
 
-        CSVFormat csvFormat = CSVFormat.Builder.create()
-                .setHeader(headers)
-                .setDelimiter(CsvUtils.DELIMITER)
-                .build();
-
         long count = 0;
         int pageNumber = 0;
 
@@ -115,18 +111,27 @@ public class WorkspaceReferentialExportService {
 
         zos.putNextEntry(new ZipEntry("workspace-referential/" + fileName));
 
-        try (CSVPrinter printer = new CSVPrinter(
-                new OutputStreamWriter(
-                        new FilterOutputStream(zos) {
-                            @Override
-                            public void close() throws IOException {
-                                // prevent closing underlying ZIP stream
-                            }
-                        },
-                        java.nio.charset.StandardCharsets.UTF_8
-                ),
-                csvFormat)) {
-            printer.print("\uFEFF");
+        CSVFormat csvFormat = CSVFormat.Builder.create()
+                .setDelimiter(CsvUtils.DELIMITER)
+                .build();
+
+        OutputStreamWriter writer = new OutputStreamWriter(
+                new FilterOutputStream(zos) {
+                    @Override
+                    public void close() throws IOException {
+                        // prevent closing underlying ZIP stream
+                    }
+                },
+                StandardCharsets.UTF_8
+        );
+
+        writer.write("\uFEFF");
+
+        try (CSVPrinter printer = new CSVPrinter(writer, csvFormat)) {
+
+            // writing header manually AFTER BOM
+            printer.printRecord((Object[]) headers);
+
             for (T item : page.getContent()) {
                 if (item != null) {
                     Object[] record = mapper.apply(item);
@@ -135,6 +140,7 @@ public class WorkspaceReferentialExportService {
                     }
                 }
             }
+
 
             count += page.getNumberOfElements();
             pageNumber = 1;
