@@ -1712,7 +1712,8 @@ app-version-type-tag {
 }
 
 app-configure-view-filters,
-dataviz-filter {
+dataviz-filter,
+dataviz-filter-application {
     .p-accordion .p-accordion-tab {
         box-shadow: none;
     }

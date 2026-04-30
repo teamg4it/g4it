@@ -11,6 +11,7 @@ import {
     inject,
     Input,
     OnChanges,
+    signal,
     SimpleChanges,
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -24,13 +25,16 @@ import { Constants } from "src/constants";
 @Component({
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
+    styleUrl: "./dataviz-filter-application.component.scss",
 })
 export class DatavizFilterApplicationComponent implements OnChanges {
     @Input() allFilters: Filter<string | TransformedDomain> = {};
     allUnusedFilters: Filter<TransformedDomain> = {};
+    localFilters = signal<Filter<string | TransformedDomain>>({});
     private readonly filterService = inject(FilterService);
     private readonly translate = inject(TranslateService);
     protected footprintStore = inject(FootprintStoreService);
+    filterSidebarVisible = false;
 
     overlayVisible: boolean = false;
     tabs = Constants.APPLICATION_FILTERS;
@@ -39,14 +43,24 @@ export class DatavizFilterApplicationComponent implements OnChanges {
 
     selectedFilterNames = computed(() => {
         const filters = this.footprintStore.applicationSelectedFilters();
-        return Object.keys(filters)
-            .filter((tab) => this.filterActive(filters[tab]))
-            .map((tab) =>
-                this.translate.instant(
-                    `inventories-footprint.filter-tabs-application.${tab}`,
-                ),
-            )
-            .join(", ");
+        return Object.keys(filters).filter((tab) => this.filterActive(filters[tab]));
+    });
+
+    localSelectedFilterNames = computed(() => {
+        const filters = this.localFilters();
+        return Object.keys(filters).filter((tab) => this.filterActive(filters[tab]));
+    });
+
+    isFilterApplied = computed(() => {
+        const filtersToCheck = this.localFilters();
+        const selectedFiltersArr = Object.keys(filtersToCheck);
+        return selectedFiltersArr.reduce(
+            (acc, key) => {
+                acc[key] = this.filterActive(filtersToCheck[key]) ?? false;
+                return acc;
+            },
+            {} as Record<string, boolean>,
+        );
     });
 
     ngOnChanges(changes: SimpleChanges) {
@@ -71,13 +85,13 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     onFilterSelected(selectedValues: string[], tab: string, selection: string) {
-        const f = this.footprintStore.applicationSelectedFilters();
+        const f = { ...this.localFilters() };
         f[tab] = this.filterService.getUpdateSelectedValues(
             selectedValues,
             this.allFilters[tab] as string[],
             selection,
         );
-        this.footprintStore.setApplicationSelectedFilters(f);
+        this.localFilters.set(f);
     }
 
     onTreeChange(event: CheckboxChangeEvent, item: TransformedDomain) {
@@ -94,9 +108,9 @@ export class DatavizFilterApplicationComponent implements OnChanges {
             }
         }
         this.setAllCheckBox();
-        const f = this.footprintStore.applicationSelectedFilters();
+        const f = { ...this.localFilters() };
         f["domain"] = this.allUnusedFilters["domain"];
-        this.footprintStore.setApplicationSelectedFilters(f);
+        this.localFilters.set(f);
     }
 
     onTreeChildChanged(event: CheckboxChangeEvent, item: TransformedDomain) {
@@ -106,9 +120,9 @@ export class DatavizFilterApplicationComponent implements OnChanges {
             item.checked = false;
         }
         this.setAllCheckBox();
-        const f = this.footprintStore.applicationSelectedFilters();
+        const f = { ...this.localFilters() };
         f["domain"] = this.allUnusedFilters["domain"];
-        this.footprintStore.setApplicationSelectedFilters(f);
+        this.localFilters.set(f);
     }
 
     setAllCheckBox(): void {
@@ -138,5 +152,31 @@ export class DatavizFilterApplicationComponent implements OnChanges {
                 (domain) =>
                     !domain.checked || domain.children.some((child) => !child.checked),
             );
+    }
+
+    openFilterSidebar(): void {
+        // Create a deep copy of current filters from store
+        this.localFilters.set(
+            structuredClone(this.footprintStore.applicationSelectedFilters()),
+        );
+        this.allUnusedFilters = structuredClone(
+            this.allFilters,
+        ) as Filter<TransformedDomain>;
+        this.filterSidebarVisible = true;
+    }
+
+    closeFilterSidebar(): void {
+        // Discard changes and reset
+        this.filterSidebarVisible = false;
+        this.localFilters.set({});
+        this.allUnusedFilters = {};
+    }
+
+    applyFilters(): void {
+        // Save local changes to store
+        const filters = this.localFilters();
+        this.footprintStore.setApplicationSelectedFilters(filters);
+        this.filterSidebarVisible = false;
+        this.localFilters.set({});
     }
 }
