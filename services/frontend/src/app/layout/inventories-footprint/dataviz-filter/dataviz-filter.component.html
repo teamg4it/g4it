@@ -1,78 +1,124 @@
-<div
-    class="filter-component"
-    (click)="overlayVisible = !overlayVisible"
-    (keydown.enter)="overlayVisible = !overlayVisible"
-    label="Show Overlay"
-    tabindex="0"
-    role="button"
-    [attr.aria-label]="'common.access-filters' | translate"
-    id="filter-component"
->
-    <div>
-        @if (selectedFilterNames().length) {
-            <i class="pi pi-filter-fill"></i>
-        } @else {
-            <i class="pi pi-filter"></i>
-        }
+<p-button
+    (onClick)="filterSidebarVisible = true"
+    styleClass="p-button-secondary-blue uppercase mr-3"
+    id="filter"
+    [icon]="selectedFilterNames().length ? 'pi pi-filter-fill' : 'pi pi-filter'"
+    [ariaLabel]="'inventories-footprint.filter-view' | translate"
+></p-button>
 
-        <span class="ml-3">
-            {{ "inventories-footprint.filter" | translate }}
-            @if (selectedFilterNames().length) {
-                <i>
-                    {{ "-" }}
-                    {{ "inventories-footprint.active-filters" | translate }}
-                    {{ ": " + selectedFilterNames() }}
-                </i>
-            }
-        </span>
-    </div>
-    <i class="pi pi-chevron-down font-bold mx-3"></i>
-</div>
-<p-overlay
-    [(visible)]="overlayVisible"
-    [responsive]="{
-        breakpoint: '1280px',
-        direction: 'bottom',
-        contentStyleClass: 'h-22rem',
-    }"
-    contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
->
-    <p-tabView>
-        @for (tab of tabs; track $index) {
-            <p-tabPanel
-                header="{{ 'inventories-footprint.filter-tabs.' + tab | translate }}"
-                [id]="tab"
-            >
-                <p-scrollPanel
-                    mode="vertical"
-                    [style]="{ width: '96%', height: '240px' }"
-                >
-                    <ul>
-                        @for (item of allFilters[tab]; track $index) {
-                            <li>
-                                <p-checkbox
-                                    tabindex="0"
-                                    [ariaLabel]="item?.toString()"
-                                    name="groupname"
-                                    [value]="item"
-                                    label="{{
-                                        item === all
-                                            ? ('common.all' | translate)
-                                            : item === empty
-                                              ? ('common.empty' | translate)
-                                              : item
-                                    }}"
-                                    [ngModel]="footprintStore.filters()[tab]"
-                                    (ngModelChange)="
-                                        onCheckboxChange($event, tab, item.toString())
-                                    "
-                                    [id]="item"
-                                ></p-checkbox>
-                            </li>
-                        }
-                    </ul>
-                </p-scrollPanel>
-            </p-tabPanel>
-        }
-    </p-tabView>
-</p-overlay>
+@if (filterSidebarVisible) {
+    <p-sidebar
+        [(visible)]="filterSidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-5"
+        (onHide)="filterSidebarVisible = false"
+    >
+        <ng-template pTemplate="headless">
+            <div pFocusTrap class="create-ds-sidebar">
+                <div class="space-form">
+                    <h2>{{ "inventories-footprint.filter-view" | translate }}</h2>
+                    <p-button
+                        (onClick)="filterSidebarVisible = false"
+                        [link]="true"
+                        [rounded]="true"
+                        ariaLabel="Outlined Close Button"
+                        icon="pi pi-times"
+                        class="space-sidebar-close"
+                        styleClass="space-sidebar-close-button text-black-alpha-60"
+                    ></p-button>
+
+                    <p-scrollPanel
+                        [style]="{ width: '100%', height: 'calc(100vh - 160px)' }"
+                    >
+                        <div class="flex align-items-center gap-2 mt-3">
+                            <h3 class="filter-text font-semibold mx-0 my-1 line-height-1">
+                                {{ "inventories-footprint.filter-text" | translate }}
+                            </h3>
+                            <p-badge
+                                styleClass="bg-blue"
+                                [value]="selectedFilterNames().length"
+                            />
+                        </div>
+                        <p-accordion [multiple]="true" styleClass="pl-0">
+                            @for (tab of tabs; track $index) {
+                                <p-accordionTab
+                                    headerStyleClass="h-3rem bg-transparent font-bold mb-0"
+                                    contentStyleClass="bg-transparent p-2"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <div class="flex flex-column">
+                                            <h4 class="mb-0 ml-0 mt-2">
+                                                {{
+                                                    "inventories-footprint.filter-tabs." +
+                                                        tab | translate
+                                                }}
+                                                @if (isFilterApplied()[tab]) {
+                                                    <i class="pi pi-filter-fill"></i>
+                                                }
+                                            </h4>
+                                        </div>
+                                    </ng-template>
+                                    <ul class="m-0">
+                                        @for (item of allFilters[tab]; track $index) {
+                                            <li class="my-3">
+                                                <p-checkbox
+                                                    tabindex="0"
+                                                    [ariaLabel]="item?.toString()"
+                                                    name="groupname"
+                                                    [value]="item"
+                                                    label="{{
+                                                        item === all
+                                                            ? ('common.all' | translate)
+                                                            : item === empty
+                                                              ? ('common.empty'
+                                                                | translate)
+                                                              : item
+                                                    }}"
+                                                    [ngModel]="
+                                                        footprintStore.filters()[tab]
+                                                    "
+                                                    (ngModelChange)="
+                                                        onCheckboxChange(
+                                                            $event,
+                                                            tab,
+                                                            item.toString()
+                                                        )
+                                                    "
+                                                    [id]="item"
+                                                ></p-checkbox>
+                                            </li>
+                                        }
+                                    </ul>
+                                </p-accordionTab>
+                                <hr class="section-hr" />
+                            }
+                        </p-accordion>
+                    </p-scrollPanel>
+
+                    <!-- Footer Buttons -->
+                    <div class="mt-3">
+                        <div
+                            class="space-form--button-group flex align-content-end justify-content-end flex-wrap"
+                        >
+                            <p-button
+                                class="cancel-creation mr-auto"
+                                styleClass="cancel-creation-button uppercase"
+                                (onClick)="filterSidebarVisible = false"
+                                [label]="'common.cancel' | translate"
+                                [ariaLabel]="'common.cancel' | translate"
+                            ></p-button>
+
+                            <p-button
+                                (onClick)="filterSidebarVisible = false"
+                                styleClass="uppercase bg-light-green"
+                                id="apply-selection-button"
+                                [label]="'inventories.apply-selection' | translate"
+                                [ariaLabel]="'inventories.apply-selection' | translate"
+                            ></p-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-sidebar>
+}

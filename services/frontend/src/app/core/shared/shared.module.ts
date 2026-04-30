@@ -13,6 +13,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { ClipboardModule } from "ngx-clipboard";
 import { NgxEchartsModule } from "ngx-echarts";
 import { AccordionModule } from "primeng/accordion";
+import { BadgeModule } from "primeng/badge";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { CheckboxModule } from "primeng/checkbox";
@@ -99,6 +100,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         ImpactSidebarComponent,
         DecimalsPipe,
         IntegerPipe,
+        BadgeModule,
     ],
     exports: [
         TooltipModule,

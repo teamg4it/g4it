@@ -4,10 +4,8 @@
     [indicatorType]="'equipment'"
 ></app-inventories-header-footprint>
 
-<dataviz-filter [allFilters]="allUnmodifiedFilters"></dataviz-filter>
-
-<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 240px)' }">
-    <div class="bg-white">
+<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 170px)' }">
+    <div class="bg-white mt-2">
         <app-indicator-section
             [statGroups]="statGroups()"
             [isApplication]="false"
@@ -35,13 +33,7 @@
                     [label]="'digital-services.configure-view' | translate"
                     [ariaLabel]="'digital-services.configure-view' | translate"
                 ></p-button>
-                <p-button
-                    (onClick)="filterSidebarVisible = true"
-                    styleClass="p-button-secondary-blue uppercase mr-3"
-                    id="filter"
-                    icon="pi pi-filter"
-                    [ariaLabel]="'digital-services.configure-view' | translate"
-                ></p-button>
+                <dataviz-filter [allFilters]="allUnmodifiedFilters"></dataviz-filter>
             </div>
         </div>
         <div class="mb-3 footprint-dashboard-container-app-criteria grid w-full">

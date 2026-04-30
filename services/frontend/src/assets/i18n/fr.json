@@ -788,7 +788,9 @@
                 "raw-impact": "Impact Brut"
             },
             "caption": "Vue tabulaire des impacts des applications"
-        }
+        },
+        "filter-view": "Filtrer la vue",
+        "filter-text": "Filtres"
     },
     "error-page": {
         "title": {

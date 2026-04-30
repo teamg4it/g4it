@@ -143,6 +143,9 @@ main {
 .bg-warning {
     background: var(--warning-color);
 }
+.bg-blue {
+    background: var(--blue-color);
+}
 .border-primary {
     border-color: var(--primary-color);
 }
@@ -1708,7 +1711,8 @@ app-version-type-tag {
     background-color: #f8f8f8;
 }
 
-app-configure-view-filters {
+app-configure-view-filters,
+dataviz-filter {
     .p-accordion .p-accordion-tab {
         box-shadow: none;
     }

@@ -791,7 +791,9 @@
                 "raw-impact": "Raw impact"
             },
             "caption": "Table view of the impacts of the Applications"
-        }
+        },
+        "filter-view": "Filter the view",
+        "filter-text": "Filters"
     },
     "error-page": {
         "title": {

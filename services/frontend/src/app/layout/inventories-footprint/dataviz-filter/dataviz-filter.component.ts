@@ -23,6 +23,7 @@ import { Constants } from "src/constants";
 @Component({
     selector: "dataviz-filter",
     templateUrl: "./dataviz-filter.component.html",
+    styleUrl: "./dataviz-filter.component.scss",
 })
 export class DatavizFilterComponent implements OnChanges {
     protected footprintStore = inject(FootprintStoreService);
@@ -30,6 +31,7 @@ export class DatavizFilterComponent implements OnChanges {
     private readonly translate = inject(TranslateService);
 
     overlayVisible: boolean = false;
+    filterSidebarVisible = false;
 
     @Input() allFilters: Filter<string> = {};
     tabs = Constants.EQUIPMENT_FILTERS;
@@ -38,18 +40,33 @@ export class DatavizFilterComponent implements OnChanges {
 
     selectedFilterNames = computed(() => {
         const selectedFilters = this.footprintStore.filters();
-        return Object.keys(selectedFilters)
-            .filter((tab) => this.filterActive(selectedFilters[tab]))
-            .map((tab) =>
-                this.translate.instant(`inventories-footprint.filter-tabs.${tab}`),
-            )
-            .join(", ");
+        console.log(selectedFilters);
+        return Object.keys(selectedFilters).filter((tab) =>
+            this.filterActive(selectedFilters[tab]),
+        );
+    });
+
+    isFilterApplied = computed(() => {
+        const selectedFiltersArr = Object.keys(this.footprintStore.filters());
+        console.log(Object.keys(selectedFiltersArr));
+        return selectedFiltersArr.reduce(
+            (acc, key) => {
+                acc[key] = this.filterActive(this.footprintStore.filters()[key]) ?? false;
+                return acc;
+            },
+            {} as Record<string, boolean>,
+        );
     });
 
     ngOnChanges(changes: SimpleChanges) {
+        console.log("All filters updated:", this.allFilters);
         if (changes["allFilters"]) {
             this.footprintStore.setFilters(this.allFilters);
         }
+    }
+
+    ngOnInit() {
+        console.log(this.footprintStore.filters());
     }
 
     filterActive(filter: any) {
