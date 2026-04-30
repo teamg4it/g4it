@@ -126,6 +126,7 @@ public class WorkspaceReferentialExportService {
         );
 
         writer.write("\uFEFF");
+        writer.flush();
 
         try (CSVPrinter printer = new CSVPrinter(writer, csvFormat)) {
 
