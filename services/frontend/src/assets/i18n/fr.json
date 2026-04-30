@@ -790,7 +790,8 @@
             "caption": "Vue tabulaire des impacts des applications"
         },
         "filter-view": "Filtrer la vue",
-        "filter-text": "Filtres"
+        "filter-text": "Filtres",
+        "filter-description": "Ces filtres vous permettent de ne visualiser qu'un partie des données calculées par G4IT. Vos choix s’appliqueront à toute la page et mettront à jour les indicateurs clés et les impacts selon le filtre définit."
     },
     "error-page": {
         "title": {

@@ -28,8 +28,11 @@
                     ></p-button>
 
                     <p-scrollPanel
-                        [style]="{ width: '100%', height: 'calc(100vh - 160px)' }"
+                        [style]="{ width: '100%', height: 'calc(100vh - 150px)' }"
                     >
+                        <p class="text-base">
+                            {{ "inventories-footprint.filter-description" | translate }}
+                        </p>
                         <div class="flex align-items-center gap-2 mt-3">
                             <h3 class="filter-text font-semibold mx-0 my-1 line-height-1">
                                 {{ "inventories-footprint.filter-text" | translate }}
@@ -74,9 +77,7 @@
                                                                 | translate)
                                                               : item
                                                     }}"
-                                                    [ngModel]="
-                                                        localFilters()[tab]
-                                                    "
+                                                    [ngModel]="localFilters()[tab]"
                                                     (ngModelChange)="
                                                         onCheckboxChange(
                                                             $event,
