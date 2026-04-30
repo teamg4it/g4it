@@ -126,7 +126,7 @@ public class WorkspaceReferentialExportService {
                         java.nio.charset.StandardCharsets.UTF_8
                 ),
                 csvFormat)) {
-
+            printer.print("\uFEFF");
             for (T item : page.getContent()) {
                 if (item != null) {
                     Object[] record = mapper.apply(item);
