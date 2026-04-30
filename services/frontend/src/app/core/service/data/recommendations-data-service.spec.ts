@@ -43,7 +43,6 @@ describe('RecommendationService', () => {
   });
 
   it('should call GET recommendations with organization and workspace', () => {
-    const baseUrl = Constants.ENDPOINTS.evaluation;
     const organization = 'org-test';
     const workspace = 1;
 
@@ -67,32 +66,30 @@ describe('RecommendationService', () => {
     });
 
     const req = httpMock.expectOne(
-      `${baseUrl}/organizations/${organization}/workspaces/${workspace}/recommendations`
+      `/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
 
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
-
   it('should return empty array if backend returns empty', () => {
-    const baseUrl = Constants.ENDPOINTS.evaluation;
-    const organization = 'org-test';
-    const workspace = 2;
+  const organization = 'org-test';
+  const workspace = 2;
 
-    service.getByOrganisation(organization, workspace).subscribe((res: Recommendation[]) => {
-      expect(res).toEqual([]);
-    });
-
-    const req = httpMock.expectOne(
-      `${baseUrl}/organizations/${organization}/workspaces/${workspace}/recommendations`
-    );
-
-    expect(req.request.method).toBe('GET');
-    req.flush([]);
+  service.getByOrganisation(organization, workspace).subscribe((res: Recommendation[]) => {
+    expect(res).toEqual([]);
   });
 
+  const req = httpMock.expectOne(
+    `/organizations/${organization}/workspaces/${workspace}/recommendations`
+  );
+
+  expect(req.request.method).toBe('GET');
+  req.flush([]);
+});
+
+  
   it('should handle HTTP error', () => {
-    const baseUrl = Constants.ENDPOINTS.evaluation;
     const organization = 'org-test';
     const workspace = 3;
 
@@ -104,7 +101,7 @@ describe('RecommendationService', () => {
     });
 
     const req = httpMock.expectOne(
-      `${baseUrl}/organizations/${organization}/workspaces/${workspace}/recommendations`
+      `/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
 
     expect(req.request.method).toBe('GET');
