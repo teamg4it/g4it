@@ -190,7 +190,8 @@
         "renew-button": "Extend",
         "renew-button-extended": "Extended",
         "renew-service-success-message": "Extended Successfully",
-        "renew-service-not-renewed-message": "Could not extend the retention period"
+        "renew-service-not-renewed-message": "Could not extend the retention period",
+        "compare": "Apply recommendations"
     },
     "useful-information": {
         "computing-engines": "Computing engines",
@@ -257,6 +258,7 @@
         "configure-view": "Configure the view",
         "view-resources": "Visualize my resources",
         "visualize-results": "Visualize my results",
+        "view-recommendations": "Visualize recommendations",
         "visualize-parameters": "Visualize the parameters",
         "back": "Back",
         "hide-menu-buttons": "Hide option for the digital service",
@@ -522,6 +524,16 @@
         "complementary-pue": "Complementary PUE",
         "energy-efficiency": "Energy efficiency",
         "location": "Location"
+    },
+    "digital-services-recommendations": {
+        "recommendations": "Recommendations",
+        "recommendation": "Recommendation",
+        "title": "Title",
+        "priority": "Priority",
+        "category": "Category",
+        "implementationDifficulty": "Implementation Difficulty",
+        "description": "Description"
+        
     },
     "digital-services-import": {
         "import": "Import Data",

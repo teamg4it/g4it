@@ -102,20 +102,30 @@ describe("DigitalServicesFootprintComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should set tabItems for EcoMind AI", () => {
-        component.isEcoMindAi = true;
-        component.digitalService = { lastCalculationDate: new Date() } as any;
-        component.updateTabItems();
-        expect(component.tabItems?.length).toBe(2);
-    });
+   it("should set tabItems for EcoMind AI", () => {
+    component.isEcoMindAi = true;
+    component.digitalService = { lastCalculationDate: new Date() } as any;
 
+    component.updateTabItems();
+
+    expect(component.tabItems?.length).toBe(3);
+
+    expect(component.tabItems?.find(i => i.id === "ecomind-parameters")).toBeDefined();
+    expect(component.tabItems?.find(i => i.id === "visualize")).toBeDefined();
+    expect(component.tabItems?.find(i => i.id === "recommendations")).toBeDefined();
+});
     it("should set tabItems for normal service", () => {
-        component.isEcoMindAi = false;
-        component.digitalService = { lastCalculationDate: new Date() } as any;
-        component.updateTabItems();
-        expect(component.tabItems?.length).toBe(2);
-        expect(component.tabItems?.find((item) => item.id === "resources")).toBeDefined();
-    });
+    component.isEcoMindAi = false;
+    component.digitalService = { lastCalculationDate: new Date() } as any;
+
+    component.updateTabItems();
+
+    expect(component.tabItems?.length).toBe(3);
+
+    expect(component.tabItems?.find(i => i.id === "resources")).toBeDefined();
+    expect(component.tabItems?.find(i => i.id === "visualize")).toBeDefined();
+    expect(component.tabItems?.find(i => i.id === "recommendations")).toBeDefined();
+});
 
     it("should call updateHeights in updateEnableCalculation", (done) => {
         const spy = spyOn(component, "updateHeights");

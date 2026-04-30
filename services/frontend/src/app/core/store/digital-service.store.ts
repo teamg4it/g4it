@@ -138,4 +138,13 @@ export class DigitalServiceStoreService {
     setIsSharedDS(isSharedDs: boolean) {
         this._store.update((s) => ({ ...s, isSharedDs }));
     }
+    
+    addDatacenter(datacenter: InDatacenterRest) {
+    datacenter.displayLabel = `${datacenter.name.split("|")[0]} (${datacenter.location} - PUE = ${datacenter.pue})`;
+    
+    this._store.update(s => ({
+        ...s,
+        inDatacenters: [...s.inDatacenters, datacenter],
+    }));
+}
 }

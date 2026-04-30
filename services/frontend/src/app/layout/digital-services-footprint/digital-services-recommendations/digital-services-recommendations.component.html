@@ -1,0 +1,38 @@
+<div class="table-container mb-5">
+  <app-digital-service-table
+    titleText="recommendations"
+    accessibilityText="recommendation"
+    translationPrefix="digital-services-recommendations"
+    [headerFields]="headerFields"
+    [data]="recommendations"
+    [showId]="false"
+    [hideActions]="true"
+    [isVM]="true"
+    [selectable]="true"
+    [showSelectAll]="true"
+     [compareMode]="true"
+     [paginator]="false"
+     (compareClicked)="compareSelected()"
+  >
+  </app-digital-service-table>
+</div>
+
+<p-sidebar
+        [(visible)]="showApplyComponent"
+        position="right"
+        styleClass="p-sidebar-lg"
+        [showCloseIcon]="true"
+        (onHide)="showApplyComponent = false"
+        ariaCloseLabel="Close"
+        [fullScreen]="true"
+    >
+        <ng-template pTemplate="headless">
+            <app-digital-services-apply-recommendations
+            *ngIf="showApplyComponent"
+            [dsVersionUid]="digitalServiceStore.digitalService().uid"
+            [selectedRecommendations]="selectedRecommendationsForApply"
+            (close)="showApplyComponent = false"
+        />
+        </ng-template>
+    </p-sidebar>
+

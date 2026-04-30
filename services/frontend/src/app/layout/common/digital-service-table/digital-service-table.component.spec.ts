@@ -43,9 +43,7 @@ describe("DigitalServiceTableComponent", () => {
         translateService = TestBed.inject(
             TranslateService,
         ) as jasmine.SpyObj<TranslateService>;
-        confirmationService = TestBed.inject(
-            ConfirmationService,
-        ) as jasmine.SpyObj<ConfirmationService>;
+        confirmationService = TestBed.inject(ConfirmationService) as jasmine.SpyObj<ConfirmationService>;
         globalStoreService = TestBed.inject(GlobalStoreService);
 
         // Setup default translate mocks
@@ -452,4 +450,81 @@ describe("DigitalServiceTableComponent", () => {
             });
         });
     });
+    describe("updateSelectAllState", () => {
+    it("should set selectAll to false when data is empty", () => {
+        component.data = [];
+        component.selectAll = true;
+
+        component.updateSelectAllState();
+
+        expect(component.selectAll).toBeFalse();
+    });
+
+    it("should set selectAll to true when all items are selected", () => {
+        component.data = [
+            { selected: true },
+            { selected: true }
+        ] as any;
+
+        component.updateSelectAllState();
+
+        expect(component.selectAll).toBeTrue();
+    });
+
+    it("should set selectAll to false when not all items are selected", () => {
+        component.data = [
+            { selected: true },
+            { selected: false }
+        ] as any;
+
+        component.updateSelectAllState();
+
+        expect(component.selectAll).toBeFalse();
+    });
+});
+describe("onSelectAllChange", () => {
+    it("should update all items to selected = true", () => {
+        component.data = [
+            { selected: false },
+            { selected: false }
+        ] as any;
+
+        component.selectAll = true;
+
+        spyOn(component.selectAllChange, "emit");
+
+        component.onSelectAllChange();
+
+        expect(component.data.every(i => i.selected)).toBeTrue();
+        expect(component.selectAllChange.emit).toHaveBeenCalledWith(true);
+    });
+
+    it("should update all items to selected = false", () => {
+        component.data = [
+            { selected: true },
+            { selected: true }
+        ] as any;
+
+        component.selectAll = false;
+
+        spyOn(component.selectAllChange, "emit");
+
+        component.onSelectAllChange();
+
+        expect(component.data.every(i => !i.selected)).toBeTrue();
+        expect(component.selectAllChange.emit).toHaveBeenCalledWith(false);
+    });
+
+    it("should call updateSelectAllState after change", () => {
+        component.data = [{ selected: false }] as any;
+        component.selectAll = true;
+
+        spyOn(component, "updateSelectAllState");
+
+        component.onSelectAllChange();
+
+        expect(component.updateSelectAllState).toHaveBeenCalled();
+    });
+});
+
 });

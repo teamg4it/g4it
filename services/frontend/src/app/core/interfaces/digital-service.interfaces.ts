@@ -429,3 +429,11 @@ export interface DuplicateNames {
     dsNames: string[];
     versionNames: string[];
 }
+export interface DigitalServiceRecommendation {
+    id?: number;
+    title: string;
+    priority:number;
+    category: string;
+    description : string ; 
+    implementationDifficulty: string;
+}
