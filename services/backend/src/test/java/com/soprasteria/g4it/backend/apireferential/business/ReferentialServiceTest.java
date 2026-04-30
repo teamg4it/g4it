@@ -140,8 +140,8 @@ class ReferentialServiceTest {
         when(mix2.getCriterion()).thenReturn("crit");
         when(mix2.getValue()).thenReturn(20.0);
         when(mix2.getLocation()).thenReturn("loc2");
-        when(referentialGetService.getElectricityMix()).thenReturn(List.of(mix1, mix2));
-        Map<Pair<String, String>, Integer> result = referentialService.getElectricityMixQuartiles();
+        when(referentialGetService.getElectricityMix(anyLong())).thenReturn(List.of(mix1, mix2));
+        Map<Pair<String, String>, Integer> result = referentialService.getElectricityMixQuartiles(anyLong());
         assertNotNull(result);
         assertTrue(result.containsKey(Pair.of("loc1", "crit")));
         assertTrue(result.containsKey(Pair.of("loc2", "crit")));

@@ -95,7 +95,7 @@ public class PhysicalEquipmentIndicatorService {
         final List<InPhysicalEquipmentLowImpactView> indicators = inPhysicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         indicators.forEach(indicator -> {
                     indicator.setType(TypeUtils.getShortType(organization, linkedWorkspace.getName(), indicator.getType()));
-                    indicator.setLowImpact(lowImpactService.isLowImpact(indicator.getCountry()));
+                    indicator.setLowImpact(lowImpactService.isLowImpact(indicator.getCountry(),workspaceId));
                 }
         );
         return physicalEquipmentIndicatorMapper.inPhysicalEquipmentLowImpacttoDTO(indicators);

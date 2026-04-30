@@ -119,7 +119,7 @@ class EvaluateServiceTest {
 
         // ---- MOCK REFERENTIAL BEFORE INIT ----
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
 
         // ---- MANUALLY CALL @PostConstruct ----
@@ -201,7 +201,7 @@ class EvaluateServiceTest {
         when(csvFileService.getPrinter(any(FileType.class), any(Path.class))).thenReturn(printer);
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -244,7 +244,7 @@ class EvaluateServiceTest {
                 .thenReturn(List.of(criterion("criterion_1", "kg")));
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -292,7 +292,7 @@ class EvaluateServiceTest {
                 .thenReturn(List.of(criterion("criterion_1", "kg")));
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -345,7 +345,7 @@ class EvaluateServiceTest {
                 .thenReturn(List.of(criterion("criterion_1", "kg")));
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -398,7 +398,7 @@ class EvaluateServiceTest {
                 .thenReturn(List.of(criterion("criterion_1", "kg")));
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -456,7 +456,7 @@ class EvaluateServiceTest {
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getActiveCriteria(anyList())).thenReturn(List.of(criterionRest));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -526,7 +526,7 @@ class EvaluateServiceTest {
 
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getActiveCriteria(anyList())).thenReturn(List.of(criterionRest));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString())).thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList())).thenReturn(Map.of("criterion_1", 1.0));
         when(boaviztapiService.getCountryMap()).thenReturn(Map.of("France", "FR"));
@@ -962,7 +962,7 @@ class EvaluateServiceTest {
         when(referentialService.getLifecycleSteps())
                 .thenReturn(List.of("STEP"));
 
-        when(referentialService.getElectricityMixQuartiles())
+        when(referentialService.getElectricityMixQuartiles(anyLong()))
                 .thenReturn(Map.of());
 
         evaluateService.init();
@@ -1022,7 +1022,7 @@ class EvaluateServiceTest {
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("STEP1"));
         when(referentialService.getActiveCriteria(anyList()))
                 .thenReturn(List.of(criterionRest));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(anyString()))
                 .thenReturn(List.of(mock(HypothesisRest.class)));
         when(referentialService.getSipValueMap(anyList()))

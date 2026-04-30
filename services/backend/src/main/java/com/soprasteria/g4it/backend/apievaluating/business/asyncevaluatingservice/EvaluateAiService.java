@@ -205,7 +205,7 @@ public class EvaluateAiService {
                 criteriaUnitMap,
                 getShortcutMap(criteriaCodes),
                 getShortcutMap(lifecycleSteps),
-                referentialService.getElectricityMixQuartiles()
+                referentialService.getElectricityMixQuartiles(context.getWorkspaceId())
         );
 
         final List<HypothesisRest> hypothesisRestList = referentialService.getHypotheses(organization);

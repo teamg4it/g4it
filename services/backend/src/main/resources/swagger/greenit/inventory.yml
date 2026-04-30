@@ -142,8 +142,6 @@ paths:
       summary: Get a list for sources used in inventory
       operationId: getInventoriesSources
       x-custom-role: "hasRole('INVENTORY_READ')"
-      parameters:
-        - $ref: '#/components/parameters/inventoryIdQueryParam'
       responses:
         '200':
           description: Return the list for sources used in inventory
