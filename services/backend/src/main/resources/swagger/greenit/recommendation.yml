@@ -54,7 +54,7 @@ paths:
   # ─────────────────────────────────────────────────────────────
   # CRUD on recommendations for an organisation
   # ─────────────────────────────────────────────────────────────
-  /api/v1/organizations/{organization}/workspaces/{workspace}/recommendations:
+  /organizations/{organization}/workspaces/{workspace}/recommendations:
     parameters:
       - name: organization
         in: path

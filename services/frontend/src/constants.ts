@@ -83,7 +83,6 @@ export abstract class Constants {
         task: "task",
         sharedDs: "shared",
         dsv: "dsv",
-        evaluation: "/api/v1"
     };
 
     static readonly ERRORS: any = {
