@@ -84,9 +84,12 @@ export abstract class Constants {
         sharedDs: "shared",
         dsv: "dsv",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         evaluation: "/api/v1"
 >>>>>>> 42857b44 (fix :  change the format of uri so a standard user would have access to the recommendations)
+=======
+>>>>>>> 7459191a (attempt: possible fix  for the 401 error when openning the recomendations  tab)
     };
 
     static readonly ERRORS: any = {

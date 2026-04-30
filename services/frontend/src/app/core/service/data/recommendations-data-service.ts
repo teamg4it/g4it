@@ -15,7 +15,6 @@ export interface Recommendation {
   difficulty?: string;
 }
 
-const endpoint = Constants.ENDPOINTS.evaluation; 
 
 @Injectable({
   providedIn: "root",
@@ -26,7 +25,7 @@ export class RecommendationService {
   getByOrganisation(organization: string, workspace: number): Observable<Recommendation[]> {
     console.log("LOG: HTTP GET /recommendations orgId =", organization);
     return this.http.get<Recommendation[]>(
-      `${endpoint}/organizations/${organization}/workspaces/${workspace}/recommendations`
+      `/organizations/${organization}/workspaces/${workspace}/recommendations`
     );
   }
 }
