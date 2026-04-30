@@ -11,6 +11,7 @@ import {
     inject,
     Input,
     OnChanges,
+    signal,
     SimpleChanges,
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -32,6 +33,7 @@ export class DatavizFilterComponent implements OnChanges {
 
     overlayVisible: boolean = false;
     filterSidebarVisible = false;
+    localFilters = signal<Filter<string>>({});
 
     @Input() allFilters: Filter<string> = {};
     tabs = Constants.EQUIPMENT_FILTERS;
@@ -46,12 +48,20 @@ export class DatavizFilterComponent implements OnChanges {
         );
     });
 
+    localSelectedFilterNames = computed(() => {
+        const selectedFilters = this.localFilters();
+        return Object.keys(selectedFilters).filter((tab) =>
+            this.filterActive(selectedFilters[tab]),
+        );
+    });
+
     isFilterApplied = computed(() => {
-        const selectedFiltersArr = Object.keys(this.footprintStore.filters());
+        const filtersToCheck = this.localFilters();
+        const selectedFiltersArr = Object.keys(filtersToCheck);
         console.log(Object.keys(selectedFiltersArr));
         return selectedFiltersArr.reduce(
             (acc, key) => {
-                acc[key] = this.filterActive(this.footprintStore.filters()[key]) ?? false;
+                acc[key] = this.filterActive(filtersToCheck[key]) ?? false;
                 return acc;
             },
             {} as Record<string, boolean>,
@@ -83,7 +93,10 @@ export class DatavizFilterComponent implements OnChanges {
             this.allFilters[tab],
             selection,
         );
-        this.footprintStore.setCustomFilters(updatedFilter, tab);
+        // Update local copy instead of store directly
+        const currentFilters = { ...this.localFilters() };
+        currentFilters[tab] = updatedFilter;
+        this.localFilters.set(currentFilters);
     }
 
     private readonly checkboxChange$ = new Subject<any>();
@@ -96,5 +109,27 @@ export class DatavizFilterComponent implements OnChanges {
 
     onCheckboxChange(selectedValues: string[], tab: string, selection: string): void {
         this.checkboxChange$.next({ selectedValues, tab, selection });
+    }
+
+    openFilterSidebar(): void {
+        // Create a deep copy of current filters from store
+        this.localFilters.set(structuredClone(this.footprintStore.filters()));
+        this.filterSidebarVisible = true;
+    }
+
+    closeFilterSidebar(): void {
+        // Discard changes
+        this.filterSidebarVisible = false;
+        this.localFilters.set({});
+    }
+
+    applyFilters(): void {
+        // Save local changes to store
+        const filters = this.localFilters();
+        Object.keys(filters).forEach((tab) => {
+            this.footprintStore.setCustomFilters(filters[tab], tab);
+        });
+        this.filterSidebarVisible = false;
+        this.localFilters.set({});
     }
 }

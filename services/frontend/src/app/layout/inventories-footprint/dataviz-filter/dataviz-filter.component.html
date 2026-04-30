@@ -1,5 +1,5 @@
 <p-button
-    (onClick)="filterSidebarVisible = true"
+    (onClick)="openFilterSidebar()"
     styleClass="p-button-secondary-blue uppercase mr-3"
     id="filter"
     [icon]="selectedFilterNames().length ? 'pi pi-filter-fill' : 'pi pi-filter'"
@@ -11,14 +11,14 @@
         [(visible)]="filterSidebarVisible"
         position="right"
         styleClass="p-sidebar-md w-5"
-        (onHide)="filterSidebarVisible = false"
+        (onHide)="closeFilterSidebar()"
     >
         <ng-template pTemplate="headless">
             <div pFocusTrap class="create-ds-sidebar">
                 <div class="space-form">
                     <h2>{{ "inventories-footprint.filter-view" | translate }}</h2>
                     <p-button
-                        (onClick)="filterSidebarVisible = false"
+                        (onClick)="closeFilterSidebar()"
                         [link]="true"
                         [rounded]="true"
                         ariaLabel="Outlined Close Button"
@@ -36,7 +36,7 @@
                             </h3>
                             <p-badge
                                 styleClass="bg-blue"
-                                [value]="selectedFilterNames().length"
+                                [value]="localSelectedFilterNames().length"
                             />
                         </div>
                         <p-accordion [multiple]="true" styleClass="pl-0">
@@ -75,7 +75,7 @@
                                                               : item
                                                     }}"
                                                     [ngModel]="
-                                                        footprintStore.filters()[tab]
+                                                        localFilters()[tab]
                                                     "
                                                     (ngModelChange)="
                                                         onCheckboxChange(
@@ -103,13 +103,13 @@
                             <p-button
                                 class="cancel-creation mr-auto"
                                 styleClass="cancel-creation-button uppercase"
-                                (onClick)="filterSidebarVisible = false"
+                                (onClick)="closeFilterSidebar()"
                                 [label]="'common.cancel' | translate"
                                 [ariaLabel]="'common.cancel' | translate"
                             ></p-button>
 
                             <p-button
-                                (onClick)="filterSidebarVisible = false"
+                                (onClick)="applyFilters()"
                                 styleClass="uppercase bg-light-green"
                                 id="apply-selection-button"
                                 [label]="'inventories.apply-selection' | translate"
