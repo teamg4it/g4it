@@ -83,6 +83,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
     private readonly evaluationService = inject(EvaluationDataService);
     private readonly destroyRef = inject(DestroyRef);
     filterSidebarVisible = false;
+    sourceList = signal<string[]>([]);
     selectedUnit: string = "Raw";
 
     selectedView: string = "";
@@ -292,6 +293,7 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         this.globalStore.setLoading(true);
         this.digitalBusinessService.initCountryMap();
         this.getDataApis(currentWorkspaceName, criteria);
+        this.getSources();
     }
 
     async initInventory() {
@@ -605,5 +607,14 @@ export class InventoriesFootprintComponent implements OnInit, OnDestroy {
         this.router.navigate(["../", criteria], {
             relativeTo: this.route,
         });
+    }
+
+    getSources() {
+        this.footprintDataService
+            .getSourceList(this.inventoryId)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((sources) => {
+                this.sourceList.set(sources);
+            });
     }
 }

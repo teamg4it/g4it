@@ -999,6 +999,9 @@ components:
         error:
           description: Error code
           type: string
+        message:
+          description: error msg
+          type: string
 
     InventoryType:
       type: string

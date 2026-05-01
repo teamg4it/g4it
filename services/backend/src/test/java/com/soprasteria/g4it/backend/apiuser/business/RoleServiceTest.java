@@ -158,4 +158,164 @@ class RoleServiceTest {
     void hasAdminRightOnOrganizationOrWorkspace_superAdmin() {
         assertTrue(roleService.hasAdminRightOnOrganizationOrWorkspace(TestUtils.createSuperAdminUserBO(), 99L, 77L));
     }
+
+    @Test
+    void hasWorkspaceAdminRights_hasRole() {
+        UserBO user = TestUtils.createWorkspaceAdminUserBO(10L);
+
+        assertTrue(roleService.hasWorkspaceAdminRights(user, 10L));
+    }
+
+    @Test
+    void hasWorkspaceAdminRights_noRole() {
+        UserBO user = TestUtils.createUserBONoRole();
+
+        assertFalse(roleService.hasWorkspaceAdminRights(user, 10L));
+    }
+
+    @Test
+    void hasWorkspaceAdminRights_superAdmin() {
+        assertTrue(roleService.hasWorkspaceAdminRights(
+                TestUtils.createSuperAdminUserBO(), 10L
+        ));
+    }
+
+    @Test
+    void hasWorkspaceAdminRights_wrongWorkspaceId() {
+        UserBO user = TestUtils.createWorkspaceAdminUserBO(10L);
+
+        assertFalse(roleService.hasWorkspaceAdminRights(user, 99L));
+    }
+
+    @Test
+    void hasAdminRightOnOrganizationOrWorkspace_bothFalse() {
+        UserBO user = TestUtils.createUserBONoRole();
+
+        assertFalse(roleService.hasAdminRightOnOrganizationOrWorkspace(user, 99L, 99L));
+    }
+
+    @Test
+    void hasAdminRightOnOrganizationOrWorkspace_onlyWorkspaceAdmin() {
+        UserBO user = TestUtils.createWorkspaceAdminUserBO(55L);
+
+        assertTrue(roleService.hasAdminRightOnOrganizationOrWorkspace(user, 1L, 55L));
+    }
+
+    @Test
+    void hasAdminRightOnOrganizationOrWorkspace_onlyOrgAdmin() {
+        UserBO user = TestUtils.createUserBOAdminOrg();
+
+        assertTrue(roleService.hasAdminRightOnOrganizationOrWorkspace(user, 2L, 999L));
+    }
+
+    @Test
+    void isUserDomainAuthorized_multipleDomains_match() {
+        UserBO user = TestUtils.createUserBOWithAuthorizedDomains(
+                1L,
+                "abc.com,example.com,test.com",
+                "example.com" // NOT full email
+        );
+
+        assertTrue(roleService.isUserDomainAuthorized(user, 1L));
+    }
+
+    @Test
+    void isUserDomainAuthorized_trimSpaces() {
+        UserBO user = TestUtils.createUserBOWithAuthorizedDomains(
+                1L,
+                " abc.com , example.com ",
+                "example.com"
+        );
+
+        assertTrue(roleService.isUserDomainAuthorized(user, 1L));
+    }
+
+    @Test
+    void isUserDomainAuthorized_organizationNotFound() {
+        UserBO user = TestUtils.createUserBOWithAuthorizedDomains(
+                1L,
+                "example.com",
+                "example.com"
+        );
+
+        assertFalse(roleService.isUserDomainAuthorized(user, 999L));
+    }
+
+    @Test
+    void isUserDomainAuthorized_emptyAuthorizedDomains() {
+        UserBO user = TestUtils.createUserBOWithAuthorizedDomains(
+                1L,
+                "",
+                "user@test.com"
+        );
+
+        assertFalse(roleService.isUserDomainAuthorized(user, 1L));
+    }
+
+    @Test
+    void hasAdminRightsOnAnyOrganization_noOrganizations() {
+        UserBO user = UserBO.builder()
+                .email("user@test.com")
+                .organizations(List.of())
+                .build();
+
+        assertFalse(roleService.hasAdminRightsOnAnyOrganization(user));
+    }
+
+
+    @Test
+    void hasAdminRightsOnWorkspace_emptyWorkspaces() {
+        UserBO user = TestUtils.createUserBOAdminOrg();
+
+        // FIX: use empty list instead of null
+        user.getOrganizations().forEach(org -> org.setWorkspaces(List.of()));
+
+        assertFalse(roleService.hasAdminRightsOnWorkspace(user, 1L));
+    }
+
+    @Test
+    void isUserDomainAuthorized_noMatch() {
+        UserBO user = TestUtils.createUserBOWithAuthorizedDomains(
+                1L,
+                "abc.com,test.com",
+                "example.com"
+        );
+
+        assertFalse(roleService.isUserDomainAuthorized(user, 1L));
+    }
+
+    @Test
+    void isUserDomainAuthorized_emptyDomains() {
+        UserBO user = TestUtils.createUserBOWithAuthorizedDomains(
+                1L,
+                "",
+                "example.com"
+        );
+
+        assertFalse(roleService.isUserDomainAuthorized(user, 1L));
+    }
+
+    @Test
+    void isUserDomainAuthorized_nullDomains() {
+        UserBO user = TestUtils.createUserBOWithAuthorizedDomains(
+                1L,
+                null,
+                "example.com"
+        );
+
+        assertFalse(roleService.isUserDomainAuthorized(user, 1L));
+    }
+
+    @Test
+    void isUserDomainAuthorized_exactExtractionCheck() {
+        UserBO user = TestUtils.createUserBOWithAuthorizedDomains(
+                1L,
+                "unitaire",
+                "unitaire"
+        );
+
+        // email = test@unitaire → domain = "unitaire"
+        assertTrue(roleService.isUserDomainAuthorized(user, 1L));
+    }
+
 }

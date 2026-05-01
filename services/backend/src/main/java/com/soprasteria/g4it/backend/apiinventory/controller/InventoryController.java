@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiinventory.controller;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryRestMapper;
+import com.soprasteria.g4it.backend.apireferential.business.WorkspaceReferentialExportService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
 import com.soprasteria.g4it.backend.server.gen.api.InventoryApiDelegate;
@@ -19,10 +20,14 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -58,6 +63,9 @@ public class InventoryController implements InventoryApiDelegate {
      */
     @Autowired
     private InventoryRestMapper inventoryRestMapper;
+
+    @Autowired
+    private WorkspaceReferentialExportService workspaceReferentialExportService;
 
     /**
      * {@inheritDoc}
@@ -111,5 +119,38 @@ public class InventoryController implements InventoryApiDelegate {
                                                          final InventoryUpdateRest inventoryUpdateRest) {
         return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.updateInventory(organization, workspace, inventoryUpdateRest, authService.getUser())), HttpStatus.OK);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<String>> getInventoriesSources(final String organization, final Long workspace, final Long inventoryId) {
+        return ResponseEntity.ok().body(this.inventoryService.getInventoriesSources(workspace, inventoryId));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Resource> exportInventoryWorkspaceReferentialZip(String organization,
+                                                                  Long workspace) {
+
+        try {
+            InputStream zipStream =
+                    workspaceReferentialExportService.exportReferentialZip(workspace);
+
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=workspace-referential.zip")
+                    .header("Content-Type", "application/zip")
+                    .body(new InputStreamResource(zipStream));
+
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error occurred while downloading ZIP: " + e.getMessage()
+            );
+        }
+    }
+
 
 }

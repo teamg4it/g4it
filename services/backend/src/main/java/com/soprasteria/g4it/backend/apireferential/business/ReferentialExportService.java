@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -98,8 +99,13 @@ public class ReferentialExportService {
                 .build();
 
         File outputFile = Path.of(localWorkingFolder).resolve(REFERENTIAL).resolve(type + "_" + UUID.randomUUID() + ".csv").toFile();
-        try (FileWriter csvout = new FileWriter(outputFile);
+        try (Writer csvout = new OutputStreamWriter(
+                new FileOutputStream(outputFile),
+                StandardCharsets.UTF_8);
              CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
+
+            csvout.write("\uFEFF");
+
             for (Object object : records) {
                 csvPrinter.printRecord(getCsvRecord(object));
             }
@@ -143,8 +149,12 @@ public class ReferentialExportService {
                 .build();
 
         File outputFile = Path.of(localWorkingFolder).resolve(REFERENTIAL).resolve(type + "_" + UUID.randomUUID() + ".csv").toFile();
-        try (FileWriter csvout = new FileWriter(outputFile);
+        try (Writer csvout = new OutputStreamWriter(
+                new FileOutputStream(outputFile),
+                StandardCharsets.UTF_8);
              CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
+
+            csvout.write("\uFEFF");
 
             int pageNumber = 0;
             Page<MatchingItem> matchingItems;
@@ -181,8 +191,12 @@ public class ReferentialExportService {
                 .build();
 
         File outputFile = Path.of(localWorkingFolder).resolve(REFERENTIAL).resolve(type + "_" + UUID.randomUUID() + ".csv").toFile();
-        try (FileWriter csvout = new FileWriter(outputFile);
+        try (Writer csvout = new OutputStreamWriter(
+                new FileOutputStream(outputFile),
+                StandardCharsets.UTF_8);
              CSVPrinter csvPrinter = new CSVPrinter(csvout, csvFormat)) {
+
+            csvout.write("\uFEFF");
 
             int pageNumber = 0;
             Page<ItemImpact> itemImpacts;

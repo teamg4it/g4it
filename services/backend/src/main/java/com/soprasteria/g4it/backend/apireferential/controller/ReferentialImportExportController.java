@@ -51,7 +51,16 @@ public class ReferentialImportExportController implements ReferentialImportExpor
     @Override
     public ResponseEntity<ImportReportRest> importReferentialCSV(String type, MultipartFile file, String organization) {
 
-        ImportReportRest importReportRest = referentialImportService.importReferentialCSV(type, file, organization);
+        ImportReportRest importReportRest;
+
+        try {
+            importReportRest = referentialImportService.importReferentialCSV(type, file, organization);
+        } catch (IOException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error occurred while importing file: " + e.getMessage()
+            );
+        }
 
         return new ResponseEntity<>(importReportRest, HttpStatus.OK);
     }

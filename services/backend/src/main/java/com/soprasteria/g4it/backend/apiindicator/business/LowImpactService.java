@@ -67,7 +67,7 @@ public class LowImpactService {
      * @return if country has a low impact.
      */
     @Cacheable("isLowImpact")
-    public boolean isLowImpact(final String country) {
+    public boolean isLowImpact(final String country,Long workspaceId) {
 
         Set<String> transformedCriteria = criterias.stream()
                 .map(criterion -> StringUtils.kebabToSnakeCase(
@@ -79,7 +79,7 @@ public class LowImpactService {
                         refCountry -> refCountry,
                         refCountry -> transformedCriteria.stream()
                                 .mapToInt(criteria -> {
-                                    var quartile = referentialService.getElectricityMixQuartiles().get(Pair.of(refCountry, criteria));
+                                    var quartile = referentialService.getElectricityMixQuartiles(workspaceId).get(Pair.of(refCountry, criteria));
                                     if (quartile == null) {
                                         log.error("Electricity mix not found for country: {} and criteria: {}", refCountry, criteria);
                                         quartile = 4;

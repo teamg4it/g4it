@@ -55,6 +55,7 @@ export class InventoriesCritereFootprintComponent
     protected readonly inventoryComponent = inject(InventoriesFootprintComponent);
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
+    sourceList = input<string[]>([]);
     @Input() footprint: Criterias = {} as Criterias;
     @Input() criteriaFootprint: Criteria = {} as Criteria;
     @Input() filterFields: string[] = [];

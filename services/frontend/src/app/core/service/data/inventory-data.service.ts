@@ -79,4 +79,10 @@ export class InventoryDataService {
             },
         );
     }
+
+    downloadWorkspaceSettingsZip(): Observable<Blob> {
+        return this.http.get(`${endpoint}/workspace-referential-csv`, {
+            responseType: "blob",
+        });
+    }
 }
