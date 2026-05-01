@@ -318,6 +318,7 @@ public class EvaluateService {
                     // Aggregate physical equipment indicators in memory
                     for (ImpactEquipementPhysique impact : impactEquipementPhysiqueList) {
                         Double sipValue = refSip.get(impact.getCritere());
+                        log.info("SOURCE BEFORE AGG = {}", impact.getSource());
                         AggValuesBO values = createAggValuesBO(impact.getStatutIndicateur(), impact.getTrace(),
                                 impact.getQuantite(), impact.getConsoElecMoyenne(),
                                 impact.getImpactUnitaire(),
@@ -670,6 +671,7 @@ public class EvaluateService {
                                           Double usageDuration,
                                           Double workload, Boolean isCloudService,
                                           String source) {
+        log.info("SOURCE IN BO = {}", source);
 
         boolean isOk = "OK".equals(indicatorStatus);
 
