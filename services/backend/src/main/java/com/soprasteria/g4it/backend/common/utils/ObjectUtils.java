@@ -9,6 +9,9 @@
 package com.soprasteria.g4it.backend.common.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ObjectUtils {
 
@@ -58,5 +61,15 @@ public class ObjectUtils {
         } catch (InvocationTargetException | IllegalAccessException e) {
             return String.format(errorMessage, "get" + fieldNameBase);
         }
+    }
+
+    public static String getExpiryDate(LocalDateTime lastUpdateDate, Integer retentionDay) {
+        if (lastUpdateDate == null || retentionDay == null) {
+            return "";
+        }
+        LocalDateTime now= LocalDateTime.now();
+        long daysSinceLastUpdate = Duration.between(lastUpdateDate, now).toDays();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return now.plusDays(retentionDay - daysSinceLastUpdate).toLocalDate().format(formatter);
     }
 }
