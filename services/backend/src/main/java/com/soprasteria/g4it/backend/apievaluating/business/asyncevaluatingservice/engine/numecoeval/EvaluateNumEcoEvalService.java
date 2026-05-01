@@ -224,7 +224,6 @@ public class EvaluateNumEcoEvalService {
                                       ObjectMapper objectMapper) {
 
         String trace = impactEquipementPhysique.getTrace();
-        log.info("TRACE RAW = {}", trace);
         if (StringUtils.isEmpty(trace) || trace.contains("erreur")) {
             return;
         }
