@@ -1,3 +1,4 @@
+/// <reference types="jasmine" />
 import { TestBed } from "@angular/core/testing";
 import { TranslateService } from "@ngx-translate/core";
 import { FilterService } from "src/app/core/service/business/filter.service";

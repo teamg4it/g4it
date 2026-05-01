@@ -47,25 +47,6 @@ export class DatavizFilterComponent implements OnChanges {
         );
     });
 
-    localSelectedFilterNames = computed(() => {
-        const selectedFilters = this.localFilters();
-        return Object.keys(selectedFilters).filter((tab) =>
-            this.filterActive(selectedFilters[tab]),
-        );
-    });
-
-    isFilterApplied = computed(() => {
-        const filtersToCheck = this.localFilters();
-        const selectedFiltersArr = Object.keys(filtersToCheck);
-        return selectedFiltersArr.reduce(
-            (acc, key) => {
-                acc[key] = this.filterActive(filtersToCheck[key]) ?? false;
-                return acc;
-            },
-            {} as Record<string, boolean>,
-        );
-    });
-
     ngOnChanges(changes: SimpleChanges) {
         if (changes["allFilters"]) {
             this.footprintStore.setFilters(this.allFilters);

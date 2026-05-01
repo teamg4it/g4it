@@ -46,11 +46,6 @@ export class DatavizFilterApplicationComponent implements OnChanges {
         return Object.keys(filters).filter((tab) => this.filterActive(filters[tab]));
     });
 
-    localSelectedFilterNames = computed(() => {
-        const filters = this.localFilters();
-        return Object.keys(filters).filter((tab) => this.filterActive(filters[tab]));
-    });
-
     isFilterApplied = computed(() => {
         const filtersToCheck = this.localFilters();
         const selectedFiltersArr = Object.keys(filtersToCheck);
@@ -156,11 +151,11 @@ export class DatavizFilterApplicationComponent implements OnChanges {
 
     openFilterSidebar(): void {
         // Create a deep copy of current filters from store
-        this.localFilters.set(
-            structuredClone(this.footprintStore.applicationSelectedFilters()),
-        );
+        const currentFilters = this.footprintStore.applicationSelectedFilters();
+        this.localFilters.set(structuredClone(currentFilters));
+        // Use current filter state (with checked values), not raw allFilters
         this.allUnusedFilters = structuredClone(
-            this.allFilters,
+            currentFilters,
         ) as Filter<TransformedDomain>;
         this.filterSidebarVisible = true;
     }
