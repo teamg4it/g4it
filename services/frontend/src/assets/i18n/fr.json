@@ -185,7 +185,7 @@
         "unit-manage-text": "Votre choix s'appliquera à toutes les unités",
         "criteria": "Critères",
         "renew-service-title": "Prolonger le délai avant la suppression des données",
-        "renew-service-body": "Les données associées à {{serviceName}} expireront le {{expiryDate}}. Si la durée de conservation des données n'est pas renouvelée, elles seront supprimées Ce mécanisme a été mis en place pour éviter le stockage de données inutiles et ainsi réduire l'impact de G4IT. Pour conserver les données {{retentionDays}} jours de plus, cliquez sur le bouton suivant.",
+        "renew-service-body": "Les données associées à {{serviceName}} expireront le {{expiryDate}}. Si la durée de conservation des données n'est pas renouvelée, elles seront supprimées. Ce mécanisme a été mis en place pour éviter le stockage de données inutiles et ainsi réduire l'impact de G4IT. Pour conserver les données {{retentionDays}} jours de plus, cliquez sur le bouton suivant.",
         "renew-button": "Prolonger",
         "renew-button-extended": "Prolongée",
         "renew-service-success-message": "prolongée avec succès",
@@ -788,7 +788,10 @@
                 "raw-impact": "Impact Brut"
             },
             "caption": "Vue tabulaire des impacts des applications"
-        }
+        },
+        "filter-view": "Filtrer la vue",
+        "filter-text": "Filtres",
+        "filter-description": "Ces filtres vous permettent de ne visualiser qu'un partie des données calculées par G4IT. Vos choix s’appliqueront à toute la page et mettront à jour les indicateurs clés et les impacts selon le filtre définit."
     },
     "error-page": {
         "title": {

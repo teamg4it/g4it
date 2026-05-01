@@ -13,6 +13,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { ClipboardModule } from "ngx-clipboard";
 import { NgxEchartsModule } from "ngx-echarts";
 import { AccordionModule } from "primeng/accordion";
+import { BadgeModule } from "primeng/badge";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { CheckboxModule } from "primeng/checkbox";
@@ -42,6 +43,7 @@ import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.componen
 import { StackBarChartComponent } from "src/app/layout/common/stack-bar-chart/stack-bar-chart.component";
 import { StatsComponent } from "src/app/layout/common/stats/stats.component";
 import { WorkspaceComponent } from "src/app/layout/common/workspace/workspace.component";
+import { BaseFilterSidebarComponent } from "src/app/layout/inventories-footprint/base-filter-sidebar/base-filter-sidebar.component";
 import { DatavizFilterComponent } from "src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component";
 import { InventoriesHeaderFootprintComponent } from "src/app/layout/inventories-footprint/header/inventories-header-footprint.component";
 import { AutofocusDirective } from "../directives/auto-focus.directive";
@@ -55,6 +57,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         SpinnerComponent,
         MonthYearPipe,
         InventoriesHeaderFootprintComponent,
+        BaseFilterSidebarComponent,
         DatavizFilterComponent,
         CommonEditorComponent,
         BusinessHoursRendererPipe,
@@ -99,6 +102,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         ImpactSidebarComponent,
         DecimalsPipe,
         IntegerPipe,
+        BadgeModule,
     ],
     exports: [
         TooltipModule,
@@ -115,6 +119,7 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
         InventoriesHeaderFootprintComponent,
         ConfirmPopupModule,
         ButtonModule,
+        BaseFilterSidebarComponent,
         DatavizFilterComponent,
         PaginatorModule,
         CheckboxModule,
