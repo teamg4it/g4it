@@ -36,6 +36,7 @@ import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipeme
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,7 +171,14 @@ public class EvaluateNumEcoEvalService {
                 Object source = mixMap.get("sourceReferentielMixElectrique");
 
                 if (source != null) {
-                    impact.setSource(source.toString());
+                    String raw = source.toString();
+
+                    String fixed = new String(
+                            raw.getBytes(StandardCharsets.ISO_8859_1),
+                            StandardCharsets.UTF_8
+                    );
+
+                    impact.setSource(fixed);
                     return;
                 }
             }
@@ -185,7 +193,14 @@ public class EvaluateNumEcoEvalService {
                 Object source = refMap.get(Constants.SOURCE);
 
                 if (source != null) {
-                    impact.setSource(source.toString());
+                    String raw = source.toString();
+
+                    String fixed = new String(
+                            raw.getBytes(StandardCharsets.ISO_8859_1),
+                            StandardCharsets.UTF_8
+                    );
+
+                    impact.setSource(fixed);
                 }
             }
 
