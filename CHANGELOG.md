@@ -3,9 +3,11 @@
 ## 3.12.0
 
 ## Major changes
+- 2001 | Inventory module filter the view moves from overlay to side panel
 
 ### Minor Changes
 - 2129 | Fix for Unit change - Unauthorized error remove in Digital Service
+
 
 ## 3.11.0
 
