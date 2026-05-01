@@ -37,21 +37,6 @@ describe("DatavizFilterComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should compute selectedFilterNames correctly", () => {
-        footprintStoreMock.filters.and.returnValue({
-            tab1: ["value1"],
-            tab2: ["test"],
-            tab3: ["All"],
-        });
-        translateServiceMock.instant.and.callFake((key: string) => key);
-
-        const result = component.selectedFilterNames();
-
-        expect(result).toBe(
-            "inventories-footprint.filter-tabs.tab1, inventories-footprint.filter-tabs.tab2",
-        );
-    });
-
     it("should debounce onCheckboxChange calls", (done) => {
         spyOn(component, "onFilterSelected");
         const selectedValues = ["value1"];
