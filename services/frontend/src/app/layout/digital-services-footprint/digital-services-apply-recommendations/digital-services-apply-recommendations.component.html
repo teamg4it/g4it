@@ -4,10 +4,11 @@
   <div pFocusTrap class="import-digital-content">
 
     <app-form-nav 
-      [spaceDetails]="importDetails"
-      [spaceForm]="importForm"
-      (tabSelected)="selectTab($event)"
-    />
+    *ngIf="selectedRecommendations.length > 1"
+    [spaceDetails]="importDetails"
+    [spaceForm]="importForm"
+    (tabSelected)="selectTab($event)"
+  />
 
     @if (importDetails?.form) {
 
