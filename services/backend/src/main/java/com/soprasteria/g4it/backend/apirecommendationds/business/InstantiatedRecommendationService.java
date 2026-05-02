@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apirecommendationds.business;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
@@ -68,8 +69,6 @@ public class InstantiatedRecommendationService {
     // Criterion for emission filtering
     private static final String CLIMATE_CHANGE = "CLIMATE_CHANGE";
 
-    // Terminal equipment type
-    private static final String TERMINAL_TYPE = "Terminal";
 
     /**
      * Returns recommendations sorted by descending TOPSIS priority score.
@@ -91,12 +90,10 @@ public class InstantiatedRecommendationService {
 
         // Compute heuristic context once (shared across recommendations)
         HeuristicContext heuristicContext = buildHeuristicContext(digitalServiceVersionUid);
-        log.info("TOPSIS: heuristic context for dsVersionUid={}: avgPue={}, avgWorkload={}, avgDurationHour={}, locations={}",
+        log.info("TOPSIS: heuristic context for dsVersionUid={}: weightedAverages={}, locations={}",
                 digitalServiceVersionUid,
-                heuristicContext.avgPue,
-                heuristicContext.avgWorkload,
-                heuristicContext.avgDurationHour,
-                heuristicContext.locations);
+                heuristicContext.weightedAverages(),
+                heuristicContext.locationWeights());
 
         // Build numeric matrix [n x 4]
         int n = recommendations.size();
@@ -144,54 +141,259 @@ public class InstantiatedRecommendationService {
      * Holds pre-computed actual values from the digital service version inputs.
      */
     private record HeuristicContext(
-            Double avgPue,
-            Double avgWorkload,
-            Double avgDurationHour,
-            List<String> locations
+            Map<String, Double> weightedAverages,  // keyed by affectedAttribute name
+            Map<String, Double> locationWeights
     ) {}
 
     /**
      * Builds the heuristic context by reading actual input values for the digital service version.
+     *
+     * Each numeric attribute is stored in weightedAverages under its affectedAttribute key.
+     * To support a new attribute, add one entry here: choose the right repository, filter,
+     * value extractor, and quantity extractor.
      */
     private HeuristicContext buildHeuristicContext(String digitalServiceVersionUid) {
-        // Average PUE from datacenters
-        Double avgPue = inDatacenterRepository
+        Map<String, Double> weightedAverages = new HashMap<>();
+
+        // --- Shared collections (fetched once, reused across attribute blocks) ---
+
+        List<InPhysicalEquipment> allPhysicalEquipments =
+                inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid);
+
+        // Lookup map: datacenter name -> PUE, used to resolve the PUE of each server's datacenter.
+        Map<String, Double> pueByDatacenterName = inDatacenterRepository
                 .findByDigitalServiceVersionUid(digitalServiceVersionUid)
                 .stream()
-                .filter(dc -> dc.getPue() != null)
-                .mapToDouble(dc -> dc.getPue())
-                .average()
-                .orElse(Double.NaN);
+                .filter(dc -> dc.getName() != null && dc.getPue() != null)
+                .collect(Collectors.toMap(dc -> dc.getName(), dc -> dc.getPue(), (a, b) -> a));
 
-        // Average workload from virtual equipments
-        Double avgWorkload = inVirtualEquipmentRepository
-                .findByDigitalServiceVersionUid(digitalServiceVersionUid)
-                .stream()
-                .filter(ve -> ve.getWorkload() != null)
-                .mapToDouble(ve -> ve.getWorkload())
-                .average()
-                .orElse(Double.NaN);
+        // --- Attribute blocks ---
 
-        // Average durationHour from terminal physical equipments
-        Double avgDurationHour = inPhysicalEquipmentRepository
-                .findByDigitalServiceVersionUid(digitalServiceVersionUid)
-                .stream()
-                .filter(pe -> TERMINAL_TYPE.equals(pe.getType()) && pe.getDurationHour() != null)
-                .mapToDouble(pe -> pe.getDurationHour())
-                .average()
-                .orElse(Double.NaN);
+        // "pue": quantity-weighted average PUE across private infrastructure servers.
+        // Each server contributes its datacenter's PUE, weighted by the server quantity.
+        List<InPhysicalEquipment> privateServers = allPhysicalEquipments.stream()
+                .filter(pe -> pe.getDatacenterName() != null
+                        && (pe.getType().equals("Server") || pe.getType().equals("Dedicated Server")))
+                .toList();
 
-        // Distinct locations from virtual equipments + datacenters
-        List<String> locations = computeDistinctLocations(digitalServiceVersionUid);
+        weightedAverages.put("pue",
+                computeWeightedAverage(
+                        privateServers,
+                        pe -> pueByDatacenterName.get(pe.getDatacenterName()),
+                        pe -> pe.getQuantity()
+                ));
 
-        return new HeuristicContext(avgPue, avgWorkload, avgDurationHour, locations);
+        // "workload": quantity-weighted average CPU workload across virtual equipments (cloud)
+        weightedAverages.put("workload",
+                computeWeightedAverage(
+                        inVirtualEquipmentRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid),
+                        ve -> ve.getWorkload(),
+                        ve -> ve.getQuantity()
+                ));
+
+        // "yearlyUsageTimePerUser": quantity-weighted average usage duration across terminal physical equipments
+        weightedAverages.put("yearlyUsageTimePerUser",
+                computeWeightedAverage(
+                        allPhysicalEquipments.stream()
+                                .filter(pe -> pe.getType().equals("Terminal"))
+                                .toList(),
+                        pe -> pe.getDurationHour(),
+                        pe -> 1.0 
+                ));
+
+        // Weighted locations from virtual equipments + datacenters
+        Map<String, Double> locationWeights = computeLocationWeights(digitalServiceVersionUid);
+
+        return new HeuristicContext(weightedAverages, locationWeights);
     }
+
+    /**
+     * Computes the quantity-weighted average of a numeric attribute over a collection.
+     *
+     * Elements where valueExtractor returns null are excluded.
+     * If quantityExtractor returns null, a quantity of 1.0 is assumed (simple average fallback).
+     * Returns NaN if the collection is empty or all values are null.
+     *
+     * @param items           source collection
+     * @param valueExtractor  extracts the numeric attribute value (e.g. workload, PUE)
+     * @param quantityExtractor extracts the weight (e.g. number of instances)
+     */
+    private <T> Double computeWeightedAverage(
+            List<T> items,
+            java.util.function.Function<T, Double> valueExtractor,
+            java.util.function.Function<T, Double> quantityExtractor) {
+
+        double weightedSum = 0.0;
+        double totalQuantity = 0.0;
+
+        for (T item : items) {
+            Double value = valueExtractor.apply(item);
+            if (value == null) continue;
+            double quantity = Optional.ofNullable(quantityExtractor.apply(item)).orElse(1.0);
+            weightedSum    += value * quantity;
+            totalQuantity  += quantity;
+        }
+
+        return totalQuantity > 0 ? weightedSum / totalQuantity : Double.NaN;
+    }
+
+    /**
+         * Maps ISO-3 country codes to full country names used in the referential.
+         * Only applied to public cloud locations.
+         */
+private String normalizeCloudLocation(String location) {
+    if (location == null) return null;
+    return switch (location.toUpperCase()) {
+        case "ALB" -> "Albania";
+        case "DZA" -> "Algeria";
+        case "AND" -> "Andorra";
+        case "AGO" -> "Angola";
+        case "ARG" -> "Argentina";
+        case "ARM" -> "Armenia";
+        case "AUS" -> "Australia";
+        case "AUT" -> "Austria";
+        case "AZE" -> "Azerbaijan";
+        case "BHS" -> "Bahamas";
+        case "BHR" -> "Bahrain";
+        case "BGD" -> "Bangladesh";
+        case "BLR" -> "Belarus";
+        case "BEL" -> "Belgium";
+        case "BEN" -> "Benin";
+        case "BOL" -> "Bolivia";
+        case "BIH" -> "Bosnia-Herzegovina";
+        case "BWA" -> "Botswana";
+        case "BRA" -> "Brazil";
+        case "BRN" -> "Brunei Darussalam";
+        case "BGR" -> "Bulgaria";
+        case "KHM" -> "Cambodia";
+        case "CMR" -> "Cameroon";
+        case "CAN" -> "Canada";
+        case "CHL" -> "Chile";
+        case "CHN" -> "China";
+        case "COL" -> "Colombia";
+        case "COG" -> "Congo";
+        case "COD" -> "Congo, The Democratic Republic Of The";
+        case "CRI" -> "Costa Rica";
+        case "CIV" -> "Cote D'ivoire";
+        case "HRV" -> "Croatia";
+        case "CUB" -> "Cuba";
+        case "CYP" -> "Cyprus";
+        case "CZE" -> "Czech Republic";
+        case "DNK" -> "Denmark";
+        case "DOM" -> "Dominican Republic";
+        case "ECU" -> "Ecuador";
+        case "EGY" -> "Egypt";
+        case "SLV" -> "El Salvador";
+        case "ERI" -> "Eritrea";
+        case "EST" -> "Estonia";
+        case "ETH" -> "Ethiopia";
+        case "FIN" -> "Finland";
+        case "FRA" -> "France";
+        case "GAB" -> "Gabon";
+        case "GEO" -> "Georgia";
+        case "DEU" -> "Germany";
+        case "GHA" -> "Ghana";
+        case "GRC" -> "Greece";
+        case "GTM" -> "Guatemala";
+        case "HTI" -> "Haiti";
+        case "HND" -> "Honduras";
+        case "HKG" -> "Hong Kong";
+        case "HUN" -> "Hungary";
+        case "ISL" -> "Iceland";
+        case "IND" -> "India";
+        case "IDN" -> "Indonesia";
+        case "IRN" -> "Iran, Islamic Republic Of";
+        case "IRQ" -> "Iraq";
+        case "IRL" -> "Ireland";
+        case "ISR" -> "Israel";
+        case "ITA" -> "Italy";
+        case "JAM" -> "Jamaica";
+        case "JPN" -> "Japan";
+        case "JOR" -> "Jordan";
+        case "KAZ" -> "Kazakhstan";
+        case "KEN" -> "Kenya";
+        case "KWT" -> "Kuwait";
+        case "KGZ" -> "Kyrgyzstan";
+        case "LVA" -> "Latvia";
+        case "LBN" -> "Lebanon";
+        case "LBY" -> "Libya";
+        case "LTU" -> "Lithuania";
+        case "LUX" -> "Luxembourg";
+        case "MYS" -> "Malaysia";
+        case "MLT" -> "Malta";
+        case "MEX" -> "Mexico";
+        case "MDA" -> "Moldova, Republic Of";
+        case "MNG" -> "Mongolia";
+        case "MAR" -> "Morocco";
+        case "MOZ" -> "Mozambique";
+        case "MMR" -> "Myanmar";
+        case "NAM" -> "Namibia";
+        case "NPL" -> "Nepal";
+        case "NLD" -> "Netherlands";
+        case "NZL" -> "New Zealand";
+        case "NIC" -> "Nicaragua";
+        case "NGA" -> "Nigeria";
+        case "PRK" -> "Korea, Democratic People's Repulic of";
+        case "MKD" -> "North Macedonia";
+        case "NOR" -> "Norway";
+        case "OMN" -> "Oman";
+        case "PAK" -> "Pakistan";
+        case "PAN" -> "Panama";
+        case "PRY" -> "Paraguay";
+        case "PER" -> "Peru";
+        case "PHL" -> "Philippines";
+        case "POL" -> "Poland";
+        case "PRT" -> "Portugal";
+        case "QAT" -> "Qatar";
+        case "ROU" -> "Romania";
+        case "RUS" -> "Russian Federation";
+        case "SAU" -> "Saudi Arabia";
+        case "SEN" -> "Senegal";
+        case "SRB" -> "Serbie";
+        case "SGP" -> "Singapore";
+        case "SVK" -> "Slovakia";
+        case "SVN" -> "Slovenia";
+        case "ZAF" -> "South Africa";
+        case "KOR" -> "Korea, Republic Of";
+        case "ESP" -> "Spain";
+        case "LKA" -> "Sri Lanka";
+        case "SDN" -> "Sudan";
+        case "SUR" -> "Suriname";
+        case "SWE" -> "Sweden";
+        case "CHE" -> "Switzerland";
+        case "SYR" -> "Syria";
+        case "TWN" -> "Taiwan";
+        case "TJK" -> "Tajikistan";
+        case "TZA" -> "Tanzania, United Republic Of";
+        case "THA" -> "Thailand";
+        case "TGO" -> "Togo";
+        case "TTO" -> "Trinidad and Tobago";
+        case "TUN" -> "Tunisia";
+        case "TUR" -> "Turkey";
+        case "TKM" -> "Turkmenistan";
+        case "UKR" -> "Ukraine";
+        case "ARE" -> "United Arab Emirates";
+        case "GBR" -> "United Kingdom";
+        case "USA" -> "United States";
+        case "URY" -> "Uruguay";
+        case "UZB" -> "Uzbekistan";
+        case "VEN" -> "Venezuela";
+        case "VNM" -> "Vietnam";
+        case "YEM" -> "Yemen";
+        case "ZMB" -> "Zambia";
+        case "ZWE" -> "Zimbabwe";
+        case "EEE" -> "Europe";
+
+        default -> location; 
+    };
+}
+
 
     /**
      * Collects all distinct non-null locations across virtual equipments and datacenters.
      */
-    private List<String> computeDistinctLocations(String digitalServiceVersionUid) {
-        List<String> locations = new ArrayList<>();
+    private Map<String, Double> computeLocationWeights(String digitalServiceVersionUid) {
+        Map<String, Double> weights = new HashMap<>();        
         // Cloud locations
         inVirtualEquipmentRepository
                 .findByDigitalServiceVersionUid(digitalServiceVersionUid)
@@ -199,8 +401,13 @@ public class InstantiatedRecommendationService {
                 .filter(ve -> ve.getLocation() != null && !ve.getLocation().isBlank()
                     && ("CLOUD_SERVICES".equals(ve.getInfrastructureType())
                                 || "Cloud".equals(ve.getInfrastructureType())))
-                .forEach(ve -> locations.add(ve.getLocation()));
-        
+                .forEach(ve -> {
+                    // Normalization with ISO-3 country codes
+                    String finalLocation = normalizeCloudLocation(ve.getLocation());
+
+                    double qty = ve.getQuantity() != null ? ve.getQuantity() : 0.0;
+                    weights.merge(finalLocation, qty, Double::sum);
+                });
         
         // Private infra: only datacenters actually referenced by a server physical equipment
         inPhysicalEquipmentRepository
@@ -209,9 +416,12 @@ public class InstantiatedRecommendationService {
                 .filter(pe -> pe.getType() != null
                         && (pe.getType().equals("Server") || pe.getType().equals("Dedicated Server"))
                         && pe.getLocation() != null && !pe.getLocation().isBlank())
-                .forEach(pe -> locations.add(pe.getLocation()));
+                .forEach(pe -> {
+                    double qty = pe.getQuantity() != null ? pe.getQuantity() : 0.0;
+                    weights.merge(pe.getLocation(), qty, Double::sum);
+                });
 
-        return locations;
+        return weights;
     }
 
     // -------------------------------------------------------------------------
@@ -232,24 +442,20 @@ public class InstantiatedRecommendationService {
             return 0.5; // neutral
         }
 
-        // location is computed dynamically via electricity mix quartiles, no heuristicRange needed
         if ("location".equals(attribute)) {
-            return computeLocationHeuristic(ctx.locations);
+            return computeLocationHeuristic(ctx.locationWeights());
         }
 
         if (recommendation.getHeuristicRange() == null) {
             return 0.5; // neutral -- no range defined for this attribute
         }
 
-        return switch (attribute) {
-            case "pue"                    -> computeNumericHeuristic(ctx.avgPue,          recommendation.getHeuristicRange());
-            case "workload"               -> computeNumericHeuristic(ctx.avgWorkload,      recommendation.getHeuristicRange());
-            case "yearlyUsageTimePerUser" -> computeNumericHeuristic(ctx.avgDurationHour,  recommendation.getHeuristicRange());
-            default -> {
-                log.warn("TOPSIS: unknown affectedAttribute '{}', using neutral score", attribute);
-                yield 0.5;
-            }
-        };
+        Double actualValue = ctx.weightedAverages().get(attribute);
+        if (actualValue == null) {
+            log.warn("TOPSIS: unknown affectedAttribute '{}', using neutral score", attribute);
+            return 0.5;
+        }
+        return computeNumericHeuristic(actualValue, recommendation.getHeuristicRange());
     }
 
     /**
@@ -311,33 +517,37 @@ public class InstantiatedRecommendationService {
      * Quartile 4 (worst mix) -> score 1.0 (highly prioritized)
      * Unknown locations are ignored; if none found -> neutral 0.5
      */
-    private double computeLocationHeuristic(List<String> locations) {
-        if (locations == null || locations.isEmpty()) return 0.5;
+    private double computeLocationHeuristic(Map<String, Double> locationWeights) {
+        if (locationWeights == null || locationWeights.isEmpty()) return 0.5;
 
         try {
             Map<Pair<String, String>, Integer> quartiles = referentialService.getElectricityMixQuartiles();
             
-            List<Double> scores = new ArrayList<>();
-            for (String location : locations) {
+            double totalWeightedScore = 0.0;
+            double totalQuantity = 0.0;
+
+            for (Map.Entry<String, Double> entry : locationWeights.entrySet()) {
+                String location = entry.getKey();
+                Double quantity = entry.getValue();
+                
                 Integer quartile = quartiles.get(Pair.of(location, CLIMATE_CHANGE));
+                double score;
+                
                 if (quartile == null) {
-                    log.warn("TOPSIS: no electricity mix quartile found for location={}, using 0.5", location);
-                    scores.add(0.5);
+                    score = 0.5; // Neutre si inconnu
                 } else {
-                    double score = (quartile - 1.0) / 3.0;
-                    log.info("TOPSIS: location={} -> quartile={} -> score={}", location, quartile, score);
-                    scores.add(score);
+                    score = (quartile - 1.0) / 3.0; // 1->0.0, 4->1.0
                 }
+                
+                totalWeightedScore += (score * quantity);
+                totalQuantity += quantity;
             }
 
-            if (scores.isEmpty()) {
-                log.warn("TOPSIS: no valid quartile found for any location, using neutral score");
-                return 0.5;
-            }
+            if (totalQuantity == 0) return 0.5;
 
-            double avgScore = scores.stream().mapToDouble(Double::doubleValue).average().orElse(0.5);
-            log.info("TOPSIS: average location heuristic score={} over {} locations", avgScore, scores.size());
-            return avgScore;
+            double weightedAvg = totalWeightedScore / totalQuantity;
+            log.info("TOPSIS: Weighted location heuristic score={} over {} total units", weightedAvg, totalQuantity);
+            return weightedAvg;
 
         } catch (Exception e) {
             log.error("TOPSIS: failed to compute location heuristic", e);
