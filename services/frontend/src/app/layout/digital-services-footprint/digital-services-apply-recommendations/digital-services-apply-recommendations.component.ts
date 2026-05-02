@@ -623,6 +623,15 @@ openCloudEditor(cloud: DigitalServiceCloudServiceConfig) {
   this.editingCloud = structuredClone(cloud);
     const current = this.instanceTypesByProvider();
 }
+onCloudLocationChange(code: string) {
+  const found = this.countries().find(c => c.code === code);
+  if (found && this.editingCloud) {
+    this.editingCloud.location = {
+      code: found.code,
+      name: found.label
+    };
+  }
+}
 
 closeCloudEditor() {
   this.editingCloud = null;
