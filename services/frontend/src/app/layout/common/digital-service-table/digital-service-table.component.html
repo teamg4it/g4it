@@ -87,11 +87,11 @@
 
     <!-- title / description -->
     <ng-container *ngSwitchCase="'title'">
-      {{ data.title | translate }}
+      {{ translateOrFallback(data.title) }}
     </ng-container>
 
     <ng-container *ngSwitchCase="'description'">
-      {{ data.description | translate }}
+      {{ translateOrFallback(data.description) }}
     </ng-container>
 
     <!-- difficulty -->
