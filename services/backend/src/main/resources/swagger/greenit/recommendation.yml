@@ -221,6 +221,7 @@ components:
         organisationId:
           type: integer
           format: int64
+          readOnly: true
         difficulty:
           type: string
           enum: [ EASY, MEDIUM, HARD ]
