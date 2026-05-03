@@ -317,7 +317,44 @@
         },
         "global-access-link": "accèder à l'impact détaillé sur l'axe {{criteria}}",
         "criteria-access-link": "accèder à l'impact détaillé pour les {{type}}",
-        "resource-access-link": "accèder à l'impact détaillé pour {{type}}"
+        "resource-access-link": "accèder à l'impact détaillé pour {{type}}",
+                  "apply-recommendations": {
+            "title": "Modifiez les paramètres de vos ressources selon la recommandation sélectionnée",
+            "subtitle": "Veuillez adapter les paramètres des ressources afin d’appliquer cette recommandation"
+        }
+    },
+    "recommendations": {
+        "ADAPT_ARCHITECTURE": {
+            "title": "Utiliser une architecture adaptée",
+            "description": "La quantité de ressources utilisées par l'architecture doit être adaptée à la consommation du service"
+        },
+        "LIMIT_REQUESTS": {
+            "title": "Limiter le poids et le nombre de requêtes par écran",
+            "description": "Le service numérique s'astreint à un poids maximum et une limite de requêtes par écran"
+        },
+        "MINIMIZE_PUE": {
+            "title": "Minimiser le PUE de l'hébergement",
+            "description": "Utiliser un hébergement dont le PUE (Power Usage Effectiveness) est minimisé"
+        },
+        "GEO_CLOUD": {
+            "title": "Choisir un hébergement cloud géographiquement cohérent",
+            "description": "Utiliser un hébergement dont la localisation géographique est cohérente avec ses activités et qui minimise son empreinte environnementale"
+        },
+        "OPTIMIZE_UX": {
+            "title": "Optimiser le parcours utilisateur",
+            "description": "Le service numérique optimise le parcours d'utilisation pour chaque fonctionnalité principale afin de minimiser le temps et le nombre d'écrans"
+        }
+    },
+    "categories": {
+        "PUBLIC_CLOUD": "Clouds Publics - IaaS",
+        "PRIVATE_INFRASTRUCTURE": "Infrastructure Privée",
+        "NETWORK": "Réseaux",
+        "TERMINAL": "Terminaux"
+    },
+    "difficulty": {
+        "HARD": "Difficile",
+        "MEDIUM": "Moyenne",
+        "EASY": "Facile"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",

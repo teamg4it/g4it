@@ -319,7 +319,46 @@
         },
         "global-access-link": "access to the detailed impact on {{criteria}} axis",
         "criteria-access-link": "access to the detailed impact for the {{type}}",
-        "resource-access-link": "access to the detailed impact for {{type}}"
+        "resource-access-link": "access to the detailed impact for {{type}}",
+        
+          "apply-recommendations": {
+            "title": "Modify your resource parameters according to the selected recommendation",
+            "subtitle": "Please adjust the resource parameters to apply this recommendation"
+        }
+    },
+    "recommendations": {
+  "ADAPT_ARCHITECTURE": {
+    "title": "Use an appropriate architecture",
+    "description": "The amount of resources used should match the service consumption"
+  },
+  "LIMIT_REQUESTS": {
+    "title": "Limit weight and number of requests per screen",
+    "description": "The service limits data size and number of requests per screen"
+  },
+    "MINIMIZE_PUE": {
+    "title": "Minimize hosting PUE",
+    "description": "Use hosting with a minimized Power Usage Effectiveness (PUE)"
+  },
+  "GEO_CLOUD": {
+    "title": "Choose a geographically relevant cloud hosting",
+    "description": "Use hosting whose geographical location is aligned with its usage and minimizes environmental impact"
+  },
+  "OPTIMIZE_UX": {
+    "title": "Optimize user journey",
+    "description": "The service optimizes the user journey for each main feature to minimize time and number of screens"
+  }
+
+    },
+    "categories": {
+        "PUBLIC_CLOUD": "Public Clouds - IaaS",
+        "PRIVATE_INFRASTRUCTURE": "Private Infrastructure",
+        "NETWORK": "Networks",
+        "TERMINAL": "Terminals"
+    },
+    "difficulty": {
+        "HARD": "Hard",
+        "MEDIUM": "Medium",
+        "EASY": "Easy"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",

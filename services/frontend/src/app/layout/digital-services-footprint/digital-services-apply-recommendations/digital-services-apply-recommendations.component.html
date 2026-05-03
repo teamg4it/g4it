@@ -25,19 +25,19 @@
 
 
 <h2 class="text-xl md:text-2xl">
-  Modifiez les paramètres de vos ressources selon la recommandation sélectionnée
+      {{ 'digital-services.apply-recommendations.title' | translate }}
 </h2>
 
 <h3 class="font-semibold text-2xl md:text-3xl ml-0">
-  {{ importDetails.menu[selectedMenuIndex ?? 0].title }}
+  {{ importDetails.menu[selectedMenuIndex ?? 0].title | translate }}
 </h3>
 
 <p class="mb-3 text-base md:text-lg">
-  {{ importDetails.menu[selectedMenuIndex ?? 0].descriptionText }}
+  {{ importDetails.menu[selectedMenuIndex ?? 0].descriptionText | translate}}
 </p>
 
 <p class="mt-4 mb-2 font-medium text-base md:text-lg">
-  Veuillez adapter les paramètres des ressources afin d’appliquer cette recommandation.
+  {{ 'digital-services.apply-recommendations.subtitle' | translate }}
 </p>
 
           <!-- Onglets si plusieurs catégories -->
@@ -47,7 +47,7 @@
 >
   <p-tabPanel
     *ngFor="let cat of currentCategories"
-    [header]="cat"
+    [header]="cat | translate"
   >
   </p-tabPanel>
 </p-tabView>
@@ -56,7 +56,7 @@
 <ng-container [ngSwitch]="currentModifiedCategory">
 
   <!-- Réseaux -->
-  <ng-container *ngSwitchCase="'Réseaux'">
+  <ng-container *ngSwitchCase="'categories.NETWORK'">
     <ng-container *ngIf="!editingNetwork; else editNetworkMode">
 <app-digital-services-networks
   [dsVersionUid]="dsVersionUid"
@@ -108,7 +108,7 @@
   </ng-container>
 
   <!-- Clouds Publics - IaaS -->
- <ng-container *ngSwitchCase="'Clouds Publics - IaaS'">
+ <ng-container *ngSwitchCase="'categories.PUBLIC_CLOUD'">
 <ng-container *ngIf="!editingCloud; else editCloudMode">
 <app-digital-services-cloud-services
   [dsVersionUid]="dsVersionUid"
@@ -198,7 +198,7 @@ styleClass="yellow-button"
 </ng-container>
 
   <!-- Infrastructure Privée -->
-  <ng-container *ngSwitchCase="'Infrastructure Privée'">
+  <ng-container *ngSwitchCase="'categories.PRIVATE_INFRASTRUCTURE'">
     <ng-container *ngIf="!editingServer; else editMode">
       <app-digital-services-servers
         [dsVersionUid]="dsVersionUid"
@@ -280,7 +280,7 @@ styleClass="yellow-button"
   </ng-container>
 
   <!-- Terminaux -->
-<ng-container *ngSwitchCase="'Terminaux'">
+<ng-container *ngSwitchCase="'categories.TERMINAL'">
 
   <!-- LISTE -->
   <ng-container *ngIf="!editingTerminal; else editTerminalMode">

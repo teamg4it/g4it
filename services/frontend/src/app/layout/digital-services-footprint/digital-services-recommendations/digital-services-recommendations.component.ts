@@ -9,14 +9,6 @@ import { RecommendationService, InstantiatedRecommendation } from 'src/app/core/
 @Component({
   selector: 'app-digital-services-recommendations',
   templateUrl: './digital-services-recommendations.component.html',
-  // providers: [
-  //   {
-  //     provide: UserService,
-  //     useValue: {
-  //       isAllowedDigitalServiceWrite$: of(false), 
-  //     },
-  //   },
-  // ],
 })
 
 export class DigitalServicesRecommendationsComponent {
@@ -79,31 +71,46 @@ ngOnInit() {
     )
     .subscribe({
       next: (data: InstantiatedRecommendation[]) => {
-        // Data is already sorted by priority desc by the backend (TOPSIS)
-        this.recommendations = data.map((r: InstantiatedRecommendation, index: number) => ({
-          ...r.recommendation,
-          priority: index + 1,
-          category: this.mapCategory(r.recommendation?.category ?? []),
-          selected: false,
-          implementationDifficulty: r.recommendation?.difficulty
-            ? this.mapDifficulty(r.recommendation.difficulty)
-            : "N/A"
-        }));
+        this.recommendations = data.map((r: InstantiatedRecommendation, index: number) => {
+          const rec = r.recommendation;
+          const translationKey = this.getRecommendationKey(rec!.title);
 
-        console.log("LOG: Recommendations transformées:", this.recommendations);
-      },
-      error: (err: any) => {
-        console.error("LOG: Erreur lors de la récupération des recommandations:", err);
+          return {
+            ...rec,
+              title: `recommendations.${translationKey}.title`,
+            description: `recommendations.${translationKey}.description`,
+            priority: index + 1,
+          category: this.mapCategory(r.recommendation?.category ?? []),
+            selected: false,
+              implementationDifficulty: rec?.difficulty
+              ? `difficulty.${rec.difficulty}`
+              : null,    
+            translationKey: translationKey
+          };
+        });
       }
     });
 }
 
+// ==================== MAPPING FR -> CLÉ ====================
+private getRecommendationKey(frenchTitle: string): string {
+  const map: { [key: string]: string } = {
+    "Utiliser une architecture adaptée": "ADAPT_ARCHITECTURE",
+    "Limiter le poids et le nombre de requêtes par écran": "LIMIT_REQUESTS",
+    "Minimiser le PUE de l'hébergement": "MINIMIZE_PUE",
+    "Choisir un hébergement cloud géographiquement cohérent": "GEO_CLOUD",
+    "Optimiser le parcours utilisateur": "OPTIMIZE_UX"
+  };
+
+  return map[frenchTitle] || 'UNKNOWN';
+}
+
 private mapCategory(category: string[]): string[] {
   const mapping: any = {
-    PUBLIC_CLOUD: "Clouds Publics - IaaS",
-    PRIVATE_INFRASTRUCTURE: "Infrastructure Privée",
-    NETWORK: "Réseaux",
-    TERMINAL: "Terminaux"
+    PUBLIC_CLOUD: `categories.PUBLIC_CLOUD`,
+    PRIVATE_INFRASTRUCTURE: "categories.PRIVATE_INFRASTRUCTURE",
+    NETWORK: "categories.NETWORK",
+    TERMINAL: "categories.TERMINAL"
   };
 
   return category?.map(c => mapping[c] || c);

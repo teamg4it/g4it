@@ -82,7 +82,35 @@
                 ></ng-template>
             }
             @for (header of headerFields; track $index) {
-                <td>{{ data[header] | decimals }}</td>
+               <td>
+  <ng-container [ngSwitch]="header">
+
+    <!-- title / description -->
+    <ng-container *ngSwitchCase="'title'">
+      {{ data.title | translate }}
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'description'">
+      {{ data.description | translate }}
+    </ng-container>
+
+    <!-- difficulty -->
+    <ng-container *ngSwitchCase="'implementationDifficulty'">
+      {{ data.implementationDifficulty | translate }}
+    </ng-container>
+
+    <!-- categories  -->
+    <ng-container *ngSwitchCase="'category'">
+     {{ translateCategories(data.category) }}
+    </ng-container>
+
+    <!-- default -->
+    <ng-container *ngSwitchDefault>
+      {{ data[header] }}
+    </ng-container>
+
+  </ng-container>
+</td>
             }
             @if (!isMobileView()) {
                 <ng-template
