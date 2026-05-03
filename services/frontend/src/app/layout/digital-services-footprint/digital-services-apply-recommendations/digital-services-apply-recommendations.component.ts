@@ -12,6 +12,7 @@ import { InPhysicalEquipmentsService } from 'src/app/core/service/data/in-out/in
 import { DigitalServiceVersionDataService } from 'src/app/core/service/data/digital-service-version-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { addDays, differenceInDays } from 'date-fns';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -140,29 +141,44 @@ addDatacenter(newDc: ServerDC) {
   instanceTypesLoaded = signal(false);
   
 
-  buildImportDetails() {
-    this.importDetails = {
-      menu: this.selectedRecommendations.map((r) => ({
-        title: r.title,
-         subTitle: Array.isArray(r.category) ? r.category.join(' | ') : r.category,
-        descriptionText: r.description,
-        active: false,
-        optional: true,
-      })),
-      form: this.selectedRecommendations.map((_, i) => ({
-        name: `rec-${i}`,
-      })),
-    };
-
-    this.importForm = new FormGroup(
-      this.selectedRecommendations.reduce((acc, _, i) => {
-        acc[`rec-${i}`] = new FormControl(undefined);
-        return acc;
-      }, {} as any)
-    );
-
-    this.selectTab(0);
+  ngOnChanges() {
+    if (this.selectedRecommendations?.length) {
+      this.buildImportDetails();
+    }
+} 
+  private translate = inject(TranslateService);
+  private translateCategory(cat: string): string {
+    return this.digitalServiceStore.translate.instant(`${cat}`);
   }
+  buildImportDetails() {
+   this.importDetails = {
+    menu: this.selectedRecommendations.map((r) => ({
+      title: r.translationKey 
+        ? `recommendations.${r.translationKey}.title`
+        : r.title, 
+      subTitle: (Array.isArray(r.category) ? r.category : [r.category])
+      .map((c: string) => this.translateCategory(c))
+      .join(' | '),
+          descriptionText: r.translationKey
+            ? `recommendations.${r.translationKey}.description`
+            : r.description,
+      active: false,
+      optional: true,
+    })),
+    form: this.selectedRecommendations.map((_, i) => ({
+      name: `rec-${i}`,
+    })),
+  };
+
+  this.importForm = new FormGroup(
+    this.selectedRecommendations.reduce((acc, _, i) => {
+      acc[`rec-${i}`] = new FormControl(undefined);
+      return acc;
+    }, {} as any)
+  );
+
+  this.selectTab(0);
+}
 
   openTerminalEditor(terminal: DigitalServiceTerminalConfig) {
   this.editingTerminal = structuredClone(terminal);

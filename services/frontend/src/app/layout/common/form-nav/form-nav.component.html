@@ -24,7 +24,7 @@
                     (keydown)="handleKeydown($event, panelIndex)"
                 >
                     <p class="space-menu-sub-title">{{ spaceMenu.subTitle }}</p>
-                    <p class="space-menu-title">{{ spaceMenu.title }}</p>
+                    <p class="space-menu-title">{{ spaceMenu.title | translate  }}</p>
                     <!-- Not valid field OR optional field with empty value -->
                     @if (!onlyOneNav) {
                         @if (

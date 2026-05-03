@@ -113,4 +113,9 @@ export class DigitalServiceTableComponent {
   this.selectAllChange.emit(this.selectAll);
   this.updateSelectAllState();
 }
+translateCategories(categories: string[]): string {
+  return categories
+    .map(c => this.translate.instant(c))
+    .join(', ');
+}
 }
