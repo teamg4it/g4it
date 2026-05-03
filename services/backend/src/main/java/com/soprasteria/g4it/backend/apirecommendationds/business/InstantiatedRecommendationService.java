@@ -218,6 +218,16 @@ public class InstantiatedRecommendationService {
                         pe -> 1.0   // unweighted: duration is independent of the number of terminals
                 ));
 
+        // "electricityConsumption": quantity-weighted average electricity consumption across private infrastructure servers.
+        weightedAverages.put("electricityConsumption",
+                computeWeightedAverage(
+                        allPhysicalEquipments.stream()
+                                .filter(pe -> pe.getType().equals(TYPE_SERVER) || pe.getType().equals(TYPE_DEDICATED_SERVER))
+                                .toList(),
+                        pe -> pe.getElectricityConsumption(),
+                        pe -> pe.getQuantity()
+                ));
+
         // Weighted locations from virtual equipments + datacenters
         Map<String, Double> locationWeights = computeLocationWeights(digitalServiceVersionUid, allVirtualEquipments, allPhysicalEquipments);
 
