@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
@@ -69,6 +70,21 @@ public class InstantiatedRecommendationService {
     // Criterion for emission filtering
     private static final String CLIMATE_CHANGE = "CLIMATE_CHANGE";
 
+    // Physical equipment types
+    private static final String TYPE_TERMINAL          = "Terminal";
+    private static final String TYPE_NETWORK           = "Network";
+    private static final String TYPE_SERVER            = "Server";
+    private static final String TYPE_DEDICATED_SERVER  = "Dedicated Server";
+
+    // Virtual equipment infrastructure types
+    private static final String INFRA_CLOUD            = "Cloud";
+    private static final String INFRA_CLOUD_SERVICES   = "CLOUD_SERVICES";
+
+    // TOPSIS emission categories
+    private static final String CATEGORY_TERMINAL              = "TERMINAL";
+    private static final String CATEGORY_NETWORK               = "NETWORK";
+    private static final String CATEGORY_PRIVATE_INFRASTRUCTURE = "PRIVATE_INFRASTRUCTURE";
+    private static final String CATEGORY_PUBLIC_CLOUD          = "PUBLIC_CLOUD";
 
     /**
      * Returns recommendations sorted by descending TOPSIS priority score.
@@ -160,25 +176,25 @@ public class InstantiatedRecommendationService {
         List<InPhysicalEquipment> allPhysicalEquipments =
                 inPhysicalEquipmentRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid);
 
-        // Lookup map: datacenter name -> PUE, used to resolve the PUE of each server's datacenter.
+        List<InVirtualEquipment> allVirtualEquipments =
+                inVirtualEquipmentRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid);
+
+        // --- Attribute blocks ---
+
+        // "pue": quantity-weighted average PUE across private infrastructure servers.
+        // Each server contributes its datacenter's PUE, weighted by the server quantity.
         Map<String, Double> pueByDatacenterName = inDatacenterRepository
                 .findByDigitalServiceVersionUid(digitalServiceVersionUid)
                 .stream()
                 .filter(dc -> dc.getName() != null && dc.getPue() != null)
                 .collect(Collectors.toMap(dc -> dc.getName(), dc -> dc.getPue(), (a, b) -> a));
 
-        // --- Attribute blocks ---
-
-        // "pue": quantity-weighted average PUE across private infrastructure servers.
-        // Each server contributes its datacenter's PUE, weighted by the server quantity.
-        List<InPhysicalEquipment> privateServers = allPhysicalEquipments.stream()
-                .filter(pe -> pe.getDatacenterName() != null
-                        && (pe.getType().equals("Server") || pe.getType().equals("Dedicated Server")))
-                .toList();
-
         weightedAverages.put("pue",
                 computeWeightedAverage(
-                        privateServers,
+                        allPhysicalEquipments.stream()
+                                .filter(pe -> pe.getDatacenterName() != null
+                                        && (pe.getType().equals(TYPE_SERVER) || pe.getType().equals(TYPE_DEDICATED_SERVER)))
+                                .toList(),
                         pe -> pueByDatacenterName.get(pe.getDatacenterName()),
                         pe -> pe.getQuantity()
                 ));
@@ -186,23 +202,24 @@ public class InstantiatedRecommendationService {
         // "workload": quantity-weighted average CPU workload across virtual equipments (cloud)
         weightedAverages.put("workload",
                 computeWeightedAverage(
-                        inVirtualEquipmentRepository.findByDigitalServiceVersionUid(digitalServiceVersionUid),
+                        allVirtualEquipments,
                         ve -> ve.getWorkload(),
                         ve -> ve.getQuantity()
                 ));
 
-        // "yearlyUsageTimePerUser": quantity-weighted average usage duration across terminal physical equipments
+        // "yearlyUsageTimePerUser": simple average usage duration across terminal physical equipments.
+        // Duration is per-user, quantity is irrelevant.
         weightedAverages.put("yearlyUsageTimePerUser",
                 computeWeightedAverage(
                         allPhysicalEquipments.stream()
-                                .filter(pe -> pe.getType().equals("Terminal"))
+                                .filter(pe -> TYPE_TERMINAL.equals(pe.getType()))
                                 .toList(),
                         pe -> pe.getDurationHour(),
-                        pe -> 1.0 
+                        pe -> 1.0   // unweighted: duration is independent of the number of terminals
                 ));
 
         // Weighted locations from virtual equipments + datacenters
-        Map<String, Double> locationWeights = computeLocationWeights(digitalServiceVersionUid);
+        Map<String, Double> locationWeights = computeLocationWeights(digitalServiceVersionUid, allVirtualEquipments, allPhysicalEquipments);
 
         return new HeuristicContext(weightedAverages, locationWeights);
     }
@@ -392,15 +409,16 @@ private String normalizeCloudLocation(String location) {
     /**
      * Collects all distinct non-null locations across virtual equipments and datacenters.
      */
-    private Map<String, Double> computeLocationWeights(String digitalServiceVersionUid) {
-        Map<String, Double> weights = new HashMap<>();        
+    private Map<String, Double> computeLocationWeights(
+            String digitalServiceVersionUid,
+            List<InVirtualEquipment> allVirtualEquipments,
+            List<InPhysicalEquipment> allPhysicalEquipments) {
+        Map<String, Double> weights = new HashMap<>();
         // Cloud locations
-        inVirtualEquipmentRepository
-                .findByDigitalServiceVersionUid(digitalServiceVersionUid)
-                .stream()
+        allVirtualEquipments.stream()
                 .filter(ve -> ve.getLocation() != null && !ve.getLocation().isBlank()
-                    && ("CLOUD_SERVICES".equals(ve.getInfrastructureType())
-                                || "Cloud".equals(ve.getInfrastructureType())))
+                    && (INFRA_CLOUD_SERVICES.equals(ve.getInfrastructureType())
+                                || INFRA_CLOUD.equals(ve.getInfrastructureType())))
                 .forEach(ve -> {
                     // Normalization with ISO-3 country codes
                     String finalLocation = normalizeCloudLocation(ve.getLocation());
@@ -410,11 +428,9 @@ private String normalizeCloudLocation(String location) {
                 });
         
         // Private infra: only datacenters actually referenced by a server physical equipment
-        inPhysicalEquipmentRepository
-                .findByDigitalServiceVersionUid(digitalServiceVersionUid)
-                .stream()
+        allPhysicalEquipments.stream()
                 .filter(pe -> pe.getType() != null
-                        && (pe.getType().equals("Server") || pe.getType().equals("Dedicated Server"))
+                        && (pe.getType().equals(TYPE_SERVER) || pe.getType().equals(TYPE_DEDICATED_SERVER))
                         && pe.getLocation() != null && !pe.getLocation().isBlank())
                 .forEach(pe -> {
                     double qty = pe.getQuantity() != null ? pe.getQuantity() : 0.0;
@@ -575,10 +591,10 @@ private String normalizeCloudLocation(String location) {
 
     private Map<String, Double> computeCategoryProportions(String digitalServiceVersionUid) {
         Map<String, Double> emissions = new HashMap<>();
-        emissions.put("TERMINAL",               0.0);
-        emissions.put("NETWORK",                0.0);
-        emissions.put("PRIVATE_INFRASTRUCTURE", 0.0);
-        emissions.put("PUBLIC_CLOUD",           0.0);
+        emissions.put(CATEGORY_TERMINAL,               0.0);
+        emissions.put(CATEGORY_NETWORK,                0.0);
+        emissions.put(CATEGORY_PRIVATE_INFRASTRUCTURE, 0.0);
+        emissions.put(CATEGORY_PUBLIC_CLOUD,           0.0);
 
         List<OutPhysicalEquipmentRest> physicalEquipments =
                 outPhysicalEquipmentService.getByDigitalServiceVersionUid(digitalServiceVersionUid);
@@ -631,10 +647,10 @@ private String normalizeCloudLocation(String location) {
     private String mapPhysicalEquipmentTypeToCategory(String equipmentType) {
         if (equipmentType == null) return null;
         return switch (equipmentType) {
-            case "Terminal"         -> "TERMINAL";
-            case "Network"          -> "NETWORK";
+            case "Terminal"         -> CATEGORY_TERMINAL;
+            case "Network"          -> CATEGORY_NETWORK;
             case "Server",
-                 "Dedicated Server" -> "PRIVATE_INFRASTRUCTURE";
+                 "Dedicated Server" -> CATEGORY_PRIVATE_INFRASTRUCTURE;
             default                 -> null;
         };
     }
@@ -643,7 +659,7 @@ private String normalizeCloudLocation(String location) {
         if (infrastructureType == null) return null;
         return switch (infrastructureType) {
             case "Cloud",
-                 "CLOUD_SERVICES" -> "PUBLIC_CLOUD";
+                 "CLOUD_SERVICES" -> CATEGORY_PUBLIC_CLOUD;
             default              -> null;
         };
     }
