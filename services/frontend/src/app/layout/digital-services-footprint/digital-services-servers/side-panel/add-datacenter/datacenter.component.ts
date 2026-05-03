@@ -86,10 +86,12 @@ get hideInternalButtons() {
 
     submitFormData() {
   if (!this.isToLow) {
+        const rawPue = this.datacenterForm.value.pue;
+        const pue = Number(rawPue);
     const datacenter: ServerDC = {
       name: this.datacenterForm.value.name?.trim() || "",
       location: this.datacenterForm.value.country || "",
-      pue: this.datacenterForm.value.pue || 1,
+      pue: isNaN(pue) ? 1 : pue, 
       displayLabel: `${this.datacenterForm.value.name} (${this.datacenterForm.value.country} - PUE = ${this.datacenterForm.value.pue ?? 1})`,
       uid: "" as any,
     };
