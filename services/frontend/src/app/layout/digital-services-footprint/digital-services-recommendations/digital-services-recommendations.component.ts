@@ -80,9 +80,9 @@ ngOnInit() {
     .subscribe({
       next: (data: InstantiatedRecommendation[]) => {
         // Data is already sorted by priority desc by the backend (TOPSIS)
-        this.recommendations = data.map((r: InstantiatedRecommendation) => ({
+        this.recommendations = data.map((r: InstantiatedRecommendation, index: number) => ({
           ...r.recommendation,
-          priority: +(r.priority * 100).toFixed(1),
+          priority: index + 1,
           category: this.mapCategory(r.recommendation?.category ?? []),
           selected: false,
           implementationDifficulty: r.recommendation?.difficulty
