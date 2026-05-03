@@ -9,6 +9,7 @@ import PanelDatacenterComponent from '../digital-services-servers/side-panel/add
 import { InDatacenterRest, InPhysicalEquipmentRest, InVirtualEquipmentRest } from 'src/app/core/interfaces/input.interface';
 import { InVirtualEquipmentsService } from 'src/app/core/service/data/in-out/in-virtual-equipments.service';
 import { InPhysicalEquipmentsService } from 'src/app/core/service/data/in-out/in-physical-equipments.service';
+import { InDatacentersService } from 'src/app/core/service/data/in-out/in-datacenters.service';
 import { DigitalServiceVersionDataService } from 'src/app/core/service/data/digital-service-version-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { addDays, differenceInDays } from 'date-fns';
@@ -653,6 +654,7 @@ closeCloudEditor() {
   this.editingCloud = null;
 }
 private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
+private readonly inDatacentersService = inject(InDatacentersService);
 
 async onCloudSaved() {
   if (!this.editingCloud) {
@@ -914,6 +916,30 @@ private async clearVersionData(versionUid: string) {
 private async applySimulationToVersion(versionUid: string) {
   const physicalSimulation = this.simulationEquipments();
   const virtualSimulation = this.simulationVirtualEquipments();
+
+  // --- DATACENTERS ---
+for (const dc of this.simulationDatacenters()) {
+  const payload: InDatacenterRest = {
+    ...dc,
+    name: dc.name.split("|")[0],
+    location: dc.location,
+    pue: Number(dc.pue) || 1,
+  };
+
+  try {
+    console.log("DATACENTERS SENT", this.simulationDatacenters());
+    console.log("PUE VALUES", this.simulationDatacenters().map(dc => dc.pue));
+    await firstValueFrom(
+        this.inDatacentersService.createForVersion(versionUid, payload)
+
+    );
+    await firstValueFrom(
+  this.inDatacentersService.get(versionUid)
+);
+  } catch (e) {
+    console.error("Error creating datacenter:", payload, e);
+  }
+}
 
   // --- PHYSICAL EQUIPMENTS ---
 for (const equip of physicalSimulation) {

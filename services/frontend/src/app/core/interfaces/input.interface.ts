@@ -2,6 +2,7 @@ export interface InDatacenterRest {
     id?: number;
     inventoryId?: number;
     digitalServiceUid?: string;
+    digitalServiceVersionUid?: string;
     name: string;
     pue: number;
     location: string;
