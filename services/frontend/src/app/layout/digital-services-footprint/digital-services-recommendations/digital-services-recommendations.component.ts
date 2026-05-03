@@ -75,10 +75,16 @@ ngOnInit() {
           const rec = r.recommendation;
           const translationKey = this.getRecommendationKey(rec!.title);
 
+          const hasTranslation = translationKey !== 'UNKNOWN';
+          tap((data) => console.log("dattaaaaaa",data))
           return {
             ...rec,
-              title: `recommendations.${translationKey}.title`,
-            description: `recommendations.${translationKey}.description`,
+              title: hasTranslation
+    ? `recommendations.${translationKey}.title`
+    : rec!.title,
+            description: hasTranslation
+    ? `recommendations.${translationKey}.description`
+    : rec!.description,
             priority: index + 1,
           category: this.mapCategory(r.recommendation?.category ?? []),
             selected: false,

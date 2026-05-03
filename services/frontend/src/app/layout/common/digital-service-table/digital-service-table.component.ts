@@ -118,4 +118,15 @@ translateCategories(categories: string[]): string {
     .map(c => this.translate.instant(c))
     .join(', ');
 }
+private translateService = inject(TranslateService);
+
+translateOrFallback(value: string): string {
+  const translated = this.translateService.instant(value);
+
+  if (translated === value) {
+    return value; 
+  }
+
+  return translated;
+}
 }
