@@ -66,7 +66,7 @@ public class Hypothesis implements Serializable {
     private String version;
 
     public static String[] getCsvHeaders() {
-        return new String[]{"code", "value", "description", "source", "subscriber", "version"};
+        return new String[]{"code", "value", "description", "source", "version"};
     }
 
     public Object[] toCsvRecord() {
