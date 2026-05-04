@@ -3,6 +3,7 @@
 ## 3.12.0
 
 ## Major changes
+- 2017 | keep the data for 2 more years - GUI Impact
 
 ### Minor Changes
 - 2129 | Fix for Unit change - Unauthorized error remove in Digital Service
