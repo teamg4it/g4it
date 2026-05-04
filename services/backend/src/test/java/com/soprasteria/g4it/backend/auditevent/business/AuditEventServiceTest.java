@@ -17,7 +17,6 @@ import com.soprasteria.g4it.backend.auditevent.modeldb.AuditEvent;
 import com.soprasteria.g4it.backend.auditevent.repository.AuditEventRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
-import com.soprasteria.g4it.backend.common.functional.SupplierWithException;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +48,7 @@ class AuditEventServiceTest {
     }
 
     @Test
-    void execute_success() throws Exception {
+    void execute_success() {
 
         AuditContext ctx = AuditContext.builder()
                 .userId(1L)
@@ -151,7 +150,7 @@ class AuditEventServiceTest {
     }
 
     @Test
-    void execute_nullUserAndWorkspace() throws Exception {
+    void execute_nullUserAndWorkspace(){
 
         AuditContext ctx = AuditContext.builder()
                 .action(AuditEventType.IMPORT_WORKSPACE_REFERENTIAL)

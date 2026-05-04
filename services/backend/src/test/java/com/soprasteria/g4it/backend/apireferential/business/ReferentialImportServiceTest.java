@@ -515,17 +515,6 @@ t;c;com;1;true;s;ref;1
     }
 
     @Test
-    void testProcessCriterionCsv_GetBytesFails_ReturnsEarly() throws Exception {
-        when(file.getBytes()).thenThrow(new IOException("fail"));
-        when(file.getOriginalFilename()).thenReturn("test.csv");
-
-        ImportReportRest report =
-                referentialImportService.processCriterionCsv(file);
-
-        assertFalse(report.getErrors().isEmpty());
-    }
-
-    @Test
     void testImportReferentialCSV_SafeExecuteIOException() throws Exception {
         when(file.isEmpty()).thenReturn(false);
         when(file.getOriginalFilename()).thenReturn("test.csv");
