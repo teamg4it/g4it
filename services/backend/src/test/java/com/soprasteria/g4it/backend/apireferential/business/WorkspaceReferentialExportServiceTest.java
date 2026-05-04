@@ -39,6 +39,7 @@ class WorkspaceReferentialExportServiceTest {
     private MatchingItemRepository matchingItemRepository;
 
     private String tempDir;
+    private static final String ORG = "ORG"; // ✅ added
 
     @BeforeEach
     void setup() {
@@ -83,7 +84,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(matchingPage);
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅ fixed
 
         assertNotNull(result);
 
@@ -109,7 +110,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅
 
         assertNotNull(result);
     }
@@ -147,7 +148,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅
 
         assertNotNull(result);
 
@@ -162,7 +163,7 @@ class WorkspaceReferentialExportServiceTest {
     @Test
     void exportReferentialZip_nullWorkspace() {
         assertThrows(IllegalArgumentException.class,
-                () -> service.exportReferentialZip(null));
+                () -> service.exportReferentialZip(ORG, null)); // ✅
     }
 
     // =========================
@@ -202,7 +203,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅
 
         assertNotNull(result);
     }
@@ -233,7 +234,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅
 
         assertNotNull(result);
     }
