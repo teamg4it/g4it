@@ -36,6 +36,7 @@ import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipeme
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,16 +81,16 @@ public class EvaluateNumEcoEvalService {
                                                                      final String organization,
                                                                      List<CriterionRest> criteria,
                                                                      List<String> lifecycleSteps,
-                                                                     List<HypothesisRest> hypotheses) {
+                                                                     List<HypothesisRest> hypotheses,Long workspaceId) {
 
         MatchingItemRest matchingItem = null;
         boolean isModelMatched = true;
 
         if (physicalEquipment.getModel() != null) {
-            matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
+            matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(), organization,workspaceId);
         }
 
-        ItemTypeRest itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
+        ItemTypeRest itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(), organization,workspaceId);
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
@@ -108,9 +109,9 @@ public class EvaluateNumEcoEvalService {
                     itemImpactName = matchingItem.getRefItemTarget();
                 }
 
-                List<ItemImpactRest> itemImpacts = referentialService.getItemImpacts(
+                List<ItemImpactRest> itemImpacts = referentialService.getItemImpactsForWorkspace(
                         criterion.getCode(), lifecycleStep, itemImpactName,
-                        physicalEquipment.getLocation(), organization);
+                        physicalEquipment.getLocation(), organization,workspaceId);
 
                 ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
                 boolean hideValue = true;
@@ -170,7 +171,14 @@ public class EvaluateNumEcoEvalService {
                 Object source = mixMap.get("sourceReferentielMixElectrique");
 
                 if (source != null) {
-                    impact.setSource(source.toString());
+                    String raw = source.toString();
+
+                    String fixed = new String(
+                            raw.getBytes(StandardCharsets.ISO_8859_1),
+                            StandardCharsets.UTF_8
+                    );
+
+                    impact.setSource(fixed);
                     return;
                 }
             }
@@ -185,7 +193,14 @@ public class EvaluateNumEcoEvalService {
                 Object source = refMap.get(Constants.SOURCE);
 
                 if (source != null) {
-                    impact.setSource(source.toString());
+                    String raw = source.toString();
+
+                    String fixed = new String(
+                            raw.getBytes(StandardCharsets.ISO_8859_1),
+                            StandardCharsets.UTF_8
+                    );
+
+                    impact.setSource(fixed);
                 }
             }
 

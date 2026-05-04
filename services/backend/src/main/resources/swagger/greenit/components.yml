@@ -423,6 +423,8 @@ components:
             $ref: "#/components/schemas/TaskRest"
         note:
           $ref: "#/components/schemas/NoteRest"
+        expiryDate:
+          type: string
 
     FileDescriptionRest:
       description: Information of a file
@@ -733,6 +735,8 @@ components:
         enableDataInconsistency:
           type: boolean
           description: The flag to enable data consistency view
+        expiryDate:
+          type: string
 
     DigitalServiceVersionRest:
       description: Information of a Digital Service Version

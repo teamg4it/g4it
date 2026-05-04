@@ -28,6 +28,7 @@ import com.soprasteria.g4it.backend.common.error.ErrorConstants;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
+import com.soprasteria.g4it.backend.common.utils.ObjectUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
@@ -35,6 +36,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +83,8 @@ public class InventoryService {
     @Autowired
     private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
 
+    @Value("${g4it.data.retention.day}")
+    private Integer dataRetentiondDay;
 
 
     /**
@@ -109,8 +113,14 @@ public class InventoryService {
         var inventories = inventoryId == null ?
                 inventoryRepository.findByWorkspace(linkedWorkspace) :
                 inventoryRepository.findByWorkspaceAndId(linkedWorkspace, inventoryId).stream().toList();
-
-        return inventoryMapper.toBusinessObject(inventories);
+        final Integer retentionDay = Optional.ofNullable(linkedWorkspace.getDataRetentionDay())
+                .orElse(Optional.ofNullable(linkedWorkspace.getOrganization().getDataRetentionDay())
+                        .orElse(dataRetentiondDay));
+        return inventories.stream().map(inventory -> {
+            InventoryBO bo = inventoryMapper.toBusinessObject(inventory);
+            bo.setExpiryDate(ObjectUtils.getExpiryDate(inventory.getLastUpdateDate(), retentionDay));
+            return bo;
+        }).toList();
     }
 
     /**

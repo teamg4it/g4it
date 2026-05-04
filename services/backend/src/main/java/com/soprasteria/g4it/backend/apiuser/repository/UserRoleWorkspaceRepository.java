@@ -12,8 +12,12 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.UserWorkspace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface UserRoleWorkspaceRepository extends JpaRepository<UserRoleWorkspace, Long> {
 
     @Transactional
     void deleteByUserWorkspaces(final UserWorkspace userWorkspace);
+
+    List<UserRoleWorkspace> findByUserWorkspaces(final UserWorkspace userWorkspace);
 }
