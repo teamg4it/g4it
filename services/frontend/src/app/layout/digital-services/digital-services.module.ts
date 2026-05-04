@@ -12,6 +12,7 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { PaginatorModule } from "primeng/paginator";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { RenewServicePopupComponent } from "../common/renew-service-popup/renew-service-popup.component";
 import { CreateDigitalServicesSidebarComponent } from "./create-digital-services-sidebar/create-digital-services-sidebar.component";
 import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
 import { DigitalServicesComponent } from "./digital-services.component";
@@ -31,6 +32,7 @@ import { digitalServicesRouter } from "./digital-services.router";
         SharedModule,
         ConfirmPopupModule,
         digitalServicesRouter,
+        RenewServicePopupComponent,
     ],
     exports: [DigitalServicesComponent, DigitalServicesItemComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

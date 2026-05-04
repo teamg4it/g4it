@@ -315,7 +315,9 @@
         },
         "global-access-link": "accèder à l'impact détaillé sur l'axe {{criteria}}",
         "criteria-access-link": "accèder à l'impact détaillé pour les {{type}}",
-        "resource-access-link": "accèder à l'impact détaillé pour {{type}}"
+        "resource-access-link": "accèder à l'impact détaillé pour {{type}}",
+        "expiry-warning": "les données vont être supprimées le {{expiryDate}}",
+        "click-extend": "cliquez sur ce lien pour les conserver"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",

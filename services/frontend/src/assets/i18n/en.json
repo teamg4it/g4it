@@ -317,7 +317,9 @@
         },
         "global-access-link": "access to the detailed impact on {{criteria}} axis",
         "criteria-access-link": "access to the detailed impact for the {{type}}",
-        "resource-access-link": "access to the detailed impact for {{type}}"
+        "resource-access-link": "access to the detailed impact for {{type}}",
+        "expiry-warning": "Data will be deleted on {{expiryDate}}",
+        "click-extend": "click on this link to extend"
     },
     "eco-mind-ai": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",
