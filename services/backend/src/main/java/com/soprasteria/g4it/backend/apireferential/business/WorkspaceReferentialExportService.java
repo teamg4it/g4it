@@ -46,8 +46,6 @@ public class WorkspaceReferentialExportService {
     private final ItemTypeRepository itemTypeRepository;
     private final ItemImpactRepository itemImpactRepository;
     private final MatchingItemRepository matchingItemRepository;
-    private final AuthService authService;
-    private final AuditEventService auditEventService;
 
     @Value("${export.page.size:500}")
     private int pageSize;
@@ -67,57 +65,38 @@ public class WorkspaceReferentialExportService {
         if (workspaceId == null) {
             throw new IllegalArgumentException("workspaceId cannot be null");
         }
-        UserBO user = authService.getUser();
 
-        AuditEvent audit = auditEventService.start(
-                AuditContext.builder()
-                        .userId(user.getId())
-                        .userEmail(user.getEmail())
-                        .organization(organization)
-                        .workspaceId(workspaceId)
-                        .action(AuditEventType.EXPORT_WORKSPACE_REFERENTIAL)
-                        .endpoint(Constants.GET_REFERENTIAL_WORKSPACE_ZIP_FILES)
-                        .build()
-        );
 
         long startTime = System.currentTimeMillis();
 
-        try {
-            log.info("Exporting ZIP for workspace {}", workspaceId);
+        log.info("Exporting ZIP for workspace {}", workspaceId);
 
-            Path zipPath = Files.createTempFile("workspace_referential_", ".zip");
-            zipPath.toFile().deleteOnExit();
+        Path zipPath = Files.createTempFile("workspace_referential_", ".zip");
+        zipPath.toFile().deleteOnExit();
 
-            try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipPath))) {
-                zos.putNextEntry(new ZipEntry("workspace-referential/"));
-                zos.closeEntry();
+        try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipPath))) {
+            zos.putNextEntry(new ZipEntry("workspace-referential/"));
+            zos.closeEntry();
 
-                addCsvToZip(zos, workspaceId, "itemType",
-                        ItemType.getCsvHeaders(),
-                        pageable -> itemTypeRepository.findByWorkspaceId(workspaceId, pageable),
-                        ItemType::toCsvRecord);
+            addCsvToZip(zos, workspaceId, "itemType",
+                    ItemType.getCsvHeaders(),
+                    pageable -> itemTypeRepository.findByWorkspaceId(workspaceId, pageable),
+                    ItemType::toCsvRecord);
 
-                addCsvToZip(zos, workspaceId, "itemImpact",
-                        ItemImpact.getCsvHeaders(),
-                        pageable -> itemImpactRepository.findByWorkspaceId(workspaceId, pageable),
-                        ItemImpact::toCsvRecord);
+            addCsvToZip(zos, workspaceId, "itemImpact",
+                    ItemImpact.getCsvHeaders(),
+                    pageable -> itemImpactRepository.findByWorkspaceId(workspaceId, pageable),
+                    ItemImpact::toCsvRecord);
 
-                addCsvToZip(zos, workspaceId, "matchingItem",
-                        MatchingItem.getCsvHeaders(),
-                        pageable -> matchingItemRepository.findByWorkspaceId(workspaceId, pageable),
-                        MatchingItem::toCsvRecord);
-            }
-
-            log.info("ZIP export completed for workspace {}", workspaceId);
-
-            auditEventService.success(audit);
-
-            return Files.newInputStream(zipPath);
-
-        } catch (Exception e) {
-            auditEventService.fail(audit);
-            throw e;
+            addCsvToZip(zos, workspaceId, "matchingItem",
+                    MatchingItem.getCsvHeaders(),
+                    pageable -> matchingItemRepository.findByWorkspaceId(workspaceId, pageable),
+                    MatchingItem::toCsvRecord);
         }
+
+        log.info("ZIP export completed for workspace {}", workspaceId);
+
+        return Files.newInputStream(zipPath);
     }
 
     private <T> void addCsvToZip(

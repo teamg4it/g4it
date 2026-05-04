@@ -6,12 +6,16 @@ import com.soprasteria.g4it.backend.auditevent.modeldb.AuditEvent;
 import com.soprasteria.g4it.backend.auditevent.repository.AuditEventRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Workspace;
+import com.soprasteria.g4it.backend.common.functional.SupplierWithException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.time.Instant;
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -22,60 +26,44 @@ public class AuditEventService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private static final ThreadLocal<Boolean> auditStarted =
-            ThreadLocal.withInitial(() -> false);
+    public <T> T execute(AuditContext ctx, SupplierWithException<T> action) {
 
-    /**
-     * Start audit event
-     */
-    public AuditEvent start(AuditContext ctx) {
+        AuditEvent event = auditEventRepository.save(
+                AuditEvent.builder()
+                        .user(getUserReference(ctx.getUserId()))
+                        .userEmail(ctx.getUserEmail())
+                        .organization(ctx.getOrganization())
+                        .workspace(getWorkspaceReference(ctx.getWorkspaceId()))
+                        .action(ctx.getAction())
+                        .endpoint(ctx.getEndpoint())
+                        .startTime(Instant.now())
+                        .status(AuditStatus.IN_PROGRESS)
+                        .build()
+        );
 
-        if (auditStarted.get()) {
-            return null; // prevent duplicate
+        try {
+            T result = action.get();
+
+            event.setEndTime(Instant.now());
+            event.setStatus(AuditStatus.SUCCESS);
+            auditEventRepository.save(event);
+
+            return result;
+
+        } catch (Exception e) {
+
+            event.setEndTime(Instant.now());
+            event.setStatus(AuditStatus.FAILED);
+            auditEventRepository.save(event);
+
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e; // ✅ preserve original exception
+            }
+
+            throw new RuntimeException(e); // only wrap checked ones
         }
-        auditStarted.set(true);
-        System.out.println("AUDIT START CALLED: " + System.currentTimeMillis());
-        AuditEvent event = AuditEvent.builder()
-                .user(getUserReference(ctx.getUserId()))
-                .userEmail(ctx.getUserEmail())
-                .organization(ctx.getOrganization())
-                .workspace(getWorkspaceReference(ctx.getWorkspaceId()))
-                .action(ctx.getAction())
-                .endpoint(ctx.getEndpoint())
-                .startTime(Instant.now())
-                .status(AuditStatus.IN_PROGRESS)
-                .build();
-
-        return auditEventRepository.save(event);
     }
 
-    /**
-     * Mark success
-     */
-    public void success(AuditEvent event) {
-        event.setEndTime(Instant.now());
-        event.setStatus(AuditStatus.SUCCESS);
-        auditEventRepository.save(event);
-        auditStarted.remove();
-    }
-
-    /**
-     * Mark failure
-     */
-    public void fail(AuditEvent event) {
-        AuditEvent managed = auditEventRepository.findById(event.getId())
-                .orElseThrow();
-
-        managed.setEndTime(Instant.now());
-        managed.setStatus(AuditStatus.FAILED);
-
-        auditEventRepository.save(managed);
-        auditStarted.remove();
-    }
-
-    /**
-     * Use lazy references (no DB hit)
-     */
     private User getUserReference(Long userId) {
         return userId == null ? null : entityManager.getReference(User.class, userId);
     }

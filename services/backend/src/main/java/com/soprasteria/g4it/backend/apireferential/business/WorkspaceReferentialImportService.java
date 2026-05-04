@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component
+@Primary
+@Service
 @RequiredArgsConstructor
 public class WorkspaceReferentialImportService {
 
@@ -33,8 +35,6 @@ public class WorkspaceReferentialImportService {
     private final WorkspaceReferentialPersistenceService workspacePersistenceService;
     private final ItemImpactRepository itemImpactRepository;
     private final ReferentialMapper referentialMapper;
-    private final AuditEventService auditEventService;
-    private final AuthService authService;
 
 
     public ImportReportRest importReferentialCSV(
@@ -52,47 +52,27 @@ public class WorkspaceReferentialImportService {
             throw new BadRequestException("file", "File is empty");
         }
 
-        UserBO user = authService.getUser();
+        switch (type) {
 
-        AuditEvent audit = auditEventService.start(
-                AuditContext.builder()
-                        .userId(user.getId())
-                        .userEmail(user.getEmail())
-                        .organization(organization)
-                        .workspaceId(workspaceId)
-                        .action(AuditEventType.IMPORT_WORKSPACE_REFERENTIAL)
-                        .endpoint(resolveEndpoint(type))
-                        .build()
-        );
+            case "itemType":
+                return handleItemType(workspaceId, file);
 
-        try {
+            case "matchingItem":
+                return handleMatchingItem(workspaceId, file);
 
-            switch (type) {
+            case "itemImpact":
+                return handleItemImpact(workspaceId, file);
 
-                case "itemType":
-                    return handleItemType(workspaceId, file, audit);
-
-                case "matchingItem":
-                    return handleMatchingItem(workspaceId, file, audit);
-
-                case "itemImpact":
-                    return handleItemImpact(workspaceId, file, audit);
-
-                default:
-                    throw new BadRequestException("type", "Unsupported type");
-            }
-
-        } catch (Exception e) {
-            auditEventService.fail(audit);
-            throw e;
+            default:
+                throw new BadRequestException("type", "Unsupported type");
         }
     }
 
-    private ImportReportRest handleItemType(Long workspaceId, MultipartFile file, AuditEvent audit) {
+    private ImportReportRest handleItemType(Long workspaceId, MultipartFile file) {
 
         ItemTypeParseResult result = referentialImportService.parseItemTypeCsv(file);
 
-        validateReportOrFail(result.getReport(), audit);
+        validateReportOrFail(result.getReport());
 
         validateDuplicates(result.getData(), ItemTypeRest::getType, "type");
 
@@ -100,16 +80,14 @@ public class WorkspaceReferentialImportService {
 
         workspacePersistenceService.syncItemTypes(workspaceId, entities);
 
-        auditEventService.success(audit);
-
         return result.getReport();
     }
 
-    private ImportReportRest handleMatchingItem(Long workspaceId, MultipartFile file, AuditEvent audit) {
+    private ImportReportRest handleMatchingItem(Long workspaceId, MultipartFile file) {
 
         MatchingItemParseResult result = referentialImportService.parseMatchingItemCsv(file);
 
-        validateReportOrFail(result.getReport(), audit);
+        validateReportOrFail(result.getReport());
 
         validateDuplicates(result.getData(), MatchingItemRest::getItemSource, "itemSource");
         validateMatchingItems(result.getData(), workspaceId);
@@ -118,16 +96,14 @@ public class WorkspaceReferentialImportService {
 
         workspacePersistenceService.syncMatchingItems(workspaceId, entities);
 
-        auditEventService.success(audit);
-
         return result.getReport();
     }
 
-    private ImportReportRest handleItemImpact(Long workspaceId, MultipartFile file, AuditEvent audit) {
+    private ImportReportRest handleItemImpact(Long workspaceId, MultipartFile file) {
 
         ItemImpactParseResult result = referentialImportService.parseItemImpactCsv(file);
 
-        validateReportOrFail(result.getReport(), audit);
+        validateReportOrFail(result.getReport());
 
         validateDuplicates(
                 result.getData(),
@@ -139,14 +115,11 @@ public class WorkspaceReferentialImportService {
 
         workspacePersistenceService.syncItemImpacts(workspaceId, entities);
 
-        auditEventService.success(audit);
-
         return result.getReport();
     }
 
-    private void validateReportOrFail(ImportReportRest report, AuditEvent audit) {
+    private void validateReportOrFail(ImportReportRest report) {
         if (report != null && !report.getErrors().isEmpty()) {
-
             throw new BadRequestException("csv", "Validation errors in file");
         }
     }
@@ -188,12 +161,5 @@ public class WorkspaceReferentialImportService {
         }
 
     }
-    private String resolveEndpoint(String type) {
-        return switch (type) {
-            case "itemType" -> Constants.POST_REFERENTIAL_WORKSPACE_ITEM_TYPE;
-            case "itemImpact" -> Constants.POST_REFERENTIAL_WORKSPACE_ITEM_IMPACT;
-            case "matchingItem" -> Constants.POST_REFERENTIAL_WORKSPACE_MATCHING_ITEMS;
-            default -> "unknown";
-        };
-    }
+
 }
