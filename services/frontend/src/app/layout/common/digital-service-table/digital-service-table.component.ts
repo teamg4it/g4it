@@ -129,4 +129,16 @@ translateOrFallback(value: string): string {
 
   return translated;
 }
+getCompareTooltip(): string | null {
+  if (!this.compareMode) return null;
+
+  const hasSelected = this.data?.some(item => item.selected);
+
+  if (hasSelected) return null;
+
+  return this.translate.instant('recommendations.select_before_apply');
+}
+hasSelectedItems(): boolean {
+  return this.data?.some(item => item.selected);
+}
 }
