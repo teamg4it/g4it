@@ -57,10 +57,10 @@ public class AuditEventService {
             auditEventRepository.save(event);
 
             if (e instanceof RuntimeException) {
-                throw (RuntimeException) e; // ✅ preserve original exception
+                throw (RuntimeException) e;
             }
 
-            throw new RuntimeException(e); // only wrap checked ones
+            throw new RuntimeException(e);
         }
     }
 

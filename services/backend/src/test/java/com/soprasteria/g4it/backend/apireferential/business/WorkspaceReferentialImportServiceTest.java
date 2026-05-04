@@ -235,4 +235,49 @@ class WorkspaceReferentialImportServiceTest {
         assertThrows(BadRequestException.class,
                 () -> service.importReferentialCSV(ORG, 1L, "invalid", file)); // ✅
     }
+    @Test
+    void importReferentialCSV_itemType_blankKey_shouldThrow() {
+
+        ItemTypeRest rest = new ItemTypeRest();
+        rest.setType("   ");
+
+        ItemTypeParseResult result = ItemTypeParseResult.builder()
+                .data(List.of(rest))
+                .report(emptyReport())
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+    }
+
+    @Test
+    void importReferentialCSV_nullFile_shouldThrow() {
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", null));
+    }
+
+    @Test
+    void importReferentialCSV_validationErrorsInReport_shouldThrow() {
+
+        ItemTypeParseResult result = ItemTypeParseResult.builder()
+                .data(List.of())
+                .report(
+                        ImportReportRest.builder()
+                                .errors(List.of("error"))
+                                .build()
+                )
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
+
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+
+        assertEquals("Validation errors in file", ex.getError());
+    }
 }

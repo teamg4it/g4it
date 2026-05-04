@@ -91,7 +91,6 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessCriterionCsv_Valid() throws IOException {
         String csv = "header1,header2\nval1,val2\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
         when(referentialMapper.csvCriterionToRest(any())).thenReturn(new CriterionRest());
@@ -149,7 +148,6 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessLifecycleStepCsv_Valid() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
         when(referentialMapper.csvLifecycleStepToRest(any())).thenReturn(new LifecycleStepRest());
@@ -164,7 +162,6 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessHypothesisCsv_OrganizationMismatch_ThrowsBadRequest() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
         HypothesisRest rest = mock(HypothesisRest.class);
@@ -179,7 +176,6 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessItemTypeCsv_OrganizationMismatch_ThrowsBadRequest() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
         ItemTypeRest rest = mock(ItemTypeRest.class);
@@ -194,7 +190,7 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessMatchingItemCsv_OrganizationMismatch_ThrowsBadRequest() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
+
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
         MatchingItemRest rest = mock(MatchingItemRest.class);
@@ -209,7 +205,7 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessItemImpactCsv_SubscriberMismatch_ThrowsBadRequest() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
+
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
         ItemImpactRest rest = mock(ItemImpactRest.class);
@@ -249,8 +245,6 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessHypothesisCsv_Valid() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
-
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
@@ -272,8 +266,6 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessItemTypeCsv_Valid() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
-
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
@@ -295,8 +287,6 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessMatchingItemCsv_Valid() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
-
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
@@ -318,8 +308,6 @@ class ReferentialImportServiceTest {
     @Test
     void testProcessLifecycleStepCsv_Invalid_AddsError() throws IOException {
         String csv = "header1\nval1\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
-
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
@@ -386,9 +374,6 @@ class ReferentialImportServiceTest {
             type;category;comment;default_lifespan;is_server;source;ref_default_item;version
 t;c;com;1;true;s;ref;1
 """;
-
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
-
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
@@ -407,7 +392,6 @@ t;c;com;1;true;s;ref;1
     @Test
     void testParseItemTypeCsv_InvalidHeaders_ThrowsException() throws IOException {
         String csv = "wrong,header\nval1,val2\n";
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
 
          when(file.getBytes()).thenReturn(csv.getBytes());
 
@@ -422,8 +406,6 @@ t;c;com;1;true;s;ref;1
         itemSource;refItemTarget
         A;B
         """;
-
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
 
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
@@ -446,8 +428,6 @@ t;c;com;1;true;s;ref;1
         c;l;n;cat;1;desc;loc;lev;src;t;u;10;1
         """;
 
-        InputStream is = new ByteArrayInputStream(csv.getBytes());
-
          when(file.getBytes()).thenReturn(csv.getBytes());
         when(file.getOriginalFilename()).thenReturn("test.csv");
 
@@ -462,4 +442,99 @@ t;c;com;1;true;s;ref;1
         assertTrue(result.getReport().getErrors().isEmpty());
     }
 
+    @Test
+    void testParseItemTypeCsv_IOException() throws Exception {
+
+        when(file.getBytes()).thenThrow(new IOException("fail"));
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        ItemTypeParseResult result =
+                referentialImportService.parseItemTypeCsv(file);
+
+        assertNotNull(result.getReport());
+        assertFalse(result.getReport().getErrors().isEmpty());
+    }
+
+    @Test
+    void testProcessItemImpactCsv_IOExceptionDuringParsing() throws Exception {
+
+        when(file.getBytes()).thenThrow(new IOException("fail"));
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        ImportReportRest report =
+                referentialImportService.processItemImpactCsv(file, "org");
+
+        assertFalse(report.getErrors().isEmpty());
+    }
+
+    @Test
+    void testProcessItemImpactCsv_BatchSaveTriggered() throws Exception {
+
+        StringBuilder csv = new StringBuilder("subscriber;field\n");
+
+        for (int i = 0; i < 110; i++) {
+            csv.append("org;val\n");
+        }
+
+        when(file.getBytes()).thenReturn(csv.toString().getBytes());
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        when(referentialMapper.csvItemImpactToRest(any()))
+                .thenAnswer(invocation -> {
+                    ItemImpactRest r = new ItemImpactRest();
+                    r.setOrganization("org");
+                    return r;
+                });
+
+        when(cacheManager.getCache(anyString())).thenReturn(cache);
+
+        referentialImportService.processItemImpactCsv(file, "org");
+
+        verify(persistenceService, atLeastOnce())
+                .saveItemImpacts(any());
+    }
+
+    @Test
+    void testParseMatchingItemCsv_HeaderWrongOrder() throws IOException {
+        String csv = "refItemTarget;itemSource\nA;B\n";
+
+        when(file.getBytes()).thenReturn(csv.getBytes());
+
+        assertThrows(BadRequestException.class,
+                () -> referentialImportService.parseMatchingItemCsv(file));
+    }
+
+    @Test
+    void testParseItemTypeCsv_HeaderSizeMismatch() throws IOException {
+        String csv = "a;b\n1;2\n";
+
+        when(file.getBytes()).thenReturn(csv.getBytes());
+
+        assertThrows(BadRequestException.class,
+                () -> referentialImportService.parseItemTypeCsv(file));
+    }
+
+    @Test
+    void testProcessCriterionCsv_GetBytesFails_ReturnsEarly() throws Exception {
+        when(file.getBytes()).thenThrow(new IOException("fail"));
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        ImportReportRest report =
+                referentialImportService.processCriterionCsv(file);
+
+        assertFalse(report.getErrors().isEmpty());
+    }
+
+    @Test
+    void testImportReferentialCSV_SafeExecuteIOException() throws Exception {
+        when(file.isEmpty()).thenReturn(false);
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        when(file.getBytes()).thenThrow(new IOException("boom"));
+
+        ImportReportRest report =
+                referentialImportService.importReferentialCSV("criterion", file, "org");
+
+        assertFalse(report.getErrors().isEmpty());
+    }
 }
