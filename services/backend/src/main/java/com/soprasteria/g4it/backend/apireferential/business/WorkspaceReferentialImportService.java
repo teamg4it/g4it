@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Primary
 @Service
 @RequiredArgsConstructor
 public class WorkspaceReferentialImportService {
