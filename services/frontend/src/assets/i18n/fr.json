@@ -343,7 +343,8 @@
         "OPTIMIZE_UX": {
             "title": "Optimiser le parcours utilisateur",
             "description": "Le service numérique optimise le parcours d'utilisation pour chaque fonctionnalité principale afin de minimiser le temps et le nombre d'écrans"
-        }
+        },
+          "select_before_apply": "Veuillez sélectionner les recommandations à appliquer avant de continuer."
     },
     "categories": {
         "PUBLIC_CLOUD": "Clouds Publics - IaaS",

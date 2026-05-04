@@ -346,7 +346,10 @@
   "OPTIMIZE_UX": {
     "title": "Optimize user journey",
     "description": "The service optimizes the user journey for each main feature to minimize time and number of screens"
-  }
+  },
+  
+  "select_before_apply": "Please select recommendations to apply before continuing."
+
 
     },
     "categories": {
