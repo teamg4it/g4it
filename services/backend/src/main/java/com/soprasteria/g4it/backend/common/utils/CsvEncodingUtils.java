@@ -21,7 +21,6 @@ public class CsvEncodingUtils {
 
         Charset charset = detectCharset(bytes);
 
-        // 🔥 Normalize common lies from detector
         if (charset.name().equalsIgnoreCase("ISO-8859-1")) {
             charset = Charset.forName("Windows-1252");
         }
@@ -43,7 +42,7 @@ public class CsvEncodingUtils {
         String encoding = detector.getDetectedCharset();
 
         if (encoding == null) {
-            return StandardCharsets.UTF_8; // safe fallback
+            return StandardCharsets.UTF_8;
         }
 
         try {

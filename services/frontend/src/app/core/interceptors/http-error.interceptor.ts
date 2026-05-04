@@ -17,7 +17,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MessageService } from "primeng/api";
-import { Observable, throwError } from "rxjs";
+import { Observable, throwError, timer } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
 import { Constants } from "src/constants";
 import { UserService } from "../service/business/user.service";
@@ -45,7 +45,16 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(
-            retry(1),
+            retry({
+                count: 1,
+                delay: (error) => {
+                    // Retry only for server errors (5xx) or network error
+                    if (error.status >= 500 || error.status === 0) {
+                        return timer(500); // wait before retry
+                    }
+                    throw error; // don't retry
+                },
+            }),
             catchError((returnedError) => {
                 this.handleErrorPageNavigation(returnedError);
                 return throwError(() => new Error(this.getErrorMessage(returnedError)));

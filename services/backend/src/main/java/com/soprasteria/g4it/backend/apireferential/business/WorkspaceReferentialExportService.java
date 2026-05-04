@@ -2,9 +2,17 @@ package com.soprasteria.g4it.backend.apireferential.business;
 
 import com.soprasteria.g4it.backend.apireferential.modeldb.*;
 import com.soprasteria.g4it.backend.apireferential.repository.*;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
+import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.auditevent.business.AuditEventService;
+import com.soprasteria.g4it.backend.auditevent.model.AuditContext;
+import com.soprasteria.g4it.backend.auditevent.model.AuditEventType;
+import com.soprasteria.g4it.backend.auditevent.modeldb.AuditEvent;
+import com.soprasteria.g4it.backend.auditevent.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.CsvUtils;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -18,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Map;
 import java.util.function.Function;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -51,17 +61,20 @@ public class WorkspaceReferentialExportService {
     /**
      * Export workspace referential zip
      */
-    public InputStream exportReferentialZip(Long workspaceId) throws IOException {
+    public InputStream exportReferentialZip(String organization, Long workspaceId) throws IOException {
 
         if (workspaceId == null) {
             throw new IllegalArgumentException("workspaceId cannot be null");
         }
 
+
+        long startTime = System.currentTimeMillis();
+
         log.info("Exporting ZIP for workspace {}", workspaceId);
-        long start = System.currentTimeMillis();
 
         Path zipPath = Files.createTempFile("workspace_referential_", ".zip");
         zipPath.toFile().deleteOnExit();
+
         try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipPath))) {
             zos.putNextEntry(new ZipEntry("workspace-referential/"));
             zos.closeEntry();
@@ -82,9 +95,8 @@ public class WorkspaceReferentialExportService {
                     MatchingItem::toCsvRecord);
         }
 
-        log.info("ZIP export completed for workspace {} in {} ms",
-                workspaceId,
-                System.currentTimeMillis() - start);
+        log.info("ZIP export completed for workspace {}", workspaceId);
+
         return Files.newInputStream(zipPath);
     }
 

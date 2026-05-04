@@ -137,7 +137,7 @@ public class InventoryController implements InventoryApiDelegate {
 
         try {
             InputStream zipStream =
-                    workspaceReferentialExportService.exportReferentialZip(workspace);
+                    workspaceReferentialExportService.exportReferentialZip(organization, workspace);
 
             return ResponseEntity.ok()
                     .header("Content-Disposition", "attachment; filename=workspace-referential.zip")
