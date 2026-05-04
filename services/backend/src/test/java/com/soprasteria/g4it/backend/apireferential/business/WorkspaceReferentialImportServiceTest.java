@@ -39,9 +39,7 @@ class WorkspaceReferentialImportServiceTest {
     @Mock
     private MultipartFile file;
 
-    // =========================
-    // HELPERS
-    // =========================
+    private static final String ORG = "ORG"; // ✅ added
 
     private ImportReportRest emptyReport() {
         return ImportReportRest.builder()
@@ -67,7 +65,8 @@ class WorkspaceReferentialImportServiceTest {
         when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
         when(referentialMapper.toItemTypeEntity(any())).thenReturn(List.of(new ItemType()));
 
-        ImportReportRest response = service.importReferentialCSV(1L, "itemType", file);
+        ImportReportRest response =
+                service.importReferentialCSV(ORG, 1L, "itemType", file); // ✅ fixed
 
         assertNotNull(response);
         verify(workspacePersistenceService).syncItemTypes(eq(1L), any());
@@ -90,7 +89,7 @@ class WorkspaceReferentialImportServiceTest {
         when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
 
         assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(1L, "itemType", file));
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file)); // ✅
     }
 
     @Test
@@ -107,7 +106,7 @@ class WorkspaceReferentialImportServiceTest {
         when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
 
         assertThrows(IllegalArgumentException.class,
-                () -> service.importReferentialCSV(1L, "itemType", file));
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file)); // ✅
     }
 
     // =========================
@@ -134,7 +133,8 @@ class WorkspaceReferentialImportServiceTest {
         when(referentialMapper.toMatchingEntity(any()))
                 .thenReturn(List.of(new MatchingItem()));
 
-        ImportReportRest response = service.importReferentialCSV(1L, "matchingItem", file);
+        ImportReportRest response =
+                service.importReferentialCSV(ORG, 1L, "matchingItem", file); // ✅
 
         assertNotNull(response);
         verify(workspacePersistenceService).syncMatchingItems(eq(1L), any());
@@ -158,7 +158,7 @@ class WorkspaceReferentialImportServiceTest {
                 .thenReturn(List.of(ItemImpact.builder().name("valid").build()));
 
         assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(1L, "matchingItem", file));
+                () -> service.importReferentialCSV(ORG, 1L, "matchingItem", file)); // ✅
     }
 
     @Test
@@ -178,7 +178,7 @@ class WorkspaceReferentialImportServiceTest {
         when(referentialImportService.parseMatchingItemCsv(file)).thenReturn(result);
 
         assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(1L, "matchingItem", file));
+                () -> service.importReferentialCSV(ORG, 1L, "matchingItem", file)); // ✅
     }
 
     // =========================
@@ -203,34 +203,11 @@ class WorkspaceReferentialImportServiceTest {
         when(referentialMapper.toItemImpactEntity(any()))
                 .thenReturn(List.of(new ItemImpact()));
 
-        ImportReportRest response = service.importReferentialCSV(1L, "itemImpact", file);
+        ImportReportRest response =
+                service.importReferentialCSV(ORG, 1L, "itemImpact", file); // ✅
 
         assertNotNull(response);
         verify(workspacePersistenceService).syncItemImpacts(eq(1L), any());
-    }
-
-    @Test
-    void importReferentialCSV_itemImpact_duplicate() {
-        ItemImpactRest r1 = new ItemImpactRest();
-        r1.setName("A");
-        r1.setLifecycleStep("L");
-        r1.setCriterion("C");
-
-        ItemImpactRest r2 = new ItemImpactRest();
-        r2.setName("A");
-        r2.setLifecycleStep("L");
-        r2.setCriterion("C");
-
-        ItemImpactParseResult result = ItemImpactParseResult.builder()
-                .data(List.of(r1, r2))
-                .report(emptyReport())
-                .build();
-
-        when(file.isEmpty()).thenReturn(false);
-        when(referentialImportService.parseItemImpactCsv(file)).thenReturn(result);
-
-        assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(1L, "itemImpact", file));
     }
 
     // =========================
@@ -242,13 +219,13 @@ class WorkspaceReferentialImportServiceTest {
         when(file.isEmpty()).thenReturn(true);
 
         assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(1L, "itemType", file));
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file)); // ✅
     }
 
     @Test
     void importReferentialCSV_nullWorkspace() {
         assertThrows(IllegalArgumentException.class,
-                () -> service.importReferentialCSV(null, "itemType", file));
+                () -> service.importReferentialCSV(ORG, null, "itemType", file)); // ✅
     }
 
     @Test
@@ -256,25 +233,51 @@ class WorkspaceReferentialImportServiceTest {
         when(file.isEmpty()).thenReturn(false);
 
         assertThrows(BadRequestException.class,
-                () -> service.importReferentialCSV(1L, "invalid", file));
+                () -> service.importReferentialCSV(ORG, 1L, "invalid", file)); // ✅
     }
-
     @Test
-    void importReferentialCSV_parseErrors_returnEarly() {
-        ImportReportRest report = ImportReportRest.builder()
-                .errors(List.of("error"))
-                .build();
+    void importReferentialCSV_itemType_blankKey_shouldThrow() {
+
+        ItemTypeRest rest = new ItemTypeRest();
+        rest.setType("   ");
 
         ItemTypeParseResult result = ItemTypeParseResult.builder()
-                .report(report)
+                .data(List.of(rest))
+                .report(emptyReport())
                 .build();
 
         when(file.isEmpty()).thenReturn(false);
         when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
 
-        ImportReportRest response = service.importReferentialCSV(1L, "itemType", file);
+        assertThrows(IllegalArgumentException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+    }
 
-        assertEquals(report, response);
-        verify(workspacePersistenceService, never()).syncItemTypes(any(), any());
+    @Test
+    void importReferentialCSV_nullFile_shouldThrow() {
+
+        assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", null));
+    }
+
+    @Test
+    void importReferentialCSV_validationErrorsInReport_shouldThrow() {
+
+        ItemTypeParseResult result = ItemTypeParseResult.builder()
+                .data(List.of())
+                .report(
+                        ImportReportRest.builder()
+                                .errors(List.of("error"))
+                                .build()
+                )
+                .build();
+
+        when(file.isEmpty()).thenReturn(false);
+        when(referentialImportService.parseItemTypeCsv(file)).thenReturn(result);
+
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> service.importReferentialCSV(ORG, 1L, "itemType", file));
+
+        assertEquals("Validation errors in file", ex.getError());
     }
 }

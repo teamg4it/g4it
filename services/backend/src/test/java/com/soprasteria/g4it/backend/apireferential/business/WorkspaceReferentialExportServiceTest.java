@@ -39,6 +39,7 @@ class WorkspaceReferentialExportServiceTest {
     private MatchingItemRepository matchingItemRepository;
 
     private String tempDir;
+    private static final String ORG = "ORG";
 
     @BeforeEach
     void setup() {
@@ -83,7 +84,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(matchingPage);
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅ fixed
 
         assertNotNull(result);
 
@@ -109,7 +110,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅
 
         assertNotNull(result);
     }
@@ -147,7 +148,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅
 
         assertNotNull(result);
 
@@ -162,7 +163,7 @@ class WorkspaceReferentialExportServiceTest {
     @Test
     void exportReferentialZip_nullWorkspace() {
         assertThrows(IllegalArgumentException.class,
-                () -> service.exportReferentialZip(null));
+                () -> service.exportReferentialZip(ORG, null)); // ✅
     }
 
     // =========================
@@ -202,7 +203,7 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅
 
         assertNotNull(result);
     }
@@ -233,8 +234,37 @@ class WorkspaceReferentialExportServiceTest {
         when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
                 .thenReturn(Page.empty());
 
-        InputStream result = service.exportReferentialZip(workspaceId);
+        InputStream result = service.exportReferentialZip(ORG, workspaceId); // ✅
 
         assertNotNull(result);
+    }
+
+    @Test
+    void exportReferentialZip_recordIsPrinted() throws Exception {
+        Long workspaceId = 1L;
+
+        ItemType item = mock(ItemType.class);
+
+        when(item.toCsvRecord()).thenReturn(new Object[]{"val1", "val2"});
+
+        Page<ItemType> page = new PageImpl<>(
+                List.of(item),
+                PageRequest.of(0, 1),
+                1
+        );
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(page);
+
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        InputStream result = service.exportReferentialZip("ORG", workspaceId);
+
+        assertNotNull(result);
+        verify(item, atLeastOnce()).toCsvRecord();
     }
 }
