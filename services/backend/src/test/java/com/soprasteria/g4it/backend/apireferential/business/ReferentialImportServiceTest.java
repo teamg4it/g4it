@@ -537,4 +537,109 @@ t;c;com;1;true;s;ref;1
 
         assertFalse(report.getErrors().isEmpty());
     }
+
+    @Test
+    void testParseItemImpactCsv_HeaderPositionMismatch() throws IOException {
+
+        String csv = """
+    criterion;lifecycleStep;WRONG;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+    c;l;n;cat;1;desc;loc;lev;src;t;u;10;1
+    """;
+
+        when(file.getBytes()).thenReturn(csv.getBytes());
+
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                () -> referentialImportService.parseItemImpactCsv(file));
+
+        assertTrue(ex.getError().contains("Invalid header at position"));
+    }
+
+    @Test
+    void testParseItemTypeCsv_WithValidationErrors() throws IOException {
+
+        String csv = """
+    type;category;comment;default_lifespan;is_server;source;ref_default_item;version
+    t;c;com;1;true;s;ref;1
+    """;
+
+        when(file.getBytes()).thenReturn(csv.getBytes());
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        ItemTypeRest rest = new ItemTypeRest();
+        when(referentialMapper.csvItemTypeToRest(any())).thenReturn(rest);
+
+        ConstraintViolation<ItemTypeRest> violation = mock(ConstraintViolation.class);
+        Path path = mock(Path.class);
+
+        when(path.toString()).thenReturn("field");
+        when(violation.getPropertyPath()).thenReturn(path);
+        when(violation.getMessage()).thenReturn("error");
+
+        Set<ConstraintViolation<ItemTypeRest>> violations = new HashSet<>();
+        violations.add(violation);
+
+        when(validator.validate(any()))
+                .thenReturn((Set) violations);
+
+        ItemTypeParseResult result =
+                referentialImportService.parseItemTypeCsv(file);
+
+        assertFalse(result.getReport().getErrors().isEmpty());
+    }
+
+    @Test
+    void testProcessItemImpactCsv_SaveRemainingBatch() throws Exception {
+
+        String csv = """
+    criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;version
+    c;l;n;cat;1;desc;loc;lev;src;t;u;10;1
+    """;
+
+        when(file.getBytes()).thenReturn(csv.getBytes());
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        when(referentialMapper.csvItemImpactToRest(any()))
+                .thenAnswer(invocation -> {
+                    ItemImpactRest r = new ItemImpactRest();
+                    r.setOrganization("org");
+                    return r;
+                });
+
+        when(cacheManager.getCache(anyString())).thenReturn(cache);
+
+        referentialImportService.processItemImpactCsv(file, "org");
+
+        verify(persistenceService).saveItemImpacts(any());
+    }
+
+    @Test
+    void testImportReferentialCSV_SafeExecuteSuccess() throws Exception {
+
+        when(file.isEmpty()).thenReturn(false);
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        when(file.getBytes()).thenReturn("header\nval\n".getBytes());
+        when(referentialMapper.csvCriterionToRest(any())).thenReturn(new CriterionRest());
+        when(validator.validate(any())).thenReturn(Collections.emptySet());
+        when(persistenceService.saveCriteria(any())).thenReturn(1);
+        when(referentialMapper.toCriteriaEntity(any())).thenReturn(List.of(new Criterion()));
+        when(cacheManager.getCache(anyString())).thenReturn(cache);
+
+        ImportReportRest report =
+                referentialImportService.importReferentialCSV("criterion", file, "org");
+
+        assertTrue(report.getErrors().isEmpty());
+    }
+
+    @Test
+    void testGetBytesSafe_ReturnsNull() throws Exception {
+
+        when(file.getBytes()).thenThrow(new IOException("fail"));
+        when(file.getOriginalFilename()).thenReturn("test.csv");
+
+        ImportReportRest report =
+                referentialImportService.processLifecycleStepCsv(file);
+
+        assertFalse(report.getErrors().isEmpty());
+    }
 }
