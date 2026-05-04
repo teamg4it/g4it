@@ -926,7 +926,7 @@ app-inventory-item {
     }
 }
 .p-accordion p-accordiontab:first-child .p-accordion-header .p-accordion-header-link {
-    height: 50px;
+    height: 60px;
 }
 
 .p-accordion .p-accordion-tab:not(.p-accordion-tab-active) .p-accordion-toggle-icon {
@@ -1750,5 +1750,34 @@ app-inventories-application-footprint {
     .segment:active {
         border-color: var(--tertiary-color);
         transform: scale(0.97);
+    }
+}
+
+app-inventory-item,
+app-digital-services-item {
+    .expiry-card {
+        background: var(--red-light-bg);
+        border: 1px solid var(--red-border-light);
+        border-left: 5px solid var(--red-color);
+        min-width: 310px;
+        transition: all 0.2s ease;
+    }
+
+    .expiry-card:hover {
+        background: var(--red-hover-bg);
+        transform: translateY(-1px);
+    }
+
+    .expiry-icon,
+    .expiry-link {
+        color: var(--red-color);
+    }
+
+    .expiry-title {
+        color: var(--dark-red-color);
+    }
+
+    .expiry-link {
+        background-color: transparent;
     }
 }

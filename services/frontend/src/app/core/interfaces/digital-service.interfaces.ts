@@ -30,6 +30,7 @@ export interface DigitalService {
     activeDsvUid: string;
     versionType?: string;
     description?: string;
+    expiryDate?: string;
 }
 
 export interface DigitalServiceUserInfo {

@@ -27,6 +27,7 @@ export interface Inventory {
     lastTaskLoading?: TaskRest;
     lastTaskEvaluating?: TaskRest;
     workspaceId?: number;
+    expiryDate?: string;
 }
 
 export interface CreateInventory {
