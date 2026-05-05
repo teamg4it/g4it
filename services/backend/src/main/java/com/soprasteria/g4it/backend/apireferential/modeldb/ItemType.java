@@ -85,7 +85,7 @@ public class ItemType implements Serializable {
 
     public static String[] getCsvHeaders() {
         return new String[]{"type", "category", "comment", "default_lifespan", "is_server",
-                "source", "ref_default_item","organization", "version"};
+                "source", "ref_default_item","subscriber", "version"};
     }
 
     public Object[] toCsvRecord() {
