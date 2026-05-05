@@ -176,6 +176,7 @@
         [serviceId]="renewInventoryId"
         (outClose)="inventoryRenewServicePopup = false"
         [isInventory]="true"
+        (outExtended)="reloadInventories()"
     >
     </app-renew-service-popup>
 }
