@@ -80,19 +80,19 @@ public class WorkspaceReferentialExportService {
             zos.closeEntry();
 
             addCsvToZip(zos, workspaceId, "itemType",
-                    ItemType.getCsvHeaders(),
+                    ItemType.getCsvHeadersForWorkspace(),
                     pageable -> itemTypeRepository.findByWorkspaceId(workspaceId, pageable),
-                    ItemType::toCsvRecord);
+                    ItemType::toCsvRecordForWorkspace);
 
             addCsvToZip(zos, workspaceId, "itemImpact",
-                    ItemImpact.getCsvHeaders(),
+                    ItemImpact.getCsvHeadersForWorkspace(),
                     pageable -> itemImpactRepository.findByWorkspaceId(workspaceId, pageable),
-                    ItemImpact::toCsvRecord);
+                    ItemImpact::toCsvRecordForWorkspace);
 
             addCsvToZip(zos, workspaceId, "matchingItem",
-                    MatchingItem.getCsvHeaders(),
+                    MatchingItem.getCsvHeadersForWorkspace(),
                     pageable -> matchingItemRepository.findByWorkspaceId(workspaceId, pageable),
-                    MatchingItem::toCsvRecord);
+                    MatchingItem::toCsvRecordForWorkspace);
         }
 
         log.info("ZIP export completed for workspace {}", workspaceId);

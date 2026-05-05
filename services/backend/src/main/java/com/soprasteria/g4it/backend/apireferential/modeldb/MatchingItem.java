@@ -61,4 +61,12 @@ public class MatchingItem implements Serializable {
         return new Object[]{itemSource, refItemTarget, organization};
     }
 
+    public static String[] getCsvHeadersForWorkspace() {
+        return new String[]{"itemSource", "refItemTarget"};
+    }
+
+    public Object[] toCsvRecordForWorkspace() {
+        return new Object[]{itemSource, refItemTarget};
+    }
+
 }
