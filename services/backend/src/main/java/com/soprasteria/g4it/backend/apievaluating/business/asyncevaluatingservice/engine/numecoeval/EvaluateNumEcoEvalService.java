@@ -36,6 +36,7 @@ import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipeme
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,16 +81,16 @@ public class EvaluateNumEcoEvalService {
                                                                      final String organization,
                                                                      List<CriterionRest> criteria,
                                                                      List<String> lifecycleSteps,
-                                                                     List<HypothesisRest> hypotheses) {
+                                                                     List<HypothesisRest> hypotheses,Long workspaceId) {
 
         MatchingItemRest matchingItem = null;
         boolean isModelMatched = true;
 
         if (physicalEquipment.getModel() != null) {
-            matchingItem = referentialService.getMatchingItem(physicalEquipment.getModel(), organization);
+            matchingItem = referentialService.getMatchingItemForWorkspace(physicalEquipment.getModel(), organization,workspaceId);
         }
 
-        ItemTypeRest itemTypeRest = referentialService.getItemType(physicalEquipment.getType(), organization);
+        ItemTypeRest itemTypeRest = referentialService.getItemTypeForWorkspace(physicalEquipment.getType(), organization,workspaceId);
 
         List<ImpactEquipementPhysique> result = new ArrayList<>(criteria.size() * lifecycleSteps.size());
         LocalDateTime now = LocalDateTime.now();
@@ -108,9 +109,9 @@ public class EvaluateNumEcoEvalService {
                     itemImpactName = matchingItem.getRefItemTarget();
                 }
 
-                List<ItemImpactRest> itemImpacts = referentialService.getItemImpacts(
+                List<ItemImpactRest> itemImpacts = referentialService.getItemImpactsForWorkspace(
                         criterion.getCode(), lifecycleStep, itemImpactName,
-                        physicalEquipment.getLocation(), organization);
+                        physicalEquipment.getLocation(), organization,workspaceId);
 
                 ItemImpactRest firstImpact = itemImpacts.stream().findFirst().orElse(null);
                 boolean hideValue = true;
@@ -155,6 +156,59 @@ public class EvaluateNumEcoEvalService {
         return result;
     }
 
+    private void extractAndSetSource(ImpactEquipementPhysique impact,
+                                     Map<String, Object> traceMap,
+                                     ObjectMapper objectMapper) {
+
+        try {
+
+            if (traceMap.containsKey(Constants.MIX_ELECTRIQUE)) {
+                Map<String, Object> mixMap = objectMapper.convertValue(
+                        traceMap.get(Constants.MIX_ELECTRIQUE),
+                        new TypeReference<>() {}
+                );
+
+                Object source = mixMap.get("sourceReferentielMixElectrique");
+
+                if (source != null) {
+                    String raw = source.toString();
+
+                    String fixed = new String(
+                            raw.getBytes(StandardCharsets.ISO_8859_1),
+                            StandardCharsets.UTF_8
+                    );
+
+                    impact.setSource(fixed);
+                    return;
+                }
+            }
+
+            // 2. FALLBACK → ReferentielFacteurCaracterisation
+            if (traceMap.containsKey(Constants.REFERENTIEL_FACTEUR)) {
+                Map<String, Object> refMap = objectMapper.convertValue(
+                        traceMap.get(Constants.REFERENTIEL_FACTEUR),
+                        new TypeReference<>() {}
+                );
+
+                Object source = refMap.get(Constants.SOURCE);
+
+                if (source != null) {
+                    String raw = source.toString();
+
+                    String fixed = new String(
+                            raw.getBytes(StandardCharsets.ISO_8859_1),
+                            StandardCharsets.UTF_8
+                    );
+
+                    impact.setSource(fixed);
+                }
+            }
+
+        } catch (Exception e) {
+            log.warn("Failed to extract source from trace", e);
+        }
+    }
+
     /**
      * Update trace information
      *
@@ -182,6 +236,7 @@ public class EvaluateNumEcoEvalService {
             if (modified) {
                 impactEquipementPhysique.setTrace(objectMapper.writeValueAsString(traceMap));
             }
+            extractAndSetSource(impactEquipementPhysique, traceMap, objectMapper);
         } catch (Exception e) {
             log.warn("Failed to update trace for impact equipment: {}", impactEquipementPhysique, e);
         }
@@ -316,18 +371,24 @@ public class EvaluateNumEcoEvalService {
         LocalDateTime now = LocalDateTime.now();
 
         return impactEquipementPhysiqueList.stream()
-                .map(impact -> calculImpactEquipementVirtuelService.calculerImpactEquipementVirtuel(
-                        DemandeCalculImpactEquipementVirtuel.builder()
-                                .dateCalcul(now)
-                                .equipementVirtuel(internalToNumEcoEvalCalculs.map(virtualEquipment))
-                                .nbEquipementsVirtuels(virtualEquipmentNumber)
-                                .nbTotalVCPU(totalVcpuNumber)
-                                .stockageTotalVirtuel(totalStorage)
-                                .impactEquipement(impact)
-                                .pue(pue)
-                                .localisation(location)
-                                .facteurCaracterisations(impact.getFacteurCaracterisations())
-                                .build()))
+                .map(impact -> {
+                    ImpactEquipementVirtuel impactVirtuel =
+                            calculImpactEquipementVirtuelService.calculerImpactEquipementVirtuel(
+                                    DemandeCalculImpactEquipementVirtuel.builder()
+                                            .dateCalcul(now)
+                                            .equipementVirtuel(internalToNumEcoEvalCalculs.map(virtualEquipment))
+                                            .nbEquipementsVirtuels(virtualEquipmentNumber)
+                                            .nbTotalVCPU(totalVcpuNumber)
+                                            .stockageTotalVirtuel(totalStorage)
+                                            .impactEquipement(impact)
+                                            .pue(pue)
+                                            .localisation(location)
+                                            .facteurCaracterisations(impact.getFacteurCaracterisations())
+                                            .build()
+                            );
+                    impactVirtuel.setSource(impact.getSource());
+                    return impactVirtuel;
+                })
                 .toList();
 
     }

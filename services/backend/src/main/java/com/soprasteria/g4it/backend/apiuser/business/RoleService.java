@@ -128,4 +128,19 @@ public class RoleService {
         if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return this.hasAdminRightsOnOrganization(user, organizationId) || this.hasAdminRightsOnWorkspace(user, workspaceId);
     }
+
+    public boolean hasWorkspaceAdminRights(final UserBO user, final Long workspaceId) {
+
+        if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) {
+            return true;
+        }
+
+        return user.getOrganizations().stream()
+                .anyMatch(orgBO -> orgBO.getWorkspaces().stream()
+                        .filter(workspaceBO -> Objects.equals(workspaceBO.getId(), workspaceId))
+                        .anyMatch(workspaceBO ->
+                                workspaceBO.getRoles().contains(Constants.ROLE_WORKSPACE_ADMINISTRATOR)
+                        )
+                );
+    }
 }

@@ -80,4 +80,6 @@ public class OutPhysicalEquipment {
 
     private Set<String> errors;
 
+    private String source;
+
 }

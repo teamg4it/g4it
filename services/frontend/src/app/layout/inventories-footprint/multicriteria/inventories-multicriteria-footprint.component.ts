@@ -55,6 +55,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         PhysicalEquipmentsElecConsumption[],
     ] = [[], [], []];
     inventory = input<Inventory>();
+    sourceList = input<string[]>([]);
     showInconsitencyGraph = false;
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     selectedDimension = signal(this.dimensions[0]);

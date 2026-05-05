@@ -43,6 +43,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             "\\/administrator\\/.*",
             "\\/business-hours",
             "\\/workspace\\/.*",
+            "\\/workspaces\\/.*",
             "\\/referential\\/boaviztapi\\/.*",
             "\\/ecomindai\\/aiModelConfig\\/.*",
             "\\/shared\\/.*"

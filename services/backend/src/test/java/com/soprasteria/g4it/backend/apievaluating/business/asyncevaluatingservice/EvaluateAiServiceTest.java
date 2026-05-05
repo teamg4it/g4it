@@ -168,7 +168,7 @@ class EvaluateAiServiceTest {
         when(referentialService.getLifecycleSteps()).thenReturn(List.of("use"));
         when(referentialService.getActiveCriteria(task.getCriteria().stream()
                 .map(StringUtils::kebabToSnakeCase).toList())).thenReturn(List.of(criterionRest));
-        when(referentialService.getElectricityMixQuartiles()).thenReturn(Map.of());
+        when(referentialService.getElectricityMixQuartiles(anyLong())).thenReturn(Map.of());
         when(referentialService.getHypotheses(any())).thenReturn(List.of());
         when(referentialService.getSipValueMap(any())).thenReturn(Map.of("CLIMATE_CHANGE", 2.0));
 
@@ -184,7 +184,7 @@ class EvaluateAiServiceTest {
         when(impact.getConsoElecMoyenne()).thenReturn(10.0);
         when(impact.getDureeDeVie()).thenReturn(5.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any()))
                 .thenReturn(List.of(impact));
         when(aggregationToOutput.keyPhysicalEquipment(any(), any(), any(), any(), anyBoolean()))
                 .thenReturn(List.of("PHYSICAL_KEY"));
@@ -384,7 +384,7 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
         when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any()))
                 .thenReturn(List.of(mock(ImpactEquipementPhysique.class)));
 
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
@@ -504,7 +504,7 @@ class EvaluateAiServiceTest {
         when(evaluateNumEcoEvalService.getTotalVcpuCoreNumber(any())).thenReturn(4.0);
         when(evaluateNumEcoEvalService.getTotalDiskSize(any())).thenReturn(100.0);
 
-        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any()))
+        when(evaluateNumEcoEvalService.calculatePhysicalEquipment(any(), any(), any(), any(), any(), any(),any()))
                 .thenReturn(List.of(mock(ImpactEquipementPhysique.class)));
 
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))

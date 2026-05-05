@@ -4,6 +4,10 @@
 
 ## Major changes
 - 2001 | Inventory module filter the view moves from overlay to side panel
+- 2017 | keep the data for 2 more years - GUI Impact
+- 1983 | Update Reference Data at Workspace level
+- 2080 | Take into account Workspace Reference Data in calculation
+- 2081 | Sources used for calculation below the graphs
 
 ### Minor Changes
 - 2129 | Fix for Unit change - Unauthorized error remove in Digital Service

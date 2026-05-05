@@ -61,7 +61,6 @@ class EvaluateNumEcoEvalServiceTest {
         MockitoAnnotations.openMocks(this);
 
         mappedPhysical = new EquipementPhysique();
-
         mappedDataCenter = mock(org.mte.numecoeval.calculs.domain.data.entree.DataCenter.class);
         mappedPhysical.setDataCenter(mappedDataCenter);
 
@@ -71,6 +70,9 @@ class EvaluateNumEcoEvalServiceTest {
         when(internalToNumEcoEvalCalculs.map(any(InDatacenter.class)))
                 .thenReturn(mappedDataCenter);
 
+        // Prevent NPE in all tests
+        when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
+                .thenReturn(new ItemTypeRest());
     }
 
     // ------------------------------------------------------------------
@@ -240,6 +242,8 @@ class EvaluateNumEcoEvalServiceTest {
                 .thenReturn(List.of(itemImpact));
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(ImpactEquipementPhysique.builder().trace("{}").build());
+        when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
+                .thenReturn(new ItemTypeRest());
 
         List<ImpactEquipementPhysique> result =
                 service.calculatePhysicalEquipment(
@@ -248,7 +252,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),1L
                 );
 
         assertEquals(1, result.size());
@@ -269,38 +273,35 @@ class EvaluateNumEcoEvalServiceTest {
         ItemTypeRest itemType = new ItemTypeRest();
         itemType.setRefDefaultItem("DEFAULT_SERVER");
 
-        when(referentialService.getItemType(any(), any()))
-                .thenReturn(itemType);
-
-        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
-                .thenReturn(List.of());
-
+        // Correct mocks for service logic
+        when(referentialService.getItemTypeForWorkspace(any(), any(), any())).thenReturn(itemType);
+        when(referentialService.getMatchingItemForWorkspace(any(), any(), any())).thenReturn(null);
+        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(), any())).thenReturn(List.of());
         when(internalToNumEcoEvalCalculs.map(any(CriterionRest.class)))
                 .thenReturn(new org.mte.numecoeval.calculs.domain.data.referentiel.ReferentielCritere());
 
         ImpactEquipementPhysique impact = mock(ImpactEquipementPhysique.class);
         when(impact.getTrace()).thenReturn(
-                "{ \"valeurReferentielFacteurCaracterisation\": 9.1," +
-                        "  \"sourceReferentielFacteurCaracterisation\": \"ADEME\" }"
+                "{ \"valeurReferentielFacteurCaracterisation\": 9.1,\"sourceReferentielFacteurCaracterisation\": \"ADEME\" }"
         );
         when(impact.getStatutIndicateur()).thenReturn("OK");
-
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(impact);
-        
+
+        // WHEN
         service.calculatePhysicalEquipment(
                 physical,
                 null,
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of()
+                List.of(),1L
         );
 
         // THEN
         ArgumentCaptor<String> traceCaptor = ArgumentCaptor.forClass(String.class);
         verify(impact).setTrace(traceCaptor.capture());
-
+        System.out.println("TRACE VALUE: " + traceCaptor.getValue()); // Debug output
         assertTrue(traceCaptor.getValue().contains("\"impact source\":\"TYPE\""));
     }
 
@@ -326,7 +327,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion, criterion),
                         List.of("FABRICATION", "USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),1L
                 );
 
         assertEquals(4, result.size());
@@ -373,7 +374,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("USING"),
-                        Collections.emptyList()
+                        Collections.emptyList(),1L
                 );
 
         // THEN
@@ -432,7 +433,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("MANUFACTURING"),
-                List.of()
+                List.of(),1L
         );
 
         // THEN
@@ -452,9 +453,9 @@ class EvaluateNumEcoEvalServiceTest {
         CriterionRest criterion = new CriterionRest();
         criterion.setCode("CLIMATE_CHANGE");
 
-        when(referentialService.getItemType(any(), any()))
+        when(referentialService.getItemTypeForWorkspace(any(), any(),any()))
                 .thenReturn(new ItemTypeRest());
-        when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
+        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(),any()))
                 .thenReturn(List.of(new ItemImpactRest()));
         when(calculImpactEquipementPhysiqueService.calculerImpactEquipementPhysique(any()))
                 .thenReturn(ImpactEquipementPhysique.builder().trace("INVALID_JSON").build());
@@ -466,7 +467,7 @@ class EvaluateNumEcoEvalServiceTest {
                         "ORG",
                         List.of(criterion),
                         List.of("FABRICATION"),
-                        Collections.emptyList()
+                        Collections.emptyList(),1L
                 )
         );
     }
@@ -530,6 +531,10 @@ class EvaluateNumEcoEvalServiceTest {
 
         when(referentialService.getItemImpacts(any(), any(), any(), any(), any()))
                 .thenReturn(List.of(impactRest));
+        when(referentialService.getItemImpactsForWorkspace(any(), any(), any(), any(), any(),any()))
+                .thenReturn(List.of(impactRest));
+        when(referentialService.getItemTypeForWorkspace(any(), any(), any()))
+                .thenReturn(new ItemTypeRest());
 
         String traceJson = """
         {
@@ -552,7 +557,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of("USING"),
-                List.of()
+                List.of(),1L
         );
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -611,7 +616,7 @@ class EvaluateNumEcoEvalServiceTest {
                 "ORG",
                 List.of(criterion),
                 List.of(Constants.USING),
-                List.of()
+                List.of(),1L
         );
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);

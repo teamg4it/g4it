@@ -112,4 +112,8 @@ export class FootprintDataService {
 
         return forkJoin([lowImpact$, elecConsumption$]);
     }
+
+    getSourceList(inventoryId: number) {
+        return this.http.get<string[]>(`${endpoint}/${inventoryId}/sources`);
+    }
 }

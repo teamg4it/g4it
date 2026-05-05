@@ -51,9 +51,21 @@ export class AdministrationPanelComponent implements OnInit {
 
             if (user.isSuperAdmin) {
                 this.tabMenuList.push({
-                    label: this.translate.instant("administration.update-referential"),
+                    label: this.translate.instant(
+                        "administration.update-platform-referential",
+                    ),
                     routerLink: "update-referential",
                     id: "update-referential-tab",
+                });
+            }
+
+            if (this.userService.hasAnyAdminRole(user)) {
+                this.tabMenuList.push({
+                    label: this.translate.instant(
+                        "administration.update-workspace-referential",
+                    ),
+                    routerLink: "update-workspace-referential",
+                    id: "update-workspace-referential-tab",
                 });
             }
         });
