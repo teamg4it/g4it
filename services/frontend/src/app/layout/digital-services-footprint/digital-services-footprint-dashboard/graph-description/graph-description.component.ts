@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, input, Output } from "@angular/core";
+import { Component, computed, EventEmitter, inject, input, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { GraphDescriptionContent } from "src/app/core/interfaces/digital-service.interfaces";
 
@@ -17,6 +17,8 @@ export class GraphDescriptionComponent {
     selectedParam = input<string>("");
     versionIdNames = input<any[]>([]);
     tableBody = input<any>([]);
+    source = input<boolean>(false);
+    sourceValue = input<string[]>([]);
     textDescriptionImpacts = input<
         {
             text: string;
@@ -35,6 +37,10 @@ export class GraphDescriptionComponent {
     >([]);
 
     @Output() impactSelectedEvent: EventEmitter<any> = new EventEmitter();
+
+    sourceValueText = computed(() => {
+        return this.sourceValue().length ? this.sourceValue().join(", ") : "null";
+    });
 
     toggleContentVisibility() {
         this.contentVisible = !this.contentVisible;

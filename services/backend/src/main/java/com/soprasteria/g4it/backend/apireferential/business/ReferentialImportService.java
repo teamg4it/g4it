@@ -10,15 +10,14 @@ package com.soprasteria.g4it.backend.apireferential.business;
 
 import com.soprasteria.g4it.backend.apireferential.mapper.ReferentialMapper;
 import com.soprasteria.g4it.backend.apireferential.persistence.ReferentialPersistenceService;
-import com.soprasteria.g4it.backend.common.utils.Constants;
-import com.soprasteria.g4it.backend.common.utils.CsvUtils;
-import com.soprasteria.g4it.backend.common.utils.ValidationUtils;
+import com.soprasteria.g4it.backend.common.utils.*;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -27,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,7 +63,7 @@ public class ReferentialImportService {
      * @param organization the organization
      * @return the ImportReportRest
      */
-    public ImportReportRest importReferentialCSV(final String type, final MultipartFile file, final String organization) {
+    public ImportReportRest importReferentialCSV(final String type, final MultipartFile file, final String organization) throws IOException {
         if (file == null || file.isEmpty()) {
             throw new BadRequestException("file", "The file does not exist or it is empty");
         }
@@ -71,14 +71,13 @@ public class ReferentialImportService {
         log.info("Referential - start importing with: type={}, file={}, subscriber={}", type, file.getOriginalFilename(), organization);
 
         ImportReportRest result = switch (type) {
-            case "lifecycleStep" -> processLifecycleStepCsv(file);
-            case "criterion" -> processCriterionCsv(file);
-            case "hypothesis" -> processHypothesisCsv(file, organization);
-            case "itemType" -> processItemTypeCsv(file, organization);
-            case "matchingItem" -> processMatchingItemCsv(file, organization);
-            case "itemImpact" -> processItemImpactCsv(file, organization);
-            default ->
-                    throw new BadRequestException("type", String.format("type of referential '%s' does not exist", type));
+            case "lifecycleStep" -> safeExecute(() -> processLifecycleStepCsv(file), file);
+            case "criterion" -> safeExecute(() -> processCriterionCsv(file), file);
+            case "hypothesis" -> safeExecute(() -> processHypothesisCsv(file, organization), file);
+            case "itemType" -> safeExecute(() -> processItemTypeCsv(file, organization), file);
+            case "matchingItem" -> safeExecute(() -> processMatchingItemCsv(file, organization), file);
+            case "itemImpact" -> safeExecute(() -> processItemImpactCsv(file, organization), file);
+            default -> throw new BadRequestException("type", String.format("type of referential '%s' does not exist", type));
         };
 
         log.info("Referential - end importing with: type={}, file={}, subscriber={}", type, file.getOriginalFilename(), organization);
@@ -107,7 +106,7 @@ public class ReferentialImportService {
      * @param file file to be imported
      * @return the report
      */
-    public ImportReportRest processCriterionCsv(final MultipartFile file) {
+    public ImportReportRest processCriterionCsv(final MultipartFile file)   {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -116,7 +115,9 @@ public class ReferentialImportService {
 
         List<CriterionRest> objects = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        byte[] bytes = getBytesSafe(file, importReportRest);
+        if (bytes == null) return importReportRest;
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
             int line = 2;
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 CriterionRest criterionRest = referentialMapper.csvCriterionToRest(csvRecord);
@@ -146,7 +147,7 @@ public class ReferentialImportService {
      * @param file file to be imported
      * @return the report
      */
-    public ImportReportRest processLifecycleStepCsv(final MultipartFile file) {
+    public ImportReportRest processLifecycleStepCsv(final MultipartFile file)   {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -154,8 +155,9 @@ public class ReferentialImportService {
                 .build();
 
         List<LifecycleStepRest> objects = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        byte[] bytes = getBytesSafe(file, importReportRest);
+        if (bytes == null) return importReportRest;
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
             int line = 2;
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 LifecycleStepRest lifecycleStepRest = referentialMapper.csvLifecycleStepToRest(csvRecord);
@@ -186,7 +188,7 @@ public class ReferentialImportService {
      * @param organization the organization(mapped to subscriber column in table)
      * @return the report
      */
-    public ImportReportRest processHypothesisCsv(final MultipartFile file, final String organization) {
+    public ImportReportRest processHypothesisCsv(final MultipartFile file, final String organization)   {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -197,7 +199,10 @@ public class ReferentialImportService {
 
         int line = 2;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        byte[] bytes = getBytesSafe(file, importReportRest);
+        if (bytes == null) return importReportRest;
+
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 HypothesisRest hypothesisRest = referentialMapper.csvHypothesisToRest(csvRecord);
                 Optional<String> violations = ValidationUtils.getViolations(validator.validate(hypothesisRest));
@@ -233,7 +238,7 @@ public class ReferentialImportService {
      * @param organization the organization(mapped to subscriber column in table)
      * @return the report
      */
-    public ImportReportRest processItemTypeCsv(final MultipartFile file, final String organization) {
+    public ImportReportRest processItemTypeCsv(final MultipartFile file, final String organization)   {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -244,7 +249,10 @@ public class ReferentialImportService {
 
         int line = 2;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        byte[] bytes = getBytesSafe(file, importReportRest);
+        if (bytes == null) return importReportRest;
+
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 ItemTypeRest itemTypeRest = referentialMapper.csvItemTypeToRest(csvRecord);
                 Optional<String> violations = ValidationUtils.getViolations(validator.validate(itemTypeRest));
@@ -280,7 +288,7 @@ public class ReferentialImportService {
      * @param organization the organization(mapped to subscriber column in table)
      * @return the report
      */
-    public ImportReportRest processMatchingItemCsv(final MultipartFile file, final String organization) {
+    public ImportReportRest processMatchingItemCsv(final MultipartFile file, final String organization)   {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -290,7 +298,10 @@ public class ReferentialImportService {
         List<MatchingItemRest> objects = new ArrayList<>();
 
         int line = 2;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        byte[] bytes = getBytesSafe(file, importReportRest);
+        if (bytes == null) return importReportRest;
+
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
             for (CSVRecord csvRecord : createCsvParser().parse(reader)) {
                 MatchingItemRest matchingItemRest = referentialMapper.csvMatchingItemToRest(csvRecord);
                 Optional<String> violations = ValidationUtils.getViolations(validator.validate(matchingItemRest));
@@ -326,7 +337,7 @@ public class ReferentialImportService {
      * @param organization the organization(mapped to subscriber column in table)
      * @return the report
      */
-    public ImportReportRest processItemImpactCsv(final MultipartFile file, final String organization) {
+    public ImportReportRest processItemImpactCsv(final MultipartFile file, final String organization)   {
 
         ImportReportRest importReportRest = ImportReportRest.builder()
                 .errors(new ArrayList<>())
@@ -339,57 +350,309 @@ public class ReferentialImportService {
         int pageNumber = 0;
         int line = 0;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        byte[] bytes = getBytesSafe(file, importReportRest);
+        if (bytes == null) return importReportRest;
+
+        /*
+         * ===============================
+         * STEP 1 — VALIDATION PASS
+         * ===============================
+         */
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
             Iterable<CSVRecord> records = createCsvParser().parse(reader);
+
             for (CSVRecord csvRecord : records) {
                 ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
+
                 if (!Objects.equals(itemImpactRest.getOrganization(), organization)) {
-                    throw new BadRequestException(SUBSCRIBER, String.format("Line %d : The column subscriber does not contain all values equal to '%s'", i + 2, organization == null ? "" : organization));
+                    throw new BadRequestException(
+                            SUBSCRIBER,
+                            String.format("Line %d : The column subscriber must be '%s'", i + 2,
+                                    organization == null ? "" : organization)
+                    );
                 }
                 i++;
             }
+
         } catch (IOException e) {
             log.error(CANNOT_READ_FILE, e);
             importReportRest.getErrors().add(CANNOT_READ_FILE + e.getMessage());
             return importReportRest;
         }
 
+        /*
+         * ===============================
+         * STEP 2 — DELETE OLD DATA
+         * ===============================
+         */
         persistenceService.deleteItemImpactsByOrganization(organization);
 
         i = 0;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        /*
+         * ===============================
+         * STEP 3 — IMPORT PASS
+         * ===============================
+         */
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
             Iterable<CSVRecord> records = createCsvParser().parse(reader);
+
             for (CSVRecord csvRecord : records) {
+
                 line = i + 2 + pageNumber * Constants.BATCH_SIZE;
+
                 ItemImpactRest itemImpactRest = referentialMapper.csvItemImpactToRest(csvRecord);
+
                 Optional<String> violations = ValidationUtils.getViolations(validator.validate(itemImpactRest));
+
                 if (violations.isEmpty()) {
                     objects.add(itemImpactRest);
                 } else {
                     importReportRest.getErrors().add(printLine(line, violations.get()));
                 }
 
-                if (i >= Constants.BATCH_SIZE) {
+                // ✅ batch save
+                if (objects.size() >= Constants.BATCH_SIZE) {
                     persistenceService.saveItemImpacts(referentialMapper.toItemImpactEntity(objects));
                     objects.clear();
                     pageNumber++;
-                    i = 0;
                 }
+
                 i++;
             }
+
         } catch (IOException e) {
             log.error(CANNOT_READ_FILE, e);
             importReportRest.getErrors().add(CANNOT_READ_FILE + e.getMessage());
             return importReportRest;
         }
 
-        persistenceService.saveItemImpacts(referentialMapper.toItemImpactEntity(objects));
+        /*
+         * ===============================
+         * STEP 4 — SAVE REMAINING
+         * ===============================
+         */
+        if (!objects.isEmpty()) {
+            persistenceService.saveItemImpacts(referentialMapper.toItemImpactEntity(objects));
+        }
+
+        /*
+         * ===============================
+         * STEP 5 — CLEAR CACHE
+         * ===============================
+         */
         Objects.requireNonNull(cacheManager.getCache("ref_getItemImpacts")).clear();
         Objects.requireNonNull(cacheManager.getCache("ref_getCountries")).clear();
 
         importReportRest.setImportedLineNumber((long) line - 1);
+
         return importReportRest;
+    }
+
+    public ItemTypeParseResult parseItemTypeCsv(MultipartFile file)   {
+
+        ImportReportRest report = ImportReportRest.builder()
+                .errors(new ArrayList<>())
+                .file(file.getOriginalFilename())
+                .build();
+
+        List<ItemTypeRest> objects = new ArrayList<>();
+
+        int line = 2;
+        byte[] bytes = getBytesSafe(file, report);
+        if (bytes == null) {
+            return ItemTypeParseResult.builder()
+                    .report(report)
+                    .build();
+        }
+
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
+            var parser = createCsvParser().parse(reader);
+
+            validateHeaders(
+                    parser.getHeaderNames(),
+                    List.of("type", "category", "comment", "default_lifespan", "is_server", "source", "ref_default_item", "version"),
+                    "ItemType"
+            );
+
+            for (CSVRecord csvRecord :parser) {
+
+                ItemTypeRest item = referentialMapper.csvItemTypeToRest(csvRecord);
+
+                Optional<String> violations =
+                        ValidationUtils.getViolations(validator.validate(item));
+
+                if (violations.isEmpty()) {
+                    item.setOrganization(null); // ignore subscriber
+                    objects.add(item);
+                } else {
+                    report.getErrors().add(printLine(line, violations.get()));
+                }
+
+                line++;
+            }
+
+        } catch (IOException e) {
+            report.getErrors().add("Cannot read file: " + e.getMessage());
+            return ItemTypeParseResult.builder()
+                    .report(report)
+                    .build();
+        }
+
+        report.setImportedLineNumber((long) objects.size());
+
+        return ItemTypeParseResult.builder()
+                .data(objects)
+                .report(report).build();
+    }
+
+    public MatchingItemParseResult parseMatchingItemCsv(MultipartFile file)   {
+
+        ImportReportRest report = ImportReportRest.builder()
+                .errors(new ArrayList<>())
+                .file(file.getOriginalFilename())
+                .build();
+
+        List<MatchingItemRest> objects = new ArrayList<>();
+
+        int line = 2;
+
+        byte[] bytes = getBytesSafe(file, report);
+        if (bytes == null) {
+            return MatchingItemParseResult.builder()
+                    .report(report)
+                    .build();
+        }
+
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
+            var parser = createCsvParser().parse(reader);
+            validateHeaders(
+                    parser.getHeaderNames(),
+                    List.of("itemSource", "refItemTarget"),
+                    "MatchingItem"
+            );
+            for (CSVRecord csvRecord : parser) {
+
+                MatchingItemRest item = referentialMapper.csvMatchingItemToRest(csvRecord);
+
+                Optional<String> violations =
+                        ValidationUtils.getViolations(validator.validate(item));
+
+                if (violations.isEmpty()) {
+                    item.setOrganization(null);
+                    objects.add(item);
+                } else {
+                    report.getErrors().add(printLine(line, violations.get()));
+                }
+
+                line++;
+            }
+
+        } catch (IOException e) {
+            report.getErrors().add("Cannot read file: " + e.getMessage());
+            return MatchingItemParseResult.builder().report(report).build();
+        }
+
+        report.setImportedLineNumber((long) objects.size());
+
+        return MatchingItemParseResult.builder()
+                .data(objects)
+                .report(report).build();
+    }
+
+    public ItemImpactParseResult parseItemImpactCsv(MultipartFile file)   {
+
+        ImportReportRest report = ImportReportRest.builder()
+                .errors(new ArrayList<>())
+                .file(file.getOriginalFilename())
+                .build();
+
+        List<ItemImpactRest> objects = new ArrayList<>();
+
+        int line = 2;
+
+        byte[] bytes = getBytesSafe(file, report);
+        if (bytes == null) {
+            return ItemImpactParseResult.builder()
+                    .report(report)
+                    .build();
+        }
+
+        try (BufferedReader reader = CsvEncodingUtils.getReader(bytes)) {
+            var parser = createCsvParser().parse(reader);
+            validateHeaders(
+                    parser.getHeaderNames(),
+                    List.of("criterion", "lifecycleStep", "name", "category", "avgElectricityConsumption",
+                            "description", "location", "level", "source", "tier", "unit", "value", "version"),
+                    "ItemImpact"
+            );
+            for (CSVRecord csvRecord : parser) {
+
+                ItemImpactRest item = referentialMapper.csvItemImpactToRest(csvRecord);
+
+                Optional<String> violations =
+                        ValidationUtils.getViolations(validator.validate(item));
+
+                if (violations.isEmpty()) {
+                    item.setOrganization(null);
+                    objects.add(item);
+                } else {
+                    report.getErrors().add(printLine(line, violations.get()));
+                }
+
+                line++;
+            }
+
+        } catch (IOException e) {
+            report.getErrors().add("Cannot read file: " + e.getMessage());
+            return ItemImpactParseResult.builder().report(report).build();
+        }
+
+        report.setImportedLineNumber((long) objects.size());
+
+        return ItemImpactParseResult.builder()
+                .data(objects)
+                .report(report).build();
+    }
+
+    private void validateHeaders(List<String> actual, List<String> expected, String type) {
+
+        if (actual.size() != expected.size()) {
+            throw new BadRequestException("csv",
+                    "Invalid headers for " + type + ". Expected: " + expected + ", but got: " + actual);
+        }
+
+        for (int i = 0; i < expected.size(); i++) {
+            if (!expected.get(i).equals(actual.get(i))) {
+                throw new BadRequestException("csv",
+                        "Invalid header at position " + (i + 1) +
+                                " for " + type +
+                                ". Expected: " + expected.get(i) +
+                                ", but got: " + actual.get(i));
+            }
+        }
+    }
+
+    private ImportReportRest safeExecute(SupplierWithException<ImportReportRest> supplier, MultipartFile file) {
+        try {
+            return supplier.get();
+        } catch (IOException e) {
+            log.error(CANNOT_READ_FILE, e);
+            return ImportReportRest.builder()
+                    .errors(List.of(CANNOT_READ_FILE + e.getMessage()))
+                    .file(file.getOriginalFilename())
+                    .build();
+        }
+    }
+
+    private byte[] getBytesSafe(MultipartFile file, ImportReportRest report) {
+        try {
+            return file.getBytes();
+        } catch (IOException e) {
+            log.error(CANNOT_READ_FILE, e);
+            report.getErrors().add(CANNOT_READ_FILE + e.getMessage());
+            return null;
+        }
     }
 
     /**

@@ -143,7 +143,7 @@ class VirtualEquipmentIndicatorServiceTest {
 
         service.init();
 
-        when(lowImpactService.isLowImpact("France"))
+        when(lowImpactService.isLowImpact("France",workspaceId))
                 .thenReturn(true);
 
         when(mapper.toLowImpactBO(repoResult))
@@ -158,7 +158,7 @@ class VirtualEquipmentIndicatorServiceTest {
 
         assertThat(result).isNotNull();
 
-        verify(lowImpactService).isLowImpact("France");
+        verify(lowImpactService).isLowImpact("France",workspaceId);
 
         assertThat(view1.getLocation()).isEqualTo("France");
         assertThat(view1.getLowImpact()).isTrue();
@@ -192,7 +192,7 @@ class VirtualEquipmentIndicatorServiceTest {
 
         service.init();
 
-        when(lowImpactService.isLowImpact("UNKNOWN"))
+        when(lowImpactService.isLowImpact("UNKNOWN",workspaceId))
                 .thenReturn(false);
 
         when(mapper.toLowImpactBO(List.of(view)))
@@ -204,7 +204,7 @@ class VirtualEquipmentIndicatorServiceTest {
                 inventoryId
         );
 
-        verify(lowImpactService).isLowImpact("UNKNOWN");
+        verify(lowImpactService).isLowImpact("UNKNOWN",workspaceId);
 
         assertThat(view.getLocation()).isEqualTo("UNKNOWN");
         assertThat(view.getLowImpact()).isFalse();

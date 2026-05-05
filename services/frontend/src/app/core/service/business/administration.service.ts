@@ -6,20 +6,26 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 
-import { Injectable, signal } from "@angular/core";
-import { Observable } from "rxjs";
+import { Injectable, inject, signal } from "@angular/core";
+import { Observable, map } from "rxjs";
+import { Constants } from "src/constants";
 import {
     Organization,
     OrganizationCriteriaRest,
     WorkspaceCriteriaRest,
     WorkspaceUpsertRest,
+    WorkspaceWithOrganization,
 } from "../../interfaces/administration.interfaces";
+import { Role } from "../../interfaces/roles.interfaces";
 import { AdministrationDataService } from "../data/administration-data-service";
+import { UserService } from "./user.service";
 
 @Injectable({
     providedIn: "root",
 })
 export class AdministrationService {
+    private readonly userService = inject(UserService);
+
     constructor(private readonly administrationDataService: AdministrationDataService) {}
 
     getUsersTriggered = signal<boolean>(false);
@@ -86,6 +92,42 @@ export class AdministrationService {
 
     postWorkspace(body: any): Observable<any> {
         return this.administrationDataService.postWorkspace(body);
+    }
+
+    /**
+     * Gets list of workspaces where the current user is an admin (Organization or Workspace Admin)
+     * Returns an observable of WorkspaceWithOrganization array with filtered active workspaces
+     */
+    getAdminWorkspaceList(): Observable<WorkspaceWithOrganization[]> {
+        return this.getUsers().pipe(
+            map((organizationsDetails: any) => {
+                const list: WorkspaceWithOrganization[] = [];
+                for (const organization of organizationsDetails) {
+                    for (const workspace of organization.workspaces) {
+                        const roles = this.userService.getRoles(organization, workspace);
+                        if (
+                            workspace.status === Constants.WORKSPACE_STATUSES.ACTIVE &&
+                            (roles.includes(Role.OrganizationAdmin) ||
+                                roles.includes(Role.WorkspaceAdmin))
+                        ) {
+                            list.push({
+                                organizationName: organization.name,
+                                organizationId: organization.id,
+                                workspaceName: workspace.name,
+                                workspaceId: workspace.id,
+                                status: workspace.status,
+                                dataRetentionDays: workspace.dataRetentionDays!,
+                                displayLabel: `${workspace.name} - (${organization.name})`,
+                                criteriaDs: workspace.criteriaDs!,
+                                criteriaIs: workspace.criteriaIs!,
+                                authorizedDomains: organization.authorizedDomains,
+                            });
+                        }
+                    }
+                }
+                return list;
+            })
+        );
     }
 
     refreshGetUsers() {
