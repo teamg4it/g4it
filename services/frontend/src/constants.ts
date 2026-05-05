@@ -72,7 +72,7 @@ export abstract class Constants {
         users: "users",
         organizations: "administrator/organizations",
         organizationById: "administrator/organization",
-        workspaces: "administrator/workspaces",
+        adminWorkspaces: "administrator/workspaces",
         ecomindaiModelConfig: "ecomindai/aiModelConfig/type",
         actions: "administrator-actions",
         version: "version",
@@ -83,6 +83,7 @@ export abstract class Constants {
         task: "task",
         sharedDs: "shared",
         dsv: "dsv",
+        referentialWorkspace: "referential-workspace",
     };
 
     static readonly ERRORS: any = {

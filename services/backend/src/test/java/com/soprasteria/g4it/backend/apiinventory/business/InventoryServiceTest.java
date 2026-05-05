@@ -9,6 +9,8 @@ package com.soprasteria.g4it.backend.apiinventory.business;
 
 
 import com.soprasteria.g4it.backend.TestUtils;
+import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapperImpl;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -38,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -72,6 +75,12 @@ class InventoryServiceTest {
 
     @Mock
     private OrganizationRepository organizationRepository;
+
+    @Mock
+    OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
+
+    @Mock
+    OutVirtualEquipmentRepository outVirtualEquipmentRepository;
 
 
     @BeforeEach
@@ -664,4 +673,128 @@ class InventoryServiceTest {
         verify(inventoryRepo, never()).save(any());
     }
 
+    @Test
+    void getInventoriesSources_shouldMergeAndDeduplicateSources() {
+        Workspace workspace = TestUtils.createWorkspace();
+        Inventory inventory = Inventory.builder().id(1L).workspace(workspace).build();
+
+        Task task = Task.builder().id(10L).build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(inventoryRepo.findByWorkspaceAndId(workspace, INVENTORY_ID))
+                .thenReturn(Optional.of(inventory));
+        when(taskRepo.findByInventoryAndLastCreationDate(inventory))
+                .thenReturn(Optional.ofNullable(task));
+
+
+        when(outPhysicalEquipmentRepository.findDistinctSourcesByTaskId(10L))
+                .thenReturn(Arrays.asList("A", "B", null) );
+
+        when(outVirtualEquipmentRepository.findDistinctSourcesByTaskId(10L))
+                .thenReturn(List.of("B", "C"));
+
+        List<String> result = inventoryService.getInventoriesSources(WORKSPACE_ID, INVENTORY_ID);
+
+        assertThat(result).containsExactlyInAnyOrder("A", "B", "C");
+    }
+
+    @Test
+    void getInventoriesSources_shouldReturnEmpty_whenNoTask() {
+        Workspace workspace = TestUtils.createWorkspace();
+        Inventory inventory = Inventory.builder().id(1L).workspace(workspace).build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(inventoryRepo.findByWorkspaceAndId(workspace, INVENTORY_ID))
+                .thenReturn(Optional.of(inventory));
+        when(taskRepo.findByInventoryAndLastCreationDate(inventory))
+                .thenReturn(Optional.empty());
+
+        List<String> result = inventoryService.getInventoriesSources(WORKSPACE_ID, INVENTORY_ID);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void getInventories_shouldUseDefaultRetention_whenAllNull() {
+        Workspace workspace = TestUtils.createWorkspace();
+        workspace.setDataRetentionDay(null);
+        workspace.getOrganization().setDataRetentionDay(null);
+
+        ReflectionTestUtils.setField(inventoryService, "dataRetentiondDay", 15);
+
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .lastUpdateDate(LocalDateTime.now())
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(inventoryRepo.findByWorkspace(workspace)).thenReturn(List.of(inventory));
+
+        List<InventoryBO> result = inventoryService.getInventories(WORKSPACE_ID, null);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getExpiryDate()).isNotNull();
+    }
+
+    @Test
+    void getInventories_shouldUseOrganizationRetention_whenWorkspaceNull() {
+        Workspace workspace = TestUtils.createWorkspace();
+        workspace.setDataRetentionDay(null);
+        workspace.getOrganization().setDataRetentionDay(30);
+
+        Inventory inventory = Inventory.builder()
+                .id(1L)
+                .lastUpdateDate(LocalDateTime.now())
+                .build();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(inventoryRepo.findByWorkspace(workspace)).thenReturn(List.of(inventory));
+
+        List<InventoryBO> result = inventoryService.getInventories(WORKSPACE_ID, null);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getExpiryDate()).isNotNull();
+    }
+
+    @Test
+    void createInventory_shouldSetInventoryDate_forInformationSystem() {
+        Workspace workspace = TestUtils.createWorkspace();
+
+        InventoryCreateRest rest = InventoryCreateRest.builder()
+                .name("inv")
+                .type(InventoryType.INFORMATION_SYSTEM)
+                .build();
+
+        UserBO user = TestUtils.createUserBONoRole();
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+        when(inventoryRepo.findByWorkspaceAndName(workspace, "inv"))
+                .thenReturn(Optional.empty());
+        when(inventoryRepo.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        InventoryBO result = inventoryService.createInventory(
+                ORGANIZATION, WORKSPACE_ID, rest, user
+        );
+
+        ArgumentCaptor<Inventory> captor = ArgumentCaptor.forClass(Inventory.class);
+        verify(inventoryRepo).save(captor.capture());
+
+        assertThat(captor.getValue().getInventoryDate()).isEqualTo("inv");
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    void inventoryExists_shouldReturnFalse_whenOrganizationMismatch() {
+        Workspace workspace = TestUtils.createWorkspace();
+        workspace.getOrganization().setName("OTHER");
+
+        when(workspaceService.getWorkspaceById(WORKSPACE_ID)).thenReturn(workspace);
+
+        boolean result = inventoryService.inventoryExists(
+                ORGANIZATION, WORKSPACE_ID, INVENTORY_ID
+        );
+
+        assertThat(result).isFalse();
+        verify(inventoryRepo, never()).findByWorkspaceAndId(any(), any());
+    }
 }
