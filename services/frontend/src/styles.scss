@@ -131,6 +131,10 @@ main {
     background-color: var(--gray-100);
 }
 
+.bg-lightest-gray-color {
+    background-color: var(--lightest-gray-color);
+}
+
 .bg-black {
     background: var(--black-color);
 }
@@ -611,33 +615,6 @@ main {
 
 .text-no-data-global {
     font-size: 8px;
-}
-
-.side-data-title {
-    display: flex;
-    margin-bottom: 8px;
-}
-
-.side-data-title span {
-    font-size: 13px;
-    line-height: 22px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    display: inline-block;
-    position: relative;
-    margin-bottom: 14px;
-    padding-top: 10px;
-}
-
-.side-data-title span::after {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    transform: translateX(-142%);
-    width: 70%;
-    height: 2px;
-    background-color: var(--primary-color);
 }
 
 .rmv-padding-card .p-card-content,
@@ -1751,4 +1728,8 @@ app-inventories-application-footprint {
         border-color: var(--tertiary-color);
         transform: scale(0.97);
     }
+}
+
+.box-shadow-pie {
+    box-shadow: 0 2px 4px 0 rgba(28, 33, 29, 0.1);
 }

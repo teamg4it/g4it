@@ -777,7 +777,8 @@
             "application-view": "Application graph for",
             "subdomain-view": "Subdomain graph for",
             "domain-view": "Domain graph for",
-            "selected-infos": "Impacts in people equivalent for"
+            "selected-infos": "Impacts in people equivalent for",
+            "additional-elements": "Additional elements of analysis"
         },
         "critere": {
             "repartition": "Repartition"
