@@ -165,6 +165,33 @@
                                 />
                             </button>
                         </li>
+                        <li class="my-1">
+                            <span
+                                class="vertical-align-middle my-1 font-semibold text-lg"
+                            >
+                                {{
+                                    "inventories.templates.workspace-settings" | translate
+                                }}
+                            </span>
+                            <button
+                                type="button"
+                                class="bg-transparent border-none cursor-pointer vertical-align-middle"
+                                (click)="downloadWorkspaceReferenceData()"
+                            >
+                                <img
+                                    src="assets/images/icons/icon-download.svg"
+                                    height="24px"
+                                    [alt]="'inventories.download-alt' | translate"
+                                    ariaLabel="{{
+                                        'inventories-footprint.header.download'
+                                            | translate
+                                    }} {{
+                                        'inventories.templates.workspace-settings'
+                                            | translate
+                                    }}"
+                                />
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </div>

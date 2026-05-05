@@ -141,7 +141,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {BadRequestException.class})
     public ResponseEntity<RestValidationError> handleBadRequestException(final BadRequestException ex) {
-        return ResponseEntity.badRequest().body(RestValidationError.builder().field(ex.getField()).error(ex.getError()).build());
+        return ResponseEntity.badRequest().body(RestValidationError.builder().field(ex.getField()).error(ex.getError()).message(ex.getError()).build());
     }
 
     @Override
@@ -151,6 +151,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         RestValidationError.builder()
                                 .field(fieldError.getField())
                                 .error(fieldError.getDefaultMessage())
+                                .message(fieldError.getDefaultMessage())
                                 .build())
                 .toList();
         return ResponseEntity.status(status.value()).body(errors);

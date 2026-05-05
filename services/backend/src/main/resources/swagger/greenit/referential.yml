@@ -11,6 +11,8 @@ tags:
     description: All endpoints for referential import and export
   - name: referential analysis
     description: Endpoint for referential analysis
+  - name: workspace referential import export
+    description: All endpoints for workspace referential import and export
 
 paths:
   /referential/{type}/csv:
@@ -516,3 +518,43 @@ components:
           type: array
           items:
             type: string
+
+    ItemTypeParseResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemTypeRest"
+        report:
+          $ref: "#/components/schemas/ImportReportRest"
+
+    MatchingItemParseResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchingItemRest"
+        report:
+          $ref: "#/components/schemas/ImportReportRest"
+
+    ItemImpactParseResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemImpactRest"
+        report:
+          $ref: "#/components/schemas/ImportReportRest"
+
+    HypothesisParseResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/HypothesisRest"
+        report:
+          $ref: "#/components/schemas/ImportReportRest"

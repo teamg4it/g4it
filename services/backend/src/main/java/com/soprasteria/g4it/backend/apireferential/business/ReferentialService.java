@@ -146,8 +146,8 @@ public class ReferentialService {
      * @return the map of quartiles
      */
     @Cacheable("getNewElectricityMixQuartiles")
-    public Map<Pair<String, String>, Integer> getElectricityMixQuartiles() {
-        var allMixElec = referentialGetService.getElectricityMix().stream()
+    public Map<Pair<String, String>, Integer> getElectricityMixQuartiles(Long workspaceId) {
+        var allMixElec = referentialGetService.getElectricityMix(workspaceId).stream()
                 .filter(mix -> {
                     var hasNullValue = mix.getCriterion() == null || mix.getValue() == null;
                     if (hasNullValue) {
@@ -184,6 +184,43 @@ public class ReferentialService {
                     }
                     return quartileIndex;
                 }));
+    }
+
+    public MatchingItemRest getMatchingItemForWorkspace(String model, String organization, Long workspaceId) {
+        MatchingItemRest matchingItem = referentialGetService.getMatchingItemForWorkspace(model, organization,workspaceId);
+        if (matchingItem == null) {
+            matchingItem = referentialGetService.getMatchingItem(model, null);
+        }
+        return matchingItem;
+    }
+
+    public ItemTypeRest getItemTypeForWorkspace(String type, String organization,Long workspaceId) {
+        List<ItemTypeRest> itemTypeRestList = referentialGetService.getItemTypesForWorkspace(type, workspaceId,organization);
+        if (itemTypeRestList.isEmpty()) {
+            itemTypeRestList = referentialGetService.getItemTypes(type, null);
+        }
+
+        return itemTypeRestList.getFirst();
+    }
+
+    public List<ItemImpactRest> getItemImpactsForWorkspace(final String criterion, final String lifecycleStep, final String name,
+                                               final String location, final String organization,Long workspaceId) {
+        List<ItemImpactRest> itemImpacts = new ArrayList<>(referentialGetService.getItemImpactsForWorkspace(criterion, lifecycleStep,
+                name, null, null, organization,workspaceId));
+
+        if (itemImpacts.isEmpty()) {
+            itemImpacts = new ArrayList<>(referentialGetService.getItemImpacts(criterion, lifecycleStep,
+                    name, null, null, null));
+        }
+
+        List<ItemImpactRest> electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpactsForWorkspace(criterion, null, null, location, "electricity-mix", organization,workspaceId));
+        if (electricityMixImpact.isEmpty()) {
+            electricityMixImpact = new ArrayList<>(referentialGetService.getItemImpacts(criterion, null, null, location, "electricity-mix", null));
+        }
+
+        itemImpacts.addAll(electricityMixImpact);
+
+        return itemImpacts;
     }
 }
 
