@@ -13,7 +13,8 @@
     @if (!showInconsitencyGraph) {
         <p-dropdown
             [options]="dimensions"
-            [(ngModel)]="selectedDimension"
+            [ngModel]="selectedDimension()"
+            (ngModelChange)="footprintStore.setApplicationDimension($event)"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
             styleClass="ml-auto"
         >

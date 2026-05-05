@@ -8,6 +8,7 @@ import {
 
 interface EquipmentState extends FilterCritera<string> {
     unit: string;
+    dimension: string;
 }
 
 interface FilterCritera<T> {
@@ -21,6 +22,7 @@ interface ApplicationState extends FilterCritera<string | TransformedDomain> {
     selectedFilters: Filter;
     graph: string;
     domain: string;
+    dimension: string;
     subDomain: string;
     application: string;
 }
@@ -29,6 +31,7 @@ const initialState: EquipmentState = {
     filters: {},
     unit: Constants.PEOPLEEQ,
     criteria: Constants.MUTLI_CRITERIA,
+    dimension: Constants.EQUIPMENT_DIMENSIONS[0],
 };
 
 const applicationInitialState: ApplicationState = {
@@ -41,6 +44,7 @@ const applicationInitialState: ApplicationState = {
     domain: "",
     subDomain: "",
     application: "",
+    dimension: Constants.APPLICATION_DIMENSIONS[0],
 };
 
 @Injectable({
@@ -66,6 +70,11 @@ export class FootprintStoreService {
     readonly criteria = computed(() => this._store().criteria);
     setCriteria(criteria: string) {
         this._store.update((s) => ({ ...s, criteria }));
+    }
+
+    readonly dimension = computed(() => this._store().dimension);
+    setDimension(dimension: string) {
+        this._store.update((s) => ({ ...s, dimension }));
     }
 
     private readonly applicationStore = signal(applicationInitialState);
@@ -113,5 +122,10 @@ export class FootprintStoreService {
     readonly appApplication = computed(() => this.applicationStore().application);
     setApplication(application: string) {
         this.applicationStore.update((s) => ({ ...s, application }));
+    }
+
+    readonly appDimension = computed(() => this.applicationStore().dimension);
+    setApplicationDimension(dimension: string) {
+        this.applicationStore.update((s) => ({ ...s, dimension }));
     }
 }
