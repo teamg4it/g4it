@@ -47,6 +47,8 @@ export class DigitalServicesComponent implements OnInit {
     currentPage = 0;
     isEcoMindAi = false;
     firstCall = true;
+    displayRenewServicePopup = false;
+    digitalServiceUid = "";
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(

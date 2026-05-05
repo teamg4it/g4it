@@ -89,6 +89,9 @@
                         (openTab)="childOpenTab($event)"
                         (closeTab)="childCloseTab($event)"
                         [open]="inventoriesOpen.has(inventory.id)"
+                        (renewInventoryId)="
+                            renewInventoryId = $event; inventoryRenewServicePopup = true
+                        "
                     >
                     </app-inventory-item>
                 </div>

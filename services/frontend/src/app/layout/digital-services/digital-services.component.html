@@ -32,6 +32,9 @@
                     [isAi]="isEcoMindAi"
                     [digitalService]="digitalService"
                     (deleteUid)="itemDelete($event)"
+                    (renewInventoryId)="
+                        digitalServiceUid = $event; displayRenewServicePopup = true
+                    "
                 >
                 </app-digital-services-item>
             </li>
@@ -66,4 +69,14 @@
             />
         </ng-template>
     </p-sidebar>
+}
+
+<!-- Renew Popup -->
+@if (displayRenewServicePopup && digitalServiceUid) {
+    <app-renew-service-popup
+        [displayPopup]="displayRenewServicePopup"
+        [serviceId]="digitalServiceUid"
+        (outClose)="displayRenewServicePopup = false"
+    >
+    </app-renew-service-popup>
 }
