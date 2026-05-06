@@ -13,14 +13,15 @@
     @if (!showInconsitencyGraph) {
         <p-dropdown
             [options]="dimensions"
-            [(ngModel)]="selectedDimension"
+            [ngModel]="store.dimension()"
+            (ngModelChange)="store.setDimension($event)"
             [placeholder]="'inventories-footprint.select-dimension' | translate"
             styleClass="ml-auto"
         >
             <ng-template pTemplate="selectedItem">
-                <div *ngIf="selectedDimension()">
+                <div *ngIf="store.dimension()">
                     {{
-                        "inventories-footprint.round-button." + selectedDimension()
+                        "inventories-footprint.round-button." + store.dimension()
                             | translate
                     }}
                 </div>
@@ -50,7 +51,7 @@
         <div
             role="img"
             attr.aria-label="{{
-                'inventories-footprint.round-button.' + selectedDimension() | translate
+                'inventories-footprint.round-button.' + store.dimension() | translate
             }} {{ 'inventories-footprint.global.global-vision' | translate }}"
             echarts
             class="m-0"

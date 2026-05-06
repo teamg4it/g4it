@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, Signal, computed, inject, input, signal } from "@angular/core";
+import { Component, Input, Signal, computed, inject, input } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { Constants } from "src/constants";
 
@@ -39,7 +39,7 @@ import { AbstractDashboard } from "../abstract-dashboard";
     templateUrl: "./inventories-multicriteria-footprint.component.html",
 })
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
-    private readonly store = inject(FootprintStoreService);
+    protected readonly store = inject(FootprintStoreService);
     private readonly footprintService = inject(FootprintService);
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
@@ -58,7 +58,6 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     sourceList = input<string[]>([]);
     showInconsitencyGraph = false;
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
-    selectedDimension = signal(this.dimensions[0]);
     criteriaMap: StatusCountMap = {};
     xAxisInput: string[] = [];
     textDescriptionImpacts: {
@@ -72,7 +71,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             this.footprintService.calculate(
                 this.footprint,
                 this.store.filters(),
-                this.selectedDimension(),
+                this.store.dimension(),
                 this.filterFields,
             );
         // sort footprint by criteria
@@ -109,7 +108,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     });
 
     options: Signal<EChartsOption> = computed(() => {
-        return this.renderChart(this.criteriaCalculated(), this.selectedDimension());
+        return this.renderChart(this.criteriaCalculated(), this.store.dimension());
     });
 
     renderChart(

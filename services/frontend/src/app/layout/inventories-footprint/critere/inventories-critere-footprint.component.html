@@ -35,14 +35,15 @@
     }
     <p-dropdown
         [options]="dimensions"
-        [(ngModel)]="selectedDimension"
+        [ngModel]="footprintStore.dimension()"
+        (ngModelChange)="footprintStore.setDimension($event)"
         [placeholder]="'inventories-footprint.select-dimension' | translate"
         styleClass="ml-auto"
     >
         <ng-template pTemplate="selectedItem">
-            <div *ngIf="selectedDimension()">
+            <div *ngIf="footprintStore.dimension()">
                 {{
-                    "inventories-footprint.round-button." + selectedDimension()
+                    "inventories-footprint.round-button." + footprintStore.dimension()
                         | translate
                 }}
             </div>
