@@ -32,7 +32,7 @@ https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval
     - Equipment
     - Status
 5. Each button allows seeing the impact for one specific filter
-6. Quick description of what people eq. means
+6. Quick description of what people eq. means. For each graph displayed in the results (Inventories and Digital Services), a new “Source” section is added between Analysis and To go further. This section lists the references used (previously only available in calculation traces) and the engines involved in the computation.
 7. Key indicators about a Data center
 8. Key indicators about Equipment
 

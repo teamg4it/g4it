@@ -98,6 +98,7 @@ erDiagram
     varchar reference
     varchar hosting_efficiency
     float8 nb_user
+    varchar source
   }
   out_virtual_equipment {
     int8 id PK
@@ -129,6 +130,7 @@ erDiagram
     int8 count_value
     float8 usage_duration
     float8 workload
+    varchar source
   }
   inventory ||--o{ task : "foreign key"
   task ||--o{ out_application : "foreign key"
@@ -304,6 +306,7 @@ erDiagram
 |reference|varchar|<ul><li>Referenced physical equipment</li></ul>|
 |hosting_efficiency|varchar|<ul><li>Equipment Hosting efficiency</li></ul>|
 |nb_user|float8|<ul><li>Number of users</li></ul>|
+|source|varchar|<ul><li>source of calculation</li></ul>|
 
 #### Primary Key 
 
@@ -355,6 +358,7 @@ erDiagram
 |count_value|int8|<ul><li>Count value</li></ul>|
 |usage_duration|float8|<ul><li>Usage duration of virtual equipment</li></ul>|
 |workload|float8|<ul><li>Average Workload</li></ul>|
+|source|varchar|<ul><li>source of calculation</li></ul>|
 
 #### Primary Key 
 
