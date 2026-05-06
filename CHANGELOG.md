@@ -11,6 +11,8 @@
 
 ### Minor Changes
 - 2129 | Fix for Unit change - Unauthorized error remove in Digital Service
+- 2140 | Inventories - Application View Review Set Graph view as default, Additional elements of analysis section added
+- 2142 | Retain repartition dropdown list selection in the navigation on the inventory results page.
 
 
 ## 3.11.0

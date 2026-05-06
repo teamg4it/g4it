@@ -94,7 +94,7 @@ public class ReferentialGetService {
             return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganization(organization));
         }
 
-        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganization(type, organization);
+        Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, organization,null);
 
         return refRestMapper.toItemTypeRest(itemType.map(List::of).orElseGet(List::of));
     }
@@ -107,7 +107,7 @@ public class ReferentialGetService {
      */
     @Cacheable("ref_getMatchingItem")
     public MatchingItemRest getMatchingItem(String model, String organization) {
-        return matchingItemRepository.findByItemSourceAndOrganization(model, organization)
+        return matchingItemRepository.findByItemSourceAndOrganizationAndWorkspaceId(model, organization,null)
                 .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
@@ -123,8 +123,8 @@ public class ReferentialGetService {
                                                String name, String location,
                                                String category, String organization) {
 
-        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganization(
-                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization);
+        List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndOrganizationAndWorkspaceId(
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, organization,null);
         return refRestMapper.toItemImpactRest(itemImpacts);
     }
 
