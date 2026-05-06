@@ -106,7 +106,8 @@ task{
       int8 count_value     
       varchar reference     
       varchar hosting_efficiency     
-      float8 nb_user   
+      float8 nb_user
+      varchar source   
   }
   out_virtual_equipment{     
       int8 id PK     
@@ -137,7 +138,8 @@ task{
       varchar errors     
       int8 count_value     
       float8 usage_duration     
-      float8 workload   
+      float8 workload
+      varchar source   
   }
   note ||--o{ digital_service_version : "foreign key"
   digital_service ||--o{ digital_service_version : "foreign key"
@@ -342,6 +344,7 @@ task{
 |reference|varchar|<ul><li>Referenced physical equipment</li></ul>|
 |hosting_efficiency|varchar|<ul><li>Equipment Hosting efficiency</li></ul>|
 |nb_user|float8|<ul><li>Number of users</li></ul>|
+|source|varchar|<ul><li>source of calculation</li></ul>|
 
 #### Primary Key 
 
@@ -393,6 +396,7 @@ task{
 |count_value|int8|<ul><li>Count value</li></ul>|
 |usage_duration|float8|<ul><li>Usage duration of virtual equipment</li></ul>|
 |workload|float8|<ul><li>Average Workload</li></ul>|
+|source|varchar|<ul><li>source of calculation</li></ul>|
 
 #### Primary Key 
 
