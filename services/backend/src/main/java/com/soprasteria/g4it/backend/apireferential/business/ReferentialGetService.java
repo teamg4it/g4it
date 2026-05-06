@@ -165,7 +165,7 @@ public class ReferentialGetService {
             if(itemType.isPresent()){
                 return refRestMapper.toItemTypeRest(List.of(itemType.get()));
             }
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findByTypeAndOrganization(type,organization).map(List::of).orElseGet(List::of));
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type,organization,workspaceId).map(List::of).orElseGet(List::of));
         }
     }
 
