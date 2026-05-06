@@ -47,10 +47,11 @@ The parser is configured with the following settings:
 
 1. **Validation**: Each line is parsed and mapped to a REST DTO using `ReferentialMapper`. Validation constraints (JSR 303/380) are then checked using a `Validator`.
 2. **Organization Scope**: Some types are **global** (`lifecycleStep`, `criterion`) and do not use an organization. Others are **organization-scoped** (`hypothesis`, `itemType`, `matchingItem`, `itemImpact`): the service validates that every row's `subscriber` column matches the `organization` parameter provided in the request.
-3. **Persistence**:
+3. **Workspace Scope**: Workspace-scoped referential data allows users to override platform reference data with values specific to a workspace. When processing inventory data, workspace references (`itemType`, `matchingItem`, `itemImpact`) are applied first, with automatic fallback to platform-level references if no match is found. This ensures more accurate and customizable impact calculations. Users can also export these workspace-specific references as a ZIP file for reuse and validation.
+4. **Persistence**:
     - For some types, the data is appended or merged.
     - For **Item Impact**, the existing data for the organization is **deleted** before importing the new records to ensure consistency.
-4. **Caching**: After a successful import, the relevant cache is cleared per data type (e.g., `ref_getAllCriteria`, `ref_getItemImpacts`). For `itemImpact`, two caches are cleared: `ref_getItemImpacts` and `ref_getCountries`.
+5. **Caching**: After a successful import, the relevant cache is cleared per data type (e.g., `ref_getAllCriteria`, `ref_getItemImpacts`). For `itemImpact`, two caches are cleared: `ref_getItemImpacts` and `ref_getCountries`.
 
 ## CSV Schema Definitions
 

@@ -91,7 +91,7 @@ public class ReferentialGetService {
 
         // get all itemTypes
         if (type == null) {
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganization(organization));
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(organization,null));
         }
 
         Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, organization,null);
@@ -166,7 +166,7 @@ public class ReferentialGetService {
             if(itemType.isPresent()){
                 return refRestMapper.toItemTypeRest(List.of(itemType.get()));
             }
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findByTypeAndOrganization(type,organization).map(List::of).orElseGet(List::of));
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type,organization,workspaceId).map(List::of).orElseGet(List::of));
         }
     }
 

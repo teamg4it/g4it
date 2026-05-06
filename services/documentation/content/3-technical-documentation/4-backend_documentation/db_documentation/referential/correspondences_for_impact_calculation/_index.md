@@ -34,12 +34,14 @@ erDiagram
     varchar subscriber UK
     varchar version
     boolean hidden
+    int8 workspace_id
   }
   ref_matching_item {
     int8 id PK
     varchar item_source UK
     varchar ref_item_target
     varchar subscriber UK
+    int8 workspace_id
   }
 ``` 
 
@@ -55,15 +57,15 @@ erDiagram
 
 #### Columns 
 
-|Name|Data type|Comments|
-|---|---|---|
-|**id**|int8||
-|code|varchar||
-|source|varchar||
-|value|float8||
-|description|varchar||
-|subscriber|varchar||
-|version|varchar||
+| Name         |Data type|Comments|
+|--------------|---|---|
+| **id**       |int8||
+| code         |varchar||
+| source       |varchar||
+| value        |float8||
+| description  |varchar||
+| subscriber   |varchar||
+| version      |varchar||
 
 #### Primary Key 
 
@@ -97,6 +99,7 @@ erDiagram
 |subscriber|varchar||
 |version|varchar||
 |hidden|boolean||
+| workspace_id |int8||
 
 #### Primary Key 
 
@@ -118,6 +121,7 @@ erDiagram
 |item_source|varchar||
 |ref_item_target|varchar||
 |subscriber|varchar||
+| workspace_id |int8||
 
 #### Primary Key 
 

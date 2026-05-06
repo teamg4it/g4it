@@ -1,6 +1,6 @@
 ---
 title: '3. Administration'
-description: "All use cases related to administrate users, workspaces and referential data."
+description: "All use cases related to administrate users."
 weight: 30
 mermaid: true 
 ---
