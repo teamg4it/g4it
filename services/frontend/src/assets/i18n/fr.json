@@ -783,7 +783,8 @@
             "application-view": "Graphique application pour",
             "subdomain-view": "Graphique sous domaine pour",
             "domain-view": "Graphique domain pour",
-            "selected-infos": "Impacts en équivalent habitant pour"
+            "selected-infos": "Impacts en équivalent habitant pour",
+            "additional-elements": "Éléments supplémentaires d'analyse"
         },
         "critere": {
             "repartition": "Répartition"
