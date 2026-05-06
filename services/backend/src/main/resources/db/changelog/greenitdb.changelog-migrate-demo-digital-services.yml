@@ -331,3 +331,25 @@ databaseChangeLog:
             - renameTable:
                   oldTableName: ds_migration_new_organization_created_rollback
                   newTableName: ds_migration_new_organization_created_rollback_backup
+
+  - changeSet:
+        id: drop-migration-rollback-backup-tables
+        author: G4IT Dev Team
+        preConditions:
+            - onFail: MARK_RAN
+            - tableExists:
+                  tableName: ds_migration_rollback_backup
+            - tableExists:
+                  tableName: dss_migration_rollback_backup
+            - tableExists:
+                  tableName: ds_migration_new_organization_created_rollback_backup
+        changes:
+            - dropTable:
+                  tableName: ds_migration_rollback_backup
+                  cascadeConstraints: true
+            - dropTable:
+                  tableName: dss_migration_rollback_backup
+                  cascadeConstraints: true
+            - dropTable:
+                  tableName: ds_migration_new_organization_created_rollback_backup
+                  cascadeConstraints: true
