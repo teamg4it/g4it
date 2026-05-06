@@ -145,8 +145,9 @@ public class ReferentialGetService {
      */
     public List<ItemImpact> getElectricityMix(Long workspaceId) {
         List<ItemImpact> itemImpactList= itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",workspaceId);
-        if(itemImpactList!=null && !itemImpactList.isEmpty())
+        if(itemImpactList!=null && !itemImpactList.isEmpty()) {
             return itemImpactList;
+        }
         return itemImpactRepository.findByCategoryAndWorkspaceId("electricity-mix",null);
     }
 
