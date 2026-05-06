@@ -77,6 +77,7 @@
         [displayPopup]="displayRenewServicePopup"
         [serviceId]="digitalServiceUid"
         (outClose)="displayRenewServicePopup = false"
+        (outExtended)="retrieveDigitalServices()"
     >
     </app-renew-service-popup>
 }
