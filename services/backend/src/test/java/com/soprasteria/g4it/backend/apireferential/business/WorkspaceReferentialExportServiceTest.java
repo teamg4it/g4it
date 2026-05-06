@@ -217,7 +217,7 @@ class WorkspaceReferentialExportServiceTest {
         Long workspaceId = 1L;
 
         ItemType item = mock(ItemType.class);
-        when(item.toCsvRecord()).thenReturn(null);
+        when(item.toCsvRecordForWorkspace()).thenReturn(null);
 
         Page<ItemType> page = new PageImpl<>(
                 List.of(item),
@@ -245,7 +245,7 @@ class WorkspaceReferentialExportServiceTest {
 
         ItemType item = mock(ItemType.class);
 
-        when(item.toCsvRecord()).thenReturn(new Object[]{"val1", "val2"});
+        when(item.toCsvRecordForWorkspace()).thenReturn(new Object[]{"val1", "val2"});
 
         Page<ItemType> page = new PageImpl<>(
                 List.of(item),
@@ -265,6 +265,149 @@ class WorkspaceReferentialExportServiceTest {
         InputStream result = service.exportReferentialZip("ORG", workspaceId);
 
         assertNotNull(result);
-        verify(item, atLeastOnce()).toCsvRecord();
+        verify(item, atLeastOnce()).toCsvRecordForWorkspace();
+    }
+
+    @Test
+    void exportReferentialZip_shouldCreateTemplateFiles_whenNoData() throws Exception {
+        Long workspaceId = 1L;
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        InputStream is = service.exportReferentialZip(ORG, workspaceId);
+
+        assertNotNull(is);
+
+        // optional: verify repo calls
+        verify(itemTypeRepository).findByWorkspaceId(eq(workspaceId), any());
+    }
+
+    @Test
+    void exportReferentialZip_itemImpact_multiplePages() throws Exception {
+        Long workspaceId = 1L;
+
+        Page<ItemImpact> page1 = new PageImpl<>(
+                List.of(mock(ItemImpact.class)),
+                PageRequest.of(0, 1),
+                2
+        );
+
+        Page<ItemImpact> page2 = new PageImpl<>(
+                List.of(mock(ItemImpact.class)),
+                PageRequest.of(1, 1),
+                2
+        );
+
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(page1)
+                .thenReturn(page2);
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        InputStream result = service.exportReferentialZip(ORG, workspaceId);
+
+        assertNotNull(result);
+
+        verify(itemImpactRepository, atLeast(2))
+                .findByWorkspaceId(eq(workspaceId), any());
+    }
+
+    @Test
+    void exportReferentialZip_itemImpact_nullRecordIgnored() throws Exception {
+        Long workspaceId = 1L;
+
+        ItemImpact item = mock(ItemImpact.class);
+        when(item.toCsvRecordForWorkspace()).thenReturn(null);
+
+        Page<ItemImpact> page = new PageImpl<>(
+                List.of(item),
+                PageRequest.of(0, 1),
+                1
+        );
+
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(page);
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        InputStream result = service.exportReferentialZip(ORG, workspaceId);
+
+        assertNotNull(result);
+    }
+
+    @Test
+    void exportReferentialZip_matchingItem_multiplePages() throws Exception {
+        Long workspaceId = 1L;
+
+        Page<MatchingItem> page1 = new PageImpl<>(
+                List.of(mock(MatchingItem.class)),
+                PageRequest.of(0, 1),
+                2
+        );
+
+        Page<MatchingItem> page2 = new PageImpl<>(
+                List.of(mock(MatchingItem.class)),
+                PageRequest.of(1, 1),
+                2
+        );
+
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(page1)
+                .thenReturn(page2);
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        InputStream result = service.exportReferentialZip(ORG, workspaceId);
+
+        assertNotNull(result);
+
+        verify(matchingItemRepository, atLeast(2))
+                .findByWorkspaceId(eq(workspaceId), any());
+    }
+
+    @Test
+    void exportReferentialZip_shouldContainCsvEntries() throws Exception {
+        Long workspaceId = 1L;
+
+        when(itemTypeRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+        when(itemImpactRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+        when(matchingItemRepository.findByWorkspaceId(eq(workspaceId), any()))
+                .thenReturn(Page.empty());
+
+        InputStream is = service.exportReferentialZip(ORG, workspaceId);
+
+        java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(is);
+
+        boolean found = false;
+        java.util.zip.ZipEntry entry;
+
+        while ((entry = zis.getNextEntry()) != null) {
+            if (entry.getName().contains("itemType_template.csv")) {
+                found = true;
+            }
+        }
+
+        assertTrue(found);
     }
 }
