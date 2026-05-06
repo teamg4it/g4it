@@ -41,4 +41,6 @@ public interface ItemTypeRepository extends JpaRepository<ItemType, Long> {
     List<ItemType> findByWorkspaceIdOrWorkspaceIdIsNull(Long workspaceId);
 
     Page<ItemType> findByWorkspaceId(Long workspaceId, Pageable pageable);
+
+    Optional<ItemType> findByTypeAndOrganizationAndWorkspaceId(String type, String organization,Long workspaceId);
 }
