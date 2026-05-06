@@ -7,6 +7,7 @@
  */
 import { NgModule } from "@angular/core";
 import { NgxEchartsModule } from "ngx-echarts";
+import { BadgeModule } from "primeng/badge";
 import { ImageModule } from "primeng/image";
 import { OverlayModule } from "primeng/overlay";
 import { TabMenuModule } from "primeng/tabmenu";
@@ -45,6 +46,7 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
         }),
         inventoriesApplicationRouteur,
         TabMenuModule,
+        BadgeModule,
         ImpactButtonComponent,
         ConfigureViewFiltersComponent,
         IndicatorSectionComponent,
