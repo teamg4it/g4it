@@ -91,7 +91,7 @@ public class ReferentialGetService {
 
         // get all itemTypes
         if (type == null) {
-            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganization(organization));
+            return refRestMapper.toItemTypeRest(itemTypeRepository.findByOrganizationAndWorkspaceId(organization,null));
         }
 
         Optional<ItemType> itemType = itemTypeRepository.findByTypeAndOrganizationAndWorkspaceId(type, organization,null);
