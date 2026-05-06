@@ -54,7 +54,7 @@ public class CsvUtils {
     public static Boolean readBoolean(CSVRecord csvRecord, String field) {
         final String value = read(csvRecord, field);
         if (value == null) return false;
-        return Boolean.getBoolean(value);
+        return Boolean.parseBoolean(value);
     }
 
     public static LocalDate readLocalDate(CSVRecord csvRecord, String field) {
