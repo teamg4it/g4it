@@ -7,6 +7,7 @@
  */
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { NgxEchartsModule } from "ngx-echarts";
+import { BadgeModule } from "primeng/badge";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { CheckboxModule } from "primeng/checkbox";
@@ -49,6 +50,7 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
         OverlayModule,
         CheckboxModule,
         ConfirmPopupModule,
+        BadgeModule,
         NgxEchartsModule.forRoot({
             echarts: () =>
                 import(

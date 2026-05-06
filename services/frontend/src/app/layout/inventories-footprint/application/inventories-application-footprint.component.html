@@ -3,9 +3,8 @@
     [inventoryId]="inventoryId"
     [indicatorType]="'application'"
 ></app-inventories-header-footprint>
-<dataviz-filter-application [allFilters]="filteredFilters()"></dataviz-filter-application>
 
-<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 240px)' }">
+<p-scrollPanel [style]="{ width: '100%', height: 'calc(100vh - 170px)' }">
     <div class="bg-white">
         <app-indicator-section
             [statGroups]="statGroups()"
@@ -175,6 +174,10 @@
                     [label]="'digital-services.configure-view' | translate"
                     [ariaLabel]="'digital-services.configure-view' | translate"
                 ></p-button>
+
+                <dataviz-filter-application
+                    [allFilters]="filteredFilters()"
+                ></dataviz-filter-application>
             </div>
         </div>
         <div class="mb-3 footprint-dashboard-container-app-criteria grid w-full">

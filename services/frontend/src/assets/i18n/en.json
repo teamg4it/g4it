@@ -786,7 +786,8 @@
             "application-view": "Application graph for",
             "subdomain-view": "Subdomain graph for",
             "domain-view": "Domain graph for",
-            "selected-infos": "Impacts in people equivalent for"
+            "selected-infos": "Impacts in people equivalent for",
+            "additional-elements": "Additional elements of analysis"
         },
         "critere": {
             "repartition": "Repartition"
@@ -800,7 +801,10 @@
                 "raw-impact": "Raw impact"
             },
             "caption": "Table view of the impacts of the Applications"
-        }
+        },
+        "filter-view": "Filter the view",
+        "filter-text": "Filters",
+        "filter-description": "These filters allow you to view only a portion of the data calculated by G4IT. Your selections will apply to the entire page and update the key indicators and impacts based on the filter you set."
     },
     "error-page": {
         "title": {

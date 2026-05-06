@@ -93,6 +93,16 @@ public class ItemType implements Serializable {
                 source, refDefaultItem, organization, version};
     }
 
+    public static String[] getCsvHeadersForWorkspace() {
+        return new String[]{"type", "category", "comment", "default_lifespan", "is_server",
+                "source", "ref_default_item","version"};
+    }
+
+    public Object[] toCsvRecordForWorkspace() {
+        return new Object[]{type, category, comment, defaultLifespan, isServer,
+                source, refDefaultItem, version};
+    }
+
 }
 
 
