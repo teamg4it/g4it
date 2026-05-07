@@ -65,6 +65,7 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     selectedFilters() {
+        // Initialize with all available filters when data changes
         this.allUnusedFilters = structuredClone(
             this.allFilters,
         ) as Filter<TransformedDomain>;
@@ -150,14 +151,53 @@ export class DatavizFilterApplicationComponent implements OnChanges {
     }
 
     openFilterSidebar(): void {
-        // Create a deep copy of current filters from store
-        const currentFilters = this.footprintStore.applicationSelectedFilters();
-        this.localFilters.set(structuredClone(currentFilters));
-        // Use current filter state (with checked values), not raw allFilters
+        // Start with ALL available filters
         this.allUnusedFilters = structuredClone(
-            currentFilters,
+            this.allFilters,
         ) as Filter<TransformedDomain>;
+
+        // Get current selection state from store
+        const currentFilters = this.footprintStore.applicationSelectedFilters();
+
+        // For tree-based filters (domain), merge the checked state
+        if (this.allUnusedFilters["domain"] && currentFilters["domain"]) {
+            this.allUnusedFilters["domain"] = this.mergeFilterState(
+                this.allUnusedFilters["domain"],
+                currentFilters["domain"] as TransformedDomain[],
+            );
+        }
+
+        // Set local filters to current selection state
+        this.localFilters.set(structuredClone(currentFilters));
         this.filterSidebarVisible = true;
+    }
+
+    private mergeFilterState(
+        allFilters: TransformedDomain[],
+        selectedFilters: TransformedDomain[],
+    ): TransformedDomain[] {
+        return allFilters.map((domain) => {
+            const selected = selectedFilters.find((s) => s.label === domain.label);
+            if (selected) {
+                const mergedChildren =
+                    domain.children?.map((child) => {
+                        const selectedChild = selected.children?.find(
+                            (sc) => sc.label === child.label,
+                        );
+                        return {
+                            ...child,
+                            checked: selectedChild?.checked ?? true,
+                        };
+                    }) ?? [];
+
+                return {
+                    ...domain,
+                    checked: selected.checked ?? true,
+                    children: mergedChildren,
+                };
+            }
+            return domain;
+        });
     }
 
     closeFilterSidebar(): void {
