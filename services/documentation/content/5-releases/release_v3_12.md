@@ -6,7 +6,7 @@ weight: 135
 
 ## Overview
 
-Release v3.12 introduces major improvements focused on **data governance, customization, and usability** across the platform.
+Release v3.12 introduces major improvements focused on **customization and usability** across the platform.
 
 This version brings a redesigned **filter experience in the Inventory module**, enhances **data retention visibility and extension capabilities**, and introduces **workspace-level reference data management** for greater flexibility in impact calculations.
 
@@ -19,7 +19,7 @@ Overall, this release strengthens user autonomy, transparency, and analytical ca
 The filtering experience in the Inventory module has been redesigned for better usability and clarity.
 
 - Filters moved from **top overlay bar to a right-side panel**
-- Integrated with the **“Configure the view”** button
+- Aligned with the **“Configure the view”** button
 - Features:
     - Foldable/unfoldable filter sections (collapsed by default)
     - Indicator showing the **number of active filters**
